@@ -18,9 +18,7 @@
     The \c CachedTable class inherits QDialog making the table editor
     widget a top-level dialog window.
 
-    \quotefromfile CachedTable.java
-    \skipto public class CachedTable
-    \printuntil private QSqlTableModel
+    \snippet CachedTable.java 0
 
     Note the QSqlTableModel variable declaration: As we will see in
     this example, the QSqlTableModel class can be used to provide data
@@ -32,8 +30,7 @@
 
     We define a static method to check for suitable database support:
 
-    \skipto public static boolean checkSqlLite
-    \printuntil }
+    \snippet CachedTable.java 9
 
     We are also going to show how a table view can be used to cache
     any changes to the data until the user explicitly requests to
@@ -50,9 +47,7 @@
     We do this by defining a \c SqlCommon class containing a method
     that performs this task:
 
-    \quotefromfile SqlCommon.java
-    \skipto class SqlCommon
-    \printuntil /^\}/
+    \snippet SqlCommon.java 0
 
     The \c createConnection() method is a helper method provided
     for convenience. It opens a connection to an in-memory SQLITE
@@ -65,9 +60,7 @@
     \c submit() slot. In the constructor we create and customize the
     data model and the various window elements:
 
-    \quotefromfile CachedTable.java
-    \skipto public CachedTable
-    \printto String
+    \snippet CachedTable.java 1
 
     First we create the data model and set the SQL database table we
     want the model to operate on. Note that the
@@ -78,8 +71,7 @@
     customized by specifying filters and sort conditions (see the
     QSqlTableModel class documentation for more details).
 
-    \skipto QSqlTableModel
-    \printto QTableView
+    \snippet CachedTable.java 2
 
     We also set the model's edit strategy: The edit strategy dictates
     when the changes done by the user in the view are actually applied
@@ -93,8 +85,7 @@
     the \l {QSqlQueryModel::setHeaderData()}{setHeaderData()} method
     the model inherits from the QSqlQueryModel class.
 
-    \skipto QTableView
-    \printuntil setModel
+    \snippet CachedTable.java 3
 
     Then we create a table view. The QTableView class provides a
     default model/view implementation of a table view, i.e. it
@@ -108,8 +99,7 @@
     {QAbstractItemView::setModel()}{setModel()} method, to make the
     view present our data.
 
-    \skipto submitButton
-    \printto QVBoxLayout
+    \snippet CachedTable.java 4
 
     The \c {TableEditor}'s buttons are regular QPushButton objects. We
     connect the \gui Quit button to the table editor's \l
@@ -119,17 +109,15 @@
     to our model's \l {QSqlTableModel::revertAll()}{revertAll()} slot,
     reverting all pending changes (restoring the original data).
 
-    \skipto QVBoxLayout
-    \printuntil }
+    \snippet CachedTable.java 5
 
     In the end we add all the buttons and the table view to a layout,
     install the layout on the table editor widget, and set the
     editor's window title.
 
-    \skipto submit()
-    \printuntil QMessageBox.warning
-    \printuntil }
-    \printuntil }
+    \snippet CachedTable.java 6
+    \snippet CachedTable.java 7
+    \snippet CachedTable.java 8
 
     The \c submit() slot is called whenever the users hit the \gui
     Submit button to save their changes.

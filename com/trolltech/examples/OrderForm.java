@@ -22,6 +22,7 @@ import java.util.*;
 @QtJambiExample(name = "Order Form")
 public class OrderForm extends QMainWindow
 {
+//! [0]
     private static class DetailsDialog extends QDialog
     {
         private QLabel nameLabel;
@@ -32,7 +33,9 @@ public class OrderForm extends QMainWindow
         private QTableWidget itemsTable;
         private QTextEdit addressEdit;
         private QDialogButtonBox buttonBox;
+//! [0]
 
+//! [1]
         public DetailsDialog(String title, QWidget parent)
         {
             nameLabel = new QLabel(tr("Name:"));
@@ -54,7 +57,9 @@ public class OrderForm extends QMainWindow
 
             buttonBox.accepted.connect(this, "verify()");
             buttonBox.rejected.connect(this, "reject()");
+//! [1]
 
+//! [2]
             QGridLayout mainLayout = new QGridLayout();
             mainLayout.addWidget(nameLabel, 0, 0);
             mainLayout.addWidget(nameEdit, 0, 1);
@@ -68,6 +73,7 @@ public class OrderForm extends QMainWindow
             setWindowTitle(title);
         }
 
+//! [3]
         public void verify()
         {
             if (!nameEdit.text().equals("") &&
@@ -87,6 +93,7 @@ public class OrderForm extends QMainWindow
                 reject();
         }
 
+//! [4]
         public List<QPair<String, Integer>> orderItems()
         {
             List<QPair<String, Integer>> orderList = new Vector<QPair<String, Integer>>();
@@ -102,21 +109,25 @@ public class OrderForm extends QMainWindow
             return orderList;
         }
 
+//! [5]
         public String senderName()
         {
             return nameEdit.text();
         }
 
+//! [6]
         public String senderAddress()
         {
             return addressEdit.toPlainText();
         }
 
+//! [7]
         public boolean sendOffers()
         {
             return offersCheckBox.isChecked();
         }
 
+//! [8]
         private void setupItemsTable()
         {
             items = new Vector<String>();
@@ -136,7 +147,9 @@ public class OrderForm extends QMainWindow
             }
         }
     }
+//! [2] //! [3] //! [4] //! [5] //! [6] //! [7] //! [8]
 
+//! [9]
     public OrderForm() {
         QMenu fileMenu = new QMenu(tr("&File"), this);
         QAction newAction = fileMenu.addAction(tr("&New..."));
@@ -160,7 +173,9 @@ public class OrderForm extends QMainWindow
 
         createSample();
     }
+//! [9]
 
+//! [10]
     public void createSample()
     {
         DetailsDialog dialog =
@@ -168,7 +183,9 @@ public class OrderForm extends QMainWindow
         createLetter("Mr. Smith", "12 High Street\nSmall Town\nThis country",
                      dialog.orderItems(), true);
     }
+//! [10]
 
+//! [11]
     public void openDialog() {
         DetailsDialog dialog =
                 new DetailsDialog(tr("Enter Customer Details"), this);
@@ -177,7 +194,9 @@ public class OrderForm extends QMainWindow
             createLetter(dialog.senderName(), dialog.senderAddress(),
                     dialog.orderItems(), dialog.sendOffers());
     }
+//! [11]
 
+//! [12]
     public void printFile() {
         QTextEdit editor = (QTextEdit) letters.currentWidget();
         QPrinter printer = new QPrinter();
@@ -193,16 +212,21 @@ public class OrderForm extends QMainWindow
 
         editor.print(printer);
     }
+//! [12]
 
+//! [13]
     private void createLetter(String name, String address,
                               List<QPair<String, Integer>> orderItems,
                               boolean sendOffers) {
         QTextEdit editor = new QTextEdit();
         int tabIndex = letters.addTab(editor, name);
         letters.setCurrentIndex(tabIndex);
+//! [13]
 
+//! [14]
         QTextCursor cursor = new QTextCursor(editor.textCursor());
         cursor.movePosition(QTextCursor.MoveOperation.Start);
+//! [14] //! [15]
         QTextFrame topFrame = cursor.currentFrame();
         QTextFrameFormat topFrameFormat = topFrame.frameFormat();
         topFrameFormat.setPadding(16);
@@ -226,7 +250,9 @@ public class OrderForm extends QMainWindow
         cursor.insertText("Industry Park");
         cursor.insertBlock();
         cursor.insertText("Another country");
+//! [15]
 
+//! [16]
         cursor.setPosition(topFrame.lastPosition());
 
         cursor.insertText(name, textFormat);
@@ -235,7 +261,9 @@ public class OrderForm extends QMainWindow
             cursor.insertBlock();
             cursor.insertText(line);
         }
+//! [16]
 
+//! [17]
         cursor.insertBlock();
         cursor.insertBlock();
 
@@ -247,12 +275,17 @@ public class OrderForm extends QMainWindow
         QTextFrameFormat bodyFrameFormat = new QTextFrameFormat();
         bodyFrameFormat.setWidth(new QTextLength(QTextLength.Type.PercentageLength, 100));
         cursor.insertFrame(bodyFrameFormat);
+//! [17]
 
+//! [18]
         cursor.insertText(tr("I would like to place an order for the following "
                 + "items:"), textFormat);
         cursor.insertBlock();
+//! [18] //! [19]
         cursor.insertBlock();
+//! [19]
 
+//! [20]
         QTextTableFormat orderTableFormat = new QTextTableFormat();
         orderTableFormat.setAlignment(Qt.AlignmentFlag.AlignHCenter);
         QTextTable orderTable = cursor.insertTable(1, 2, orderTableFormat);
@@ -260,12 +293,16 @@ public class OrderForm extends QMainWindow
         QTextFrameFormat orderFrameFormat = cursor.currentFrame().frameFormat();
         orderFrameFormat.setBorder(1);
         cursor.currentFrame().setFrameFormat(orderFrameFormat);
+//! [20]
 
+//! [21]
         cursor = orderTable.cellAt(0, 0).firstCursorPosition();
         cursor.insertText(tr("Product"), boldFormat);
+//! [21]
         cursor = orderTable.cellAt(0, 1).firstCursorPosition();
         cursor.insertText(tr("Quantity"), boldFormat);
 
+//! [22]
         for (int i = 0; i < orderItems.size(); ++i) {
             QPair<String, Integer> item = orderItems.get(i);
             int row = orderTable.rows();
@@ -276,14 +313,19 @@ public class OrderForm extends QMainWindow
             cursor = orderTable.cellAt(row, 1).firstCursorPosition();
             cursor.insertText("" + item.second, textFormat);
         }
+//! [22]
 
+//! [23]
         cursor.setPosition(topFrame.lastPosition());
 
         cursor.insertBlock();
+//! [23] //! [24]
         cursor.insertText(tr("Please update my records to take account of the "
                 + "following privacy information:"));
         cursor.insertBlock();
+//! [24]
 
+//! [25]
         QTextTable offersTable = cursor.insertTable(2, 2);
 
         cursor = offersTable.cellAt(0, 1).firstCursorPosition();
@@ -299,7 +341,9 @@ public class OrderForm extends QMainWindow
             cursor = offersTable.cellAt(1, 0).firstCursorPosition();
 
         cursor.insertText("X", boldFormat);
+//! [25]
 
+//! [26]
         cursor.setPosition(topFrame.lastPosition());
         cursor.insertBlock();
         cursor.insertText(tr("Sincerely,"), textFormat);
@@ -310,6 +354,7 @@ public class OrderForm extends QMainWindow
 
         printAction.setEnabled(true);
     }
+//! [26]
 
     @Override
     public QSize sizeHint() {
@@ -319,6 +364,7 @@ public class OrderForm extends QMainWindow
     private QAction printAction;
     private QTabWidget letters;
 
+//! [27]
     public static void main(String args[])
     {
         QApplication.initialize(args);
@@ -328,5 +374,6 @@ public class OrderForm extends QMainWindow
 
         QApplication.exec();
     }
+//! [27]
 }
 

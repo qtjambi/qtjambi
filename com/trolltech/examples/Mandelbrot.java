@@ -18,6 +18,7 @@ import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QPainter.RenderHint;
 
 @QtJambiExample(name = "Mandelbrot")
+//! [0]
 public class Mandelbrot extends QWidget {
 
     private RenderThread thread = new RenderThread();
@@ -41,17 +42,22 @@ public class Mandelbrot extends QWidget {
 
     private Signal2<QImage, Double> renderedImage =
             new Signal2<QImage, Double>();
+//! [0]
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
         Mandelbrot mainWindow = new Mandelbrot();
         mainWindow.show();
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     public Mandelbrot() {
         this(null);
     }
+//! [2]
     
     @Override
     protected void disposed() {
@@ -79,6 +85,7 @@ public class Mandelbrot extends QWidget {
     }
 
     @Override
+//! [3]
     public void paintEvent(QPaintEvent event) {
         QPainter painter = new QPainter();
         painter.begin(this);
@@ -94,6 +101,7 @@ public class Mandelbrot extends QWidget {
 
             return;
         }
+//! [3] //! [4]
         if (currentScale == pixmapScale) {
             painter.drawImage(pixmapOffset, pixmap);
         } else {
@@ -118,8 +126,11 @@ public class Mandelbrot extends QWidget {
                 painter.drawImage(exposed, pixmap, exposed);
 
             painter.restore();
+//! [4] //! [5]
         }
+//! [5]
 
+//! [6]
         String text = tr("Use mouse wheel to zoom.")
                       + tr("Press and hold left mouse button to scroll.");
         QFontMetrics metrics = painter.fontMetrics();
@@ -133,13 +144,17 @@ public class Mandelbrot extends QWidget {
         painter.drawText(offset, metrics.leading() + metrics.ascent(), text);
         painter.end();
     }
+//! [6]
 
     @Override
+//! [7]
     public void resizeEvent(QResizeEvent event) {
         thread.render(centerX, centerY, currentScale, size());
     }
+//! [7]
 
     @Override
+//! [8]
     protected void closeEvent(QCloseEvent event) {
         synchronized (thread) {
             abort = true;
@@ -147,8 +162,10 @@ public class Mandelbrot extends QWidget {
         }
         super.closeEvent(event);
     }
+//! [8]
 
     @Override
+//! [9]
     public void keyPressEvent(QKeyEvent event) {
         Qt.Key key = Qt.Key.resolve(event.key());
         switch (key) {
@@ -174,21 +191,27 @@ public class Mandelbrot extends QWidget {
             super.keyPressEvent(event);
         }
     }
+//! [9]
 
     @Override
+//! [10]
     public void wheelEvent(QWheelEvent event) {
         int numDegrees = event.delta() / 8;
         double numSteps = numDegrees / 15.0f;
         zoom(Math.pow(ZoomInFactor, numSteps));
     }
+//! [10]
 
     @Override
+//! [11]
     public void mousePressEvent(QMouseEvent event) {
         if (event.button() == Qt.MouseButton.LeftButton)
             lastDragPosition = event.pos();
     }
+//! [11]
 
     @Override
+//! [12]
     public void mouseMoveEvent(QMouseEvent event) {
         if (event.buttons().isSet(Qt.MouseButton.LeftButton)) {
             pixmapOffset.add(event.pos());
@@ -198,8 +221,10 @@ public class Mandelbrot extends QWidget {
             update();
         }
     }
+//! [12]
 
     @Override
+//! [13]
     public void mouseReleaseEvent(QMouseEvent event) {
         if (event.button() == Qt.MouseButton.LeftButton) {
             pixmapOffset.add(event.pos());
@@ -211,8 +236,10 @@ public class Mandelbrot extends QWidget {
             scrollImage(deltaX, deltaY);
         }
     }
+//! [13]
 
     @SuppressWarnings("unused")
+//! [14]
     private void updatePixmap(QImage image, Double scaleFactor) {
         if (!lastDragPosition.isNull())
             return;
@@ -230,20 +257,26 @@ public class Mandelbrot extends QWidget {
             }
         });
     }
+//! [14]
 
+//! [15]
     protected void zoom(double zoomFactor) {
         currentScale *= zoomFactor;
         update();
         thread.render(centerX, centerY, currentScale, size());
     }
+//! [15]
 
+//! [16]
     public void scrollImage(int deltaX, int deltaY) {
         centerX += deltaX * currentScale;
         centerY += deltaY * currentScale;
         update();
         thread.render(centerX, centerY, currentScale, size());
     }
+//! [16]
 
+//! [17]
     private class RenderThread extends Thread {
         private double centerX;
         private double centerY;
@@ -255,6 +288,7 @@ public class Mandelbrot extends QWidget {
         int[] colormap = new int[ColormapSize];
 
         RenderThread() {
+//! [17] //! [18]
             restart = false;
 
             for (int i = 0; i < ColormapSize; ++i) {
@@ -262,7 +296,9 @@ public class Mandelbrot extends QWidget {
                 colormap[i] = rgbFromWaveLength(wave);
             }
         }
+//! [18]
 
+//! [19]
         synchronized void render(double centerX, double centerY,
                                  double scaleFactor, QSize resultSize) {
 
@@ -278,8 +314,10 @@ public class Mandelbrot extends QWidget {
                 notify();
             }
         }
+//! [19]
 
         @Override
+//! [20]
         public void run() {
             QSize resultSize;
             double scaleFactor;
@@ -287,16 +325,22 @@ public class Mandelbrot extends QWidget {
             double centerY;
 
             while (true) {
+//! [20] //! [21]
                 synchronized (this) {
+//! [21] //! [22]
                     resultSize = this.resultSize;
                     scaleFactor = this.scaleFactor;
                     centerX = this.centerX;
                     centerY = this.centerY;
                 }
+//! [22]
 
+//! [23]
                 int halfWidth = resultSize.width() / 2;
+//! [23] //! [24]
                 int halfHeight = resultSize.height() / 2;
                 QImage.Format format = QImage.Format.Format_RGB32;
+//! [24] //! [25]
                 QImage image = new QImage(resultSize, format);
 
                 final int NumPasses = 8;
@@ -358,7 +402,9 @@ public class Mandelbrot extends QWidget {
                         ++pass;
                     }
                 }
+//! [25] //! [26]
                 synchronized (this) {
+//! [26] //! [27]
                     if (!restart)
                         try {
                             wait();
@@ -369,7 +415,9 @@ public class Mandelbrot extends QWidget {
                 }
             }
         }
+//! [27]
 
+//! [28]
         int rgbFromWaveLength(double wave) {
             double red= 0.0;
             double green = 0.0;
@@ -409,4 +457,6 @@ public class Mandelbrot extends QWidget {
             return color.rgb();
         }
     }
+//! [28] //! [29]
 }
+//! [29]

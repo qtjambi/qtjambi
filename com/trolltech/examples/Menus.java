@@ -17,15 +17,20 @@ import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Menus")
+//! [0]
 public class Menus extends QMainWindow {
+//! [0]
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
         Menus menus = new Menus();
         menus.show();
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     QMenu fileMenu;
     QMenu editMenu;
     QMenu formatMenu;
@@ -53,11 +58,15 @@ public class Menus extends QMainWindow {
     QAction aboutQtAct;
     QAction aboutQtJambiAct;
     QLabel infoLabel;
+//! [2]
 
+//! [3]
     public Menus() {
         QWidget widget = new QWidget();
         setCentralWidget(widget);
+//! [3]
 
+//! [4]
         QWidget topFiller = new QWidget();
         topFiller.setSizePolicy(QSizePolicy.Policy.Expanding,
                                 QSizePolicy.Policy.Expanding);
@@ -79,20 +88,26 @@ public class Menus extends QMainWindow {
         layout.addWidget(infoLabel);
         layout.addWidget(bottomFiller);
         widget.setLayout(layout);
+//! [4]
 
+//! [5]
         createActions();
         createMenus();
 
         statusBar().showMessage(tr("A context menu is available by "
                                    + "right-clicking"));
+//! [5]
 
+//! [6]
         setWindowTitle(tr("Menus"));
         setMinimumSize(160, 160);
         resize(480, 320);
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
+//! [6]
 
     @Override
+//! [7]
     public void contextMenuEvent(QContextMenuEvent event) {
         QMenu menu = new QMenu(this);
         menu.addAction(cutAct);
@@ -100,6 +115,7 @@ public class Menus extends QMainWindow {
         menu.addAction(pasteAct);
         menu.exec(event.globalPos());
     }
+//! [7]
 
     void newFile() {
         infoLabel.setText(tr("Invoked <b>File|New</b>"));
@@ -185,11 +201,13 @@ public class Menus extends QMainWindow {
         infoLabel.setText(tr("Invoked <b>Help|About Qt Jambi</b>"));
     }
 
+//! [8]
     void createActions() {
         newAct = new QAction(tr("&New"), this);
         newAct.setShortcut(tr("Ctrl+N"));
         newAct.setStatusTip(tr("Create a new file"));
         newAct.triggered.connect(this, "newFile()");
+//! [8]
 
         openAct = new QAction(tr("&Open..."), this);
         openAct.setShortcut(tr("Ctrl+O"));
@@ -303,14 +321,19 @@ public class Menus extends QMainWindow {
         centerAct.setStatusTip(tr("Center the selected text"));
         centerAct.triggered.connect(this, "center()");
 
+//! [9]
         alignmentGroup = new QActionGroup(this);
         alignmentGroup.addAction(leftAlignAct);
         alignmentGroup.addAction(rightAlignAct);
         alignmentGroup.addAction(justifyAct);
         alignmentGroup.addAction(centerAct);
+//! [9]
         leftAlignAct.setChecked(true);
+//! [10]
     }
+//! [10]
 
+//! [11]
     void createMenus() {
         fileMenu = menuBar().addMenu(tr("&File"));
         fileMenu.addAction(newAct);
@@ -334,7 +357,9 @@ public class Menus extends QMainWindow {
         helpMenu.addSeparator();
         helpMenu.addAction(aboutQtJambiAct);
         helpMenu.addAction(aboutQtAct);
+//! [11]
 
+//! [12]
         formatMenu = editMenu.addMenu(tr("&Format"));
         formatMenu.addAction(boldAct);
         formatMenu.addAction(italicAct);
@@ -347,4 +372,6 @@ public class Menus extends QMainWindow {
         formatMenu.addAction(setLineSpacingAct);
         formatMenu.addAction(setParagraphSpacingAct);
     }
+//! [12] //! [13]
 }
+//! [13]

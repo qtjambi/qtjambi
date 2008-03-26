@@ -13,11 +13,14 @@
 
 package com.trolltech.examples;
 
+//! [0]
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+//! [0]
 
 @QtJambiExample(name = "Application")
+//! [1]
 public class Application extends QMainWindow {
 
     private String curFile;
@@ -42,17 +45,21 @@ public class Application extends QMainWindow {
     private QAction aboutQtAct;
 
     private String rsrcPath = "classpath:com/trolltech/images";
+//! [1]
 
+//! [2]
     public Application()
     {
         QMenuBar menuBar = new QMenuBar();
         setMenuBar(menuBar);
+//! [2]
 
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         textEdit = new QTextEdit();
         setCentralWidget(textEdit);
 
+//! [3]
         try {
             createActions();
         } catch (Exception e) {
@@ -61,15 +68,19 @@ public class Application extends QMainWindow {
         createMenus();
         createToolBars();
         createStatusBar();
+//! [3]
 
         readSettings();
 
+//! [4]
         textEdit.document().contentsChanged.connect(this, "documentWasModified()");
 
         setCurrentFile("");
     }
+//! [4]
 
     @Override
+//! [5]
     public void closeEvent(QCloseEvent event)
     {
         if (maybeSave()) {
@@ -77,17 +88,24 @@ public class Application extends QMainWindow {
             event.accept();
         } else {
             event.ignore();
+//! [5] //! [6]
         }
+//! [6] //! [7]
     }
+//! [7]
 
+//! [8]
     public void newFile()
     {
         if (maybeSave()) {
             textEdit.clear();
             setCurrentFile("");
         }
+//! [8] //! [9]
     }
+//! [9]
 
+//! [10]
     public void open()
     {
         if (maybeSave()) {
@@ -95,17 +113,24 @@ public class Application extends QMainWindow {
             if (fileName.length() != 0)
                 loadFile(fileName);
         }
+//! [10] //! [11]
     }
+//! [11]
 
+//! [12]
     public boolean save()
     {
         if (curFile.length() == 0) {
             return saveAs();
         } else {
             return saveFile(curFile);
+//! [12] //! [13]
         }
+//! [13] //! [14]
     }
+//! [14]
 
+//! [15]
     public boolean saveAs()
     {
         String fileName = QFileDialog.getSaveFileName(this);
@@ -114,7 +139,9 @@ public class Application extends QMainWindow {
 
         return saveFile(fileName);
     }
+//! [15]
 
+//! [16]
     public void about()
     {
         QMessageBox.about(this,
@@ -123,12 +150,16 @@ public class Application extends QMainWindow {
                             "write modern GUI applications using Qt, with a menu bar, " +
                             "toolbars, and a status bar."));
     }
+//! [16]
 
+//! [17]
     public void documentWasModified()
     {
         setWindowModified(textEdit.document().isModified());
     }
+//! [17]
 
+//! [18]
     private void createActions()
     {
         newAct = new QAction(new QIcon(rsrcPath + "/new.png"), tr("&New"), this);
@@ -140,6 +171,7 @@ public class Application extends QMainWindow {
         openAct.setShortcut(tr("Ctrl+O"));
         openAct.setStatusTip(tr("Open an existing file"));
         openAct.triggered.connect(this, "open()");
+//! [18]
 
         saveAct = new QAction(new QIcon(rsrcPath + "/save.png"), tr("&Save"), this);
         saveAct.setShortcut(tr("Ctrl+S"));
@@ -178,17 +210,22 @@ public class Application extends QMainWindow {
         aboutQtJambiAct.setStatusTip(tr("Show the Qt Jambi library's About box"));
         aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
         
+//! [19]
         aboutQtAct = new QAction(tr("About Q&t"), this);
         aboutQtAct.setStatusTip(tr("Show the Qt library's About box"));
         aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
+//! [19]
         
 
+//! [20]
         cutAct.setEnabled(false);
         copyAct.setEnabled(false);
         textEdit.copyAvailable.connect(cutAct, "setEnabled(boolean)");
         textEdit.copyAvailable.connect(copyAct, "setEnabled(boolean)");
     }
+//! [20]
 
+//! [21]
     private void createMenus()
     {
         fileMenu = menuBar().addMenu(tr("&File"));
@@ -212,7 +249,9 @@ public class Application extends QMainWindow {
         helpMenu.addAction(aboutQtJambiAct);
         helpMenu.addAction(aboutQtAct);        
     }
+//! [21]
 
+//! [22]
     private void createToolBars()
     {
         fileToolBar = addToolBar(tr("File"));
@@ -225,11 +264,14 @@ public class Application extends QMainWindow {
         editToolBar.addAction(copyAct);
         editToolBar.addAction(pasteAct);
     }
+//! [22]
 
+//! [23]
     private void createStatusBar()
     {
         statusBar().showMessage(tr("Ready"));
     }
+//! [23]
 
     private void readSettings()
     {
@@ -247,6 +289,7 @@ public class Application extends QMainWindow {
         settings.setValue("size", size());
     }
 
+//! [24]
     private boolean maybeSave()
     {
         if (textEdit.document().isModified()) {
@@ -263,8 +306,11 @@ public class Application extends QMainWindow {
             }
         }
         return true;
+//! [24] //! [25]
     }
+//! [25]
 
+//! [26]
     public void loadFile(String fileName)
     {
         QFile file = new QFile(fileName);
@@ -272,6 +318,7 @@ public class Application extends QMainWindow {
             QMessageBox.warning(this, tr("Application"), String.format(tr("Cannot read file %1$s:\n%2$s."), fileName, file.errorString()));
             return;
         }
+//! [26] //! [27]
 
         QTextStream in = new QTextStream(file);
         QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
@@ -281,7 +328,9 @@ public class Application extends QMainWindow {
         setCurrentFile(fileName);
         statusBar().showMessage(tr("File loaded"), 2000);
     }
+//! [27]
 
+//! [28]
     public boolean saveFile(String fileName)
     {
         QFile file = new QFile(fileName);
@@ -299,8 +348,11 @@ public class Application extends QMainWindow {
         statusBar().showMessage(tr("File saved"), 2000);
         file.close();
         return true;
+//! [28] //! [29]
     }
+//! [29]
 
+//! [30]
     public void setCurrentFile(String fileName)
     {
         curFile = fileName;
@@ -315,12 +367,16 @@ public class Application extends QMainWindow {
 
         setWindowTitle(String.format(tr("%1$s[*] - %2$s"), shownName, tr("Application")));
     }
+//! [30]
 
+//! [31]
     private static String strippedName(String fullFileName)
     {
         return new QFileInfo(fullFileName).fileName();
     }
+//! [31]
 
+//! [32]
     public static void main(String[] args) {
         QApplication.initialize(args);
 
@@ -329,5 +385,6 @@ public class Application extends QMainWindow {
 
         QApplication.exec();
     }
+//! [32]
 
 }

@@ -39,9 +39,7 @@
 
     The \c Helper class is minimal:
 
-    \quotefromfile Painting2D.java
-    \skipto /class Helper/
-    \printuntil /textPen/
+    \snippet Painting2D.java 10
 
     Apart from the constructor, it only provides a \c paint() method
     to paint using a painter supplied by one of our widget subclasses.
@@ -50,8 +48,7 @@
     The constructor of the class sets up the resources it needs to paint
     content onto a widget:
 
-    \skipto /public Helper/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 11
 
     The actual painting is performed in the \c paint() method. This takes
     a QPainter that has already been set up to paint onto a paint device
@@ -59,8 +56,7 @@
     about the region to be painted, and a measure of the elapsed time (in
     milliseconds) since the paint device was last updated.
 
-    \skipto /void paint/
-    \printuntil translate
+    \snippet Painting2D.java 12
 
     We begin painting by filling in the region contained in the paint event
     before translating the origin of the coordinate system so that the rest
@@ -71,15 +67,13 @@
     animate them so that they appear to move outward and around the coordinate
     system's origin:
 
-    \skipto save()
-    \printuntil restore()
+    \snippet Painting2D.java 13
 
     Since the coordinate system is rotated many times during
     this process, we \l{QPainter::save()}{save()} the QPainter's state
     beforehand and \l{QPainter::restore()}{restore()} it afterwards.
 
-    \skipto setPen(
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 14
 
     We draw some text at the origin to complete the effect.
 
@@ -88,9 +82,7 @@
     The \c Widget class provides a basic custom widget that we use to
     display the simple animation painted by the \c Helper class.
 
-    \quotefromfile Painting2D.java
-    \skipto class Widget
-    \printuntil /helper/
+    \snippet Painting2D.java 6
 
     Apart from the constructor, the widget class only contains a
     \l{QWidget::paintEvent()}{paintEvent()} method, that lets us draw
@@ -103,14 +95,12 @@
     Helper object supplied, calls the base class's constructor, and
     enforces a fixed size for the widget:
 
-    \skipto /public Widget/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 7
 
     The \c animate() slot is called whenever a timer, which we define later, times
     out:
 
-    \skipto /void animate/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 8
 
     Here, we determine the interval that has elapsed since the timer last
     timed out, and we add it to any existing value before repainting the
@@ -122,25 +112,21 @@
     to implement a paint event that sets up a QPainter for the widget and calls
     the helper's \c paint() method:
 
-    \skipto /void paintEvent/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 9
 
     \section1 GLWidget Class 
 
     The \c GLWidget class definition is basically the same as the \c Widget
     class except that it is derived from QGLWidget.
 
-    \quotefromfile Painting2D.java
-    \skipto class GLWidget
-    \printuntil /elapsed/
+    \snippet Painting2D.java 2
 
     Again, the member variables record the \c Helper used to paint the
     widget and the elapsed time since the previous update.
 
     The constructor differs a little from the \c Widget class's constructor:
 
-    \skipto public GLWidget
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 3
 
     As well as initializing the \c elapsed member variable and storing
     the \c Helper object used to paint the widget, the base class's
@@ -150,13 +136,11 @@
     The \c animate() slot is exactly the same as that provided by the \c Widget
     class:
 
-    \skipto /void animate/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 4
 
     The \c paintEvent() is almost the same as that found in the \c Widget class:
 
-    \skipto /void paintEvent/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Painting2D.java 5
 
     Since anti-aliasing will be enabled if available, we only need to set up
     a QPainter on the widget and call the helper's \c paint() method to display
@@ -166,9 +150,7 @@
 
     The \c Painting2D class has a basic, minimal definition:
 
-    \quotefromfile Painting2D.java
-    \skipto class
-    \printuntil /helper/
+    \snippet Painting2D.java 0
 
     It contains a single \c Helper object that will be shared between all
     widgets.
@@ -176,8 +158,7 @@
     The constructor does all the work, creating a widget of each type and
     inserting them with labels into a layout:
 
-    \skipto /public Painting2D/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Painting2D.java 1
 
     A timer with a 50 millisecond time out is constructed for animation purposes,
     and connected to the \c animate() slots of the \c Widget and \c GLWidget objects.

@@ -4,6 +4,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Sliders")
+//! [0]
 public class Sliders extends QWidget
 {
     private SlidersGroup horizontalSliders;
@@ -20,8 +21,10 @@ public class Sliders extends QWidget
     private QSpinBox maximumSpinBox;
     private QSpinBox valueSpinBox;
     private QComboBox orientationCombo;
+//! [0]
 
 
+//! [1]
     public Sliders()
     {
         horizontalSliders = new SlidersGroup(Qt.Orientation.Horizontal, tr("Horizontal"));
@@ -32,6 +35,7 @@ public class Sliders extends QWidget
         stackedWidget.addWidget(verticalSliders);
 
         createControls(tr("Controls"));
+//! [1] //! [2]
 
         horizontalSliders.valueChanged.connect(verticalSliders, "setValue(int)");
         verticalSliders.valueChanged.connect(valueSpinBox, "setValue(int)");
@@ -48,7 +52,9 @@ public class Sliders extends QWidget
 
         setWindowTitle(tr("Sliders"));
     }
+//! [2]
 
+//! [3]
     private void createControls(String title)
     {
         controlsGroup = new QGroupBox(title);
@@ -60,7 +66,9 @@ public class Sliders extends QWidget
         invertedAppearance = new QCheckBox(tr("Inverted appearance"));
         invertedKeyBindings = new QCheckBox(tr("Inverted key bindings"));
 
+//! [3] //! [4]
         minimumSpinBox = new QSpinBox();
+//! [4] //! [5]
         minimumSpinBox.setRange(-100, 100);
         minimumSpinBox.setSingleStep(1);
 
@@ -76,7 +84,9 @@ public class Sliders extends QWidget
         orientationCombo.addItem(tr("Horizontal slider-like widgets"));
         orientationCombo.addItem(tr("Vertical slider-like widgets"));
 
+//! [5] //! [6]
         orientationCombo.activatedIndex.connect(stackedWidget, "setCurrentIndex(int)");
+//! [6] //! [7]
         minimumSpinBox.valueChanged.connect(horizontalSliders, "setMinimum(int)");
         minimumSpinBox.valueChanged.connect(verticalSliders, "setMinimum(int)");
         maximumSpinBox.valueChanged.connect(horizontalSliders, "setMaximum(int)");
@@ -98,6 +108,7 @@ public class Sliders extends QWidget
         controlsLayout.addWidget(orientationCombo, 3, 0, 1, 3);
         controlsGroup.setLayout(controlsLayout);
     }
+//! [7]
 
     public static void main(String args[])
     {
@@ -109,6 +120,7 @@ public class Sliders extends QWidget
     }
 }
 
+//! [8]
 class SlidersGroup extends QGroupBox
 {
     private QSlider slider;
@@ -116,7 +128,9 @@ class SlidersGroup extends QGroupBox
     private QDial dial;
 
     public Signal1<Integer> valueChanged = new Signal1<Integer>();
+//! [8]
 
+//! [9]
     public SlidersGroup(Qt.Orientation orientation, String title)
     {
         slider = new QSlider(orientation);
@@ -133,10 +147,14 @@ class SlidersGroup extends QGroupBox
 
         slider.valueChanged.connect(scrollBar, "setValue(int)");
         scrollBar.valueChanged.connect(dial, "setValue(int)");
+//! [9] //! [10]
         dial.valueChanged.connect(slider, "setValue(int)");
+//! [10] //! [11]
         dial.valueChanged.connect(valueChanged);
 
+//! [11] //! [12]
         QBoxLayout.Direction direction;
+//! [12] //! [13]
 
         if (orientation == Qt.Orientation.Horizontal)
             direction = QBoxLayout.Direction.TopToBottom;
@@ -149,37 +167,48 @@ class SlidersGroup extends QGroupBox
         slidersLayout.addWidget(dial);
         setLayout(slidersLayout);
     }
+//! [13]
 
+//! [14]
     public void setValue(int value)
     {
         slider.setValue(value);
     }
+//! [14]
 
+//! [15]
     public void setMinimum(int value)
     {
         slider.setMinimum(value);
         scrollBar.setMinimum(value);
         dial.setMinimum(value);
     }
+//! [15]
 
+//! [16]
     public void setMaximum(int value)
     {
         slider.setMaximum(value);
         scrollBar.setMaximum(value);
         dial.setMaximum(value);
     }
+//! [16]
 
+//! [17]
     public void invertAppearance(boolean invert)
     {
         slider.setInvertedAppearance(invert);
         scrollBar.setInvertedAppearance(invert);
         dial.setInvertedAppearance(invert);
     }
+//! [17]
 
+//! [18]
     public void invertedKeyBindings(boolean invert)
     {
         slider.setInvertedControls(invert);
         scrollBar.setInvertedControls(invert);
         dial.setInvertedControls(invert);
     }
+//! [18]
 }

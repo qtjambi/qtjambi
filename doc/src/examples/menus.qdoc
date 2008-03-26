@@ -31,12 +31,9 @@
     First, we declare the various menus and actions as well as a
     simple information label in the application wide scope:
 
-    \quotefromfile Menus.java
-    \skipto public class Menus
-    \printline public class Menus
-
-    \skipto fileMenu
-    \printuntil infoLabel
+    \snippet Menus.java 0
+    \codeline
+    \snippet Menus.java 2
 
     The QMenu class provides a menu widget for use in menu bars,
     context menus, and other popup menus while the QAction class
@@ -50,16 +47,14 @@
     way of achieving this is to group the actions together in an
     action group using the QActionGroup class.
 
-    \skipto public Menus()
-    \printuntil setCentralWidget
+    \snippet Menus.java 3
 
     In the constructor, we start off by creating a regular QWidget and
     make it our main window's central widget. Note that the main
     window takes ownership of the widget pointer and deletes it at the
     appropriate time.
 
-    \skipto topFiller
-    \printuntil widget.setLayout
+    \snippet Menus.java 4
 
     Then we create the information label as well as a top and bottom
     filler that we add to a layout which we install on the central
@@ -68,11 +63,9 @@
     layout with a main window as a parent, is considered an error. You
     should always set your own layout on the central widget instead.
 
-    \skipto createActions()
-    \printuntil "right-clicking"
-
-    \skipto setWindowTitle
-    \printuntil /^\s\s\s\s\}/
+    \snippet Menus.java 5
+    \codeline
+    \snippet Menus.java 6
 
     To simplify the constructor, we have chosen to create the actions
     and menus using two convenience methods: \c createActions() and \c
@@ -89,8 +82,7 @@
     Now, let's take a closer look at the \c createActions()
     convenience method that creates the various actions:
 
-    \skipto void createActions()
-    \printuntil newAct.triggered.connect
+    \snippet Menus.java 8
     \dots 8
 
     A QAction object may contain an icon, a text, a shortcut, a status
@@ -116,10 +108,8 @@
     of them are only displaying the action's path in the main window's
     central widget.
 
-    \skipto alignmentGroup
-    \printuntil alignmentGroup.addAction(centerAct)
-    \skipto /^\s\s\s\s\}/
-    \printline /^\s\s\s\s\}/
+    \snippet Menus.java 9
+    \snippet Menus.java 10
 
     Once we have created the \gui {Left Align}, \gui {Right Align},
     \gui {Justify}, and a \gui {Center} actions, we can also create
@@ -138,8 +128,7 @@
     method to add the actions to the menus and to insert the menus
     into the menu bar:
 
-    \skipto void createMenus()
-    \printuntil helpMenu.addAction(aboutQtAct)
+    \snippet Menus.java 11
 
     QMenuBar's \l {QMenuBar::addMenu()}{addMenu()} method appends a
     new QMenu with the given title, to the menubar (note that the
@@ -159,8 +148,7 @@
     which \l {QAction::isSeparator()}{QAction.isSeparator()} returns
     true, and adds the new action to the menu's list of actions.
 
-    \skipto formatMenu
-    \printuntil /^\s\s\s\s\}/
+    \snippet Menus.java 12
 
     Note the \gui Format menu. First of all, it is added as a submenu
     to the \gui Edit Menu using QMenu's \l
@@ -171,9 +159,7 @@
     to the menu separately while the action group does its magic
     behind the scene.
 
-    \quotefromfile Menus.java
-    \skipto public void contextMenuEvent
-    \printuntil /^\s\s\s\s\}/
+    \snippet Menus.java 7
 
     To provide a custom context menu, we must reimplement QWidget's \l
     {QWidget::contextMenuEvent()}{contextMenuEvent()} method to
@@ -189,11 +175,8 @@
     passing the event's position as argument we ensure that the
     context menu appears at the expected position.
 
-    \quotefromfile Menus.java
-    \skipto public static void main
-    \printuntil /^\s\s\s\s\}/
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet Menus.java 1
+    \snippet Menus.java 13
 
     Finally, we provide a \c main() method to create and show our main
     window when the example is run.

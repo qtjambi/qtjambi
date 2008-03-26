@@ -17,8 +17,11 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Custom Filter")
+//! [0]
 public class CustomFilter extends QWidget {
+//! [0]
 
+//! [1]
     public static void main(String[] args) {
 
         QApplication.initialize(args);
@@ -26,6 +29,7 @@ public class CustomFilter extends QWidget {
         filter.show();
         QApplication.exec();
     }
+//! [1]
 
     private MySortFilterProxyModel proxyModel;
 
@@ -42,13 +46,18 @@ public class CustomFilter extends QWidget {
     QDateEdit fromDateEdit;
     QDateEdit toDateEdit;
 
+//! [2]
     public CustomFilter() {
         QStandardItemModel model = createMailModel(this);
+//! [2]
 
+//! [3]
         proxyModel = new MySortFilterProxyModel(this);
         proxyModel.setSourceModel(model);
         proxyModel.setDynamicSortFilter(true);
+//! [3]
 
+//! [4]
         sourceView = new QTreeView();
         sourceView.setRootIsDecorated(false);
         sourceView.setAlternatingRowColors(true);
@@ -59,7 +68,9 @@ public class CustomFilter extends QWidget {
 
         sourceGroupBox = new QGroupBox(tr("Original Model"));
         sourceGroupBox.setLayout(sourceLayout);
+//! [4]
 
+//! [5]
         filterPatternLineEdit = new QLineEdit("Grace|Sports");
         filterPatternLabel = new QLabel(tr("&Filter pattern:"));
         filterPatternLabel.setBuddy(filterPatternLineEdit);
@@ -91,7 +102,9 @@ public class CustomFilter extends QWidget {
                                                       "textFilterChanged()");
         fromDateEdit.dateChanged.connect(this, "dateFilterChanged()");
         toDateEdit.dateChanged.connect(this, "dateFilterChanged()");
+//! [5]
 
+//! [6]
         proxyView = new QTreeView();
         proxyView.setRootIsDecorated(false);
         proxyView.setAlternatingRowColors(true);
@@ -112,7 +125,9 @@ public class CustomFilter extends QWidget {
 
         proxyGroupBox = new QGroupBox(tr("Sorted/Filtered Model"));
         proxyGroupBox.setLayout(proxyLayout);
+//! [6]
 
+//! [7]
         QVBoxLayout mainLayout = new QVBoxLayout();
         mainLayout.addWidget(sourceGroupBox);
         mainLayout.addWidget(proxyGroupBox);
@@ -121,11 +136,15 @@ public class CustomFilter extends QWidget {
         setWindowTitle(tr("Custom Sort/Filter Model"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(500, 450);
+//! [7]
 
+//! [8]
         textFilterChanged();
         dateFilterChanged();
     }
+//! [8]
 
+//! [9]
     private void addMail(QAbstractItemModel model, String subject,
                          String sender, QDateTime date) {
         model.insertRow(0);
@@ -133,7 +152,9 @@ public class CustomFilter extends QWidget {
         model.setData(model.index(0, 1), sender);
         model.setData(model.index(0, 2), date);
     }
+//! [9]
 
+//! [10]
     private QStandardItemModel createMailModel(QObject parent) {
         QStandardItemModel model = new QStandardItemModel(0, 3, parent);
 
@@ -165,8 +186,10 @@ public class CustomFilter extends QWidget {
 
         return model;
     }
+//! [10]
 
     @SuppressWarnings("unused")
+//! [11]
     private void textFilterChanged() {
         QRegExp.PatternSyntax syntax;
         int index = filterSyntaxComboBox.currentIndex();
@@ -182,13 +205,17 @@ public class CustomFilter extends QWidget {
                                      caseSensitivity, syntax);
         proxyModel.setFilterRegExp(regExp);
     }
+//! [11]
 
     @SuppressWarnings("unused")
+//! [12]
     private void dateFilterChanged() {
         proxyModel.setFilterMinimumDate(fromDateEdit.date());
         proxyModel.setFilterMaximumDate(toDateEdit.date());
     }
+//! [12]
 
+//! [13]
     private class MySortFilterProxyModel extends QSortFilterProxyModel {
         private QDateTime minDate = new QDateTime();
         private QDateTime maxDate = new QDateTime();
@@ -196,18 +223,23 @@ public class CustomFilter extends QWidget {
         private MySortFilterProxyModel(QObject parent) {
             super(parent);
         }
+//! [13]
 
+//! [14]
         private void setFilterMinimumDate(QDate date) {
             minDate = new QDateTime(date);
             invalidateFilter();
         }
 
         private void setFilterMaximumDate(QDate date) {
+//! [14] //! [15]
             maxDate = new QDateTime(date);
             invalidateFilter();
         }
+//! [15]
 
         @Override
+//! [16]
         protected boolean filterAcceptsRow(int sourceRow,
                                            QModelIndex sourceParent) {
             QModelIndex index0;
@@ -227,14 +259,18 @@ public class CustomFilter extends QWidget {
 
             return matchFound && dateInRange((QDateTime) (model.data(index2)));
         }
+//! [16]
 
         @Override
+//! [17]
         protected boolean lessThan(QModelIndex left, QModelIndex right) {
 
             boolean result = false;
             Object leftData = sourceModel().data(left);
             Object rightData = sourceModel().data(right);
+//! [17]
 
+//! [18]
             if (leftData instanceof QDateTime
                 && rightData instanceof QDateTime) {
 
@@ -258,9 +294,14 @@ public class CustomFilter extends QWidget {
             }
             return result;
         }
+//! [18]
 
+//! [19]
         private boolean dateInRange(QDateTime date) {
             return (minDate.compareTo(date) < 0 && maxDate.compareTo(date) > 0);
         }
+//! [19] //! [20]
     }
+//! [20] //! [21]
 }
+//! [21]

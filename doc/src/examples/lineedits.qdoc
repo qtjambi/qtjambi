@@ -20,9 +20,7 @@
     several slots (shown later), it contains a number of private variables
     that are accessed from various places in the class:
 
-    \quotefromfile LineEdits.java
-    \skipto public class LineEdits
-    \printuntil accessLineEdit
+    \snippet LineEdits.java 0
 
     The \c LineEdits constructor is used to set up the line edits, validators,
     and comboboxes, connect signals from the comboboxes to slots in the \c LineEdits
@@ -31,8 +29,7 @@
     We begin by constructing a \l{QGroupBox}{group box} to hold a label, combobox,
     and line edit so that we can demonstrate the QLineEdit::echoMode property:
 
-    \skipto LineEdits()
-    \printuntil echoLineEdit.setFocus
+    \snippet LineEdits.java 2
 
     At this point, none of these widgets have been arranged in layouts. Eventually,
     the \c echoLabel, \c echoComboBox, and \c echoLineEdit will be placed in a
@@ -41,34 +38,29 @@
     Similarly, we construct group boxes and collections of widgets to show the
     effects of QIntValidator and QDoubleValidator on a line edit's contents:
 
-    \skipto validatorGroup
-    \printuntil validatorLineEdit
+    \snippet LineEdits.java 3
 
     Text alignment is demonstrated by another group of widgets:
 
-    \skipto alignmentGroup
-    \printuntil alignmentLineEdit
+    \snippet LineEdits.java 4
 
     QLineEdit supports the use of \l{QLineEdit::inputMask}{input masks}.
     These only allow the user to type characters into the line edit that
     follow a simple specification. We construct a group of widgets to
     demonstrate a selection of predefined masks:
 
-    \skipto inputMaskGroup
-    \printuntil inputMaskLineEdit
+    \snippet LineEdits.java 5
 
     Another useful feature of QLineEdit is its ability to make its contents
     read-only. This property is used to control access to a line edit in the
     following group of widgets:
 
-    \skipto accessGroup
-    \printuntil accessLineEdit
+    \snippet LineEdits.java 6
 
     Now that all the child widgets have been constructed, we connect signals
     from the comboboxes to slots in the \c LineEdits object:
 
-    \skipto connect
-    \printuntil accessChanged
+    \snippet LineEdits.java 7
 
     Each of these connections use the
     \l{QComboBox::activated()}{QComboBox.activated()} signal that supplies
@@ -78,19 +70,16 @@
     We place each combobox, line edit, and label in a layout for each group
     box, beginning with the layout for the \c echoGroup group box:
 
-    \skipto echoLayout
-    \printuntil setLayout
+    \snippet LineEdits.java 8
 
     The other layouts are constructed in the same way:
 
-    \skipto validatorLayout
-    \printuntil setLayout(accessLayout)
+    \snippet LineEdits.java 9
 
     Finally, we place each group box in a grid layout for the \c LineEdits
     object and set the window title:
 
-    \skipto layout
-    \printuntil }
+    \snippet LineEdits.java 10
 
     The slots are used to update the type of validator used for a given line edit when
     a new validator has been selected in the associated combobox. The line edits
@@ -102,9 +91,8 @@
     When the combobox for the \gui{Echo} group box is changed, the \c echoChanged()
     slot is called:
 
-    \skipto echoChanged
-    \printuntil }
-    \printuntil }
+    \snippet LineEdits.java 11
+    \snippet LineEdits.java 12
 
     The slot updates the line edit in the same group box to use an echo mode that
     corresponds to the entry described in the combobox.
@@ -112,9 +100,8 @@
     When the combobox for the \gui{Validator} group box is changed, the
     \c validatorChanged() slot is called:
 
-    \skipto validatorChanged
-    \printuntil }
-    \printuntil }
+    \snippet LineEdits.java 13
+    \snippet LineEdits.java 14
 
     The slot either creates a new validator for the line edit to use, or it removes
     the validator in use by calling
@@ -125,9 +112,8 @@
     When the combobox for the \gui{Alignment} group box is changed, the
     \c alignmentChanged() slot is called:
 
-    \skipto alignmentChanged
-    \printuntil }
-    \printuntil }
+    \snippet LineEdits.java 15
+    \snippet LineEdits.java 16
 
     This changes the way that text is displayed in the line edit to correspond with
     the description selected in the combobox.
@@ -135,9 +121,8 @@
     The \c inputMaskChanged() slot handles changes to the combobox in the
     \gui{Input Mask} group box:
 
-    \skipto inputMaskChanged
-    \printuntil }
-    \printuntil }
+    \snippet LineEdits.java 17
+    \snippet LineEdits.java 18
 
     Each entry in the relevant combobox is associated with an input mask. We set
     a new mask by calling the \l{QLineEdit::setMask()}{QLineEdit.setMask()}
@@ -147,9 +132,8 @@
     The \c accessChanged() slot handles changes to the combobox in the
     \gui{Access} group box:
 
-    \skipto accessChanged
-    \printuntil }
-    \printuntil }
+    \snippet LineEdits.java 19
+    \snippet LineEdits.java 20
 
     Here, we simply associate the \gui{False} and \gui{True} entries in the combobox
     with \c false and \c true values to be passed to
@@ -159,9 +143,6 @@
     Finally, we provide a \c main() method to create and show the \c
     LineEdits widget when the example is run:
 
-    \quotefromfile LineEdits.java
-    \skipto main(
-    \printuntil }
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet LineEdits.java 1
+    \snippet LineEdits.java 21
 */

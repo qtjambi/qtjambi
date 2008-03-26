@@ -34,6 +34,7 @@ import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QWidget;
 
 @QtJambiExample(name = "System Tray Example")
+//! [0]
 public class SystemTrayExample extends QWidget {
 
     private QSystemTrayIcon trayIcon;
@@ -45,9 +46,11 @@ public class SystemTrayExample extends QWidget {
 
     private QTextEdit infoDisplay;
     private QComboBox iconCombo;
+//! [0]
 
     private QAction toggleVisibilityAction;
 
+//! [1]
     public static void main(String[] args) {
         QApplication.initialize(args);
 
@@ -56,7 +59,9 @@ public class SystemTrayExample extends QWidget {
 
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     public SystemTrayExample() {
         this(null);
     }
@@ -65,12 +70,17 @@ public class SystemTrayExample extends QWidget {
         super(parent);
         if (!QSystemTrayIcon.isSystemTrayAvailable())
             QMessageBox.warning(this, tr("System tray is unavailable"),
+//! [2] //! [3]
                                       tr("System tray unavailable"));
+//! [3]
 
         // Create the menu that will be used for the context menu
+//! [4]
         trayIconMenu = new QMenu(this);
         trayIconMenu.aboutToShow.connect(this, "updateMenu()");
+//! [4]
 
+//! [5]
         toggleVisibilityAction = new QAction("Show/Hide", this);
         toggleVisibilityAction.triggered.connect(this, "toggleVisibility()");
         trayIconMenu.addAction(toggleVisibilityAction);
@@ -92,8 +102,10 @@ public class SystemTrayExample extends QWidget {
         QAction quitAction = new QAction("&Quit", this);
         quitAction.triggered.connect(this, "close()");
         trayIconMenu.addAction(quitAction);
+//! [5]
 
         // Create the tray icon
+//! [6]
         trayIcon = new QSystemTrayIcon(this);
         trayIcon.setToolTip("System trayIcon example");
         trayIcon.setContextMenu(trayIconMenu);
@@ -103,7 +115,9 @@ public class SystemTrayExample extends QWidget {
 
         changeIcon(0);
         trayIcon.show();
+//! [6]
 
+//! [7]
         QLabel titleLabel = new QLabel(tr("Message Title"));
         titleEdit = new QLineEdit(tr("Message Title"));
 
@@ -140,7 +154,9 @@ public class SystemTrayExample extends QWidget {
         icons.add("32x32 icon");
         iconCombo.addItems(icons);
         iconCombo.activatedIndex.connect(this, "changeIcon(int)");
+//! [7]
 
+//! [8]
         QGridLayout layout = new QGridLayout();
         layout.addWidget(titleLabel, 0, 0);
         layout.addWidget(titleEdit, 0, 1);
@@ -158,47 +174,65 @@ public class SystemTrayExample extends QWidget {
         setWindowTitle(tr("System Tray Example"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
+//! [8]
 
     @Override
+//! [9]
     public void closeEvent(QCloseEvent e) {
         
     }
+//! [9]
 
+//! [10]
     protected void updateMenu() {
         toggleVisibilityAction.setText(isVisible() ? tr("Hide") : tr("Show"));
     }
+//! [10]
 
+//! [11]
     protected void toggleVisibility() {
         if (isVisible())
             hide();
         else
             show();
     }
+//! [11]
 
+//! [12]
     protected void showMessage() {
+//! [12]
         // #ifdef Q_WS_MAC
+//! [13]
         if (QSysInfo.macVersion() != 0) {
             QMessageBox.information(this, tr("System tray example"),
                     tr("Balloon tips are not supported on Mac OS X"));
         } else {
+//! [13] //! [14]
             QSystemTrayIcon.MessageIcon icon;
             icon = QSystemTrayIcon.MessageIcon.resolve(typeCombo.currentIndex());
             trayIcon.showMessage(titleEdit.text(), messageEdit.toPlainText(),
                                  icon, 10000);
             trayIcon.setToolTip(titleEdit.text());
         }
+//! [14] //! [15]
     }
+//! [15]
 
+//! [16]
     protected void balloonClicked() {
         infoDisplay.append(tr("Balloon message was clicked"));
     }
+//! [16]
 
+//! [17]
     public void activated(QSystemTrayIcon.ActivationReason reason) {
         String name = QSystemTrayIcon.MessageIcon.resolve(reason.value()).name();
         if (name != null)
             infoDisplay.append("Activated - Reason " + name);
     }
+//! [17]
 
+//! [18]
     protected void changeIcon(int index) {
         String iconName;
         switch (index) {
@@ -215,8 +249,12 @@ public class SystemTrayExample extends QWidget {
             iconName = "classpath:com/trolltech/examples/images/icon_32x32.png";
             break;
         }
+//! [18] //! [19]
         QPixmap pixmap = new QPixmap(iconName);
         trayIcon.setIcon(new QIcon(pixmap));
     }
+//! [19]
 
+//! [20]
 }
+//! [20]

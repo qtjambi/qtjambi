@@ -46,15 +46,13 @@
            as a top level window.
     \endlist
 
-    \quotefromfile Tablet.java
 
     \section1 Tablet Class
 
     The \c Tablet class creates a \c TabletCanvas and sets it as its
     center widget.
 
-    \skipto /class Tablet/
-    \printuntil /loadAction/
+    \snippet Tablet.java 0
 
     The QActions let the user select if the tablets pressure and tilt
     should change the pen width, color alpha component and color
@@ -69,8 +67,7 @@
 
     We start with a look at the constructor \c Tablet():
 
-    \skipto /public Tablet/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 1
 
     In the constructor we create the canvas, actions, and menus.
     We set the canvas as the center widget. We also initialize the
@@ -79,16 +76,14 @@
 
     Here is the implementation of \c brushColorAct():
 
-    \skipto /void brushColorAct/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 2
 
     We let the user pick a color with a QColorDialog. If it is valid,
     we set a new drawing color with \c setColor().
 
     Here is the implementation of \c alphaActionTriggered():
 
-    \skipto /void alphaActionTriggered/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 3
 
     The \c TabletCanvas class supports two ways by which the alpha
     channel of the drawing color can be changed: tablet pressure and
@@ -97,16 +92,14 @@
 
     Here is the implementation of \c lineWidthActionTriggered():
 
-    \skipto /void lineWidthActionTriggered/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 4
 
     We check which action is selected in \c lineWidthGroup, and set
     how the canvas should change the drawing line width.
 
     Here is the implementation of \c saturationActionTriggered():
 
-    \skipto /void saturationActionTriggered/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 5
 
     We check which action is selected in \c colorSaturationGroup, and
     set how the canvas should change the color saturation of the
@@ -114,8 +107,7 @@
 
     Here is the implementation of \c saveAct():
 
-    \skipto /void saveAct/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 6
 
     We use the QFileDialog to let the user select a file to save the
     drawing in. It is the \c TabletCanvas that save the drawing, so we
@@ -123,8 +115,7 @@
 
     Here is the implementation of \c loadAct():
 
-    \skipto /void loadAct/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 7
 
     We let the user select the image file to be opened with
     a QFileDialog; we then ask the canvas to load the image with \c
@@ -132,8 +123,7 @@
 
     Here is the implementation of \c aboutAct():
 
-    \skipto /void aboutAct/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 8
 
     We show a message box with a short description of the example.
 
@@ -144,11 +134,9 @@
 
     Here is the implementation of \c createActions:
 
-    \skipto /void createActions/
-    \printuntil /^\s\s\s\s\{/
+    \snippet Tablet.java 9
     \dots
-    \skipto /alphaChannelPressureAction/
-    \printto /colorSaturationVTiltAction/
+    \snippet Tablet.java 10
 
     We want the user to be able to choose if the drawing color's
     alpha component should be changed by the tablet pressure or tilt.
@@ -158,26 +146,22 @@
     that only one of the actions are checked at any time. The \c
     triggered() signal is emitted when an action is checked.
 
-    \skipto /^\s\s\s\s\}/
     \dots
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 11
 
     Here is the implementation of \c createMenus():
 
-    \skipto /void createMenus/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 12
 
     We create the menus of the example and add the actions to them.
 
-    \quotefromfile Tablet.java
 
     \section1 TabletCanvas Class
 
     The \c TabletCanvas class provides a surface on which the
     user can draw with a tablet.
 
-    \skipto /class TabletCanvas/
-    \printuntil /polyLine/
+    \snippet Tablet.java 13
 
     The canvas can change the alpha channel, color saturation,
     and line width of the drawing. We have one enum for each of
@@ -200,32 +184,28 @@
 
     We start with a look at the constructor:
 
-    \skipto /public TabletCanvas/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 14
 
     In the constructor we initialize our class variables. We need
     to draw the background of our image, as the default is gray.
 
     Here is the implementation of \c saveImage():
 
-    \skipto /boolean saveImage/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 15
 
     QImage implements functionality to save itself to disk, so we
     simply call \l{QImage::}{save()}.
 
     Here is the implementation of \c loadImage():
 
-    \skipto /boolean loadImage/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 16
 
     We simply call \l{QImage::}{load()}, which loads the image in \a
     file.
 
     Here is the implementation of \c tabletEvent():
 
-    \skipto /void tabletEvent/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 17
 
     We get three kind of events to this method: TabletPress,
     TabletRelease, and TabletMove, which is generated when a device
@@ -238,15 +218,13 @@
 
     Here is the implementation of \c paintEvent():
 
-    \skipto /void paintEvent/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 18
 
     We simply draw the image to the top left of the widget.
 
     Here is the implementation of \c paintImage():
 
-    \skipto /void paintImage/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 19
 
     In this method we draw on the image based on the movement of the
     device. If the device used on the tablet is a stylus we want to draw a
@@ -258,8 +236,7 @@
     density; we select the style based on the tangential pressure in
     \c brushPattern().
 
-    \skipto /BrushStyle brushPattern/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 20
 
     We return a brush style with a point density that increases with
     the tangential pressure.
@@ -269,8 +246,7 @@
     colorSaturationType, and \c myColor. We will examine the code to
     set up \c myBrush and \c myPen for each of these variables:
 
-    \skipto /void updateBrush/
-    \printuntil /hValue/
+    \snippet Tablet.java 21
 
     We fetch the current drawingcolor's hue, saturation, value,
     and alpha values. \c hValue and \c vValue are set to the
@@ -280,7 +256,7 @@
     is between the device and the perpendicular of the tablet (see
     QTabletEvent for an illustration).
 
-    \printto /colorSaturationType/
+    \snippet Tablet.java 22
 
     The alpha channel of QColor is given as a number between 0
     and 255 where 0 is transparent and 255 is opaque.
@@ -291,27 +267,26 @@
     the tablet. We select the largest of the vertical and horizontal
     tilt value.
 
-    \printto /lineWidthType/
+    \snippet Tablet.java 23
 
     The colorsaturation is given as a number between 0 and 255. It is
     set with \l{QColor::}{setHsv()}. We can set the tilt values
     directly, but must multiply the pressure to a number between 0 and
     255.
 
-    \printto /event\.pointer/
+    \snippet Tablet.java 24
 
     The width of the pen increases with the pressure. When the pen
     width is controlled with the tilt we let the width increse with
     the angle between the device and the perpendicular of the tablet.
 
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 25
 
     We finally check wether the pointer is the stylus or the eraser.
     If it is the eraser, we set the color to the background color of
     the image an let the pressure decide the pen width, else we set
     the colors we have set up previously in the method.
 
-    \quotefromfile Tablet.java
 
     \section1 TabletApplication Class
 
@@ -326,8 +301,7 @@
 
     Here is the implementation of \c event():
 
-    \skipto /boolean event/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Tablet.java 26
 
     We use this method to handle the TabletEnterProximity and
     TabletLeaveProximity events, which is generated when a device
@@ -342,8 +316,7 @@
 
     Here is the examples \c main() method:
 
-    \skipto /void main/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Tablet.java 27
 
     In the \c main() method we create a \c Tablet and display it
     as a top level window. We use the \c TabletApplication class. We

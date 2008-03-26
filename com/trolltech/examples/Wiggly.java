@@ -16,13 +16,16 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+//! [0]
 class WigglyWidget extends QWidget {
     static final int sineTable[] = { 0, 38, 71, 92, 100, 92, 71, 38, 0, -38, -71, -92, -100, -92, -71, -38 };
 
     private QBasicTimer timer;
     private String text;
     private int step;
+//! [0]
 
+//! [1]
     WigglyWidget(QWidget parent) {
         super(parent);
         setBackgroundRole(QPalette.ColorRole.Midlight);
@@ -30,24 +33,32 @@ class WigglyWidget extends QWidget {
         QFont newFont = font();
         newFont.setPointSize(newFont.pointSize() + 20);
         setFont(newFont);
+//! [1]
 
+//! [2]
         step = 0;
 
         timer = new QBasicTimer();
         timer.start(60, this);
     }
+//! [2]
 
+//! [3]
     public void setText(String s) {
         text = s;
     }
+//! [3]
 
     @Override
+//! [4]
     protected void paintEvent(QPaintEvent e) {
         QFontMetrics metrics = new QFontMetrics(font());
         int x = (width() - metrics.width(text)) / 2;
         int y = (height() + metrics.ascent() - metrics.descent()) / 2;
         QColor color = new QColor();
+//! [4]
 
+//! [5]
         QPainter painter = new QPainter();
         painter.begin(this);
         for (int i = 0; i < text.length(); ++i) {
@@ -58,21 +69,30 @@ class WigglyWidget extends QWidget {
             x += metrics.width(text.substring(i, i + 1));
         }
         painter.end();
+//! [5] //! [6]
     }
+//! [6]
 
     @Override
+//! [7]
     protected void timerEvent(QTimerEvent event) {
         if (event.timerId() == timer.timerId()) {
             ++step;
             update();
         } else {
             super.timerEvent(event);
+//! [7] //! [8]
         }
+//! [8] //! [9]
     }
+//! [9] //! [10]
 }
+//! [10]
 
 @QtJambiExample(name = "Wiggly")
+//! [11]
 public class Wiggly extends QDialog {
+//! [11] //! [12]
     public Wiggly(QWidget parent) {
         super(parent);
 
@@ -92,7 +112,9 @@ public class Wiggly extends QDialog {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(360, 145);
     }
+//! [12]
 
+//! [13]
     public static void main(String args[]) {
         QApplication.initialize(args);
 
@@ -101,4 +123,6 @@ public class Wiggly extends QDialog {
 
         QApplication.exec();
     }
+//! [13] //! [14]
 }
+//! [14]

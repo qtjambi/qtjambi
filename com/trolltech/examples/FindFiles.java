@@ -32,6 +32,7 @@ public class FindFiles extends QDialog
     private QPushButton findButton;
     private QTableWidget filesTable;
 
+//! [0]
     public FindFiles()
     {
         browseButton = createButton(tr("&Browse..."), "browse()");
@@ -47,7 +48,9 @@ public class FindFiles extends QDialog
         filesFoundLabel = new QLabel();
     
         createFilesTable();
+//! [0]
     
+//! [1]
         QHBoxLayout buttonsLayout = new QHBoxLayout();
         buttonsLayout.addStretch();
         buttonsLayout.addWidget(findButton);
@@ -68,8 +71,10 @@ public class FindFiles extends QDialog
         setWindowTitle(tr("Find Files"));
         resize(700, 300);
     }
+//! [1]
 
     @SuppressWarnings("unused")
+//! [2]
     private void browse()
     {
         String directory = QFileDialog.getExistingDirectory(this,
@@ -79,8 +84,10 @@ public class FindFiles extends QDialog
             directoryComboBox.setCurrentIndex(directoryComboBox.currentIndex() + 1);
         }
     }
+//! [2]
 
     @SuppressWarnings("unused")
+//! [3]
     private void find()
     {
         filesTable.setRowCount(0);
@@ -88,7 +95,9 @@ public class FindFiles extends QDialog
         String fileName = fileComboBox.currentText();
         String text = textComboBox.currentText();
         String path = directoryComboBox.currentText();
+//! [3]
 
+//! [4]
         QDir directory = new QDir(path);
         List<String> files = new LinkedList<String>();
 
@@ -105,7 +114,9 @@ public class FindFiles extends QDialog
             files = findFiles(directory, files, text);
         showFiles(directory, files);
     }
+//! [4]
 
+//! [5]
     private List<String> findFiles(QDir directory, List<String> files,
                                    String text)
     {
@@ -114,6 +125,7 @@ public class FindFiles extends QDialog
         progressDialog.setRange(0, files.size());
         progressDialog.setWindowTitle(tr("Find Files"));
 
+//! [5] //! [6]
         List<String> foundFiles = new LinkedList<String>();
 
         for (int i = 0; i < files.size(); ++i) {
@@ -124,7 +136,9 @@ public class FindFiles extends QDialog
 
             if (progressDialog.wasCanceled())
                 break;
+//! [6]
 
+//! [7]
             QFile file = new QFile(directory.absoluteFilePath(files.get(i)));
 
             if (file.open(QIODevice.OpenModeFlag.ReadOnly)) {
@@ -143,7 +157,9 @@ public class FindFiles extends QDialog
         }
         return foundFiles;
     }
+//! [7]
 
+//! [8]
     private void showFiles(QDir directory, List<String> files)
     {
         for (int i = 0; i < files.size(); ++i) {
@@ -165,7 +181,9 @@ public class FindFiles extends QDialog
         }
         filesFoundLabel.setText("" + files.size() + tr("file(s) found."));
     }
+//! [8]
 
+//! [9]
     private QPushButton createButton(String text, String goldMember)
     {
         QPushButton button = new QPushButton(text);
@@ -173,7 +191,9 @@ public class FindFiles extends QDialog
 
         return button;
     }
+//! [9]
 
+//! [10]
     private QComboBox createComboBox(String text)
     {
         QComboBox comboBox = new QComboBox();
@@ -184,7 +204,9 @@ public class FindFiles extends QDialog
 
         return comboBox;
     }
+//! [10]
 
+//! [11]
     private void createFilesTable()
     {
         filesTable = new QTableWidget(0, 2);
@@ -198,6 +220,7 @@ public class FindFiles extends QDialog
         filesTable.verticalHeader().hide();
         filesTable.setShowGrid(false);
     }
+//! [11]
 
     public static void main(String args[])
     {

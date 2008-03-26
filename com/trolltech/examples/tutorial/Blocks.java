@@ -16,8 +16,10 @@ package com.trolltech.examples.tutorial;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
+//! [0]
 public class Blocks extends QWidget
 {
+//! [1]
     public Blocks()
     {
         QPushButton quit = new QPushButton(tr("Quit"));
@@ -25,19 +27,29 @@ public class Blocks extends QWidget
 
         QLCDNumber lcd = new QLCDNumber(2);
         lcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
+//! [1]
 
+//! [2]
         QSlider slider = new QSlider(Qt.Orientation.Horizontal);
+//! [2] //! [3]
         slider.setRange(0, 99);
+//! [3] //! [4]
         slider.setValue(0);
+//! [4]
 
         quit.clicked.connect(QApplication.instance(), "quit()");
+//! [5]
         slider.valueChanged.connect(lcd, "display(int)");
+//! [5]
 
+//! [6]
         QVBoxLayout layout = new QVBoxLayout();
+//! [6] //! [7]
         layout.addWidget(quit);
         layout.addWidget(lcd);
         layout.addWidget(slider);
         setLayout(layout);
+//! [7]
         setWindowTitle(tr("Building Blocks"));
     }
 
@@ -51,3 +63,4 @@ public class Blocks extends QWidget
         QApplication.exec();
     }
 }
+//! [0]

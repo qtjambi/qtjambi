@@ -33,15 +33,12 @@
 
     \section1 Wiggly Class Implementation
 
-    \quotefromfile Wiggly.java
-    \skipto public class Wiggly
-    \printuntil {
+    \snippet Wiggly.java 11
 
     The \c Wiggly class provides a dialog widget that allows the user
     to enter a text. The text is then rendered by \c WigglyWidget.
 
-    \skipto Wiggly
-    \printuntil }
+    \snippet Wiggly.java 12
 
     In the constructor we create a wiggly widget along with a
     \l{QLineEdit}{line edit}, and we put the two widgets in a
@@ -51,18 +48,15 @@
     with the wiggly widget. The widget's default text is "Hello
     world!".
 
-    \skipto main(
-    \printuntil }
-    \printuntil /^\}/
+    \snippet Wiggly.java 13
+    \snippet Wiggly.java 14
 
     We also provide a \c main() method to create and show the dialog
     widget when the example is run.
 
     \section1 WigglyWidget Class Implementation
 
-    \quotefromfile Wiggly.java
-    \skipto class WigglyWidget
-    \printuntil private int
+    \snippet Wiggly.java 0
 
     The \c WigglyWidget class provides the wiggly line displaying the
     text. We subclass QWidget and reimplement some standard event
@@ -72,8 +66,7 @@
     multiplied by 100. It is used to make the wiggly widget move
     along the sine curve.
 
-    \skipto WigglyWidget
-    \printuntil setFont
+    \snippet Wiggly.java 1
 
     The \c timer variable, of type QBasicTimer, is used to update the
     widget at regular intervals, making the widget move. The \c text
@@ -87,8 +80,7 @@
     widget's palette that Qt uses to paint the background. Then we
     enlarge the widget's font with 20 points.
 
-    \skipto step
-    \printuntil }
+    \snippet Wiggly.java 2
 
     Finally we start the timer; the call to QBasicTimer::start()
     makes sure that \e this particular wiggly widget will receive the
@@ -97,8 +89,7 @@
 
     We implement a public \c setText() slot that sets the widget's text.
 
-    \skipto setText
-    \printuntil }
+    \snippet Wiggly.java 3
 
     The \c paintEvent() method is called whenever a QPaintEvent is
     sent to the widget. Paint events are sent to widgets that need to
@@ -108,8 +99,7 @@
     the \c timerEvent() slot.
 
 
-    \skipto paintEvent
-    \printuntil QColor
+    \snippet Wiggly.java 4
 
 
     The QFontMetrics object provides information about the widget's
@@ -122,9 +112,8 @@
     font below the base line). If the descent equals the ascent, they
     cancel out each other and the base line is at \c height() / 2.
 
-    \skipto QPainter
-    \printuntil painter.end
-    \printuntil }
+    \snippet Wiggly.java 5
+    \snippet Wiggly.java 6
 
     Each time the \c paintEvent() method is called, we create a
     QPainter object \c painter to draw the contents of the widget.
@@ -140,11 +129,10 @@
     'V'). The result is that the text isn't perfectly centered. You
     can verify this by typing "AVAVAVAVAVAV" in the line edit.
 
-    \skipto timerEvent
-    \printuntil super
-    \printuntil }
-    \printuntil }
-    \printuntil }
+    \snippet Wiggly.java 7
+    \snippet Wiggly.java 8
+    \snippet Wiggly.java 9
+    \snippet Wiggly.java 10
 
     The \c timerEvent() method receives all the timer events that
     are generated for this widget. If a timer event is sent from the

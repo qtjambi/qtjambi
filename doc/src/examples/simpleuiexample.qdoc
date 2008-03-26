@@ -18,9 +18,7 @@
   interface that is implemented by an instance of the
   \c Ui_SimpleUIExampleMainWindow class:
 
-  \quotefromfile SimpleUIExample.java
-  \skipto public class SimpleUIExample extends QMainWindow {
-  \printuntil Ui_SimpleUIExampleMainWindow mainWindowUi
+  \snippet SimpleUIExample.java 0
 
   The instance of the user interface class is implemented as a member of the
   \c SimpleUIExample class.
@@ -29,14 +27,12 @@
   example is built, and provides a \c setupUi() method that we use in the
   \c SimpleUIExample constructor to set up the user interface:
 
-  \skipto public SimpleUIExample() {
-  \printuntil }
+  \snippet SimpleUIExample.java 2
 
   We also set the window's icon, and connect a push button defined in the user
   interface to the \c showDialog() slot in this class:
 
-  \skipto private void showDialog() {
-  \printuntil dialogUi.setupUi(dialog);
+  \snippet SimpleUIExample.java 3
 
   The dialog itself uses a user interface class generated from a \c{.jui} file,
   which we set up in a similar way to before. Here, we call the
@@ -45,11 +41,9 @@
 
   Once set up, the dialog is executed in the normal way:
 
-  \skipto String result = "";
-  \printuntil mainWindowUi.textBrowser.setText(result);
-  \printuntil }
-  \skipto /^\}/
-  \printuntil }
+  \snippet SimpleUIExample.java 4
+  \snippet SimpleUIExample.java 5
+  \snippet SimpleUIExample.java 6
 
   If the user accepts the dialog, we read the contents of the input widgets it
   contains, and write the result to the main window's text browser widget.
@@ -63,9 +57,7 @@
   instance of the \c SimpleUIExample class, and executes the application's
   event loop:
 
-  \quotefromfile SimpleUIExample.java
-  \skipto public static void main(String[] args) {
-  \printuntil }
+  \snippet SimpleUIExample.java 1
 
   The example exits when the event loop has finished running, typically when
   the user closes the main window.

@@ -227,34 +227,27 @@
 
     (I think we need to say something about the data members)
 
-    \quotefromfile Icons.java
-    \skipto public IconPreviewArea
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 39
 
     In the constructor we create the labels displaying the headers and
     the icon's generated pixmaps, and add them to a grid layout.
 
-    \skipto setIcon
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
-    \skipto setSize
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 40
+    \snippet Icons.java 41
 
     The public \c setIcon() and \c setSize() methods change the icon
     or the icon size, and make sure that the generated pixmaps are
     updated.
 
-    \skipto createHeaderLabel
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
-    \skipto createPixmapLabel
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 42
+    \snippet Icons.java 43
 
     We use the \c createHeaderLabel() and \c createPixmapLabel()
     methods to create the preview area's labels displaying the
     headers and the icon's generated pixmaps. Both methods return
     the QLabel that is created.
 
-    \skipto updatePixmapLabel
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 44
 
     We use the private \c updatePixmapLabel() method to update the
     generated pixmaps displayed in the preview area.
@@ -288,9 +281,7 @@
     examined later - to simplify the constructor. We will now review
     the implementation of the Icons class
 
-    \quotefromfile Icons.java
-    \skipto public Icons
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 0
 
     In the constructor, we first create the main window's central
     widget and its child widgets, and put them in a grid layout. Then
@@ -302,9 +293,7 @@
     associated radio button, making the current value of the spin box
     the icon's initial size.
 
-    \quotefromfile Icons.java
-    \skipto /void about/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 1
 
     The \c about() slot displays a message box using the static
     QMessageBox::about() method. In this example it displays a
@@ -316,8 +305,7 @@
     parent, and if that fails, it tries the active window. As a last
     resort it uses the QMessageBox's Information icon.
 
-    \skipto /void changeStyle/
-    \printuntil QAction
+    \snippet Icons.java 2
 
     In the \c changeStyle() slot we first check the slot's
     parameter. If it is false we immediately return, otherwise we find
@@ -328,8 +316,8 @@
     know that the sender is a QAction object, we can safely cast the
     QSignalEmitter object.
 
-    \printline QStyle
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 3
+    \snippet Icons.java 4
 
     Once we have the action, we extract the style name using
     QAction::data(). Then we create a QStyle object using the static
@@ -344,8 +332,7 @@
     group box and in the end call the \c changeSize() slot to update
     the icon's size.
 
-    \skipto /void changeSize/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 5
 
     The \c changeSize() slot sets the size for the preview area's
     icon.
@@ -358,8 +345,7 @@
     based on the extent, and use that object to set the size of the
     preview area's icon.
 
-    \skipto /void addImages/
-    \printuntil imagesTable.setRowCount
+    \snippet Icons.java 12
 
     The first thing we do when the \c addImages() slot is called, is
     to show a file dialog to the user. The easiest way to create a
@@ -371,8 +357,8 @@
     table widget. The table widget is listing the images the user has
     loaded into the application.
 
-    \printline imageName
-    \printuntil Qt.ItemFlag.ItemIsEditable
+    \snippet Icons.java 13
+    \snippet Icons.java 14
 
     We retrieve the image name using the QFileInfo::baseName()
     method that returns the base name of the file without the path,
@@ -385,10 +371,9 @@
     We also make sure that the item is not editable by removing the
     Qt.ItemFlag.ItemIsEditable flag. Table items are editable by default.
 
-    \skipto item1
-    \printline item1
-    \printuntil item2.setText
-    \printline }
+    \snippet Icons.java 15
+    \snippet Icons.java 16
+    \snippet Icons.java 17
 
     Then we create the second and third items in the row making the
     default mode Normal and the default state Off. But if the \gui
@@ -398,8 +383,8 @@
     "_on", the state is changed to On. The sample files in the
     example's \c images subdirectory respect this naming convension.
 
-    \printline imagesTable
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 18
+    \snippet Icons.java 19
 
     In the end we add the items to the associated row, and use the
     QTableWidget::openPersistentEditor() method to create
@@ -412,10 +397,8 @@
     preview area. So we need to make sure that the new image's check
     box is enabled.
 
-    \quotefromfile Icons.java
-    \skipto /void changeIcon/
-    \printuntil QIcon.State.Off;
-    \printline }
+    \snippet Icons.java 6
+    \snippet Icons.java 7
 
     The \c changeIcon() slot is called when the user alters the set
     of images listed in the QTableWidget to update the QIcon object
@@ -425,10 +408,9 @@
     QTableWidget, which lists the images the user has loaded into the
     application.
 
-    \skipto fileName
-    \printuntil addPixmap
-    \printline }
-    \printline }
+    \snippet Icons.java 8
+    \snippet Icons.java 9
+    \snippet Icons.java 10
 
     We also extract the image file's name using the
     QTableWidgetItem::data() method. This method takes a
@@ -443,14 +425,12 @@
     with its associated mode and state, to the QIcon's set of
     available pixmaps.
 
-    \skipto previewArea
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 11
 
     After running through the entire list of images, we change the
     icon of the preview area to the one we just created.
 
-    \skipto /void removeAllImages/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 20
 
     In the \c removeAllImages() slot, we simply set the table widget's
     row count to zero, automatically removing all the images the user
@@ -465,8 +445,7 @@
     QTableWidget that will keep track of the images the user has
     loaded into the application.
 
-    \skipto /void createImagesGroupBox/
-    \printuntil setItemDelegate
+    \snippet Icons.java 21
 
     First we create a group box that will contain the table widget.
     Then we create a QTableWidget and customize it to suit our
@@ -489,15 +468,14 @@
     \c ImageDelegate, provides comboboxes for the mode and state
     fields.
 
-    \skipto labels
-    \printline labels
-    \printuntil verticalHeader
+    \snippet Icons.java 22
+    \snippet Icons.java 23
 
     Then we customize the QTableWidget's horizontal header, and hide
     the vertical header.
 
-    \printline connect(
-    \printuntil }
+    \snippet Icons.java 24
+    \snippet Icons.java 25
 
     At the end, we connect the QTableWidget::itemChanged() signal to
     the \c changeIcon() slot to ensuret that the preview area is in
@@ -509,8 +487,7 @@
     constructor. It creates the widgets controlling the size of the
     preview area's icon.
 
-    \skipto /void createIconSizeGroupBox/
-    \printuntil setValue
+    \snippet Icons.java 26
 
     First we create a group box that will contain all the widgets.
     Then we create the radio buttons and the spin box.
@@ -522,8 +499,7 @@
     handle icon sizes, e.g., "32 x 32", instead of plain integer
     values.
 
-    \skipto connect
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 27
 
     Then we connect all of the radio buttons
     \l{QRadioButton::}{toggled()} signals and the spin box's \l
@@ -532,8 +508,7 @@
     whenever the user changes the icon size.  In the end we put the
     widgets in a layout that we install on the group box.
 
-    \skipto /void createActions/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 28
 
     In the \c createActions() method we create and customize all the
     actions needed to implement the functionality associated with the
@@ -550,8 +525,7 @@
     with the style name. We will retrieve it later using
     QAction::data().
 
-    \skipto /void createMenus/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 29
 
     In the \c createMenu() method, we add the previously created
     actions to the \gui File, \gui View and \gui Help menus.
@@ -561,8 +535,7 @@
     application's menu bar, which we retrieve using
     QMainWindow::menuBar().
 
-    \skipto /void createContextMenu/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 30
 
     QWidgets have a \l{QWidget::}{contextMenuPolicy} property that
     controls how the widget should behave when the user requests a
@@ -575,8 +548,7 @@
     actions to the table widget. They will then appear in the table
     widget's context menu.
 
-    \skipto /void checkCurrentStyle/
-    \printuntil /^\s\s\s\s\}/
+    \snippet Icons.java 31
 
     In the \c checkCurrentStyle() method we go through the group of
     style actions, looking for the current GUI style.
@@ -601,8 +573,7 @@
     The IconSizeSpinBox does not implement a constructor, so we
     move on to the \c textFromValue method:
 
-    \skipto String textFromValue
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 33
 
     QSpinBox::textFromValue() is used by the spin box whenever it
     needs to display a value. The default implementation returns a
@@ -610,9 +581,7 @@
 
     Our reimplementation returns a QString of the form "32 x 32".
 
-    \quotefromfile Icons.java
-    \skipto /int valueFromText/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 32
 
     The QSpinBox::valueFromText() method is used by the spin box
     whenever it needs to interpret text typed in by the user. Since
@@ -662,14 +631,11 @@
     We move on to examine the implementation of the individual
     methods.
     
-    \quotefromfile Icons.java
-    \skipto public ImageDelegate
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 34
 
     The constructor is trivial.
 
-    \skipto QWidget createEditor
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 35
 
     The default QItemDelegate::createEditor() implementation returns
     the widget used to edit the item specified by the model and item
@@ -688,8 +654,7 @@
     the user chooses an item using the combobox. This ensures that the
     rest of the application notices the change and updates itself.
 
-    \skipto /void setEditorData/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 36
 
     The QItemDelegate::setEditorData() method is used by
     QTableWidget to transfer data from a QTableWidgetItem to the
@@ -702,14 +667,12 @@
     items is done implicitly by QTableWidget; we don't need to worry
     about it.
 
-    \skipto /void setModelData/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 37
 
     The QItemDelegate::setEditorData() method is used by QTableWidget
     to transfer data back from the editor to the \l{QTableWidgetItem}.
 
-    \skipto /void emitCommitData/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet Icons.java 38
 
     The \c emitCommitData() slot simply emit the
     QAbstractItemDelegate::commitData() signal for the editor that

@@ -31,9 +31,7 @@
     implementation of the \c PieView class
     (\l{#PieView Class Implementation}{shown later}).
 
-    \quotefromfile ItemviewChart.java
-    \skipto public class
-    \printuntil private
+    \snippet ItemviewChart.java 0
 
     We define private variables for the model so that we can access
     and modify it as required.
@@ -42,8 +40,7 @@
     menus to slots in the class, constructs a model, and arranges the views in
     the window:
 
-    \skipto public ItemviewChart
-    \printuntil }
+    \snippet ItemviewChart.java 1
 
     The data in the \c qtdata.cht file is accessed from the classpath via the
     \l{Resource System Example}{resource system}.
@@ -51,8 +48,7 @@
     The \c setupModel() method provides an empty model with a reasonable number
     of rows and columns:
 
-    \skipto setupModel
-    \printuntil }
+    \snippet ItemviewChart.java 2
 
     Since the data used with the example is arranged in the form of a two-column
     table with an arbitrary number of rows, it is useful to set the number of
@@ -64,8 +60,7 @@
     view in a QSplitter widget, enabling the amount of space assigned to each
     to be adjusted by the user:
 
-    \skipto setupViews
-    \printuntil }
+    \snippet ItemviewChart.java 3
 
     We construct a selection model for both views to share, before setting the
     splitter as the central widget for the main window.
@@ -179,13 +174,11 @@
     about the data supplied by the model, including the sum of all values in the
     second column of the model and the number of valid items:
 
-    \skipto private class PieView
-    \printuntil QRubberBand
+    \snippet ItemviewChart.java 4
 
     The constructor provides default values for these variables:
 
-    \skipto public PieView
-    \printuntil }
+    \snippet ItemviewChart.java 5
 
     We also set constant values for the total size of the view and its margin,
     calculating the pie chart's size from these values.
@@ -194,9 +187,8 @@
 
     When data in the model is changed, the \c dataChanged() slot is called:
 
-    \skipto dataChanged
-    \printuntil viewport().update()
-    \printuntil }
+    \snippet ItemviewChart.java 6
+    \snippet ItemviewChart.java 7
 
     Since the view needs to know the sum of all values in the second column in
     order to correctly represent each individual item in the pie chart, it is
@@ -207,16 +199,13 @@
     The \c rowsInserted() and \c rowsAboutToBeRemoved() slots are able to
     modify the running total and update the number of valid items:
 
-    \skipto rowsInserted
-    \printuntil rowsAboutToBeRemoved
-    \printuntil super.rowsAbout
-    \printuntil }
+    \snippet ItemviewChart.java 28
+    \snippet ItemviewChart.java 29
+    \snippet ItemviewChart.java 30
 
     The \c edit() slot handles item editing:
 
-    \quotefromfile ItemviewChart.java
-    \skipto protected boolean edit
-    \printuntil }
+    \snippet ItemviewChart.java 8
 
     We only allow the user to edit the labels for each item; these are stored in
     the first column of the model.
@@ -233,8 +222,7 @@
     point lies, or an invalid model index if the point does not intersect with
     an item.
 
-    \skipto public QModelIndex indexAt
-    \printuntil int wy
+    \snippet ItemviewChart.java 9
 
     The initial conversion between viewport and view (contents) coordinates is
     straightforward for this view, requiring a simple translation based on the
@@ -246,10 +234,9 @@
     of the slices in the pie and, if it lies within a slice, we return the
     corresponding model index:
 
-    \skipto if
-    \printuntil startAngle += sliceAngle
-    \printuntil return null;
-    \printuntil }
+    \snippet ItemviewChart.java 10
+    \snippet ItemviewChart.java 11
+    \snippet ItemviewChart.java 12
 
     If the point did not lie within any parts of the view that
     correspond to model indexes, null is returned.
@@ -257,10 +244,9 @@
     The \c itemRect() method is used to obtain rectangles defined in view
     coordinates that correspond to model indexes:
 
-    \skipto QRect itemRect
-    \printuntil return new QRect(margin
-    \printuntil return new QRect()
-    \printuntil }
+    \snippet ItemviewChart.java 13
+    \snippet ItemviewChart.java 14
+    \snippet ItemviewChart.java 15
 
     In this example, we only return useful information for the model indexes
     that are used to obtain information about the key labels in the right half
@@ -271,10 +257,9 @@
     information about the geometry of each slice in the pie chart that corresponds
     to the specified model index:
 
-    \skipto QRegion itemRegion
-    \printuntil return null;
-    \printuntil return null;
-    \printuntil return null;
+    \snippet ItemviewChart.java 16
+    \snippet ItemviewChart.java 17
+    \snippet ItemviewChart.java 18
 
     We are only interested in items in the second column in the model
     that contain positive double values, so we return null for all
@@ -284,10 +269,9 @@
     geometry of the item, and convert it to a filled polygon to construct a
     new QRegion object:
 
-    \skipto double
-    \printuntil startAngle += angle
-    \printuntil return null;
-    \printuntil }
+    \snippet ItemviewChart.java 19
+    \snippet ItemviewChart.java 20
+    \snippet ItemviewChart.java 21
 
     If the model index supplied was invalid, null is returned.
 
@@ -295,8 +279,7 @@
     model index in viewport coordinates, calling the \c itemRect() method to
     avoid duplicating effort:
 
-    \skipto public QRect visualRect
-    \printuntil }
+    \snippet ItemviewChart.java 39
 
     The \c visualRegionForSelection() method is similar to \c visualRect() but,
     where \c visualRect(), \c itemRect(), and \c itemRegion() are only used to
@@ -304,9 +287,8 @@
     obtain regions that correspond to a number of selected items in viewport
     coordinates:
 
-    \skipto protected QRegion visualRegionForSelection
-    \printuntil return region
-    \printuntil }
+    \snippet ItemviewChart.java 40
+    \snippet ItemviewChart.java 41
 
     We start with an empty region, and cumulatively find its union with the
     region that corresponds to each selected item. The result we return is the
@@ -320,12 +302,9 @@
     \c verticalOffset() methods to return the position of the top-left corner of
     the visible area relative to the top-left corner of the view's contents:
 
-    \quotefromfile ItemviewChart.java
-    \skipto protected int horizontalOffset
-    \printuntil }
-
-    \skipto protected int verticalOffset
-    \printuntil }
+    \snippet ItemviewChart.java 22
+    \codeline
+    \snippet ItemviewChart.java 38
 
     Since the view does not contain scaled content, these methods simply return
     the corresponding scroll bar values.
@@ -333,9 +312,7 @@
     The \c scrollTo() method is used to navigate to the item that corresponds to
     a particular model index:
 
-    \quotefromfile ItemviewChart.java
-    \skipto public void scrollTo
-    \printuntil }
+    \snippet ItemviewChart.java 31
 
     We find the position of the item in viewport coordinates, and calculate
     the displacement from the top-left of the viewport. The result is used to
@@ -344,8 +321,7 @@
     The \c updateGeometries() method ensures that the scroll bars have the
     correct size when the size of the viewport changes:
 
-    \skipto protected void updateGeometries
-    \printuntil }
+    \snippet ItemviewChart.java 37
 
     This method is called by the implementation of \c resizeEvent() handler
     method.
@@ -358,10 +334,8 @@
 
     In this model, we only handle actions for the cursor keys:
 
-    \quotefromfile ItemviewChart.java
-    \skipto protected QModelIndex moveCursor
-    \printuntil return current;
-    \printuntil }
+    \snippet ItemviewChart.java 26
+    \snippet ItemviewChart.java 27
 
     Here, we interpret the left and up cursor keys in the same way, setting the
     current model index to the index in the row above it in the model.
@@ -379,10 +353,9 @@
     First, we obtain model indexes from the model for each item of data,
     using \c itemRegion() to obtain a region for each item.
 
-    \skipto protected void setSelection
-    \printuntil indexes.add
-    \printuntil }
-    \printuntil }
+    \snippet ItemviewChart.java 32
+    \snippet ItemviewChart.java 33
+    \snippet ItemviewChart.java 34
 
     If an item's region intersects the selection rectangle, we add the
     model index to a vector of indexes.
@@ -391,8 +364,8 @@
     indexes were stored in the vector. If so, we construct a selection by
     extending the current selection to cover a range of indexes.
 
-    \printuntil update()
-    \printuntil }
+    \snippet ItemviewChart.java 35
+    \snippet ItemviewChart.java 36
 
     Note that we still apply a selection even if there are no model indexes
     to select; this ensures that selection commands such as
@@ -408,9 +381,7 @@
     create a QRubberBand object that we will use to indicate the region the
     user has selected in the view:
 
-    \quotefromfile ItemviewChart.java
-    \skipto protected void mousePressEvent
-    \printuntil }
+    \snippet ItemviewChart.java 23
 
     We record the position of the mouse press in the instance's \c origin
     variable for later use.
@@ -422,8 +393,7 @@
     newly-constructed rectangle first, and calls the base class's
     implementation of the method:
 
-    \skipto protected void mouseMoveEvent
-    \printuntil }
+    \snippet ItemviewChart.java 24
 
     If the mouse is over an item in the view, we update the selection to
     include the corresponding model index. We also update the visible part
@@ -433,8 +403,7 @@
     implementation, hide the rubber band, and update the visible part of the
     view:
 
-    \skipto protected void mouseReleaseEvent
-    \printuntil }
+    \snippet ItemviewChart.java 25
 
     Although the selection handling provided by these event handlers is quite
     simple, it demonstrates a basic level of functionality that can be used

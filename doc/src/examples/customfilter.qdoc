@@ -41,9 +41,7 @@
     The \c MySortFilterProxyModel class extends the
     QSortFilterProxyModel class:
 
-    \quotefromfile CustomFilter.java
-    \skipto private class MySortFilterProxyModel
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet CustomFilter.java 13
 
     Since QAbstractProxyModel and its subclasses are derived from
     QAbstractItemModel, much of the same advice about subclassing
@@ -58,9 +56,8 @@
     that our filter can recognize a valid range of dates, and to
     control the sorting behavior.
 
-    \skipto setFilterMinimumDate
-    \printuntil setFilterMaximumDate
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet CustomFilter.java 14
+    \snippet CustomFilter.java 15
 
     We want to be able to filter our data by specifying a given period
     of time. For that reason, we implement custom \c
@@ -77,10 +74,8 @@
     {QSortFilterProxyModel::filterAcceptsRow()}{filterAcceptsRow()}
     method to only accept rows with valid dates:
 
-    \skipto filterAcceptsRow
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
-    \skipto dateInRange
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet CustomFilter.java 16
+    \snippet CustomFilter.java 19
 
     The \l
     {QSortFilterProxyModel::filterAcceptsRow()}{filterAcceptsRow()}
@@ -89,9 +84,7 @@
     the subject or the sender contains the given regular expression,
     and the date is valid.
 
-    \quotefromfile CustomFilter.java
-    \skipto lessThan
-    \printuntil rightData
+    \snippet CustomFilter.java 17
 
     Finally, we want to be able to sort the senders by their email
     adresses. For that reason we must reimplement the \l
@@ -102,10 +95,8 @@
     the senders by their email adresses we must first identify the
     adress within the given string:
 
-    \skipto if
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
-    \skipto /^\s\s\s\s\}/
-    \printuntil /^\s\s\s\s\}/
+    \snippet CustomFilter.java 18
+    \snippet CustomFilter.java 20
 
     We use QRegExp to define a pattern for the adresses we are looking
     for. The \l {QRegExp::indexIn()}{QRegExp.indexIn()} method
@@ -128,20 +119,16 @@
     The \c CustomFilter class extends QWidget, and provides the main
     application window:
 
-    \quotefromfile CustomFilter.java
-    \skipto public class CustomFilter
-    \printline public class CustomFilter
+    \snippet CustomFilter.java 0
     \dots
-    \skipto public CustomFilter()
-    \printuntil model
+    \snippet CustomFilter.java 2
 
     In the constructor, we first create our source model by calling
     the \c createMailModel() method. The QStandardItemModel class
     provides a generic model for storing custom data, and can be used
     as a repository for standard Qt data types.
 
-    \skipto proxyModel
-    \printuntil proxyModel.setDynamicSortFilter
+    \snippet CustomFilter.java 3
 
     Then we create a proxy model. By calling the \l
     {QSortFilterProxyModel::setSourceModel()}{QSortFilterProxyModel.setSourceModel()}
@@ -156,8 +143,7 @@
     The main application window shows views of both the source model
     and the proxy model. The source view is quite simple:
 
-    \skipto sourceView
-    \printuntil sourceGroupBox.setLayout
+    \snippet CustomFilter.java 4
 
     The QTreeView class provides a default model/view implementation
     of a tree view; our view implements a tree representation of items
@@ -168,15 +154,13 @@
     controlling the various aspects of transforming the source model's
     data structure:
 
-    \skipto filterPatternLineEdit
-    \printuntil toDateEdit.dateChanged
+    \snippet CustomFilter.java 5
 
     Note that whenever the user changes one of the filtering options,
     we must explicitly reapply the filter. This is done by connecting
     the various editors to methods that update the proxy model.
 
-    \skipto proxyView
-    \printuntil proxyGroupBox.setLayout
+    \snippet CustomFilter.java 6
 
     The sorting will be handled by the view. All we have to do is to
     enable sorting for our proxy view by setting the \l
@@ -185,10 +169,8 @@
     and the proxy view to a layout that we install on a corresponding
     group box.
 
-    \skipto mainLayout
-    \printuntil resize(500, 450)
-    \skipto textFilterChanged
-    \printuntil /^\s\s\s\s\}/
+    \snippet CustomFilter.java 7
+    \snippet CustomFilter.java 8
 
     After putting our two group boxes into another layout that we
     install on our main application widget, we customize the
@@ -196,8 +178,7 @@
     and \c dateFilterChanged() methods to update the proxy model
     according to the filtering widgets's initial values.
 
-    \skipto private void textFilterChanged
-    \printuntil /^\s\s\s\s\}/
+    \snippet CustomFilter.java 11
 
     The \c textFilterChanged() method is called whenever the user
     changes the filter pattern or the case sensitivity.
@@ -214,8 +195,7 @@
     {QSortFilterProxyModel::setFilterRegExp()}{setFilterRegExp()}
     method also updates the model.
 
-    \skipto private void dateFilterChanged()
-    \printuntil /^\s\s\s\s\}/
+    \snippet CustomFilter.java 12
 
     The \c dateFilterChanged() method is called whenever the user
     modifies the range of valid dates. We retrieve the new dates from
@@ -224,13 +204,9 @@
     maximum dates. As we explained above, calling these methods also
     updates the model.
 
-    \quotefromfile CustomFilter.java
-    \skipto private QStandardItemModel createMailModel
-    \printuntil /^\s\s\s\s\}/
-
-    \quotefromfile CustomFilter.java
-    \skipto addMail
-    \printuntil /^\s\s\s\s\}/
+    \snippet CustomFilter.java 10
+    \codeline
+    \snippet CustomFilter.java 9
 
     The \c createMailModel() method is a convenience method
     provided to simplify the constructor. All it does is to create and
@@ -238,11 +214,8 @@
     emails. Each description is added to the model using \c addMail(),
     another convenience method.
 
-    \quotefromfile CustomFilter.java
-    \skipto main
-    \printuntil /^\s\s\s\s\}/
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet CustomFilter.java 1
+    \snippet CustomFilter.java 21
 
     Finally, we provide the \c main() method to create and show the
     main application window when the example is run.

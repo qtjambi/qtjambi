@@ -19,15 +19,20 @@ import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QSizePolicy.Policy;
 
 @QtJambiExample(name = "Screenshot")
+//! [0]
 public class Screenshot extends QWidget {
+//! [0]
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
         Screenshot screenshot = new Screenshot(null);
         screenshot.show();
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     volatile QPixmap originalPixmap;
 
     QLabel screenshotLabel;
@@ -66,8 +71,10 @@ public class Screenshot extends QWidget {
         setWindowTitle(tr("Screenshot"));
         resize(300, 200);
     }
+//! [2]
 
     @Override
+//! [3]
     public void resizeEvent(QResizeEvent event) {
         QSize scaledSize = originalPixmap.size();
         scaledSize.scale(screenshotLabel.size(), 
@@ -76,7 +83,9 @@ public class Screenshot extends QWidget {
             || scaledSize != screenshotLabel.pixmap().size())
                 updateScreenshotLabel();
     }
+//! [3]
 
+//! [4]
     void newScreenshot() {
         if (hideThisWindowCheckBox.isChecked())
             hide();
@@ -85,7 +94,9 @@ public class Screenshot extends QWidget {
         QTimer.singleShot(delaySpinBox.value() * 1000, 
                           this, "shootScreen()");
     }
+//! [4]
 
+//! [5]
     void saveScreenshot() {
         String format = "png";
         String initialPath = QDir.currentPath() + tr("/untitled.") + format;
@@ -98,11 +109,15 @@ public class Screenshot extends QWidget {
         if (!fileName.equals(""))
             originalPixmap.save(fileName, format);
     }
+//! [5]
 
+//! [6]
     void shootScreen() {
         if (delaySpinBox.value() != 0)
             QApplication.beep();
+//! [6]
 
+//! [7]
         originalPixmap = null;
         
         originalPixmap = QPixmap.grabWindow(
@@ -113,14 +128,18 @@ public class Screenshot extends QWidget {
         if (hideThisWindowCheckBox.isChecked())
             show();
     }
+//! [7]
 
+//! [8]
     void updateCheckBox() {
         if (delaySpinBox.value() == 0)
             hideThisWindowCheckBox.setDisabled(true);
         else
             hideThisWindowCheckBox.setDisabled(false);
     }
+//! [8]
 
+//! [9]
     void createOptionsGroupBox() {
         optionsGroupBox = new QGroupBox(tr("Options"));
 
@@ -139,7 +158,9 @@ public class Screenshot extends QWidget {
         optionsGroupBoxLayout.addWidget(hideThisWindowCheckBox, 1, 0, 1, 2);
         optionsGroupBox.setLayout(optionsGroupBoxLayout);
     }
+//! [9]
 
+//! [10]
     void createButtonsLayout() {
         newScreenshotButton = createButton(tr("New Screenshot"), this, 
                                            "newScreenshot()");
@@ -155,17 +176,23 @@ public class Screenshot extends QWidget {
         buttonsLayout.addWidget(saveScreenshotButton);
         buttonsLayout.addWidget(quitScreenshotButton);
     }
+//! [10]
 
+//! [11]
     QPushButton createButton(final String text, QWidget receiver, 
                              String member) {
         QPushButton button = new QPushButton(text);
         button.clicked.connect(receiver, member);
         return button;
     }
+//! [11]
 
+//! [12]
     void updateScreenshotLabel() {
         screenshotLabel.setPixmap(originalPixmap.scaled(screenshotLabel.size(),
                                   AspectRatioMode.KeepAspectRatio, 
                                   TransformationMode.SmoothTransformation));
     }
+//! [12] //! [13]
 }
+//! [13]

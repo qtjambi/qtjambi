@@ -6,6 +6,7 @@ import com.trolltech.qt.core.*;
 import java.util.*;
 
 @QtJambiExample(name = "Undo Framework")
+//! [0]
 public class UndoFramework extends QMainWindow
 {
     private QAction deleteAction;
@@ -24,11 +25,13 @@ public class UndoFramework extends QMainWindow
     private DiagramScene diagramScene;
     private QUndoStack undoStack;
     private QUndoView undoView;
+//! [0]
 
     public static int itemCount = 0;
 
     public enum DiagramType { Box, Triangle }
 
+//! [1]
     public UndoFramework()
     {
         undoStack = new QUndoStack();
@@ -51,7 +54,9 @@ public class UndoFramework extends QMainWindow
         setCentralWidget(view);
         resize(700, 500);
     }
+//! [1]
 
+//! [2]
     private void createUndoView()
     {
         undoView = new QUndoView(undoStack);
@@ -64,12 +69,15 @@ public class UndoFramework extends QMainWindow
         layout.addWidget(undoView);
         dialog.show();
     }
+//! [2]
 
+//! [3]
     private void createActions()
     {
         deleteAction = new QAction(tr("&Delete Item"), this);
         deleteAction.setShortcut(tr("Del"));
         deleteAction.triggered.connect(this, "deleteItem()");
+//! [3]
 
         addBoxAction = new QAction(tr("Add &Box"), this);
         addBoxAction.setShortcut(tr("Ctrl+O"));
@@ -79,6 +87,7 @@ public class UndoFramework extends QMainWindow
         addTriangleAction.setShortcut(tr("Ctrl+T"));
         addTriangleAction.triggered.connect(this, "addTriangle()");
 
+//! [4]
         undoAction = new QAction(tr("&Undo"), this);
         undoAction.setShortcut(tr("Ctrl+Z"));
         undoAction.setEnabled(false);
@@ -91,6 +100,7 @@ public class UndoFramework extends QMainWindow
         redoAction.setShortcuts(redoShortcuts);
         redoAction.setEnabled(false);
         redoAction.triggered.connect(undoStack, "redo()");
+//! [4]
 
         exitAction = new QAction(tr("E&xit"), this);
         exitAction.setShortcut(tr("Ctrl+Q"));
@@ -104,11 +114,14 @@ public class UndoFramework extends QMainWindow
         aboutAction.triggered.connect(this, "about()");
     }
 
+//! [5]
     private void createMenus()
     {
+//! [5]
         fileMenu = menuBar().addMenu(tr("&File"));
         fileMenu.addAction(exitAction);
 
+//! [6]
         editMenu = menuBar().addMenu(tr("&Edit"));
         editMenu.addAction(undoAction);
         editMenu.addAction(redoAction);
@@ -117,20 +130,26 @@ public class UndoFramework extends QMainWindow
         editMenu.aboutToShow.connect(this, "itemMenuAboutToShow()");
         editMenu.aboutToHide.connect(this, "itemMenuAboutToHide()");
 
+//! [6]
         itemMenu = menuBar().addMenu(tr("&Item"));
         itemMenu.addAction(addBoxAction);
         itemMenu.addAction(addTriangleAction);
 
         helpMenu = menuBar().addMenu(tr("&About"));
         helpMenu.addAction(aboutAction);
+//! [7]
     }
+//! [7]
 
+//! [8]
     public void itemMoved(DiagramItem movedItem, QPointF oldPosition)
     {
         undoStack.push(new MoveCommand(movedItem, oldPosition));
     }
+//! [8]
 
     @SuppressWarnings("unused")
+//! [9]
     private void deleteItem()
     {
         if (diagramScene.selectedItems().isEmpty())
@@ -139,43 +158,54 @@ public class UndoFramework extends QMainWindow
         QUndoCommand deleteCommand = new DeleteCommand(diagramScene);
         undoStack.push(deleteCommand);
     }
+//! [9]
 
     @SuppressWarnings("unused")
+//! [10]
     private void itemMenuAboutToHide()
     {
         deleteAction.setEnabled(true);
     }
+//! [10]
 
     @SuppressWarnings("unused")
+//! [11]
     private void itemMenuAboutToShow()
     {
         undoAction.setText(tr("Undo ") + undoStack.undoText());
         redoAction.setText(tr("Redo ") + undoStack.redoText());
         deleteAction.setEnabled(!diagramScene.selectedItems().isEmpty());
     }
+//! [11]
 
     @SuppressWarnings("unused")
+//! [12]
     private void addBox()
     {
         QUndoCommand addCommand = new AddCommand(DiagramType.Box, diagramScene);
         undoStack.push(addCommand);
     }
+//! [12]
 
     @SuppressWarnings("unused")
+//! [13]
     private void addTriangle()
     {
         QUndoCommand addCommand = new AddCommand(DiagramType.Triangle,
                                                  diagramScene);
         undoStack.push(addCommand);
     }
+//! [13]
 
     @SuppressWarnings("unused")
+//! [14]
     private void about()
     {
         QMessageBox.about(this, tr("About Undo"),
                           tr("The <b>Undo</b> example demonstrates how to " +
                           "use Qt's undo framework."));
     }
+//! [14]
 
     class DiagramItem extends QGraphicsPolygonItem
     {
@@ -216,6 +246,7 @@ public class UndoFramework extends QMainWindow
         }
     }
 
+//! [15]
     class DiagramScene extends QGraphicsScene
     {
         public Signal2<DiagramItem,QPointF> itemMoved =
@@ -223,6 +254,7 @@ public class UndoFramework extends QMainWindow
 
         private DiagramItem movingItem;
         private QPointF oldPos;
+//! [15]
 
         public DiagramScene()
         {
@@ -267,13 +299,18 @@ public class UndoFramework extends QMainWindow
                 painter.drawLine(new QPointF(startX, rect.top()),
                                  new QPointF(startX, rect.bottom()));
         }
+//! [16]
     }
+//! [16]
 
+//! [17]
     class DeleteCommand extends QUndoCommand
     {
         private DiagramItem myDiagramItem;
         private QGraphicsScene myGraphicsScene;
+//! [17]
 
+//! [18]
         public DeleteCommand(QGraphicsScene scene)
         {
             myGraphicsScene = scene;
@@ -282,6 +319,7 @@ public class UndoFramework extends QMainWindow
             myDiagramItem = (DiagramItem) list.get(0);
             setText("Delete " + UndoFramework.createCommandString(myDiagramItem, myDiagramItem.pos()));
         }
+//! [18]
 
         @Override
         public void redo()
@@ -290,31 +328,38 @@ public class UndoFramework extends QMainWindow
         }
 
         @Override
+//! [19]
         public void undo()
         {
             myGraphicsScene.addItem(myDiagramItem);
             myGraphicsScene.update();
         }
+//! [19]
     }
 
+//! [20]
     class MoveCommand extends QUndoCommand
     {
         private DiagramItem myDiagramItem;
         private QPointF myOldPos;
         private QPointF newPos;
+//! [20]
 
 
+//! [21]
         public MoveCommand(DiagramItem diagramItem, QPointF oldPos)
         {
             myDiagramItem = diagramItem;
             newPos = diagramItem.pos();
             myOldPos = oldPos;
         }
+//! [21]
 
         @Override
         public int id() { return 1; }
 
         @Override
+//! [22]
         public void undo()
         {
             myDiagramItem.setPos(myOldPos);
@@ -323,13 +368,16 @@ public class UndoFramework extends QMainWindow
        }
 
         @Override
+//! [23]
         public void redo()
         {
             myDiagramItem.setPos(newPos);
             setText(tr("Move " + UndoFramework.createCommandString(myDiagramItem, newPos)));
         }
+//! [22] //! [23]
 
         @Override
+//! [24]
         public boolean mergeWith(QUndoCommand other)
         {
             MoveCommand moveCommand = (MoveCommand) other;
@@ -343,14 +391,18 @@ public class UndoFramework extends QMainWindow
 
             return true;
         }
+//! [24]
     }
 
+//! [25]
     class AddCommand extends QUndoCommand
     {
         private DiagramItem myDiagramItem;
         private QGraphicsScene myGraphicsScene;
         private QPointF initialPosition;
+//! [25]
 
+//! [26]
         public AddCommand(DiagramType addType, QGraphicsScene scene)
         {
             myGraphicsScene = scene;
@@ -361,8 +413,10 @@ public class UndoFramework extends QMainWindow
             ++UndoFramework.itemCount;
             setText(tr("Add " + UndoFramework.createCommandString(myDiagramItem, initialPosition)));
         }
+//! [26]
 
         @Override
+//! [27]
         public void redo()
         {
             myGraphicsScene.addItem(myDiagramItem);
@@ -370,13 +424,16 @@ public class UndoFramework extends QMainWindow
             myGraphicsScene.clearSelection();
             myGraphicsScene.update();
         }
+//! [27]
 
         @Override
+//! [28]
         public void undo()
         {
             myGraphicsScene.removeItem(myDiagramItem);
             myGraphicsScene.update();
         }
+//! [28]
     }
 
     public static String createCommandString(DiagramItem item, QPointF pos)
@@ -385,6 +442,7 @@ public class UndoFramework extends QMainWindow
                " at (" + pos.x() + ", " + pos.y() + ")");
     }
 
+//! [29]
     public static void main(String args[])
     {
         QApplication.initialize(args);
@@ -394,4 +452,5 @@ public class UndoFramework extends QMainWindow
 
         QApplication.exec();
     }
+//! [29]
 }

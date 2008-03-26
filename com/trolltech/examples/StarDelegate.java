@@ -49,6 +49,7 @@ public class StarDelegate extends QWidget {
         setMinimumSize(550, 200);
     }
 
+//! [0]
     public void createTable()
     {
         LinkedList<String> headers = new LinkedList<String>();
@@ -61,6 +62,7 @@ public class StarDelegate extends QWidget {
                               QAbstractItemView.EditTrigger.SelectedClicked);
         table.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows);
+//! [0]
 
         headers.add(tr("Title"));
         headers.add(tr("Genre"));
@@ -82,7 +84,9 @@ public class StarDelegate extends QWidget {
         }
 
         table.resizeColumnsToContents();
+//! [1]
     }
+//! [1]
 
     class Delegate extends QItemDelegate
     {
@@ -92,6 +96,7 @@ public class StarDelegate extends QWidget {
         }
 
         @Override
+//! [2]
         public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index)
         {
             Object data = index.data();
@@ -105,8 +110,10 @@ public class StarDelegate extends QWidget {
             } else
                 super.paint(painter, option, index);
         }
+//! [2]
 
         @Override
+//! [3]
         public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index)
         {
             Object data = index.data();
@@ -116,8 +123,10 @@ public class StarDelegate extends QWidget {
             else
                 return super.sizeHint(option, index);
         }
+//! [3]
 
         @Override
+//! [4]
         public QWidget createEditor(QWidget parent, QStyleOptionViewItem item,
                                     QModelIndex index)
         {
@@ -128,8 +137,10 @@ public class StarDelegate extends QWidget {
             else
                 return super.createEditor(parent, item, index);
         }
+//! [4]
 
         @Override
+//! [5]
         public void setEditorData(QWidget editor, QModelIndex index)
         {
             Object data = index.data();
@@ -139,8 +150,10 @@ public class StarDelegate extends QWidget {
             else
                 super.setEditorData(editor, index);
         }
+//! [5]
 
         @Override
+//! [6]
         public void setModelData(QWidget editor, QAbstractItemModel model,
                                  QModelIndex index)
         {
@@ -149,12 +162,14 @@ public class StarDelegate extends QWidget {
             else
                 super.setModelData(editor, model, index);
         }
+//! [6]
     }
 
     class StarEditor extends QWidget
     {
         private StarRating starRating;
 
+//! [7]
         public StarEditor(QWidget parent, StarRating rating)
         {
             super(parent);
@@ -163,6 +178,7 @@ public class StarDelegate extends QWidget {
             setMouseTracking(true);
             setAutoFillBackground(true);
         }
+//! [7]
 
         @Override
         public QSize sizeHint()
@@ -171,13 +187,16 @@ public class StarDelegate extends QWidget {
         }
 
         @Override
+//! [8]
         public void paintEvent(QPaintEvent event)
         {
             QPainter painter = new QPainter(this);
             starRating.paint(painter, rect(), palette(), StarRating.ReadWrite);
         }
+//! [8]
 
         @Override
+//! [9]
         public void mouseMoveEvent(QMouseEvent event)
         {
             int star = starAtPosition(event.x());
@@ -187,7 +206,9 @@ public class StarDelegate extends QWidget {
                 update();
             }
         }
+//! [9]
 
+//! [10]
         public int starAtPosition(int x)
         {
             int star = (x / (starRating.sizeHint().width()
@@ -198,6 +219,7 @@ public class StarDelegate extends QWidget {
 
             return star;
         }
+//! [10]
 
         public void setStarRating(StarRating rating)
         {
@@ -243,12 +265,14 @@ public class StarDelegate extends QWidget {
             this(rating, 5);
         }
 
+//! [11]
         public StarRating(int rating, int maxRating)
         {
             setupPolygons();
             maxCount = maxRating;
             setRating(rating);
         }
+//! [11]
 
         public void setRating(int rating)
         {
@@ -268,6 +292,7 @@ public class StarDelegate extends QWidget {
             return maxCount;
         }
 
+//! [12]
         public void paint(QPainter painter, QRect rect, QPalette palette,
                       int mode)
         {
@@ -296,6 +321,7 @@ public class StarDelegate extends QWidget {
 
             painter.restore();
         }
+//! [12]
 
         public QSize sizeHint()
         {

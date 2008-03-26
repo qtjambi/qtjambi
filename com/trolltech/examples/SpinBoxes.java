@@ -17,6 +17,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Spin Boxes")
+//! [0]
 public class SpinBoxes extends QWidget {
     private QDateTimeEdit meetingEdit;
     private QDoubleSpinBox doubleSpinBox;
@@ -26,14 +27,18 @@ public class SpinBoxes extends QWidget {
     private QGroupBox editsGroup;
     private QGroupBox doubleSpinBoxesGroup;
     private QLabel meetingLabel;
+//! [0]
 
 
+//! [1]
     public SpinBoxes() {
         this(null);
     }
+//! [1]
 
     public SpinBoxes(QWidget parent) {
         super(parent);
+//! [2]
         createSpinBoxes();
         createDateTimeEdits();
         createDoubleSpinBoxes();
@@ -57,7 +62,9 @@ public class SpinBoxes extends QWidget {
         integerSpinBox.setRange(-20, 20);
         integerSpinBox.setSingleStep(1);
         integerSpinBox.setValue(0);
+//! [2]
 
+//! [3]
         QLabel zoomLabel = new QLabel(String.format(tr("Enter a zoom value between %1$d and %2$d:"), 0, 1000));
         QSpinBox zoomSpinBox = new QSpinBox();
         zoomSpinBox.setRange(0, 1000);
@@ -65,13 +72,16 @@ public class SpinBoxes extends QWidget {
         zoomSpinBox.setSuffix("%");
         zoomSpinBox.setSpecialValueText(tr("Automatic"));
         zoomSpinBox.setValue(100);
+//! [3]
 
+//! [4]
         QLabel priceLabel = new QLabel(String.format(tr("Enter a price between %1$d and %2$d:"), 0, 999));
         QSpinBox priceSpinBox = new QSpinBox();
         priceSpinBox.setRange(0, 999);
         priceSpinBox.setSingleStep(1);
         priceSpinBox.setPrefix("$");
         priceSpinBox.setValue(99);
+//! [4] //! [5]
 
         QVBoxLayout spinBoxLayout = new QVBoxLayout();
         spinBoxLayout.addWidget(integerLabel);
@@ -82,7 +92,9 @@ public class SpinBoxes extends QWidget {
         spinBoxLayout.addWidget(priceSpinBox);
         spinBoxesGroup.setLayout(spinBoxLayout);
     }
+//! [5]
 
+//! [6]
     public void createDateTimeEdits() {
         editsGroup = new QGroupBox(tr("Date and time spin boxes"));
 
@@ -92,17 +104,23 @@ public class SpinBoxes extends QWidget {
         dateLabel.setText(String.format(tr("Appointment date (between %1$s and %2$s):"),
                                         dateEdit.minimumDate().toString(Qt.DateFormat.ISODate),
                                         dateEdit.maximumDate().toString(Qt.DateFormat.ISODate)));
+//! [6]
 
+//! [7]
         QLabel timeLabel = new QLabel();
         QTimeEdit timeEdit = new QTimeEdit(QTime.currentTime());
         timeEdit.setTimeRange(new QTime(9, 0, 0, 0), new QTime(16, 30, 0, 0));
         timeLabel.setText(String.format(tr("Appointment time (between %1$s and %2$s):"),
                                         timeEdit.minimumTime().toString(Qt.DateFormat.ISODate),
                                         timeEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
+//! [7]
 
+//! [8]
         meetingLabel = new QLabel();
         meetingEdit = new QDateTimeEdit(QDateTime.currentDateTime());
+//! [8]
 
+//! [9]
         QLabel formatLabel = new QLabel(tr("Format string for the meeting date and time:"));
         QComboBox formatComboBox = new QComboBox();
         formatComboBox.addItem("yyyy-MM-dd hh:mm:ss (zzz 'ms')");
@@ -110,11 +128,14 @@ public class SpinBoxes extends QWidget {
         formatComboBox.addItem("hh:mm:ss dd/MM/yyyy");
         formatComboBox.addItem("hh:mm:ss");
         formatComboBox.addItem("hh:mm ap");
+//! [9] //! [10]
 
         formatComboBox.activated.connect(this, "setFormatString(String)");
+//! [10]
 
         setFormatString(formatComboBox.currentText());
 
+//! [11]
         QVBoxLayout editsLayout = new QVBoxLayout();
         editsLayout.addWidget(dateLabel);
         editsLayout.addWidget(dateEdit);
@@ -126,9 +147,12 @@ public class SpinBoxes extends QWidget {
         editsLayout.addWidget(formatComboBox);
         editsGroup.setLayout(editsLayout);
     }
+//! [11]
 
+//! [12]
     public void setFormatString(String formatString) {
         meetingEdit.setDisplayFormat(formatString);
+//! [12] //! [13]
         if (meetingEdit.displayedSections().isSet(QDateTimeEdit.Section.DateSections_Mask)) {
             meetingEdit.setDateRange(new QDate(2004, 11, 1), new QDate(2005, 11, 30));
             meetingLabel.setText(String.format(tr("Meeting date (between %1$s and %2$s):"),
@@ -136,9 +160,13 @@ public class SpinBoxes extends QWidget {
         } else {
             meetingEdit.setTimeRange(new QTime(0, 7, 20, 0), new QTime(21, 0, 0, 0));
             meetingLabel.setText(String.format(tr("Meeting time (between %1$s and %2$s):"), meetingEdit.minimumTime().toString(Qt.DateFormat.ISODate), meetingEdit.maximumTime().toString(Qt.DateFormat.ISODate)));
+//! [13] //! [14]
         }
+//! [14] //! [15]
     }
+//! [15]
 
+//! [16]
     public void createDoubleSpinBoxes() {
         doubleSpinBoxesGroup = new QGroupBox(tr("Double precision spinboxes"));
 
@@ -146,13 +174,17 @@ public class SpinBoxes extends QWidget {
         QSpinBox precisionSpinBox = new QSpinBox();
         precisionSpinBox.setRange(0, 13);
         precisionSpinBox.setValue(2);
+//! [16]
 
+//! [17]
         QLabel doubleLabel = new QLabel(String.format(tr("Enter a value between %1$d and %2$d:"), -20, 20));
         doubleSpinBox = new QDoubleSpinBox();
         doubleSpinBox.setRange(-20.0, 20.0);
         doubleSpinBox.setSingleStep(1.0);
         doubleSpinBox.setValue(0.0);
+//! [17]
 
+//! [18]
         QLabel scaleLabel = new QLabel(String.format(tr("Enter a scale factor between %1$d and %2$d:"), 0, 1000));
         scaleSpinBox = new QDoubleSpinBox();
         scaleSpinBox.setRange(0.0, 1000.0);
@@ -160,7 +192,9 @@ public class SpinBoxes extends QWidget {
         scaleSpinBox.setSuffix("%");
         scaleSpinBox.setSpecialValueText(tr("No scaling"));
         scaleSpinBox.setValue(100.0);
+//! [18]
 
+//! [19]
         QLabel priceLabel = new QLabel(String.format(tr("Enter a price between %1$d and %2$d:"), 0, 1000));
         priceSpinBox = new QDoubleSpinBox();
         priceSpinBox.setRange(0.0, 1000.0);
@@ -169,7 +203,9 @@ public class SpinBoxes extends QWidget {
         priceSpinBox.setValue(99.99);
 
         precisionSpinBox.valueChanged.connect(this, "changePrecision(int)");
+//! [19]
 
+//! [20]
         QVBoxLayout spinBoxLayout = new QVBoxLayout();
         spinBoxLayout.addWidget(precisionLabel);
         spinBoxLayout.addWidget(precisionSpinBox);
@@ -181,13 +217,17 @@ public class SpinBoxes extends QWidget {
         spinBoxLayout.addWidget(priceSpinBox);
         doubleSpinBoxesGroup.setLayout(spinBoxLayout);
     }
+//! [20]
 
+//! [21]
     public void changePrecision(int decimals) {
         doubleSpinBox.setDecimals(decimals);
         scaleSpinBox.setDecimals(decimals);
         priceSpinBox.setDecimals(decimals);
     }
+//! [21]
 
+//! [22]
     public static void main(String args[]) {
         QApplication.initialize(args);
 
@@ -196,4 +236,6 @@ public class SpinBoxes extends QWidget {
 
         QApplication.exec();
     }
+//! [22] //! [23]
 }
+//! [23]

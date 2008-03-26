@@ -24,11 +24,8 @@
 
     The \c FridgeMagnets class extends QWidget:
 
-    \quotefromfile FridgeMagnets.java
-    \skipto public class FridgeMagnets
-    \printline public class FridgeMagnets
-    \skipto public FridgeMagnets
-    \printuntil inputStream
+    \snippet FridgeMagnets.java 0
+    \snippet FridgeMagnets.java 2
 
     In the constructor, we first open the file containing the words on
     our fridge magnets. QFile is an I/O device for reading and writing
@@ -37,8 +34,7 @@
     read the contents of the file using the QTextStream class that
     provides a convenient interface for reading and writing text.
 
-    \skipto int x
-    \printuntil  /^\s\s\s\s\s\s\s\s\}/
+    \snippet FridgeMagnets.java 3
 
     Then we create the fridge magnets: As long as there is data (the
     \l {QTextStream::atEnd()}{QTextStream.atEnd()} method returns true
@@ -49,14 +45,12 @@
     calculate its position and ensure that it is visible by calling
     the \l {QWidget::show()}{QWidget.show()} method.
 
-    \skipto QPalette
-    \printuntil setWindowTitle
+    \snippet FridgeMagnets.java 4
 
     We also set the \c FridgeMagnets widget's palette, minimum size,
     window icon and window title.
 
-    \skipto setAcceptDrops
-    \printuntil /^\s\s\s\s\}/
+    \snippet FridgeMagnets.java 5
 
     Finally, to enable our user to move the fridge magnets around, we
     must also set the \c FridgeMagnets widget's \l
@@ -72,8 +66,7 @@
     {QWidget::dropEvent()}{dropEvent()} event handlers inherited from
     QWidget:
 
-    \skipto public void dragEnterEvent
-    \printline public void dragEnterEvent
+    \snippet FridgeMagnets.java 6
 
     When a a drag and drop action enters our widget, we will receive a
     drag enter \e event. QDragEnterEvent inherits most of its
@@ -86,9 +79,8 @@
     In our \c dragEnterEvent() implementation, we first determine
     whether we support the event's MIME type or not:
 
-    \skipto event.mimeData()
-    \printuntil event.acceptProposedAction()
-    \printline }
+    \snippet FridgeMagnets.java 7
+    \snippet FridgeMagnets.java 8
 
     If the type is \c "application/x-fridgemagnet" and the event
     origins from any of this application's fridge magnet widgets, we
@@ -104,8 +96,7 @@
     event origins from any other widget, we simply accept the proposed
     action.
 
-    \skipto else
-    \printuntil /^\s\s\s\s\}/
+    \snippet FridgeMagnets.java 9
 
     We also accept the proposed action if the event's MIME type is \c
     text/plain, i.e., if \l
@@ -114,8 +105,7 @@
     \l {QDragMoveEvent::ignore()}{ignore()} method allowing the event
     to be propagated further.
 
-    \skipto public void dragMoveEvent
-    \printuntil /^\s\s\s\s\}/
+    \snippet FridgeMagnets.java 10
 
     Drag move events occur when the cursor enters a widget, when it
     moves within the widget, and when a modifier key is pressed on the
@@ -126,8 +116,7 @@
     drag enter events.
 
     \target drop
-    \skipto public void dropEvent
-    \printuntil QMimeData
+    \snippet FridgeMagnets.java 11
 
     Note that the \l {QWidget::dropEvent()}{dropEvent()} event handler
     behaves slightly different: If the event origins from any of this
@@ -139,9 +128,8 @@
     between applications, and copied around within the same
     application.
 
-    \skipto itemData
-    \printuntil event.acceptProposedAction()
-    \printline }
+    \snippet FridgeMagnets.java 12
+    \snippet FridgeMagnets.java 13
 
     Then we retrieve the data associated with the \c
     "application/x-fridgemagnet" MIME type and use it to create a new
@@ -163,8 +151,7 @@
     accept the proposed action like we did in the other event
     handlers.
 
-    \skipto else if
-    \printuntil /^\s\s\s\s\}/
+    \snippet FridgeMagnets.java 14
 
     If the event's MIME type is \c text/plain, i.e., if \l
     {QMimeData::hasText()}{QMimeData.hasText()} returns true, we
@@ -177,11 +164,8 @@
     {QDragMoveEvent::ignore()}{ignore()} method allowing the event to
     be propagated further.
 
-    \quotefromfile FridgeMagnets.java
-    \skipto /public static void main/
-    \printuntil /^\s\s\s\s\}/
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet FridgeMagnets.java 1
+    \snippet FridgeMagnets.java 22
 
     Finally, we provide a \c main() method to create and show our main
     widget when the example is run.
@@ -191,9 +175,7 @@
     Each fridge magnet is represented by an instance of the \c
     DragLabel class:
 
-    \quotefromfile FridgeMagnets.java
-    \skipto /class DragLabel/
-    \printuntil font.setStyleStrategy
+    \snippet FridgeMagnets.java 15
 
     In the \c DragLabel constructor, we first create a QImage object
     on which we will draw the fridge magnet's text and frame. Its size
@@ -209,8 +191,7 @@
     {QFont::ForceOutline}{QFont.StyleStrategy.ForceOutline} forces the
     use of outline fonts.
 
-    \skipto QPainter
-    \printuntil painter.end()
+    \snippet FridgeMagnets.java 16
 
     To draw the text and frame onto the image, we use the QPainter
     class. QPainter provides highly optimized methods to do most of
@@ -229,8 +210,7 @@
     hint ensures that the paint engine will antialias the edges of
     primitives if possible.
 
-    \skipto setPixmap
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet FridgeMagnets.java 17
 
     When the painting is done, we convert our image to a pixmap using
     QPixmap's \l {QPixmap::fromImage()}{fromImage()} method. This
@@ -255,8 +235,7 @@
     magnet widget to make the user able to pick it up in the first
     place:
 
-    \skipto /public void mousePressEvent/
-    \printuntil /position.writeTo/
+    \snippet FridgeMagnets.java 18
 
     Mouse events occur when a mouse button is pressed or released
     inside a widget, or when the mouse cursor is moved. By
@@ -269,8 +248,7 @@
     array to store our item data, and a QDataStream object to stream
     the data to the byte array.
 
-    \skipto QMimeData
-    \printuntil mimeData.setText
+    \snippet FridgeMagnets.java 19
 
     Then we create a new QMimeData object. As mentioned above,
     QMimeData objects associate the data that they hold with the
@@ -286,8 +264,7 @@
     our main widget detects both these MIME types with its event
     handlers.
 
-    \skipto QDrag
-    \printuntil hide()
+    \snippet FridgeMagnets.java 20
 
     Finally, we create a QDrag object. It is the QDrag class
     that handles most of the details of a drag and drop operation,
@@ -307,8 +284,7 @@
     fridge magnet image itself to make the magnet appear as moving,
     immediately hiding the activated widget.
 
-    \skipto if
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet FridgeMagnets.java 21
 
     Then we start the drag using QDrag's \l {QDrag::start()}{start()}
     method requesting that the magnet is moved when the drag is

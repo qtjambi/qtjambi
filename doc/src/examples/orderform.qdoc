@@ -13,9 +13,7 @@
 
     \section1 DetailsDialog Class
 
-    \quotefromfile OrderForm.java
-    \skipto /class DetailsDialog/
-    \printuntil /buttonBox/
+    \snippet OrderForm.java 0
 
     The \c DetailsDialog class is a subclass of QDialog, implementing
     a slot \c verify() to allow contents of the \c DetailsDialog to be
@@ -46,13 +44,11 @@
     buttonBox's \c accepted() and \c rejected() signals are connected
     to the \c verify() and \c reject() slots in \c DetailsDialog.
 
-    \skipto /public DetailsDialog/
-    \printuntil rejected
+    \snippet OrderForm.java 1
 
     A QGridLayout is used to place all the objects on the \c DetailsDialog.
 
-    \skipto mainLayout
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 2
 
     The \c setupItemsTable() function instantiates the QTableWidget
     object, \c itemsTable, and sets the number of rows based on the
@@ -65,39 +61,29 @@
     have this value for quantity; but this can be modified by editing
     the contents of the cells at run time.
 
-    \quotefromfile OrderForm.java
-    \skipto /void setupItemsTable/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 8
 
     The \c orderItems() function extracts data from the \c itemsTable
     and returns it in the form of a \c{List<QPair<QString,Integer>>}
     where each QPair corresponds to an item and the quantity ordered.
 
-    \quotefromfile OrderForm.java
-    \skipto /public.*orderItems/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 4
 
     The \c senderName() function is used to return the value of the QLineEdit
     used to store the name field for the order form.
 
-    \quotefromfile OrderForm.java
-    \skipto /String senderName()/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 5
 
     The \c senderAddress() function is used to return the value of the
     QTextEdit containing the address for the order form.
 
-    \quotefromfile OrderForm.java
-    \skipto /String senderAddress()/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 6
 
     The \c sendOffers() function is used to return a \c true or \c false
     value that is used to determine if the customer in the order form
     wishes to receive more information on the company's offers and promotions.
 
-    \quotefromfile OrderForm.java
-    \skipto /boolean sendOffers\(\)/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 7
 
     The \c verify() function is an additionally implemented slot used to
     verify the details entered by the user into the \c DetailsDialog. If
@@ -105,9 +91,7 @@
     providing the user the option to discard the \c DetailsDialog. Otherwise,
     the details are accepted and the \c accept() function is invoked.
 
-    \quotefromfile OrderForm.java
-    \skipto /void verify\(\)/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 3
 
     \section1 MainWindow Class
 
@@ -122,25 +106,20 @@
     and the default close() slot. The QTabWidget, \c letters, is
     instantiated and set as the window's central widget.
 
-    \quotefromfile OrderForm.java
-    \skipto /public OrderForm/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 9
 
     The \c createLetter() function creates a new QTabWidget with a QTextEdit,
     \c editor, as the parent. This function accepts four parameters that
     correspond to we obtained through \c DetailsDialog, in order to "fill"
     the \c editor.
 
-    \quotefromfile OrderForm.java
-    \skipto /void createLetter/
-    \printuntil (tabIndex);
+    \snippet OrderForm.java 13
 
     We then obtain the cursor for the \c editor using QTextEdit::textCursor().
     The \c cursor is then moved to the start of the document using
     QTextCursor::Start.
 
-    \skipto /QTextCursor cursor/
-    \printuntil MoveOperation
+    \snippet OrderForm.java 14
 
     Recall the structure of a \l{Rich Text Document Structure}
     {Rich Text Document}, where sequences of frames and
@@ -171,8 +150,7 @@
 
     This is accomplished with the following code:
 
-    \skipto /QTextFrame topFrame/
-    \printuntil /Another country/
+    \snippet OrderForm.java 15
 
     Note that \c topFrame is the \c {editor}'s top-level frame and is not shown
     in the document structure.
@@ -181,8 +159,7 @@
     \c topFrame and fill in the customer's name (provided by the constructor)
     and address - using a \c foreach loop to traverse the QString, \c address.
 
-    \skipto cursor.setPosition
-    \printuntil }
+    \snippet OrderForm.java 16
 
     The \c cursor is now back in \c topFrame and the document structure for
     the above portion of code is:
@@ -202,15 +179,12 @@
     {setWidth()} to increase the width of \c bodyFrameFormat and we insert
     a new frame with that width.
 
-    \skipto cursor.insertBlock()
-    \printuntil cursor.insertFrame(bodyFrameFormat);
+    \snippet OrderForm.java 17
 
     The following code inserts standard text into the order form.
 
-    \skipto cursor.insertText(tr("I would like to place an order for
-    \printuntil cursor.insertBlock();
-    \skipto cursor.insertBlock();
-    \printuntil ();
+    \snippet OrderForm.java 18
+    \snippet OrderForm.java 19
 
     This part of the document structure now contains the date, a frame with
     \c bodyFrameFormat, as well as the standard text.
@@ -237,20 +211,17 @@
     A QTextTableFormat object, \c orderTableFormat, is used to hold the type
     of item and the quantity ordered.
 
-    \skipto /QTextTableFormat orderTableFormat/
-    \printuntil setFrameFormat
+    \snippet OrderForm.java 20
 
     We use \l{QTextTable::cellAt()}{cellAt()} to set the headers for the
     \c orderTable.
 
-    \skipto /orderTable.*cellAt/
-    \printuntil boldFormat
+    \snippet OrderForm.java 21
 
     Then, we iterate through the List of QPair objects to populate
     \c orderTable.
 
-    \skipto for
-    \printuntil }
+    \snippet OrderForm.java 22
 
     The resulting document structure for this section is:
 
@@ -283,16 +254,13 @@
     \l{QTextFrame::lastPosition()}{lastPosition()} and more standard text
     is inserted.
 
-    \skipto cursor.setPosition
-    \printuntil cursor.insertBlock();
-    \skipto cursor.insertText
-    \printuntil cursor.insertBlock();
+    \snippet OrderForm.java 23
+    \snippet OrderForm.java 24
 
     Another QTextTable is inserted, to display the customer's
     preference regarding offers.
 
-    \skipto /QTextTable offersTable/
-    \printuntil /insertText.*boldFormat/
+    \snippet OrderForm.java 25
 
     The document structure for this portion is:
 
@@ -317,8 +285,7 @@
     name. More blocks are inserted for spacing purposes. The \c printAction
     is enabled to indicate that an order form can now be printed.
 
-    \skipto cursor.setPosition
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 26
 
     The bottom portion of the document structure is:
 
@@ -340,24 +307,18 @@
     The \c createSample() function is used for illustration purposes, to create
     a sample order form.
 
-    \quotefromfile OrderForm.java
-    \skipto /void createSample()/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 10
 
     The \c openDialog() function opens a \c DetailsDialog object. If the
     details in \c dialog are accepted, the \c createLetter() function is
     invoked using the parameters extracted from \c dialog.
 
-    \quotefromfile OrderForm.java
-    \skipto /void openDialog()/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 11
 
     In order to print out the order form, a \c printFile() function is
     included, as shown below:
 
-    \quotefromfile OrderForm.java
-    \skipto /void printFile()/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 12
 
     This function also allows the user to print a selected area with
     QTextCursor::hasSelection(), instead of printing the entire document.
@@ -368,7 +329,5 @@
     640x480 pixels before invoking the \c show() function and
     \c createSample() function.
 
-    \quotefromfile OrderForm.java
-    \skipto /static void main/
-    \printuntil /^\s{4}\}/
+    \snippet OrderForm.java 27
 */

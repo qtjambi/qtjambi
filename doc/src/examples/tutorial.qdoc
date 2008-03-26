@@ -60,16 +60,12 @@
 
     Here's the complete source code for the application:
 
-    \quotefromfile tutorial/HelloWorld.java
-    \skipto class
-    \printuntil /^\}/
+    \snippet tutorial/HelloWorld.java 1
 
     \section1 Line by Line Walkthrough
 
-    \quotefromfile tutorial/HelloWorld.java
 
-    \skipto package
-    \printuntil gui
+    \snippet tutorial/HelloWorld.java 0
 
     To use Qt Jambi classes, you need to import at least the\c gui
     package, which includes the QApplication class.  QApplication
@@ -78,8 +74,7 @@
     classes, such as widgets, which is a user interface object that
     can process user input and draw graphics.
   
-    \skipto main
-    \printuntil {
+    \snippet tutorial/HelloWorld.java 2
 
     The \c main() method is the entry point to the program. Almost
     always when using Qt Jambi, \c main() only needs to perform some kind
@@ -89,7 +84,7 @@
     The \c args parameter is the command-line arguments. This is a
     standard Java feature.
 
-    \printline QApplication
+    \snippet tutorial/HelloWorld.java 3
 
     Each Qt Jambi application contains a unique QApplication
     instance, which is a private QApplication class member. To create
@@ -101,7 +96,7 @@
     The QApplication object must be created before any GUI-related
     features of Qt Jambi are used.
 
-    \printline QPushButton
+    \snippet tutorial/HelloWorld.java 4
 
     Here, after the QApplication, comes the first GUI-related code: A
     push button is created.
@@ -116,7 +111,7 @@
     QPushButton constructor), the button will be a window of its own,
     with its own window frame and title bar.
 
-    \printline resize
+    \snippet tutorial/HelloWorld.java 5
 
     The button is set up to be 120 pixels wide and 40 pixels high
     (excluding the window frame, which is provided by the windowing
@@ -124,18 +119,18 @@
     screen position to the widget, but instead we let the windowing
     system choose a position.
 
-    \printline setWindowTitle
+    \snippet tutorial/HelloWorld.java 6
     
     The title of the window in which the button is shown is set with
     QWidget.setWindowTitle().
 
-    \printline show
+    \snippet tutorial/HelloWorld.java 7
 
     A widget is never visible when you create it. You must call
     QWidget.show() to make it visible.
 
-    \printline exec
-    \printline }
+    \snippet tutorial/HelloWorld.java 8
+    \snippet tutorial/HelloWorld.java 9
 
     This is where \c main() passes control to Qt Jambi.
     QCoreApplication.exec() will return when the application exits.
@@ -190,27 +185,23 @@
     We will also use a font that is more exciting than the default
     one. We give the entire source code of the application:
 
-    \quotefromfile tutorial/Quit.java
-    \skipto class Quit
-    \printuntil /^\}/
+    \snippet tutorial/Quit.java 0
 
     \section1 Line by Line Walkthrough
 
-    \quotefromfile tutorial/Quit.java
-    \skipto QPushButton
-    \printline QPushButton
+    \snippet tutorial/Quit.java 1
 
     This time, the button says \gui{Quit} and that's exactly what the
     program will do when the user clicks the button.
 
-    \printline resize
+    \snippet tutorial/Quit.java 2
 
     We've chosen another size for the button since the text is a bit
     shorter than "Hello world!". We could also have used QFontMetrics
     to set right size, or let QPushButton choose a reasonable
     default.
 
-    \printline setFont
+    \snippet tutorial/Quit.java 3
 
     Here we choose a new font for the button, an 18-point bold font
     from the Times family. It is also possible to change the default
@@ -218,8 +209,7 @@
     We fetch the value from the Weight enum as the weight of the
     font is given as an int in the constructor.
 
-    \skipto connect
-    \printline connect
+    \snippet tutorial/Quit.java 4
 
     
     We connect the clicked signal to the \c quit() slot in
@@ -273,15 +263,11 @@
 
     We'll keep it simple and use just a single parent and a lone child.
 
-    \quotefromfile tutorial/FamilyValues.java
-    \skipto class FamilyValues
-    \printuntil /^\}/
+    \snippet tutorial/FamilyValues.java 0
 
     \section1 Line by Line Walkthrough
 
-    \quotefromfile tutorial/FamilyValues.java
-    \skipto QWidget window
-    \printline window
+    \snippet tutorial/FamilyValues.java 1
 
     Here we simply create a plain widget object. The QWidget class is the
     base class of all user interface objects. The widget is the atom
@@ -297,13 +283,12 @@
     Its initial position on the screen is controlled by the window
     system.
 
-    \printline resize
+    \snippet tutorial/FamilyValues.java 2
 
     We set the window's width to 200 pixels and its height to 120
     pixels.
 
-    \skipto quit
-    \printline quit
+    \snippet tutorial/FamilyValues.java 3
 
     A child is born. This QPushButton is created with a parent widget
     \c (window). A child widget is always displayed within its
@@ -311,8 +296,7 @@
     bounds. By default, it is rooted at the top-left corner of its
     parent, at position (0, 0).
 
-    \skipto setGeometry
-    \printline setGeometry
+    \snippet tutorial/FamilyValues.java 4
 
     The QWidget.setGeometry() method takes four arguments: The
     first two arguments are the x and y coordinates of the button's
@@ -321,8 +305,7 @@
     The result is a button that extends from position (10, 40) to
     position (190, 80).
 
-    \skipto show
-    \printline show
+    \snippet tutorial/FamilyValues.java 5
 
     When a parent widget is shown, it will call show for all its
     children (except those that were explicitly hidden using
@@ -354,22 +337,17 @@
     This example shows how to create your own widget, and describes
     how to control the minimum and maximum sizes of a widget.
 
-    \quotefromfile tutorial/Widgets.java
-    \skipto class
-    \printuntil /^\}/
+    \snippet tutorial/Widgets.java 1
 
     \section1 Line by Line Walkthrough
 
-    \quotefromfile tutorial/Widgets.java
-    \skipto class Widgets
-    \printuntil /^\{/
+    \snippet tutorial/Widgets.java 0
 
     Here we create a new class. Because this class inherits from QWidget,
     the new class is a widget and may be a top-level window or a child
     widget (like the QPushButton in the previous chapter).
 
-    \skipto public Widgets
-    \printuntil /^\s\s\s\s\{/
+    \snippet tutorial/Widgets.java 2
 
     This class has only one member, a constructor (in addition to
     the members it inherits from QWidget). This widget is created
@@ -379,13 +357,13 @@
     QWidget.setParent() method. A widget's parent is also set to the
     widget to which it is added.
 
-    \printuntil setFixedSize
+    \snippet tutorial/Widgets.java 3
 
     Because this widget doesn't know how to handle resizing, we fix
     its size. In the next chapter, we will show how a widget can
     respond to resize event from the user.
 
-    \printuntil setFont
+    \snippet tutorial/Widgets.java 4
 
     Here we create and set up a child widget of this widget (the new
     widget's parent is \c this, i.e. the \c Widgets instance).
@@ -405,8 +383,7 @@
     the buttons \l{QWidget.}{sizeHint()} method - all widgets are
     able to calculate their preferred size.
     
-    \skipto void main
-    \printuntil }
+    \snippet tutorial/Widgets.java 5
 
     Here we instantiate a Widgets, show it, and execute the
     application.
@@ -437,32 +414,26 @@
     This example shows how to create and connect together several widgets
     by using signals and slots, and how to handle resizes.
 
-    \quotefromfile tutorial/Blocks.java
-    \skipto class Blocks
-    \printuntil /^\}/
+    \snippet tutorial/Blocks.java 0
 
     \section1 Line by Line Walkthrough
 
-    \quotefromfile tutorial/Blocks.java
-    \skipto public Blocks
-    \printuntil SegmentStyle
+    \snippet tutorial/Blocks.java 1
 
     \c lcd is a QLCDNumber, a widget that displays numbers in an
     LCD-like fashion. This instance is set up to display two digits.
     We set the \l QLCDNumber.segmentStyle property to \l
     QLCDNumber.SegmentStyle.Filled to make the LCDs more readable.
 
-    \skipto QSlider
-    \printline QSlider
-    \printline slider
-    \printline slider
+    \snippet tutorial/Blocks.java 2
+    \snippet tutorial/Blocks.java 3
+    \snippet tutorial/Blocks.java 4
 
     The user can use the QSlider widget to adjust an integer value in
     a range. Here we create a horizontal one, set its minimum value
     to 0, its maximum value to 99, and its initial value to 0.
 
-    \skipto valueChanged
-    \printline valueChanged
+    \snippet tutorial/Blocks.java 5
 
     Here we use the \l{signals and slots} mechanism to connect the
     slider's \l{QSlider.}{valueChanged} signal to the LCD number's
@@ -478,9 +449,8 @@
     Slots are otherwise normal Java member methods and follow the
     normal Java access rules.
 
-    \skipto layout
-    \printline layout
-    \printuntil setLayout
+    \snippet tutorial/Blocks.java 6
+    \snippet tutorial/Blocks.java 7
 
     \c Blocks uses a QVBoxLayout to manage the geometry of its child widgets. For
     that reason, we don't need to specify the screen coordinates for each widget
@@ -541,40 +511,32 @@
     \printuntil /^\s\s\s\s\}/
     \endomit    
 
-    \quotefromfile tutorial/BlocksGalore.java
-    \skipto /class BlocksGalore/
-    \printuntil /^\}/    
+    \snippet tutorial/BlocksGalore.java 1
 
     \section1 Line by Line Walkthrough
 
-    \quotefromfile tutorial/BlocksGalore.java
-    \skipto class LCDRange
-    \printuntil /^\s\s\s\s\{/
+    \snippet tutorial/BlocksGalore.java 5
 
     The \c LCDRange widget is a widget without any API. It just has a
     constructor. This sort of widget is not very useful, so we'll add
     some API later.
 
-    \skipto public LCDRange
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet tutorial/BlocksGalore.java 6
 
     The code in the constructor is lifted straight from the \c Blocks
     constructor in Chapter 5. The only differences are that the
     \gui{Quit} button is left out and the class is renamed.
 
-    \quotefromfile tutorial/BlocksGalore.java
 
     The \c BlocksGalore class, too, contains no API except a constructor:
 
-    \skipto /class BlocksGalore/
-    \printuntil connect
+    \snippet tutorial/BlocksGalore.java 0
 
     The push button that used to be in what is now \c LCDRange has been
     separated so that we can have one \gui{Quit} button and many \c LCDRange
     objects.
 
-    \skipto grid
-    \printto for
+    \snippet tutorial/BlocksGalore.java 2
 
     We create a QWidget with a QGridLayout that will contain three
     columns.  The QGridLayout automatically arranges its widgets in
@@ -589,8 +551,8 @@
 
     We then proceed to create the LCDRange widgets:
 
-    \printline for
-    \printuntil /^\s\s\s\s\}/
+    \snippet tutorial/BlocksGalore.java 3
+    \snippet tutorial/BlocksGalore.java 4
 
     We create nine \c LCDRange widgets, and we arrange them in
     three rows and three columns. We set the parent of the widgets to
@@ -631,7 +593,6 @@
     This file is mainly lifted from \c BlocksGalore in Chapter 6; only
     the non-trivial changes are noted here.
 
-    \quotefromfile tutorial/ConnectedSliders.java
 
     The LCDRange class now includes three members besides the
     constructor. They make up an interface between this widget and
@@ -639,19 +600,16 @@
     really have an API at all. We will examine them as we stumble
     upon them in the code.
 
-    \quotefromfile tutorial/ConnectedSliders.java
 
     This class is for the most part equal to LCDRange from chapter
     6, and only the changes are noted here.
 
-    \skipto value
-    \printline value
+    \snippet tutorial/ConnectedSliders.java 0
 
     We have added a private variable that will hold the number in
     the display.
 
-    \skipto Signal
-    \printline Signal
+    \snippet tutorial/ConnectedSliders.java 6
 
     Here we declare our first custom signal: \c valueChanged. We will emit it
     whenever the value of the LCD changes. A signal is an instance of one of the
@@ -664,17 +622,13 @@
 
     We move on to the constructor:
 
-    \quotefromfile tutorial/ConnectedSliders.java
-    \skipto public LCDRange
-    \printline public
-    \printline /\{/
+    \snippet tutorial/ConnectedSliders.java 7
+    \snippet tutorial/ConnectedSliders.java 8
     \dots 12
-    \skipto valueChanged
-    \printline valueChanged
-    \printline valueChanged
+    \snippet tutorial/ConnectedSliders.java 9
+    \snippet tutorial/ConnectedSliders.java 10
     \dots 12
-    \skipto /^\s\s\s\s\s\s\s\s\}/
-    \printline /\}/
+    \snippet tutorial/ConnectedSliders.java 11
 
     We connect the sliders \c valueChanged signal to our \c display()
     slot, and to our own \c valueChanged signal. The signal you
@@ -694,14 +648,12 @@
     \c LCDRange.valueChanged may be emitted before or after
     QLCDNumber.display() is called.
 
-    \skipto value()
-    \printuntil }
+    \snippet tutorial/ConnectedSliders.java 12
 
     The implementation of \c value() is straightforward. It simply
     returns the slider's value.
 
-    \skipto setValue
-    \printuntil }
+    \snippet tutorial/ConnectedSliders.java 13
 
     The implementation of \c setValue() is equally straightforward.
     Note that because the slider and LCD number are connected,
@@ -712,14 +664,12 @@
     The \c ConnectedSlider class is copied from BlocksGalore in the previous
     chapter except for the constructor. We examine the changes here:
 
-    \quotefromfile tutorial/ConnectedSliders.java
 
-    \skipto previous
-    \printline previous
-    \printuntil setValue
-    \printline previous
-    \printline }
-    \printline }
+    \snippet tutorial/ConnectedSliders.java 1
+    \snippet tutorial/ConnectedSliders.java 2
+    \snippet tutorial/ConnectedSliders.java 3
+    \snippet tutorial/ConnectedSliders.java 4
+    \snippet tutorial/ConnectedSliders.java 5
 
     When we create the nine \c LCDRange objects, we connect them using
     the \l{signals and slots} mechanism. Each has its \c

@@ -30,17 +30,12 @@
     {QSyntaxHighlighter::highlightBlock()}{highlightBlock()} method,
     and define your own highlighting rules.
 
-    \quotefromfile SyntaxHighlighter.java
-    \skipto private class Highlighter
-    \printline private class Highlighter
-
-    \skipto QRegExp commentStartExpression
-    \printuntil functionFormat
-
-    \quotefromfile SyntaxHighlighter.java
-    \skipto public class HighlightingRule
-    \printuntil }
-    \printuntil }
+    \snippet SyntaxHighlighter.java 4
+    \codeline
+    \snippet SyntaxHighlighter.java 8
+    \codeline
+    \snippet SyntaxHighlighter.java 5
+    \snippet SyntaxHighlighter.java 6
 
     We have chosen to store our highlighting rules using the private
     \c HighlightingRule class: A rule consists of a QRegExp pattern
@@ -56,13 +51,11 @@
     {QTextCharFormat::setForeground()}{QTextCharFormat.setForeground()}
     methods.
 
-    \skipto Vector
-    \printline Vector
+    \snippet SyntaxHighlighter.java 7
 
     We will use a vector to store our highlighting rules.
 
-    \skipto public Highlighter
-    \printuntil pattern
+    \snippet SyntaxHighlighter.java 9
 
     When subclassing the QSyntaxHighlighter class you must pass the
     constructor's \c parent parameter to the super class's
@@ -70,10 +63,8 @@
     syntax highligning will be applied. In this example, we have also
     chosen to define our highlighting rules in the constructor:
 
-    \skipto brush
-    \printto //
-    \skipto String[] keywords
-    \printto //
+    \snippet SyntaxHighlighter.java 10
+    \snippet SyntaxHighlighter.java 11
 
     First we define a keyword rule which recognizes the most common
     Java keywords. We give the \c keywordFormat a bold, dark blue
@@ -81,14 +72,11 @@
     format to a \c HighlightingRule object and append the object to
     our list of rules.
 
-    \skipto brush
-    \printuntil add(rule);
-
-    \skipto brush
-    \printuntil add(rule);
-
-    \skipto brush
-    \printuntil add(rule);
+    \snippet SyntaxHighlighter.java 12
+    \codeline
+    \snippet SyntaxHighlighter.java 13
+    \codeline
+    \snippet SyntaxHighlighter.java 14
 
     Then we create a format that we will apply to Qt class names. The
     class names will be rendered with a dark magenta color and a bold
@@ -102,13 +90,9 @@
     expressions and are stored in \c HighlightingRule objects with the
     associated format.
 
-    \quotefromfile SyntaxHighlighter.java
-    \skipto //Comment
-    \skipto brush
-    \printuntil add(rule);
-
-    \skipto commentStartExpression
-    \printuntil }
+    \snippet SyntaxHighlighter.java 13
+    \codeline
+    \snippet SyntaxHighlighter.java 15
 
     The Java language has two variations of comments: The single line
     comment (//) and the multiline comment (/*...* /). The
@@ -122,8 +106,7 @@
     text engine, highlighting the given text block. The problem
     appears when a comment spans several text blocks.
 
-    \skipto highlightBlock
-    \printto setCurrentBlockState
+    \snippet SyntaxHighlighter.java 16
 
     The \c highlightBlock() method is called automatically whenever
     there are text blocks that have changed.
@@ -151,7 +134,7 @@
     This process is repeated until the last occurrence of the pattern
     in the current text block is found.
 
-    \printline setCurrentBlockState
+    \snippet SyntaxHighlighter.java 17
 
     To deal with constructs that can span several text blocks (like
     the Java multiline comment), it is necessary to know the end state
@@ -179,8 +162,7 @@
     syntax highlighting rules are applied, we initialize the current
     block state to 0.
 
-    \skipto startIndex
-    \printto while
+    \snippet SyntaxHighlighter.java 18
 
     If the previous block state was "in comment" (\c
     {previousBlockState() == 1}), we start the search for an end
@@ -189,11 +171,11 @@
     method returns 0, we start the search at the location of the
     first occurrence of a start expression.
 
-    \printline while
-    \printuntil }
-    \printuntil }
-    \printuntil }
-    \printuntil }
+    \snippet SyntaxHighlighter.java 19
+    \snippet SyntaxHighlighter.java 20
+    \snippet SyntaxHighlighter.java 21
+    \snippet SyntaxHighlighter.java 22
+    \snippet SyntaxHighlighter.java 23
 
 
     When an end expression is found, we calculate the length of the
@@ -212,11 +194,8 @@
     and make it the central widget of the application. Finally, we set
     the main window's title and icon:
 
-    \quotefromfile SyntaxHighlighter.java
-    \skipto public class SyntaxHighlighter
-    \printuntil editor
-    \skipto public SyntaxHighlighter()
-    \printuntil }
+    \snippet SyntaxHighlighter.java 0
+    \snippet SyntaxHighlighter.java 2
 
     Using a QSyntaxHighlighter subclass is simple; just provide your
     application with an instance of the class and pass it the document
@@ -225,8 +204,7 @@
     We initialize and install the \c Highlighter object in the private
     \c setupEditor() convenience method:
 
-    \skipto setupEditor()
-    \printuntil }
+    \snippet SyntaxHighlighter.java 3
 
     First we create the font we want to use in the editor, then we
     create the editor itself which is an instance of the QTextEdit
@@ -243,11 +221,8 @@
     {QSyntaxHighlighter::document()}{document()} method which
     returns the currently set document.
 
-    \quotefromfile SyntaxHighlighter.java
-    \skipto main
-    \printuntil }
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet SyntaxHighlighter.java 1
+    \snippet SyntaxHighlighter.java 24
 
     Finally, we provide a \c main() method to create and show the
     main application window when the example is run.

@@ -23,11 +23,8 @@
     the \c AnalogClock constructor. We set up a timer and connect it
     to the widget's \l {QWidget::update()}{update()} method:
 
-    \quotefromfile ShapedClock.java
-    \skipto public class
-    \printline public class
-    \skipto dragPosition
-    \printuntil /^\s\s\s\s\}/
+    \snippet ShapedClock.java 0
+    \snippet ShapedClock.java 2
 
     We inform the window manager that the widget is not to be
     decorated with a window frame by setting the \l
@@ -37,8 +34,7 @@
 
     Mouse button events are delivered to the \c mousePressEvent() handler:
 
-    \skipto mousePressEvent
-    \printuntil /^\s\s\s\s\}/
+    \snippet ShapedClock.java 3
 
     If the left mouse button is pressed over the widget, we record the
     displacement in global (screen) coordinates between the top-left
@@ -53,8 +49,7 @@
     The \c mouseMoveEvent() handler is called if the mouse is moved
     over the widget.
 
-    \skipto mouseMoveEvent
-    \printuntil /^\s\s\s\s\}/
+    \snippet ShapedClock.java 4
 
     If the left button is held down while the mouse is moved, the
     top-left corner of the widget is moved to the point given by
@@ -66,16 +61,14 @@
     \l{Analog Clock Example}{Analog Clock} example for a description
     of the process used to render the clock.
 
-    \skipto paintEvent
-    \printuntil /^\s\s\s\s\}/
+    \snippet ShapedClock.java 5
 
 
     In the \c resizeEvent() handler, we re-use some of the code from
     the \c paintEvent() to determine the region of the widget that is
     visible to the user:
 
-    \skipto resizeEvent
-    \printuntil /^\s\s\s\s\}/
+    \snippet ShapedClock.java 6
 
     Since the clock face is a circle drawn in the center of the
     widget, this is the region we use as the mask.
@@ -90,17 +83,13 @@
     To ensure that the widget is given a reasonable default size when
     it is first shown, we also implement the \c sizeHint() method:
 
-    \skipto sizeHint
-    \printuntil /^\s\s\s\s\}/
+    \snippet ShapedClock.java 7
 
     Finally, we provide a \c main() method to create and show the
     shaped clock when the example is run:
 
-    \quotefromfile ShapedClock.java
-    \skipto  public static void main
-    \printuntil /^\s\s\s\s\}/
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet ShapedClock.java 1
+    \snippet ShapedClock.java 8
 
     \section1 Notes on Widget Masks
 

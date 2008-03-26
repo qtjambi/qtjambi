@@ -16,9 +16,7 @@
     The SystemTrayExample class extends QWidget and provides an editor
     for the system tray icon.
 
-    \quotefromfile SystemTrayExample.java
-    \skipto class SystemTrayExample
-    \printuntil iconCombo
+    \snippet SystemTrayExample.java 0
 
     The editor enables the user to modify the message title, edit the
     actual message and choose the message type. The information
@@ -31,9 +29,8 @@
     tray is available on the user's desktop. If it is not, we show a
     message to the user:
 
-    \skipto public SystemTrayExample()
-    \printuntil warning
-    \printuntil tray unavailable
+    \snippet SystemTrayExample.java 2
+    \snippet SystemTrayExample.java 3
 
     The QMessageBox class provides a modal dialog with a short
     message, an icon, and buttons laid out depending on the current
@@ -43,8 +40,7 @@
     methods, e.g. \l
     {QMessageBox::warning()}{QMessageBox.warning()}.
 
-    \skipto new QMenu
-    \printuntil aboutToShow
+    \snippet SystemTrayExample.java 4
 
     Then we create the menu that will appear when right-clicking over
     the icon in the system tray. The QMenu class provides a menu
@@ -56,8 +52,7 @@
     A menu consists of a list of action items, i.e., a collection of
     QAction objects:
 
-    \skipto toggleVisibilityAction
-    \printuntil addAction(quitAction)
+    \snippet SystemTrayExample.java 5
 
     The purpose of the various actions in our menu, is to control the
     appearance of the editor widget: Before we add each action to the
@@ -71,8 +66,7 @@
     example and simply hides or shows the editor depending on its
     current state.
 
-    \skipto trayIcon
-    \printuntil trayIcon.show()
+    \snippet SystemTrayExample.java 6
 
     It is the QSystemTrayIcon class that actually provides the icon in
     the system tray. When we create our icon, we first set its tooltip
@@ -87,19 +81,16 @@
     size using the editor's \c changeIcon() method. We will take a
     look at the editor's methods shortly.
 
-    \skipto titleLabel
-    \printuntil iconCombo.activatedIndex
-
-    \skipto QGridLayout
-    \printuntil }
+    \snippet SystemTrayExample.java 7
+    \codeline
+    \snippet SystemTrayExample.java 8
 
     Finally, we create the editor's various window elements and use a
     QGridLayout to organize them. The QGridLayout class takes the
     space made available to it, divides it up into rows and columns,
     and puts each widget it manages into the correct cell.
 
-    \skipto closeEvent
-    \printuntil }
+    \snippet SystemTrayExample.java 9
 
     It is important to note that QObject subclasses normally have a
     lifetime beyond what is visible to the garbage collector. To
@@ -113,8 +104,7 @@
     QWidget's \l {QWidget::closeEvent()}{closeEvent()} method to
     dispose the icon when the application is terminated.
 
-    \skipto updateMenu
-    \printuntil }
+    \snippet SystemTrayExample.java 10
 
     The \c updateMenu() method is called whenever the system tray
     icon's context menu is about to be shown, i.e. when the user
@@ -122,8 +112,7 @@
     checks whether the editor widget is currently visible or not, and
     update the menu accordingly.
 
-    \skipto toggleVisibility
-    \printuntil }
+    \snippet SystemTrayExample.java 11
 
     The \c toggleVisibility() method is called whenever the user
     chooses \gui Hide or \gui Show in the context menu, and use the \l
@@ -131,12 +120,10 @@
     methods inherited from QWidget to control the appearance of the
     editor widget.
 
-    \skipto showMessage
-    \printline showMessage
-    \skipto macVersion
-    \printuntil }
-    \printuntil }
-    \printuntil }
+    \snippet SystemTrayExample.java 12
+    \snippet SystemTrayExample.java 13
+    \snippet SystemTrayExample.java 14
+    \snippet SystemTrayExample.java 15
 
     The \c showMessage() method is called whenever the user presses
     the \gui {Balloon message} button. Note that balloon tips are not
@@ -145,15 +132,13 @@
     a balloon message is displayed), show the message and update the
     icon's tooltip.
 
-    \skipto balloonClicked
-    \printuntil }
+    \snippet SystemTrayExample.java 16
 
     The \c balloonClicked() method is called whenever the user
     clicks the system tray icon's message, and simply append a status
     message to the information display in the editor.
 
-    \skipto activated
-    \printuntil }
+    \snippet SystemTrayExample.java 17
 
     Whenever the user activates the system tray icon, e.g., by
     clicking it, the icon's \l
@@ -164,19 +149,15 @@
     a corresponding message that it append to the information display
     in the editor.
 
-    \skipto changeIcon
-    \printuntil }
-    \printuntil }
+    \snippet SystemTrayExample.java 18
+    \snippet SystemTrayExample.java 19
 
     The \c changeIcon() method is used to change the icon pixmap,
     and is called whenever the user select a different size for the
     system tray icon.
 
-    \quotefromfile SystemTrayExample.java
-    \skipto main
-    \printuntil }
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet SystemTrayExample.java 1
+    \snippet SystemTrayExample.java 20
 
     Finally, we provide a \c main() method to create and show the
     editor widget when the example is run.

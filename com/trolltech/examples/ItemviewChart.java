@@ -19,9 +19,11 @@ import com.trolltech.qt.gui.*;
 import java.util.*;
 
 @QtJambiExample(name = "Itemview Charts")
+//! [0]
 public class ItemviewChart extends QMainWindow {
 
     private QAbstractItemModel model;
+//! [0]
 
     public static void main(String args[]) {
         QApplication.initialize(args);
@@ -32,6 +34,7 @@ public class ItemviewChart extends QMainWindow {
         QApplication.exec();
     }
 
+//! [1]
     public ItemviewChart() {
         QMenu fileMenu = new QMenu(tr("&File"), this);
 
@@ -62,13 +65,17 @@ public class ItemviewChart extends QMainWindow {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(750, 500);
     }
+//! [1]
 
+//! [2]
     private void setupModel() {
         model = new QStandardItemModel(8, 2, this);
         model.setHeaderData(0, Qt.Orientation.Horizontal, tr("Label"));
         model.setHeaderData(1, Qt.Orientation.Horizontal, tr("Quantity"));
     }
+//! [2]
 
+//! [3]
     private void setupViews() {
         QSplitter splitter = new QSplitter();
         QTableView table = new QTableView();
@@ -87,6 +94,7 @@ public class ItemviewChart extends QMainWindow {
 
         setCentralWidget(splitter);
     }
+//! [3]
 
     @SuppressWarnings("unused")
     private void openFile() {
@@ -155,6 +163,7 @@ public class ItemviewChart extends QMainWindow {
         }
     }
 
+//! [4]
     private class PieView extends QAbstractItemView {
 
         private int margin;
@@ -164,7 +173,9 @@ public class ItemviewChart extends QMainWindow {
         private double totalValue;
         private QPoint origin;
         private QRubberBand rubberBand;
+//! [4]
 
+//! [5]
         public PieView(QWidget parent) {
             super(parent);
             horizontalScrollBar().setRange(0, 0);
@@ -176,8 +187,10 @@ public class ItemviewChart extends QMainWindow {
             validItems = 0;
             totalValue = 0.0;
         }
+//! [5]
 
         @Override
+//! [6]
         protected void dataChanged(final QModelIndex topLeft, final QModelIndex bottomRight) {
             super.dataChanged(topLeft, bottomRight);
 
@@ -195,21 +208,28 @@ public class ItemviewChart extends QMainWindow {
                 }
             }
             viewport().update();
+//! [6] //! [7]
         }
+//! [7]
 
         @Override
+//! [8]
         protected boolean edit(final QModelIndex index, EditTrigger trigger, QEvent event) {
             return false;
         }
+//! [8]
 
         @Override
+//! [9]
         public QModelIndex indexAt(final QPoint point) {
             if (validItems == 0)
                 return null;
 
             int wx = point.x() + horizontalScrollBar().value();
             int wy = point.y() + verticalScrollBar().value();
+//! [9]
 
+//! [10]
             if (wx < totalSize) {
                 double cx = wx - totalSize / 2;
                 double cy = totalSize / 2 - wy;
@@ -236,18 +256,22 @@ public class ItemviewChart extends QMainWindow {
                             return model().index(row, 1, rootIndex());
 
                         startAngle += sliceAngle;
+//! [10] //! [11]
                     }
                 }
             }
 
             return null;
+//! [11] //! [12]
         }
+//! [12]
 
         @Override
         protected boolean isIndexHidden(final QModelIndex index) {
             return false;
         }
 
+//! [13]
         QRect itemRect(final QModelIndex index) {
             if (index == null)
                 return new QRect();
@@ -257,20 +281,28 @@ public class ItemviewChart extends QMainWindow {
 
             if (toDouble(model().data(index)) > 0.0) {
                 return new QRect(margin, margin, pieSize, pieSize);
+//! [13] //! [14]
             }
             return new QRect();
+//! [14] //! [15]
         }
+//! [15]
 
+//! [16]
         QRegion itemRegion(final QModelIndex index) {
             if (index == null)
                 return null;
+//! [16] //! [17]
 
             if (index.column() != 1)
                 return null;
+//! [17] //! [18]
 
             if (toDouble(model().data(index)) <= 0.0)
                 return null;
+//! [18]
 
+//! [19]
             double startAngle = 0.0;
             for (int row = 0; row < model().rowCount(rootIndex()); ++row) {
 
@@ -289,18 +321,24 @@ public class ItemviewChart extends QMainWindow {
                         return new QRegion(slicePath.toFillPolygon().toPolygon());
                     }
                     startAngle += angle;
+//! [19] //! [20]
                 }
             }
 
             return null;
+//! [20] //! [21]
         }
+//! [21]
 
         @Override
+//! [22]
         protected int horizontalOffset() {
             return horizontalScrollBar().value();
         }
+//! [22]
 
         @Override
+//! [23]
         protected void mousePressEvent(QMouseEvent event) {
             super.mousePressEvent(event);
             origin = event.pos();
@@ -309,8 +347,10 @@ public class ItemviewChart extends QMainWindow {
             rubberBand.setRubberBandGeometry(new QRect(origin, new QSize()));
             rubberBand.show();
         }
+//! [23]
 
         @Override
+//! [24]
         protected void mouseMoveEvent(QMouseEvent event) {
             QRect rect = new QRect(origin, event.pos()).normalized();
             rubberBand.setRubberBandGeometry(rect);
@@ -321,15 +361,19 @@ public class ItemviewChart extends QMainWindow {
                 setSelection(rect, selectionCommand(underMouseIndex, event));
             viewport().update();
         }
+//! [24]
 
         @Override
+//! [25]
         protected void mouseReleaseEvent(QMouseEvent event) {
             super.mouseReleaseEvent(event);
             rubberBand.hide();
             viewport().update();
         }
+//! [25]
 
         @Override
+//! [26]
         protected QModelIndex moveCursor(QAbstractItemView.CursorAction cursorAction, Qt.KeyboardModifiers modifiers) {
             QModelIndex current = currentIndex();
 
@@ -354,7 +398,9 @@ public class ItemviewChart extends QMainWindow {
 
             viewport().update();
             return current;
+//! [26] //! [27]
         }
+//! [27]
 
         @Override
         protected void paintEvent(QPaintEvent event) {
@@ -419,6 +465,7 @@ public class ItemviewChart extends QMainWindow {
         }
 
         @Override
+//! [28]
         protected void rowsInserted(final QModelIndex parent, int start, int end) {
             for (int row = start; row <= end; ++row) {
 
@@ -436,6 +483,7 @@ public class ItemviewChart extends QMainWindow {
 
         @Override
         protected void rowsAboutToBeRemoved(final QModelIndex parent, int start, int end) {
+//! [28] //! [29]
             for (int row = start; row <= end; ++row) {
 
                 QModelIndex index = model().index(row, 1, rootIndex());
@@ -447,9 +495,12 @@ public class ItemviewChart extends QMainWindow {
             }
 
             super.rowsAboutToBeRemoved(parent, start, end);
+//! [29] //! [30]
         }
+//! [30]
 
         @Override
+//! [31]
         public void scrollTo(final QModelIndex index, ScrollHint hint) {
             QRect area = viewport().rect();
             QRect rect = visualRect(index);
@@ -472,8 +523,10 @@ public class ItemviewChart extends QMainWindow {
 
             update();
         }
+//! [31]
 
         @Override
+//! [32]
         protected void setSelection(final QRect rect, QItemSelectionModel.SelectionFlags command) {
             QRect contentsRect = rect.translated(horizontalScrollBar().value(), verticalScrollBar().value()).normalized();
 
@@ -488,8 +541,11 @@ public class ItemviewChart extends QMainWindow {
 
                     if (region != null && region.intersects(contentsRect))
                         indexes.add(index);
+//! [32] //! [33]
                 }
+//! [33] //! [34]
             }
+//! [34] //! [35]
 
             if (indexes.size() > 0) {
                 int firstRow = indexes.elementAt(0).row();
@@ -515,22 +571,29 @@ public class ItemviewChart extends QMainWindow {
             }
 
             update();
+//! [35] //! [36]
         }
+//! [36]
 
         @Override
+//! [37]
         protected void updateGeometries() {
             horizontalScrollBar().setPageStep(viewport().width());
             horizontalScrollBar().setRange(0, Math.max(0, totalSize - viewport().width()));
             verticalScrollBar().setPageStep(viewport().height());
             verticalScrollBar().setRange(0, Math.max(0, totalSize - viewport().height()));
         }
+//! [37]
 
         @Override
+//! [38]
         protected int verticalOffset() {
             return verticalScrollBar().value();
         }
+//! [38]
 
         @Override
+//! [39]
         public QRect visualRect(final QModelIndex index) {
             QRect rect = itemRect(index);
             if (rect.isValid())
@@ -538,8 +601,10 @@ public class ItemviewChart extends QMainWindow {
             else
                 return rect;
         }
+//! [39]
 
         @Override
+//! [40]
         protected QRegion visualRegionForSelection(final QItemSelection selection) {
             int ranges = selection.size();
 
@@ -557,7 +622,9 @@ public class ItemviewChart extends QMainWindow {
                 }
             }
             return region;
+//! [40] //! [41]
         }
+//! [41]
     }
 
     private double toDouble(Object o) {

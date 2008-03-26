@@ -17,22 +17,29 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Drag and Drop")
+//! [0]
 public class FridgeMagnets extends QWidget {
+//! [0]
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
         FridgeMagnets fridgeMagnets = new FridgeMagnets(null);
         fridgeMagnets.show();
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     public FridgeMagnets(QWidget parent) {
         super(parent);
         QFile dictionaryFile;
         dictionaryFile = new QFile("classpath:com/trolltech/examples/words.txt");
         dictionaryFile.open(QIODevice.OpenModeFlag.ReadOnly);
         QTextStream inputStream = new QTextStream(dictionaryFile);
+//! [2]
 
+//! [3]
         int x = 5;
         int y = 5;
 
@@ -50,9 +57,11 @@ public class FridgeMagnets extends QWidget {
                 }
             }
         }
+//! [3]
         inputStream.dispose();
         dictionaryFile.dispose();
 
+//! [4]
         QPalette newPalette = palette();
         newPalette.setColor(QPalette.ColorRole.Window, QColor.white);
         setPalette(newPalette);
@@ -60,27 +69,36 @@ public class FridgeMagnets extends QWidget {
         setMinimumSize(400, Math.max(200, y));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         setWindowTitle(tr("Fridge Magnets"));
+//! [4]
 
+//! [5]
         setAcceptDrops(true);
     }
+//! [5]
 
     @Override
+//! [6]
     public void dragEnterEvent(QDragEnterEvent event) {
+//! [6] //! [7]
         if (event.mimeData().hasFormat("application/x-fridgemagnet")) {
             if (children().contains(event.source())) {
                 event.setDropAction(Qt.DropAction.MoveAction);
                 event.accept();
             } else {
                 event.acceptProposedAction();
+//! [7] //! [8]
             }
+//! [8] //! [9]
         } else if (event.mimeData().hasText()) {
             event.acceptProposedAction();
         } else {
             event.ignore();
         }
     }
+//! [9]
 
     @Override
+//! [10]
     public void dragMoveEvent(QDragMoveEvent event) {
         if (event.mimeData().hasFormat("application/x-fridgemagnet")) {
             if (children().contains(event.source())) {
@@ -95,11 +113,14 @@ public class FridgeMagnets extends QWidget {
             event.ignore();
         }
     }
+//! [10]
 
     @Override
+//! [11]
     public void dropEvent(QDropEvent event) {
         if (event.mimeData().hasFormat("application/x-fridgemagnet")) {
             com.trolltech.qt.core.QMimeData mime = event.mimeData();
+//! [11] //! [12]
             QByteArray itemData = mime.data("application/x-fridgemagnet");
             QDataStream dataStream = new QDataStream(itemData,
                    new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
@@ -118,7 +139,9 @@ public class FridgeMagnets extends QWidget {
                 event.accept();
             } else {
                 event.acceptProposedAction();
+//! [12] //! [13]
             }
+//! [13] //! [14]
         } else if (event.mimeData().hasText()) {
             String[] pieces = event.mimeData().text().split("\\s+");
             QPoint position = event.pos();
@@ -139,7 +162,9 @@ public class FridgeMagnets extends QWidget {
             event.ignore();
         }
     }
+//! [14]
 
+//! [15]
     class DragLabel extends QLabel {
         private String labelText;
 
@@ -154,7 +179,9 @@ public class FridgeMagnets extends QWidget {
 
             QFont font = new QFont();
             font.setStyleStrategy(QFont.StyleStrategy.ForceOutline);
+//! [15]
 
+//! [16]
             QPainter painter = new QPainter();
             painter.begin(image);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
@@ -170,12 +197,16 @@ public class FridgeMagnets extends QWidget {
             painter.drawText(rectangle, Qt.AlignmentFlag.AlignCenter.value(),
                              text);
             painter.end();
+//! [16]
 
+//! [17]
             setPixmap(QPixmap.fromImage(image));
             labelText = text;
         }
+//! [17]
 
         @Override
+//! [18]
         public void mousePressEvent(QMouseEvent event) {
             QByteArray itemData = new QByteArray();
             QDataStream dataStream;
@@ -186,11 +217,15 @@ public class FridgeMagnets extends QWidget {
             QPoint position = new QPoint(event.pos().x() - rect().topLeft().x(),
                                          event.pos().y() - rect().topLeft().y());
             position.writeTo(dataStream);
+//! [18]
 
+//! [19]
             com.trolltech.qt.core.QMimeData mimeData = new com.trolltech.qt.core.QMimeData();
             mimeData.setData("application/x-fridgemagnet", itemData);
             mimeData.setText(labelText);
+//! [19]
 
+//! [20]
             QDrag drag = new QDrag(this);
             drag.setMimeData(mimeData);
 
@@ -199,11 +234,16 @@ public class FridgeMagnets extends QWidget {
             drag.setPixmap(pixmap());
 
             hide();
+//! [20]
 
+//! [21]
             if (drag.exec(Qt.DropAction.MoveAction) == Qt.DropAction.MoveAction)
                 close();
             else
                 show();
         }
+//! [21]
     }
+//! [22]
 }
+//! [22]

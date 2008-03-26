@@ -29,9 +29,7 @@
     of our calculator. QWidget does not support dock widgets;
     QMainWindow does.
 
-    \quotefromfile AdvancedCalculator.java
-    \skipto class AdvancedCalculator
-    \printuntil Interpreter
+    \snippet AdvancedCalculator.java 0
 
     In the \c Calculator class, we first provide a \c main() method
     to create and show the main application window when the example is
@@ -49,11 +47,9 @@
     that the user can choose from, and the we use the QInputDialog
     class to retrieve the user's preferred alternative:
 
-    \skipto public AdvancedCalculator()
-    \printuntil Dockable
+    \snippet AdvancedCalculator.java 1
     \dots 8
-    \skipto QInputDialog
-    \printuntil uiTypes
+    \snippet AdvancedCalculator.java 2
 
     The QInputDialog class provides a simple convenience dialog to get
     a single value from the user. The input value can be a string, a
@@ -68,10 +64,9 @@
     {QInputDialog::getItem()}{getItem()} method returns the text of
     the current item; otherwise it returns \c null.
 
-    \skipto if
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet AdvancedCalculator.java 3
+    \snippet AdvancedCalculator.java 4
+    \snippet AdvancedCalculator.java 5
 
     Once we know which user interface the user prefer, we can create
     an object of the corresponding class. Note that you must run the
@@ -116,11 +111,9 @@
     that should be connected to each method, we use a predefined
     naming convention. For example:
 
-    \skipto on_button_equal_clicked(
-    \printuntil /^\s\s\s\s\}/
+    \snippet AdvancedCalculator.java 6
     \dots
-    \skipto /^\}/
-    \printline }
+    \snippet AdvancedCalculator.java 7
 
     The \c on_button_equal_clicked() method is called whenever the
     button called "button_equal" in the user interface emits the \l

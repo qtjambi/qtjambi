@@ -49,12 +49,9 @@
     SVG renderer for it. In this example we use the latter approach,
     making the \c CardDeck class create the card items:
 
-    \quotefromfile SvgCards.java
-    \skipto private static class CardDeck
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet SvgCards.java 9
     \dots 8
-    \skipto /^\s\s\s\s\}/
-    \printuntil }
+    \snippet SvgCards.java 10
 
     First we create the renderer, loading the contents of our file by
     passing the filename to the QSvgRenderer constructor, then we
@@ -66,11 +63,8 @@
 
     The \c Card class extends the QGraphicsSvgItem class:
 
-    \quotefromfile SvgCards.java
-    \skipto private static class Card
-    \printuntil public Card
-    \skipto super()
-    \printuntil }
+    \snippet SvgCards.java 1
+    \snippet SvgCards.java 2
 
     When constructing a card item, we start by calling the base class
     \l {QGraphicsSvgItem::QGraphicsSvgItem()}{constructor} to create a
@@ -98,23 +92,16 @@
     of an item with a lower Z-value if they share the same parent
     item.
 
-    \quotefromfile SvgCards.java
-    \skipto mousePressEvent
-    \printto opacity
-    \skipto /^\s\s\s\s\s\s\s\s\}/
+    \snippet SvgCards.java 3
     \dots 12
-    \printuntil }
-
-    \skipto mouseReleaseEvent
-    \printto opacity
-    \skipto setZValue
-    \printline setZValue
-    \skipto /^\s\s\s\s\s\s\s\s\}/
+    \snippet SvgCards.java 4
+    \codeline
+    \snippet SvgCards.java 5
+    \snippet SvgCards.java 6
     \dots 12
-    \printuntil }
+    \snippet SvgCards.java 7
     \dots 8
-    \skipto /^\s\s\s\s\}/
-    \printuntil }
+    \snippet SvgCards.java 8
 
     We reimplement the \l
     {QGraphicsItem::mousePressEvent()}{mousePressEvent()} and \l
@@ -137,12 +124,9 @@
     QGraphicsView class. To implement the view we must first create
     and set up a scene, then we must add our card items:
 
-    \quotefromfile SvgCards.java
-    \skipto public class SvgCards
-    \printline public class SvgCards
+    \snippet SvgCards.java 0
     \dots
-    \skipto public SvgCards
-    \printuntil setScene
+    \snippet SvgCards.java 12
 
     The view widget is used to visualize the contents of a
     QGraphicsScene object in a scrollable viewport. When a scene is
@@ -152,25 +136,20 @@
     {QGraphicsView::updateScene()}{updateScene()} method, and the
     view's scrollbars are adjusted to fit the size of the scene.
 
-    \skipto deck
-    \printuntil this
+    \snippet SvgCards.java 13
 
     Once the scene is set up, we create a card deck. Remember that the
     \c CardDeck constructor creates a complete set of cards based on
     the given SVG file.
 
     \dots 8
-    \skipto QApplication
-    \printuntil loadCards
-    \skipto /^\s\s\s\s\}/
-    \printuntil }
+    \snippet SvgCards.java 14
+    \snippet SvgCards.java 15
 
     Finally, we load the cards into the application by calling the \c
     loadCards() method.
 
-    \quotefromfile SvgCards.java
-    \skipto loadCards()
-    \printuntil /^\s\s\s\s\}/
+    \snippet SvgCards.java 11
 
     The \c loadCards() method is a recursive method, randomly
     spreading out the cards one by one. While loading the cards, the
@@ -178,13 +157,10 @@
     progress. Each card is added to the view using the \c addCard()
     convenience method:
 
-    \skipto addCard
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet SvgCards.java 16
     \dots 8
-    \skipto item.setPos
-    \printuntil setFlag
-    \skipto scene
-    \printuntil /^\s\s\s\s\}/
+    \snippet SvgCards.java 17
+    \snippet SvgCards.java 18
 
     Note that it is the \c addCard() method that actually adds each
     card item to the view's scene using QGraphicsScene's \l

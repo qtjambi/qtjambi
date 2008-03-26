@@ -30,9 +30,7 @@
 
     \section1 Importing the Qt Classes
 
-    \quotefromfile Application.java
-    \skipto import com.trolltech.qt
-    \printuntil com.trolltech.qt.gui
+    \snippet Application.java 0
 
     We start by importing all the classes in the \l QtCore and \l QtGui
     modules. This saves us from the trouble of having to import
@@ -42,8 +40,7 @@
 
     The entire example is implemented in a single subclass of QMainWindow:
 
-    \skipto public class Application
-    \printuntil private String rsrcPath
+    \snippet Application.java 1
 
     We declare various variables for widgets, menus, toolbars, and actions
     that will be explained later.
@@ -51,8 +48,7 @@
     In the constructor, we start by creating a menu bar and setting it
     as the menu bar for the main window:
 
-    \skipto public Application()
-    \printuntil setMenuBar
+    \snippet Application.java 2
 
     We also create a QTextEdit widget, and call
     \l{QMainWindow::}{setCentralWidget()} to make it occupy the central area
@@ -62,8 +58,7 @@
     a consistent user interface. The actions used in the main window are set
     up before any of the standard menus, toolbars or other window elements.
 
-    \skipto try
-    \printuntil createStatusBar()
+    \snippet Application.java 3
 
     We call \c createActions(), \c createMenus(), \c
     createToolBars(), and \c createStatusBar(), four private methods that set
@@ -73,8 +68,7 @@
 
     \skipto readSettings()
     \endomit
-    \skipto connect
-    \printuntil }
+    \snippet Application.java 4
 
     We establish a signal-slot connection between the QTextEdit's
     document object and our \c documentWasModified() slot. Whenever
@@ -90,10 +84,9 @@
     to close the window, and warn the user about unsaved changes:
 
     \target close event handler
-    \skipto closeEvent(
-    \printuntil event.ignore
-    \printuntil }
-    \printuntil }
+    \snippet Application.java 5
+    \snippet Application.java 6
+    \snippet Application.java 7
 
     When the user attempts to close the window, we call the private
     method \c maybeSave() to give the user the possibility to save
@@ -104,9 +97,8 @@
     that the application will stay up and running as if nothing
     happened.
 
-    \skipto newFile()
-    \printuntil }
-    \printuntil }
+    \snippet Application.java 8
+    \snippet Application.java 9
 
     The \c newFile() slot is invoked when the user selects
     \menu{File|New} from the menu. We call \c maybeSave() to save any
@@ -115,9 +107,8 @@
     update the window title and clear the
     \l{QWidget::windowModified}{windowModified} flag.
 
-    \skipto open()
-    \printuntil }
-    \printuntil }
+    \snippet Application.java 10
+    \snippet Application.java 11
 
     The \c open() slot is invoked when the user clicks
     \menu{File|Open}. We pop up a QFileDialog asking the user to
@@ -125,25 +116,22 @@
     not an empty string), we call the private method \c loadFile()
     to actually load the file.
 
-    \skipto save()
-    \printuntil return saveFile
-    \printuntil }
-    \printuntil }
+    \snippet Application.java 12
+    \snippet Application.java 13
+    \snippet Application.java 14
 
     The \c save() slot is invoked when the user clicks
     \menu{File|Save}. If the user hasn't provided a name for the file
     yet, we call \c saveAs(); otherwise, we call the private method
     \c saveFile() to actually save the file.
 
-    \skipto saveAs()
-    \printuntil }
+    \snippet Application.java 15
 
     In \c saveAs(), we start by popping up a QFileDialog asking the
     user to provide a name. If the user clicks \gui{Cancel}, the
     returned file name is empty, and we do nothing.
 
-    \skipto about()
-    \printuntil }
+    \snippet Application.java 16
 
     The application's About box is done using one statement, using
     the \l{QMessageBox::}{about()} static method and relying on its
@@ -156,8 +144,7 @@
     The \l{Internationalization with Qt} overview convers
     \l{QObject::tr()}{tr()} in more detail.
 
-    \skipto documentWasModified()
-    \printuntil }
+    \snippet Application.java 17
 
     The \c documentWasModified() slot is invoked each time the text
     in the QTextEdit changes because of user edits. We call
@@ -165,11 +152,9 @@
     the title bar show that the file was modified. How this is done varies
     on each platform.
 
-    \skipto createActions()
-    \printuntil connect(this, "open()")
+    \snippet Application.java 18
     \dots
-    \skipto aboutQtAct
-    \printuntil aboutQt()
+    \snippet Application.java 19
 
     The \c createActions() private method, which is called from the
     \c MainWindow constructor, creates \l{QAction}s. The code is very
@@ -198,8 +183,7 @@
     to this when we review the \c application.qrc file that's part of
     the project.
 
-    \skipto cutAct.setEnabled
-    \printuntil }
+    \snippet Application.java 20
 
     The \gui{Edit|Cut} and \gui{Edit|Copy} actions must be available
     only when the QTextEdit contains selected text. We disable them
@@ -208,8 +192,7 @@
     the action's \l{QAction::}{setEnabled()} slot, ensuring that the
     actions are disabled when the text editor has no selection.
 
-    \skipto createMenus()
-    \printuntil }
+    \snippet Application.java 21
 
     Creating actions isn't sufficient to make them available to the
     user; we must also add them to the menu system. This is what \c
@@ -234,14 +217,12 @@
 
     Let's now review the toolbars:
 
-    \skipto createToolBars(
-    \printuntil }
+    \snippet Application.java 22
 
     Creating toolbars is very similar to creating menus. The same
     actions that we put in the menus can be reused in the toolbars.
 
-    \skipto createStatusBar(
-    \printuntil }
+    \snippet Application.java 23
 
     QMainWindow::statusBar() returns a pointer to the main window's
     QStatusBar widget. Like with \l{QMainWindow::menuBar()}, the
@@ -282,9 +263,8 @@
     readSettings().
     \endomit
 
-    \skipto maybeSave()
-    \printuntil return true;
-    \printuntil }
+    \snippet Application.java 24
+    \snippet Application.java 25
 
     The \c maybeSave() method is called to save pending changes. If
     there are pending changes, it pops up a QMessageBox giving the
@@ -304,9 +284,8 @@
     return value and stop whatever it was doing if the return value
     is \c false.
 
-    \skipto loadFile(
-    \printuntil }
-    \printuntil }
+    \snippet Application.java 26
+    \snippet Application.java 27
 
     In \c loadFile(), we use QFile and QTextStream to read in the
     data. The QFile object provides access to the bytes stored in a
@@ -335,16 +314,14 @@
     which we'll cover in a moment, and we display the string "File
     loaded" in the status bar for 2 seconds (2000 milliseconds).
 
-    \skipto saveFile(
-    \printuntil return true;
-    \printuntil }
+    \snippet Application.java 28
+    \snippet Application.java 29
 
     Saving a file is very similar to loading one. Here, the
     \l{QFile::Text}{QFile.Text} flag ensures that on Windows, "\\n" is
     converted into "\\r\\n" to conform to the Windows convension.
 
-    \skipto setCurrentFile(
-    \printuntil }
+    \snippet Application.java 30
 
     The \c setCurrentFile() method is called to reset the state of
     a few variables when a file is loaded or saved, or when the user
@@ -358,16 +335,14 @@
     \l{QWidget::}{setWindowTitle()} call shortens the file name to exclude
     the path. Here's the method:
 
-    \skipto strippedName(
-    \printuntil }
+    \snippet Application.java 31
 
     \section1 The main() Function
 
     The \c main() method for this application is typical of
     applications that contain one main window:
 
-    \skipto static void main
-    \printuntil }
+    \snippet Application.java 32
     \omit
     \section1 The Resource File
 

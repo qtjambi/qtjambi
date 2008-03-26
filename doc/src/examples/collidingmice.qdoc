@@ -30,9 +30,7 @@
     framework, and provides a light-weight foundation for writing your
     own custom items.
 
-    \quotefromfile CollidingMice.java
-    \skipto public class Mouse
-    \printuntil rotate
+    \snippet CollidingMice.java 10
 
     In the constructor, we first initialize the color of the mouse
     using a random number generator to calculate the color
@@ -44,9 +42,8 @@
     item's \l {QGraphicsItem::rotate()}{rotate()} method we alter
     the direction in which the mouse will start moving.
 
-    \skipto timer
-    \printuntil start
-    \printline }
+    \snippet CollidingMice.java 11
+    \snippet CollidingMice.java 12
 
     Then we create a QObject instance that will act as a timer. We
     override the implementation of the \l
@@ -61,8 +58,7 @@
     virtual \l {QGraphicsItem::boundingRect()}{boundingRect()} and \l
     {QGraphicsItem::paint()}{paint()} methods:
 
-    \skipto boundingRect()
-    \printuntil }
+    \snippet CollidingMice.java 13
 
     The \l {QGraphicsItem::boundingRect()}{boundingRect()} method
     defines the outer bounds of the item as a rectangle. Note that the
@@ -70,8 +66,7 @@
     whether the item requires redrawing, so all painting must be
     restricted inside this rectangle.
 
-    \skipto paint
-    \printuntil }
+    \snippet CollidingMice.java 15
 
     The Graphics View framework calls the \l
     {QGraphicsItem::paint()}{paint()} method to paint the contents
@@ -87,9 +82,7 @@
     that the \l {QGraphicsItem::shape()}{QGraphicsItem.shape()} method
     returns an accurate shape for our item:
 
-    \quotefromfile CollidingMice.java
-    \skipto shape()
-    \printuntil }
+    \snippet CollidingMice.java 14
 
     Because the complexity of arbitrary shape-shape intersection grows
     with an order of magnitude when the shapes are complex, this
@@ -102,10 +95,8 @@
     whenever the mouse item receives a timer event from the timer we
     started in the constructor:
 
-    \skipto move()
-    \printto Don't move too far away
-    \skipto lineToCenter
-    \printto Try not to crash with any other mice
+    \snippet CollidingMice.java 16
+    \snippet CollidingMice.java 17
 
     First we ensure that the mice stays within a circle with a radius
     of 150 pixels.
@@ -114,16 +105,13 @@
     method provided by QGraphicsItem. This method maps a position
     given in \e scene coordinates, to the item's coordinate system.
 
-    \skipto polygon
-    \printto Add some random movement
-    \skipto if
-    \printuntil }
+    \snippet CollidingMice.java 18
+    \snippet CollidingMice.java 19
 
     Then we try to avoid colliding with other mice.
 
-    \skipto speed
-    \printuntil setPos
-    \printline }
+    \snippet CollidingMice.java 20
+    \snippet CollidingMice.java 21
 
     Finally, we calculate the mouse's speed, its eye direction (for
     use when painting the mouse), and set its new position.
@@ -139,9 +127,8 @@
     system. If the item has no parent, the position will be mapped to
     the scene's coordinate system instead.
 
-    \skipto normalizeAngle
-    \printuntil return
-    \printline }
+    \snippet CollidingMice.java 22
+    \snippet CollidingMice.java 23
 
     The \c normalizeAngle() method is only a convenience method
     used when calculating the mouse's new position in the \c move()
@@ -157,13 +144,9 @@
     The \c CollidingMice class extends QWidget and provides the main
     application window:
 
-    \quotefromfile CollidingMice.java
-    \skipto public class CollidingMice
-    \printuntil MOUSE_COUNT
-    \skipto public CollidingMice
-    \printuntil scene
-    \skipto scene.setSceneRect
-    \printline scene.setSceneRect
+    \snippet CollidingMice.java 0
+    \snippet CollidingMice.java 2
+    \snippet CollidingMice.java 3
 
     In the constructor, we first create a scene. The QGraphicsScene
     class serves as a container for QGraphicsItems. It also provides
@@ -181,8 +164,7 @@
     grow when items are added to or moved in the scene, but it will
     never shrink).
 
-    \skipto scene.setItemIndexMethod
-    \printuntil scene.setItemIndexMethod
+    \snippet CollidingMice.java 4
 
     The item index method is used to speed up item discovery. \l
     {QGraphicsScene::NoIndex}{NoIndex} implies that item location is
@@ -194,13 +176,11 @@
     which makes use of binary search resulting in item location
     algorithms that are of an order closer to logarithmic complexity.
 
-    \skipto for
-    \printuntil }
+    \snippet CollidingMice.java 5
 
     Then we add the mice to the scene.
 
-    \skipto QGraphicsView
-    \printuntil setBackgroundBrush
+    \snippet CollidingMice.java 6
 
     To be able to view the scene we must also create a QGraphicsView
     widget. The QGraphicsView class visualizes the contents of a scene
@@ -208,12 +188,9 @@
     rendered using antialiasing, and we create the cheese background
     by setting the view's background brush.
 
-    \skipto view.setCacheMode
-    \printline view.setCacheMode
-    \skipto view.setDragMode
-    \printline view.setDragMode
-    \skipto layout
-    \printuntil }
+    \snippet CollidingMice.java 7
+    \snippet CollidingMice.java 8
+    \snippet CollidingMice.java 9
 
     Then we set the cache mode; QGraphicsView can cache pre-rendered
     content in a QPixmap, which is then drawn onto the viewport. The
@@ -236,11 +213,8 @@
     \c CollidingMice widget, and set the application window's title,
     size and icon.
 
-    \quotefromfile CollidingMice.java
-    \skipto main
-    \printuntil }
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet CollidingMice.java 1
+    \snippet CollidingMice.java 24
 
     The \c main() method is provided to create and show the main
     application window when the example is run.

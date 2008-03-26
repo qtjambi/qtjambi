@@ -51,6 +51,7 @@ public class Icons extends QMainWindow
     QAction aboutAct;
     QAction aboutQtAct;
 
+//! [0]
     public Icons()
     {
         centralWidget = new QWidget();
@@ -75,8 +76,10 @@ public class Icons extends QMainWindow
 
         resize(minimumSizeHint());
     }
+//! [0]
 
     @SuppressWarnings("unused")
+//! [1]
     private void about()
     {
         QMessageBox.about(this, tr("About Icons"),
@@ -84,15 +87,19 @@ public class Icons extends QMainWindow
                "different modes (active, normal, disabled, and selected) and "+
                "states (on and off) based on a set of images."));
     }
+//! [1]
 
     @SuppressWarnings("unused")
+//! [2]
     private void changeStyle(boolean checked)
     {
         if (!checked)
             return;
 
         QAction action = (QAction) QSignalEmitter.signalSender();
+//! [2] //! [3]
         QStyle style = QStyleFactory.create((String) action.data());
+//! [3] //! [4]
 
         if (style != null) {
             QApplication.setStyle(style);
@@ -119,12 +126,15 @@ public class Icons extends QMainWindow
 
         changeSize(true);
     }
+//! [4]
 
     @SuppressWarnings("unused")
+//! [5]
     private void changeSize(int value)
     {
         changeSize(true);
     }
+//! [5]
 
     private void changeSize(boolean checked)
     {
@@ -157,6 +167,7 @@ public class Icons extends QMainWindow
         otherSpinBox.setEnabled(otherRadioButton.isChecked());
     }
 
+//! [6]
     private void changeIcon()
     {
         QIcon icon = new QIcon();
@@ -183,19 +194,28 @@ public class Icons extends QMainWindow
                     state = QIcon.State.On;
                 } else {
                     state = QIcon.State.Off;
+//! [6] //! [7]
                 }
+//! [7]
 
+//! [8]
                 String fileName = (String) item0.data(Qt.ItemDataRole.UserRole);
                 QImage image = new QImage(fileName);
                 if (!image.isNull())
                     icon.addPixmap(QPixmap.fromImage(image), mode, state);
+//! [8] //! [9]
             }
+//! [9] //! [10]
         }
+//! [10]
 
+//! [11]
         previewArea.setIcon(icon);
     }
+//! [11]
 
     @SuppressWarnings("unused")
+//! [12]
     private void addImages()
     {
         List<String> fileNames = QFileDialog.getOpenFileNames(this,
@@ -206,15 +226,21 @@ public class Icons extends QMainWindow
             for (String fileName : fileNames) {
                 int row = imagesTable.rowCount();
                 imagesTable.setRowCount(row + 1);
+//! [12]
 
+//! [13]
                 String imageName = new QFileInfo(fileName).baseName();
+//! [13] //! [14]
                 QTableWidgetItem item0 = new QTableWidgetItem(imageName);
                 item0.setData(Qt.ItemDataRole.UserRole, fileName);
                 Qt.ItemFlags flags = item0.flags();
                 flags.clear(Qt.ItemFlag.ItemIsEditable);
+//! [14]
                 item0.setFlags(flags);
 
+//! [15]
                 QTableWidgetItem item1 = new QTableWidgetItem(tr("Normal"));
+//! [15] //! [16]
                 QTableWidgetItem item2 = new QTableWidgetItem(tr("Off"));
 
                 if (guessModeStateAct.isChecked()) {
@@ -228,9 +254,13 @@ public class Icons extends QMainWindow
 
                     if (fileName.contains("_on"))
                         item2.setText(tr("On"));
+//! [16] //! [17]
                 }
+//! [17]
 
+//! [18]
                 imagesTable.setItem(row, 0, item0);
+//! [18] //! [19]
                 imagesTable.setItem(row, 1, item1);
                 imagesTable.setItem(row, 2, item2);
                 imagesTable.openPersistentEditor(item1);
@@ -240,13 +270,16 @@ public class Icons extends QMainWindow
             }
         }
     }
+//! [19]
 
     @SuppressWarnings("unused")
+//! [20]
     private void removeAllImages()
     {
         imagesTable.setRowCount(0);
         changeIcon();
     }
+//! [20]
 
     private void createPreviewGroupBox()
     {
@@ -259,6 +292,7 @@ public class Icons extends QMainWindow
         previewGroupBox.setLayout(layout);
     }
 
+//! [21]
     private void createImagesGroupBox()
     {
         imagesGroupBox = new QGroupBox(tr("Images"));
@@ -266,8 +300,11 @@ public class Icons extends QMainWindow
         imagesTable = new QTableWidget();
         imagesTable.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection);
         imagesTable.setItemDelegate(new ImageDelegate(this));
+//! [21]
 
+//! [22]
         List<String> labels = new LinkedList<String>();
+//! [22] //! [23]
         labels.add(tr("Image"));
         labels.add(tr("Mode"));
         labels.add(tr("State"));
@@ -279,14 +316,19 @@ public class Icons extends QMainWindow
         imagesTable.horizontalHeader().setResizeMode(1, QHeaderView.ResizeMode.Fixed);
         imagesTable.horizontalHeader().setResizeMode(2, QHeaderView.ResizeMode.Fixed);
         imagesTable.verticalHeader().hide();
+//! [23]
 
+//! [24]
         imagesTable.itemChanged.connect(this, "changeIcon()");
+//! [24] //! [25]
 
         QVBoxLayout layout = new QVBoxLayout();
         layout.addWidget(imagesTable);
         imagesGroupBox.setLayout(layout);
     }
+//! [25]
 
+//! [26]
     private void createIconSizeGroupBox()
     {
         iconSizeGroupBox = new QGroupBox(tr("Icon Size"));
@@ -302,7 +344,9 @@ public class Icons extends QMainWindow
         otherSpinBox = new IconSizeSpinBox();
         otherSpinBox.setRange(8, 128);
         otherSpinBox.setValue(64);
+//! [26]
 
+//! [27]
         smallRadioButton.toggled.connect(this, "changeSize(boolean)");
         largeRadioButton.toggled.connect(this, "changeSize(boolean)");
         toolBarRadioButton.toggled.connect(this, "changeSize(boolean)");
@@ -328,7 +372,9 @@ public class Icons extends QMainWindow
         layout.setRowStretch(4, 1);
         iconSizeGroupBox.setLayout(layout);
     }
+//! [27]
 
+//! [28]
     private void createActions()
     {
         addImagesAct = new QAction(tr("&Add Images..."), this);
@@ -362,7 +408,9 @@ public class Icons extends QMainWindow
         aboutQtAct = new QAction(tr("About &Qt"), this);
         aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
     }
+//! [28]
 
+//! [29]
     private void createMenus()
     {
         fileMenu = menuBar().addMenu(tr("&File"));
@@ -383,14 +431,18 @@ public class Icons extends QMainWindow
         helpMenu.addAction(aboutAct);
         helpMenu.addAction(aboutQtAct);
     }
+//! [29]
 
+//! [30]
     private void createContextMenu()
     {
         imagesTable.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu);
         imagesTable.addAction(addImagesAct);
         imagesTable.addAction(removeAllImagesAct);
     }
+//! [30]
 
+//! [31]
     private void checkCurrentStyle()
     {
         for (QAction action : styleActionGroup.actions()) {
@@ -404,10 +456,12 @@ public class Icons extends QMainWindow
             }
         }
     }
+//! [31]
 
     class IconSizeSpinBox extends QSpinBox
     {
         @Override
+//! [32]
         public int valueFromText(String text)
         {
             QRegExp regExp = new QRegExp(tr("(\\d+)(\\s*[xx]\\s*\\d+)?"));
@@ -418,22 +472,28 @@ public class Icons extends QMainWindow
                 return 0;
             }
         }
+//! [32]
 
         @Override
+//! [33]
         public String textFromValue(int value)
         {
             return "" + value +" x " + value;
         }
+//! [33]
     }
 
     class ImageDelegate extends QItemDelegate
     {
+//! [34]
         public ImageDelegate(QWidget widget)
         {
             super(widget);
         }
+//! [34]
 
         @Override
+//! [35]
         public QWidget createEditor(QWidget parent, QStyleOptionViewItem option,
                                     QModelIndex index)
         {
@@ -452,8 +512,10 @@ public class Icons extends QMainWindow
 
             return comboBox;
         }
+//! [35]
 
         @Override
+//! [36]
         public void setEditorData(QWidget editor, QModelIndex index)
         {
             QComboBox comboBox = (QComboBox) editor;
@@ -464,8 +526,10 @@ public class Icons extends QMainWindow
                                          Qt.MatchFlag.MatchExactly);
             comboBox.setCurrentIndex(pos);
         }
+//! [36]
 
         @Override
+//! [37]
         public void setModelData(QWidget editor, QAbstractItemModel model,
                                  QModelIndex index)
         {
@@ -475,12 +539,15 @@ public class Icons extends QMainWindow
 
             model.setData(index, comboBox.currentText());
         }
+//! [37]
 
         @SuppressWarnings("unused")
+//! [38]
         private void emitCommitData()
         {
             commitData.emit((QWidget) QSignalEmitter.signalSender());
         }
+//! [38]
     }
 
     class IconPreviewArea extends QWidget
@@ -493,6 +560,7 @@ public class Icons extends QMainWindow
 
         public static final int NumModes = 4, NumStates = 2;
 
+//! [39]
         public IconPreviewArea()
         {
             QGridLayout mainLayout = new QGridLayout();
@@ -520,13 +588,17 @@ public class Icons extends QMainWindow
                 }
             }
         }
+//! [39]
 
+//! [40]
         public void setIcon(QIcon icon)
         {
             this.icon = icon;
             updatePixmapLabels();
         }
+//! [40]
 
+//! [41]
         public void setSize(QSize size)
         {
             if (size != this.size) {
@@ -534,14 +606,18 @@ public class Icons extends QMainWindow
                 updatePixmapLabels();
             }
         }
+//! [41]
 
+//! [42]
         private QLabel createHeaderLabel(String text)
         {
             QLabel label = new QLabel(tr("<b>"+text+"</b>"));
             label.setAlignment(Qt.AlignmentFlag.AlignCenter);
             return label;
         }
+//! [42]
 
+//! [43]
         private QLabel createPixmapLabel()
         {
             QLabel label = new QLabel();
@@ -555,7 +631,9 @@ public class Icons extends QMainWindow
             label.setMinimumSize(132, 132);
             return label;
         }
+//! [43]
 
+//! [44]
         private void updatePixmapLabels()
         {
             for (int i = 0; i < NumModes; ++i) {
@@ -578,6 +656,7 @@ public class Icons extends QMainWindow
                 }
             }
         }
+//! [44]
     }
 
     public static void main(String args[])

@@ -32,9 +32,7 @@
     displays the application's search options and controlling
     buttons.
 
-    \quotefromfile ExtensionDialog.java
-    \skipto class ExtensionDialog
-    \printuntil /QWidget extension/
+    \snippet ExtensionDialog.java 0
 
     The class contains several private widgets. We need a QLineEdit
     with an associated QLabel to let the user type a word to search
@@ -48,8 +46,7 @@
     The ExtensionDialog does not contain an API, but only a
     constructor:
 
-    \skipto public ExtensionDialog
-    \printuntil setCheckable
+    \snippet ExtensionDialog.java 1
 
     In the constructor we first create the standard child widgets for
     the simple search: the QLineEdit with the associated QLabel, two
@@ -68,15 +65,13 @@
     pressed if the user presses the Enter (or Return) key. Note that a
     QDialog can only have one default button.
 
-    \skipto extension
-    \printuntil search SelectionCheckBox
+    \snippet ExtensionDialog.java 2
 
     Then we create the extension widget, and the \l
     {QCheckBox}{QCheckBox}es associated with the advanced search
     options.
 
-    \skipto connect
-    \printuntil extension.setLayout(
+    \snippet ExtensionDialog.java 3
 
     Now that the extension widget is created, we can connect the \gui
     More button's \l{QAbstractButton::}{toggled()} signal to the
@@ -97,8 +92,7 @@
     slot, and we put the checkboxes associated with the advanced
     search options into a layout we install on the extension widget.
 
-    \skipto topLeftLayout
-    \printuntil setWindowTitle
+    \snippet ExtensionDialog.java 4
 
     Before we create the main layout, we create several child layouts
     for the widgets: First we allign the QLabel ans its buddy, the
@@ -108,8 +102,7 @@
     for the buttons. In the end we lay out the two latter layouts and
     the extension widget using a QGridLayout.
 
-    \skipto hide
-    \printuntil /^\s\s\s\s\}/
+    \snippet ExtensionDialog.java 5
 
     Finally, we hide the extension widget using the QWidget::hide()
     method, making the application only show the simple search

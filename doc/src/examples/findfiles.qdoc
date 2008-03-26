@@ -40,9 +40,7 @@
 
     In the constructor we first create the application's widgets.
 
-    \quotefromfile FindFiles.java
-    \skipto public FindFiles
-    \printuntil createFilesTable
+    \snippet FindFiles.java 0
 
     We create the application's buttons using the private \c
     createButton() method. Then we create the comboboxes associated
@@ -51,16 +49,14 @@
     before we use the private \c createFilesTable() method to create
     the table displaying the search results.
 
-    \skipto buttonsLayout
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 1
 
     Then we add all the widgets to a main layout using QGridLayout. We
     have, however, put the \c Find and \c Quit buttons and a
     stretchable space in a separate QHBoxLayout first, to make the
     buttons appear in the \c Window widget's bottom right corner.
 
-    \skipto browse(
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 2
 
     The \c browse() slot presents a file dialog to the user, using the
     QFileDialog class. QFileDialog enables a user to traverse the file
@@ -80,8 +76,7 @@
     of the current item in the combobox. So in order to display the
     item we just added, we need to update the index as well.
 
-    \skipto find(
-    \printuntil path
+    \snippet FindFiles.java 3
 
     The \c find() slot is called whenever the user requests a new
     search by pressing the \gui Find button.
@@ -91,8 +86,7 @@
     specified file name, text and directory path from the respective
     comboboxes.
 
-    \skipto QDir
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 4
 
     We use the directory's path to create a QDir; the QDir class
     provides access to directory structures and their contents. We
@@ -110,8 +104,7 @@
 
     \image findfiles_progress_dialog.png Screenshot of the Progress Dialog
 
-    \skipto findFiles(
-    \printto foundFiles
+    \snippet FindFiles.java 5
 
     In the private \c findFiles() method we search through a list of
     files, looking for the ones that contain a specified text. This
@@ -126,8 +119,7 @@
     application has not frozen. It can also give the user an
     opportunity to abort the operation.
 
-    \skipto foundFiles
-    \printuntil break
+    \snippet FindFiles.java 6
 
     We run through the files, one at a time, and for each file we
     update the QProgressDialog value. This property holds the current
@@ -148,8 +140,7 @@
     until there are no more events to process. The default flags are
     QEventLoop::AllEvents.
 
-    \skipto QFile
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 7
 
     After updating the QProgressDialog, we create a QFile using the
     QDir::absoluteFilePath() method which returns the absolute path
@@ -164,8 +155,7 @@
 
     Finally, we return the list of the files found.
 
-    \skipto showFiles(
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 8
 
     Both the \c findFiles() and \c showFiles() methods are called from
     the \c find() slot. In the \c showFiles() method we run through
@@ -175,16 +165,14 @@
 
     We also update the total number of files found.
 
-    \skipto createButton
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 9
 
     The private \c createButton() method is called from the
     constructor. We create a QPushButton with the provided text,
     connect it to the provided slot, and return a pointer to the
     button.
 
-    \skipto createComboBox
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 10
 
     The private \c createComboBox() method is also called from the
     contructor. We create a QComboBox with the given text, and make it
@@ -199,8 +187,7 @@
     widget's size policies, before we return a pointer to the
     combobox.
 
-    \skipto createFilesTable
-    \printuntil /^\s\s\s\s\}/
+    \snippet FindFiles.java 11
 
     The private \c createFilesTable() method is called from the
     constructor.  In this method we create the QTableWidget that

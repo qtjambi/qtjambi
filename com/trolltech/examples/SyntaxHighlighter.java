@@ -19,10 +19,13 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Syntax Highlighter")
+//! [0]
 public class SyntaxHighlighter extends QMainWindow {
 
     private QTextEdit editor;
+//! [0]
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
 
@@ -31,7 +34,9 @@ public class SyntaxHighlighter extends QMainWindow {
 
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     public SyntaxHighlighter() {
         setupFileMenu();
         setupHelpMenu();
@@ -43,6 +48,7 @@ public class SyntaxHighlighter extends QMainWindow {
         setWindowIcon(new QIcon(
                       "classpath:com/trolltech/images/qt-logo.png"));
     }
+//! [2]
 
     public void about() {
         QMessageBox.about(this, tr("About Syntax Highlighter"),
@@ -72,6 +78,7 @@ public class SyntaxHighlighter extends QMainWindow {
         }
     }
 
+//! [3]
     private void setupEditor() {
         QFont font = new QFont();
         font.setFamily("Courier");
@@ -91,6 +98,7 @@ public class SyntaxHighlighter extends QMainWindow {
                                          QFile.OpenModeFlag.Text)))
             editor.setPlainText(file.readAll().toString());
     }
+//! [3]
 
     private void setupFileMenu() {
         QMenu fileMenu = new QMenu(tr("&File"), this);
@@ -127,8 +135,11 @@ public class SyntaxHighlighter extends QMainWindow {
         helpMenu.addAction(aboutQtAct);
     }
 
+//! [4]
     private class Highlighter extends QSyntaxHighlighter {
+//! [4]
 
+//! [5]
         public class HighlightingRule {
             public QRegExp pattern;
             public QTextCharFormat format;
@@ -137,10 +148,15 @@ public class SyntaxHighlighter extends QMainWindow {
                 this.pattern = pattern;
                 this.format = format;
             }
+//! [5] //! [6]
         }
+//! [6]
 
+//! [7]
         Vector<HighlightingRule> highlightingRules = new Vector<HighlightingRule>();
+//! [7]
 
+//! [8]
         QRegExp commentStartExpression;
         QRegExp commentEndExpression;
 
@@ -149,7 +165,9 @@ public class SyntaxHighlighter extends QMainWindow {
         QTextCharFormat commentFormat = new QTextCharFormat();
         QTextCharFormat quotationFormat = new QTextCharFormat();
         QTextCharFormat functionFormat = new QTextCharFormat();
+//! [8]
 
+//! [9]
         public Highlighter(QTextDocument parent) {
 
             super(parent);
@@ -157,12 +175,16 @@ public class SyntaxHighlighter extends QMainWindow {
             HighlightingRule rule;
             QBrush brush;
             QRegExp pattern;
+//! [9]
 
+//! [10]
             brush = new QBrush(QColor.darkBlue,Qt.BrushStyle.SolidPattern);
             keywordFormat.setForeground(brush);
             keywordFormat.setFontWeight(QFont.Weight.Bold.value());
 
+//! [10]
             // All the java keywords
+//! [11]
             String[] keywords = { "abstract", "continue", "for", "new",
                                   "switch", "assert", "default", "goto",
                                   "package", "synchronized", "boolean",
@@ -183,28 +205,35 @@ public class SyntaxHighlighter extends QMainWindow {
                 highlightingRules.add(rule);
             }
 
+//! [11]
             // Any word starting with Q
+//! [12]
             brush = new QBrush(QColor.darkMagenta);
             pattern = new QRegExp("\\bQ[A-Za-z]+\\b");
             classFormat.setForeground(brush);
             classFormat.setFontWeight(QFont.Weight.Bold.value());
             rule = new HighlightingRule(pattern, classFormat);
             highlightingRules.add(rule);
+//! [12]
 
             // Comment starting with //
+//! [13]
             brush = new QBrush(QColor.gray, Qt.BrushStyle.SolidPattern);
             pattern = new QRegExp("//[^\n]*");
             commentFormat.setForeground(brush);
             rule = new HighlightingRule(pattern, commentFormat);
             highlightingRules.add(rule);
+//! [13]
 
             // String
+//! [14]
             brush = new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern);
             pattern = new QRegExp("\".*\"");
             pattern.setMinimal(true);
             quotationFormat.setForeground(brush);
             rule = new HighlightingRule(pattern, quotationFormat);
             highlightingRules.add(rule);
+//! [14]
 
             // Function
             brush = new QBrush(QColor.darkGreen, Qt.BrushStyle.SolidPattern);
@@ -215,11 +244,14 @@ public class SyntaxHighlighter extends QMainWindow {
             highlightingRules.add(rule);
 
             // Block comment
+//! [15]
             commentStartExpression = new QRegExp("/\\*");
             commentEndExpression = new QRegExp("\\*/");
         }
+//! [15]
 
         @Override
+//! [16]
         public void highlightBlock(String text) {
 
             for (HighlightingRule rule : highlightingRules) {
@@ -231,24 +263,35 @@ public class SyntaxHighlighter extends QMainWindow {
                     index = expression.indexIn(text, index + length);
                 }
             }
+//! [16] //! [17]
             setCurrentBlockState(0);
+//! [17]
 
+//! [18]
             int startIndex = 0;
             if (previousBlockState() != 1)
                 startIndex = commentStartExpression.indexIn(text);
 
+//! [18] //! [19]
             while (startIndex >= 0) {
+//! [19] //! [20]
                 int endIndex = commentEndExpression.indexIn(text, startIndex);
                 int commentLength;
                 if (endIndex == -1) {
                     setCurrentBlockState(1);
                     commentLength = text.length() - startIndex;
                 } else {
+//! [20] //! [21]
                     commentLength = endIndex - startIndex + commentEndExpression.matchedLength();
                 }
+//! [21] //! [22]
                 setFormat(startIndex, commentLength, commentFormat);
                 startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
             }
+//! [22] //! [23]
         }
+//! [23]
     }
+//! [24]
 }
+//! [24]

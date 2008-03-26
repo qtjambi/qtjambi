@@ -18,6 +18,7 @@ import com.trolltech.qt.gui.QMessageBox;
 import com.trolltech.qt.sql.QSqlDatabase;
 import com.trolltech.qt.sql.QSqlQuery;
 
+//! [0]
 class SqlCommon 
 {
     static boolean createConnection()
@@ -49,3 +50,4 @@ class SqlCommon
         
     }
 }
+//! [0]

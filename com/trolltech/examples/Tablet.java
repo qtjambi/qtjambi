@@ -3,6 +3,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+//! [0]
 public class Tablet extends QMainWindow
 {
     public static TabletCanvas myCanvas;
@@ -28,6 +29,7 @@ public class Tablet extends QMainWindow
     private QAction exitAction;
     private QAction saveAction;
     private QAction loadAction;
+//! [0]
 
     private QAction aboutAction;
     private QAction aboutQtAction;
@@ -45,6 +47,7 @@ public class Tablet extends QMainWindow
                                    SaturationPressure, NoSaturation }
     public enum LineWidthType { LineWidthPressure, LineWidthTilt, NoLineWidth }
 
+//! [1]
     public Tablet()
     {
         myCanvas = new TabletCanvas();
@@ -60,7 +63,9 @@ public class Tablet extends QMainWindow
         setWindowTitle(tr("Tablet Example"));
         setCentralWidget(myCanvas);
     }
+//! [1]
 
+//! [2]
     public void brushColorAct()
     {
         QColor color = QColorDialog.getColor(myCanvas.color());
@@ -68,7 +73,9 @@ public class Tablet extends QMainWindow
         if (color.isValid())
             myCanvas.setColor(color);
     }
+//! [2]
 
+//! [3]
     public void alphaActionTriggered(QAction action)
     {
         if (action.equals(alphaChannelPressureAction)) {
@@ -79,7 +86,9 @@ public class Tablet extends QMainWindow
             myCanvas.setAlphaChannelType(AlphaChannelType.NoAlpha);
         }
     }
+//! [3]
 
+//! [4]
     public void lineWidthActionTriggered(QAction action)
     {
         if (action.equals(lineWidthPressureAction)) {
@@ -90,7 +99,9 @@ public class Tablet extends QMainWindow
             myCanvas.setLineWidthType(LineWidthType.NoLineWidth);
         }
     }
+//! [4]
 
+//! [5]
     public void saturationActionTriggered(QAction action)
     {
         if (action.equals(colorSaturationVTiltAction)) {
@@ -103,7 +114,9 @@ public class Tablet extends QMainWindow
             myCanvas.setColorSaturationType(ColorSaturationType.NoSaturation);
         }
     }
+//! [5]
     
+//! [6]
     public void saveAct()
     {
         String path = QDir.currentPath() + tr("/untitled.png");
@@ -114,7 +127,9 @@ public class Tablet extends QMainWindow
             QMessageBox.information(this, tr("Error Saving Picture"),
                                           tr("Could not save the image"));
     }
+//! [6]
     
+//! [7]
     public void loadAct()
     {
         String fileName = QFileDialog.getOpenFileName(this, tr("Open Picture"),
@@ -124,19 +139,25 @@ public class Tablet extends QMainWindow
             QMessageBox.information(this, tr("Error Opening Picture"),
                                           tr("Could not open picture"));
     }
+//! [7]
 
+//! [8]
     public void aboutAct()
     {
         QMessageBox.about(this, tr("About Tablet Example"),
                        tr("This example shows use of a Wacom tablet in Jambi Qt"));
     }
+//! [8]
 
+//! [9]
     private void createActions()
     {
+//! [9]
         brushColorAction = new QAction(tr("&Brush Color..."), this);
         brushColorAction.setShortcut(tr("Ctrl+C"));
         brushColorAction.triggered.connect(this, "brushColorAct()");
     
+//! [10]
         alphaChannelPressureAction = new QAction(tr("&Pressure"), this);
         alphaChannelPressureAction.setCheckable(true);
     
@@ -153,6 +174,7 @@ public class Tablet extends QMainWindow
         alphaChannelGroup.addAction(noAlphaChannelAction);
         alphaChannelGroup.triggered.connect(this, "alphaActionTriggered(QAction)");
     
+//! [10]
         colorSaturationVTiltAction = new QAction(tr("&Vertical Tilt"), this);
         colorSaturationVTiltAction.setCheckable(true);
     
@@ -207,8 +229,11 @@ public class Tablet extends QMainWindow
         aboutQtAction = new QAction(tr("About &Qt Jambi"), this);
         aboutQtAction.setShortcut(tr("Ctrl+Q"));
         aboutQtAction.triggered.connect(QApplication.instance(), "aboutQt()");
+//! [11]
     }
+//! [11]
 
+//! [12]
     private void createMenus()
     {
         fileMenu = menuBar().addMenu(tr("&File"));
@@ -241,7 +266,9 @@ public class Tablet extends QMainWindow
         helpMenu.addAction(aboutAction);
         helpMenu.addAction(aboutQtAction);
     }
+//! [12]
 
+//! [13]
     class TabletCanvas extends QWidget
     {
         private AlphaChannelType alphaChannelType;
@@ -255,7 +282,9 @@ public class Tablet extends QMainWindow
         private QPen myPen;
         private boolean deviceDown;
         private QPoint polyLine[] = new QPoint[3];
+//! [13]
 
+//! [14]
         public TabletCanvas()
         {
             myBrush = new QBrush();
@@ -271,6 +300,7 @@ public class Tablet extends QMainWindow
             colorSaturationType = ColorSaturationType.NoSaturation;
             lineWidthType = LineWidthType.LineWidthPressure;
         }
+//! [14]
 
         public void setAlphaChannelType(AlphaChannelType type)
         { 
@@ -302,11 +332,14 @@ public class Tablet extends QMainWindow
             myTabletDevice = device;
         }
 
+//! [15]
         boolean saveImage(String file)
         {
             return image.save(file);
         }
+//! [15]
 
+//! [16]
         boolean loadImage(String file)
         {
             boolean success = image.load(file);
@@ -317,8 +350,10 @@ public class Tablet extends QMainWindow
             }
             return false;
         }
+//! [16]
 
         @Override
+//! [17]
         protected void tabletEvent(QTabletEvent event)
         {
             switch (event.type()) {
@@ -346,14 +381,18 @@ public class Tablet extends QMainWindow
             }
             update();
         }
+//! [17]
 
         @Override
+//! [18]
         protected void paintEvent(QPaintEvent event)
         {
             QPainter painter = new QPainter(this);
             painter.drawImage(new QPoint(0, 0), image);
         }
+//! [18]
 
+//! [19]
         private void paintImage(QPainter painter, QTabletEvent event)
         {
             QPoint brushAdjust = new QPoint(10, 10);
@@ -379,7 +418,9 @@ public class Tablet extends QMainWindow
                     System.err.println("Unsupported tablet device.");
             }
         }
+//! [19]
 
+//! [20]
         private Qt.BrushStyle brushPattern(double value)
         {
             int pattern = ((int) (value * 100.0)) % 7;
@@ -403,7 +444,9 @@ public class Tablet extends QMainWindow
                     return Qt.BrushStyle.Dense7Pattern;
             }
         }
+//! [20]
 
+//! [21]
         private void updateBrush(QTabletEvent event)
         {
             int hue, value, alpha;
@@ -413,6 +456,7 @@ public class Tablet extends QMainWindow
         
             int vValue = (int) (((event.yTilt() + 60.0) / 120.0) * 255);
             int hValue = (int) (((event.xTilt() + 60.0) / 120.0) * 255);
+//! [21] //! [22]
         
             switch (alphaChannelType) {
                 case AlphaPressure:
@@ -425,6 +469,7 @@ public class Tablet extends QMainWindow
                     myColor.setAlpha(255);
             }
         
+//! [22] //! [23]
             switch (colorSaturationType) {
                 case SaturationVTilt:
                     myColor.setHsv(hue, vValue, value, alpha);
@@ -439,6 +484,7 @@ public class Tablet extends QMainWindow
                     ;
             }
         
+//! [23] //! [24]
             switch (lineWidthType) {
                 case LineWidthPressure:
                     myPen.setWidthF(event.pressure() * 10 + 1);
@@ -450,6 +496,7 @@ public class Tablet extends QMainWindow
                     myPen.setWidthF(1);
             }
 
+//! [24] //! [25]
             if (event.pointerType().equals(QTabletEvent.PointerType.Eraser)) {
                 myBrush.setColor(new QColor(Qt.GlobalColor.white));
                 myPen.setColor(new QColor(Qt.GlobalColor.white));
@@ -459,6 +506,7 @@ public class Tablet extends QMainWindow
                 myPen.setColor(myColor);
             }
         }
+//! [25]
     }
 
     public class TabletApplication extends QApplication
@@ -469,6 +517,7 @@ public class Tablet extends QMainWindow
         }
 
         @Override
+//! [26]
         public boolean event(QEvent event)
         {
             if (event.type().equals(QEvent.Type.TabletEnterProximity) ||
@@ -478,8 +527,10 @@ public class Tablet extends QMainWindow
             }
             return super.event(event);
         }
+//! [26]
     }
 
+//! [27]
     public static void main(String args[])
     {
         Tablet.TabletApplication.initialize(args);
@@ -490,4 +541,5 @@ public class Tablet extends QMainWindow
 
         Tablet.TabletApplication.exec();
     }
+//! [27]
 }

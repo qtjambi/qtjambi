@@ -19,7 +19,9 @@ import java.util.*;
 
 @QtJambiExample(name = "SVG Card Deck",
                 canInstantiate = "call-static-method:notWebstart")
+//! [0]
 public class SvgCards extends QGraphicsView {
+//! [0]
     private static boolean closing = false;
     private static String[] CARDS = {
         "black_joker",
@@ -84,16 +86,19 @@ public class SvgCards extends QGraphicsView {
         closing = true;
     }
 
+//! [1]
     private static class Card extends QGraphicsSvgItem {
         private double opacity = 1.0;
         private CardManager manager;
 
         public Card(String card, QSvgRenderer renderer) {
+//! [1] //! [2]
             super();
             setElementId(card);
             setSharedRenderer(renderer);
             setParent(renderer);
         }
+//! [2]
 
         public void setManager(CardManager newManager) {
             manager = newManager;
@@ -104,20 +109,30 @@ public class SvgCards extends QGraphicsView {
         }
 
         @Override
+//! [3]
         public void mousePressEvent(QGraphicsSceneMouseEvent event) {
             setZValue(10);
+//! [3]
             opacity = 0.7;
             manager.startedMove(this);
             super.mousePressEvent(event);
+//! [4]
         }
+//! [4]
 
         @Override
+//! [5]
         public void mouseReleaseEvent(QGraphicsSceneMouseEvent event) {
+//! [5]
             opacity = 1.0;
+//! [6]
             setZValue(5);
+//! [6]
             manager.stoppedMove(this);
             super.mouseReleaseEvent(event);
+//! [7]
         }
+//! [7]
 
         @Override
         public void paint(QPainter painter, QStyleOptionGraphicsItem option,
@@ -125,7 +140,9 @@ public class SvgCards extends QGraphicsView {
             painter.setOpacity(opacity);
             super.paint(painter, option, widget);
         }        
+//! [8]
     }
+//! [8]
 
     private static class CardBox extends QGraphicsItem {
         private QRectF rectangle;
@@ -182,6 +199,7 @@ public class SvgCards extends QGraphicsView {
         }
     }
 
+//! [9]
     private static class CardDeck extends QObject {
         private QSvgRenderer renderer;
         private String fileName;
@@ -199,11 +217,14 @@ public class SvgCards extends QGraphicsView {
             }
 
         }
+//! [9]
 
         public List<Card> cards() {
             return cards;
         }
+//! [10]
     }
+//! [10]
 
     private static class CardManager extends QObject {
         private CardBox box;
@@ -237,6 +258,7 @@ public class SvgCards extends QGraphicsView {
     private int y = 100;
     private QGraphicsScene scene;
 
+//! [11]
     public final void loadCards() {
         if (cardsToLoad != 0 && !closing) {
             addCard(random.nextInt(50));
@@ -253,13 +275,18 @@ public class SvgCards extends QGraphicsView {
                 public void run() { loadCards(); } });
         }
     }
+//! [11]
 
+//! [12]
     public SvgCards() {
         scene = new QGraphicsScene(this);
         setScene(scene);
+//! [12]
 
+//! [13]
         deck = new CardDeck("classpath:com/trolltech/images/svg-cards.svg",
                             this);
+//! [13]
         manager = new CardManager();
         random = new Random();
 
@@ -282,20 +309,25 @@ public class SvgCards extends QGraphicsView {
 
         QPixmapCache.setCacheLimit(5 * 1024);
 
+//! [14]
         QApplication.invokeLater(new Runnable() {
                     public void run() { loadCards(); } });
+//! [14] //! [15]
     }
+//! [15]
 
     @Override
     public QSize sizeHint() {
         return new QSize(800, 600);
     }
 
+//! [16]
     private final void addCard(int i) {
         Card item = deck.cards().get(i);
         while (item.scene() != null) {
             item = deck.cards().get(random.nextInt(50));
         }
+//! [16]
 
         item.rotate(0 + 180.0 * random.nextDouble());
         double scaleF = 0.5 + 0.9 * random.nextDouble();
@@ -305,11 +337,15 @@ public class SvgCards extends QGraphicsView {
             x = 100;
             y += 100;
         }
+//! [17]
         item.setPos(x, y);
         item.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, true);
+//! [17]
         item.setManager(manager);
+//! [18]
         scene().addItem(item);
     }
+//! [18]
 
     public static void main(String args[]) {
         QApplication.initialize(args);

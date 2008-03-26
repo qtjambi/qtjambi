@@ -29,11 +29,8 @@
     main widget. It displays the application options and a preview of
     the screenshot.
 
-    \quotefromfile Screenshot.java
-    \skipto public class Screenshot
-    \printline public class Screenshot
-    \skipto originalPixmap;
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 0
+    \snippet Screenshot.java 2
 
     In the constructor we first create the QLabel displaying the
     screenshot preview.
@@ -52,8 +49,7 @@
     delay and the window title, before we resize the widget to a
     suitable size.
 
-    \skipto resizeEvent
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 3
 
     The \c resizeEvent() method is reimplemented to receive the
     resize events dispatched to the widget. The purpose is to scale
@@ -71,8 +67,7 @@
     only is repainted (using the private \c updateScreenshotLabel()
     method) when it actually changes its size.
 
-    \skipto newScreenshot
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 4
 
     The private \c newScreenshot() method is called when the user
     requests a new screenshot; but the method only prepares a new
@@ -91,8 +86,7 @@
     option. It is \c shootScreen() that actually performs the
     screenshot.
 
-    \skipto saveScreenshot
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 5
 
     The \c saveScreenshot() method is called when the user push the \gui
     Save button, and it presents a file dialog using the QFileDialog
@@ -111,8 +105,7 @@
     {QPixmap::save()}{QPixmap.save()} method to save the screenshot's
     original pixmap in that file.
 
-    \skipto shootScreen
-    \printuntil beep
+    \snippet Screenshot.java 6
 
     The \c shootScreen() method is called to take the screenshot. If the
     user has chosen to delay the screenshot, we make the application
@@ -124,8 +117,7 @@
     events from the window system and other sources are processed and
     dispatched.
 
-    \skipto originalPixmap
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 7
 
     We take the screenshot using the static \l
     {QPixmap::grabWindow()}{QPixmap.grabWindow()} method. The method
@@ -145,8 +137,7 @@
     Screenshot} button, and finally we make the \c Screenshot widget
     visible if it was hidden during the screenshot.
 
-    \skipto updateCheckBox
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 8
 
     The \gui {Hide This Window} option is enabled or disabled
     depending on the delay of the screenshot. If there is no delay,
@@ -156,8 +147,7 @@
     The \c updateCheckBox() method is called whenever the user changes
     the delay using the \gui {Screenshot Delay} option.
 
-    \skipto createOptionsGroupBox
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 9
 
     The private \c createOptionsGroupBox() method is called from the
     constructor.
@@ -175,23 +165,20 @@
     widgets are automatically reparented to the widget the layout is
     installed on.
 
-    \skipto createButtonsLayout
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 10
 
     The private \c createButtonsLayout() method is called from the
     constructor. We create the application's buttons using the private
     \c createButton() method, and add them to a QHBoxLayout.
 
-    \skipto createButton
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 11
 
     The private \c createButton() method is called from the \c
     createButtonsLayout() method. It simply creates a QPushButton
     with the provided text, connects it to the provided receiver and
     method, and returns a pointer to the button.
 
-    \skipto updateScreenshotLabel
-    \printuntil /^\s\s\s\s\}/
+    \snippet Screenshot.java 12
 
     The private \c updateScreenshotLabel() method is called whenever
     the screenshot changes, or when a resize event changes the size of
@@ -207,11 +194,8 @@
     preserving the aspect ratio and giving the resulting pixmap
     smoothed edges.
 
-    \quotefromfile Screenshot.java
-    \skipto  public static void main
-    \printuntil /^\s\s\s\s\}/
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet Screenshot.java 1
+    \snippet Screenshot.java 13
 
     Finally, we provide a \c main() method to create and show the
     shaped clock when the example is run.

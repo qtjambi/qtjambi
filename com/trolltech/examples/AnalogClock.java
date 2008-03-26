@@ -17,6 +17,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Analog Clock")
+//! [0]
 public class AnalogClock
     extends QWidget
 {
@@ -33,10 +34,13 @@ public class AnalogClock
     }
 
     QTimer m_timer = new QTimer(this);
+//! [0]
 
+//! [1]
     public AnalogClock() {
         this(null);
     }
+//! [1]
 
     public AnalogClock(QWidget parent) {
         super(parent);
@@ -48,6 +52,7 @@ public class AnalogClock
     }
 
     @Override
+//! [2]
     protected void paintEvent(QPaintEvent e)
     {
         QColor hourColor = new QColor(127, 0, 127);
@@ -56,27 +61,37 @@ public class AnalogClock
         int side = width() < height() ? width() : height();
 
         QTime time = QTime.currentTime();
+//! [2]
 
+//! [3]
         QPainter painter = new QPainter(this);
         painter.setRenderHint(QPainter.RenderHint.Antialiasing);
         painter.translate(width() / 2, height() / 2);
         painter.scale(side / 200.0f, side / 200.0f);
+//! [3]
 
+//! [4]
         painter.setPen(QPen.NoPen);
         painter.setBrush(hourColor);
+//! [4]
 
+//! [5]
         painter.save();
         painter.rotate(30.0f * ((time.hour() + time.minute() / 60.0f)));
         painter.drawConvexPolygon(hourHand);
         painter.restore();
+//! [5]
 
+//! [6]
         painter.setPen(hourColor);
 
         for (int i=0; i<12; ++i) {
             painter.drawLine(88, 0, 96, 0);
             painter.rotate(30.0f);
         }
+//! [6]
 
+//! [7]
         painter.setPen(QPen.NoPen);
         painter.setBrush(minuteColor);
 
@@ -84,7 +99,9 @@ public class AnalogClock
         painter.rotate(6.0f * (time.minute() + time.second() / 60.0f));
         painter.drawConvexPolygon(minuteHand);
         painter.restore();
+//! [7]
 
+//! [8]
         painter.setPen(minuteColor);
 
         for (int j=0; j<60; ++j) {
@@ -92,6 +109,7 @@ public class AnalogClock
                 painter.drawLine(92, 0, 96, 0);
             painter.rotate(6.0f);
         }
+//! [8]
     }
 
     @Override
@@ -100,6 +118,7 @@ public class AnalogClock
     }
 
     @Override
+//! [9]
     public void showEvent(QShowEvent e) {
         m_timer.start(1000);
     }
@@ -107,8 +126,11 @@ public class AnalogClock
     @Override
     public void hideEvent(QHideEvent e) {
         m_timer.stop();
+//! [9] //! [10]
     }
+//! [10]
 
+//! [11]
     static public void main(String args[])
     {
         QApplication.initialize(args);
@@ -119,3 +141,4 @@ public class AnalogClock
         QApplication.exec();
     }
 }
+//! [11]

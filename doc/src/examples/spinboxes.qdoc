@@ -16,9 +16,7 @@
     The \c Window class inherits QWidget and contains two slots that are used
     to provide interactive features:
 
-    \quotefromfile SpinBoxes.java
-    \skipto public class SpinBoxes
-    \printuntil private QLabel
+    \snippet SpinBoxes.java 0
 
     Private methods (shown later) are used to set up each type of spin box in
     the window. We use variables to keep track of various widgets so that they
@@ -27,8 +25,7 @@
     The constructor simply calls private methods to set up the different types
     of spin box used in the example, and places each group in a layout:
 
-    \skipto public SpinBoxes()
-    \printuntil }
+    \snippet SpinBoxes.java 1
 
     We use the layout to manage the arrangement of the window's child widgets,
     and change the window title.
@@ -37,8 +34,7 @@
     QSpinBox widgets inside it with descriptive labels to indicate the types of
     input they expect.
 
-    \skipto createSpinBoxes()
-    \printuntil setValue
+    \snippet SpinBoxes.java 2
 
     The first spin box shows the simplest way to use QSpinBox. It accepts values
     from -20 to 20, the current value can be increased or decreased by 1 with
@@ -48,8 +44,7 @@
     The second spin box uses a larger step size and displays a suffix to
     provide more information about the type of data the number represents:
 
-    \skipto zoomLabel
-    \printuntil setValue
+    \snippet SpinBoxes.java 3
 
     This spin box also displays a
     \l{QAbstractSpinBox::specialValueText}{special value} instead of the minimum
@@ -58,13 +53,12 @@
 
     The third spin box shows how a prefix can be used:
 
-    \skipto priceLabel
-    \printuntil setValue
+    \snippet SpinBoxes.java 4
 
     For simplicity, we show a spin box with a prefix and no suffix. It is also
     possible to use both at the same time.
 
-    \printuntil }
+    \snippet SpinBoxes.java 5
 
     The rest of the method sets up a layout for the group box and places each
     of the widgets inside it.
@@ -72,8 +66,7 @@
     The \c createDateTimeEdits() method constructs another group box with a
     selection of spin boxes used for editing dates and times.
 
-    \skipto createDateTimeEdits()
-    \printuntil maximumDate()
+    \snippet SpinBoxes.java 6
 
     The first spin box is a QDateEdit widget that is able to accept dates
     within a given range specified using QDate values. The arrow buttons and
@@ -82,8 +75,7 @@
 
     The second spin box is a QTimeEdit widget:
 
-    \skipto timeLabel
-    \printuntil maximumTime()
+    \snippet SpinBoxes.java 7
 
     Acceptable values for the time are defined using QTime values.
 
@@ -92,21 +84,18 @@
     times for a meeting. These widgets will be updated when the user changes a
     format string.
 
-    \skipto meetingLabel
-    \printuntil meetingEdit
+    \snippet SpinBoxes.java 8
 
     The format string used for the date time editor, which is also shown in the
     string displayed by the label, is chosen from a set of strings in a combobox:
 
-    \skipto formatLabel
-    \printuntil hh:mm ap
-    \printuntil setFormatString
+    \snippet SpinBoxes.java 9
+    \snippet SpinBoxes.java 10
 
     A signal from this combobox is connected to a slot in the \c Window class
     (shown later).
 
-    \skipto editsLayout
-    \printuntil }
+    \snippet SpinBoxes.java 11
 
     Each child widget of the group box in placed in a layout.
 
@@ -114,16 +103,15 @@
     format string in the combobox. The display format for the QDateTimeEdit
     widget is set using the raw string passed by the signal:
 
-    \skipto setFormatString(
-    \printuntil setDisplayFormat
+    \snippet SpinBoxes.java 12
 
     Depending on the visible sections in the widget, we set a new date or time
     range, and update the associated label to provide relevant information for
     the user:
 
-    \printuntil maximumTime
-    \printuntil }
-    \printuntil }
+    \snippet SpinBoxes.java 13
+    \snippet SpinBoxes.java 14
+    \snippet SpinBoxes.java 15
 
     When the format string is changed, there will be an appropriate label and
     entry widget for dates, times, or both types of input.
@@ -131,8 +119,7 @@
     The \c createDoubleSpinBoxes() method constructs three spin boxes that are
     used to input double-precision floating point numbers:
 
-    \skipto createDoubleSpinBoxes(
-    \printuntil setValue
+    \snippet SpinBoxes.java 16
 
     Before the QDoubleSpinBox widgets are constructed, we create a spin box to
     control how many decimal places they show. By default, only two decimal places
@@ -143,27 +130,23 @@
     same range, step size, and default value as the first spin box in the
     \c createSpinBoxes() method:
 
-    \skipto doubleLabel
-    \printuntil setValue
+    \snippet SpinBoxes.java 17
 
     However, this spin box also allows non-integer values to be entered.
 
     The second spin box displays a suffix and shows a special value instead
     of the minimum value:
 
-    \skipto scaleLabel
-    \printuntil setValue
+    \snippet SpinBoxes.java 18
 
     The third spin box displays a prefix instead of a suffix:
 
-    \skipto priceLabel
-    \printuntil connect
+    \snippet SpinBoxes.java 19
 
     We connect the QSpinBox widget that specifies the precision to a slot in
     the \c Window class.
 
-    \skipto spinBoxLayout
-    \printuntil }
+    \snippet SpinBoxes.java 20
 
     The rest of the method places each of the widgets into a layout for the
     group box.
@@ -171,8 +154,7 @@
     The \c changePrecision() slot is called when the user changes the value in
     the precision spin box:
 
-    \skipto changePrecision(
-    \printuntil }
+    \snippet SpinBoxes.java 21
 
     This method simply uses the integer supplied by the signal to specify the
     number of decimal places in each of the QDoubleSpinBox widgets. Each one
@@ -182,8 +164,6 @@
     Finally, we provide a \c main() method to create and show the \c
     SpinBoxes widget when the example is run:
 
-    \skipto main(
-    \printuntil }
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet SpinBoxes.java 22
+    \snippet SpinBoxes.java 23
 */

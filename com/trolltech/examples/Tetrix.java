@@ -18,8 +18,10 @@ import com.trolltech.qt.gui.*;
 
 import java.util.*;
 
+//! [0] //! [1]
 class TetrixBoard extends QFrame
 {
+//! [0]
     static final int redTable[] = new int[8];
     static final int greenTable[] = new int[8];
     static final int blueTable[] = new int[8];
@@ -57,7 +59,9 @@ class TetrixBoard extends QFrame
                    LShape, MirroredLShape }
     private static final int BoardWidth = 10;
     private static final int BoardHeight = 22;
+//! [1]
 
+//! [2]
     private boolean isStarted = false;
     private boolean isPaused = false;
     private boolean isWaitingAfterLine = false;
@@ -69,14 +73,19 @@ class TetrixBoard extends QFrame
     private int curY = 0;
     private QLabel nextPieceLabel = null;
     private QBasicTimer timer = new QBasicTimer();
+//! [2] //! [3]
     private TetrixPiece curPiece = new TetrixPiece();
     private TetrixPiece nextPiece = new TetrixPiece();
     private TetrixShape board[] = new TetrixShape[BoardWidth * BoardHeight];
+//! [3]
 
+//! [4]
     public Signal1<Integer> scoreChanged = new Signal1<Integer>();
     public Signal1<Integer> levelChanged = new Signal1<Integer>();
     public Signal1<Integer> linesRemovedChanged = new Signal1<Integer>();
+//! [4]
 
+//! [5]
     public TetrixBoard(QWidget parent)
     {
         super(parent);
@@ -87,6 +96,7 @@ class TetrixBoard extends QFrame
 
         nextPiece.setRandomShape();
     }
+//! [5]
 
     public void scoreChanged(int score)
     {
@@ -103,10 +113,12 @@ class TetrixBoard extends QFrame
         linesRemovedChanged.emit(numLines);
     }
 
+//! [6]
     public void setNextPieceLabel(QLabel label)
     {
         nextPieceLabel = label;
     }
+//! [6]
 
     TetrixShape shapeAt(int x, int y)
     {
@@ -128,6 +140,7 @@ class TetrixBoard extends QFrame
     int squareHeight() { return contentsRect().height() / BoardHeight; }
 
     @Override
+//! [7]
     public QSize sizeHint()
     {
         return new QSize(BoardWidth * 15 + frameWidth() * 2, BoardHeight * 15 + frameWidth() * 2);
@@ -135,10 +148,13 @@ class TetrixBoard extends QFrame
 
     @Override
     public QSize minimumSizeHint()
+//! [7] //! [8]
     {
         return new QSize(BoardWidth * 5 + frameWidth() * 2, BoardHeight * 5 + frameWidth() * 2);
     }
+//! [8]
 
+//! [9]
     public void start()
     {
         if (isPaused)
@@ -161,7 +177,9 @@ class TetrixBoard extends QFrame
 
         timer.start(timeoutTime(), this);
     }
+//! [9]
 
+//! [10]
     public void pause()
     {
         if (!isStarted)
@@ -175,9 +193,12 @@ class TetrixBoard extends QFrame
         }
 
         update();
+//! [10] //! [11]
     }
+//! [11]
 
     @Override
+//! [12]
     protected void paintEvent(QPaintEvent e)
     {
         super.paintEvent(e);
@@ -185,6 +206,7 @@ class TetrixBoard extends QFrame
         QPainter painter = new QPainter();
         painter.begin(this);
         QRect rect = contentsRect();
+//! [12]
 
         if (isPaused) {
             painter.drawText(rect, Qt.AlignmentFlag.AlignCenter.value(), "Pause");
@@ -192,6 +214,7 @@ class TetrixBoard extends QFrame
             return ;
         }
 
+//! [13]
         int boardTop = rect.bottom() - BoardHeight * squareHeight();
 
         for (int i=0; i<BoardHeight; ++i) {
@@ -201,9 +224,12 @@ class TetrixBoard extends QFrame
                     drawSquare(painter, rect.left() + j * squareWidth(),
                         boardTop + i * squareHeight(), shape);
                 }
+//! [13] //! [14]
             }
+//! [14]
         }
 
+//! [15]
         if (curPiece.shape() != TetrixShape.NoShape) {
             for (int i=0; i<4; ++i) {
                 int x = curX + curPiece.x(i);
@@ -213,19 +239,25 @@ class TetrixBoard extends QFrame
                     boardTop + (BoardHeight - y - 1) * squareHeight(),
                     curPiece.shape());
             }
+//! [15] //! [16]
         }
+//! [16] //! [17]
 
         painter.end();
     }
+//! [17]
 
     @Override
+//! [18]
     protected void keyPressEvent(QKeyEvent event)
     {
         if (!isStarted || isPaused || curPiece.shape() == TetrixShape.NoShape) {
             super.keyPressEvent(event);
             return ;
         }
+//! [18]
 
+//! [19]
         if (event.key() == Qt.Key.Key_Left.value())
             tryMove(curPiece, curX - 1, curY);
         else if (event.key() == Qt.Key.Key_Right.value())
@@ -241,8 +273,10 @@ class TetrixBoard extends QFrame
         else
             super.keyPressEvent(event);
     }
+//! [19]
 
     @Override
+//! [20]
     protected void timerEvent(QTimerEvent event)
     {
         if (event.timerId() == timer.timerId()) {
@@ -255,15 +289,21 @@ class TetrixBoard extends QFrame
             }
         } else {
             super.timerEvent(event);
+//! [20] //! [21]
         }
+//! [21] //! [22]
     }
+//! [22]
 
+//! [23]
     void clearBoard()
     {
         for (int i=0; i<BoardHeight * BoardWidth; ++i)
             board[i] = TetrixShape.NoShape;
     }
+//! [23]
 
+//! [24]
     void dropDown()
     {
         int dropHeight = 0;
@@ -275,14 +315,19 @@ class TetrixBoard extends QFrame
             ++dropHeight;
         }
         pieceDropped(dropHeight);
+//! [24] //! [25]
     }
+//! [25]
 
+//! [26]
     void oneLineDown()
     {
         if (!tryMove(new TetrixPiece(curPiece), curX, curY - 1))
             pieceDropped(0);
     }
+//! [26]
 
+//! [27]
     void pieceDropped(int dropHeight)
     {
         for (int i=0; i<4; ++i) {
@@ -305,8 +350,11 @@ class TetrixBoard extends QFrame
 
         if (!isWaitingAfterLine)
             newPiece();
+//! [27] //! [28]
     }
+//! [28]
 
+//! [29]
     void removeFullLines()
     {
         int numFullLines = 0;
@@ -322,16 +370,21 @@ class TetrixBoard extends QFrame
             }
 
             if (lineIsFull) {
+//! [29] //! [30]
                 ++numFullLines;
                 for (int k=i; k<BoardHeight - 1; ++k) {
                     for (int j=0; j<BoardWidth; ++j)
                         setShapeAt(j, k, shapeAt(j, k + 1));
                 }
+//! [30] //! [31]
                 for (int j=0; j<BoardWidth; ++j)
                     setShapeAt(j, BoardHeight - 1, TetrixShape.NoShape);
             }
+//! [31] //! [32]
         }
+//! [32]
 
+//! [33]
         if (numFullLines > 0) {
             numLinesRemoved += numFullLines;
             score += 10 * numFullLines;
@@ -343,8 +396,11 @@ class TetrixBoard extends QFrame
             curPiece.setShape(TetrixShape.NoShape);
             update();
         }
+//! [33] //! [34]
     }
+//! [34]
 
+//! [35]
     void newPiece()
     {
         curPiece = new TetrixPiece(nextPiece);
@@ -359,8 +415,11 @@ class TetrixBoard extends QFrame
             timer.stop();
             isStarted = false;
         }
+//! [35] //! [36]
     }
+//! [36]
 
+//! [37]
     void showNextPiece()
     {
         if (nextPieceLabel == null)
@@ -382,8 +441,11 @@ class TetrixBoard extends QFrame
         painter.end();
 
         nextPieceLabel.setPixmap(pixmap);
+//! [37] //! [38]
     }
+//! [38]
 
+//! [39]
     boolean tryMove(TetrixPiece newPiece, int newX, int newY)
     {
         for (int i = 0; i < 4; ++i) {
@@ -394,14 +456,18 @@ class TetrixBoard extends QFrame
             if (shapeAt(x, y) != TetrixShape.NoShape)
                 return false;
         }
+//! [39]
 
+//! [40]
         curPiece = new TetrixPiece(newPiece);
         curX = newX;
         curY = newY;
         update();
         return true;
     }
+//! [40]
 
+//! [41]
     void drawSquare(QPainter painter, int x, int y, TetrixShape shape)
     {
         QColor color = new QColor(redTable[shape.ordinal()], greenTable[shape.ordinal()], blueTable[shape.ordinal()]);
@@ -416,9 +482,12 @@ class TetrixBoard extends QFrame
         painter.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
         painter.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
     }
+//! [41] //! [42]
 }
+//! [42]
 
 
+//! [43]
 class TetrixPiece
 {
     static final int coordsTable[][][] =
@@ -430,15 +499,21 @@ class TetrixPiece
         { { 0, 0 },   { 1, 0 },   { 0, 1 },   { 1, 1 } },
         { { -1, -1 }, { 0, -1 },  { 0, 0 },   { 0, 1 } },
         { { 1, -1 },  { 0, -1 },  { 0, 0 },   { 0, 1 } } };
+//! [43]
 
+//! [44]
     private TetrixBoard.TetrixShape pieceShape;
     private int coords[][] = new int[4][2];
+//! [44]
 
+//! [45]
     public TetrixPiece()
     {
         setShape(TetrixBoard.TetrixShape.NoShape);
     }
+//! [45]
 
+//! [46]
     public TetrixPiece(TetrixPiece copy)
     {
     	pieceShape = copy.shape();
@@ -446,8 +521,11 @@ class TetrixPiece
 	    	setX(i, copy.x(i));
 	    	setY(i, copy.y(i));
         }
+//! [46] //! [47]
     }
+//! [47]
 
+//! [48]
     public void setRandomShape()
     {
         Random rand = new Random();
@@ -465,13 +543,18 @@ class TetrixPiece
         }
 
         setShape(shape);
+//! [48] //! [49]
     }
+//! [49]
 
+//! [50]
     public TetrixBoard.TetrixShape shape()
     {
         return pieceShape;
     }
+//! [50]
 
+//! [51]
     public void setShape(TetrixBoard.TetrixShape shape)
     {
         for (int i=0; i<4; ++i) {
@@ -480,8 +563,11 @@ class TetrixPiece
         }
 
         pieceShape = shape;
+//! [51] //! [52]
     }
+//! [52]
 
+//! [53]
     public int minX()
     {
         int min = coords[0][0];
@@ -491,13 +577,16 @@ class TetrixPiece
     }
 
     public int maxX()
+//! [53] //! [54]
     {
         int max = coords[0][0];
         for (int i=1; i<4; ++i)
             max = max > coords[i][0] ? max : coords[i][0];
         return max;
     }
+//! [54]
 
+//! [55]
     public int minY()
     {
         int min = coords[0][1];
@@ -507,13 +596,16 @@ class TetrixPiece
     }
 
     public int maxY()
+//! [55] //! [56]
     {
         int max = coords[0][1];
         for (int i=1; i<4; ++i)
             max = max > coords[i][1] ? max : coords[i][1];
         return max;
     }
+//! [56]
 
+//! [57]
     public TetrixPiece rotatedLeft()
     {
         if (pieceShape == TetrixBoard.TetrixShape.SquareShape)
@@ -527,8 +619,11 @@ class TetrixPiece
         }
 
         return result;
+//! [57] //! [58]
     }
+//! [58]
 
+//! [59]
     public TetrixPiece rotatedRight()
     {
         if (pieceShape == TetrixBoard.TetrixShape.SquareShape)
@@ -542,32 +637,42 @@ class TetrixPiece
         }
 
         return result;
+//! [59] //! [60]
     }
+//! [60]
 
+//! [61]
     public int x(int index)
     {
         return coords[index][0];
     }
 
     public int y(int index)
+//! [61] //! [62]
     {
         return coords[index][1];
     }
+//! [62]
 
+//! [63]
     private void setX(int index, int x)
     {
         coords[index][0] = x;
     }
 
     private void setY(int index, int y)
+//! [63] //! [64]
     {
         coords[index][1] = y;
     }
+//! [64] //! [65]
 }
+//! [65]
 
 @QtJambiExample(name = "Tetrix")
 public class Tetrix extends QWidget
 {
+//! [66]
     public Tetrix() {
         this(null);
     }
@@ -577,14 +682,17 @@ public class Tetrix extends QWidget
         super(parent);
 
         board = new TetrixBoard(null);
+//! [66]
 
         nextPieceLabel = new QLabel();
         nextPieceLabel.setFrameStyle(QFrame.Shape.Box.value() | QFrame.Shadow.Raised.value());
         nextPieceLabel.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignCenter));
         board.setNextPieceLabel(nextPieceLabel);
 
+//! [67]
         scoreLcd = new QLCDNumber(5);
         scoreLcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
+//! [67]
 
         levelLcd = new QLCDNumber(2);
         levelLcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
@@ -592,20 +700,26 @@ public class Tetrix extends QWidget
         linesLcd = new QLCDNumber(5);
         linesLcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
 
+//! [68]
         startButton = new QPushButton("&Start");
         startButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
         quitButton = new QPushButton("&Quit");
         quitButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
         pauseButton = new QPushButton("&Pause");
+//! [68] //! [69]
         pauseButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);
+//! [69] //! [70]
 
         startButton.clicked.connect(board, "start()");
+//! [70] //! [71]
         quitButton.clicked.connect(this, "close()");
         pauseButton.clicked.connect(board, "pause()");
         board.scoreChanged.connect(scoreLcd, "display(int)");
         board.levelChanged.connect(levelLcd, "display(int)");
         board.linesRemovedChanged.connect(linesLcd, "display(int)");
+//! [71]
 
+//! [72]
         layout = new QGridLayout();
         layout.addWidget(createLabel("NEXT"), 0, 0);
         layout.addWidget(nextPieceLabel, 1, 0);
@@ -626,14 +740,18 @@ public class Tetrix extends QWidget
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(550, 370);
     }
+//! [72]
 
+//! [73]
     private QLabel createLabel(String text)
     {
         QLabel lbl = new QLabel(text);
         lbl.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignBottom));
         return lbl;
     }
+//! [73]
 
+//! [74]
     private TetrixBoard board = null;
     private QPushButton startButton = null;
     private QPushButton quitButton = null;
@@ -643,8 +761,10 @@ public class Tetrix extends QWidget
     private QLCDNumber levelLcd = null;
     private QLCDNumber linesLcd = null;
     private QGridLayout layout = null;
+//! [74]
 
 
+//! [75]
     public static void main(String args[])
     {
         QApplication.initialize(args);
@@ -654,4 +774,6 @@ public class Tetrix extends QWidget
 
         QApplication.exec();
     }
+//! [75] //! [76]
 }
+//! [76]

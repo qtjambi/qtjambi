@@ -51,9 +51,7 @@
 
     \section1 The UndoFramework class
 
-    \quotefromfile UndoFramework.java
-    \skipto /class UndoFramework/
-    \printuntil /private QUndoView/
+    \snippet UndoFramework.java 0
 
     The \c UndoFramework class maintains the undo stack, i.e., it creates
     \l{QUndoCommand}s and pushes and pops them from the stack when it
@@ -62,8 +60,7 @@
 
     We will start with a look at the constructor:
 
-    \skipto /public UndoFramework/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 1
 
     By connecting the undo stack's \c canRedoChanged() and
     canUndoChanged() signals to our undo and redo action's
@@ -75,8 +72,7 @@
 
     Here is the \c createUndoView() method:
 
-    \skipto /void createUndoView/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 2
 
     The QUndoView is a widget that displays the text, which is set
     with the \l{QUndoCommand::}{setText()} method, for each
@@ -84,13 +80,11 @@
 
     Here is the \c createActions() method:
 
-    \skipto /void createActions/
-    \printuntil /connect/
+    \snippet UndoFramework.java 3
 
     \dots
 
-    \skipto undoAction
-    \printuntil /redoAction\.triggered/
+    \snippet UndoFramework.java 4
 
     The \c createActions() method sets up all the examples actions
     in the manner shown above. We can connect our \c undoAction and \c
@@ -101,15 +95,12 @@
 
     Here is the \c createMenues() method:
 
-    \skipto /void createMenus/
-    \printuntil /^\s\s\s\s\{/
+    \snippet UndoFramework.java 5
 
     \dots
-    \skipto /editMenu/
-    \printto /itemMenu\s/
+    \snippet UndoFramework.java 6
     \dots
-    \skipto /^\s\s\s\s\}/
-    \printline }
+    \snippet UndoFramework.java 7
 
     We have to use the QMenu \c aboutToShow() and \c aboutToHide()
     signals since we only want \c deleteAction to be enabled when we
@@ -118,15 +109,13 @@
 
     Here is the \c itemMoved() slot:
 
-    \skipto /void itemMoved/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 8
 
     We push a MoveCommand on the stack, which calls \c redo() on it.
 
     Here is the \c deleteItem() slot:
 
-    \skipto /void deleteItem/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 9
 
     An item must be selected to be deleted.  We need to check if it is
     selected as the \c deleteAction may be enabled even if an item is
@@ -135,11 +124,9 @@
 
     Here is the \c itemMenuAboutToShow() and itemMenuAboutToHide() slots:
 
-    \skipto /void itemMenuAboutToHide/
-    \printuntil /^\s\s\s\s\}/
-
-    \skipto /void itemMenuAboutToShow/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 10
+    \codeline
+    \snippet UndoFramework.java 11
 
     We implement \c itemMenuAboutToShow() and \c itemMenuAboutToHide()
     to get a dynamic item menu. These slots are connected to the
@@ -150,32 +137,28 @@
 
     Here is the \c addBox() slot:
 
-    \skipto /void addBox/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 12
 
     The \c addBox() method creates an AddCommand and pushes it on
     the undo stack.
 
     Here is the \c addTriangle() sot:
 
-    \skipto /void addTriangle/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 13
 
     The \c addTriangle() method creates an AddCommand and pushes it
     on the undo stack.
 
     Here is the implementation of \c about():
 
-    \skipto /void about/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 14
 
     The about slot is triggered by the \c aboutAction and displays an
     about box for the example.
 
     \section1 AddCommand Class
 
-    \skipto /class AddCommand/
-    \printuntil /private QPointF/
+    \snippet UndoFramework.java 25
 
     The \c AddCommand class adds DiagramItem graphics items to the
     DiagramScene. We will explain the member variables as we stumble
@@ -183,36 +166,30 @@
 
     We start with the constructor:
 
-    \skipto /public AddCommand/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 26
 
     We first create the DiagramItem to add to the DiagramScene.  The
     \l{QUndoCommand::}{setText()} method let us set a QString that
     describes the command. We use this to get custom messages in the
     QUndoView and in the menu of the main window.
 
-    \skipto/void redo()/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 27
 
     We set the position of the item as we do not do this in the
     constructor.
 
-    \skipto /void undo()/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 28
 
     \c undo() removes the item from the scene.
 
     \section1 DeleteCommand Class Definition
 
-    \quotefromfile UndoFramework.java
-    \skipto /class DeleteCommand/
-    \printuntil /private QGraphicsScene/
+    \snippet UndoFramework.java 17
 
     The DeleteCommand class implements the functionality to remove an
     item from the scene.
 
-    \skipto /public DeleteCommand/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 18
 
     We know that there must be one selected item as it is not possible
     to create a DeleteCommand unless the item to be deleted is
@@ -220,45 +197,36 @@
     The item must be unselected if it is inserted back into the
     scene.
 
-    \skipto /void undo()/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 19
 
     The item is simply reinserted into the scene.
 
-    \skipto /void redo()/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 23
 
     The item is removed from the scene.
 
     \section1 MoveCommand Class 
 
-    \quotefromfile UndoFramework.java
-    \skipto /class MoveCommand/
-    \printuntil /newPos/
+    \snippet UndoFramework.java 20
 
     MoveCommand implements the command for moving items.
 
     The constructor of MoveCommand looks like this:
 
-    \skipto /public MoveCommand/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 21
 
     We save both the old and new positions for undo and redo
     respectively.
 
-    \skipto /void undo()/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 22
 
     We simply set the items old position and update the scene.
 
-    \skipto /void redo()/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 27
 
     We set the item to its new position.
 
-    \quotefromfile UndoFramework.java
-    \skipto /boolean mergeWith/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet UndoFramework.java 24
 
     The \l{QUndoCommand::}{mergeWith()} is reimplemented to make
     consecutive moves of an item one MoveCommand, i.e, the item will
@@ -276,12 +244,9 @@
 
     \section1 DiagramScene Class
 
-    \quotefromfile UndoFramework.java
-    \skipto /class DiagramScene/
-    \printuntil /oldPos/
+    \snippet UndoFramework.java 15
     \dots
-    \skipto /^\s\s\s\s\}/
-    \printline /^\s\s\s\s\}/
+    \snippet UndoFramework.java 16
 
     The DiagramScene implements the functionality to move a
     DiagramItem with the mouse. It emits a signal when a move is
@@ -300,8 +265,7 @@
 
     The \c main() method of the program looks like this:
 
-    \skipto /void main/
-    \printuntil /^\s\s\s\s\}/
+    \snippet UndoFramework.java 29
 
     The main method creates the \c MainWindow and shows it as a top
     level window.

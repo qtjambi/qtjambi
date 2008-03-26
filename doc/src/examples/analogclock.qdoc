@@ -16,9 +16,7 @@
     The \c AnalogClock class provides a clock widget with hour and minute
     hands that is automatically updated every few seconds.
 
-    \quotefromfile AnalogClock.java
-    \skipto class AnalogClock
-    \printuntil QTimer
+    \snippet AnalogClock.java 0
 
     We subclass \l QWidget and define polygons to use for the hour and minute
     hands, as well as a timer that enables us to update the clock face.
@@ -28,8 +26,7 @@
     \l{QWidget::}{update()} slot so that the clock face is updated when the
     timer emits the \l{QTimer::}{timeout()} signal:
 
-    \skipto public AnalogClock
-    \printuntil }
+    \snippet AnalogClock.java 1
 
     We also resize the widget so that it is displayed at a reasonable size.
 
@@ -41,8 +38,7 @@
     Since we connected the timer's \l{QTimer::timeout()}{timeout()} signal to
     this slot, it will be called at least once every five seconds.
 
-    \skipto protected void paintEvent(
-    \printuntil QTime
+    \snippet AnalogClock.java 2
 
     Before we set up the painter and draw the clock, we first define
     two \l{QColor}s that will be used for the hour and minute hands.
@@ -53,8 +49,7 @@
     can fit the clock face inside the widget. It is also useful to determine
     the current time before we start drawing.
 
-    \skipto QPainter
-    \printuntil scale
+    \snippet AnalogClock.java 3
 
     The contents of custom widgets are drawn with a QPainter.
     Painters can be used to draw on any QPaintDevice, but they are
@@ -88,35 +83,30 @@
     hour and minute. This means that the hand will be shown rotated clockwise
     by the required amount.
 
-    \skipto setPen
-    \printuntil setBrush
+    \snippet AnalogClock.java 4
 
     We set the pen to be Qt::NoPen because we don't want any outline,
     and we use a solid brush with the color appropriate for
     displaying hours. Brushes are used when filling in polygons and
     other geometric shapes.
 
-    \skipto save
-    \printuntil restore
+    \snippet AnalogClock.java 5
 
     We save and restore the transformation matrix before and after the
     rotation because we want to place the minute hand without having to
     take into account any previous rotations.
 
-    \skipto setPen
-    \printuntil }
+    \snippet AnalogClock.java 6
 
     We draw markers around the edge of the clock for each hour. We
     draw each marker then rotate the coordinate system so that the
     painter is ready for the next one.
 
-    \skipto setPen
-    \printuntil restore
+    \snippet AnalogClock.java 7
 
     The minute hand is rotated in a similar way to the hour hand.
 
-    \skipto setPen
-    \printuntil }
+    \snippet AnalogClock.java 8
 
     Again, we draw markers around the edge of the clock, but this
     time to indicate minutes. We skip multiples of 5 to avoid drawing
@@ -127,9 +117,8 @@
     \l{QWidget::}{hideEvent()} implementation that stops it when the window
     is hidden.
 
-    \skipto showEvent
-    \printuntil stop()
-    \printuntil }
+    \snippet AnalogClock.java 9
+    \snippet AnalogClock.java 10
 
     These methods ensure that we don't do unnecessary work when the clock is
     not visible to the user.
@@ -137,6 +126,5 @@
     Finally, we provide a \c main() method to create and show the analog clock
     when the example is run:
 
-    \skipto main(
-    \printuntil /^\}/
+    \snippet AnalogClock.java 11
 */

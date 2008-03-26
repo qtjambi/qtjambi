@@ -16,6 +16,7 @@ package com.trolltech.examples.tutorial;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
+//! [0] //! [1]
 public class BlocksGalore extends QWidget
 {
     public BlocksGalore()
@@ -24,7 +25,9 @@ public class BlocksGalore extends QWidget
         quit.setFont(new QFont("Times", 18, QFont.Weight.Bold.value()));
 
         quit.clicked.connect(QApplication.instance(), "quit()");
+//! [0]
 
+//! [2]
         QGridLayout grid = new QGridLayout();
         QVBoxLayout layout = new QVBoxLayout();
         layout.addWidget(quit);
@@ -32,16 +35,21 @@ public class BlocksGalore extends QWidget
         setLayout(layout);
         setWindowTitle(tr("Building Blocks Galore"));
 
+//! [2] //! [3]
         for (int row = 0; row < 3; ++row) {
+//! [3] //! [4]
             for (int column = 0; column < 3; ++column) {
                 LCDRange lcdRange = new LCDRange();
                 grid.addWidget(lcdRange, row, column);
             }
         }
     }
+//! [4]
 
+//! [5]
     class LCDRange extends QWidget
     {
+//! [5] //! [6]
         public LCDRange()
         {
             QLCDNumber lcd = new QLCDNumber(2);
@@ -58,6 +66,7 @@ public class BlocksGalore extends QWidget
             layout.addWidget(slider);
             setLayout(layout);
         }
+//! [6]
     }
 
     public static void main(String args[])
@@ -70,3 +79,4 @@ public class BlocksGalore extends QWidget
         QApplication.exec();
     }
 }
+//! [1]

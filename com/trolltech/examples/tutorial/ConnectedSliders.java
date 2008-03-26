@@ -21,12 +21,16 @@ public class ConnectedSliders extends QWidget
     public ConnectedSliders()
     {
         QPushButton quit = new QPushButton(tr("Quit"));
+//! [0]
         quit.setFont(new QFont("Times", 18, QFont.Weight.Bold.value()));
+//! [0]
 
         quit.clicked.connect(QApplication.instance(), "quit()");
 
         QGridLayout grid = new QGridLayout();
+//! [1]
         LCDRange previousRange = null;
+//! [1] //! [2]
 
         for (int row = 0; row < 3; ++row) {
             for (int column = 0; column < 3; ++column) {
@@ -36,10 +40,15 @@ public class ConnectedSliders extends QWidget
             if (previousRange != null)
                 lcdRange.valueChanged.
                 connect(previousRange, "setValue(int)");
+//! [2]
 
+//! [3]
                 previousRange = lcdRange;
+//! [3] //! [4]
             }
+//! [4] //! [5]
         }
+//! [5]
         QVBoxLayout layout = new QVBoxLayout();
         layout.addWidget(quit);
         layout.addLayout(grid);
@@ -52,10 +61,15 @@ public class ConnectedSliders extends QWidget
         private QSlider slider;
         private int value;
 
+//! [6]
         public final Signal1<Integer> valueChanged = new Signal1<Integer>();
+//! [6]
 
+//! [7]
         public LCDRange()
+//! [7] //! [8]
         {
+//! [8]
             QLCDNumber lcd = new QLCDNumber(2);
             lcd.setSegmentStyle(QLCDNumber.SegmentStyle.Filled);
 
@@ -63,24 +77,33 @@ public class ConnectedSliders extends QWidget
             slider.setRange(0, 99);
             slider.setValue(0);
 
+//! [9]
             slider.valueChanged.connect(lcd, "display(int)");
+//! [9] //! [10]
             slider.valueChanged.connect(valueChanged);
+//! [10]
 
             QVBoxLayout layout = new QVBoxLayout();
             layout.addWidget(lcd);
             layout.addWidget(slider);
             setLayout(layout);
+//! [11]
         }
+//! [11]
 
+//! [12]
         public int value()
         {
             return value;
         }
+//! [12]
 
+//! [13]
         public void setValue(int value)
         {
             slider.setValue(value);
         }
+//! [13]
     }
 
     public static void main(String args[])

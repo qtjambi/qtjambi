@@ -17,6 +17,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Line Edits")
+//! [0]
 public class LineEdits extends QWidget {
 
     private QLineEdit echoLineEdit;
@@ -24,15 +25,19 @@ public class LineEdits extends QWidget {
     private QLineEdit alignmentLineEdit;
     private QLineEdit inputMaskLineEdit;
     private QLineEdit accessLineEdit;
+//! [0]
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
 
+//! [2]
         LineEdits lineedits = new LineEdits();
         lineedits.show();
 
         QApplication.exec();
     }
+//! [1]
 
     public LineEdits() {
         this(null);
@@ -52,7 +57,9 @@ public class LineEdits extends QWidget {
 
         echoLineEdit = new QLineEdit();
         echoLineEdit.setFocus();
+//! [2]
 
+//! [3]
         QGroupBox validatorGroup = new QGroupBox(tr("Validator"));
 
         QLabel validatorLabel = new QLabel(tr("Type:"));
@@ -62,7 +69,9 @@ public class LineEdits extends QWidget {
         validatorComboBox.addItem(tr("Double validator"));
 
         validatorLineEdit = new QLineEdit();
+//! [3]
 
+//! [4]
         QGroupBox alignmentGroup = new QGroupBox(tr("Alignment"));
 
         QLabel alignmentLabel = new QLabel(tr("Type:"));
@@ -72,7 +81,9 @@ public class LineEdits extends QWidget {
         alignmentComboBox.addItem(tr("Right"));
 
         alignmentLineEdit = new QLineEdit();
+//! [4]
 
+//! [5]
         QGroupBox inputMaskGroup = new QGroupBox(tr("Input mask"));
 
         QLabel inputMaskLabel = new QLabel(tr("Type:"));
@@ -83,7 +94,9 @@ public class LineEdits extends QWidget {
         inputMaskComboBox.addItem(tr("License key"));
 
         inputMaskLineEdit = new QLineEdit();
+//! [5]
 
+//! [6]
         QGroupBox accessGroup = new QGroupBox(tr("Access"));
 
         QLabel accessLabel = new QLabel(tr("Read-only:"));
@@ -92,19 +105,25 @@ public class LineEdits extends QWidget {
         accessComboBox.addItem(tr("True"));
 
         accessLineEdit = new QLineEdit();
+//! [6]
 
+//! [7]
         echoComboBox.activatedIndex.connect(this, "echoChanged(int)");
         validatorComboBox.activatedIndex.connect(this, "validatorChanged(int)");
         alignmentComboBox.activatedIndex.connect(this, "alignmentChanged(int)");
         inputMaskComboBox.activatedIndex.connect(this, "inputMaskChanged(int)");
         accessComboBox.activatedIndex.connect(this, "accessChanged(int)");
+//! [7]
 
+//! [8]
         QGridLayout echoLayout = new QGridLayout();
         echoLayout.addWidget(echoLabel, 0, 0);
         echoLayout.addWidget(echoComboBox, 0, 1);
         echoLayout.addWidget(echoLineEdit, 1, 0, 1, 2);
         echoGroup.setLayout(echoLayout);
+//! [8]
 
+//! [9]
         QGridLayout validatorLayout = new QGridLayout();
         validatorLayout.addWidget(validatorLabel, 0, 0);
         validatorLayout.addWidget(validatorComboBox, 0, 1);
@@ -128,7 +147,9 @@ public class LineEdits extends QWidget {
         accessLayout.addWidget(accessComboBox, 0, 1);
         accessLayout.addWidget(accessLineEdit, 1, 0, 1, 2);
         accessGroup.setLayout(accessLayout);
+//! [9]
 
+//! [10]
         QGridLayout layout = new QGridLayout();
         layout.addWidget(echoGroup, 0, 0);
         layout.addWidget(validatorGroup, 1, 0);
@@ -139,7 +160,9 @@ public class LineEdits extends QWidget {
 
         setWindowTitle(tr("Line Edits"));
     }
+//! [10]
 
+//! [11]
     public void echoChanged(int index) {
         switch (index) {
         case 0:
@@ -151,8 +174,11 @@ public class LineEdits extends QWidget {
         case 2:
             echoLineEdit.setEchoMode(QLineEdit.EchoMode.NoEcho);
         }
+//! [11] //! [12]
     }
+//! [12]
 
+//! [13]
     public void validatorChanged(int index) {
         switch (index) {
         case 0:
@@ -164,10 +190,13 @@ public class LineEdits extends QWidget {
         case 2:
             validatorLineEdit.setValidator(new QDoubleValidator(-999.0, 999.0, 2, validatorLineEdit));
         }
+//! [13] //! [14]
 
         validatorLineEdit.setText("");
     }
+//! [14]
 
+//! [15]
     public void alignmentChanged(int index) {
         switch (index) {
         case 0:
@@ -179,8 +208,11 @@ public class LineEdits extends QWidget {
         case 2:
             alignmentLineEdit.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignRight));
         }
+//! [15] //! [16]
     }
+//! [16]
 
+//! [17]
     public void inputMaskChanged(int index) {
         switch (index) {
         case 0:
@@ -197,8 +229,11 @@ public class LineEdits extends QWidget {
         case 3:
             inputMaskLineEdit.setInputMask(">AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#");
         }
+//! [17] //! [18]
     }
+//! [18]
 
+//! [19]
     public void accessChanged(int index) {
         switch (index) {
         case 0:
@@ -207,5 +242,8 @@ public class LineEdits extends QWidget {
         case 1:
             accessLineEdit.setReadOnly(true);
         }
+//! [19] //! [20]
     }
+//! [20] //! [21]
 }
+//! [21]

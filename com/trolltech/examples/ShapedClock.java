@@ -32,15 +32,20 @@ import com.trolltech.qt.core.Qt.WindowFlags;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Shaped Clock")
+//! [0]
 public class ShapedClock extends QWidget {
+//! [0]
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
         ShapedClock shapedClock = new ShapedClock(null);
         shapedClock.show();
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     private QPoint dragPosition = new QPoint();
     private static QPolygon hourHand;
     private static QPolygon minuteHand;
@@ -72,8 +77,10 @@ public class ShapedClock extends QWidget {
         setToolTip(tr("Drag the clock with the left mouse button.\n" + 
                       "Use the right mouse button to open a context menu."));
     }
+//! [2]
 
     @Override
+//! [3]
     public void mousePressEvent(QMouseEvent event) {
         if (event.button() == MouseButton.LeftButton) {
             QPoint topLeft = frameGeometry().topLeft();
@@ -82,8 +89,10 @@ public class ShapedClock extends QWidget {
             event.accept();
         }
     }
+//! [3]
 
     @Override
+//! [4]
     public void mouseMoveEvent(QMouseEvent event) {
         if (event.buttons().isSet(MouseButton.LeftButton)) {
             move(new QPoint(event.globalPos().x() - dragPosition.x(), 
@@ -91,8 +100,10 @@ public class ShapedClock extends QWidget {
             event.accept();
         }
     }
+//! [4]
 
     @Override
+//! [5]
     public void paintEvent(QPaintEvent event) {
 
         QColor hourColor = new QColor(127, 0, 127);
@@ -137,8 +148,10 @@ public class ShapedClock extends QWidget {
             painter.rotate(6.0);
         }
     }
+//! [5]
 
     @Override
+//! [6]
     public void resizeEvent(QResizeEvent event) {
         int side = Math.min(width(), height());
         QRegion maskedRegion;
@@ -146,9 +159,13 @@ public class ShapedClock extends QWidget {
                                     side, side, QRegion.RegionType.Ellipse);
         setMask(maskedRegion);
     }
+//! [6]
 
     @Override
+//! [7]
     public QSize sizeHint() {
         return new QSize(100, 100);
     }
+//! [7] //! [8]
 }
+//! [8]

@@ -19,12 +19,15 @@ import com.trolltech.qt.gui.*;
 import java.util.*;
 
 @QtJambiExample(name = "Colliding Mice")
+//! [0]
 public class CollidingMice extends QWidget {
 
     static final int MOUSE_COUNT = 7;
+//! [0]
     private Signal0 stop = new Signal0();
     private Signal0 start = new Signal0();
 
+//! [1]
     public static void main(String args[]) {
         QApplication.initialize(args);
 
@@ -32,30 +35,44 @@ public class CollidingMice extends QWidget {
         collidingMice.show();
         QApplication.exec();
     }
+//! [1]
 
+//! [2]
     public CollidingMice(QWidget parent) {
         super(parent);
 
         QGraphicsScene scene = new QGraphicsScene(this);
+//! [2] //! [3]
         scene.setSceneRect(-300, -300, 600, 600);
+//! [3] //! [4]
         scene.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex);
+//! [4]
 
+//! [5]
         for (int i = 0; i < MOUSE_COUNT; ++i) {
             Mouse mouse = new Mouse(this);
             mouse.setPos(Math.sin((i * 6.28) / MOUSE_COUNT) * 200,
                          Math.cos((i * 6.28) / MOUSE_COUNT) * 200);
             scene.addItem(mouse);
         }
+//! [5]
 
+//! [6]
         QGraphicsView view = new QGraphicsView(scene);
         view.setRenderHint(QPainter.RenderHint.Antialiasing);
         view.setBackgroundBrush(new QBrush(new QPixmap(
+//! [6]
                 "classpath:com/trolltech/examples/images/cheese.png")));
+//! [7]
         view.setCacheMode(new QGraphicsView.CacheMode(
+//! [7]
                 QGraphicsView.CacheModeFlag.CacheBackground));
+//! [8]
         view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag);
+//! [8]
         view.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate);
 
+//! [9]
         QGridLayout layout = new QGridLayout();
         layout.addWidget(view, 0, 0);
         setLayout(layout);
@@ -64,7 +81,9 @@ public class CollidingMice extends QWidget {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         resize(400, 300);
     }
+//! [9]
 
+//! [10]
     public class Mouse extends QGraphicsItem {
 
         double angle = 0;
@@ -79,30 +98,39 @@ public class CollidingMice extends QWidget {
             color = new QColor(generator.nextInt(256), generator.nextInt(256),
                                generator.nextInt(256));
             rotate(generator.nextDouble() * 360);
+//! [10]
 
+//! [11]
             QTimer timer = new QTimer(CollidingMice.this);
             timer.start(1000/33);
+//! [11]
             timer.timeout.connect(this, "move()");
             start.connect(timer, "start()");
             stop.connect(timer, "stop()");
+//! [12]
         }
+//! [12]
 
         private double adjust = 0.5;
         private QRectF boundingRect = new QRectF(-20 - adjust, -22 - adjust,
                                                  40 + adjust, 83 + adjust);
         @Override
+//! [13]
         public QRectF boundingRect() {
             return boundingRect;
         }
+//! [13]
 
         QPainterPath shape = new QPainterPath();
         {
             shape.addRect(-10, -20, 20, 40);
         }
         @Override
+//! [14]
         public QPainterPath shape() {
             return shape;
         }
+//! [14]
 
         QBrush brush = new QBrush(Qt.BrushStyle.SolidPattern);
         QPainterPath tail = new QPainterPath(new QPointF(0, 20));
@@ -116,6 +144,7 @@ public class CollidingMice extends QWidget {
         private QRectF pupilRect2 = new QRectF(4 + mouseEyeDirection, -17, 4, 4);
 
         @Override
+//! [15]
         public void paint(QPainter painter,
                           QStyleOptionGraphicsItem styleOptionGraphicsItem,
                           QWidget widget) {
@@ -153,11 +182,15 @@ public class CollidingMice extends QWidget {
             painter.setBrush(QBrush.NoBrush);
             painter.drawPath(tail);
         }
+//! [15]
 
         private QPolygonF polygon = new QPolygonF();
         private QPointF origo = new QPointF(0, 0);
+//! [16]
         public void move() {
+//! [16]
             // Don't move too far away
+//! [17]
             QLineF lineToCenter = new QLineF(origo,
                                              mapFromScene(0, 0));
             if (lineToCenter.length() > 150) {
@@ -183,8 +216,10 @@ public class CollidingMice extends QWidget {
                 angle -= 0.25;
             }
 
+//! [17]
             // Try not to crash with any other mice
 
+//! [18]
             polygon.clear();
             polygon.append(mapToScene(0, 0));
             polygon.append(mapToScene(-30, -50));
@@ -214,14 +249,18 @@ public class CollidingMice extends QWidget {
                 }
             }
 
+//! [18]
             // Add some random movement
+//! [19]
             if (dangerMice.size() < 1 && generator.nextDouble() < 0.1) {
                 if (generator.nextDouble() > 0.5)
                     angle += generator.nextDouble() / 5;
                 else
                     angle -= generator.nextDouble() / 5;
             }
+//! [19]
 
+//! [20]
             speed += (-50 + generator.nextDouble() * 100) / 100.0;
 
             double dx = Math.sin(angle) * 10;
@@ -229,14 +268,21 @@ public class CollidingMice extends QWidget {
 
             rotate(dx);
             setPos(mapToParent(0, -(3 + Math.sin(speed) * 3)));
+//! [20] //! [21]
         }
+//! [21]
 
+//! [22]
         private double normalizeAngle(double angle) {
             while (angle < 0)
                 angle += TWO_PI;
             while (angle > TWO_PI)
                 angle -= TWO_PI;
             return angle;
+//! [22] //! [23]
         }
+//! [23]
     }
+//! [24]
 }
+//! [24]

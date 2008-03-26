@@ -19,6 +19,7 @@ import com.trolltech.demos.Interpreter;
 import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Advanced Calculator")
+//! [0]
 public class AdvancedCalculator extends QMainWindow {
 
     public static void main(String[] args) {
@@ -32,35 +33,45 @@ public class AdvancedCalculator extends QMainWindow {
     private QTextBrowser textBrowser;
 
     private Interpreter interpreter = new Interpreter();
+//! [0]
 
+//! [1]
     public AdvancedCalculator() {
         Vector<String> uiTypes = new Vector<String>(3);
         uiTypes.add("Simple");
         uiTypes.add("Normal");
         uiTypes.add("Dockable");
+//! [1]
 
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
+//! [2]
         String item = QInputDialog.getItem(this, tr("Ui selector"), tr("Ui configurations:"), uiTypes, 0, false);
+//! [2]
 
+//! [3]
         if (item == null || item.equals("Simple")) {
             Ui_CalculatorSimple uiSimple = new Ui_CalculatorSimple();
             uiSimple.setupUi(this);
             lineEdit = uiSimple.lineEdit;
             textBrowser = uiSimple.textBrowser;
         } else if (item.equals("Normal")) {
+//! [3] //! [4]
             Ui_CalculatorNormal uiNormal = new Ui_CalculatorNormal();
             uiNormal.setupUi(this);
             lineEdit = uiNormal.lineEdit;
             textBrowser = uiNormal.textBrowser;
         } else if (item.equals("Dockable")) {
+//! [4] //! [5]
             Ui_CalculatorDockable uiDockable = new Ui_CalculatorDockable();
             uiDockable.setupUi(this);
             lineEdit = uiDockable.lineEdit;
             textBrowser = uiDockable.textBrowser;
         }
+//! [5]
     }
 
+//! [6]
     public void on_button_equal_clicked() {
         String expression = lineEdit.text();
         String result = "";
@@ -77,6 +88,7 @@ public class AdvancedCalculator extends QMainWindow {
             result = expression;
         lineEdit.setText(result);
     }
+//! [6]
 
     public void type(String s) {
         lineEdit.setText(lineEdit.text() + s);
@@ -174,4 +186,6 @@ public class AdvancedCalculator extends QMainWindow {
         if (key != null)
             type(key);
     }
+//! [7]
 }
+//! [7]

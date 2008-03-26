@@ -78,18 +78,14 @@
 
     A minimal Java class using signals and slots may read:
 
-    \quotefromfile snippets/SignalsSlotsExample.java
-    \skipto /class Counter/
-    \printuntil /^\s\s\s\s\}/
+    \snippet doc/src/snippets/SignalsSlotsExample.java 1
     
     The class manages a counter, which is stored in the private member
     \c value.  The signal \c valueChanged is emitted whenever \c value
     changes. We will now go through the class step-by-step to describe
     how signals are created and emitted.
 
-    \quotefromfile snippets/SignalsSlotsExample.java
-    \skipto Signal1
-    \printline Signal1
+    \snippet doc/src/snippets/SignalsSlotsExample.java 2
 
     Signals in Qt Jambi are implemented in classes named Signal1,
     Signal2 to Signal9. The number of the class indicates the number
@@ -97,16 +93,14 @@
     specified as a generic. It is customary to declare signals as
     public rather than to provide access methods for them. 
 
-    \skipto QtBlockedSlot
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet doc/src/snippets/SignalsSlotsExample.java 3
 
     The getter for \c value is annotated with \c {@QtBlockedSlot}.  This
     prevents the method from being used as a slot. The annotation is
     mostly provided for consitency with Qt, in which functions must
     explicitly be declared as slots.
 
-    \skipto /setValue/
-    \printuntil /^\s\s\s\s\s\s\s\s\}/
+    \snippet doc/src/snippets/SignalsSlotsExample.java 4
 
     To emit a signal, you simply invoke its emit method with the
     necessary parameters (all signal classes implements an emit
@@ -118,9 +112,7 @@
     if \c{b.valueChanged()} were connected to \c{a.setValue()}). We
     move on the see how signals are connected to slots.
 
-    \quotefromfile snippets/SignalsSlotsExample.java
-    \skipto Counter a
-    \printuntil b.setValue
+    \snippet doc/src/snippets/SignalsSlotsExample.java 0
 
     When you connect a signal to a slot, you specify the object that
     will receive the signal and the method signature of the slot. It
