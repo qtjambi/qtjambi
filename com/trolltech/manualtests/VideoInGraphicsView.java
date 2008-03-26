@@ -5,7 +5,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.phonon.*;
 
-public class VideoInGraphicsView extends QGraphicsView {
+public class VideoInGraphicsView extends ZoomableGraphicsView {
 	
 	public VideoInGraphicsView() {		
 		setRenderHint(QPainter.RenderHint.Antialiasing);
@@ -37,19 +37,6 @@ public class VideoInGraphicsView extends QGraphicsView {
 		rotate(45);								
 		
 	}
-	
-	// Zoom on wheel events
-    protected void wheelEvent(QWheelEvent event) {
-        double scaleFactor = Math.pow(2, -event.delta() / 240.0); 
-        QMatrix m = matrix();
-        m.scale(scaleFactor, scaleFactor);
-        double factor = m.mapRect(new QRectF(0, 0, 1, 1)).width();
-        if (factor < 0.07 || factor > 100)
-            return;
-
-        scale(scaleFactor, scaleFactor);
-        
-    }    
     
 	public static void main(String args[]) {
 		QApplication.initialize(args);
