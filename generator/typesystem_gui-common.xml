@@ -2565,7 +2565,8 @@
                 <insert-template name="gui.convert_graphicsitem_array_to_java">
                     <replace from="%LENGTH" to="%2"/>
                 </insert-template>
-            </conversion-rule>
+                jobjectArray graphicsItemArrayHolder = %out;
+            </conversion-rule>            
             <conversion-rule class="native">
                 <insert-template name="gui.convert_graphicsitem_array_from_java"/>              
             </conversion-rule>            
@@ -2577,11 +2578,20 @@
                 <insert-template name="gui.convert_styleoptiongraphicsitem_array_to_java">
                     <replace from="%LENGTH" to="%2"/>
                 </insert-template>
+                jobjectArray styleOptionArrayHolder = %out;
             </conversion-rule>
             <conversion-rule class="native">
                 <insert-template name="gui.convert_styleoptiongraphicsitem_array_from_java"/>
             </conversion-rule>                    
         </modify-argument>
+        
+        <modify-argument index="return">
+            <conversion-rule class="shell">
+                qtjambi_invalidate_array(__jni_env, styleOptionArrayHolder);
+                qtjambi_invalidate_array(__jni_env, graphicsItemArrayHolder);
+            </conversion-rule>
+        </modify-argument>
+        
     </modify-function>
   </object-type>
   
