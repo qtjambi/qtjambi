@@ -1210,7 +1210,7 @@ class QClassPathEngine extends QAbstractFileEngine
     }
 }
 
-public abstract class QClassPathFileEngineHandler
+public class QClassPathFileEngineHandler
 {
 	public native static void initialize();
 }
