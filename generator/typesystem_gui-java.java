@@ -1102,7 +1102,7 @@ class QListWidget___ extends QListWidget {
      * 
      * @param labels The collection of labels for the new items.
      */
-    public final void addItems(java.util.Collection<String> labels) {
+    public final void addItems(java.util.List<String> labels) {
         for (String label : labels)
             addItem(label);
     }
@@ -1124,7 +1124,7 @@ class QListWidget___ extends QListWidget {
      * @param row The position in which to insert the new items.
      * @param labels The collection of labels for the new items.
      */
-    public final void insertItems(int row, java.util.Collection<String> labels) {
+    public final void insertItems(int row, java.util.List<String> labels) {
         for (String label : labels)
             insertItem(row++, label);
     }
