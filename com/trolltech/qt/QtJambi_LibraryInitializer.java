@@ -14,6 +14,7 @@
 package com.trolltech.qt;
 
 import com.trolltech.qt.core.QMessageHandler;
+import com.trolltech.qt.internal.QClassPathFileEngineHandler;
 
 public abstract class QtJambi_LibraryInitializer
 {

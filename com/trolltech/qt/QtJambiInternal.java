@@ -14,6 +14,7 @@
 package com.trolltech.qt;
 
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.internal.QClassPathEngine;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -754,7 +755,7 @@ public class QtJambiInternal {
      */
     public static void removeSearchPathForResourceEngine(String path)
     {
-        QClassPathEngine.removeSearchPath(path);
+        QClassPathEngine.removeSearchPath(path);        
     }
 
     /**

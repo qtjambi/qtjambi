@@ -1423,7 +1423,7 @@ void StaticCache::resolveQClassPathEngine_internal()
 
     Q_ASSERT(!QClassPathEngine.class_ref);
 
-    QClassPathEngine.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QClassPathEngine"));
+    QClassPathEngine.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/internal/QClassPathEngine"));
     Q_ASSERT(QClassPathEngine.class_ref);
 
     QClassPathEngine.constructor = env->GetMethodID(QClassPathEngine.class_ref, "<init>", "(Ljava/lang/String;)V");

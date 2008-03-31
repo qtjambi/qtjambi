@@ -431,7 +431,7 @@ private:
 };
 
 extern "C" JNIEXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QClassPathFileEngineHandler_initialize)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandler_initialize)
 (JNIEnv *,
  jclass)
 {
