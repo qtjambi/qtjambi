@@ -385,6 +385,7 @@
     <reject-enum-value name="QtSystemMsg" />
   </enum-type>
 
+  <enum-type name="QReadWriteLock::RecursionMode" />  
   <enum-type name="QSystemSemaphore::AccessMode" />
   <enum-type name="QSystemSemaphore::SystemSemaphoreError" />
   <enum-type name="QTextBoundaryFinder::BoundaryReason" flags="QTextBoundaryFinder::BoundaryReasons" />
@@ -679,6 +680,7 @@
     <modify-function signature="operator~()const" access="private"/>
   </value-type>  
 
+  <object-type name="QReadWriteLock"/>
   <object-type name="QDirIterator"/>
   <object-type name="QAbstractFileEngineIterator"/>
   <object-type name="QAbstractItemModel"/>

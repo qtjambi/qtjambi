@@ -238,7 +238,6 @@
   <enum-type name="QPrinter::Unit" />
   <enum-type name="QPrinter::DuplexMode" />
   <enum-type name="QProgressBar::Direction"/>
-  <enum-type name="QReadWriteLock::RecursionMode" />  
   <enum-type name="QRegion::RegionType"/>  
   <enum-type name="QRubberBand::Shape"/>
   <enum-type name="QSessionManager::RestartHint"/>
@@ -1931,7 +1930,6 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QReadWriteLock"/>
   <object-type name="QRegExpValidator"/>
   <object-type name="QScrollArea">
     <modify-function signature="setWidget(QWidget*)">
