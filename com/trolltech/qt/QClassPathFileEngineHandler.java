@@ -65,6 +65,9 @@ class JarCache {
                 URL url = new URL("jar:" + jarFileName + "!/");
                 JarFile file = ((JarURLConnection) url.openConnection()).getJarFile();
 
+                // Add root dir for all jar files (event empty ones)
+            	add("", file);
+
                 Enumeration<JarEntry> entries = file.entries();
                 while (entries.hasMoreElements()) {
                     JarEntry entry = entries.nextElement();
@@ -702,10 +705,10 @@ class QClassPathEngine extends QAbstractFileEngine
         else
             m_baseName = m_baseName.substring(first, last).replace('\\', '/');
 
+        if (classpaths == null)
+            findClassPaths();
+        
         if (m_selectedSource.equals("*")) {
-            if (classpaths == null)
-                findClassPaths();
-
             List<JarFile> potentialJars = JarCache.jarFiles(m_baseName);
 
             if (potentialJars != null) { // Its at least a directory which exists in jar files
