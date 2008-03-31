@@ -45,22 +45,26 @@
 
   <xsl:template match="/typesystem/*[self::object-type | self::value-type | self::interface-type | self::namespace-type]">
     <xsl:variable name="name" select="name()" />
+    <xsl:variable name="other" select="document($source)/typesystem/*[name() = $name][@name = current()/@name]" />    
     <xsl:copy>
       <xsl:for-each select="@*">
         <xsl:copy>
           <xsl:value-of select="." />
         </xsl:copy>
       </xsl:for-each>
+      <xsl:for-each select="$other/@*">
+        <xsl:copy>
+          <xsl:value-of select="." />
+        </xsl:copy>
+      </xsl:for-each>  
 
       <xsl:apply-templates select="node()" />
-      
-      <xsl:variable name="other" select="document($source)/typesystem/*[name() = $name][@name = current()/@name]" />
       <xsl:if test="$other">
         <xsl:choose>
           <xsl:when test="$lang != ''">
           <xsl:element name="language">
             <xsl:attribute name="name" ><xsl:value-of select="$lang" /></xsl:attribute>
-            <xsl:copy-of select="$other/node()" />  
+            <xsl:copy-of select="$other/node()" />
           </xsl:element>
           </xsl:when>
           <xsl:otherwise>
