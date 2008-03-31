@@ -35,6 +35,7 @@ public:
     }
 
     void generate();
+    void generatePackage(const QString &packageName, const SignatureTable &table);
 
 private:
     JumpTablePreprocessor *m_preprocessor;

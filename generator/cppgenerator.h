@@ -23,9 +23,13 @@ class CppGenerator : public Generator
     Q_OBJECT
 
 public:
+    static inline QString subDirectoryForPackage(const QString &package) {
+        return QLatin1String("cpp/") + QString(package).replace(".", "_");
+    }
+
     virtual QString subDirectoryForClass(const AbstractMetaClass *cls) const
     {
-        return "cpp/" + cls->package().replace(".", "_") + "/";
+        return subDirectoryForPackage(cls->package()) + "/";
     }
 
     static void writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option option = NoOption);
