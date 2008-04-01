@@ -22,9 +22,9 @@
     required to do this once). On Windows, you also need to run the \c
     register_eclipse_integration.bat file to complete the
     installation.
-    
+
     The Qt Jambi Integration requires Eclipse version 3.2 or higher
-    and a \l{Installing Qt Jambi}{prebuilt Qt Jambi package}. 
+    and a \l{Installing Qt Jambi}{prebuilt Qt Jambi package}.
 
     Note that we have experienced problems using KDE with Qt3. If you
     need to do this, you should not use the GTK Style. The style can
@@ -124,25 +124,25 @@
     In addition to the many standard widgets found in the Qt Designer
     widget box, you can also add your own custom widgets and use them
     in your application.
-    
+
     The first step is to add a \c QWidget subclass to your project.
-    In addition, it is required that custom widgets have a constructor 
+    In addition, it is required that custom widgets have a constructor
     that takes a single \c QWidget argument as its parent.
-    
+
     After the widget has been created, open the properties of your project
     and select the \gui {Qt Designer Plugins} page. This page will list the
     candidates for custom widgets in your project, and the list will indicate
     whether the widget meets the criteria for being a custom widget. In order
-    to become a custom widget the class has to be a subclass of \c QWidget 
+    to become a custom widget the class has to be a subclass of \c QWidget
     and it needs to have a constructor that takes a \c QWidget argument.
-    
+
     \image eclipse-custom-widget-add.png
 
     In the above example, we are adding the \c
     customwidgets.MyOwnCustomWidget widget to the widget box. The
     widget is part of the project and contains a layout with a QLabel,
     which contains the text "Hello World".
-    
+
     When you have added a custom widget to a project, it will show up
     in the widget box under a heading with the same name as the project.
     The widget box will only contain custom widgets for the current project
@@ -158,7 +158,7 @@
     from the custom widgets before deleting it from a project. If you
     change the widget's code after it has been added to a project, the
     widget might not be immediately updated in designer; you may have
-    to restart Eclipse for the changes to be visible in the editor. 
+    to restart Eclipse for the changes to be visible in the editor.
 
     \section2 The Java User Interface Compiler
 
@@ -190,5 +190,5 @@
     button, you will be able to select it from the resource
     editor. Provided that the classpath contains the folder in which
     the image was found, the correct path and prefix will be set
-    automatically in the generated file.        
+    automatically in the generated file.
 */

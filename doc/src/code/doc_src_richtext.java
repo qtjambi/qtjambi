@@ -58,7 +58,7 @@ public static void theRest() {
         textCursor.insertText(someText);
     }
 
-    textCursor.endEditBlock(); 
+    textCursor.endEditBlock();
 //! [6]
 
 

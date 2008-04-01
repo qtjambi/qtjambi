@@ -8,7 +8,7 @@ public class events extends QWidget
 {
     class MyCheckBox extends QCheckBox
     {
-    
+
         //! [0]
         public void mousePressEvent(QMouseEvent event)
         {
@@ -25,7 +25,7 @@ public class events extends QWidget
     class MyWidget : public QWidget
     {
         int MyCustomEventType = 1099;
-    
+
         class MyCustomEvent : public QEvent
         {
             public MyCustomEvent()
@@ -33,7 +33,7 @@ public class events extends QWidget
                 super((QEvent.Type)MyCustomEventType) {}
             }
         }
-    
+
         //! [1]
         public boolean event(QEvent event)
         {
@@ -48,11 +48,11 @@ public class events extends QWidget
                 // custom event handling here
                 return true;
             }
-    
+
             return super.event(event);
         }
         //! [1]
-    
+
     }
 
     public static void main(String args[])

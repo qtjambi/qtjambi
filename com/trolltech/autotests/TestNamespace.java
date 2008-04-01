@@ -31,7 +31,7 @@ public class TestNamespace extends QApplicationTest {
         assertTrue(Class.forName("com.trolltech.autotests.generated.NameSpace_NameSpace2_NameSpace3_ObjectD") != null);
         assertTrue(Class.forName("com.trolltech.autotests.generated.NameSpace_NameSpace2_NameSpace3_ValueB") != null);
     }
-    
+
     @Test public void testInheritance() throws ClassNotFoundException {
         Class<?> clazzC = Class.forName("com.trolltech.autotests.generated.NameSpace_NameSpace2_NameSpace3_ObjectC");
         Class<?> clazzA = Class.forName("com.trolltech.autotests.generated.ObjectA");
@@ -39,14 +39,14 @@ public class TestNamespace extends QApplicationTest {
 
         Class<?> clazzD = Class.forName("com.trolltech.autotests.generated.NameSpace_NameSpace2_NameSpace3_ObjectD");
         assertEquals(clazzC, clazzD.getSuperclass());
-        
+
         Class<?> interfaces[] = clazzD.getInterfaces();
         assertEquals(1, interfaces.length);
-        
+
         Class<?> interfaceA = Class.forName("com.trolltech.autotests.generated.NameSpace_NameSpace2_NameSpace3_InterfaceAInterface");
         assertEquals(interfaceA, interfaces[0]);
     }
-    
+
     @Test public void testCalls() {
         ObjectA a = new ObjectA();
         ObjectB b = new ObjectB();
@@ -59,11 +59,11 @@ public class TestNamespace extends QApplicationTest {
         assertEquals(a.aFuncPrefixed(a), a);
         assertEquals(a.bFuncPrefixed(b), b);
         assertEquals(a.vFuncPrefixed(v), v);
-        
+
         {
             NameSpace_NameSpace2_NameSpace3_ObjectD d = new NameSpace_NameSpace2_NameSpace3_ObjectD("fooBar");
             NameSpace_NameSpace2_NameSpace3_ObjectC c = new NameSpace_NameSpace2_NameSpace3_ObjectC("barFoo");
-            
+
             NameSpace_NameSpace2_NameSpace3_ObjectC temp = c.fooBar(d);
             assertEquals("fooBar", temp.str());
         }

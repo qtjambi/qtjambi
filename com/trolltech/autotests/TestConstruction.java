@@ -11,7 +11,7 @@ import com.trolltech.qt.gui.QWidget;
 import static org.junit.Assert.*;
 
 public class TestConstruction extends QApplicationTest {
-        
+
     @Test
     public void testQObjectConversionInConstructor() {
         QMdiArea area = new QMdiArea() {
@@ -21,9 +21,9 @@ public class TestConstruction extends QApplicationTest {
             }
         };
         area.show();
-        
+
         QMdiSubWindow subWindow = area.addSubWindow(new QWidget());
-        
+
         // Although it seems unlikely, this may actually be false, trust me.
         assertTrue(subWindow instanceof QMdiSubWindow);
     }

@@ -29,12 +29,12 @@ body { color: black; }</style>
             hourHand.append(new QPoint(7, 8));
             hourHand.append(new QPoint(-7, 8));
             hourHand.append(new QPoint(0, -40));
-    
+
             minuteHand.append(new QPoint(7, 8));
             minuteHand.append(new QPoint(-7, 8));
             minuteHand.append(new QPoint(0, -70));
         }
-    
+
         QTimer m_timer = new QTimer(this);</pre>
 <p>We subclass QWidget and define polygons to use for the hour and minute hands, as well as a timer that enables us to update the clock face.</p>
 <p>In the constructor, we set up a one-second timer to keep track of the current time, and we connect it to the standard update() slot so that the clock face is updated when the timer emits the timeout() signal:</p>
@@ -47,9 +47,9 @@ body { color: black; }</style>
         {
             QColor hourColor = new QColor(127, 0, 127);
             QColor minuteColor = new QColor(0, 127, 127, 191);
-    
+
             int side = width() &lt; height() ? width() : height();
-    
+
             QTime time = QTime.currentTime();</pre>
 <p>Before we set up the painter and draw the clock, we first define two QColors that will be used for the hour and minute hands. The minute hand's color has an alpha component of 191, meaning that it's 75% opaque.</p>
 <p>We also determine the length of the widget's shortest side so that we can fit the clock face inside the widget. It is also useful to determine the current time before we start drawing.</p>
@@ -72,7 +72,7 @@ body { color: black; }</style>
             painter.restore();</pre>
 <p>We save and restore the transformation matrix before and after the rotation because we want to place the minute hand without having to take into account any previous rotations.</p>
 <pre>&nbsp;           painter.setPen(hourColor);
-    
+
             for (int i=0; i&lt;12; ++i) {
                 painter.drawLine(88, 0, 96, 0);
                 painter.rotate(30.0f);
@@ -80,14 +80,14 @@ body { color: black; }</style>
 <p>We draw markers around the edge of the clock for each hour. We draw each marker then rotate the coordinate system so that the painter is ready for the next one.</p>
 <pre>&nbsp;           painter.setPen(QPen.NoPen);
             painter.setBrush(minuteColor);
-    
+
             painter.save();
             painter.rotate(6.0f * (time.minute() + time.second() / 60.0f));
             painter.drawConvexPolygon(minuteHand);
             painter.restore();</pre>
 <p>The minute hand is rotated in a similar way to the hour hand.</p>
 <pre>&nbsp;           painter.setPen(minuteColor);
-    
+
             for (int j=0; j&lt;60; ++j) {
                 if ((j % 5) != 0)
                     painter.drawLine(92, 0, 96, 0);
@@ -98,7 +98,7 @@ body { color: black; }</style>
 <pre>&nbsp;       public void showEvent(QShowEvent e) {
             m_timer.start(1000);
         }
-    
+
         public void hideEvent(QHideEvent e) {
             m_timer.stop();
         }</pre>
@@ -108,9 +108,9 @@ body { color: black; }</style>
         {
             QApplication.initialize(args);
             AnalogClock w = new AnalogClock();
-    
+
             w.show();
-    
+
             QApplication.exec();
         }
     }</pre>

@@ -7,7 +7,7 @@ import com.trolltech.qt.gui.*;
 public class src_gui_painting_qpainter extends QWidget {
 //! [0]
     @Override
-    protected void paintEvent(QPaintEvent e) { 
+    protected void paintEvent(QPaintEvent e) {
         QPainter painter = new QPainter(this);
         painter.setPen(QColor.blue);
         painter.setFont(new QFont("Arial", 30));
@@ -44,7 +44,7 @@ class painterfoobar2 extends painterfoobar {
 	public void abc(QPainter painter) {
 		QWidget myWidget = null;
 		QPainter painter2 = null;
-		
+
 //! [3]
         painter.begin(null); // impossible - paint device cannot be null
 
@@ -58,7 +58,7 @@ class painterfoobar2 extends painterfoobar {
 
 
 	void setWorldMatrix(QMatrix matrix, boolean b) {}
-	
+
 //! [4]
     void rotate(double angle) {
         QMatrix matrix = new QMatrix();
@@ -201,7 +201,7 @@ class painterfoobar2 extends painterfoobar {
     painter.end();
 //! [15]
     }
-    
+
     {
 //! [16]
     QRectF target = new QRectF(10.0, 20.0, 80.0, 60.0);
@@ -235,15 +235,15 @@ class painterfoobar2 extends painterfoobar {
     }
     }
 
-    
+
     public void fillRect(int a, int b) {}
-    public int background() 
+    public int background()
     {
     	int rectangle = 0;
 //! [19]
         fillRect(rectangle, background());
 //! [19]
-    
+
 
     {
 //! [20]

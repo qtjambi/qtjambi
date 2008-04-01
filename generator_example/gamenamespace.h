@@ -35,7 +35,7 @@ namespace Game {
     enum AnimationType {
         NoAnimation             = 0x000,
         WalkingHorizontally     = 0x001,
-        WalkingFromScreen       = 0x002, 
+        WalkingFromScreen       = 0x002,
         WalkingToScreen         = 0x003,
         StandingStill           = 0x004,
 

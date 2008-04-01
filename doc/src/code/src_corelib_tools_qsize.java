@@ -56,7 +56,7 @@ public class src_corelib_tools_qsize {
         s.add(r);
 
         // s becomes (2,11)
-        
+
 //! [3]
         }
 

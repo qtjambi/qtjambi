@@ -27,17 +27,17 @@ public class Threads implements Runnable {
                     + Thread.currentThread().getId() + ", type=" + e.type());
         }
     }
-    
+
     public class ThreadReceiver extends QObject {
         @Override
-        public boolean event(QEvent e) {            
+        public boolean event(QEvent e) {
             if (e.type() == QEvent.Type.Quit) {
                 System.out.println("ThreadReceiver should call quit()");
                 eventLoop.quit();
             } else if (e.type().value() > QEvent.Type.User.value()) {
                 System.out.println("ThreadReceiver: got user event: " + Thread.currentThread().getId() + ", id=" + e.type());
             }
-            
+
             return super.event(e);
         }
     }
@@ -66,26 +66,26 @@ public class Threads implements Runnable {
 
         eventLoop = new QEventLoop();
         eventLoop.exec();
-      
+
         System.out.println("Thread: " + this + ", completed");
         System.out.println("object.thread=" + tr.thread());
     }
-    
+
     public static void runThreads(int count) {
         Thread threads[] = new Thread[count];
         for (int i = 0; i < count; ++i) {
             threads[i] = new Thread(new Threads());
-            threads[i].start();            
+            threads[i].start();
         }
-        
+
         for (int i=0; i<count; ++i)
             try { threads[i].join(); } catch (Exception e) { }
     }
-    
+
     public static void main(String args[]) {
         QApplication.initialize(args);
         runThreads(10);
-        
+
         System.gc();
 
         System.out.println("All done...");

@@ -24,7 +24,7 @@ macx:{
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
     INCLUDEPATH += $(JAVADIR)/include
-    win32 { 
+    win32 {
         INCLUDEPATH += $(JAVADIR)/include/win32
     } else {
         INCLUDEPATH += $(JAVADIR)/include/linux
@@ -54,7 +54,7 @@ CONFIG(debug, debug|release) {
 macx:{
     LIBS += $$DESTDIR/lib$$member(QTJAMBI_LIB_NAME, 0).jnilib
 } else {
-    LIBS += -L$$DESTDIR -l$$QTJAMBI_LIB_NAME 
+    LIBS += -L$$DESTDIR -l$$QTJAMBI_LIB_NAME
 }
 
 QTJAMBI_CPP = ../cpp
@@ -85,7 +85,7 @@ SOURCES += gameaction.cpp \
            pickupaction.cpp \
            useaction.cpp \
 
-mac { 
+mac {
     CONFIG += ppc x86
     CONFIG -= precompile_header
 }

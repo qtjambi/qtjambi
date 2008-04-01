@@ -24,33 +24,33 @@ import com.trolltech.qt.gui.QApplication;
  */
 class QSynchronousInvokable extends QObject {
     static QEvent.Type SYNCHRONOUS_INVOKABLE_EVENT = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
-    
+
     private Runnable runnable;
     public QSynchronousInvokable(Runnable runnable) {
         disableGarbageCollection();
         if(QCoreApplication.instance().nativeId() != 0) {
             moveToThread(QCoreApplication.instance().thread());
             this.runnable = runnable;
-        }                       
-        
+        }
+
         if (runnable == null || Thread.currentThread().equals(QApplication.instance().thread()))
             invoked = true;
-        
+
     }
 
     private Boolean invoked = false;
     synchronized void waitForInvoked() {
         while (!invoked) {
-            try { 
+            try {
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        
+
         invoked = false;
-    }                   
-    
+    }
+
     @Override
     public final boolean event(com.trolltech.qt.core.QEvent e) {
         if (e.type() == SYNCHRONOUS_INVOKABLE_EVENT && runnable != null) {
@@ -58,7 +58,7 @@ class QSynchronousInvokable extends QObject {
             synchronized (this) {
                 invoked = true;
                 notifyAll();
-            }                
+            }
             return true;
         }
         return super.event(e);

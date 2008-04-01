@@ -122,8 +122,8 @@ public class CustomWidgetManager {
                         String classpaths[] = classPathsProperty.split(";");
 
                         URL urls[] = new URL[classpaths.length];
-                        for (int j=0; j<classpaths.length; ++j)                            
-                            urls[j] = new URL(classpaths[j]);                        
+                        for (int j=0; j<classpaths.length; ++j)
+                            urls[j] = new URL(classpaths[j]);
 
                         URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
                         type = loader.loadClass(e.attribute("class"));

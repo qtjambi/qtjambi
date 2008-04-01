@@ -17,7 +17,7 @@ import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-class SmokeEffect 
+class SmokeEffect
 {
     private int m_seeds[];
     private int m_seed_pos;
@@ -26,9 +26,9 @@ class SmokeEffect
     private int m_height;
     private int m_data[];
 
-    private final int seed() { 
-	int s = m_seeds[m_seed_pos]; 
-	m_seed_pos = (m_seed_pos + 1) % m_seeds.length; 
+    private final int seed() {
+	int s = m_seeds[m_seed_pos];
+	m_seed_pos = (m_seed_pos + 1) % m_seeds.length;
 	return s;
     }
 
@@ -42,7 +42,7 @@ class SmokeEffect
     public SmokeEffect(int width, int height) {
 	m_width = width;
 	m_height = height;
-    
+
 	m_seeds = new int[16000];
 	for (int i=0; i<m_seeds.length; ++i) {
 	    double d = Math.random();
@@ -57,27 +57,27 @@ class SmokeEffect
 
 
     public void next() {
-	// blur	
-	for (int y=1; y<m_height; ++y) {	
+	// blur
+	for (int y=1; y<m_height; ++y) {
 	    int oset = y * m_width;
 // 	    System.out.println("y:::");
 	    for (int x=1; x<m_width - 1; ++x) {
 // 		int dl = m_data[oset + m_width + x - 1];
 // 		int dr = m_data[oset + m_width + x + 1];
 // 		int d = m_data[oset + m_width + x];
-//  		m_data[oset + x] = (int) ((dl + (d * 2) + dr) / (4 + 10.0 / m_width));		
+//  		m_data[oset + x] = (int) ((dl + (d * 2) + dr) / (4 + 10.0 / m_width));
 // 		m_data[oset + x] = (int) ((dl + du + dr + dd) / 4);
-		m_data[oset + x] = (((m_data[oset+x+m_width]<<2) + 
+		m_data[oset + x] = (((m_data[oset+x+m_width]<<2) +
 					   (m_data[oset+x]<<1) +
 					   (m_data[oset+x+1]) +
 					   (m_data[oset+x-1])) - 7) >> 3;
 		if (m_data[oset+x] < 0)
 		    m_data[oset+x] = 0;
 // 		System.out.print(" " + m_data[oset + x]);
-	    }	
+	    }
 // 	    System.out.println();
 	}
-	
+
 	// seed the last row for the next step...
 	seedLastRow();
 
@@ -92,7 +92,7 @@ class SmokeEffect
 		int val_2 = 0;
 		np.setIntAt(oset + x, (val << 24) | (val_2 << 16) | (val_2 << 8) | (val_2));
 	    }
-	}	
+	}
     }
 
     public QImage image() { return m_image; }
@@ -102,7 +102,7 @@ public class Image extends QWidget
 {
     static final private double GOLDEN_MEAN = 1 / 1.61803399;
     static final private QColor color_green = new QColor(167, 196, 0);
-    
+
     static private QImage qtLogoImage(int width, int height, boolean render_logo) {
 	QBrush tt_green = new QBrush(color_green);
 	QBrush tt_black = new QBrush(new QColor(0, 0, 0));
@@ -133,7 +133,7 @@ public class Image extends QWidget
 	    double ir2 = inner_radius * 2;
 	    double or2 = outer_radius * 2;
 	    double t_2 = thickness / 2;
-	
+
 	    // draw the black circle
 	    QPainterPath circle_path = new QPainterPath();
 	    circle_path.addEllipse(-inner_radius, -inner_radius, ir2, ir2);
@@ -147,7 +147,7 @@ public class Image extends QWidget
 	    p.drawPath(t_path);
 	}
 	p.end();
-	
+
 	return image;
     }
 
@@ -155,7 +155,7 @@ public class Image extends QWidget
 	double shade_alpha = 0.8;
 	double shade_size = 0.2;
 	double hl_pos = GOLDEN_MEAN;
-	
+
 	QColor shade_color = QColor.fromRgbF(0, 0, 0, shade_alpha);
 	QColor transparent = darker ? QColor.fromRgbF(0, 0, 0, 0.25) : QColor.fromRgbF(0, 0, 0, 0);
 	QColor hl_color = QColor.fromRgbF(1, 1, 1, 0.7);
@@ -172,7 +172,7 @@ public class Image extends QWidget
 	    lg.setColorAt(hl_pos, hl_color);
 	lg.setColorAt(1 - shade_size, transparent);
 	lg.setColorAt(1, shade_color);
-	p.fillRect(0, 0, 1, 1, new QBrush(lg));		      
+	p.fillRect(0, 0, 1, 1, new QBrush(lg));
 
 	if (highlight) {
 	    QRadialGradient rg = new QRadialGradient(hl_pos, 1 - hl_pos, 0.4, hl_pos, 1 - hl_pos);
@@ -180,11 +180,11 @@ public class Image extends QWidget
 	    rg.setColorAt(1, transparent);
 	    p.fillRect(0, 0, 1, 1, new QBrush(rg));
 	}
-	
+
 	p.end();
 
 	return image;
-    }	
+    }
 
     static private QImage warpImage(QImage src, int warp, int sign) {
 	int w = src.width();
@@ -192,9 +192,9 @@ public class Image extends QWidget
 	int srch = src.height();
 	int desth = srch + warp;
 
-	QImage dest = new QImage(w, desth, QImage.Format.Format_ARGB32_Premultiplied);      	
+	QImage dest = new QImage(w, desth, QImage.Format.Format_ARGB32_Premultiplied);
 	dest.fill(0);
-	
+
 	QNativePointer sbits = src.bits();
 	QNativePointer dbits = dest.bits();
 
@@ -202,7 +202,7 @@ public class Image extends QWidget
 	dbits.setVerificationEnabled(false);
 
 	double r = w / 2.0;
-	
+
 	int extra_offset = sign >= 0 ? 0 : warp;
 
 	for (int x=0; x<w; ++x) {
@@ -211,7 +211,7 @@ public class Image extends QWidget
 		int p = sbits.intAt(y * ppl + x);
 		dbits.setIntAt(((y + oset + extra_offset) * ppl) + x, p);
 	    }
-	}	
+	}
 	return dest;
     }
 
@@ -223,7 +223,7 @@ public class Image extends QWidget
 	QColor transparent = QColor.transparent;
 	double highlight_pos = 0.4;
 	double highlight_size = 0.05;
-	
+
 
 	QImage combined = new QImage(size + size / 2,
 				     size + warp * 2 + size / 8,
@@ -237,10 +237,10 @@ public class Image extends QWidget
 
 	// draw the background
 	p.drawImage(0, 0, bg_image);
-	
+
 	// Draw the coffey
 	QRectF coffey_bounds = new QRectF(0, warp, size, 2 * warp);
-	QConicalGradient cg = new QConicalGradient(coffey_bounds.width()*GOLDEN_MEAN + warp*0.1, 
+	QConicalGradient cg = new QConicalGradient(coffey_bounds.width()*GOLDEN_MEAN + warp*0.1,
 						   warp*1.2 + coffey_bounds.height() / 2.0,
 						   -30);
 	cg.setColorAt(0, dark_brown);
@@ -262,7 +262,7 @@ public class Image extends QWidget
 	double hcy = handle_bounds.height() / 2;
 	QImage handle_im = new QImage(handle_bounds.size().toSize(),
 				      QImage.Format.Format_ARGB32_Premultiplied);
-	{ 
+	{
 	    handle_im.fill(0);
 	    QPainter ph = new QPainter();
         ph.begin(handle_im);
@@ -270,7 +270,7 @@ public class Image extends QWidget
 	    double ir = 0.5;
 	    double or = 0.9;
 	    double aa = 0.02;
-	    double shade = 0.08;	
+	    double shade = 0.08;
 	    rg.setColorAt(ir - aa, transparent);
 	    rg.setColorAt(ir, QColor.fromRgbF(0, 0, 0, 1));
 	    rg.setColorAt(ir + shade, color_green);
@@ -304,7 +304,7 @@ public class Image extends QWidget
  	p.drawEllipse(new QRectF(-0.5, -0.5, 1, 1));
 //  	p.drawEllipse(new QRectF(size - size / 2, size + warp - size / 2, size, size));
 
-	
+
 
 	p.end();
 
@@ -333,7 +333,7 @@ public class Image extends QWidget
     private SmokeEffect m_smoke_effect;
     private QImage m_logo;
 
-    public Image() 
+    public Image()
     {
 	m_smoke_effect = new SmokeEffect(132, 128);
 	m_logo = qoffeyLogo(200);
@@ -346,39 +346,39 @@ public class Image extends QWidget
     @Override
     protected void paintEvent(QPaintEvent e) {
 	m_smoke_effect.next();
-	
+
 	QPainter p = new QPainter();
     p.begin(this);
 	p.fillRect(rect(), new QBrush(QColor.white));
 // 	p.fillRect(rect(), new QBrush(Qt.CrossPattern));
-	
+
 	p.drawImage(50, 80, m_logo);
 
 	p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform);
 	QImage im = m_smoke_effect.image();
-	p.drawImage(new QRect(50, -20, im.width(), im.height()), 
-		    im, 
+	p.drawImage(new QRect(50, -20, im.width(), im.height()),
+		    im,
 		    new QRect(0, (int)(im.height()*0.60), im.width(), (int)(im.height()*0.39)));
 
 
 	p.end();
-    }    
+    }
 
     @Override
     public QSize sizeHint() {
 	return new QSize(270, 320);
     }
-    
-    
+
+
     public static void main(String args[])
     {
 	QApplication.initialize(args);
 
 	QApplication.setWindowIcon(new QIcon(QPixmap.fromImage(qoffeyLogo(64))));
-	
-	
+
+
  	//QPixmap pm = QPixmap.fromImage(qoffeyLogo(400));
-	
+
 	Image im = new Image();
 	im.show();
 

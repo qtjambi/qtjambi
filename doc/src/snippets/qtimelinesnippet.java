@@ -12,16 +12,16 @@ public class qtimelinesnippet
 
         QTimeLine timeLine = new QTimeLine(5000);
         timeLine.setFrameRange(0, 100);
-    
+
         timeLine.frame
 
         QObject.connect(timeLine, SIGNAL(frameChanged(int)),
 		     progressBar, SLOT(setValue(int)));
 
         progressBar.show();
-    
+
         timeLine.start();
-    
+
         return app.exec();
     }
 }

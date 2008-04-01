@@ -15,40 +15,40 @@ import com.trolltech.qt.gui.*;
 
 public class main
 {
-    
+
     public static void main(String args[])
     {
         QApplication.initialize(args);
-    
+
         QWidget window = new QWidget();
         QVBoxLayout layout = new QVBoxLayout(window);
         QLabel title = new QLabel("Some items from the directory model", window);
         title.setBackgroundRole(QPalette.ColorRole.Base);
         title.setMargin(8);
         layout.addWidget(title);
-        
+
     //! [0]
         QDirModel model = new QDirModel();
         QModelIndex parentIndex = model.index(QDir.currentPath());
         int numRows = model.rowCount(parentIndex);
     //! [0]
-    
+
     //! [1]
         for (int row = 0; row < numRows; ++row) {
             QModelIndex index = model.index(row, 0, parentIndex);
     //! [1]
-    
+
     //! [2]
             String text = model.data(index, Qt.ItemDataRole.DisplayRole).toString();
             // Display the text in a widget.
     //! [2]
-    
+
             QLabel label = new QLabel(text, window);
             layout.addWidget(label);
     //! [3]
         }
     //! [3]
-    
+
         window.setWindowTitle("A simple model example");
         window.show();
 

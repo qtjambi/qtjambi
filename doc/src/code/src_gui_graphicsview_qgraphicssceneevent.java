@@ -7,6 +7,6 @@ public class src_gui_graphicsview_qgraphicssceneevent {
 //! [0]
     setDropAction(proposedAction());
 //! [0]
-        
+
     }
 }

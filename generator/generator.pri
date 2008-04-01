@@ -40,7 +40,7 @@ HEADERS += \
 
 
 
-      
+
 SOURCES += \
         $$GENERATORPATH/generator.cpp \
         $$GENERATORPATH/main.cpp \
@@ -57,7 +57,7 @@ SOURCES += \
         $$GENERATORPATH/prigenerator.cpp \
 
 
-   
+
 QT = core xml
 
 win32{

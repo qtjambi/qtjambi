@@ -81,7 +81,7 @@ echo.
 echo.
 echo.
 echo Open Source packages
-echo. 
+echo.
 title building Qt %QT_VERSION% Open Source Packages
 rm -rf %QT_GPL_PACKAGE% qt-opensource
 unzip %QT_GPL_PACKAGE%.zip > log
@@ -116,16 +116,16 @@ set INCLUDE=
 cd qt-opensource
 set QMAKESPEC=win32-g++
 echo y | configure -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD
-cd src && ..\bin\qmake -r && mingw32-make && cd .. 
+cd src && ..\bin\qmake -r && mingw32-make && cd ..
 cd tools && ..\bin\qmake -r && mingw32-make && cd ..
 cd ..
 set LIB=%OLD_LIB%
 set INCLUDE=%OLD_INCLUDE%
 
 :cleanup
-echo. 
+echo.
 echo Clean up
-echo. 
+echo.
 set PATH=%OLD_PATH%
 set QMAKESPEC=%OLD_QMAKESPEC%
 popd

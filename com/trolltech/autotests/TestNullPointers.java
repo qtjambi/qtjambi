@@ -25,21 +25,21 @@ import com.trolltech.qt.gui.QWidget;
 
 import static org.junit.Assert.*;
 public class TestNullPointers extends QApplicationTest {
-            
+
     @Test
     public void testBoxLayoutAddWidget() {
         QVBoxLayout layout = new QVBoxLayout();
-        
+
         Exception e = null;
         try {
             layout.addWidget(null);
         } catch (Exception f) {
             e = f;
         }
-        
+
         assertTrue(e instanceof NullPointerException);
-    }       
-    
+    }
+
     static class MyLayout extends QLayout {
 
         @Override
@@ -50,7 +50,7 @@ public class TestNullPointers extends QApplicationTest {
         @Override
         public void addItem(QLayoutItemInterface arg__1) {
             // TODO Auto-generated method stub
-            
+
         }
 
         @Override
@@ -62,7 +62,7 @@ public class TestNullPointers extends QApplicationTest {
         @Override
         public void setGeometry(QRect arg__1) {
             // TODO Auto-generated method stub
-            
+
         }
 
         @Override
@@ -75,29 +75,29 @@ public class TestNullPointers extends QApplicationTest {
         public QLayoutItemInterface takeAt(int index) {
             return null;
         }
-        
+
     }
-    
-    
+
+
     @Test
     public void testBlah() {
         QWidget w = new QWidget();
-        
+
         MyLayout l = new MyLayout();
         w.setLayout(l);
         l.addWidget(new QWidget());
-        
+
         w.show();
-        
+
         QApplication.processEvents();
     }
-    
-    
+
+
     public static void main(String args[]) {
         QApplication.initialize(args);
         TestNullPointers p = new TestNullPointers();
         p.testBlah();
-        
+
     }
-    
+
 }

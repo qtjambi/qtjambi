@@ -7,7 +7,7 @@ public class doc_src_examples_trollprint extends QtJambiObject {
     static QRadioButton twoSidedDisabledRadio;
     static QRadioButton colorsEnabledRadio;
     static QRadioButton colorsDisabledRadio;
-	
+
     public void main(String args[]) {
         QApplication.initialize(args);
 

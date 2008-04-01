@@ -13,7 +13,7 @@ If you want to build manually, do so by building qsa in
 //depot/research/qsa/quickport and building the executable in
 //depot/research/qsa/quickport/tests/qsengine
 
-You also need a version of qdoc3 in your path. 
+You also need a version of qdoc3 in your path.
 
 You need cygwin on windows, including zip.
 
@@ -23,7 +23,7 @@ Building the Qt package
 
  - Fetch the Qt source package for the version you intend to build against.
 
- - Apply patches: 
+ - Apply patches:
    * 221022, painting bug in itemviews, visible in the imageviewer.
    * 222044, clipping bug on mac, very visible in the demo.
    * 222336, Run as foreground process on mac.
@@ -40,7 +40,7 @@ Building the Qt package
  - On Linux, setup rpath by adding:
       QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
    to the .qmake.conf file...
-    
+
  - Make using:
     make sub-src sub-tools
 
@@ -69,26 +69,26 @@ Building the Qt Jambi Webstart
 
  - This sucks a little bit...
 
- - First build the linux binary. That can be done using 
+ - First build the linux binary. That can be done using
    scripts/build_webstart_jar.sh
    This requires a Qt Jambi package, on a webserver somewhere, currently
    http://anarki/~gunnar/packages
 
  - Upload the webstart linux jar file to a webserver somewhere
 
- - Run 
+ - Run
    scripts/make_jar.bat
-   on windows to build the packages. This requires jambi packages on 
+   on windows to build the packages. This requires jambi packages on
    a webserver
 
  - Update the qtjambi.jnlp file with the url of the webserver you're
-   putting it on. Its in the 
+   putting it on. Its in the
    <jnlp codebase="http://anarki.troll.no/~gunnar/webstart"
    html tag.
 
  - You should be good to go...
 
- - If you have problems, you can specify 
+ - If you have problems, you can specify
    <property name="com.trolltech.qt.verbose-loading" value="true"/>
    inside a resource tag
-   
+

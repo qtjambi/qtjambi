@@ -5,7 +5,7 @@ include(../cpp/com_trolltech_autotests_generated/com_trolltech_autotests_generat
 
 INCLUDEPATH += ../cpp/com_trolltech_autotests_generated
 
-HEADERS += \ 
+HEADERS += \
 	abstractclass.h \
 	destruction.h \
 	global.h \

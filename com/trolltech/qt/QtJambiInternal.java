@@ -755,7 +755,7 @@ public class QtJambiInternal {
      */
     public static void removeSearchPathForResourceEngine(String path)
     {
-        QClassPathEngine.removeSearchPath(path);        
+        QClassPathEngine.removeSearchPath(path);
     }
 
     /**

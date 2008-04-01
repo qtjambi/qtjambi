@@ -6,11 +6,11 @@ import java.util.*;
 
 public class picture
 {
-    
+
     public static void myProcessing(String blah)
     {
     }
-    
+
     public static void  main(String args[])
     {
         QWidget myWidget = new QWidget();
@@ -39,7 +39,7 @@ public class picture
             painter.end();                         // painting done
     //! [1]
         }
-    
+
         QPicture myPicture = new QPicture();
 
         if (true)
@@ -51,7 +51,7 @@ public class picture
                 myProcessing(new String(string.toByteArray()));
     //! [2]
         }
-    
+
         if (true)
         {
             // OUTPUT
@@ -61,7 +61,7 @@ public class picture
                 myProcessing(new String(string.toByteArray()));
     //! [3]
         }
-    
+
         if (true)
         {
             // PIC READ
@@ -76,7 +76,7 @@ public class picture
             }
     //! [4]
         }
-    
+
         if (true)
         {
             QPixmap pixmap = new QPixmap();
@@ -94,7 +94,7 @@ public class picture
     //! [5]
         }
     }
-    
+
     // SVG READ
     //! [6]
     public static void readSVG(QPictureIO picture)
@@ -102,7 +102,7 @@ public class picture
         // read the picture using the picture.ioDevice()
     }
     //! [6]
-    
+
     // SVG WRITE
     //! [7]
     public static void writeSVG(QPictureIO picture)
@@ -110,16 +110,16 @@ public class picture
         // write the picture using the picture.ioDevice()
     }
     //! [7]
-    
+
     // USE SVG
     public static void foo() {
-    
+
     //! [8]
         // add the SVG picture handler
         // ...
     //! [8]
         //QPictureIO.defineIOHandler("SVG", 0, 0, readSVG, writeSVG);
         // ...
-    
+
     }
 }

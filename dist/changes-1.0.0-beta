@@ -32,8 +32,8 @@ ____________________
    is implemented.
 
  - Improved error messaging when slots are not found, is implemented.
- 
- - It is now possible to connect signals to methods in any subclass 
+
+ - It is now possible to connect signals to methods in any subclass
    of java.lang.Object.
 
 ____________________
@@ -44,7 +44,7 @@ ____________________
 
  - QtObject is renamed to QtJambiObject
 
- - QtObjectInterface is renamed to QtJambiObjectInterface  
+ - QtObjectInterface is renamed to QtJambiObjectInterface
 
 ____________________
 
@@ -116,7 +116,7 @@ ____________________
  - Language and Custom widget plugins for Jambi:
 
    Qt Jambi language plugin is implemented. It introduces Java syntax for
-   signals / slots, enums and resources as well as providing support 
+   signals / slots, enums and resources as well as providing support
    for custom widgets.
 
  - The com.trolltech.qt.designer.QUiLoader is implemented, and can
@@ -199,13 +199,13 @@ ____________________
    destructors
 
  - Specifying global enums in the typesystem would crash.
- 
+
  - Arguments would some times loose their C++ name and be named
    argX instead.
 
  - Calling convetion of native functions according to JNI
    specifications.
-   
+
  - Conversions of classes with multiple inheritance would sometimes
    fail.
 
@@ -217,7 +217,7 @@ ____________________
  - Enums no longer support the "package" attribute in the
    typesystem.
 
- - All generated classes are now labelled with the 
+ - All generated classes are now labelled with the
    com.trolltech.qt.QtJambiGeneratedClass annotation.
 
 
@@ -232,25 +232,25 @@ New Implementations:
 ____________________
 
  - All the new Qt Designer features are implemented.
- 
- - Wizards for Qt Jambi projects complete with code 
+
+ - Wizards for Qt Jambi projects complete with code
    templates and correct class path settings, are implemented.
-   
+
  - Qt Jambi perspective with all Qt Designer views is implemented.
 
- - Global preferences for Qt Jambi which affect all 
+ - Global preferences for Qt Jambi which affect all
    projects, are implemented.
-   
+
  - A menu option to preview forms in different styles
    as they are being developed, is implemented.
-   
+
  - The signals and slots editor is implemented
 
 ____________________
 
 Other Changes:
 ____________________
-   
+
  - Error reporting when running juic on forms, is improved.
 
 

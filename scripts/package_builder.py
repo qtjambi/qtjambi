@@ -51,7 +51,7 @@ class Options:
         self.buildBinary = True
         self.buildSource = True
 
-        
+
 options = Options()
 
 
@@ -64,7 +64,7 @@ class Package:
         self.arch = arch
         self.binary = False
         self.removeDirs = [
-            "ant", 
+            "ant",
             "autotestlib",
             "com/trolltech/autotests",
             "com/trolltech/bcc",
@@ -133,7 +133,7 @@ class Package:
             self.setPreview()
         else:
             raise "bad license type:" + self.license
-        
+
 
     def setBinary(self):
         self.binary = True
@@ -149,7 +149,7 @@ class Package:
             "common",
             "com/trolltech/qt",
             "designer-integration",
-            "juic", 
+            "juic",
             "generator",
             "generator_example",
             "lib",
@@ -169,7 +169,7 @@ class Package:
             "com/trolltech/tools/generator",
             "com/trolltech/tools/designer"
             ])
-                               
+
 
     def setMacBinary(self):
         self.setBinary()
@@ -190,7 +190,7 @@ class Package:
             self.copyFiles.append("dist/win/qtjambi.exe")
             self.copyFiles.append(["dist/win/msvcr71.dll", "bin"])
             self.platformJarName = "qtjambi-win32-msvc2005-" + options.qtJambiVersion + ".jar"
-        
+
         if self.arch == pkgutil.ARCH_64:
             self.compiler = "msvc2005_x64"
         else:
@@ -272,7 +272,7 @@ class Package:
             if self.platform == pkgutil.PLATFORM_WINDOWS and self.arch == pkgutil.ARCH_32:
                 return True
         return False
-        
+
 packages = []
 
 
@@ -413,7 +413,7 @@ def setupPackages():
                 linuxSrcGpl = Package(pkgutil.PLATFORM_LINUX, None, pkgutil.LICENSE_GPL)
                 linuxSrcGpl.setSource()
                 packages.append(linuxSrcGpl)
-        if options.buildCommercial: 
+        if options.buildCommercial:
             if options.buildWindows:
                 winSrcMoney = Package(pkgutil.PLATFORM_WINDOWS, None, pkgutil.LICENSE_COMMERCIAL)
                 winSrcMoney.setSource()
@@ -422,7 +422,7 @@ def setupPackages():
                 linuxSrcMoney = Package(pkgutil.PLATFORM_LINUX, None, pkgutil.LICENSE_COMMERCIAL)
                 linuxSrcMoney.setSource()
                 packages.append(linuxSrcMoney)
-        if options.buildPreview: 
+        if options.buildPreview:
             if options.buildWindows:
                 winSrcPreview = Package(pkgutil.PLATFORM_WINDOWS, None, pkgutil.LICENSE_PREVIEW)
                 winSrcPreview.setSource()
@@ -471,14 +471,14 @@ def prepareSourceTree():
 
 def packageSourcePackage(package):
     pkgutil.debug("packaging source package: %s..." % package.name())
-    
+
     os.chdir(options.packageRoot)
 
     if os.path.isdir(package.name()):
         shutil.rmtree(package.name())
-        
+
     shutil.copytree("qtjambi", package.name())
-    
+
     postProcessPackage(package)
 
 
@@ -486,12 +486,12 @@ def packageSourcePackage(package):
 # build server
 def packageAndSend(package):
     pkgutil.debug("packaging and sending: %s..." % package.name())
-    
+
     os.chdir(options.packageRoot)
 
     if os.path.isdir("tmptree"):
         shutil.rmtree("tmptree")
-        
+
     shutil.copytree("qtjambi", "tmptree");
 
     qtEdition = "qt-" + package.license;
@@ -511,7 +511,7 @@ def packageAndSend(package):
             buildFile.write("cd scripts\n")
             buildFile.write("call build_eclipse.bat %%cd%%\\..\\eclipse\\qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
-        
+
         buildFile.write("call ant\n")
         buildFile.write('if "%ERRORLEVEL%" == "0" ' + package.make + ' clean\n')
         buildFile.write("copying remaining files...\n")
@@ -526,7 +526,7 @@ def packageAndSend(package):
 
         buildFile.write("after copy...\n")
         buildFile.write("dir\n")
-        
+
     else:
         buildFile = open("tmptree/task.sh", "w")
         buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/" + qtEdition))
@@ -552,12 +552,12 @@ def packageAndSend(package):
             buildFile.write("cp $QTDIR/lib/libQtDesignerComponents.4.dylib tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtScript.4.dylib tmplib\n")
             buildFile.write("cp lib/libcom_trolltech_tools_designer.jnilib tmplib\n")
-            
+
         if package.hasEclipse():
             buildFile.write("cd scripts\n")
             buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
     buildFile.close()
-                        
+
     zipFile = os.path.join(options.packageRoot, "tmp.zip")
     pkgutil.debug(" - compressing...")
     pkgutil.compress(zipFile, os.path.join(options.packageRoot, "tmptree"))
@@ -584,10 +584,10 @@ def postProcessPackage(package):
     pkgutil.debug(" - creating directories...")
     for mkdir in package.mkdirs:
         os.makedirs(mkdir)
-    
+
     pkgutil.debug(" - copying files around...")
     copyFiles(package)
-    
+
     pkgutil.debug(" - deleting files and directories...")
     removeFiles(package)
 
@@ -613,11 +613,11 @@ def postProcessPackage(package):
         # Recover from the nasty libqtdesigner.so trick in doEclipse...
         if package.platform == pkgutil.PLATFORM_LINUX and package.hasEclipse():
             shutil.move("libqtdesigner.so", "lib/libqtdesigner.so")
-        
+
         if package.platform == pkgutil.PLATFORM_LINUX or package.platform == pkgutil.PLATFORM_MAC:
             os.system("cp tmplib/* lib")
             shutil.rmtree("tmplib")
-        
+
         if package.platform == pkgutil.PLATFORM_LINUX:
             os.chdir("lib")
             os.system("ln -s libqtjambi.so libqtjambi.so.1")
@@ -642,13 +642,13 @@ def doEclipse(package):
     os.chdir("eclipse")
 
     shutil.copy("../dist/eclipse/LICENSE.QT_JAMBI_ECLIPSE_INTEGRATION", "LICENSE")
-    
+
     for name in os.listdir("qtjambi-4.4"):
         fullName = os.path.join("qtjambi-4.4", name)
         if os.path.isdir(fullName):
             shutil.rmtree(fullName)
     shutil.move("qtjambi-4.4", "plugins")
-    
+
 
     if package.platform == pkgutil.PLATFORM_WINDOWS:
         os.system("zip -rq %s/qtjambi-eclipse-integration-%s%s-%s.zip ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
@@ -685,7 +685,7 @@ def bundle(package):
 def copyFiles(package):
     copylog = []
     for m in package.copyFiles:
-        if isinstance(m, types.ListType): 
+        if isinstance(m, types.ListType):
             (source, target) = m;
             shutil.copy(source, target);
             copylog.append("%s -> %s" % (source, target))
@@ -720,7 +720,7 @@ def removeFiles(package):
                 rmlist.append("remove file: " + fileToRemove);
         except:
             pkgutil.debug("Failed to delete file: " + fileToRemove)
-            
+
     for dirToRemove in package.removeDirs:
         try:
             if os.path.isdir(dirToRemove):
@@ -752,7 +752,7 @@ def displayStatus():
 def waitForResponse():
     packagesRemaining = options.binaryPackageCount
     pkgutil.debug("Waiting for build server responses...")
-    
+
     while packagesRemaining:
         displayStatus()
         (sock, (host, port)) = serversocket.accept()
@@ -776,12 +776,12 @@ def waitForResponse():
             print "   - unknown host... %s" % host
     displayStatus()
 
-            
+
 
 
 def shortcutPackageBuild():
     setupPackages()
-    
+
     print "deleting old crap..."
 
     if os.path.isdir("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01"):
@@ -789,10 +789,10 @@ def shortcutPackageBuild():
 
     packages[0].dataFile = "/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01.zip"
     postProcessPackage(packages[0])
-    
+
     return 0
 
-        
+
 
 
 # The main function, parses cmd line arguments and starts the pacakge
@@ -870,7 +870,7 @@ def main():
     setupPackages()
     pkgutil.debug(" - %d packages in total..." % len(packages))
 
-    
+
     # Package and send all packages, finish off by closing all sockets
     # to make sure they are properly closed...
     for package in packages:
@@ -885,7 +885,7 @@ def main():
     if options.binaryPackageCount:
         waitForResponse()
 
-    
+
 
 if __name__ == "__main__":
     main()

@@ -3,7 +3,7 @@ package com.trolltech.examples.qtconcurrent;
 import java.util.*;
 import com.trolltech.qt.core.*;
 
-public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Integer>, String>, 
+public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Integer>, String>,
                                   QtConcurrent.ReducedFunctor<HashMap<String, Integer>, HashMap<String, Integer>> {
     private static List<String >findFiles(String startDir, List<String> filters) {
         List<String> names = new ArrayList<String>();
@@ -22,7 +22,7 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
     */
     static HashMap<String, Integer> singleThreadedWordCount(List<String> files) {
         HashMap<String, Integer> wordCount = new HashMap<String,Integer>();
-        
+
         for (String file : files) {
             QFile f = new QFile(file);
             f.open(QIODevice.OpenModeFlag.ReadOnly);
@@ -33,10 +33,10 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
                     wordCount.put(word, i + 1);
                 }
             }
-            
+
             f.close();
         }
-        
+
         return wordCount;
     }
 
@@ -52,7 +52,7 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
 
         while (!textStream.atEnd()) {
             for (String word : textStream.readLine().split(" ")) {
-                int i = wordCount.containsKey(word) ? wordCount.get(word) : 0;                
+                int i = wordCount.containsKey(word) ? wordCount.get(word) : 0;
                 wordCount.put(word, i + 1);
             }
         }
@@ -68,9 +68,9 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
         for (String key : keys) {
             int i = result.containsKey(key) ? result.get(key) : 0;
             result.put(key, i + w.get(key));
-        }        
+        }
     }
-    
+
     public HashMap<String, Integer> defaultResult() {
         return new HashMap<String, Integer>();
     }
@@ -78,10 +78,10 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
     public static void main(String args[])
     {
         System.out.println("finding files...");
-                
+
         List<String> filters = new ArrayList<String>();
         filters.add("*.java");
-        
+
         List<String> files = findFiles("classpath:com/trolltech/examples", filters);
         System.out.println(files.size() + " files");
 
@@ -108,7 +108,7 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
             QTime time = new QTime();
             time.start();
             WordCount wc = new WordCount();
-            QFuture<HashMap<String, Integer>> total = QtConcurrent.mappedReduced(files, wc, wc);            
+            QFuture<HashMap<String, Integer>> total = QtConcurrent.mappedReduced(files, wc, wc);
             total.waitForFinished();
             mapReduceTime = time.elapsed();
             System.out.println("MapReduce: " + mapReduceTime);

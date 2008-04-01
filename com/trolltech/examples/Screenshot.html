@@ -27,7 +27,7 @@ body { color: black; }</style>
 <p>The <tt>Screenshot</tt> class inherits QWidget and is the application's main widget. It displays the application options and a preview of the screenshot.</p>
 <pre>&nbsp;   public class Screenshot extends QWidget {
         QPixmap originalPixmap;
-    
+
         QLabel screenshotLabel;
         QGroupBox optionsGroupBox;
         QSpinBox delaySpinBox;
@@ -36,30 +36,30 @@ body { color: black; }</style>
         QPushButton newScreenshotButton;
         QPushButton saveScreenshotButton;
         QPushButton quitScreenshotButton;
-    
+
         QVBoxLayout mainLayout;
         QGridLayout optionsGroupBoxLayout;
         QHBoxLayout buttonsLayout;
-    
+
         public Screenshot(QWidget parent) {
             super(parent);
             screenshotLabel = new QLabel();
             screenshotLabel.setSizePolicy(Policy.Expanding, Policy.Expanding);
             screenshotLabel.setAlignment(AlignmentFlag.AlignCenter);
             screenshotLabel.setMinimumSize(240, 160);
-    
+
             createOptionsGroupBox();
             createButtonsLayout();
-    
+
             mainLayout = new QVBoxLayout();
             mainLayout.addWidget(screenshotLabel);
             mainLayout.addWidget(optionsGroupBox);
             mainLayout.addLayout(buttonsLayout);
             setLayout(mainLayout);
-    
+
             shootScreen();
             delaySpinBox.setValue(5);
-    
+
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             setWindowTitle(tr(&quot;Screenshot&quot;));
             resize(300, 200);
@@ -69,9 +69,9 @@ body { color: black; }</style>
 <p>We create the applications's buttons and the group box containing the application's options, and put it all into a main layout. Finally, we take the initial screenshot and set the inital delay and the window title, before we resize the widget to a suitable size.</p>
 <pre>&nbsp;       public void resizeEvent(QResizeEvent event) {
             QSize scaledSize = originalPixmap.size();
-            scaledSize.scale(screenshotLabel.size(), 
+            scaledSize.scale(screenshotLabel.size(),
                              AspectRatioMode.KeepAspectRatio);
-            if (screenshotLabel.pixmap() != null 
+            if (screenshotLabel.pixmap() != null
                 || scaledSize != screenshotLabel.pixmap().size())
                     updateScreenshotLabel();
         }</pre>
@@ -82,8 +82,8 @@ body { color: black; }</style>
             if (hideThisWindowCheckBox.isChecked())
                 hide();
             newScreenshotButton.setDisabled(true);
-    
-            QTimer.singleShot(delaySpinBox.value() * 1000, 
+
+            QTimer.singleShot(delaySpinBox.value() * 1000,
                               this, &quot;shootScreen()&quot;);
         }</pre>
 <p>The private <tt>newScreenshot()</tt> method is called when the user requests a new screenshot; but the method only prepares a new screenshot.</p>
@@ -97,7 +97,7 @@ body { color: black; }</style>
             String fileName;
             fileName = QFileDialog.getSaveFileName(this, tr(&quot;Save As&quot;), initialPath,
                                                    new QFileDialog.Filter(filter));
-    
+
             if (!fileName.equals(&quot;&quot;))
                 originalPixmap.save(fileName, format);
         }</pre>
@@ -112,11 +112,11 @@ body { color: black; }</style>
 <pre>&nbsp;           if(originalPixmap != null) {
                 originalPixmap.dispose();
             }
-            
+
             originalPixmap = QPixmap.grabWindow(
                     QApplication.desktop().winId());
             updateScreenshotLabel();
-    
+
             newScreenshotButton.setDisabled(false);
             if (hideThisWindowCheckBox.isChecked())
                 show();
@@ -134,16 +134,16 @@ body { color: black; }</style>
 <p>The <tt>updateCheckBox()</tt> method is called whenever the user changes the delay using the <b>Screenshot Delay</b> option.</p>
 <pre>&nbsp;       void createOptionsGroupBox() {
             optionsGroupBox = new QGroupBox(tr(&quot;Options&quot;));
-    
+
             delaySpinBox = new QSpinBox();
             delaySpinBox.setSuffix(tr(&quot; s&quot;));
             delaySpinBox.setMaximum(60);
             delaySpinBox.valueChanged.connect(this, &quot;updateCheckBox()&quot;);
-    
+
             delaySpinBoxLabel = new QLabel(tr(&quot;Screenshot Delay:&quot;));
-    
+
             hideThisWindowCheckBox = new QCheckBox(tr(&quot;Hide This Window&quot;));
-    
+
             optionsGroupBoxLayout = new QGridLayout();
             optionsGroupBoxLayout.addWidget(delaySpinBoxLabel, 0, 0);
             optionsGroupBoxLayout.addWidget(delaySpinBox, 0, 1);
@@ -154,14 +154,14 @@ body { color: black; }</style>
 <p>First we create a group box that will contain all of the options' widgets. Then we create a QSpinBox and a QLabel for the <b>Screenshot Delay</b> option, and connect the spinbox to the <tt>updateCheckBox()</tt> method. Finally, we create a QCheckBox for the <b>Hide This Window</b> option, add all the options' widgets to a QGridLayout and install the layout on the group box.</p>
 <p>Note that we don't have to specify any parents for the widgets when we create them. The reason is that when we add a widget to a layout and install the layout on another widget, the layout's widgets are automatically reparented to the widget the layout is installed on.</p>
 <pre>&nbsp;       void createButtonsLayout() {
-            newScreenshotButton = createButton(tr(&quot;New Screenshot&quot;), this, 
+            newScreenshotButton = createButton(tr(&quot;New Screenshot&quot;), this,
                                                &quot;newScreenshot()&quot;);
-    
-            saveScreenshotButton = createButton(tr(&quot;Save Screenshot&quot;), this, 
+
+            saveScreenshotButton = createButton(tr(&quot;Save Screenshot&quot;), this,
                                                 &quot;saveScreenshot()&quot;);
-    
+
             quitScreenshotButton = createButton(tr(&quot;Quit&quot;), this, &quot;close()&quot;);
-    
+
             buttonsLayout = new QHBoxLayout();
             buttonsLayout.addStretch();
             buttonsLayout.addWidget(newScreenshotButton);
@@ -169,7 +169,7 @@ body { color: black; }</style>
             buttonsLayout.addWidget(quitScreenshotButton);
         }</pre>
 <p>The private <tt>createButtonsLayout()</tt> method is called from the constructor. We create the application's buttons using the private <tt>createButton()</tt> method, and add them to a QHBoxLayout.</p>
-<pre>&nbsp;       QPushButton createButton(final String text, QWidget receiver, 
+<pre>&nbsp;       QPushButton createButton(final String text, QWidget receiver,
                                  String member) {
             QPushButton button = new QPushButton(text);
             button.clicked.connect(receiver, member);
@@ -178,7 +178,7 @@ body { color: black; }</style>
 <p>The private <tt>createButton()</tt> method is called from the <tt>createButtonsLayout()</tt> method. It simply creates a QPushButton with the provided text, connects it to the provided receiver and method, and returns a pointer to the button.</p>
 <pre>&nbsp;       void updateScreenshotLabel() {
             screenshotLabel.setPixmap(originalPixmap.scaled(screenshotLabel.size(),
-                                      AspectRatioMode.KeepAspectRatio, 
+                                      AspectRatioMode.KeepAspectRatio,
                                       TransformationMode.SmoothTransformation));
         }</pre>
 <p>The private <tt>updateScreenshotLabel()</tt> method is called whenever the screenshot changes, or when a resize event changes the size of the screenshot preview label. It updates the screenshot preview's label using the QLabel.setPixmap() and QPixmap.scaled() methods.</p>

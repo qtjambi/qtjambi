@@ -18,7 +18,7 @@ ____________________
  - setProperty() / property() in QObject for dynamically setting
    and accessing properties
 
- - read / write / reset -Property in QtPropertyManager for 
+ - read / write / reset -Property in QtPropertyManager for
    manipulating properties.
 
  - Optimize property access in QtPropertyManager.
@@ -27,7 +27,7 @@ ____________________
 
  - More Qt 4.3 classes added to the API, including QMdiArea, QWizard,
    QColumnView and QXmlStream.
-   
+
  - Added setShortcut() overload that takes a QKeySequence.StandardKey
    to QAction and QAbstractButton.
 
@@ -36,7 +36,7 @@ ____________________
 Fixes:
 ____________________
 
- - Connections between signals and slots of array types 
+ - Connections between signals and slots of array types
 
  - Retain references to objects that are passed to C++ functions to
    prevent garbage collection from disposing them. This prevents sporadic
@@ -62,7 +62,7 @@ ____________________
  - Made adding/removing searchpaths in QClassPathFileEngine reentrant.
 
  - QUiLoader has improved support for: buddies, actions, tabs, docks
-   and a number of different properties. 
+   and a number of different properties.
 
  - QTreeModel would query children when parent is exposed, now it only
    queries childCount().
@@ -73,11 +73,11 @@ ____________________
 
  - Runnables passed to QCoreApplication.invokeLater() were often gc'ed
    prematurly.
-   
+
  - Memory leak for java-created objects of certain object types.
- 
+
  - Compatibility with changes to Java Webstart in Java 1.6.
- 
+
  - Stability issues with QInvokable.
 
 
@@ -145,8 +145,8 @@ New Implementations:
 ____________________
 
  - Operators == and != are converted into an equals() function.
- 
- - Operators >=, >, ==, <= and < are converted into the Comparable 
+
+ - Operators >=, >, ==, <= and < are converted into the Comparable
    interface.
 
  - Generated code always imports "com.trolltech.qt.*".
@@ -154,38 +154,38 @@ ____________________
  - Extended the <modify-function> tag to include remove, access
    and rename as attributes.
 
- - Parse and understand the Q_PROPERTY C++ macro and generate code 
+ - Parse and understand the Q_PROPERTY C++ macro and generate code
    accordingly.
 
  - Support the "slots" keyword and generate @QtBlockedSlots annotations
    for methods that are not slots in the C++ function.
 
  - Improved error feedback
- 
+
  - Added <no-null-pointer> tag to specify arguments for which null pointers
    constitute an exception.
-   
+
  - Moved "class" attribute from <modify-function> tag to the individual child
    tags that support it.
-   
- - Replaced <disable-gc> tag with <define-ownership> tag for more flexible 
+
+ - Replaced <disable-gc> tag with <define-ownership> tag for more flexible
    control over ownership changes.
-   
- - Added <reference-count> tag to specify reference counting without 
+
+ - Added <reference-count> tag to specify reference counting without
    redefining ownership.
-   
+
  - fromNativePointer() function now generated for object types as well as
    value types.
-   
+
  - Reduce the number of inconsistent functions generated for interface types.
 
- - Stream operators that are declared in the global scope and that take a 
-   QDataStream or QTextStream as first argument will be implemented as 
+ - Stream operators that are declared in the global scope and that take a
+   QDataStream or QTextStream as first argument will be implemented as
    Java methods writeTo() and readFrom() in the class of the second argument.
 
 ____________________
 
-Fixes: 
+Fixes:
 ____________________
 
  - The generator would in some cases make use of calls to __override_xxx
@@ -212,9 +212,9 @@ Fixes:
 ____________________
 
  - Numerous stability fixes.
- 
- - Pressing certain keys when editing a form would open the preview 
-   window by mistake. 
+
+ - Pressing certain keys when editing a form would open the preview
+   window by mistake.
 
 
 
@@ -240,7 +240,7 @@ ____________________
 
 Fixes:
 ____________________
- 
+
  - Updated TextEdit to new shortcut API.
 
 ************************************************************************

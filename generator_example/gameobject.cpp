@@ -15,8 +15,8 @@
 
 #include "gamescene.h"
 
-GameObject::GameObject(GameScene *scene, const QString &name) 
-: m_name(name), m_direction(Game::NoDirection), m_size_in_depth(1.0), m_scene(scene), 
+GameObject::GameObject(GameScene *scene, const QString &name)
+: m_name(name), m_direction(Game::NoDirection), m_size_in_depth(1.0), m_scene(scene),
   m_current_animation(Game::NoAnimation), m_movement_factor(0.05), m_old_factor(0.0)
 {
     startTimer(10);
@@ -29,10 +29,10 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::walk(Game::WalkingDirection direction) 
-{ 
-    m_direction = direction; 
-    
+void GameObject::walk(Game::WalkingDirection direction)
+{
+    m_direction = direction;
+
     switch (direction) {
     case Game::Right:
         setFlipped(true);
@@ -55,29 +55,29 @@ void GameObject::walk(Game::WalkingDirection direction)
 }
 
 
-Game::WalkingDirection GameObject::direction() const 
-{ 
-    return m_direction; 
-}  
-
-QString GameObject::name() const 
-{ 
-    return m_name; 
+Game::WalkingDirection GameObject::direction() const
+{
+    return m_direction;
 }
 
-QStringList GameObject::otherNames() const 
-{ 
-    return m_other_names; 
+QString GameObject::name() const
+{
+    return m_name;
 }
 
-Point3D GameObject::position() const 
-{ 
-    return m_position; 
+QStringList GameObject::otherNames() const
+{
+    return m_other_names;
+}
+
+Point3D GameObject::position() const
+{
+    return m_position;
 }
 
 void GameObject::addName(const QString &other_name)
-{ 
-    m_other_names.append(other_name); 
+{
+    m_other_names.append(other_name);
     if (m_scene != 0)
         m_scene->addNameToGameObject(this, other_name);
 }
@@ -91,10 +91,10 @@ QPainterPath GameObject::shape() const
         QPainterPath path;
         path.addRect(boundingRect());
         return path;
-    }        
+    }
 }
 
-void GameObject::showDescription() const 
+void GameObject::showDescription() const
 {
     m_scene->message(m_description);
 }
@@ -118,14 +118,14 @@ bool GameObject::canMove(const Point3D &pos)
     QPainterPath walkPath;
     if (m_direction != Game::Left && m_direction != Game::Right) {
         walkPath = QPainterPath(this->pos() + QPointF(-w / 2.0, h / 2.0));
-        walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0));    
+        walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0));
         walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0));
         walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(-w / 2.0, h / 2.0));
         walkPath.closeSubpath();
     } else {
         if (m_direction == Game::Left) w *= -1;
         walkPath = QPainterPath(this->pos() + QPointF(w / 2.0, h / 2.0));
-        walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0 + 1.0));    
+        walkPath.lineTo(this->pos() + QPointF(w / 2.0, h / 2.0 + 1.0));
         walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0));
         walkPath.lineTo(QPointF(pos.x(), pos.y()) + QPointF(w / 2.0, h / 2.0 + 1.0));
         walkPath.closeSubpath();
@@ -133,13 +133,13 @@ bool GameObject::canMove(const Point3D &pos)
 
     QList<QGraphicsItem *> items = m_scene->scene()->items();
     foreach (QGraphicsItem *item, items) {
-        AbstractGameObject *gameObject = static_cast<AbstractGameObject *>(item);        
-        if (gameObject->collidesWithPath(gameObject->mapFromScene(walkPath)) && (gameObject->objectFlags() & Game::Blocking)) {            
+        AbstractGameObject *gameObject = static_cast<AbstractGameObject *>(item);
+        if (gameObject->collidesWithPath(gameObject->mapFromScene(walkPath)) && (gameObject->objectFlags() & Game::Blocking)) {
             returned = false;
             break;
         }
     }
-    
+
     return returned;
 }
 
@@ -147,8 +147,8 @@ void GameObject::timerEvent(QTimerEvent *)
 {
     GameAnimation *a = animation(m_current_animation);
     if (a != 0 && a->update())
-        update();        
-    
+        update();
+
     int elapsed = m_time.elapsed();
     if (elapsed > 0 && direction() != Game::NoDirection) {
         Point3D pos = position();
@@ -160,30 +160,30 @@ void GameObject::timerEvent(QTimerEvent *)
             if (pos.x() < anim_width) pos.rx() = anim_width;
         } else if (direction() == Game::Right) {
             pos.rx() += elapsed * m_movement_factor;
-            if (pos.x() + anim_width > m_scene->background().width()) 
+            if (pos.x() + anim_width > m_scene->background().width())
                 pos.rx() = m_scene->background().width() - anim_width;
         } else if (direction() == Game::Up) {
             pos.ry() -= elapsed * m_movement_factor;
-            if (pos.y() < m_scene->horizon()) pos.ry() = m_scene->horizon();            
+            if (pos.y() < m_scene->horizon()) pos.ry() = m_scene->horizon();
         } else if (direction() == Game::Down) {
             pos.ry() += elapsed * m_movement_factor;
             if (pos.y() + anim_height > m_scene->background().height()) pos.ry() = m_scene->background().height() - anim_height;
         }
-        qreal dist = m_scene->farthestZ() - m_scene->closestZ();            
+        qreal dist = m_scene->farthestZ() - m_scene->closestZ();
         pos.rz() = m_scene->farthestZ() - ((m_scene->height() - pos.y()) / m_scene->height()) * dist;
         if (canMove(pos))
-            setPosition(pos);        
-    } 
+            setPosition(pos);
+    }
 
     if (elapsed > 0)
-        m_time.restart();    
+        m_time.restart();
 }
 
-void GameObject::setPosition(const Point3D &position) 
-{ 
+void GameObject::setPosition(const Point3D &position)
+{
     setPos(position.x(), position.y());
     setZValue(position.z());
-    m_position = position; 
+    m_position = position;
 }
 
 
@@ -195,7 +195,7 @@ bool GameObject::inProximityOfEgo() const
 void GameObject::perform(Game::ActionType action, AbstractGameObject **args, int num_args)
 {
     switch (action) {
-    case Game::Use: 
+    case Game::Use:
         if (num_args == 0) {
             emit used();
         } else {

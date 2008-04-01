@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <typesystem>
-  
+
 
   <namespace-type name="QPatternist"/>
   <namespace-type name="QPatternistSDK"/>
@@ -9,7 +9,7 @@
   <enum-type name="QXmlNodeModelIndex::DocumentOrder"/>
   <enum-type name="QAbstractXmlNodeModel::NodeCopySetting"/>
   <enum-type name="QAbstractXmlNodeModel::SimpleAxis"/>
-  
+
   <object-type name="QAbstractMessageHandler">
     <modify-function signature="QAbstractMessageHandler(QObject*)" remove="all" />
   </object-type>
@@ -26,16 +26,16 @@
   <rejection class="QAbstractXmlNodeModel" function-name="type" />
   <value-type name="QAbstractXmlNodeModel">
     <modify-function signature="QAbstractXmlNodeModel()" remove="all" />
-    <modify-function signature="namespaceForPrefix(QXmlNodeModelIndex,short) const" 
+    <modify-function signature="namespaceForPrefix(QXmlNodeModelIndex,short) const"
 		     remove="all" />
-    <modify-function signature="isDeepEqual(QXmlNodeModelIndex,QXmlNodeModelIndex) const" 
+    <modify-function signature="isDeepEqual(QXmlNodeModelIndex,QXmlNodeModelIndex) const"
 		     remove="all" />
   </value-type>
 
   <rejection class="QAbstractXmlReceiver" function-name="item" />
   <rejection class="QAbstractXmlReceiver" function-name="sendAsNode" />
   <value-type name="QAbstractXmlReceiver">
-  </value-type>  
+  </value-type>
 
   <value-type name="QSimpleXmlNodeModel" />
 
@@ -46,7 +46,7 @@
   <rejection class="QXmlFormatter" function-name="item" />
   <object-type name="QXmlFormatter">
     <modify-function signature="startFormattingContent()" remove="all" />
-  </object-type> 
+  </object-type>
 
   <value-type name="QXmlItem">
     <modify-function signature="operator=(QXmlItem)" remove="all" />
@@ -60,10 +60,10 @@
       <modify-argument index="4">
 	<remove-default-expression />
       </modify-argument>
-    </modify-function>    
+    </modify-function>
 
     <modify-function signature="operator=(QXmlName)" remove="all" />
-    <modify-function signature="QXmlName(short,short,short)" 
+    <modify-function signature="QXmlName(short,short,short)"
 		     remove="all" />
     <modify-function signature="localName()const" remove="all" />
     <modify-function signature="prefix()const" remove="all" />
@@ -95,16 +95,16 @@
     <modify-function signature="isDeepEqual(QXmlNodeModelIndex) const" remove="all" />
     <modify-function signature="compareOrder(QXmlNodeModelIndex) const" remove="all" />
     <modify-function signature="namespaceBindings() const" remove="all" />
-    <modify-function signature="namespaceForPrefix(short) const" remove="all" /> 
+    <modify-function signature="namespaceForPrefix(short) const" remove="all" />
     <modify-function signature="stringValue() const" remove="all" />
     <modify-function signature="is(QXmlNodeModelIndex) const" remove="all" />
-    <modify-function signature="reset()" remove="all" />  
+    <modify-function signature="reset()" remove="all" />
     <modify-function signature="internalPointer()const" remove="all" />
 
     <modify-function signature="model()const">
-      <access modifier="private"/>  
+      <access modifier="private"/>
       <rename to="model_private" />
-    </modify-function>    
+    </modify-function>
   </value-type>
 
   <value-type name="QXmlSerializerPointer"/>
@@ -144,7 +144,7 @@
       <modify-argument index="1">
 	<reference-count action="set" variable-name="__rcCodec" />
       </modify-argument>
-    </modify-function> 
+    </modify-function>
   </object-type>
 
 
@@ -156,7 +156,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::sequencedTypedValue', unmatched return type 'QExplicitlySharedDataPointer&lt;QAbstractXmlForwardIterator&lt;QPatternist::Item&gt;&gt;"/>
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::QXmlNodeModelIndex', unmatched parameter type 'QPatternist::NodeIndexStorage const&amp;'" />
-  
+
   <!-- To avoid warnings when running the generator on systems without XML patterns -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSimpleXmlNodeModel' is specified in typesystem, but not defined. This could potentially lead to compilation errors."/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QXmlSerializerPointer' is specified in typesystem, but not defined. This could potentially lead to compilation errors."/>

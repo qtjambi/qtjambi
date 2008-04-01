@@ -84,9 +84,9 @@ public class src_gui_dialogs_qmessagebox extends QWidget {
     public static void main(String args[]) {
         QApplication.initialize(args);
     }
-    
+
     private void snippetWrapper0() {
-    
+
 //! [0]
     	QMessageBox.StandardButtons buttons = new QMessageBox.StandardButtons();
     	buttons.set(QMessageBox.StandardButton.Save);
@@ -99,7 +99,7 @@ public class src_gui_dialogs_qmessagebox extends QWidget {
 //! [0]
     }
 
-    
+
     private void snippetWrapper1() {
 //! [1]
         QMessageBox msgBox = new QMessageBox();

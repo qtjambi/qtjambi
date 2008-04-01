@@ -154,7 +154,7 @@ public class VirtualFunctions extends QApplicationTest {
     /**
      * The purpose of this test is to verify the correct virtual functions are
      * being called for objects created in C++ and Java.
-     * 
+     *
      * This test relies on some hardcoded values in the styles so if those
      * change the tests will break, but wth...
      */
@@ -305,7 +305,7 @@ public class VirtualFunctions extends QApplicationTest {
         obj.doVirtualCall(foo, "of my non-super strings");
         assertEquals(foo.getS(), "Even more of my non-super strings");
     }
-    
+
     private boolean myVirtualFunctionWasCalled;
     @Test
     //  Test whether slots are magically virtual as predicated by Qt
@@ -321,19 +321,19 @@ public class VirtualFunctions extends QApplicationTest {
             @Override
             public void drawComplexControl(ComplexControl cc, QStyleOptionComplex opt, QPainter p, QWidget widget) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             @Override
             public void drawControl(ControlElement element, QStyleOption opt, QPainter p, QWidget w) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             @Override
             public void drawPrimitive(PrimitiveElement pe, QStyleOption opt, QPainter p, QWidget w) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             @Override
@@ -378,13 +378,13 @@ public class VirtualFunctions extends QApplicationTest {
                 return null;
             }
         };
-        
+
         QIcon icon = style.standardIcon(QStyle.StandardPixmap.SP_ArrowBack);
         assertTrue(myVirtualFunctionWasCalled);
         assertTrue(icon.isNull());
     }
-    
-    
+
+
     @Test
     //  Test whether slots are magically virtual as predicated by Qt
     public void slotsAsVirtualFromCppToJava2() {
@@ -396,10 +396,10 @@ public class VirtualFunctions extends QApplicationTest {
                 return 123;
             }
         };
-        
+
         int k = style.layoutSpacing(QSizePolicy.ControlType.ButtonBox, QSizePolicy.ControlType.ButtonBox, Qt.Orientation.Horizontal);
         assertTrue(myVirtualFunctionWasCalled);
         assertEquals(123, k);
     }
-    
+
 }

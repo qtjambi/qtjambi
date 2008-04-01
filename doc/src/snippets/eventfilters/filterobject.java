@@ -12,7 +12,7 @@ public class filterobject extends QObject
     {
         target = null;
     }
-    
+
     //! [0]
     public boolean eventFilter(QObject object, QEvent event)
     {
@@ -27,14 +27,14 @@ public class filterobject extends QObject
         return false;
     }
     //! [0]
-    
+
     public void setFilteredObject(QObject object)
     {
         if (target != null)
             target.removeEventFilter(this);
-    
+
         target = object;
-    
+
         if (target != null)
             target.installEventFilter(this);
     }

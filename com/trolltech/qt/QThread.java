@@ -27,13 +27,13 @@ import com.trolltech.qt.core.*;
  * The QThread class was introduced to ensure that native resources are freed when
  * QObjects are garbage collected. The garbage collector thread posts an event to
  * the native QObject, which then deletes itself. Before exiting, the thread will
- * flush all events - causing all native QObjects to be deleted. 
+ * flush all events - causing all native QObjects to be deleted.
  * <p>
  * QThread has two convenience signals: starting and finished. Started is emitted
  * just before the runnable target is invoked. Finished is emitted just before the
  * thread shuts down - after the execution of the runnable target and the flushing
  * of the event loop.
- *   
+ *
  * @See com.trolltech.qt.core.QObject#thread()
  * @See com.trolltech.qt.QThreadAffinityException
  * @See <a href="../threads.html">Threading support in Qt</a>
@@ -134,7 +134,7 @@ public final class QThread extends Thread {
 
         System.gc();
         QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
-        
+
         finished.emit();
     }
 

@@ -19,7 +19,7 @@ public class src_gui_widgets_qtextedit extends QWidget {
 
         String text = "insert me";
         String fragment = "<B>Hi!</B>";
-        
+
         //! [1]
         edit.textCursor().insertText(text);
         //! [1]

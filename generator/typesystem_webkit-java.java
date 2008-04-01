@@ -9,7 +9,7 @@ class QWebPage___ extends QWebPage {
         if (javaScriptPrompt(originatingFrame, msg, defaultValue, result))
             return result.stringValue();
         else
-            return null;        
+            return null;
     }
 
 }// class

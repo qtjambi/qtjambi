@@ -13,7 +13,7 @@ class whatsthis extends QMainWindow
         newAct.setWhatsThis(tr("Click this option to create a new file."));
     //! [0]
     }
-    
+
     private QAction newAct;
 
     public static void main(String args[])

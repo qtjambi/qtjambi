@@ -20,7 +20,7 @@ public class QTableArea {
         this.column = column;
         this.rowCount = rowCount;
         this.columnCount = columnCount;
-    }        
+    }
     public int row;
     public int column;
     public int rowCount;

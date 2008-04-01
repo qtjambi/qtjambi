@@ -626,11 +626,11 @@
 
     We also implement \c emitCommitData(), which is a slot used to
     emit the QImageDelegate::commitData() signal with the appropriate
-    argument. 
+    argument.
 
     We move on to examine the implementation of the individual
     methods.
-    
+
     \snippet Icons.java 34
 
     The constructor is trivial.

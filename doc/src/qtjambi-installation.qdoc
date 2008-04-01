@@ -4,7 +4,7 @@
 
     Qt Jambi is available both in prebuilt and source packages for
     Linux, Mac OS X, and Windows. Java 1.5 or later is required to
-    install Qt Jambi. 
+    install Qt Jambi.
 
     The procedure of installing is different depending on whether
     you have downloaded a source or prebuilt package. This
@@ -53,14 +53,14 @@
     the \c{qtjambi-examples-4.4.0_01.jar}.
 
     \code
-        // Linux 
-        java -cp qtjambi-4.4.0_01.jar:qtjambi-linux32-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
+        // Linux
+        java -cp qtjambi-4.4.0_01.jar:qtjambi-linux32-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
 
         // Mac OS X
-        java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-mac-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
+        java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-mac-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
 
         // Windows
-        java -cp qtjambi-4.4.0_01.jar:qtjambi-win32-msvc2005-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher 
+        java -cp qtjambi-4.4.0_01.jar:qtjambi-win32-msvc2005-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
     \endcode
 
     \bold{Note:} When running a Qt Jambi application on Mac, it is necessary to pass
@@ -78,7 +78,7 @@
     {qtjambi-win64-msvc2005x64-4.4.0_01.jar}. The native libraries
     will be automatically loaded when this jar file is part of the
     classpath.
-    
+
     An alternative way of loading the native libraries is to rely on
     Java's standard method of loading native libraries. This is done
     by specifying either the JVM system property
@@ -131,7 +131,7 @@
     configure script with the --no-framework option).
 
     \section2 Configuring the System for Qt Jambi
-    
+
     The Jambi source package requires a Qt source package, JDK 1.5 or
     higher and the build utility \c ant.
 
@@ -158,7 +158,7 @@
     \section2 Setting up the environment
 
     The following table describes the environment variables necessary
-    to install Qt Jambi. 
+    to install Qt Jambi.
 
     \table 80% \header \o Variable \o Value
     \row
@@ -207,11 +207,11 @@
     \endcode
 
     For a description of the various build configurations, one can do:
-    
-    \code 
+
+    \code
     > ant help
     \endcode
-    
+
 
     \section2 Trouble Shooting
 
@@ -236,7 +236,7 @@
 
     \table 80%
         \header
-            \o Problem 
+            \o Problem
             \o Solution
         \row
             \o On Linux the \c gcj (GNU Java Compiler) is located in \c{/usr/bin};
@@ -246,7 +246,7 @@
             \o Make sure that it is the correct java executable in the PATH.
         \row
             \o Environment variables are not set correctly.
-            \o Check with the \l{Configuring the System for Qt Jambi} section 
+            \o Check with the \l{Configuring the System for Qt Jambi} section
                that your system is properly configured for Jambi.
         \row
             \o Qt Jambi uses the Qt Header files to generate the
@@ -294,7 +294,7 @@
     \row \o Mac OS X
     \o When running a Qt Jambi application, it is necessary to pass
     the \c -XstartOnFirstThread argument to the Java executable. Also,
-    if you have a source package, you have to build Qt with the 
+    if you have a source package, you have to build Qt with the
     --no-framework option.
 
     \row \o Linux / 64 bit:
@@ -307,7 +307,7 @@
     \endtable
 
     \section1 Running the Qt Designer
-    
+
     The Qt Designer is Trolltech's tool for designing and building
     user interfaces. If you have a prebuilt package, you can run it
     from the command line with the \c designer.bat or \c
@@ -316,7 +316,7 @@
     automatically.
 
     You will find more information in the \l{Qt Designer}{Qt Designer
-    document}. 
+    document}.
 
     \section1 Running the Qt Jambi Generator
 

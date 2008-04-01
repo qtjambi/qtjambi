@@ -10,24 +10,24 @@ class ColorListEditor extends QComboBox {
 	public ColorListEditor() {
 		this(null);
 	}
-	
+
 	public ColorListEditor(QWidget widget) {
 		super(widget);
-		
+
 		populateList();
 	}
-	
+
 	@QtPropertyUser()
 	@QtPropertyReader()
 	public final QColor color() {
 		return (QColor) itemData(currentIndex(), Qt.ItemDataRole.DecorationRole);
 	}
-	
+
 	@QtPropertyWriter()
 	public final void setColor(QColor color) {
 		setCurrentIndex(findData(color, Qt.ItemDataRole.DecorationRole));
 	}
-	
+
 	private void populateList() {
 	    List<String> colorNames = QColor.colorNames();
 
@@ -37,42 +37,42 @@ class ColorListEditor extends QComboBox {
 	        insertItem(i, colorNames.get(i));
 	        setItemData(i, color, Qt.ItemDataRole.DecorationRole);
 	    }
-		
+
 	}
 }
 
 @QtJambiExample(name="Color Editor Factory")
 public class ColorEditorFactory extends QWidget {
-	
+
 	QItemEditorCreatorBase colorListCreator;
 	QItemEditorFactory factory;
 	public ColorEditorFactory() {
 		this(null);
-		
+
 		factory = new QItemEditorFactory();
 		colorListCreator = new QStandardItemEditorCreator(ColorListEditor.class);
-		
+
 		factory.registerEditor(QVariant.Color, colorListCreator);
 		QItemEditorFactory.setDefaultFactory(factory);
-		
+
 		createGUI();
 	}
-	
+
 	public ColorEditorFactory(QWidget parent) {
 		super(parent);
 	}
-	
+
 	private void createGUI() {
 		List<QPair<String, QColor>> list = new ArrayList<QPair<String, QColor>>();
 		list.add(new QPair<String, QColor> (tr("Alice"), new QColor("aliceblue")));
 	    list.add(new QPair<String, QColor>(tr("Neptun"), new QColor("aquamarine")));
 	    list.add(new QPair<String, QColor>(tr("Ferdinand"), new QColor("springgreen")));
-	    
-	    QTableWidget table = new QTableWidget(3, 2);	    
+
+	    QTableWidget table = new QTableWidget(3, 2);
 	    table.setHorizontalHeaderLabels(Arrays.asList(new String[] { "Name", "Hair color" } ));
 	    table.verticalHeader().setVisible(false);
 	    table.resize(150, 50);
-	    
+
 	    for (int i = 0; i < list.size(); ++i) {
 	        QPair<String, QColor> pair = list.get(i);
 
@@ -94,14 +94,14 @@ public class ColorEditorFactory extends QWidget {
 	    setWindowTitle(tr("Color Editor Factory"));
 	    setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 	}
-	
+
 
 	public static void main(String args[]) {
 		QApplication.initialize(args);
-		
+
 		ColorEditorFactory window = new ColorEditorFactory();
 		window.show();
-		
+
 		QApplication.exec();
 	}
 }

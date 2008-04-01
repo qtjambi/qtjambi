@@ -9,7 +9,7 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
 
-  <rejection class="" enum-name="QtValidLicenseForTestModule"/>  
+  <rejection class="" enum-name="QtValidLicenseForTestModule"/>
 
   <rejection class="" enum-name="QtValidLicenseForDBusModule"/>
   <rejection class="" enum-name="QtValidLicenseForSqlModule"/>
@@ -176,7 +176,7 @@
   <rejection class="QtConcurrent::VoidStoredMemberFunctionPointerCall5"/>
 
   <rejection class="QMdi" />
-  <rejection class="stdext" /> 
+  <rejection class="stdext" />
   <rejection class="QAlgorithmsPrivate"/>
   <rejection class="QAtomic"/>
   <rejection class="QAtomicPointer"/>
@@ -188,7 +188,7 @@
   <rejection class="QCache"/>
   <rejection class="QCharRef"/>
   <rejection class="QDebug"/>
-  <rejection class="QExplicitlySharedDataPointer"/>  
+  <rejection class="QExplicitlySharedDataPointer"/>
   <rejection class="QFlag"/>
   <rejection class="QFlags"/>
   <rejection class="QForeachContainer"/>
@@ -248,7 +248,7 @@
   <rejection class="QSharedDataPointer"/>
   <rejection class="QStack"/>
   <rejection class="QSysInfo"/>
-  <rejection class="QTextStreamManipulator"/>    
+  <rejection class="QTextStreamManipulator"/>
   <rejection class="QThreadStorage"/>
   <rejection class="QThreadStorageData"/>
   <rejection class="QTypeInfo"/>
@@ -256,7 +256,7 @@
   <rejection class="QVFbKeyData"/>
   <rejection class="QVariantComparisonHelper"/>
   <rejection class="QVectorData"/>
-  <rejection class="QVectorIterator"/>  
+  <rejection class="QVectorIterator"/>
   <rejection class="QVectorTypedData"/>
   <rejection class="QWriteLocker"/>
   <rejection class="QtPrivate"/>
@@ -276,11 +276,11 @@
   <rejection class="QUintForType"/>
   <rejection class="QtConcurrent::internal" />
 
-  <rejection class="QLocale::Data" />  
+  <rejection class="QLocale::Data" />
   <rejection class="QGlobalStaticDeleter" />
   <rejection class="QSharedMemory" /> <!-- Temporarily until we know how to implement it in Java -->
   <rejection class="QVarLengthArray" />
-  
+
   <!-- DBus -->
   <rejection class="QDBusAbstractAdaptor" />
   <rejection class="QDBusAbstractInterface" />
@@ -297,7 +297,7 @@
   <rejection class="QDBusServer" />
   <rejection class="QDBusSignature" />
   <rejection class="QDBusVariant" />
-   
+
   <rejection class="_Revbidit" />
   <rejection class="_complex" />
   <rejection class="_exception" />
@@ -340,7 +340,7 @@
   <rejection class="QList" function-name="node_destruct"/>
   <rejection class="QList" function-name="toSet"/>
   <rejection class="QObject" function-name="receivers"/>
-  <rejection class="QObject" function-name="findChild"/>   
+  <rejection class="QObject" function-name="findChild"/>
   <rejection class="QObject" function-name="findChildren"/>
   <rejection class="QObject" function-name="setUserData"/>
   <rejection class="QObject" function-name="userData"/>
@@ -368,10 +368,10 @@
   <rejection class="QVector" function-name="alloc"/>
   <rejection class="QVector" function-name="operator+="/>
   <rejection class="QAbstractFileEngineIterator" function-name="entryInfo"/>
-  
+
   <rejection class="QAbstractFileEngineIterator" enum-name="EntryInfoType"/>
   <rejection class="QDataStream" enum-name="ByteOrder"/>
-  
+
 
   <namespace-type name="Qt">
     <modify-function signature="codecForHtml(const QByteArray &amp;)" remove="all" />
@@ -385,11 +385,11 @@
     <reject-enum-value name="QtSystemMsg" />
   </enum-type>
 
-  <enum-type name="QReadWriteLock::RecursionMode" />  
+  <enum-type name="QReadWriteLock::RecursionMode" />
   <enum-type name="QSystemSemaphore::AccessMode" />
   <enum-type name="QSystemSemaphore::SystemSemaphoreError" />
   <enum-type name="QTextBoundaryFinder::BoundaryReason" flags="QTextBoundaryFinder::BoundaryReasons" />
-  <enum-type name="QTextBoundaryFinder::BoundaryType" />  
+  <enum-type name="QTextBoundaryFinder::BoundaryType" />
   <enum-type name="QAbstractFileEngine::Extension" extensible="yes"/>
   <enum-type name="QAbstractFileEngine::FileFlag" flags="QAbstractFileEngine::FileFlags"/>
   <enum-type name="QAbstractFileEngine::FileName"/>
@@ -491,12 +491,12 @@
   <enum-type name="Qt::EventPriority"/>
   <enum-type name="Qt::MaskMode"/>
   <enum-type name="QCryptographicHash::Algorithm"/>
-  
+
   <enum-type name="QtConcurrent::ReduceOption" flags="QtConcurrent::ReduceOptions" />
   <enum-type name="QtConcurrent::ThreadFunctionResult" />
 
   <enum-type name="QCoreApplication::Encoding">
-    <reject-enum-value name="DefaultCodec"/> 
+    <reject-enum-value name="DefaultCodec"/>
   </enum-type>
 
   <enum-type name="Qt::AlignmentFlag" flags="Qt::Alignment">
@@ -519,7 +519,7 @@
   </enum-type>
 
 
-  <enum-type name="QDataStream::Version"> 
+  <enum-type name="QDataStream::Version">
     <reject-enum-value name="Qt_4_1"/>
     <reject-enum-value name="Qt_4_5"/>
   </enum-type>
@@ -557,44 +557,44 @@
   <enum-type name="Qt::ToolBarArea" flags="Qt::ToolBarAreas">
     <reject-enum-value name="AllToolBarAreas"/>
   </enum-type>
-  
+
   <enum-type name="Qt::WidgetAttribute">
     <reject-enum-value name="WA_ForceAcceptDrops"/>
     <reject-enum-value name="WA_NoBackground"/>
     <reject-enum-value name="WA_MacMetalStyle"/>
   </enum-type>
-  
-  <value-type name="QBasicTimer"/>  
+
+  <value-type name="QBasicTimer"/>
   <value-type name="QByteArrayMatcher">
     <modify-function signature="operator=(QByteArrayMatcher)" remove="all"/>
   </value-type>
-  
-  <value-type name="QDate">    
+
+  <value-type name="QDate">
     <modify-function signature="julianToGregorian(uint,int&amp;,int&amp;,int&amp;)">
         <remove/>
-    </modify-function>    
-  
+    </modify-function>
+
     <modify-function signature="setYMD(int, int, int)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
-  
+
   <value-type name="QDateTime">
     <modify-function signature="operator=(QDateTime)" remove="all"/>
   </value-type>
-  
+
   <value-type name="QDir">
     <modify-function signature="QDir(QString,QString,QFlags&lt;QDir::SortFlag&gt;,QFlags&lt;QDir::Filter&gt;)">
         <modify-argument index="3">
             <replace-default-expression with="SortFlag.Name, SortFlag.IgnoreCase"/>
         </modify-argument>
-    </modify-function>  
+    </modify-function>
     <modify-function signature="operator=(QDir)" remove="all"/>
     <modify-function signature="operator=(QString)" remove="all"/>
     <modify-function signature="addResourceSearchPath(QString)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
-  
+
   <value-type name="QPoint"/>
   <value-type name="QPointF"/>
-  
+
   <value-type name="QRect">
     <modify-function signature="getCoords(int*,int*,int*,int*)const"> <remove/> </modify-function>
     <modify-function signature="getRect(int*,int*,int*,int*)const"> <remove/> </modify-function>
@@ -614,7 +614,7 @@
     <modify-function signature="operator|=(QRectF)"> <remove/> </modify-function>
     <modify-function signature="operator&amp;(QRectF)const"> <remove/> </modify-function>
     <modify-function signature="operator|(QRectF)const"> <remove/> </modify-function>
-  
+
     <modify-function signature="intersect(const QRectF&amp;)const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="unite(const QRectF&amp;)const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
@@ -626,7 +626,7 @@
     <modify-function signature="operator+=(QSize)"> <access modifier="private"/> </modify-function>
     <modify-function signature="operator-=(QSize)"> <access modifier="private"/> </modify-function>
     <modify-function signature="rheight()"> <remove/> </modify-function>
-    <modify-function signature="rwidth()"> <remove/> </modify-function>     
+    <modify-function signature="rwidth()"> <remove/> </modify-function>
   </value-type>
 
   <value-type name="QSizeF">
@@ -635,14 +635,14 @@
     <modify-function signature="operator+=(QSizeF)"> <access modifier="private"/> </modify-function>
     <modify-function signature="operator-=(QSizeF)"> <access modifier="private"/> </modify-function>
     <modify-function signature="rheight()"> <remove/> </modify-function>
-    <modify-function signature="rwidth()"> <remove/> </modify-function>     
+    <modify-function signature="rwidth()"> <remove/> </modify-function>
   </value-type>
-  
+
   <value-type name="QStringMatcher">
     <modify-function signature="operator=(QStringMatcher)" remove="all"/>
   </value-type>
 
-  <value-type name="QTime"/>  
+  <value-type name="QTime"/>
 
   <value-type name="QPersistentModelIndex">
     <modify-function signature="operator=(QPersistentModelIndex)" remove="all"/>
@@ -656,17 +656,17 @@
     </modify-function>
   </value-type>
 
-  <value-type name="QLocale">  
+  <value-type name="QLocale">
     <modify-function signature="toString(unsigned long long) const" remove="all"/>
     <modify-function signature="toString(unsigned short) const" remove="all"/>
     <modify-function signature="toString(unsigned int) const" remove="all"/>
     <modify-function signature="toUInt(QString,bool*,int)const" remove="all"/>
     <modify-function signature="toULongLong(QString,bool*,int)const" remove="all"/>
     <modify-function signature="operator=(QLocale)" remove="all"/>
-    
+
   </value-type>
-  
-  
+
+
   <value-type name="QBitArray">
     <modify-function signature="operator[](int)" remove="all"/>
     <modify-function signature="operator[](int)const" remove="all"/>
@@ -678,31 +678,31 @@
     <modify-function signature="operator^=(QBitArray)" access="private"/>
     <modify-function signature="operator|=(QBitArray)" access="private"/>
     <modify-function signature="operator~()const" access="private"/>
-  </value-type>  
+  </value-type>
 
   <object-type name="QReadWriteLock"/>
   <object-type name="QDirIterator"/>
   <object-type name="QAbstractFileEngineIterator"/>
   <object-type name="QAbstractItemModel"/>
-    
+
   <object-type name="QAbstractListModel">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
     </extra-includes>
   </object-type>
-  
+
   <value-type name="QUrl">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
     <modify-function signature="operator=(QUrl)" remove="all"/>
     <modify-function signature="operator=(QString)" remove="all"/>
-  
+
     <modify-function signature="fromPunycode(const QByteArray&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="toPunycode(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
-  
+
   <value-type name="QRegExp">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
@@ -723,14 +723,14 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
-  
+
     <modify-function signature="readLink()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
   <interface-type name="QFactoryInterface" java-name="QAbstractFactory" />
 
   <value-type name="QByteArray">
-   
+
     <extra-includes>
         <include file-name="QNoImplicitBoolCast" location="global"/>
     </extra-includes>
@@ -777,27 +777,27 @@
     <modify-function signature="operator+=(QString)" remove="all"/>
     <modify-function signature="operator+=(char)" remove="all"/>
   </value-type>
-  
+
   <value-type name="QTextBoundaryFinder">
     <modify-function signature="QTextBoundaryFinder(QTextBoundaryFinder::BoundaryType,const QChar*,int,unsigned char*,int)" remove="all" />
     <modify-function signature="operator=(QTextBoundaryFinder)" remove="all" />
   </value-type>
 
   <object-type name="QXmlStreamEntityResolver" />
-  <object-type name="QAbstractEventDispatcher"/>  
+  <object-type name="QAbstractEventDispatcher"/>
   <object-type name="QEventLoop"/>
-  <object-type name="QFile">  
+  <object-type name="QFile">
     <modify-function signature="readLink()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="readLink(QString)" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="map(long long,long long,QFile::MemoryMapFlags)" remove="all" /> <!-- Can't provide same API and performance -->
-    <modify-function signature="unmap(unsigned char*)" remove="all" /> <!-- Can't provide same API and performance -->    
+    <modify-function signature="unmap(unsigned char*)" remove="all" /> <!-- Can't provide same API and performance -->
   </object-type>
 
   <object-type name="QIODevice"/>
 
   <object-type name="QCryptographicHash"/>
   <object-type name="QLibraryInfo"/>
-  <object-type name="QMutex"/>  
+  <object-type name="QMutex"/>
   <object-type name="QSemaphore"/>
   <object-type name="QSocketNotifier"/>
   <object-type name="QSystemLocale"/>
@@ -809,8 +809,8 @@
         <include file-name="QStringList" location="global"/>
         <include file-name="QUrl" location="global"/>
     </extra-includes>
-  </object-type>  
-  <object-type name="QTextCodec">          
+  </object-type>
+  <object-type name="QTextCodec">
 
     <modify-function signature="setCodecForTr(QTextCodec*)">
         <access modifier="private"/>
@@ -828,7 +828,7 @@
             <reference-count action="set" variable-name="__rcCodecForLocale"/>
         </modify-argument>
     </modify-function>
-    
+
 
     <modify-function signature="codecForTr()">
         <remove/>
@@ -839,15 +839,15 @@
             <define-ownership class="java" owner="c++"/>
         </modify-argument>
     </modify-function>
-  
+
     <modify-function signature="fromUnicode(const QChar*,int,QTextCodec::ConverterState*)const">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="toUnicode(const char*,int,QTextCodec::ConverterState*)const">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="toUnicode(const char*)const">
         <remove/>
     </modify-function>
@@ -856,21 +856,21 @@
   <object-type name="QTextDecoder">
     <modify-function signature="toUnicode(const char*,int)">
         <remove/>
-    </modify-function>    
+    </modify-function>
     <modify-function signature="toUnicode(QString*,const char*,int)" remove="all"/>
   </object-type>
   <object-type name="QTextEncoder">
     <modify-function signature="fromUnicode(const QChar*,int)">
         <remove/>
-    </modify-function>    
+    </modify-function>
   </object-type>
-  <object-type name="QTimeLine"/> 
+  <object-type name="QTimeLine"/>
   <object-type name="QTranslator">
     <modify-function signature="translate(const char*,const char*,const char*,int)const">
         <remove/>
     </modify-function>
   </object-type>
-  
+
   <object-type name="QWaitCondition"/>
 
   <object-type name="QFileSystemWatcher">
@@ -878,17 +878,17 @@
       <include file-name="QStringList" location="global"/>
     </extra-includes>
   </object-type>
-  
+
   <object-type name="QTextCodec::ConverterState">
     <include file-name="QTextCodec" location="global"/>
   </object-type>
 
-  <object-type name="QBuffer">  
+  <object-type name="QBuffer">
     <modify-function signature="buffer()">
         <remove/>
     </modify-function>
   </object-type>
-  
+
   <object-type name="QTimer"/>
 
   <object-type name="QAbstractFileEngineHandler">
@@ -898,7 +898,7 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  
+
   <object-type name="QAbstractFileEngine::MapExtensionOption" />
   <object-type name="QAbstractFileEngine::MapExtensionReturn" />
   <object-type name="QAbstractFileEngine::UnMapExtensionOption" />
@@ -909,29 +909,29 @@
     <modify-function signature="map(long long,long long,QFile::MemoryMapFlags)" remove="all" />
     <modify-function signature="unmap(unsigned char*)" remove="all" />
   </object-type>
-  
+
   <object-type name="QProcess">
     <modify-function signature="readChannelMode()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="setReadChannelMode(QProcess::ProcessChannelMode)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
-  
+
   <object-type name="QSignalMapper">
     <modify-function signature="mapped(const QString &amp;)">
         <rename to="mappedString"/>
     </modify-function>
     <modify-function signature="mapped(int)">
         <rename to="mappedInteger"/>
-    </modify-function>    
+    </modify-function>
     <modify-function signature="mapped(QObject *)">
         <rename to="mappedQObject"/>
-    </modify-function>    
+    </modify-function>
     <modify-function signature="mapped(QWidget *)" remove="all"/>
-    
+
     <modify-function signature="mapping(QWidget*)const" remove="all"/>
-        
+
     <modify-function signature="setMapping(QObject*,QWidget*)" remove="all"/>
-  </object-type>  
-  
+  </object-type>
+
   <object-type name="QObject">
     <modify-function signature="childEvent(QChildEvent*)">
         <modify-argument index="1" invalidate-after-use="yes" />
@@ -968,42 +968,42 @@
     <modify-function signature="deleteLater()">
         <rename to="disposeLater"/>
     </modify-function>
-    
+
     <modify-function signature="inherits(const char*)const">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="property(const char*)const">
         <access modifier="private"/>
     </modify-function>
-    
+
     <modify-function signature="setProperty(const char*,QVariant)">
-        <access modifier="private"/>        
+        <access modifier="private"/>
     </modify-function>
-    
-    
+
+
     <extra-includes>
         <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
-    
+
   </object-type>
 
   <object-type name="QCoreApplication">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
-    
+
     <modify-function signature="argv()" remove="all" /> <!-- Obsolete -->
     <modify-function signature="argc()" remove="all" /> <!-- Obsolete -->
-    
+
     <modify-function signature="notify(QObject*,QEvent*)">
         <modify-argument index="2" invalidate-after-use="yes" />
     </modify-function>
-    
-    
+
+
     <modify-function signature="QCoreApplication(int &amp;, char  **)">
       <access modifier="private"/>
-    </modify-function>     
+    </modify-function>
     <modify-function signature="removePostedEvents(QObject*)">
         <modify-argument index="1">
             <reference-count action="ignore"/>
@@ -1014,32 +1014,32 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
-    
+
     <modify-function signature="installTranslator(QTranslator *)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcTranslators"/>
         </modify-argument>
     </modify-function>
-    
+
     <modify-function signature="removeTranslator(QTranslator *)">
         <modify-argument index="1">
             <reference-count action="remove" variable-name="__rcTranslators"/>
         </modify-argument>
-    </modify-function>    
-    
-    
+    </modify-function>
+
+
     <modify-function signature="postEvent(QObject*,QEvent*)">
         <modify-argument index="2">
-            <define-ownership class="java" owner="c++"/>  
+            <define-ownership class="java" owner="c++"/>
         </modify-argument>
-    </modify-function>    
+    </modify-function>
   </object-type>
 
   <object-type name="QSettings">
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
-  
+
     <modify-function signature="setSystemIniPath(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="setUserIniPath(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
@@ -1049,9 +1049,9 @@
     <modify-field name="c" read="false" write="false"/>
   </object-type>
   <object-type name="QTimerEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::Timer"/>
-  <object-type name="QDynamicPropertyChangeEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::DynamicPropertyChange"/>  
-            
-  <object-type name="QDataStream">    
+  <object-type name="QDynamicPropertyChangeEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::DynamicPropertyChange"/>
+
+  <object-type name="QDataStream">
     <modify-function signature="setDevice(QIODevice*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcDevice"/>
@@ -1066,14 +1066,14 @@
 
     <modify-function signature="operator&lt;&lt;(const char*)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(unsigned char)"> <remove/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(unsigned int)"> <remove/> </modify-function>     
+    <modify-function signature="operator&lt;&lt;(unsigned int)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(unsigned long long)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(unsigned short)"> <remove/> </modify-function>
 
-    <modify-function signature="operator&gt;&gt;(char &amp;*)"> <remove/> </modify-function>  
-    <modify-function signature="operator&gt;&gt;(uint&amp;)"> <remove/> </modify-function> 
-    <modify-function signature="operator&gt;&gt;(unsigned char&amp;)"> <remove/> </modify-function>    
-    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)"> <remove/> </modify-function>   
+    <modify-function signature="operator&gt;&gt;(char &amp;*)"> <remove/> </modify-function>
+    <modify-function signature="operator&gt;&gt;(uint&amp;)"> <remove/> </modify-function>
+    <modify-function signature="operator&gt;&gt;(unsigned char&amp;)"> <remove/> </modify-function>
+    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)"> <remove/> </modify-function>
 
     <modify-function signature="readRawData(char*,int)"> <remove/> </modify-function>
     <modify-function signature="readBytes(char&amp;*,uint&amp;)"> <remove/> </modify-function>
@@ -1092,18 +1092,18 @@
     <modify-function signature="QTextStream(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(QChar&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(const void*)"> <remove/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(unsigned int)"> <remove/> </modify-function>     
-    <modify-function signature="operator&lt;&lt;(unsigned long long)"> <remove/> </modify-function>    
-    <modify-function signature="operator&lt;&lt;(const QChar &amp;)"> <remove/> </modify-function>        
+    <modify-function signature="operator&lt;&lt;(unsigned int)"> <remove/> </modify-function>
+    <modify-function signature="operator&lt;&lt;(unsigned long long)"> <remove/> </modify-function>
+    <modify-function signature="operator&lt;&lt;(const QChar &amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(unsigned long)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(signed long)"> <remove/> </modify-function>
-    <modify-function signature="operator&lt;&lt;(const char*)"> <remove/> </modify-function>    
-    <modify-function signature="operator&lt;&lt;(unsigned short)"> <remove/> </modify-function>   
-    <modify-function signature="operator&lt;&lt;(const QByteArray&amp;)"> <remove/> </modify-function>   
+    <modify-function signature="operator&lt;&lt;(const char*)"> <remove/> </modify-function>
+    <modify-function signature="operator&lt;&lt;(unsigned short)"> <remove/> </modify-function>
+    <modify-function signature="operator&lt;&lt;(const QByteArray&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(uint&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(ulong&amp;)"> <remove/> </modify-function>
-    <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> <remove/> </modify-function>    
+    <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> <remove/> </modify-function>
     <modify-function signature="string()const"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(signed long&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(char*)"> <remove/> </modify-function>
@@ -1111,30 +1111,30 @@
     <modify-function signature="operator&gt;&gt;(QString&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(unsigned short&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(const QString&amp;)"> <remove/> </modify-function>
-    
-  
+
+
     <modify-function signature="setCodec(QTextCodec *)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcCodec"/>
         </modify-argument>
     </modify-function>
-    
+
     <modify-function signature="QTextStream(QIODevice *)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcDevice"/>
         </modify-argument>
-    </modify-function>    
+    </modify-function>
     <modify-function signature="setDevice(QIODevice *)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcDevice"/>
         </modify-argument>
-    </modify-function>         
+    </modify-function>
   </object-type>
-  
+
   <object-type name="QSystemSemaphore" />
-  
+
   <namespace-type name="QtConcurrent" target-type="class" />
-  
+
   <value-type name="QFuture" generate="no">
     <modify-function signature="operator T() const" remove="all" />
     <modify-function signature="operator=(const QFuture &amp;)" remove="all" />
@@ -1144,29 +1144,29 @@
     <modify-function signature="isResultReadyAt(int)const" remove="all" />
   </value-type>
   <value-type name="QtJambiFuture" java-name="QFuture" generic-class="yes" />
-  
+
   <object-type name="QFutureWatcherBase">
     <modify-function signature="connectNotify(const char *)" remove="all" />
     <modify-function signature="disconnectNotify(const char *)" remove="all" />
-  </object-type>  
+  </object-type>
   <object-type name="QtJambiVoidFutureWatcher" java-name="QFutureWatcherVoid" />
-  
+
   <object-type name="QFutureWatcher" generate="no">
     <modify-function signature="future()const" remove="all" />
   </object-type>
   <object-type name="QtJambiFutureWatcher" java-name="QFutureWatcher" generic-class="yes" />
-  
+
   <object-type name="QFutureSynchronizer" generate="no" />
   <object-type name="QtJambiFutureSynchronizer" generic-class="yes" java-name="QFutureSynchronizer" />
   <object-type name="QtJambiVoidFutureSynchronizer" java-name="QFutureSynchronizerVoid" />
   <object-type name="QThreadPool" />
-  
+
   <object-type name="QFutureIterator" generate="no">
       <modify-function signature="operator=(const QFuture&amp;)" remove="all" />
   </object-type>
   <object-type name="QtJambiFutureIterator" generic-class="yes" java-name="QFutureIterator" />
   <object-type name="QRunnable" />
-  
+
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
@@ -1183,12 +1183,12 @@
   <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QPointer&lt;*&gt;'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QVector&lt;*&gt;'"/>
-  <suppress-warning text="* private virtual function '*' in 'QAbstractListModel'"/>  
-  <suppress-warning text="* private virtual function '*' in 'QAbstractTableModel'"/>  
-  <suppress-warning text="* private virtual function '*' in 'QListWidget'"/>  
-  <suppress-warning text="* private virtual function '*' in 'QTreeWidget'"/>  
-  <suppress-warning text="* private virtual function '*' in 'QFontDialog'"/>  
-  <suppress-warning text="* private virtual function '*' in 'QTableWidget'"/>  
+  <suppress-warning text="* private virtual function '*' in 'QAbstractListModel'"/>
+  <suppress-warning text="* private virtual function '*' in 'QAbstractTableModel'"/>
+  <suppress-warning text="* private virtual function '*' in 'QListWidget'"/>
+  <suppress-warning text="* private virtual function '*' in 'QTreeWidget'"/>
+  <suppress-warning text="* private virtual function '*' in 'QFontDialog'"/>
+  <suppress-warning text="* private virtual function '*' in 'QTableWidget'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDateTime' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPersistentModelIndex' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUuid' has equals operators but no qHash() function"/>

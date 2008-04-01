@@ -65,7 +65,7 @@ public class SystemTrayExample extends QWidget {
     public SystemTrayExample() {
         this(null);
     }
-    
+
     public SystemTrayExample(QWidget parent) {
         super(parent);
         if (!QSystemTrayIcon.isSystemTrayAvailable())
@@ -179,7 +179,7 @@ public class SystemTrayExample extends QWidget {
     @Override
 //! [9]
     public void closeEvent(QCloseEvent e) {
-        
+
     }
 //! [9]
 

@@ -40,25 +40,25 @@ class QObject___ extends QObject {
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public final void setProperty(String name, Object value) 
+    public final void setProperty(String name, Object value)
     {
         setProperty(QNativePointer.createCharPointer(name), value);
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public final Object property(String name) 
+    public final Object property(String name)
     {
         return property(QNativePointer.createCharPointer(name));
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public final QtProperty userProperty() 
+    public final QtProperty userProperty()
     {
         return com.trolltech.qt.QtJambiInternal.userProperty(nativeId());
     }
 
     @com.trolltech.qt.QtBlockedSlot
-    public final java.util.List<com.trolltech.qt.QtProperty> properties() 
+    public final java.util.List<com.trolltech.qt.QtProperty> properties()
     {
         return com.trolltech.qt.QtJambiInternal.properties(nativeId());
     }
@@ -525,7 +525,7 @@ class QIODevice___ extends QIODevice {
 
     /**
      * Gets a byte from the device.
-     * 
+     *
      * @return -1 on failure, or the value of the byte on success
      */
     public final int getByte() {
@@ -585,11 +585,11 @@ class QBuffer___ extends QBuffer {
 }// class
 
 class QSignalMapper___ extends QSignalMapper {
-    
+
     private java.util.Hashtable<QObject, QObject> __rcObjectForObject = new java.util.Hashtable<QObject, QObject>();
-    
+
     private java.util.Hashtable<QObject, Object> __rcWidgetForObject = new java.util.Hashtable<QObject, Object>();
-    
+
 }// class
 
 class QAbstractFileEngine_MapExtensionReturn___ extends QAbstractFileEngine_MapExtensionReturn {
@@ -668,7 +668,7 @@ class QtConcurrent___ extends QtConcurrent {
 
     static {
         com.trolltech.qt.QtJambi_LibraryInitializer.init();
-        com.trolltech.qt.core.QtJambi_LibraryInitializer.init();        
+        com.trolltech.qt.core.QtJambi_LibraryInitializer.init();
     }
 
     public interface MapFunctor<T> {
@@ -680,22 +680,22 @@ class QtConcurrent___ extends QtConcurrent {
     public interface MappedFunctor<U, T> {
         public U map(T object);
     }
-    public static native <U, T> QFuture<U> mapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);    
+    public static native <U, T> QFuture<U> mapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);
     public static native <U, T> java.util.List<U> blockingMapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);
 
     /**
-     * Implement this interface in order to perform a reduce operation. 
-     * 
+     * Implement this interface in order to perform a reduce operation.
+     *
      * The reduce method will be called once per intermediate result (the result of the mapping of the data)
-     * and the very first time the reduce() method is called for the particular data set, the result is set to 
-     * the returned value of the defaultResult() method. 
+     * and the very first time the reduce() method is called for the particular data set, the result is set to
+     * the returned value of the defaultResult() method.
      */
     public interface ReducedFunctor<U, T> {
         public U defaultResult();
 
         public void reduce(U result, T intermediate);
     }
-    
+
     public static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor) {
         return mappedReduced(sequence, functor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
     }
@@ -710,7 +710,7 @@ class QtConcurrent___ extends QtConcurrent {
 
     private native static <U, V, T> QFuture<U> mappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor, int options);
 
-    
+
     public static <U, V, T> U blockingMappedReduced(java.util.Collection<T> sequence, MappedFunctor<V, T> functor, ReducedFunctor<U, V> reducedFunctor) {
         return blockingMappedReduced(sequence, functor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
     }
@@ -743,7 +743,7 @@ class QtConcurrent___ extends QtConcurrent {
     public static <U, T> QFuture<U> filteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, ReduceOptions options) {
         return filteredReduced(sequence, filteredFunctor, reducedFunctor, options.value());
     }
-    private native static <U, T> QFuture<U> filteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, int options); 
+    private native static <U, T> QFuture<U> filteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, int options);
 
     public static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor) {
         return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, ReduceOption.UnorderedReduce, ReduceOption.SequentialReduce);
@@ -757,8 +757,8 @@ class QtConcurrent___ extends QtConcurrent {
         return blockingFilteredReduced(sequence, filteredFunctor, reducedFunctor, options.value());
     }
 
-    private native static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, int options); 
- 
+    private native static <U, T> U blockingFilteredReduced(java.util.Collection<T> sequence, FilteredFunctor<T> filteredFunctor, ReducedFunctor<U, T> reducedFunctor, int options);
+
     public static <T> QFuture<T> run(Object _this, java.lang.reflect.Method m, Object ... args) {
         if (m.getReturnType() == null || m.getReturnType().equals(Void.TYPE))
             throw new IllegalArgumentException("Cannot call run on method returning void. Use 'runVoidMethod' instead.");

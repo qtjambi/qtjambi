@@ -27,9 +27,9 @@
 
 //! [3]
     extern QString someFunction(const QByteArray &input);
-    
+
     QByteArray bytearray = ...;
-    
+
     QFuture<QString> future = QtConcurrent::run(someFunction, bytearray);
     ...
     QString result = future.result();
@@ -103,9 +103,9 @@ public class src_corelib_concurrent_qtconcurrentrun {
 
 //! [3]
     extern StringssomeFunction(QByteArray nput);
-    
+
     QByteArray bytearray = ...;
-    
+
     QFuture<QString> future = QtConcurrent.run(someFunction, bytearray);
     ...
     Stringsresult = future.result();

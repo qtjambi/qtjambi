@@ -11,7 +11,7 @@ $$QVariant.toDouble(java.lang.Object)
 Returns the double value of <tt>obj</tt>
 
 <tt>obj</tt>
-@return 
+@return
 */
 
 
@@ -20,7 +20,7 @@ $$QVariant.toDouble(java.lang.Object, java.lang.Boolean[])
 Returns the double value of <tt>obj</tt>. If the conversion fails, the
 first element in <tt>ok</tt> will be false; otherwise, it will be
 true.
- 
+
 */
 
 
@@ -30,7 +30,7 @@ Returns true if <tt>obj</tt> can be converted to a string; otherwise,
 returns false.
 
 <tt>obj</tt>
-@return 
+@return
 */
 
 
@@ -58,7 +58,7 @@ Returns the boolean value of <tt>obj</tt>.
 $$QVariant.canConvertToByteArray(java.lang.Object)
 /**
 Returns true if <tt>obj</tt> can be converted to a byte array.
-@return 
+@return
 */
 
 
@@ -446,7 +446,7 @@ $$QSysInfo.operatingSystem()
 /**
 Returns the operating system.
 
-@return 
+@return
 */
 
 
@@ -568,7 +568,7 @@ $$QVariant.toDouble(java.lang.Object)
 Returns the double value of <tt>obj</tt>
 
 <tt>obj</tt>
-@return 
+@return
 */
 
 
@@ -577,7 +577,7 @@ $$QVariant.toDouble(java.lang.Object, java.lang.Boolean[])
 Returns the double value of <tt>obj</tt>. If the conversion fails, the
 first element in <tt>ok</tt> will be false; otherwise, it will be
 true.
- 
+
 */
 
 
@@ -587,7 +587,7 @@ Returns true if <tt>obj</tt> can be converted to a string; otherwise,
 returns false.
 
 <tt>obj</tt>
-@return 
+@return
 */
 
 
@@ -615,7 +615,7 @@ Returns the boolean value of <tt>obj</tt>.
 $$QVariant.canConvertToByteArray(java.lang.Object)
 /**
 Returns true if <tt>obj</tt> can be converted to a byte array.
-@return 
+@return
 */
 
 
@@ -1003,7 +1003,7 @@ $$QSysInfo.operatingSystem()
 /**
 Returns the operating system.
 
-@return 
+@return
 */
 
 

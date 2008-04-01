@@ -25,7 +25,7 @@ public class src_gui_widgets_qabstractspinbox extends QWidget {
     public static void main(String args[]) {
         QApplication.initialize(args);
     }
-  
+
     public void foo() {
 //! [0]
         QSpinBox spinBox = new QSpinBox(this);

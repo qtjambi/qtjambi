@@ -11,7 +11,7 @@ public class MakeTask extends Task {
     private String target = "";
     private String dir = ".";
     private boolean silent = true;
-  
+
     private String compilerName() {
         switch(OSInfo.os()){
         case Windows:
@@ -19,13 +19,13 @@ public class MakeTask extends Task {
         }
         return "make";
     }
-    
+
     @Override
     public void execute() throws BuildException {
         System.out.println(msg);
 
         String arguments = "";
-        
+
         if (silent && OSInfo.os() != OSInfo.OS.Windows)
             arguments += " -s";
 
@@ -40,11 +40,11 @@ public class MakeTask extends Task {
     public void setTarget(String target) {
         this.target = target;
     }
-    
+
     public void setSilent(boolean silent) {
         this.silent = silent;
     }
-    
+
     public void setDir(String dir) {
         this.dir = dir;
     }

@@ -93,7 +93,7 @@ public class src_gui_graphicsview_qgraphicsview {
         QRect viewport = view.viewport().rect();
         view.render(painter,
                     new QRectF(0, printer.height() / 2, printer.width(), printer.height() / 2),
-                    viewport.adjusted(0, 0, 0, -viewport.height() / 2)       
+                    viewport.adjusted(0, 0, 0, -viewport.height() / 2)
         );
 
 //! [4]

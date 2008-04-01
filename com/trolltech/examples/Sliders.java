@@ -39,7 +39,7 @@ public class Sliders extends QWidget
 
         horizontalSliders.valueChanged.connect(verticalSliders, "setValue(int)");
         verticalSliders.valueChanged.connect(valueSpinBox, "setValue(int)");
-        valueSpinBox.valueChanged.connect(horizontalSliders, "setValue(int)");    
+        valueSpinBox.valueChanged.connect(horizontalSliders, "setValue(int)");
 
         QHBoxLayout layout = new QHBoxLayout();
         layout.addWidget(controlsGroup);
@@ -92,7 +92,7 @@ public class Sliders extends QWidget
         maximumSpinBox.valueChanged.connect(horizontalSliders, "setMaximum(int)");
         maximumSpinBox.valueChanged.connect(verticalSliders, "setMaximum(int)");
         invertedAppearance.toggled.connect(horizontalSliders, "invertAppearance(boolean)");
-        invertedAppearance.toggled.connect(verticalSliders, "invertAppearance(boolean)"); 
+        invertedAppearance.toggled.connect(verticalSliders, "invertAppearance(boolean)");
         invertedKeyBindings.toggled.connect(horizontalSliders, "invertedKeyBindings(boolean)");
         invertedKeyBindings.toggled.connect(verticalSliders, "invertedKeyBindings(boolean)");
 

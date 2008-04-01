@@ -462,7 +462,7 @@ booleansQAbstractSlider.event(QEvent e)
         break;
     }
 #endif
-    
+
     return QWidget.event(e);
 }
 

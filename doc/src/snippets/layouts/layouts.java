@@ -8,7 +8,7 @@ public class layouts
     public static void main(String args[])
     {
         QApplication.initialize(args);
-    
+
         if (true)
         {
     //! [0]
@@ -21,7 +21,7 @@ public class layouts
         QPushButton button4 = new QPushButton("Four");
         QPushButton button5 = new QPushButton("Five");
     //! [2]
-    
+
     //! [3]
         QHBoxLayout layout = new QHBoxLayout();
     //! [3] //! [4]
@@ -30,13 +30,13 @@ public class layouts
         layout.addWidget(button3);
         layout.addWidget(button4);
         layout.addWidget(button5);
-    
+
         window.setLayout(layout);
     //! [4] //! [5]
         window.show();
     //! [5]
         }
-        
+
         if (true)
         {
     //! [6]
@@ -49,7 +49,7 @@ public class layouts
         QPushButton button4 = new QPushButton("Four");
         QPushButton button5 = new QPushButton("Five");
     //! [8]
-    
+
     //! [9]
         QVBoxLayout layout = new QVBoxLayout();
     //! [9] //! [10]
@@ -58,14 +58,14 @@ public class layouts
         layout.addWidget(button3);
         layout.addWidget(button4);
         layout.addWidget(button5);
-    
+
         window.setLayout(layout);
     //! [10] //! [11]
         window.show();
     //! [11]
         }
 
-        if (true)        
+        if (true)
         {
     //! [12]
         QWidget window = new QWidget();
@@ -77,7 +77,7 @@ public class layouts
         QPushButton button4 = new QPushButton("Four");
         QPushButton button5 = new QPushButton("Five");
     //! [14]
-    
+
     //! [15]
         QGridLayout layout = new QGridLayout();
     //! [15] //! [16]
@@ -86,13 +86,13 @@ public class layouts
         layout.addWidget(button3, 1, 0, 1, 2);
         layout.addWidget(button4, 2, 0);
         layout.addWidget(button5, 2, 1);
-    
+
         window.setLayout(layout);
     //! [16] //! [17]
         window.show();
     //! [17]
         }
-    
+
         QApplication.exec();
     }
 }

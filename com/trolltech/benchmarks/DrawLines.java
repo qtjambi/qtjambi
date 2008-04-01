@@ -29,7 +29,7 @@ public class DrawLines {
     private static int VER_MULT = 1;
 
     private static class AwtWidget extends Component {
-        
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -39,7 +39,7 @@ public class DrawLines {
 	    int runningTime = 1000;
 
 	    for (int size=8; size<=512; size*=2) {
-		
+
 		long drawCount = 0;
 		long startTime = System.currentTimeMillis();
 		long endTime = startTime + runningTime;
@@ -67,7 +67,7 @@ public class DrawLines {
     private static class QtWidget extends QWidget {
 	@Override
     protected void paintEvent(QPaintEvent e) {
-	    
+
 	    QPainter p = new QPainter();
 	    p.begin(this);
 
@@ -104,12 +104,12 @@ public class DrawLines {
     private static class QtGLWidget extends QGLWidget {
 	@Override
     protected void paintEvent(QPaintEvent e) {
-	    
+
 	    QPainter p = new QPainter();
 	    p.begin(this);
 
 	    p.setPen(new QPen(QColor.red));
-	    
+
 	    int runningTime = 1000;
 
 	    for (int size=8; size<=512; size*=2) {
@@ -137,7 +137,7 @@ public class DrawLines {
 	    return new QSize(SIZE, SIZE);
 	}
     }
-    
+
     public static void main(String args[]) {
 	{
 	    JFrame f = new JFrame();
@@ -147,7 +147,7 @@ public class DrawLines {
 	    f.pack();
 
 	    f.setVisible(true);
-	    
+
 	}
 
 

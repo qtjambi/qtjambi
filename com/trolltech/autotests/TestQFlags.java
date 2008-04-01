@@ -49,7 +49,7 @@ public class TestQFlags extends QApplicationTest {
         Flags flag = new Flags();
         flag.set(new Flags(MyEnum.One, MyEnum.Four));
         assertEquals(flag.value(), 5);
-        
+
         flag.clearAll();
         flag.set(new Flags(MyEnum.Four));
         assertEquals(flag.value(), 4);

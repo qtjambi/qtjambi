@@ -31,7 +31,7 @@ GameGrammar::~GameGrammar()
 {
 }
 
-void GameGrammar::parse(const QString &c) 
+void GameGrammar::parse(const QString &c)
 {
     m_current_command = c.toLower().split(' ');
 
@@ -47,7 +47,7 @@ void GameGrammar::registerGameObject(AbstractGameObject *gameObject)
 {
     if (gameObject != 0) {
         m_objects[gameObject->name()] = gameObject;
-        
+
         QStringList names = gameObject->otherNames();
         foreach (QString name, names) {
             m_objects[name] = gameObject;
@@ -66,10 +66,10 @@ void GameGrammar::addNameToGameObject(AbstractGameObject *gameObject, const QStr
     }
 }
 
-QString GameGrammar::currentToken(int i) const 
+QString GameGrammar::currentToken(int i) const
 {
     QString returned;
-    if (m_current_command.size() < i) 
+    if (m_current_command.size() < i)
         return QString();
 
     for (int j=0; j<i; ++j) {
@@ -85,14 +85,14 @@ void GameGrammar::nextToken()
     m_current_command.pop_front();
 }
 
-GameAction *GameGrammar::command() 
+GameAction *GameGrammar::command()
 {
     GameAction *action = verb();
-    if (action == 0) 
+    if (action == 0)
         return 0;
 
     while (filler()) ;
-    
+
     while (AbstractGameObject *s = object()) action->addSubject(s);
 
     while (filler()) ;
@@ -102,8 +102,8 @@ GameAction *GameGrammar::command()
     return m_current_command.isEmpty() ? action : 0;
 }
 
-GameAction *GameGrammar::verb() 
-{    
+GameAction *GameGrammar::verb()
+{
     GameAction *a = m_actions.value(currentToken(), 0);
     if (a != 0) {
         nextToken();
@@ -113,16 +113,16 @@ GameAction *GameGrammar::verb()
     }
 }
 
-AbstractGameObject *GameGrammar::object() 
-{    
-    AbstractGameObject *gameObject = 0;    
+AbstractGameObject *GameGrammar::object()
+{
+    AbstractGameObject *gameObject = 0;
     int i=1;
-    while (gameObject == 0 && !currentToken(i).isEmpty()) 
+    while (gameObject == 0 && !currentToken(i).isEmpty())
     {
         gameObject = m_objects.value(currentToken(i++), 0);
     }
 
-    if (gameObject != 0 && gameObject->isVisible() 
+    if (gameObject != 0 && gameObject->isVisible()
         && (m_scene->egoHasInInventory(gameObject) || m_scene->inProximityOfEgo(gameObject))) {
         while (--i) nextToken();
         while (and_token()) ;
@@ -132,7 +132,7 @@ AbstractGameObject *GameGrammar::object()
     }
 }
 
-bool GameGrammar::and_token() 
+bool GameGrammar::and_token()
 {
     if (currentToken() == "and"
         || currentToken() == ",") {
@@ -143,9 +143,9 @@ bool GameGrammar::and_token()
     }
 }
 
-bool GameGrammar::filler() 
+bool GameGrammar::filler()
 {
-    if (currentToken() == "to" 
+    if (currentToken() == "to"
         || currentToken() == "with"
         || currentToken() == "in"
         || currentToken() == "at"

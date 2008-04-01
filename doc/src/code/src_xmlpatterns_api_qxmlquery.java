@@ -16,7 +16,7 @@ public class src_xmlpatterns_api_qxmlquery {
 //! [0]
         }
 
-    
+
 //! [1]
     QByteArray myDocument = new QByteArray();
     QBuffer buffer = new QBuffer(myDocument); // This is a QIODevice.

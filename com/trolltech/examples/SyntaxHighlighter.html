@@ -25,7 +25,7 @@ body { color: black; }</style>
 <pre>&nbsp;       private class Highlighter extends QSyntaxHighlighter {
             QRegExp commentStartExpression;
             QRegExp commentEndExpression;
-    
+
             QTextCharFormat keywordFormat = new QTextCharFormat();
             QTextCharFormat classFormat = new QTextCharFormat();
             QTextCharFormat commentFormat = new QTextCharFormat();
@@ -34,7 +34,7 @@ body { color: black; }</style>
             public class HighlightingRule {
                 public QRegExp pattern;
                 public QTextCharFormat format;
-    
+
                 public HighlightingRule(QRegExp pattern, QTextCharFormat format) {
                     this.pattern = pattern;
                     this.format = format;
@@ -45,9 +45,9 @@ body { color: black; }</style>
 <pre>&nbsp;           Vector&lt;HighlightingRule&gt; highlightingRules = new Vector&lt;HighlightingRule&gt;();</pre>
 <p>We will use a vector to store our highlighting rules.</p>
 <pre>&nbsp;           public Highlighter(QTextDocument parent) {
-    
+
                 super(parent);
-    
+
                 HighlightingRule rule;
                 QBrush brush;
                 QRegExp pattern;</pre>
@@ -55,7 +55,7 @@ body { color: black; }</style>
 <pre>&nbsp;               brush = new QBrush(QColor.darkBlue,Qt.BrushStyle.SolidPattern);
                 keywordFormat.setForeground(brush);
                 keywordFormat.setFontWeight(QFont.Weight.Bold.value());
-    
+
                 String[] keywords = { &quot;abstract&quot;, &quot;continue&quot;, &quot;for&quot;, &quot;new&quot;,
                                       &quot;switch&quot;, &quot;assert&quot;, &quot;default&quot;, &quot;goto&quot;,
                                       &quot;package&quot;, &quot;synchronized&quot;, &quot;boolean&quot;,
@@ -69,7 +69,7 @@ body { color: black; }</style>
                                       &quot;static&quot;, &quot;void&quot;, &quot;class&quot;, &quot;finally&quot;,
                                       &quot;long&quot;, &quot;strictfp&quot;, &quot;volatile&quot;, &quot;const&quot;,
                                       &quot;float&quot;, &quot;native&quot;, &quot;super&quot;, &quot;while&quot; };
-    
+
                 for (String keyword : keywords) {
                     pattern = new QRegExp(&quot;\\b&quot; + keyword + &quot;\\b&quot;);
                     rule = new HighlightingRule(pattern, keywordFormat);
@@ -106,7 +106,7 @@ body { color: black; }</style>
 <p>The Java language has two variations of comments: The single line comment (//) and the multiline comment (/*...* /). The single line comment can easily be defined through a highlighting rule similar to the previous ones. But the multiline comment needs special care due to the design of the QSyntaxHighlighter class.</p>
 <p>After a QSyntaxHighlighter object is created, its highlightBlock() method will be called automatically whenever it is necessary by the rich text engine, highlighting the given text block. The problem appears when a comment spans several text blocks.</p>
 <pre>&nbsp;           public void highlightBlock(String text) {
-    
+
                 for (HighlightingRule rule : highlightingRules) {
                     QRegExp expression = rule.pattern;
                     int index = expression.indexIn(text);
@@ -147,13 +147,13 @@ body { color: black; }</style>
 <h2>SyntaxHighlighter Class Implementation</h2>
 <p>The constructor of the main application window is straight forward. We first set up the menus, then we initialize the editor and make it the central widget of the application. Finally, we set the main window's title and icon:</p>
 <pre>&nbsp;   public class SyntaxHighlighter extends QMainWindow {
-    
+
         private QTextEdit editor;
         public SyntaxHighlighter() {
             setupFileMenu();
             setupHelpMenu();
             setupEditor();
-    
+
             setCentralWidget(editor);
             resize(640, 480);
             setWindowTitle(tr(&quot;Syntax Highlighter&quot;));
@@ -167,16 +167,16 @@ body { color: black; }</style>
             font.setFamily(&quot;Courier&quot;);
             font.setFixedPitch(true);
             font.setPointSize(10);
-    
+
             editor = new QTextEdit();
             editor.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap);
             editor.setFont(font);
-    
+
             new Highlighter(editor.document());
-    
+
             QFile file = new QFile(
                    &quot;classpath:com/trolltech/examples/SyntaxHighlighter.java&quot;);
-    
+
             if (file.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly,
                                              QFile.OpenModeFlag.Text)))
                 editor.setPlainText(file.readAll().toString());
@@ -185,10 +185,10 @@ body { color: black; }</style>
 <p>A QSyntaxHighlighter object can only be installed on one document at the time, but you can easily reinstall the highlighter on another document using the QSyntaxHighlighter.setDocument() method. The QSyntaxHighlighter class also provides the document() method which returns the currently set document.</p>
 <pre>&nbsp;       public static void main(String args[]) {
             QApplication.initialize(args);
-    
+
             SyntaxHighlighter syntaxHighlighter = new SyntaxHighlighter();
             syntaxHighlighter.show();
-    
+
             QApplication.exec();
         }
     }</pre>

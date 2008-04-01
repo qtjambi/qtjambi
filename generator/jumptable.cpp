@@ -6,7 +6,7 @@
 static QHash<QString, QString> shortNames;
 static QHash<char, QString> expandNames;
 
-static QString simplifyName(const QString &name)
+static QString simplifyName(const QString &name, const QString &context, const QString &funcName)
 {
     if (shortNames.size() == 0) {
         shortNames.insert("jboolean", "Z");
@@ -19,11 +19,20 @@ static QString simplifyName(const QString &name)
         shortNames.insert("jdouble", "D");
         shortNames.insert("jobject", "L");
         shortNames.insert("void", "V");
+
+        // Because QBool is specialcased in the typesystem to do
+        // automatic conversions from between bool and jboolean, we
+        // need to handle bool specially here.
+        shortNames.insert("bool", "Z");
     }
 
     QString sn = ((const QHash<QString, QString> &) shortNames).value(name);
-    if (sn.isEmpty())
-        printf("Failed to translate to shortname: %s\n", qPrintable(name));
+    if (sn.isEmpty()) {
+        printf("Failed to translate to shortname: %s in %s :: %s\n",
+               qPrintable(name),
+               qPrintable(context),
+               qPrintable(funcName));
+    }
 
     return shortNames.value(name);
 }
@@ -81,17 +90,20 @@ void JumpTablePreprocessor::process(AbstractMetaClass *cls)
 QString JumpTablePreprocessor::signature(AbstractMetaFunction *func)
 {
     QString signature;
+    QString context = func->implementingClass()->name();
+    QString functionSignature = func->signature();
 
     if (func->argumentRemoved(0))
         signature = "V";
     else
-        signature = simplifyName(CppImplGenerator::jniReturnName(func));
+        signature = simplifyName(CppImplGenerator::jniReturnName(func), context, functionSignature);
 
     AbstractMetaArgumentList args = func->arguments();
     foreach (const AbstractMetaArgument *a, args) {
         if (!func->argumentRemoved(a->argumentIndex() + 1)) {
             if (!a->type()->hasNativeId())
-                signature += simplifyName(CppImplGenerator::translateType(a->type(), EnumAsInts));
+                signature += simplifyName(CppImplGenerator::translateType(a->type(), EnumAsInts),
+                                          context, functionSignature);
             else
                 signature += "J";
         }
@@ -122,7 +134,7 @@ void JumpTableGenerator::generate()
 
 void JumpTableGenerator::generatePackage(const QString &packageName, const SignatureTable &table)
 {
-    QString tableFile = QString("%1/%2/jumptable.cpp")
+    QString tableFile = QString("%1/%2/nativejumptable.cpp")
                         .arg(outputDirectory())
                         .arg(CppGenerator::subDirectoryForPackage(packageName));
 
@@ -134,6 +146,8 @@ void JumpTableGenerator::generatePackage(const QString &packageName, const Signa
         return;
     }
 
+    QString pkgSubDir = QString(packageName).replace(".", "_");
+    m_prigenerator->addSource(pkgSubDir + "/" + pkgSubDir + ".pri", "nativejumptable.cpp");
 
     printf("Generating jump table: %s\n", qPrintable(tableFile));
 
@@ -155,19 +169,51 @@ void JumpTableGenerator::generatePackage(const QString &packageName, const Signa
             s << ", " << expandName(signature.at(i)) << " a" << i;
         }
 
-        s << ")" << endl
+        s << ", jobject __this)" << endl
           << "{" << endl
-          << "    switch (id) { " << endl;
+          << "Q_UNUSED(__this);" << endl
+          << "switch (id) { " << endl;
 
         AbstractMetaFunctionList functions = sit.value();
+        bool hasReturn = signature.at(0) != 'V';
 
         foreach (AbstractMetaFunction *f, functions) {
             s << endl
-              << "    // " << f->implementingClass()->name() << "::" << f->signature() << endl
-              << "    case " << f->jumpTableId() << ":" << endl;
+              << "// " << f->implementingClass()->name() << "::" << f->signature() << endl
+              << "case " << f->jumpTableId() << ":" << endl
+              << "extern ";
+            CppImplGenerator::writeFunctionName(s, f, f->implementingClass(), CppImplGenerator::ReturnType);
+            s << endl;
+            CppImplGenerator::writeFinalFunctionArguments(s, f, "object");
+            s << ";" << endl;
+
+            if (hasReturn && !f->isConstructor())
+                s << "return ";
+
+            CppImplGenerator::writeFunctionName(s, f, f->implementingClass(), 0);
+
+            s << "(e";
+
+            if (f->isStatic())
+                s << ", 0";
+            else if (f->isConstructor())
+                s << ", __this";
+            else
+                s << ", __this, id";
+
+            for (int i=1; i<signature.size(); ++i) {
+                s << ", a" << i;
+            }
+
+            s << ");" << endl
+              << "break;" << endl;
         }
 
-        s << "    }" << endl
-          << "}" << endl;
+        s << "} // switch..." << endl;
+
+        if (hasReturn)
+            s << "return 0;" << endl;
+
+        s << "} // " << signature << endl;
     }
 }

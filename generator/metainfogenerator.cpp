@@ -519,7 +519,8 @@ void MetaInfoGenerator::writeLibraryInitializers()
                                           QString class_name,
                                           const QString &function_name,
                                           const QString &return_type,
-                                          const QString &mangled_arguments = QString());
+                                          const QString &mangled_arguments = QString(),
+                                          uint options = CppImplGenerator::StandardJNISignature);
 
     // We need to generate a library initializer in Java for all packages
     // that have generated classes in Java, and in C++ for all packages

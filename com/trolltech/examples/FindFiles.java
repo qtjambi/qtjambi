@@ -37,24 +37,24 @@ public class FindFiles extends QDialog
     {
         browseButton = createButton(tr("&Browse..."), "browse()");
         findButton = createButton(tr("&Find"), "find()");
-    
+
         fileComboBox = createComboBox(tr("*"));
         textComboBox = createComboBox("");
         directoryComboBox = createComboBox(QDir.currentPath());
-    
+
         fileLabel = new QLabel(tr("Named:"));
         textLabel = new QLabel(tr("Containing text:"));
         directoryLabel = new QLabel(tr("In directory:"));
         filesFoundLabel = new QLabel();
-    
+
         createFilesTable();
 //! [0]
-    
+
 //! [1]
         QHBoxLayout buttonsLayout = new QHBoxLayout();
         buttonsLayout.addStretch();
         buttonsLayout.addWidget(findButton);
-    
+
         QGridLayout mainLayout = new QGridLayout();
         mainLayout.addWidget(fileLabel, 0, 0);
         mainLayout.addWidget(fileComboBox, 0, 1, 1, 2);
@@ -67,7 +67,7 @@ public class FindFiles extends QDialog
         mainLayout.addWidget(filesFoundLabel, 4, 0);
         mainLayout.addLayout(buttonsLayout, 5, 0, 1, 3);
         setLayout(mainLayout);
-    
+
         setWindowTitle(tr("Find Files"));
         resize(700, 300);
     }

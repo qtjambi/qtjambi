@@ -27,11 +27,11 @@ public class QMakeTask extends Task {
             arguments += " -r ";
 
         String command = "qmake" + arguments;
-        
+
         if (!pro.equals("")) {
             command += " " + Util.makeCanonical(pro).getAbsolutePath();
         }
-        
+
         Util.exec(command, new File(dir));
     }
 
@@ -42,7 +42,7 @@ public class QMakeTask extends Task {
     public void setConfig(String config) {
         this.config = config;
     }
-    
+
     public void setDir(String dir) {
         this.dir = dir;
     }
@@ -50,7 +50,7 @@ public class QMakeTask extends Task {
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
     }
-    
+
     public void setPro(String pro) {
         this.pro = pro;
     }

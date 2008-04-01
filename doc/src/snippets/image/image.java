@@ -21,17 +21,17 @@ public class image
             else
                 image.scanLine(y)[x >> 3] |= 1 << (7 - (x  7));
         }
-    
+
         {
             // 8-BIT ACCESS
             QImage image;
             // set entry 19 in the color table to yellow
             image.setColor(19, qRgb(255, 255, 0));
-    
+
             // set 8 bit pixel at (x,y) to value yellow (in color table)
             image.scanLine(y)[x] = 19;
         }
-    
+
         {
             // 32-BIT
             QImage image;
@@ -39,7 +39,7 @@ public class image
             uint ptr = reinterpret_cast<uint >(image.scanLine(y)) + x;
             ptr = qRgb(255, 255, 0);
         }*/
-    
+
         if (true)
         {
             // SAVE
@@ -51,7 +51,7 @@ public class image
             image.save(buffer, "PNG"); // writes image into ba in PNG format
     //! [0]
         }
-    
+
         QByteArray bytes = new QByteArray();
         if (true)
         {
@@ -64,7 +64,7 @@ public class image
             pixmap.save(buffer, "PNG"); // writes pixmap into bytes in PNG format
     //! [1]
         }
-    
+
         if (true)
         {
             // MASK

@@ -364,7 +364,7 @@ private slots:
     void aSlot(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 };
 
-class SenderQObject: public QObject 
+class SenderQObject: public QObject
 {
     Q_OBJECT
 public:
@@ -383,7 +383,7 @@ signals:
 class StyledItemDelegateSubclass: public QStyledItemDelegate
 {
 public:
-    void initStyleOptionInStyledDelegate(QStyleOptionViewItem *styleOption) 
+    void initStyleOptionInStyledDelegate(QStyleOptionViewItem *styleOption)
     {
         initStyleOption(styleOption, QModelIndex());
     }
@@ -400,7 +400,7 @@ protected:
     }
 
 public:
-    static int callInitStyleOption(GraphicsWidgetSubclass *widget) 
+    static int callInitStyleOption(GraphicsWidgetSubclass *widget)
     {
         QStyleOptionGroupBox box;
         widget->initStyleOption(&box);
@@ -409,7 +409,7 @@ public:
     }
 };
 
-class XmlEntityResolverSubclass: public QXmlEntityResolver 
+class XmlEntityResolverSubclass: public QXmlEntityResolver
 {
 public:
     bool resolveEntity(const QString &publicId, const QString &systemId, QXmlInputSource *&ret)
@@ -417,12 +417,12 @@ public:
         if (publicId == "c++") {
             ret = new QXmlInputSource;
             ret->setData(QString::fromLatin1("Made in C++"));
-        } 
+        }
 
         return (systemId != "error");
     }
 
-    QXmlInputSource *callResolveEntity(const QString &publicId, const QString &systemId) 
+    QXmlInputSource *callResolveEntity(const QString &publicId, const QString &systemId)
     {
         QXmlInputSource *ptr = 0;
         bool error = !resolveEntity(publicId, systemId, ptr);

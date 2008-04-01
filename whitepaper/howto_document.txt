@@ -21,7 +21,7 @@ Object types are classes which needs to be instantiated using the
 objects. Widgets, for instance, fall into this category. These types
 need to be explicity deleted in C++, either by calling the "delete"
 operator directly or by assigning the object a parent that will be
-delete by the object when the parent is deleted. 
+delete by the object when the parent is deleted.
 
 These objects do not rely on garbage collection in Java. Consider a
 QWidget with a QPushButton inside it. After setting up the widget, the
@@ -40,7 +40,7 @@ Java has a simpler typesystem compared to that of C++, with only
 primitives and objects. Primitives are passed by value and objects are
 passed by reference. Qt/Java maps the signatures in Qt/C++ to those in
 Qt/Java according to the following table:
-		
+
 Object Types	passed by pointer
 Value Types	passed by value or const &
 Primitives 	primitives
@@ -72,7 +72,7 @@ to change the pen width from 10 to 1 for the painter that has a
 reference to the pen, this is indeed not the case as the pen is passed
 to the setPen function by value on the C++ side, causing a separate
 copy to be made of it, thus calling pen.setWidth(1) will only change
-the pen width of the local pen in Java. 
+the pen width of the local pen in Java.
 
 If the pen been passed to another Java function the behaviour would
 have been different.
@@ -100,7 +100,7 @@ will be deleted. When an object is passed to a Qt/C++ function that
 takes ownership of the object, such as QEvent being passed to
 QApplication::postEvent(), the event object might no longer be
 reachable from the Virtual Machine and can be scheduled for deletion
-by the Garbage Collector. 
+by the Garbage Collector.
 
 In these cases it is required to call the function
 QtObject.disableGarbageCollection() which will make sure that the
@@ -120,7 +120,7 @@ Both enums and flags are mapped into Java as plain intergers. Although
 Java 1.5 provides enumerators as a language feature these enumerators
 are not suitable mapping for enums as they exist in C++, as enums in
 C++ can be treated as both bitmasks and integers while Java enums are
-special objects that fail to fit into these categories. 
+special objects that fail to fit into these categories.
 
 
 [section] Operator overloading

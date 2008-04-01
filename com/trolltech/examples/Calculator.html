@@ -25,20 +25,20 @@ body { color: black; }</style>
 <h2>Calculator Class Definition</h2>
 <p>In general, you only have to subclass QWidget to implement the UI forms. The reason we have chosen to derive from QMainWindow (which is a QWidget subclass) instead, is rooted in the dockable version of our calculator. QWidget does not support dock widgets; QMainWindow does.</p>
 <pre>&nbsp;   public class Calculator extends QMainWindow {
-    
+
         public static void main(String[] args) {
-    
+
             QApplication.initialize(args);
             Calculator calculator = new Calculator();
             calculator.show();
             QApplication.exec();
         }
-    
+
         private QLineEdit lineEdit;
         private QTextBrowser textBrowser;
-    
+
         private Vector&lt;Function&gt; infixFunctions = new Vector&lt;Function&gt;();
-        private Hashtable&lt;String, Function&gt; functions = new Hashtable&lt;String, 
+        private Hashtable&lt;String, Function&gt; functions = new Hashtable&lt;String,
                                                                       Function&gt;();</pre>
 <p>In the <tt>Calculator</tt> class, we first provide a <tt>main()</tt> method to create and show the main application window when the example is run. While running the calculator, we will have to access the line edit to accept input and the text browser to display the calculations and results. For that reason, we declare corresponding variables in the application wide scope. We also have to provide functions that correspond to the application's user interface. All of this is taken care of in the <tt>Calculator</tt> class's constructor.</p>
 <a name="calculator-class-constructor"></a>
@@ -50,7 +50,7 @@ body { color: black; }</style>
             uiTypes.add(&quot;Normal&quot;);
             uiTypes.add(&quot;Dockable&quot;);
             ...
-            String item = QInputDialog.getItem(this, tr(&quot;Ui selector&quot;), 
+            String item = QInputDialog.getItem(this, tr(&quot;Ui selector&quot;),
                                                tr(&quot;Ui configurations:&quot;), uiTypes,</pre>
 <p>The QInputDialog class provides a simple convenience dialog to get a single value from the user. The input value can be a string, a number or an item from a list. We use the static QInputDialog.getItem() convenience method to let the user select one of our predefined alternatives using a combobox.</p>
 <p align="center"><img src="classpath:com/trolltech/images/calculator-selector.png" /></p><p>When pressing the dialog's <b>OK</b> button, the getItem() method returns the text of the current item; otherwise it returns <tt>null</tt>.</p>
@@ -93,11 +93,11 @@ body { color: black; }</style>
             try {
                 result = Double.toString(evaluate(parse(expression)));
             } catch (ParseException exception) {
-                result = &quot;Error: &lt;font color=\&quot;red\&quot;&gt;&quot; 
+                result = &quot;Error: &lt;font color=\&quot;red\&quot;&gt;&quot;
                          + exception.getMessage() + &quot;&lt;/font&gt;&quot;;
                 error = true;
             }
-    
+
             textBrowser.append(expression + &quot;&lt;b&gt; = &quot; + result + &quot;&lt;/b&gt;&lt;br&gt;&quot;);
             if (error)
                 result = expression;

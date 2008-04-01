@@ -35,7 +35,7 @@ QGroupBox::title {
   border-image : url(classpath:com/trolltech/launcher/stylesheet/pushbutton_normal.png) 3 11 3 11;
   border-width : 3 11 3 11;
   padding : 2 2 3 2
-  
+
 }
 
 QGroupBox[flat="true"] {

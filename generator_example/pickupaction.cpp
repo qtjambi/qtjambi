@@ -19,11 +19,11 @@
 bool PickUpAction::perform(GameScene *scene)
 {
     if (objects.size() > 0) {
-        return false; 
+        return false;
     } else {
         QList<AbstractGameObject *> cant_pick_up;
         for (int i=0; i<subjects.size(); ++i) {
-            if (!(subjects.at(i)->objectFlags() & Game::CanPickUp)) {                
+            if (!(subjects.at(i)->objectFlags() & Game::CanPickUp)) {
                 cant_pick_up.append(subjects.at(i));
             } else {
                 scene->addToEgoInventory(subjects.at(i));

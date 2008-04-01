@@ -24,7 +24,7 @@ void displayHelp(GeneratorSet *generatorSet);
 
 #include <QDebug>
 int main(int argc, char *argv[])
-{ 
+{
     GeneratorSet *gs = GeneratorSet::getInstance();
 
     QString default_file = "qtjambi_masterinclude.h";
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     QString typesystemFileName;
     QString pp_file = ".preprocessed.tmp";
     QStringList rebuild_classes;
-     
+
     QMap<QString, QString> args;
 
     int argNum = 0;
@@ -54,12 +54,12 @@ int main(int argc, char *argv[])
             args[QString("arg-%1").arg(argNum)] = arg;
         }
     }
-    
+
     if (args.contains("no-suppress-warnings")) {
         TypeDatabase *db = TypeDatabase::instance();
         db->setSuppressWarnings(false);
     }
-        
+
     if (args.contains("debug-level")) {
         QString level = args.value("debug-level");
         if (level == "sparse")
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
             ReportHandler::setDebugLevel(ReportHandler::MediumDebug);
         else if (level == "full")
             ReportHandler::setDebugLevel(ReportHandler::FullDebug);
-    }      
+    }
 
     if (args.contains("dummy")) {
         FileOut::dummy = true;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     if (args.contains("diff")) {
         FileOut::diff = true;
     }
-    
+
     if (args.contains("rebuild-only")) {
         QStringList classes = args.value("rebuild-only").split(",", QString::SkipEmptyParts);
         TypeDatabase::instance()->setRebuildClasses(classes);
@@ -143,7 +143,7 @@ void displayHelp(GeneratorSet* generatorSet) {
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n",
            path_splitter, path_splitter);
-    
+
     printf("%s", qPrintable( generatorSet->usage()));
     exit(0);
 }

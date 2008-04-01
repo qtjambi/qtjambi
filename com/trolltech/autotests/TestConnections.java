@@ -32,11 +32,11 @@ class SignalsAndSlotsSubclass extends SignalsAndSlots
     public int java_slot5_called = 0;
 
     public Signal0 signal4 = new Signal0();
-    
+
     public class NonQObjectSubclass {
         public Signal1<String> s = new Signal1<String>();
     }
-    
+
     public NonQObjectSubclass getSubclassObject() {
         return new NonQObjectSubclass();
     }
@@ -56,8 +56,8 @@ class SignalsAndSlotsSubclass extends SignalsAndSlots
     {
         java_slot3_2_called += Integer.parseInt(k);
     }
-    
-    public void unnormalized_signature(String s, int i) 
+
+    public void unnormalized_signature(String s, int i)
     {
         java_slot5_called = i * 3;
     }
@@ -75,7 +75,7 @@ class NonQObject {
         receivedBar = bar;
         receivedFoo = foo;
     }
-    
+
     public String receivedFoo;
     public int receivedBar;
 }
@@ -85,62 +85,62 @@ public class TestConnections extends QApplicationTest implements Qt
     public TestConnections()
     {
     }
-    
+
     @Test public void run_signalInNonQObject() {
         SignalsAndSlotsSubclass b = new SignalsAndSlotsSubclass();
-        
+
         Exception e = null;
         try {
-            SignalsAndSlotsSubclass.NonQObjectSubclass sc = b.getSubclassObject();  
+            SignalsAndSlotsSubclass.NonQObjectSubclass sc = b.getSubclassObject();
             sc.s.connect(this, "reciveSignal(String)");
         } catch (RuntimeException f) {
             e = f;
         }
-        
+
         assertTrue(e != null);
         assertEquals(e.getMessage(), "Signals must be declared as members of QSignalEmitter subclasses");
     }
-    
+
     public void reciveSignal(String s){
 
     }
-    
+
     class SignalEmitter extends QSignalEmitter {
-        public Signal2<String, Integer> mySignal = new Signal2<String, Integer>(); 
+        public Signal2<String, Integer> mySignal = new Signal2<String, Integer>();
     }
-    
+
     @Test public void run_connectFromNonQObjects() {
         NonQObject nonQObject = new NonQObject();
         SignalEmitter signalEmitter = new SignalEmitter();
-        
+
         signalEmitter.mySignal.connect(nonQObject, "foobar(String, int)");
-        
+
         signalEmitter.mySignal.emit("one-two-three", 123);
-        
+
         assertEquals("one-two-three", nonQObject.receivedFoo);
         assertEquals(123, nonQObject.receivedBar);
     }
-    
+
     @Test public void run_connectToNonQObjects() {
         SignalsAndSlotsSubclass sas = new SignalsAndSlotsSubclass();
         NonQObject o = new NonQObject();
-        
+
         sas.signal6.connect(o, "foobar(String, int)");
         sas.signal6.emit("I have this many friends:", 100);
-        
+
         assertEquals(o.receivedFoo, "I have this many friends:");
         assertEquals(o.receivedBar, 100);
     }
-    
+
     @Test public void run_shouldConnectToUnnormalizedSignatures() {
         SignalsAndSlotsSubclass sas = new SignalsAndSlotsSubclass();
         assertEquals(0, sas.java_slot5_called);
         assertEquals(0, sas.slot1_1_called());
-        
-        sas.connectSignal6ToUnnormalizedSignature();                
+
+        sas.connectSignal6ToUnnormalizedSignature();
         sas.signal6.connect(sas, "slot1_1()");
         sas.signal6.emit("abc", 11);
-        
+
         assertEquals(33, sas.java_slot5_called);
         assertEquals(1, sas.slot1_1_called());
     }
@@ -730,7 +730,7 @@ public class TestConnections extends QApplicationTest implements Qt
         for (int i = 0; i < 1000; ++i) {
             objects[i] = new MyQObject(parent);
             objects[i].destroyed = this.destroyed;
-            
+
         }
 
         MyQObject.finalizedCount = 0;
@@ -752,7 +752,7 @@ public class TestConnections extends QApplicationTest implements Qt
     @Test public void run_connectJavaQt()
     {
         QWidget widget = new QWidget();
-       
+
         assertTrue(!widget.isVisible());
         assertTrue(widget.isEnabled());
 
@@ -1207,7 +1207,7 @@ public class TestConnections extends QApplicationTest implements Qt
          Class<?> ce = null;
          String msg = null;
          try {
-             ((QSignalEmitter.AbstractSignal)signal).connect(receiver, slotSignature);             
+             ((QSignalEmitter.AbstractSignal)signal).connect(receiver, slotSignature);
          } catch (Exception e) {
              ce = e.getClass();
              msg = e.getMessage();
@@ -1368,81 +1368,81 @@ public class TestConnections extends QApplicationTest implements Qt
         public Signal1<String[]> test2 = new Signal1<String[]>();
         public Signal1<String[][]> test3 = new Signal1<String[][]>();
         public Signal1<Byte[]> test4 = new Signal1<Byte[]>();
-        
+
         String[] a = {"one", "two"};
         String[][] b = {a, a};
         Byte[] c = {1, 2, 3};
-        
+
 
         public void slot1(String[] str){
             for (int i = 0; i < str.length; i++) {
                 assertEquals(a[i], str[i]);
             }
         }
-        
+
         public void slot2(String[][] str){
             for (int i = 0; i < str.length; i++) {
                 String[] strings = str[i];
                 for (int j = 0; j < strings.length; j++) {
                     assertEquals(a[j], strings[j]);
-                }   
+                }
             }
         }
-        
+
         public void slot3(Byte[] bb){
             for (int i = 0; i < bb.length; i++) {
                 assertEquals(c[i], bb[i]);
             }
         }
     }
-    
+
     @Test public void testConnectArrays() {
-        ArrayConnection test = new ArrayConnection();    
-        
+        ArrayConnection test = new ArrayConnection();
+
         test.test1.connect(System.out, "println(java.lang.String)");
         test.test2.connect(test, "slot1(String[])");
         test.test3.connect(test, "slot2(java.lang.String[][])");
         test.test4.connect(test, "slot3(Byte[])");
-        
+
         try {
             test.test3.connect(test, "slot2(String[][][])");
             assertTrue(false);
         } catch (RuntimeException e) {}
-        
+
         test.test1.emit("hello");
-        
+
         test.test2.emit(test.a);
         test.test3.emit(test.b);
         test.test4.emit(test.c);
     }
-    
-    
+
+
     private String path = "not/the/right/path";
     @Test public void testUrlHandler() {
         QDesktopServices.setUrlHandler("superscheme", new QDesktopServices.UrlHandler() {
-           
+
             public void handleUrl(QUrl url) {
                 path = url.path();
             }
-            
+
         });
-        
+
         QUrl url = new QUrl("superscheme:host.com/my/super/scheme/path");
-        
+
         QDesktopServices.openUrl(url);
         assertEquals(url.path(), path);
-        
+
         QDesktopServices.unsetUrlHandler("superscheme");
         QDesktopServices.setUrlHandler("superscheme", new QDesktopServices.UrlHandler() {
-            
+
             public void handleUrl(QUrl url) {
                 path = url.toString();
             }
-            
+
         });
         QDesktopServices.openUrl(new QUrl("superscheme:superhost.com/not/a/valid"));
         assertEquals("superscheme:superhost.com/not/a/valid", path);
-        
+
         QDesktopServices.setUrlHandler("superscheme", null);
     }
 
@@ -1479,136 +1479,136 @@ public class TestConnections extends QApplicationTest implements Qt
 
         assertTrue(e.goodExit);
     }
-    
+
     @Test public void standardReadWriteResetProperty() {
         SignalsAndSlots sas = new SignalsAndSlots();
-        
+
         sas.setByteArrayProperty("cppProperty", new QByteArray("it was a dark and stormy night"));
         QByteArray ba = QVariant.toByteArray(sas.property("cppProperty"));
         assertEquals("it was a dark and stormy night", ba.toString());
-        
+
         sas.setProperty("cppProperty", new QByteArray("it was a stormy, dark night"));
         ba = sas.byteArrayProperty("cppProperty");
         assertEquals("it was a stormy, dark night", ba.toString());
-        
+
         sas.resetProperty("cppProperty");
         assertEquals("it was the darkest and stormiest night evar", sas.property("cppProperty").toString());
     }
-    
+
     @Test public void standardClassName() {
         SignalsAndSlots sas = new SignalsAndSlots();
-        
+
         assertEquals("SignalsAndSlots", sas.classNameFromMetaObject());
-        assertEquals("QObject", sas.classNameOfSuperClassFromMetaObject());        
+        assertEquals("QObject", sas.classNameOfSuperClassFromMetaObject());
     }
-    
+
     @Test public void standardPropertyCount() {
         SignalsAndSlots sas = new SignalsAndSlots();
-        
+
         assertEquals(2, sas.propertyCountFromMetaObject());
         assertEquals(1, sas.propertyCountOfSuperClassFromMetaObject());
     }
-    
+
     @Test public void standardPropertyNames() {
         SignalsAndSlots sas = new SignalsAndSlots();
-        
+
         List<String> list = sas.propertyNamesFromMetaObject();
         assertEquals(2, list.size());
         assertEquals("objectName", list.get(0));
         assertEquals("cppProperty", list.get(1));
     }
-    
+
     private static class SignalsAndSlotsWithProperties extends SignalsAndSlots {
         private QByteArray javaProperty;
-        
+
         @QtPropertyReader(name="javaProperty")
         public QByteArray javaProperty() {
             return javaProperty;
         }
-        
+
         @QtPropertyWriter(name="javaProperty")
         public void setJavaProperty(QByteArray ba) {
             javaProperty = ba;
         }
-        
-        @QtPropertyResetter(name="javaProperty") 
+
+        @QtPropertyResetter(name="javaProperty")
         public void resetJavaProperty() {
-            javaProperty = new QByteArray("HAY GUYS I INVENTED INTERNET"); 
+            javaProperty = new QByteArray("HAY GUYS I INVENTED INTERNET");
         }
-        
+
     }
-    
+
     private static class SignalsAndSlotsWithMoreProperties extends SignalsAndSlotsWithProperties {
         private QByteArray otherJavaProperty;
-        
+
         @QtPropertyReader(name="otherJavaProperty")
         public QByteArray otherJavaProperty() {
             return otherJavaProperty;
         }
-        
+
         @QtPropertyWriter(name="otherJavaProperty")
         public void setOtherJavaProperty(QByteArray ba) {
             otherJavaProperty = ba;
         }
-        
-        @QtPropertyResetter(name="otherJavaProperty") 
+
+        @QtPropertyResetter(name="otherJavaProperty")
         public void resetOtherJavaProperty() {
-            otherJavaProperty = new QByteArray("HAY GUYS I INVENTED INTERNET"); 
+            otherJavaProperty = new QByteArray("HAY GUYS I INVENTED INTERNET");
         }
-        
+
         @QtPropertyReader(name="readOnlyProperty")
         public QByteArray readOnlyProperty() {
-            return new QByteArray("it was a darker and stormier night than yesterday night, which was also dark and stormy");                                   
+            return new QByteArray("it was a darker and stormier night than yesterday night, which was also dark and stormy");
         }
     }
-    
+
     @Test public void readWriteResetProperty() {
         SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
-        
+
         sas.setByteArrayProperty("javaProperty", new QByteArray("it was a dark and stormy night"));
         QByteArray ba = QVariant.toByteArray(sas.property("javaProperty"));
         assertEquals("it was a dark and stormy night", ba.toString());
         assertEquals("it was a dark and stormy night", sas.javaProperty().toString());
-        
+
         sas.setProperty("javaProperty", new QByteArray("it was a stormy, dark night"));
         ba = sas.byteArrayProperty("javaProperty");
         assertEquals("it was a stormy, dark night", sas.javaProperty().toString());
-        assertEquals("it was a stormy, dark night", ba.toString());        
-        
+        assertEquals("it was a stormy, dark night", ba.toString());
+
         sas.resetProperty("javaProperty");
         assertEquals("HAY GUYS I INVENTED INTERNET", sas.property("javaProperty").toString());
         assertEquals("HAY GUYS I INVENTED INTERNET", sas.javaProperty().toString());
-        
+
         sas.setByteArrayProperty("otherJavaProperty", new QByteArray("it was a cold and dry night"));
         assertEquals("it was a cold and dry night", sas.property("otherJavaProperty").toString());
         assertEquals("it was a cold and dry night", sas.byteArrayProperty("otherJavaProperty").toString());
         assertEquals("it was a cold and dry night", sas.otherJavaProperty().toString());
     }
-    
+
     @Test public void readOnlyProperty() {
-        SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();        
+        SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
         assertEquals("it was a darker and stormier night than yesterday night, which was also dark and stormy", sas.byteArrayProperty("readOnlyProperty").toString());
     }
-    
+
     @Test public void propertyCount() {
         SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
-        
+
         assertEquals(5, sas.propertyCountFromMetaObject());
         assertEquals(3, sas.propertyCountOfSuperClassFromMetaObject());
     }
-    
+
     @Test public void className() {
         SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
-        
-        assertEquals("com::trolltech::autotests::TestConnections$SignalsAndSlotsWithMoreProperties",  
+
+        assertEquals("com::trolltech::autotests::TestConnections$SignalsAndSlotsWithMoreProperties",
                      sas.classNameFromMetaObject());
-        assertEquals("com::trolltech::autotests::TestConnections$SignalsAndSlotsWithProperties",  
-                sas.classNameOfSuperClassFromMetaObject());        
+        assertEquals("com::trolltech::autotests::TestConnections$SignalsAndSlotsWithProperties",
+                sas.classNameOfSuperClassFromMetaObject());
     }
-    
+
     @Test public void propertyNames() {
         SignalsAndSlotsWithMoreProperties sas = new SignalsAndSlotsWithMoreProperties();
-        
+
         List<String> propertyNames = sas.propertyNamesFromMetaObject();
         assertEquals(5, propertyNames.size());
         assertEquals("objectName", propertyNames.get(0));
@@ -1616,93 +1616,93 @@ public class TestConnections extends QApplicationTest implements Qt
         assertEquals("javaProperty", propertyNames.get(2));
         assertEquals("readOnlyProperty", propertyNames.get(3));
         assertEquals("otherJavaProperty", propertyNames.get(4));
-        
+
     }
-    
+
     private static class JavaSignal extends SignalsAndSlots {
         public Signal2<String, QByteArray> aJavaSignal = new Signal2<String, QByteArray>();
     }
-    
+
     @Test public void javaEmitShouldEmitCpp() {
         JavaSignal javaSignal = new JavaSignal();
-        
+
         javaSignal.javaSignalToCppSlot();
-        
+
         assertEquals("", javaSignal.received_string());
         assertEquals("", javaSignal.received_bytearray().toString());
-        
+
         javaSignal.aJavaSignal.emit("where are we?", new QByteArray("what the hell is going on?"));
-        
+
         assertEquals("where are we?", javaSignal.received_string());
-        assertEquals("what the hell is going on?", javaSignal.received_bytearray().toString());        
+        assertEquals("what the hell is going on?", javaSignal.received_bytearray().toString());
     }
-    
+
     private static class ArrayQObject extends QObject {
-        public Object received = null; 
-            
+        public Object received = null;
+
         public void fooBar(String args[]) {
             received = args;
         }
-        
+
         public Signal1<String[]> zootBaz = new Signal1<String[]>();
     }
-    
+
     @Test
     public void signatureOfJavaMethodsWithArrays() {
         ArrayQObject aqo = new ArrayQObject();
-        
+
         String signature = SignalsAndSlots.metaObjectMethodSignature(aqo, "fooBar");
         assertEquals("fooBar(JObjectWrapper)", signature);
-        
+
         assertTrue(SignalsAndSlots.invokeMethod(aqo, "fooBar", new String[] { "hello", "world" }));
         assertTrue(aqo.received instanceof String[]);
-        
+
         String array[] = (String[])aqo.received;
         assertEquals(2, array.length);
-        
+
         assertEquals("hello", array[0]);
         assertEquals("world", array[1]);
     }
-    
+
     @Test
     public void signatureOfJavaSignalWithArrays() {
         ArrayQObject aqo = new ArrayQObject();
-        
+
         String signature = SignalsAndSlots.metaObjectMethodSignature(aqo, "zootBaz");
         assertEquals("zootBaz(JObjectWrapper)", signature);
-        
+
         aqo.zootBaz.connect(aqo, "fooBar(String [])");
-        
+
         assertTrue(SignalsAndSlots.invokeMethod(aqo, "zootBaz", new String[] { "goodday", "planet" }));
         assertTrue(aqo.received instanceof String[]);
-        
+
         String array[] = (String[])aqo.received;
         assertEquals(2, array.length);
-        
+
         assertEquals("goodday", array[0]);
         assertEquals("planet", array[1]);
-        
+
     }
-    
+
     static class RecursiveSignalEmission extends QPushButton {
     	public static final int COUNT = 100;
-    	
+
     	public int emitted = 0;
     	public void slot() {
     		if (++emitted < COUNT)
     			clicked.emit(true);
     	}
     }
-    
+
     @Test
     public void recursiveSignalEmission() {
     	RecursiveSignalEmission e = new RecursiveSignalEmission();
-    	
+
     	assertEquals(0, e.emitted);
     	e.clicked.connect(e, "slot()");
     	e.slot();
-    	
+
     	assertEquals(RecursiveSignalEmission.COUNT, e.emitted);
     }
-    
+
 }

@@ -50,12 +50,12 @@ void MainWindow.openFile()
 {
     String fileName = QFileDialog.getOpenFileName(this,
         tr("Open file"), currentFile, "HTML files (.html);;Text files (.txt)");
-    
+
     if (!fileName.isEmpty()) {
         QFileInfo info(fileName);
         if (info.completeSuffix() == "html") {
             QFile file(fileName);
-            
+
             if (file.open(QFile.ReadOnly)) {
                 editor.setHtml(QString(file.readAll()));
                 file.close();
@@ -63,7 +63,7 @@ void MainWindow.openFile()
             }
         } else if (info.completeSuffix() == "txt") {
             QFile file(fileName);
-            
+
             if (file.open(QFile.ReadOnly)) {
                 editor.setPlainText(file.readAll());
                 file.close();

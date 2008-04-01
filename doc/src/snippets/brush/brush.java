@@ -8,7 +8,7 @@ public class brush extends QWidget
     public static void main(String args[])
     {
         QWidget anyPaintDevice = new QWidget();
-    
+
         if (true)
         {
             // PEN SNIPPET
@@ -21,7 +21,7 @@ public class brush extends QWidget
             painter.drawLine(40,30, 240,130);     // draw a diagonal in rectangle
             painter.end();                        // painting done
         }
-    
+
         if (true)
         {
             // BRUSH SNIPPET
@@ -36,7 +36,7 @@ public class brush extends QWidget
             painter.drawRect(10,10, 30,20);                         // draw rectangle outline
             painter.end();                                          // painting done
         }
-    
+
         // LINEAR
     //! [0]
         QLinearGradient linearGrad = new QLinearGradient(new QPointF(100, 100),
@@ -44,7 +44,7 @@ public class brush extends QWidget
         linearGrad.setColorAt(0, new QColor(Qt.GlobalColor.black));
         linearGrad.setColorAt(1, new QColor(Qt.GlobalColor.white));
     //! [0]
-    
+
         // RADIAL
     //! [1]
         QRadialGradient radialGrad =

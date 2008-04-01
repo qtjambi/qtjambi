@@ -41,7 +41,7 @@ class InventoryAction extends GameAction
     public boolean perform(GameScene scene) {
         if (objects().isEmpty()) {
             List<AbstractGameObjectInterface> inventory = scene.egoInventory();
-            
+
             if (inventory.isEmpty()) {
                 scene.message("Your pockets are empty");
             } else {
@@ -50,11 +50,11 @@ class InventoryAction extends GameAction
                     if (gameObject instanceof GameObject) {
                         msg += ((GameObject) gameObject).description() + "\n";
                     }
-                }       
-                
+                }
+
                 scene.message(msg);
             }
-            
+
             return true;
         } else {
             return false;
@@ -62,54 +62,54 @@ class InventoryAction extends GameAction
     }
 
     public InventoryAction() {
-        super(Game.ActionType.resolve(Game.ActionType.UserAction.value()));               
+        super(Game.ActionType.resolve(Game.ActionType.UserAction.value()));
     }
 }
 
 class ChickenObject extends GameObject {
-    
+
     public ChickenObject(GameScene scene, String name) {
         super(scene, name);
-        
+
         used.connect(this, "youCantUseTheChicken()");
     }
-               
+
     @SuppressWarnings("unused")
     private void youCantUseTheChicken() {
         gameScene().message("You can't use the rubber chicken for anything");
-    }        
+    }
 }
 
 @QtJambiExample(name = "Generator Example")
 public class GeneratorExample extends GameScene {
-    
-    private static final String resourcesLocation = "classpath:com/trolltech/examples/generator/images/"; 
-       
+
+    private static final String resourcesLocation = "classpath:com/trolltech/examples/generator/images/";
+
     public GeneratorExample()
-    {               
+    {
         int w = 0; int h = 0;
-        
+
         // Set up scene
         {
             setCacheMode(QGraphicsView.CacheModeFlag.CacheBackground);
             setDescription("You are standing next to a restaurant and it is sunny outside.");
-            
+
             QImage img = new QImage(resourcesLocation + "background.png");
             setBackground(img);
-            
+
             setHorizon(250.0);
             w = img.width(); h = img.height();
             setSceneRect(new QRectF(0.0, 0.0, w, h));
         }
-        
+
         // Player avatar
         setEgoObject(makeEgo(w, h));
-        
+
         // Inventory command
         grammar().addVerb("inventory", new InventoryAction());
         grammar().addVerb("inv", new InventoryAction());
-               
-        
+
+
         // Make boundary
         {
             QPainterPath path = new QPainterPath(new QPointF(0, 305));
@@ -121,20 +121,20 @@ public class GeneratorExample extends GameScene {
             path.lineTo(new QPointF(635, 200));
             path.lineTo(new QPointF(0, 200));
             path.closeSubpath();
-            
+
             GameObject boundary = new GameObject(this, "boundary");
             boundary.setVisible(false);
-            boundary.setShape(path);                        
+            boundary.setShape(path);
             boundary.setFlags(Game.ObjectFlag.Blocking);
-         
+
 
             addGameObject(boundary);
         }
-        
+
         // Make chicken
         {
             GameObject chicken = new ChickenObject(this, "a rubber chicken with a pulley in the middle");
-            
+
             chicken.setDescription("It's a rubber chicken with a pulley in the middle.");
             chicken.addName("rubber chicken");
             chicken.addName("chicken");
@@ -156,47 +156,47 @@ public class GeneratorExample extends GameScene {
 
             addGameObject(chicken);
         }
-     
+
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
         setWindowTitle(tr("Generator Example"));
-        
-        message("Press any letter to write a command and enter when you are done. Use the arrow keys to move around." 
+
+        message("Press any letter to write a command and enter when you are done. Use the arrow keys to move around."
                      +" Hit enter when you are done reading this message.");
     }
-    
+
     private GameAnimation makeAnimation(Game.AnimationType type, String nameTemplate, int startIdx, int endIdx) {
         GameAnimation a = new GameAnimation(type);
-        
+
         a.setSpeed(100);
         a.setLooping(true);
-        
-        for (int i=startIdx; i<=endIdx; ++i) 
+
+        for (int i=startIdx; i<=endIdx; ++i)
             a.addFrame(new QImage(resourcesLocation + nameTemplate.replace("#", new Integer(i).toString())));
-        
+
         return a;
     }
-    
+
     private GameObject makeEgo(int w, int h) {
         GameObject ego = new GameObject(this);
-        
+
         ego.setPosition(new Point3D(w / 2.0, 350.0, 0.0));
         ego.setVisible(true);
-        
+
         ego.setAnimation(makeAnimation(Game.AnimationType.WalkingHorizontally, "walk#.png", 1, 4));
         ego.setAnimation(makeAnimation(Game.AnimationType.StandingStill, "walk#.png", 2, 2));
         ego.setAnimation(makeAnimation(Game.AnimationType.WalkingFromScreen, "walkaway#.png", 1, 2));
         ego.setAnimation(makeAnimation(Game.AnimationType.WalkingToScreen, "walktowards#.png", 1, 2));
-        
+
         return ego;
     }
 
     @SuppressWarnings("unused")
     public static void main(String[] args) {
-        QApplication.initialize(args);               
+        QApplication.initialize(args);
         GeneratorExample ex = new GeneratorExample();
         ex.show();
         QApplication.exec();
-        
+
     }
 
 }

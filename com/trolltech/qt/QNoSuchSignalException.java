@@ -17,8 +17,8 @@ public class QNoSuchSignalException extends ConnectionException
 {
     private static final long serialVersionUID = 1L;
 
-    public QNoSuchSignalException(String extraMessage)    
+    public QNoSuchSignalException(String extraMessage)
     {
-        super(extraMessage.length() > 0 ? "Signal not found: " + extraMessage : "Signal not found");    
+        super(extraMessage.length() > 0 ? "Signal not found: " + extraMessage : "Signal not found");
     }
  }

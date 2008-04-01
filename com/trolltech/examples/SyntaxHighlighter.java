@@ -124,7 +124,7 @@ public class SyntaxHighlighter extends QMainWindow {
         QAction aboutAct = new QAction(tr("&About"), this);
         aboutAct.triggered.connect(this, "about()");
         helpMenu.addAction(aboutAct);
-        
+
         QAction aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
         aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
         helpMenu.addSeparator();

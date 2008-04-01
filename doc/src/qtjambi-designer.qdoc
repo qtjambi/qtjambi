@@ -26,7 +26,7 @@
     group of the widgets (see \c
     path/to/qt/jambi/plugins/qtjambi/qtjambi_examples.xml for an
     example), and locate this file in a plugins directory like \c
-    path/to/qt/jambi/plugins/qtjambi. 
+    path/to/qt/jambi/plugins/qtjambi.
 
     For more details on how to use Qt Designer, please see the \l {Qt
     Designer Manual}. This manual covers the fundamental steps that

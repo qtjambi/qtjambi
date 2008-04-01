@@ -10,7 +10,7 @@ public class textedit extends QTextEdit
     {
         super(parent);
     }
-    
+
     //! [0]
     public boolean canInsertFromMimeData(QMimeData source)
     {
@@ -20,7 +20,7 @@ public class textedit extends QTextEdit
             return super.canInsertFromMimeData(source);
     }
     //! [0]
-    
+
     //! [1]
     public void insertFromMimeData(QMimeData source)
     {

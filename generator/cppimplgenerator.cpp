@@ -304,20 +304,36 @@ QByteArray callXxxMethod(const QString &name) {
 QString jni_function_signature(QString package, QString class_name,
                                const QString &function_name,
                                const QString &return_type,
-                               const QString &mangled_arguments = QString())
+                               const QString &mangled_arguments = QString(),
+                               uint options = CppImplGenerator::StandardJNISignature)
 {
     QString s;
-    s += "extern \"C\" JNIEXPORT ";
-    s += return_type;
-    s += " JNICALL";
-    s += " QTJAMBI_FUNCTION_PREFIX(Java_";
+
+    if (options & CppImplGenerator::ExternC)
+        s += "extern \"C\" ";
+
+    if (options & CppImplGenerator::JNIExport)
+        s += "Q_DECL_EXPORT ";
+
+    if (options & CppImplGenerator::ReturnType) {
+        s += return_type;
+        s += " ";
+    }
+
+    if (options & CppImplGenerator::JNIExport)
+        s += "JNICALL QTJAMBI_FUNCTION_PREFIX(";
+
+    s += "Java_";
     s += package.replace("_", "_1").replace(".", "_");
     s += '_';
     s += class_name.replace("_", "_1");
     s += '_';
     s += QString(function_name).replace("_", "_1");
     s += mangled_arguments;
-    s += ")";
+
+    if (options & CppImplGenerator::JNIExport)
+        s += ")";
+
     return s;
 }
 
@@ -1326,7 +1342,8 @@ void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
 
 void CppImplGenerator::writeFunctionName(QTextStream &s,
                                          const AbstractMetaFunction *java_function,
-                                         const AbstractMetaClass *java_class)
+                                         const AbstractMetaClass *java_class,
+                                         uint options)
 {
     const AbstractMetaClass *cls = java_class ? java_class : java_function->ownerClass();
     AbstractMetaArgumentList arguments = java_function->arguments();
@@ -1363,7 +1380,7 @@ void CppImplGenerator::writeFunctionName(QTextStream &s,
     }
 
     s << jni_function_signature(cls->package(), cls->name(), function_name,
-                                return_type, args);
+                                return_type, args, options);
 
 }
 
@@ -1398,7 +1415,7 @@ void CppImplGenerator::writeFinalFunctionArguments(QTextStream &s, const Abstrac
             s << " " << argument->indexedName();
         }
     }
-    s << ")" << endl << "{" << endl;
+    s << ")" << endl;
 }
 
 
@@ -1463,10 +1480,11 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunc
 
     // function signature...
     bool callThrough = java_function->needsCallThrough();
-    writeFunctionName(s, java_function, cls);
+    uint options = m_native_jump_table ? ReturnType | ExternC : StandardJNISignature;
+    writeFunctionName(s, java_function, cls, options);
     s << endl;
     writeFinalFunctionArguments(s, java_function, java_object_name);
-
+    s << "{" << endl;
     Indentation indent(INDENT);
 
     s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) entering: " << java_function_signature << "\");" << endl;
@@ -1612,6 +1630,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
         writeFunctionName(s, setter, setter->ownerClass());
         s << endl;
         writeFinalFunctionArguments(s, setter, "__java_object");
+        s  << "{" << endl;
 
         {
             Indentation indent(INDENT);
@@ -1660,7 +1679,7 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
         writeFunctionName(s, getter, getter->ownerClass());
         s << endl;
         writeFinalFunctionArguments(s, getter, "__java_object");
-
+        s << "{" << endl;
         {
             Indentation indent(INDENT);
 

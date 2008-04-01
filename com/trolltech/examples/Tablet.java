@@ -41,7 +41,7 @@ public class Tablet extends QMainWindow
     private QMenu colorSaturationMenu;
     private QMenu lineWidthMenu;
     private QMenu alphaChannelMenu;
-    
+
     public enum AlphaChannelType { AlphaPressure, AlphaTilt, NoAlpha }
     public enum ColorSaturationType { SaturationVTilt, SaturationHTilt,
                                    SaturationPressure, NoSaturation }
@@ -54,12 +54,12 @@ public class Tablet extends QMainWindow
 
         createActions();
         createMenus();
-        
+
         myCanvas.setColor(new QColor(Qt.GlobalColor.red));
         myCanvas.setLineWidthType(LineWidthType.LineWidthPressure);
         myCanvas.setAlphaChannelType(AlphaChannelType.NoAlpha);
         myCanvas.setColorSaturationType(ColorSaturationType.NoSaturation);
-        
+
         setWindowTitle(tr("Tablet Example"));
         setCentralWidget(myCanvas);
     }
@@ -115,26 +115,26 @@ public class Tablet extends QMainWindow
         }
     }
 //! [5]
-    
+
 //! [6]
     public void saveAct()
     {
         String path = QDir.currentPath() + tr("/untitled.png");
         String fileName = QFileDialog.getSaveFileName(this, tr("Save Picture"),
                                  path);
-    
+
         if (!myCanvas.saveImage(fileName))
             QMessageBox.information(this, tr("Error Saving Picture"),
                                           tr("Could not save the image"));
     }
 //! [6]
-    
+
 //! [7]
     public void loadAct()
     {
         String fileName = QFileDialog.getOpenFileName(this, tr("Open Picture"),
                                                             QDir.currentPath());
-    
+
         if (!myCanvas.loadImage(fileName))
             QMessageBox.information(this, tr("Error Opening Picture"),
                                           tr("Could not open picture"));
@@ -156,76 +156,76 @@ public class Tablet extends QMainWindow
         brushColorAction = new QAction(tr("&Brush Color..."), this);
         brushColorAction.setShortcut(tr("Ctrl+C"));
         brushColorAction.triggered.connect(this, "brushColorAct()");
-    
+
 //! [10]
         alphaChannelPressureAction = new QAction(tr("&Pressure"), this);
         alphaChannelPressureAction.setCheckable(true);
-    
+
         alphaChannelTiltAction = new QAction(tr("&Tilt"), this);
         alphaChannelTiltAction.setCheckable(true);
-    
+
         noAlphaChannelAction = new QAction(tr("No Alpha Channel"), this);
         noAlphaChannelAction.setCheckable(true);
         noAlphaChannelAction.setChecked(true);
-    
+
         alphaChannelGroup = new QActionGroup(this);
         alphaChannelGroup.addAction(alphaChannelPressureAction);
         alphaChannelGroup.addAction(alphaChannelTiltAction);
         alphaChannelGroup.addAction(noAlphaChannelAction);
         alphaChannelGroup.triggered.connect(this, "alphaActionTriggered(QAction)");
-    
+
 //! [10]
         colorSaturationVTiltAction = new QAction(tr("&Vertical Tilt"), this);
         colorSaturationVTiltAction.setCheckable(true);
-    
+
         colorSaturationHTiltAction = new QAction(tr("&Horizontal Tilt"), this);
         colorSaturationHTiltAction.setCheckable(true);
-    
+
         colorSaturationPressureAction = new QAction(tr("&Pressure"), this);
         colorSaturationPressureAction.setCheckable(true);
-    
+
         noColorSaturationAction = new QAction(tr("&No Color Saturation"), this);
         noColorSaturationAction.setCheckable(true);
         noColorSaturationAction.setChecked(true);
-    
+
         colorSaturationGroup = new QActionGroup(this);
         colorSaturationGroup.addAction(colorSaturationVTiltAction);
         colorSaturationGroup.addAction(colorSaturationHTiltAction);
         colorSaturationGroup.addAction(colorSaturationPressureAction);
         colorSaturationGroup.addAction(noColorSaturationAction);
         colorSaturationGroup.triggered.connect(this, "saturationActionTriggered(QAction)");
-    
+
         lineWidthPressureAction = new QAction(tr("&Pressure"), this);
         lineWidthPressureAction.setCheckable(true);
         lineWidthPressureAction.setChecked(true);
         lineWidthTiltAction = new QAction(tr("&Tilt"), this);
         lineWidthTiltAction.setCheckable(true);
-    
+
         lineWidthFixedAction = new QAction(tr("&Fixed"), this);
         lineWidthFixedAction.setCheckable(true);
-    
+
         lineWidthGroup = new QActionGroup(this);
         lineWidthGroup.addAction(lineWidthPressureAction);
         lineWidthGroup.addAction(lineWidthTiltAction);
         lineWidthGroup.addAction(lineWidthFixedAction);
         lineWidthGroup.triggered.connect(this, "lineWidthActionTriggered(QAction)");
-    
+
         exitAction = new QAction(tr("E&xit"), this);
         exitAction.setShortcut(tr("Ctrl+X"));
         exitAction.triggered.connect(this, "close()");
-    
+
         loadAction = new QAction(tr("&Open..."), this);
         loadAction.setShortcut(tr("Ctrl+O"));
         loadAction.triggered.connect(this, "loadAct()");
-    
+
         saveAction = new QAction(tr("&Save As..."), this);
         saveAction.setShortcut(tr("Ctrl+S"));
         saveAction.triggered.connect(this, "saveAct()");
-    
+
         aboutAction = new QAction(tr("A&bout"), this);
         aboutAction.setShortcut(tr("Ctrl+B"));
         aboutAction.triggered.connect(this, "aboutAct()");
-    
+
         aboutQtAction = new QAction(tr("About &Qt Jambi"), this);
         aboutQtAction.setShortcut(tr("Ctrl+Q"));
         aboutQtAction.triggered.connect(QApplication.instance(), "aboutQt()");
@@ -241,27 +241,27 @@ public class Tablet extends QMainWindow
         fileMenu.addAction(saveAction);
         fileMenu.addSeparator();
         fileMenu.addAction(exitAction);
-    
+
         brushMenu = menuBar().addMenu(tr("&Brush"));
         brushMenu.addAction(brushColorAction);
-    
+
         tabletMenu = menuBar().addMenu(tr("&Tablet"));
-    
+
         lineWidthMenu = tabletMenu.addMenu(tr("&Line Width"));
         lineWidthMenu.addAction(lineWidthPressureAction);
         lineWidthMenu.addAction(lineWidthTiltAction);
         lineWidthMenu.addAction(lineWidthFixedAction);
-    
+
         alphaChannelMenu = tabletMenu.addMenu(tr("&Alpha Channel"));
         alphaChannelMenu.addAction(alphaChannelPressureAction);
         alphaChannelMenu.addAction(alphaChannelTiltAction);
         alphaChannelMenu.addAction(noAlphaChannelAction);
-    
+
         colorSaturationMenu = tabletMenu.addMenu(tr("&Color Saturation"));
         colorSaturationMenu.addAction(colorSaturationVTiltAction);
         colorSaturationMenu.addAction(colorSaturationHTiltAction);
         colorSaturationMenu.addAction(noColorSaturationAction);
-    
+
         helpMenu = menuBar().addMenu("&Help");
         helpMenu.addAction(aboutAction);
         helpMenu.addAction(aboutQtAction);
@@ -303,7 +303,7 @@ public class Tablet extends QMainWindow
 //! [14]
 
         public void setAlphaChannelType(AlphaChannelType type)
-        { 
+        {
             alphaChannelType = type;
         }
 
@@ -369,7 +369,7 @@ public class Tablet extends QMainWindow
                     polyLine[2] = polyLine[1];
                     polyLine[1] = polyLine[0];
                     polyLine[0] = event.pos();
-        
+
                     if (deviceDown) {
                         updateBrush(event);
                         QPainter painter = new QPainter(image);
@@ -396,7 +396,7 @@ public class Tablet extends QMainWindow
         private void paintImage(QPainter painter, QTabletEvent event)
         {
             QPoint brushAdjust = new QPoint(10, 10);
-    
+
             switch (myTabletDevice) {
                 case Stylus:
                     painter.setBrush(myBrush);
@@ -408,7 +408,7 @@ public class Tablet extends QMainWindow
                     myBrush.setStyle(brushPattern(event.pressure()));
                     painter.setPen(Qt.PenStyle.NoPen);
                     painter.setBrush(myBrush);
-    
+
                     for (int i = 0; i < 3; ++i) {
                         painter.drawEllipse(new QRect(polyLine[i].subtract(brushAdjust),
                                                       polyLine[i].add(brushAdjust)));
@@ -453,11 +453,11 @@ public class Tablet extends QMainWindow
             hue = myColor.hue();
             value = myColor.value();
             alpha = myColor.alpha();
-        
+
             int vValue = (int) (((event.yTilt() + 60.0) / 120.0) * 255);
             int hValue = (int) (((event.xTilt() + 60.0) / 120.0) * 255);
 //! [21] //! [22]
-        
+
             switch (alphaChannelType) {
                 case AlphaPressure:
                     myColor.setAlpha((int) (event.pressure() * 255.0));
@@ -468,7 +468,7 @@ public class Tablet extends QMainWindow
                 default:
                     myColor.setAlpha(255);
             }
-        
+
 //! [22] //! [23]
             switch (colorSaturationType) {
                 case SaturationVTilt:
@@ -483,7 +483,7 @@ public class Tablet extends QMainWindow
                 default:
                     ;
             }
-        
+
 //! [23] //! [24]
             switch (lineWidthType) {
                 case LineWidthPressure:

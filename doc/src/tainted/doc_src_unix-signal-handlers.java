@@ -4,11 +4,11 @@
     class MyDaemon : public QObject
     {
 	Q_OBJECT
-      
+
       public:
         MyDaemon(QObject *parent = 0, const char *name = 0);
         ~MyDaemon();
-    
+
 	// Unix signal handlers.
 	static void hupSignalHandler(int unused);
 	static void termSignalHandler(int unused);
@@ -21,7 +21,7 @@
       private:
 	static int sighupFd[2];
     	static int sigtermFd[2];
-    
+
 	QSocketNotifier *snHup;
     	QSocketNotifier *snTerm;
     };
@@ -130,11 +130,11 @@ public class doc_src_unix-signal-handlers {
     class MyDaemon : public QObject
     {
 	Q_OBJECT
-      
+
       public:
         MyDaemon(QObject arent = 0, char ame = 0);
         ~MyDaemon();
-    
+
 	// Unix signal handlers.
 	static void hupSignalHandler(int unused);
 	static void termSignalHandler(int unused);
@@ -147,7 +147,7 @@ public class doc_src_unix-signal-handlers {
       private:
 	static int sighupFd[2];
     	static int sigtermFd[2];
-    
+
 	QSocketNotifier nHup;
     	QSocketNotifier nTerm;
     };

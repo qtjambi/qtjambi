@@ -97,7 +97,7 @@ public:
     bool isQObject(const QString &qualified_name);
     bool isEnum(const QStringList &qualified_name);
 
-    void fixQObjectForScope  (TypeDatabase *types, 
+    void fixQObjectForScope  (TypeDatabase *types,
 			      NamespaceModelItem item);
 protected:
     AbstractMetaClass *argumentToClass(ArgumentModelItem);
@@ -118,7 +118,7 @@ private:
     AbstractMetaClassList m_meta_classes;
     AbstractMetaClassList m_templates;
     FileModelItem m_dom;
-    
+
     QSet<const TypeEntry *> m_used_types;
 
     QMap<QString, RejectReason> m_rejected_classes;

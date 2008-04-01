@@ -19,7 +19,7 @@ import com.trolltech.qt.sql.QSqlDatabase;
 import com.trolltech.qt.sql.QSqlQuery;
 
 //! [0]
-class SqlCommon 
+class SqlCommon
 {
     static boolean createConnection()
     {
@@ -31,7 +31,7 @@ class SqlCommon
                          "This example needs SQLite support. Please read " +
                          "the Qt SQL driver documentation for information how " +
                          "to build it.\n\n" +
-                         "Click Cancel to exit."), 
+                         "Click Cancel to exit."),
                          new QMessageBox.StandardButtons(QMessageBox.StandardButton.Cancel,
                                                          QMessageBox.StandardButton.NoButton));
             return false;
@@ -45,9 +45,9 @@ class SqlCommon
         query.exec("insert into person values(103, 'Lars', 'Gordon')");
         query.exec("insert into person values(104, 'Roberto', 'Robitaille')");
         query.exec("insert into person values(105, 'Maria', 'Papadopoulos')");
-        
+
         return true;
-        
+
     }
 }
 //! [0]

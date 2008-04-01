@@ -114,7 +114,7 @@ public class View extends QWidget
             p.drawImage(0, height() - reflection.height() + 10, reflection);
 
         }
-        
+
         p.end();
     }
 

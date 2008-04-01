@@ -17,13 +17,13 @@ package com.trolltech.qt;
  * This exception is thrown in cases where a painter is used on a widget
  * outside its paintEvent function. In most cases this is because one
  * has forgotten to call QPainter.end() at the end of a paint event.
- *  
+ *
  * @author gunnar
  */
 public class QPaintingOutsidePaintEventException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public QPaintingOutsidePaintEventException(String message) {        
+    public QPaintingOutsidePaintEventException(String message) {
 	super(message);
     }
 }

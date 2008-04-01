@@ -41,7 +41,7 @@ private:
     void fixConnectionNode(QDomElement node, QDomDocument *doc);
     void fixWidgetNode(QDomElement, QDomDocument *doc);
     void fixCustomWidgetNode(QDomElement, QDomDocument *doc);
-    
+
     void traverseCustomWidgets(const QString &customWidgetFiles);
     void traverseCustomWidgetFile(const QString &customWidgetFile);
     QString translateEnumValue(const QString &enumValue);

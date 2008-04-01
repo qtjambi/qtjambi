@@ -1,16 +1,16 @@
 #include "qguisignalmapper.h"
 
-QGuiSignalMapper::QGuiSignalMapper() : QSignalMapper() 
-{ 
+QGuiSignalMapper::QGuiSignalMapper() : QSignalMapper()
+{
     init();
 }
 
-QGuiSignalMapper::QGuiSignalMapper(QObject *parent) : QSignalMapper(parent) 
-{ 
+QGuiSignalMapper::QGuiSignalMapper(QObject *parent) : QSignalMapper(parent)
+{
     init();
 }
 
-void QGuiSignalMapper::emitMapped(QWidget *widget) 
+void QGuiSignalMapper::emitMapped(QWidget *widget)
 {
     // Make sure we emit mapped() exactly once for each emission of mappedQWidget()
     if (!emittingMapped) {
@@ -20,7 +20,7 @@ void QGuiSignalMapper::emitMapped(QWidget *widget)
     }
 }
 
-void QGuiSignalMapper::emitMappedQWidget(QWidget *widget) 
+void QGuiSignalMapper::emitMappedQWidget(QWidget *widget)
 {
     // Make sure we emit mappedQWidget() exactly once for each emission of mapped()
     if (!emittingMappedQWidget) {
@@ -30,7 +30,7 @@ void QGuiSignalMapper::emitMappedQWidget(QWidget *widget)
     }
 }
 
-void QGuiSignalMapper::init() 
+void QGuiSignalMapper::init()
 {
     // mappedQWidget is a replacement for the original signal
     connect(this, SIGNAL(mappedQWidget(QWidget *)), this, SLOT(emitMapped(QWidget*)));

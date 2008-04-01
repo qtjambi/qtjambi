@@ -14,7 +14,7 @@ public class src_corelib_concurrent_qthreadpool {
 
         public static void main(String args[]) {
             QCoreApplication.initialize(args);
-        
+
             HelloWorldTask hello = new HelloWorldTask();
             // QThreadPool takes ownership and deletes 'hello' automatically
             QThreadPool.globalInstance().start(hello);

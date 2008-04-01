@@ -15,7 +15,7 @@ that includes QtCore and QtGui. The header files are then preprocessed
 so all macros and typedefs are expanded. Enums, namespaces and classes
 are mapped according to how they are specified in the type system. For
 each C++ class that is encountered, we generate a Java source file, a
-C++ header file and a C++ source file. 
+C++ header file and a C++ source file.
 
 The Java source file contains one public class named as the class in
 C++. All public and protected members are included in this Java
@@ -156,7 +156,7 @@ QtCore typesystem so users willn not have to add existing ones.
   preferred-conversion="no" (optional)
   >
 
-name attribute: The name of the primitive in C++, such as "char". 
+name attribute: The name of the primitive in C++, such as "char".
 
 java-name attribute: The name of the primitive in Java, such as
 "byte". If this value is not specified it will be the same as the name
@@ -186,7 +186,7 @@ namespace becomes an interface in Java.
   >
 
 name attribute: The name of the namespace, such as "Qt"
-  
+
 
 Enums
 -----
@@ -271,10 +271,10 @@ The function modification nodes are specified as children of a
 type. The <remove>, <access>, <rename>, <inject-code> nodes are used
 to specify the details of the modification.
 
-<modify-function 
+<modify-function
   class="shell" (optional)
   signature="...">
-    
+
 class attribute: Specifies in which part of the generated code the
 modification should apply. This is only relevant for code injections,
 otherwise leave out.
@@ -365,7 +365,7 @@ rename the include with with an include node. The include node can be
 specified as a child of the <primitive-type>, <value-type> or
 <object-type> nodes.
 
-<...-type> 
+<...-type>
   <include file-name="..." location="global | local"/>
 </...-type>
 
@@ -381,7 +381,7 @@ the <extra-includes> node.
 
 file-name attribute: The file to include, such as "QStringList".
 
-location attribute: Where the file is located.  
+location attribute: Where the file is located.
 global: The file is in located $INCLUDEPATH and will be included using
 #include <...>
 local: The file is in local directory and will be included using:
@@ -394,14 +394,14 @@ Code Injections
 Code injections can be inserted to an <object-type>, <value-type> or a
 <modify-function> node.
 
-<inject-code 
+<inject-code
   class="java | native | shell | shell-declaration | shell-definition"
   position="beginning | end"
   >
-    // the code  
+    // the code
 </inject-code>
 
-class attribute: 
+class attribute:
 java: Code inserted into the java source code on the class level,
 making it possible to declare variables and functions
 native:
@@ -410,7 +410,7 @@ injected into shell function.
 shell-declaration:
 shell-definition:
 
-position attribute: 
+position attribute:
 beginning: (the default), code is inserted at the beginning of the
 function.
  end: code is inserted at the end of the function
@@ -423,7 +423,7 @@ Argument mapping can be inserted into code injections to map an
 argument name to the argument name actually used in the generated
 code.
 
-<argument-map 
+<argument-map
   position="numeric value"
   meta-name="string value"
   >
@@ -433,7 +433,7 @@ foposition which this argument map applies.
 
 meta-name attribute: The name used within the code injection to adress
 the argument at the given position
-        
+
 
 Warnings
 --------

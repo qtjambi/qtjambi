@@ -39,34 +39,34 @@ public class ExtensionDialog extends QDialog
         label = new QLabel(tr("Find &what:"));
         lineEdit = new QLineEdit();
         label.setBuddy(lineEdit);
-    
+
         caseCheckBox = new QCheckBox(tr("Match &case"));
         fromStartCheckBox = new QCheckBox(tr("Search from &start"));
         fromStartCheckBox.setChecked(true);
-    
+
         findButton = new QPushButton(tr("&Find"));
         findButton.setDefault(true);
-    
+
         moreButton = new QPushButton(tr("&More"));
         moreButton.setCheckable(true);
 //! [1]
         moreButton.setAutoDefault(false);
-    
+
         buttonBox = new QDialogButtonBox(Qt.Orientation.Vertical);
         buttonBox.addButton(findButton, QDialogButtonBox.ButtonRole.ActionRole);
         buttonBox.addButton(moreButton, QDialogButtonBox.ButtonRole.ActionRole);
-    
+
 //! [2]
         extension = new QWidget();
-    
+
         wholeWordsCheckBox = new QCheckBox(tr("&Whole words"));
         backwardCheckBox = new QCheckBox(tr("Search &backward"));
         searchSelectionCheckBox = new QCheckBox(tr("Search se&lection"));
 //! [2]
-    
+
 //! [3]
         moreButton.toggled.connect(extension, "setVisible(boolean)");
-    
+
         QVBoxLayout extensionLayout = new QVBoxLayout();
         extensionLayout.setMargin(0);
         extensionLayout.addWidget(wholeWordsCheckBox);
@@ -74,25 +74,25 @@ public class ExtensionDialog extends QDialog
         extensionLayout.addWidget(searchSelectionCheckBox);
         extension.setLayout(extensionLayout);
 //! [3]
-    
+
 //! [4]
         QHBoxLayout topLeftLayout = new QHBoxLayout();
         topLeftLayout.addWidget(label);
         topLeftLayout.addWidget(lineEdit);
-    
+
         QVBoxLayout leftLayout = new QVBoxLayout();
         leftLayout.addLayout(topLeftLayout);
         leftLayout.addWidget(caseCheckBox);
         leftLayout.addWidget(fromStartCheckBox);
         leftLayout.addStretch(1);
-    
+
         QGridLayout mainLayout = new QGridLayout();
         mainLayout.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize);
         mainLayout.addLayout(leftLayout, 0, 0);
         mainLayout.addWidget(buttonBox, 0, 1);
         mainLayout.addWidget(extension, 1, 0, 1, 2);
         setLayout(mainLayout);
-    
+
         setWindowTitle(tr("Extension"));
 //! [4] //! [5]
         extension.hide();
@@ -107,4 +107,4 @@ public class ExtensionDialog extends QDialog
 
         QApplication.exec();
     }
-} 
+}

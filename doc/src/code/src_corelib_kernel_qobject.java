@@ -384,7 +384,7 @@ import java.util.*;
 
 public class src_corelib_kernel_qobject extends QObject {
     public void fooBar() {
-        
+
         /* huh?
 //! [0]
         QLineEdit ineEdit = static_cast<QLineEdit *>(
@@ -458,7 +458,7 @@ public class src_corelib_kernel_qobject extends QObject {
                 textEdit = new QTextEdit();
                 setCentralWidget(textEdit);
 
-                textEdit.installEventFilter(this);                
+                textEdit.installEventFilter(this);
             }
 
             @Override
@@ -474,10 +474,10 @@ public class src_corelib_kernel_qobject extends QObject {
                 } else {
                     // pass the event on to the parent class
                     return super.eventFilter(obj, event);
-                }                
+                }
             }
 
-            private QTextEdit textEdit;       
+            private QTextEdit textEdit;
         }
 //! [6]
 
@@ -496,13 +496,13 @@ public class src_corelib_kernel_qobject extends QObject {
             public MyObject() {
                 this(null);
             }
-            
-            public MyObject(QObject parent) {                
+
+            public MyObject(QObject parent) {
                 super(parent);
-                
+
                 startTimer(50);     // 50-millisecond timer
                 startTimer(1000);   // 1-second timer
-                startTimer(60000);  // 1-minute timer                
+                startTimer(60000);  // 1-minute timer
             }
 
             @Override
@@ -513,7 +513,7 @@ public class src_corelib_kernel_qobject extends QObject {
 
 //! [8]
 
-        
+
         class FooBar3 extends QWidget{
             public void fooBar() {
                 /* I don't know what this is
@@ -521,10 +521,10 @@ public class src_corelib_kernel_qobject extends QObject {
                 List<QObject> list = window().queryList("QAbstractButton");
                 for (QObject obj : list)
                     ((QAbstractButton)obj).setEnabled(false);
-                
+
 //! [9]
                  */
-                
+
 
                 QWidget parentWidget = null;
 //! [10]
@@ -549,7 +549,7 @@ public class src_corelib_kernel_qobject extends QObject {
 //! [13]
 
 
-                
+
                 QObject monitoredObj = null, filterObj = null;
 //! [14]
                 monitoredObj.installEventFilter(filterObj);
@@ -562,7 +562,7 @@ public class src_corelib_kernel_qobject extends QObject {
             public KeyPressEater(QObject parent) {
                 super(parent);
             }
-            
+
             @Override
             public boolean eventFilter(QObject obj, QEvent event) {
                 if (event.type() == QEvent.Type.KeyPress) {
@@ -572,7 +572,7 @@ public class src_corelib_kernel_qobject extends QObject {
                 } else {
                     // standard event processing
                     return super.eventFilter(obj, event);
-                }                
+                }
             }
         }
 
@@ -581,8 +581,8 @@ public class src_corelib_kernel_qobject extends QObject {
 
         class MyWindow extends QSplashScreen {
             private QListView listView;
-            
-            public void fooBar() { 
+
+            public void fooBar() {
 //! [16]
                 KeyPressEater keyPressEater = new KeyPressEater(this);
                 QPushButton pushButton = new QPushButton(this);
@@ -602,16 +602,16 @@ public class src_corelib_kernel_qobject extends QObject {
              }
 //! [17]
 
-             
+
 
              private List<Object> messages;
              public void fooBar2() {
 //! [18]
                  int n = messages.size();
                  showMessage(tr("%n message(s) saved", "", n));
-//! [18]           
+//! [18]
 
-                 String s = 
+                 String s =
 //! [19]
                  n == 1 ? tr("%n message saved") : tr("%n messages saved")
 //! [19]
@@ -626,7 +626,7 @@ public class src_corelib_kernel_qobject extends QObject {
 
         /* not in java
 //! [21]
-        
+
                 if (receivers(SIGNAL(valueChanged(QByteArray))) > 0) {
                     QByteArray data;
                     get_the_value(ata);       // expensive operation
@@ -642,10 +642,10 @@ public class src_corelib_kernel_qobject extends QObject {
             QScrollBar scrollBar = new QScrollBar();
             scrollBar.valueChanged.connect(label, "setNum(int)");
 //! [22]
-      
 
 
-//! [23]        
+
+//! [23]
             // WRONG
             scrollBar.valueChanged.connect(label, "setNum(int value)");
 //! [23]
@@ -660,7 +660,7 @@ public class src_corelib_kernel_qobject extends QObject {
             }
 
             Signal0 buttonClicked = new Signal0();
-        
+
             private QPushButton myButton;
         }
 
@@ -679,7 +679,7 @@ public class src_corelib_kernel_qobject extends QObject {
                 public Signal0 mySignal;
             }
             MyClass myObject;
-            public void foo() {                
+            public void foo() {
 //! [26]
                 myObject.disconnect();
 //! [26]
@@ -688,7 +688,7 @@ public class src_corelib_kernel_qobject extends QObject {
 //! [27]
                 myObject.disconnect();
 //! [27]
-            
+
 
 //! [28]
                 myObject.mySignal.disconnect();
@@ -705,7 +705,7 @@ public class src_corelib_kernel_qobject extends QObject {
                 myObject.disconnect(myReceiver);
 //! [30]
 
-                
+
 //! [31]
                 myObject.disconnect(myReceiver);
 //! [31]

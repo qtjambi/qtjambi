@@ -30,6 +30,14 @@ class CppImplGenerator : public CppGenerator
     Q_OBJECT
 
 public:
+    enum JNISignatureMode {
+        JNIExport       = 0x0001,
+        ReturnType      = 0x0002,
+        ExternC         = 0x0004,
+
+        StandardJNISignature = JNIExport | ReturnType | ExternC
+    };
+
     CppImplGenerator(PriGenerator *pri)
         : m_native_jump_table(false)
     {
@@ -81,8 +89,11 @@ public:
                            const QStringList &extraParameters = QStringList());
     void writeFunctionCallArguments(QTextStream &s, const AbstractMetaFunction *java_function,
                                     const QString &prefix = QString(), Option option = NoOption);
-    void writeFunctionName(QTextStream &s, const AbstractMetaFunction *java_function,
-                           const AbstractMetaClass *java_class = 0);
+    static void writeFunctionName(QTextStream &s,
+                                  const AbstractMetaFunction *java_function,
+                                  const AbstractMetaClass *java_class = 0,
+                                  uint options = StandardJNISignature);
+
     void writeJavaToQt(QTextStream &s,
                        const AbstractMetaClass *java_class,
                        const AbstractMetaType *function_return_type,
@@ -101,9 +112,9 @@ public:
     void writeFinalFunction(QTextStream &s,
                             const AbstractMetaFunction *java_function,
                             const AbstractMetaClass *java_class);
-    void writeFinalFunctionArguments(QTextStream &s,
-                                     const AbstractMetaFunction *java_function,
-                                     const QString &java_object_name);
+    static void writeFinalFunctionArguments(QTextStream &s,
+                                            const AbstractMetaFunction *java_function,
+                                            const QString &java_object_name);
     void writeFinalFunctionSetup(QTextStream &s,
                                  const AbstractMetaFunction *java_function,
                                  const QString &qt_object_name,

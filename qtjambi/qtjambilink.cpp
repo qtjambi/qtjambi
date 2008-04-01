@@ -397,7 +397,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 
 void QtJambiLink::cleanUpAll(JNIEnv *env)
 {
-    
+
     if (m_java_object != 0)
         releaseJavaObject(env);
 

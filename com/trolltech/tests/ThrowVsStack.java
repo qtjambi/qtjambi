@@ -24,7 +24,7 @@ public class ThrowVsStack {
             timeException();
         else recurseTimeException(rec - 1);
     }
-    
+
     static void timeException()
     {
         try {
@@ -35,83 +35,83 @@ public class ThrowVsStack {
                 System.out.println("...");
         }
     }
-    
+
     static void recurseThread(int i) {
-        if (i == 0) 
+        if (i == 0)
             timeThreadLookup();
         else
             recurseThread(i - 1);
     }
-    
+
     static void timeThreadLookup()
     {
         StackTraceElement elements[] = Thread.currentThread().getStackTrace();
         if (elements[1].getMethodName() == "just one of those strings...")
             System.out.println("...");
     }
-    
+
     static void timeSillyFunctionCall(String s)
     {
         if (s == "just one of those strings...")
             System.out.println("...");
     }
-    
+
     static void timeSillyFunctionCall(int s)
     {
         if (s == 7891235)
             System.out.println("...");
     }
-    
-    public static void main(String[] args) 
+
+    public static void main(String[] args)
     {
         int COUNT = args.length > 0 ? Integer.parseInt(args[0]) : 100000;
-        
+
 //        if (false) {
 //            long t1 = System.currentTimeMillis();
 //            for (int i=0; i<COUNT; ++i) {
 //                recurseTimeException();
-//            }   
+//            }
 //            System.out.println("timeException " + COUNT + " times " + (System.currentTimeMillis() - t1));
 //        }
-//        
+//
 //        if (false) {
 //            long t1 = System.currentTimeMillis();
 //            for (int i=0; i<COUNT; ++i) {
 //                recurseThread();
-//            }   
+//            }
 //            System.out.println("timeThreadLookup " + COUNT + " times " + (System.currentTimeMillis() - t1));
 //        }
-//        
+//
        {
-           long t1 = System.currentTimeMillis();            
+           long t1 = System.currentTimeMillis();
            for (int i=0; i<COUNT; ++i) {
                timeSillyFunctionCall(args[1]);
-           }   
+           }
            System.out.println("sullidull " + COUNT + " times " + (System.currentTimeMillis() - t1));
        }
-       
+
        {
-           long t1 = System.currentTimeMillis();            
+           long t1 = System.currentTimeMillis();
            for (int i=0; i<COUNT; ++i) {
                timeSillyFunctionCall(args[0]);
-           }   
+           }
            System.out.println("sullidull int " + COUNT + " times " + (System.currentTimeMillis() - t1));
        }
-       
+
 //       {
 //           QObject o = new QObject();
-//           long t1 = System.currentTimeMillis();            
+//           long t1 = System.currentTimeMillis();
 //           for (int i=0; i<COUNT; ++i) {
 //               o.dumpObjectInfo();
-//           }   
+//           }
 //           System.out.println("dumpObjectInfo " + COUNT + " times " + (System.currentTimeMillis() - t1));
-//       }     
+//       }
        {
            QObject o = new QObject();
-           long t1 = System.currentTimeMillis();            
+           long t1 = System.currentTimeMillis();
            for (int i=0; i<COUNT; ++i) {
                o.killTimer(1000);
-           }   
+           }
            System.out.println("killTimer " + COUNT + " times " + (System.currentTimeMillis() - t1));
        }
        {
@@ -120,7 +120,7 @@ public class ThrowVsStack {
            String s = args[1];
            for (int i=0; i<COUNT; ++i) {
                o.setObjectName(s);
-           }   
+           }
            System.out.println("setObjectName " + COUNT + " times " + (System.currentTimeMillis() - t1));
        }
 

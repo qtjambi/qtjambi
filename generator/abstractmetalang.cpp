@@ -410,7 +410,7 @@ bool AbstractMetaFunction::resetObjectAfterUse(int argument_idx) const
         QList<ArgumentModification> argumentModifications = modification.argument_mods;
         foreach (ArgumentModification argumentModification, argumentModifications) {
             if (argumentModification.index == argument_idx && argumentModification.reset_after_use)
-                return true;            
+                return true;
         }
     }
 

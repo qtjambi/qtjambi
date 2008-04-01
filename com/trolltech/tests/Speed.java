@@ -20,19 +20,19 @@ import com.trolltech.qt.gui.*;
 public class Speed
 {
     private static final int many = 300000;
-    
+
     public static void main(String[] args)
     {
-        QApplication.initialize(args);        
+        QApplication.initialize(args);
         QWidget w = new QWidget();
         QRect rects[] = new QRect[many];
-        
+
         long l = System.currentTimeMillis();
         for (int i=0; i<many; ++i) {
             rects[i] = w.geometry();
         }
         System.out.println(System.currentTimeMillis() - l);
-        
-        
+
+
     }
 }

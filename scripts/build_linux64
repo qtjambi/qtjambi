@@ -4,4 +4,4 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/qt/package-builder/qt-x11-commerci
 scp qtjambi-linux64-eval-*.tar.gz gunnar@anarki:~/public_html/packages/eval
 scp qtjambi-linux64-gpl-*.tar.gz gunnar@anarki:~/public_html/packages/gpl
 scp qtjambi-linux64-commercial-*.tar.gz  gunnar@anarki:~/public_html/packages/commercial
-scp qtjambi-linux64-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart 
+scp qtjambi-linux64-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart

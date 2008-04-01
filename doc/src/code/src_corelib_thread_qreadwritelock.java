@@ -1,5 +1,5 @@
 import com.trolltech.qt.gui.*;
-    
+
 	class readWriteLock {
 //! [0]
         QReadWriteLock lock = new QReadWriteLock();
@@ -20,12 +20,12 @@ import com.trolltech.qt.gui.*;
             // ...
         }
 //! [0]
-        
+
         public void read_file(){} public void write_file(){}
-        
+
 		}
 
-// QReadLocker/QWriteLocker snippets remvoed. 
+// QReadLocker/QWriteLocker snippets remvoed.
 
 //! [1]
 //! [1]

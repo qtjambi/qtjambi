@@ -35,7 +35,7 @@ body { color: black; }</style>
 <p>In the constructor, we first open the file containing the words on our fridge magnets. QFile is an I/O device for reading and writing text and binary files and resources, and may be used by itself or in combination with QTextStream or QDataStream. We have chosen to read the contents of the file using the QTextStream class that provides a convenient interface for reading and writing text.</p>
 <pre>&nbsp;           int x = 5;
             int y = 5;
-    
+
             while (!inputStream.atEnd()) {
                 String word = &quot;&quot;;
                 word = inputStream.readLine();
@@ -54,7 +54,7 @@ body { color: black; }</style>
 <pre>&nbsp;           QPalette newPalette = palette();
             newPalette.setColor(QPalette.ColorRole.Window, QColor.white);
             setPalette(newPalette);
-    
+
             setMinimumSize(400, Math.max(200, y));
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             setWindowTitle(tr(&quot;Fridge Magnets&quot;));</pre>
@@ -104,16 +104,16 @@ body { color: black; }</style>
 <pre>&nbsp;               QByteArray itemData = mime.data(&quot;application/x-fridgemagnet&quot;);
                 QDataStream dataStream = new QDataStream(itemData,
                        new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
-    
+
                 String text = dataStream.readString();
                 QPoint offset = new QPoint();
                 offset.readFrom(dataStream);
-    
+
                 DragLabel newLabel = new DragLabel(text, this);
                 newLabel.move(new QPoint(event.pos().x() - offset.x(),
                                          event.pos().y() - offset.y()));
                 newLabel.show();
-    
+
                 if (children().contains(event.source())) {
                     event.setDropAction(Qt.DropAction.MoveAction);
                     event.accept();
@@ -126,18 +126,18 @@ body { color: black; }</style>
 <pre>&nbsp;           } else if (event.mimeData().hasText()) {
                 String[] pieces = event.mimeData().text().split(&quot;\\s+&quot;);
                 QPoint position = event.pos();
-    
+
                 for (String piece : pieces) {
                     if (piece.equals(&quot;&quot;))
                         continue;
-    
+
                     DragLabel newLabel = new DragLabel(piece, this);
                     newLabel.move(position);
                     newLabel.show();
-    
+
                     position.add(new QPoint(newLabel.width(), 0));
                 }
-    
+
                 event.acceptProposedAction();
             } else {
                 event.ignore();
@@ -158,16 +158,16 @@ body { color: black; }</style>
 <p>Each fridge magnet is represented by an instance of the <tt>DragLabel</tt> class:</p>
 <pre>&nbsp;       class DragLabel extends QLabel {
             private String labelText;
-    
+
             public DragLabel(final String text, QWidget parent) {
                 super(parent);
-    
+
                 QFontMetrics metrics = new QFontMetrics(font());
                 QSize size = metrics.size(12, text);
                 QImage image = new QImage(size.width() + 12, size.height() + 12,
                         QImage.Format.Format_ARGB32_Premultiplied);
                 image.fill(0);
-    
+
                 QFont font = new QFont();
                 font.setStyleStrategy(QFont.StyleStrategy.ForceOutline);</pre>
 <p>In the <tt>DragLabel</tt> constructor, we first create a QImage object on which we will draw the fridge magnet's text and frame. Its size depends on the current font size, and its format is QImage.Format.Format_ARGB32_Premultiplied (i.e., the image is stored using a premultiplied 32-bit ARGB format (0xAARRGGBB)).</p>
@@ -179,10 +179,10 @@ body { color: black; }</style>
                 QRectF frame = new QRectF(0.5, 0.5, image.width() - 1,
                                           image.height() - 1);
                 painter.drawRoundRect(frame, 10 * 100 / image.width(), 10 * 100 / image.height());
-    
+
                 painter.setFont(font);
                 painter.setBrush(QColor.black);
-    
+
                 QRect rectangle = new QRect(new QPoint(6, 6), size);
                 painter.drawText(rectangle, Qt.AlignmentFlag.AlignCenter.value(),
                                  text);
@@ -200,7 +200,7 @@ body { color: black; }</style>
                 QDataStream dataStream;
                 dataStream = new QDataStream(itemData,
                         new QIODevice.OpenMode(QIODevice.OpenModeFlag.WriteOnly));
-    
+
                 dataStream.writeString(labelText);
                 QPoint position = new QPoint(event.pos().x() - rect().topLeft().x(),
                                              event.pos().y() - rect().topLeft().y());
@@ -214,11 +214,11 @@ body { color: black; }</style>
 <p>Note that we also associate the magnet's text with the <tt>text/plain</tt> MIME type using QMimeData's setText() method. We have already seen how our main widget detects both these MIME types with its event handlers.</p>
 <pre>&nbsp;               QDrag drag = new QDrag(this);
                 drag.setMimeData(mimeData);
-    
+
                 drag.setHotSpot(new QPoint(event.pos().x() - rect().topLeft().x(),
                                            event.pos().y() - rect().topLeft().y()));
                 drag.setPixmap(pixmap());
-    
+
                 hide();</pre>
 <p>Finally, we create a QDrag object. It is the QDrag class that handles most of the details of a drag and drop operation, providing support for MIME-based drag and drop data transfer. The data to be transferred by the drag and drop operation is contained in a QMimeData object. When we call QDrag's setMimeData() method the ownership of our item data is transferred to the QDrag object.</p>
 <p>We also specify the cursor's hot spot, i.e., its position while the drag is in progress, to be the top-left corner of our fridge magnet. We call the QDrag.setPixmap() method to set the pixmap used to represent the data during the drag and drop operation. Typically, this pixmap shows an icon that represents the MIME type of the data being transferred, but any pixmap can be used. In this example, we have chosen to use the fridge magnet image itself to make the magnet appear as moving, immediately hiding the activated widget.</p>

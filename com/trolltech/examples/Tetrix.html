@@ -37,11 +37,11 @@ body { color: black; }</style>
 <pre>&nbsp;       public Tetrix() {
             this(null);
         }
-    
+
         public Tetrix(QWidget parent)
         {
             super(parent);
-    
+
             board = new TetrixBoard(null);</pre>
 <p>We begin by constructing a <tt>TetrixBoard</tt> instance for the playing area and a label that shows the next piece to be dropped into the playing area; the label is initially empty.</p>
 <p>Three QLCDNumber objects are used to display the score, number of lives, and lines removed. These initially show default values, and will be filled in when a game begins:</p>
@@ -56,7 +56,7 @@ body { color: black; }</style>
             pauseButton.setFocusPolicy(Qt.FocusPolicy.NoFocus);</pre>
 <p>These buttons are configured so that they never receive the keyboard focus; we want the keyboard focus to remain with the <tt>TetrixBoard</tt> instance so that it receives all the keyboard events. Nonetheless, the buttons will still respond to <b>Alt</b> key shortcuts.</p>
 <p>We connect clicked() signals from the <b>Start</b> and <b>Pause</b> buttons to the board, and from the <b>Quit</b> button to the application's quit() slot.</p>
-<pre>&nbsp;   
+<pre>&nbsp;
             startButton.clicked.connect(board, &quot;start()&quot;);
             quitButton.clicked.connect(this, &quot;close()&quot;);
             pauseButton.clicked.connect(board, &quot;pause()&quot;);
@@ -78,9 +78,9 @@ body { color: black; }</style>
             layout.addWidget(linesLcd, 3, 2);
             layout.addWidget(quitButton, 4, 2);
             layout.addWidget(pauseButton, 5, 2);
-    
+
             setLayout(layout);
-    
+
             setWindowTitle(&quot;Tetrix&quot;);
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             resize(550, 370);
@@ -108,10 +108,10 @@ body { color: black; }</style>
 <pre>&nbsp;       public static void main(String args[])
         {
             QApplication.initialize(args);
-    
+
             Tetrix window = new Tetrix();
             window.show();
-    
+
             QApplication.exec();
         }
     }</pre>
@@ -152,7 +152,7 @@ body { color: black; }</style>
         {
             Random rand = new Random();
             int shapeint = rand.nextInt(7) + 1;
-    
+
             TetrixBoard.TetrixShape shape = TetrixBoard.TetrixShape.NoShape;
             switch (shapeint) {
             case 1: shape = TetrixBoard.TetrixShape.ZShape; break ;
@@ -163,7 +163,7 @@ body { color: black; }</style>
             case 6: shape = TetrixBoard.TetrixShape.LShape; break ;
             case 7: shape = TetrixBoard.TetrixShape.MirroredLShape; break ;
             }
-    
+
             setShape(shape);
         }</pre>
 <p>For convenience, it simply chooses a random shape from the <tt>TetrixShape</tt> enum and calls the <tt>setShape()</tt> function to perform the task of positioning the blocks.</p>
@@ -179,7 +179,7 @@ body { color: black; }</style>
                 for (int j=0; j&lt;2; ++j)
                     coords[i][j] = coordsTable[shape.ordinal()][i][j];
             }
-    
+
             pieceShape = shape;
         }</pre>
 <p>These positions are read from the table into the piece's own array of positions, and the piece's internal shape information is updated to use the new shape.</p>
@@ -191,7 +191,7 @@ body { color: black; }</style>
                 min = min &lt; coords[i][0] ? min : coords[i][0];
             return min;
         }
-    
+
         public int maxX()
         {
             int max = coords[0][0];
@@ -207,7 +207,7 @@ body { color: black; }</style>
                 min = min &lt; coords[i][1] ? min : coords[i][1];
             return min;
         }
-    
+
         public int maxY()
         {
             int max = coords[0][1];
@@ -220,14 +220,14 @@ body { color: black; }</style>
         {
             if (pieceShape == TetrixBoard.TetrixShape.SquareShape)
                 return this;
-    
+
             TetrixPiece result = new TetrixPiece();
             result.pieceShape = pieceShape;
             for (int i=0; i&lt;4; ++i) {
                 result.setX(i, y(i));
                 result.setY(i, -x(i));
             }
-    
+
             return result;
         }</pre>
 <p>Similarly, the <tt>rotatedRight()</tt> function returns a new piece with the same shape as an existing piece, but rotated clockwise by 90 degrees:</p>
@@ -235,14 +235,14 @@ body { color: black; }</style>
         {
             if (pieceShape == TetrixBoard.TetrixShape.SquareShape)
                 return this;
-    
+
             TetrixPiece result = new TetrixPiece();
             result.pieceShape = pieceShape;
             for (int i=0; i&lt;4; ++i) {
                 result.setX(i, -y(i));
                 result.setY(i, x(i));
             }
-    
+
             return result;
         }</pre>
 <p>These two functions enable each piece to create rotated copies of itself.</p>
@@ -251,7 +251,7 @@ body { color: black; }</style>
         {
             return coords[index][0];
         }
-    
+
         public int y(int index)
         {
             return coords[index][1];
@@ -262,7 +262,7 @@ body { color: black; }</style>
         {
             coords[index][0] = x;
         }
-    
+
         private void setY(int index, int y)
         {
             coords[index][1] = y;
@@ -285,7 +285,7 @@ body { color: black; }</style>
             redTable[5] = 0xCC;
             redTable[6] = 0x66;
             redTable[7] = 0xDA;
-    
+
             greenTable[0] = 0x00;
             greenTable[1] = 0x66;
             greenTable[2] = 0xCC;
@@ -294,7 +294,7 @@ body { color: black; }</style>
             greenTable[5] = 0x66;
             greenTable[6] = 0xCC;
             greenTable[7] = 0xAA;
-    
+
             blueTable[0] = 0x00;
             blueTable[1] = 0x66;
             blueTable[2] = 0x66;
@@ -303,9 +303,9 @@ body { color: black; }</style>
             blueTable[5] = 0xCC;
             blueTable[6] = 0xCC;
             blueTable[7] = 0x00;
-    
+
         };
-    
+
         enum TetrixShape { NoShape, ZShape, SShape, LineShape, TShape, SquareShape,
                        LShape, MirroredLShape }
         private static final int BoardWidth = 10;
@@ -336,11 +336,11 @@ body { color: black; }</style>
 <pre>&nbsp;       public TetrixBoard(QWidget parent)
         {
             super(parent);
-    
+
             setFrameStyle(QFrame.Shape.Panel.value() | QFrame.Shadow.Sunken.value());
             setFocusPolicy(Qt.FocusPolicy.StrongFocus);
             clearBoard();
-    
+
             nextPiece.setRandomShape();
         }</pre>
 <p>The first (next) piece is also set up with a random shape.</p>
@@ -354,7 +354,7 @@ body { color: black; }</style>
         {
             return new QSize(BoardWidth * 15 + frameWidth() * 2, BoardHeight * 15 + frameWidth() * 2);
         }
-    
+
         public QSize minimumSizeHint()
         {
             return new QSize(BoardWidth * 5 + frameWidth() * 2, BoardHeight * 5 + frameWidth() * 2);
@@ -365,8 +365,8 @@ body { color: black; }</style>
         {
             if (isPaused)
                 return ;
-    
-    
+
+
             isStarted = true;
             isWaitingAfterLine = false;
             numLinesRemoved = 0;
@@ -374,13 +374,13 @@ body { color: black; }</style>
             score = 0;
             level = 1;
             clearBoard();
-    
+
             linesRemovedChanged(numLinesRemoved);
             scoreChanged(score);
             levelChanged(level);
-    
+
             newPiece();
-    
+
             timer.start(timeoutTime(), this);
         }</pre>
 <p>We also emit signals to inform other components of these changes before creating a new piece that is ready to be dropped into the playing area. We start the timer that determines how often the piece drops down one row on the board.</p>
@@ -389,14 +389,14 @@ body { color: black; }</style>
         {
             if (!isStarted)
                 return ;
-    
+
             isPaused = !isPaused;
             if (isPaused) {
                 timer.stop();
             } else {
                 timer.start(timeoutTime(), this);
             }
-    
+
             update();
         }</pre>
 <p>We perform checks to ensure that the game can only be paused if it is already running and not already paused.</p>
@@ -404,7 +404,7 @@ body { color: black; }</style>
 <pre>&nbsp;       protected void paintEvent(QPaintEvent e)
         {
             super.paintEvent(e);
-    
+
             QPainter painter = new QPainter();
             painter.begin(this);
             QRect rect = contentsRect();</pre>
@@ -412,7 +412,7 @@ body { color: black; }</style>
 <p>If the game is paused, we want to hide the existing state of the board and show some text. We achieve this by painting text onto the widget and returning early from the function. The rest of the painting is performed after this point.</p>
 <p>The position of the top of the board is found by subtracting the total height of each space on the board from the bottom of the frame's internal rectangle. For each space on the board that is occupied by a piece, we call the <tt>drawSquare()</tt> function to draw a block at that position.</p>
 <pre>&nbsp;           int boardTop = rect.bottom() - BoardHeight * squareHeight();
-    
+
             for (int i=0; i&lt;BoardHeight; ++i) {
                 for (int j=0; j&lt;BoardWidth; ++j) {
                     TetrixShape shape = shapeAt(j, BoardHeight - i - 1);
@@ -427,13 +427,13 @@ body { color: black; }</style>
                 for (int i=0; i&lt;4; ++i) {
                     int x = curX + curPiece.x(i);
                     int y = curY - curPiece.y(i);
-    
+
                     drawSquare(painter, rect.left() + x * squareWidth(),
                         boardTop + (BoardHeight - y - 1) * squareHeight(),
                         curPiece.shape());
                 }
             }
-    
+
             painter.end();
         }</pre>
 <p>The <tt>keyPressEvent()</tt> handler is called whenever the player presses a key while the <tt>TetrixBoard</tt> widget has the keyboard focus.</p>
@@ -512,19 +512,19 @@ body { color: black; }</style>
                 int y = curY - curPiece.y(i);
                 setShapeAt(x, y, curPiece.shape());
             }
-    
+
             ++numPiecesDropped;
             if (numPiecesDropped % 25 == 0) {
                 ++level;
                 timer.start(timeoutTime(), this);
                 levelChanged(level);
             }
-    
+
             score += dropHeight + 7;
             scoreChanged(score);
-    
+
             removeFullLines();
-    
+
             if (!isWaitingAfterLine)
                 newPiece();
         }</pre>
@@ -532,17 +532,17 @@ body { color: black; }</style>
 <pre>&nbsp;       void removeFullLines()
         {
             int numFullLines = 0;
-    
+
             for (int i=BoardHeight - 1; i &gt;= 0; --i) {
                 boolean lineIsFull = true;
-    
+
                 for (int j=0; j&lt;BoardWidth; ++j) {
                     if (shapeAt(j, i) == TetrixShape.NoShape) {
                         lineIsFull = false;
                         break ;
                     }
                 }
-    
+
                 if (lineIsFull) {
                     ++numFullLines;
                     for (int k=i; k&lt;BoardHeight - 1; ++k) {
@@ -559,7 +559,7 @@ body { color: black; }</style>
                 score += 10 * numFullLines;
                 linesRemovedChanged(numLinesRemoved);
                 scoreChanged(score);
-    
+
                 timer.start(500, this);
                 isWaitingAfterLine = true;
                 curPiece.setShape(TetrixShape.NoShape);
@@ -572,12 +572,12 @@ body { color: black; }</style>
 <pre>&nbsp;       void newPiece()
         {
             curPiece = new TetrixPiece(nextPiece);
-    
+
             nextPiece.setRandomShape();
             showNextPiece();
             curX = BoardWidth / 2 + 1;
             curY = BoardHeight - 1 + curPiece.minY();
-    
+
             if (!tryMove(curPiece, curX, curY)) {
                 curPiece.setShape(TetrixShape.NoShape);
                 timer.stop();
@@ -590,22 +590,22 @@ body { color: black; }</style>
         {
             if (nextPieceLabel == null)
                 return ;
-    
+
             int dx = nextPiece.maxX() - nextPiece.minX() + 1;
             int dy = nextPiece.maxY() - nextPiece.minY() + 1;
-    
+
             QPixmap pixmap = new QPixmap(dx * squareWidth(), dy * squareHeight());
             QPainter painter = new QPainter();
             painter.begin(pixmap);
             painter.fillRect(pixmap.rect(), nextPieceLabel.palette().window());
-    
+
             for (int i=0; i&lt;4; ++i) {
                 int x = nextPiece.x(i) - nextPiece.minX();
                 int y = nextPiece.y(i) - nextPiece.minY();
                 drawSquare(painter, x * squareWidth(), y * squareHeight(), nextPiece.shape());
             }
             painter.end();
-    
+
             nextPieceLabel.setPixmap(pixmap);
         }</pre>
 <p>We draw the piece's component blocks onto a pixmap that is then set on the label.</p>
@@ -634,11 +634,11 @@ body { color: black; }</style>
             QColor color = new QColor(redTable[shape.ordinal()], greenTable[shape.ordinal()], blueTable[shape.ordinal()]);
             painter.fillRect(x + 1, y + 1, squareWidth() - 2, squareHeight() - 2,
                 new QBrush(color));
-    
+
             painter.setPen(color.lighter());
             painter.drawLine(x, y + squareHeight() - 1, x, y);
             painter.drawLine(x, y, x + squareWidth() - 1, y);
-    
+
             painter.setPen(color.darker());
             painter.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
             painter.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);

@@ -11,7 +11,7 @@ public class src_corelib_io_qdiriterator {
     public static void main(String args[]) {
         QApplication.initialize(args);
 //! [0]
-        QDirIterator it = new QDirIterator("/etc", 
+        QDirIterator it = new QDirIterator("/etc",
             new QDirIterator.IteratorFlags(QDirIterator.IteratorFlag.Subdirectories));
         while (it.hasNext()) {
             System.out.println(it.next());

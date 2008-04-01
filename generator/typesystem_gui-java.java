@@ -35,7 +35,7 @@ class QTransform___ extends QTransform {
 
     /**
      * Returns an inverted copy of this transformation.
-     * 
+     *
      * @return The inverse of the transformation.
      * @throws IllegalArgumentException
      *             If this transformation is not invertible.
@@ -50,7 +50,7 @@ class QTransform___ extends QTransform {
 
     /**
      * Creates a transformation mapping one arbitrary quad into another.
-     * 
+     *
      * @return The transformation.
      * @throws IllegalArgumentException
      *             If this transformation is not possible.
@@ -81,7 +81,7 @@ class QTransform___ extends QTransform {
 
     /**
      * Creates a transformation that maps a unit square to a the given quad.
-     * 
+     *
      * @return The transformation.
      * @throws IllegalArgumentException
      *             If this transformation is not possible.
@@ -213,7 +213,7 @@ class QTextCursor___ extends QTextCursor {
 class QMatrix___ extends QMatrix {
     /**
      * Returns an inverted copy of this matrix.
-     * 
+     *
      * @return The inverse of the matrix.
      * @throws IllegalArgumentException
      *             If this matrix is not invertible.
@@ -535,11 +535,11 @@ class QWizardPage___ extends QWizardPage {
      * Finish buttons are enabled only when all mandatory fields are filled.
      * This requires a <code>changedSignal</code> to be specified, to tell
      * QWizard to recheck the value stored by the mandatory field.
-     * 
+     *
      * QWizard knows the most common Qt widgets. For these (or their
      * subclasses), you don't need to specify a <code>property</code> or a
      * <code>changedSignal</code>. The table below lists these widgets:
-     * 
+     *
      * <code>QAbstractButton</code> (for which the relevant property is the
      * <code>checked</code> property), <code>QAbstractSlider</code> (the
      * <code>value</code> property), <code>QComboBox</code> (<code>currentIndex</code>
@@ -547,7 +547,7 @@ class QWizardPage___ extends QWizardPage {
      * property), <code>QLineEdit</code>(<code>text</code> property),
      * <code>QListWidget</code>(<code>currentRow</code> property), or
      * <code>QSpinBox</code>(<code>value</code> property).
-     * 
+     *
      * @param name
      *            The name which will be used to access the field. Names ending
      *            with an asterisk signify mandatory fields.
@@ -558,7 +558,7 @@ class QWizardPage___ extends QWizardPage {
      * @param changedSignal
      *            The name of a signal which is emitted when the associated
      *            property's value changes.
-     * 
+     *
      * @see com.trolltech.qt.gui.QWizardPage#field
      * @see com.trolltech.qt.gui.QWizardPage#setField
      */
@@ -645,7 +645,7 @@ class QAbstractButton___ extends QAbstractButton {
      * "Meta" are recognized, as well as their translated equivalents in the
      * "QShortcut" context (using QObject::tr()). Up to four key codes may be
      * entered by separating them with commas, e.g. "Alt+X,Ctrl+S,Q".
-     * 
+     *
      * @param key
      *            The description of the key sequence. Typically used with tr()
      *            so key sequences can be locale aware.
@@ -658,7 +658,7 @@ class QAbstractButton___ extends QAbstractButton {
      * Sets the shortcut to the key sequence for the given key. The result will
      * depend on the currently running platform. The key sequence will be based
      * on the first element in the list of key bindings for the key.
-     * 
+     *
      * @param key
      *            The key for which to select a key sequence
      */
@@ -863,7 +863,7 @@ class QAction___ extends QAction {
      * "Meta" are recognized, as well as their translated equivalents in the
      * "QShortcut" context (using QObject::tr()). Up to four key codes may be
      * entered by separating them with commas, e.g. "Alt+X,Ctrl+S,Q".
-     * 
+     *
      * @param key
      *            The description of the key sequence. Typically used with tr()
      *            so key sequences can be locale aware.
@@ -876,7 +876,7 @@ class QAction___ extends QAction {
      * Sets the shortcut to the key sequence for the given key. The result will
      * depend on the currently running platform. The key sequence will be based
      * on the first element in the list of key bindings for the key.
-     * 
+     *
      * @param key
      *            The key for which to select a key sequence
      */
@@ -967,9 +967,9 @@ class QApplication___ extends QApplication {
 
 class QFormLayout___ extends QFormLayout {
     /**
-     * Retrieves the row and role (column) of the item at the specified index.      
+     * Retrieves the row and role (column) of the item at the specified index.
      * If index is out of bounds, -1 is returned in place of the row.
-     * 
+     *
      * @param index The index of the item for which to retrieve the position.
      * @return A pair of an int (row of item) and an ItemRole (role of the item.)
      **/
@@ -984,9 +984,9 @@ class QFormLayout___ extends QFormLayout {
     }
 
     /**
-     * Retrieves the row and role (column) of the specified child layout. 
+     * Retrieves the row and role (column) of the specified child layout.
      * If the layout is not in the form layout, -1 is returned in place of the row.
-     * 
+     *
      * @param layout The layout for which to retrieve the position.
      * @return A pair of an int (row of item) and an ItemRole (role of the item.)
      */
@@ -1001,9 +1001,9 @@ class QFormLayout___ extends QFormLayout {
     }
 
     /**
-     * Retrieves the row and role (column) of the specified widget in the layout. 
+     * Retrieves the row and role (column) of the specified widget in the layout.
      * If the widget is not in the form layout, -1 is returned in place of the row.
-     * 
+     *
      * @param widget The widget for which to retrieve the position.
      * @return A pair of an int (row of item) and an ItemRole (role of the item.)
      */
@@ -1047,8 +1047,8 @@ class Subclass_of_QGraphicsLayoutItem___ extends QGraphicsLayoutItem {
 class QGraphicsWidget___ extends QGraphicsWidget {
 
     /**
-     * Gets the widget's window frame margins. 
-     * 
+     * Gets the widget's window frame margins.
+     *
      * @returns An object containing the margins in left, right, top and bottom coordinates.
      */
     @QtBlockedSlot
@@ -1070,10 +1070,10 @@ class QPrinter___ extends QPrinter {
      * Returns the page margins for this printer.
      * The unit of the returned margins are specified with the unit parameter.
      * This function was introduced in Qt 4.4.
-     * 
+     *
      * @param unit Specifies the unit of the returned margins.
      * @return The page margins for this printer.
-     */    
+     */
     public final QMarginsF getPageMargins(QPrinter.Unit unit) {
         QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
         QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
@@ -1090,7 +1090,7 @@ class QListWidget___ extends QListWidget {
 
     /**
      * Inserts an item with the text label at the end of the list widget.
-     * 
+     *
      * @param label The text of the new item.
      */
     public final void addItem(String label) {
@@ -1099,28 +1099,28 @@ class QListWidget___ extends QListWidget {
 
     /**
      * Inserts items with the text labels at the end of the list widget.
-     * 
+     *
      * @param labels The collection of labels for the new items.
      */
     public final void addItems(java.util.List<String> labels) {
         for (String label : labels)
             addItem(label);
     }
-    
+
     /**
      * This is an overloaded member function, provided for convenience.
      * Inserts an item with the text label in the list widget at the position given by row.
-     * 
+     *
      * @param row The position in which to insert the new item.
      * @param label The text of the new item.
      */
     public final void insertItem(int row, String label) {
         insertItem(row, new QListWidgetItem(label, this));
     }
-    
+
     /**
      * Inserts items from the list of labels into the list, starting at the given row.
-     * 
+     *
      * @param row The position in which to insert the new items.
      * @param labels The collection of labels for the new items.
      */
@@ -1135,7 +1135,7 @@ class QGraphicsScene___ extends QGraphicsScene {
     /**
      * Equivalent to addEllipse(rect, null, null)
      */
-    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect) 
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect)
     {
         return addEllipse(rect, null);
     }
@@ -1143,7 +1143,7 @@ class QGraphicsScene___ extends QGraphicsScene {
     /**
      * Equivalent to addEllipse(rect, pen, null)
      */
-    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen) 
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen)
     {
         return addEllipse(rect, pen, null);
     }
@@ -1153,20 +1153,20 @@ class QGraphicsScene___ extends QGraphicsScene {
      * Creates and adds an ellipse item to the scene, and returns the item
      * reference. The geometry of the ellipse is defined by rect, and its pen
      * and brush are initialized to pen and brush.
-     * 
+     *
      * Note that the item's geometry is provided in item coordinates, and its
      * position is initialized to (0, 0).
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem::isVisible() returns true),
      * QGraphicsScene will emit changed() once control goes back to the event
      * loop.
-     * 
+     *
      * @param rect The bounding rectangle of the ellipse.
      * @param pen The pen for the resulting QGraphicsEllipseItem.
      * @param brush The brush for the resulting QGraphicsEllipseItem.
      * @return The resulting item.
      */
-    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) 
+    public final QGraphicsEllipseItem addEllipse(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush)
     {
         return addEllipse(rect.x(), rect.y(), rect.width(), rect.height(), pen, brush);
     }
@@ -1181,7 +1181,7 @@ class QGraphicsScene___ extends QGraphicsScene {
     /**
      * Equivalent to addEllipse(x, y, w, h, pen, null)
      */
-    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen) 
+    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen)
     {
         return addEllipse(x, y, w, h, pen, null);
     }
@@ -1190,14 +1190,14 @@ class QGraphicsScene___ extends QGraphicsScene {
      * Creates and adds an ellipse item to the scene, and returns the item
      * reference. The geometry of the ellipse is defined by x, y, w, h, and its pen
      * and brush are initialized to pen and brush.
-     * 
+     *
      * Note that the item's geometry is provided in item coordinates, and its
      * position is initialized to (0, 0).
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param x The left horizontal coordinate of the ellipse's bounding rectangle.
      * @param y The top vertical coordinate of the ellipse's bounding rectangle.
      * @param w The width of the ellipse's bounding rectangle.
@@ -1206,7 +1206,7 @@ class QGraphicsScene___ extends QGraphicsScene {
      * @param brush The brush for the resulting QGraphicsEllipseItem.
      * @return The resulting item.
      */
-    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen, QBrush brush) 
+    public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen, QBrush brush)
     {
         QGraphicsEllipseItem item = new QGraphicsEllipseItem(x, y, w, h);
         item.setPen(pen);
@@ -1235,12 +1235,12 @@ class QGraphicsScene___ extends QGraphicsScene {
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param line The definition of the line.
      * @param pen The pen with which to draw the line.
      * @return The resulting item.
      */
-    public final QGraphicsLineItem addLine(QLineF line, QPen pen) 
+    public final QGraphicsLineItem addLine(QLineF line, QPen pen)
     {
         return addLine(line.x1(), line.y1(), line.x2(), line.y2(), pen);
     }
@@ -1263,7 +1263,7 @@ class QGraphicsScene___ extends QGraphicsScene {
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param x1 The first horizontal coordinate of the line.
      * @param y1 The first vertical coordinate of the line.
      * @param x2 The second horizontal coordinate of the line.
@@ -1271,7 +1271,7 @@ class QGraphicsScene___ extends QGraphicsScene {
      * @param pen The pen with which to draw the line.
      * @return The resulting item.
      */
-    public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2, QPen pen) 
+    public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2, QPen pen)
     {
         QGraphicsLineItem item = new QGraphicsLineItem(x1, y1, x2, y2);
         item.setPen(pen);
@@ -1282,17 +1282,17 @@ class QGraphicsScene___ extends QGraphicsScene {
     }
 
 
-    /** 
+    /**
      * Equivalent to addPath(path, null, null)
      */
     public final QGraphicsPathItem addPath(QPainterPath path) {
         return addPath(path, null);
     }
 
-    /** 
+    /**
      * Equivalent to addPath(path, pen, null)
      */
-    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen) 
+    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen)
     {
         return addPath(path, pen, null);
     }
@@ -1300,20 +1300,20 @@ class QGraphicsScene___ extends QGraphicsScene {
      * Creates and adds a path item to the scene, and returns the item
      * reference. The geometry of the path is defined by path, and its pen and
      * brush are initialized to pen and brush.
-     * 
+     *
      * Note that the item's geometry is provided in item coordinates, and its
      * position is initialized to (0, 0).
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param path The definition of the path.
      * @param pen The pen for drawing the path.
      * @param brush The brush for drawing the path.
      * @return The resulting item.
      */
-    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen, QBrush brush) 
+    public final QGraphicsPathItem addPath(QPainterPath path, QPen pen, QBrush brush)
     {
         QGraphicsPathItem item = new QGraphicsPathItem(path);
         item.setPen(pen);
@@ -1327,18 +1327,18 @@ class QGraphicsScene___ extends QGraphicsScene {
     /**
      * Creates and adds a pixmap item to the scene, and returns the item
      * reference. The pixmap is defined by pixmap.
-     * 
+     *
      * Note that the item's geometry is provided in item coordinates, and its
      * position is initialized to (0, 0).
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param pixmap The pixmap for which to create a graphics item.
      * @return The resulting item.
      */
-    public final QGraphicsPixmapItem addPixmap(QPixmap pixmap) 
+    public final QGraphicsPixmapItem addPixmap(QPixmap pixmap)
     {
         QGraphicsPixmapItem item = new QGraphicsPixmapItem(pixmap);
 
@@ -1365,20 +1365,20 @@ class QGraphicsScene___ extends QGraphicsScene {
      * Creates and adds a polygon item to the scene, and returns the item
      * reference. The polygon is defined by polygon, and its pen and
      * brush are initialized to pen and brush.
-     * 
+     *
      * Note that the item's geometry is provided in item coordinates, and its
      * position is initialized to (0, 0).
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param polygon The definition of the polygon.
      * @param pen The pen with which to draw the polygon.
      * @param brush The brush with which to draw the polygon.
      * @return The resulting item.
      */
-    public final QGraphicsPolygonItem addPolygon(QPolygonF polygon, QPen pen, QBrush brush) 
+    public final QGraphicsPolygonItem addPolygon(QPolygonF polygon, QPen pen, QBrush brush)
     {
         QGraphicsPolygonItem item = new QGraphicsPolygonItem(polygon);
         item.setPen(pen);
@@ -1399,7 +1399,7 @@ class QGraphicsScene___ extends QGraphicsScene {
     /**
      * Equivalent to addRect(rect, pen, null)
      */
-    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen) 
+    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen)
     {
         return addRect(rect, pen, null);
     }
@@ -1413,17 +1413,17 @@ class QGraphicsScene___ extends QGraphicsScene {
      * position is initialized to (0, 0). For example, if a QRect(50, 50, 100,
      * 100) is added, its top-left corner will be at (50, 50) relative to the
      * origin in the item's coordinate system.
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param rect The definition of the rectangle.
      * @param pen The pen with which to draw the rectangle.
      * @param brush The brush with which to draw the rectangle.
      * @return The resulting item.
      */
-    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush) 
+    public final QGraphicsRectItem addRect(com.trolltech.qt.core.QRectF rect, QPen pen, QBrush brush)
     {
         return addRect(rect.x(), rect.y(), rect.width(), rect.height(), pen, brush);
     }
@@ -1448,12 +1448,12 @@ class QGraphicsScene___ extends QGraphicsScene {
      * and brush are initialized to pen and brush.
      *
      * Note that the item's geometry is provided in item coordinates, and its
-     * position is initialized to (0, 0). 
-     * 
+     * position is initialized to (0, 0).
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param x The left horizontal coordinate of the rectangle.
      * @param y The top vertical coordinate of the rectangle.
      * @param w The width of the rectangle.
@@ -1462,7 +1462,7 @@ class QGraphicsScene___ extends QGraphicsScene {
      * @param brush The brush with which to draw the rectangle.
      * @return The resulting item.
      */
-    public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen, QBrush brush) 
+    public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen, QBrush brush)
     {
         QGraphicsRectItem item = new QGraphicsRectItem(x, y, w, h);
         item.setPen(pen);
@@ -1484,18 +1484,18 @@ class QGraphicsScene___ extends QGraphicsScene {
      * Creates and adds a QGraphicsSimpleTextItem to the scene, and returns the
      * item reference. The text string is initialized to text, and its font is
      * initialized to font.
-     * 
+     *
      * The item's position is initialized to (0, 0).
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param text The text to add to the scene.
      * @param font The font to use for displaying the text.
      * @return The resulting item.
      */
-    public final QGraphicsSimpleTextItem addSimpleText(String text, QFont font) 
+    public final QGraphicsSimpleTextItem addSimpleText(String text, QFont font)
     {
         QGraphicsSimpleTextItem item = new QGraphicsSimpleTextItem(text);
         item.setFont(font);
@@ -1516,18 +1516,18 @@ class QGraphicsScene___ extends QGraphicsScene {
      * Creates and adds a text item to the scene, and returns the item
      * reference. The text string is initialized to text, and its font
      * is initialized to font.
-     * 
+     *
      * The item's position is initialized to (0, 0).
-     * 
+     *
      * If the item is visible (i.e., QGraphicsItem.isVisible() returns true),
      * QGraphicsScene will emit changed once control goes back to the event
      * loop.
-     * 
+     *
      * @param text The text to add to the scene.
      * @param font The font to use for displaying the text.
      * @return The resulting item.
      */
-    public final QGraphicsTextItem addText(String text, QFont font) 
+    public final QGraphicsTextItem addText(String text, QFont font)
     {
         QGraphicsTextItem item = new QGraphicsTextItem(text);
         item.setFont(font);

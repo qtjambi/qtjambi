@@ -80,7 +80,7 @@ public class SvgCards extends QGraphicsView {
         "10_heart",
         "10_spade"
     };
-    
+
     @Override
     protected void closeEvent(QCloseEvent e) {
         closing = true;
@@ -139,7 +139,7 @@ public class SvgCards extends QGraphicsView {
                           QWidget widget) {
             painter.setOpacity(opacity);
             super.paint(painter, option, widget);
-        }        
+        }
 //! [8]
     }
 //! [8]

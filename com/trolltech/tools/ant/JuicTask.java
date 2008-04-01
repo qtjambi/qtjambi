@@ -42,7 +42,7 @@ public class JuicTask extends MatchingTask {
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
             File dir = Util.makeCanonical(tokenizer.nextToken());
-            
+
             DirectoryScanner ds = getDirectoryScanner(dir);
             String[] files = ds.getIncludedFiles();
             for (String file : files) {

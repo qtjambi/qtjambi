@@ -23,19 +23,19 @@ import com.trolltech.qt.gui.QApplication;
 
 
 public abstract class ManualTests {
-    
+
     @BeforeClass
     public static void testInitialize() throws Exception {
         QApplication.initialize(new String[] {});
-    }    
+    }
 
     @AfterClass
     public static void testDispose() throws Exception {
         QApplication.quit();
-        QApplication.instance().dispose();        
+        QApplication.instance().dispose();
     }
-    
-    
+
+
     public void run() {
         Class<?> cls = this.getClass();
         Method methods[] = cls.getMethods();

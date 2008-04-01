@@ -5,7 +5,7 @@ import com.trolltech.qt.gui.*;
 import java.util.*;
 
 public class polygon
-{ 
+{
     public static void main(String args[])
     {
         if (true)
@@ -17,7 +17,7 @@ public class polygon
             polygon.add(new QPoint(20, 30));
     //! [0]
         }
-    
+
         if (true)
         {
             // STREAMF
@@ -27,7 +27,7 @@ public class polygon
             polygon.add(new QPointF(20.2, 30.2));
     //! [1]
         }
-    
+
         if (true)
         {
             // SETPOINTS
@@ -37,7 +37,7 @@ public class polygon
             //polygon.setPoints(2, points);
     //! [2]
         }
-    
+
         if (true)
         {
             // SETPOINTS2
@@ -46,7 +46,7 @@ public class polygon
             //polygon.setPoints(2, 10, 20, 30, 40);
     //! [3]
         }
-    
+
         if (true)
         {
             // PUTPOINTS
@@ -56,7 +56,7 @@ public class polygon
             //polygon.putPoints(1, 2, 6,7, 8,9);
     //! [4]
         }
-    
+
         if (true)
         {
             // PUTPOINTS2
@@ -66,7 +66,7 @@ public class polygon
             //polygon.putPoints(1, 1, 6,7);
     //! [5]
         }
-    
+
         if (true)
         {
             // PUTPOINTS3
@@ -74,11 +74,11 @@ public class polygon
             // QPolygon polygon1 = new QPolygon();
             // polygon1.putPoints(0, 3, 1,2, 0,0, 5,6);
             // polygon1 is now the three-point polygon(1,2, 0,0, 5,6);
-    
+
             // QPolygon polygon2 = new QPolygon();
             // polygon2.putPoints(0, 3, 4,4, 5,5, 6,6);
             // polygon2 is now (4,4, 5,5, 6,6);
-    
+
             // polygon1.putPoints(2, 3, polygon2);
             // polygon1 is now the five-point polygon(1,2, 0,0, 4,4, 5,5, 6,6);
     //! [6]

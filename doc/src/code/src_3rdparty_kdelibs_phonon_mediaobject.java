@@ -113,9 +113,9 @@ import java.util.*;
 
 public class src_3rdparty_kdelibs_phonon_mediaobject extends QObject {
     private MediaObject media;
-    public void fooBar() {        
+    public void fooBar() {
 //! [0]
-        
+
         media = new MediaObject(this);
         media.finished.connect(this, "slotFinished()");
         media.setCurrentSource(new MediaSource("/home/username/music/filename.ogg"));
@@ -132,11 +132,11 @@ public class src_3rdparty_kdelibs_phonon_mediaobject extends QObject {
 
 
 //! [2]
-        
+
         media.setCurrentSource(new MediaSource("classpath:/sounds/startsound.ogg"));
         media.aboutToFinish.connect(this, "enqueueNextSource()");
     }
- 
+
      public final void enqueueNextSource() {
          media.enqueue(new MediaSource("/home/username/music/song.mp3"));
      }
@@ -173,7 +173,7 @@ public class src_3rdparty_kdelibs_phonon_mediaobject extends QObject {
          media.setCurrentSource(new MediaSource("somevideo.avi"));
          media.hasVideo(); // returns false;
      }
-             
+
      public final void hasVideoChanged(boolean b) {
          // b == true
          media.hasVideo(); // returns true;
@@ -192,7 +192,7 @@ class Hack extends MediaObject {
          media.setCurrentSource(new MediaSource("somevideo.avi"));
          media.hasVideo(); // returns false;
  }
-         
+
      public final void hasVideoChanged(boolean b) {
          // b == true
          media.hasVideo(); // returns true;

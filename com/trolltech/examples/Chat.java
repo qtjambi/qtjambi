@@ -62,7 +62,7 @@ public class Chat extends QDialog {
         tableFormat.setBorder(0);
 
         setWindowTitle("Chat " + myNickName);
-        
+
         QTimer.singleShot(10 * 1000, this, "showInformation()");
     }
 
@@ -613,8 +613,8 @@ public class Chat extends QDialog {
             updateAddresses(false);
             if (broadcastAddresses.isEmpty())
                 updateAddresses(true);
-        }        
-        
+        }
+
         private void updateAddresses(boolean enableLoopBack) {
             broadcastAddresses.clear();
             ipAddresses.clear();
@@ -624,10 +624,10 @@ public class Chat extends QDialog {
 
                         QHostAddress broadcastAddress = entry.broadcast();
                         if (!broadcastAddress.equals(QHostAddress.SpecialAddress.Null)) {
-                            broadcastAddresses.add(broadcastAddress); 
+                            broadcastAddresses.add(broadcastAddress);
                         }
                         ipAddresses.add(entry.ip());
-                    }  
+                    }
                 }
             }
         }

@@ -14,7 +14,7 @@
 package com.trolltech.qt;
 
 /**
- *   QNativePointer encapsulates a native C++ pointer. The class 
+ *   QNativePointer encapsulates a native C++ pointer. The class
  *   provides the functionality that you would get if you had direct
  *   access to the pointer through function calls. It is as such a
  *   low-level memory manager that should be used sparsely; its
@@ -279,7 +279,7 @@ public class QNativePointer {
     public QNativePointer pointerValue() {
         return pointerAt(0);
     }
-    
+
     /**
      * If the native pointer is of string type, this function returns
      * its value. If it is an array of strings, the first element is
@@ -380,7 +380,7 @@ public class QNativePointer {
     public void setPointerValue(QNativePointer value) {
         setPointerAt(0, value);
     }
-    
+
     /**
      * Sets the value of this pointer to <code>value</code>.
      * The pointer must point to a string.
@@ -395,7 +395,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public boolean booleanAt(int pos) {
@@ -407,7 +407,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public byte byteAt(int pos) {
@@ -419,7 +419,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public char charAt(int pos) {
@@ -431,7 +431,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public short shortAt(int pos) {
@@ -443,7 +443,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public int intAt(int pos) {
@@ -455,7 +455,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public long longAt(int pos) {
@@ -467,7 +467,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public float floatAt(int pos) {
@@ -479,7 +479,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public double doubleAt(int pos) {
@@ -491,7 +491,7 @@ public class QNativePointer {
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public QNativePointer pointerAt(int pos) {
@@ -499,12 +499,12 @@ public class QNativePointer {
         long ptr = readPointer(m_ptr, pos);
         return fromNative(ptr, m_type, m_indirections - 1);
     }
-    
+
     /**
      * Returns the value of the native pointer at the specified
      * position. If <code>pos</code> is larger than 1, QNativePointer
      * will check that the position is within the array bounds.
-     * 
+     *
      * @param pos the array index
      */
     public String stringAt(int pos) {
@@ -514,7 +514,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -526,7 +526,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -538,7 +538,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -550,7 +550,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -562,7 +562,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -574,7 +574,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -586,7 +586,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -598,7 +598,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -610,7 +610,7 @@ public class QNativePointer {
 
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -621,10 +621,10 @@ public class QNativePointer {
             value.setAutoDeleteMode(AutoDeleteMode.None);
         writePointer(m_ptr, pos, value == null ? 0 : value.m_ptr);
     }
-    
+
     /**
      *  Sets the value of the array element at <code>pos</code> to
-     *  which this native pointer points. 
+     *  which this native pointer points.
      *
      *  @param pos the array index
      *  @param value the value to set the index to
@@ -655,7 +655,7 @@ public class QNativePointer {
     /**
      *  Returns true if the native pointer is 0; otherwise false.
      *
-     * @return true if the native pointer is 0. 
+     * @return true if the native pointer is 0.
      */
     public boolean isNull() {
         return m_ptr == 0;
@@ -685,7 +685,7 @@ public class QNativePointer {
     }
 
     /**
-     * This function deletes the internal pointer. 
+     * This function deletes the internal pointer.
      *
      * Currently, all QNativePointers should be deleted using the
      * delete() function.
@@ -774,7 +774,7 @@ public class QNativePointer {
      * int pointer will trigger an exception. Disabling this value allows
      * complete access, but without any safety, so incorrect usage may lead to
      * memory corruption in the C++ implementation.
-     * 
+     *
      * @param a Set to true if verification should be enabled.
      */
     public void setVerificationEnabled(boolean a) {
@@ -830,7 +830,7 @@ public class QNativePointer {
         ptrs.setPointerAt(strings.length, null);
         return ptrs;
     }
-    
+
     /**
      * Creates a char* from the input string
      *
@@ -848,7 +848,7 @@ public class QNativePointer {
     }
 
     /*
-     * This is doc in superclass 
+     * This is doc in superclass
      */
     @Override
     protected void finalize() {

@@ -1448,7 +1448,7 @@ void StaticCache::resolveQItemEditorCreatorBase_internal()
     Q_ASSERT(QItemEditorCreatorBase.valuePropertyName);
 }
 
-void StaticCache::resolveResolvedEntity_internal() 
+void StaticCache::resolveResolvedEntity_internal()
 {
     JNIEnv *env = qtjambi_current_environment();
 

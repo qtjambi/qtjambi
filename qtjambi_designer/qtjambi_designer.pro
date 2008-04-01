@@ -10,5 +10,5 @@ CONFIG += designer
 HEADERS += \
            jambiresourcebrowser.h \
 
-		
-	
+
+

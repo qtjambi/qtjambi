@@ -23,30 +23,30 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.core.QTextStream;
 
-public class GeneratorGui 
+public class GeneratorGui
 {
     public static void main(String args[])
     {
         new QCoreApplication(args);
-        
+
         String default_file = "tests/dummy.h";
         String default_system = "build_all.txt";
-    
+
         String fileName = "";
         String typesystemFileName = "";
         String out_dir = "..";
         String pp_file = ".preprocessed.tmp";
-        
+
         String juic_file = "../juic/juic.xml";
         boolean print_stdout = false;
-    
+
         boolean no_java = false;
         boolean no_cpp_h = false;
         boolean no_cpp_impl = false;
         boolean no_metainfo = false;
         boolean display_help = false;
         boolean dump_object_tree = false;
-        
+
         for (int i=1; i<args.length; ++i) {
             String arg = args[i];
             if (arg.startsWith("--no-suppress-warnings")) {
@@ -78,10 +78,10 @@ public class GeneratorGui
                 display_help = true;
             } else if (arg.startsWith("--dump-object-tree")) {
                 dump_object_tree = true;
-            } else if (arg.startsWith("--rebuild-only")) {                
+            } else if (arg.startsWith("--rebuild-only")) {
                 String classes[] = args[i+1].split(",");
-                
-                List<String> classList = Arrays.asList(classes);                
+
+                List<String> classList = Arrays.asList(classes);
                 TypeDatabase.instance().setRebuildClasses(classList);
                 ++i;
             } else if (arg.startsWith("--test-typeparser")) {
@@ -97,7 +97,7 @@ public class GeneratorGui
                     typesystemFileName = args[i];
             }
         }
-        
+
         if (fileName.length() == 0)
             fileName = default_file;
 
@@ -113,7 +113,7 @@ public class GeneratorGui
                    "  --dump-object-tree                \n" +
                    "  --help, -h or -?                  \n" +
                    "  --juic-file=[name]                \n" +
-                   "  --no-cpp-h                        \n" + 
+                   "  --no-cpp-h                        \n" +
                    "  --no-cpp-impl                     \n" +
                    "  --no-java                         \n" +
                    "  --no-metainfo                     \n" +
@@ -123,7 +123,7 @@ public class GeneratorGui
                    );
             return ;
         }
-        
+
         if (!TypeDatabase.instance().parseFile(typesystemFileName))
             System.err.printf("Cannot parse file: '%s'", typesystemFileName);
 
@@ -146,7 +146,7 @@ public class GeneratorGui
 
         // Code generation
         List<Generator> generators = new LinkedList<Generator>();
-        
+
         //MetaJavaClassList keep = builder.classes();
 
         List<String> contexts = new LinkedList<String>();
@@ -198,7 +198,7 @@ public class GeneratorGui
 
         System.out.printf("Done, %d warnings (%d known issues)\n", ReportHandler.warningCount(),
                ReportHandler.suppressedCount());
-        
+
     }
 
     static QFile openPriFile(String base_dir, String sub_dir, MetaJavaClass cls)
@@ -219,37 +219,37 @@ public class GeneratorGui
 
         return pro_file;
     }
-    
-    static void generatePriFile(String base_dir, String sub_dir, 
+
+    static void generatePriFile(String base_dir, String sub_dir,
             MetaJavaClassList classes,
             String metaInfoStub)
     {
         HashMap<String, QFile> fileHash = new HashMap<String, QFile>();
         String endl = System.getProperty("line.separator");
-    
+
         for (int i=0; i<classes.size(); ++i) {
-            MetaJavaClass cls = classes.at(i);           
-        
+            MetaJavaClass cls = classes.at(i);
+
             if ((cls.typeEntry().codeGeneration() & TypeEntry.CodeGeneration.GenerateCpp.value()) == 0)
                 continue;
-    
+
             QTextStream s = new QTextStream();
-    
-            QFile f = fileHash.containsKey(cls.packageName()) 
+
+            QFile f = fileHash.containsKey(cls.packageName())
                 ? fileHash.get(cls.packageName())
                 : null;
-            
-            
+
+
             if (f == null) {
                 f = openPriFile(base_dir, sub_dir, cls);
                 fileHash.put(cls.packageName(), f);
-    
+
                 s.setDevice(f);
                 if (metaInfoStub.length() != 0) {
-                    s.operator_shift_left("HEADERS += $$QTJAMBI_CPP/" + cls.packageName().replace(".", "_") + 
+                    s.operator_shift_left("HEADERS += $$QTJAMBI_CPP/" + cls.packageName().replace(".", "_") +
                                           "/" + metaInfoStub + ".h" + endl);
                 }
-    
+
                 s.operator_shift_left("SOURCES += \\" + endl);
                 if (metaInfoStub.length() != 0) {
                     s.operator_shift_left("        " + "$$QTJAMBI_CPP/" + cls.packageName().replace(".",  "_") +
@@ -258,33 +258,33 @@ public class GeneratorGui
                 s.operator_shift_left("     $$QTJAMBI_CPP/" + cls.packageName().replace(".", "_") +
                                       "/qtjambi_libraryinitializer.cpp \\" + endl);
             } else {
-               s.setDevice(f);               
+               s.setDevice(f);
             }
-    
-            
+
+
             if (!cls.isNamespace() && !cls.isInterface() && !cls.typeEntry().isVariant()) {
                 s.operator_shift_left("        " + "$$QTJAMBI_CPP/" + /*cls.packageName().replace(".", "_") +*/
                                       "/qtjambishell_" + cls.name() + ".cpp \\" + endl);
             }
         }
-    
+
         for (QFile f : fileHash.values()) {
             QTextStream s = new QTextStream(f);
             s.operator_shift_left(endl + "HEADERS += \\" + endl);
         }
-    
+
         for (int i=0; i<classes.size(); ++i) {
             MetaJavaClass cls = classes.at(i);
-            
+
             if ((cls.typeEntry().codeGeneration() & TypeEntry.CodeGeneration.GenerateCpp.value()) == 0)
                 continue;
-                
+
             QFile f = fileHash.containsKey(cls.packageName())
                 ? fileHash.get(cls.packageName())
                 : null;
-    
+
             QTextStream s = new QTextStream(f);
-            boolean shellfile = (cls.generateShellClass() 
+            boolean shellfile = (cls.generateShellClass()
                 || cls.queryFunctions(MetaJavaClass.FunctionQueryOption.Signals.value()).size() > 0)
                 && !cls.isNamespace() && !cls.isInterface() && !cls.typeEntry().isVariant();
             if (shellfile) {
@@ -292,7 +292,7 @@ public class GeneratorGui
                                       cls.name() + ".h \\" + endl);
             }
         }
-    
+
         for (QFile f : fileHash.values()) {
             f.close();
             f.dispose();
@@ -301,4 +301,4 @@ public class GeneratorGui
 
 
 }
-        
+

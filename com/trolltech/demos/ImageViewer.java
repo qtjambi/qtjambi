@@ -19,13 +19,13 @@ import com.trolltech.qt.gui.*;
 
 @QtJambiExample(name = "Image Viewer")
 public class ImageViewer extends MainWindow {
-    
+
     public ImageViewer() {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
-    
+
     public static void main(String[] args) {
-        QApplication.initialize(args);        
+        QApplication.initialize(args);
         ImageViewer viewer = new ImageViewer();
         viewer.show();
         QApplication.exec();

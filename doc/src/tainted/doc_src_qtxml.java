@@ -28,8 +28,8 @@
 
 //! [5]
     <author xmlns:fnord = 'http://trolltech.com/fnord/'
-                 title="Ms" 
-                 fnord:title="Goddess" 
+                 title="Ms"
+                 fnord:title="Goddess"
                  name="Eris Kallisti"/>
 //! [5]
 
@@ -121,8 +121,8 @@ public class doc_src_qtxml {
 
 //! [5]
     <author xmlns:fnord = 'http://trolltech.com/fnord/'
-                 title="Ms" 
-                 fnord:title="Goddess" 
+                 title="Ms"
+                 fnord:title="Goddess"
                  name="Eris Kallisti"/>
 //! [5]
 

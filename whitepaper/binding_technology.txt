@@ -43,8 +43,8 @@ The following example illustrates the mapping of a C++ class "Foo"
 which contains a single function "bar". The function expects one
 parameter of type "QRect".
 
-class Foo 
-{ 
+class Foo
+{
     void bar(const QRect &) { /* ... */ }
 }
 
@@ -82,8 +82,8 @@ The supported usage types for classes are:
   -> Primitive types: Objects of a primitive type can be copied by
      assignment, and should map to a primitive type in Java that has
      an equivalent resolution.
-  -> Enum types: Types that are declared as enums in C++. 
-                      
+  -> Enum types: Types that are declared as enums in C++.
+
 The generator will assume that objects of object type classes are
 never passed by copy in any of the original native code.  Examples of
 such classes in Qt are: any QObject subclass, any QEvent subclass,

@@ -18,24 +18,24 @@ package com.trolltech.qt;
   * <tt>first</tt> and <tt>second</tt>.
   *
   */
-public class QPair <T, S> implements Cloneable {    
-    
+public class QPair <T, S> implements Cloneable {
+
     /** First value of the pair. */
     public T first;
     /** Second value of the pair. */
     public S second;
-    
+
     /**
      * Constructs a pair.
      * @param t The first parameter.
      * @param s The second parameter.
      */
     public QPair(T t, S s) {
-        first = t;        
+        first = t;
         second = s;
     }
-    
-    
+
+
     /**
      * Returns true if this pair is the same as the other pair. If any
      * of the first or second members are null the result is false regardless.
@@ -44,13 +44,13 @@ public class QPair <T, S> implements Cloneable {
      */
     @Override
     public boolean equals(Object o) {
-        QPair<?, ?> other = o instanceof QPair ? (QPair<?, ?>) o : null; 
+        QPair<?, ?> other = o instanceof QPair ? (QPair<?, ?>) o : null;
         if (other == null || first == null || second == null || other.first == null || other.second == null)
             return false;
-        return first.equals(other.first) && second.equals(other.second);    
+        return first.equals(other.first) && second.equals(other.second);
     }
-    
-    
+
+
     /**
      * Returns a string representation of this pair.
      */
@@ -59,8 +59,8 @@ public class QPair <T, S> implements Cloneable {
         return "Pair(" + (first != null ? first.toString() : "null")
          + "," + (second != null ? second.toString() : "null") + ")";
     }
-    
-    
+
+
     /**
      * Returns a copy of this object.
      */

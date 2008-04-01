@@ -67,14 +67,14 @@ public class ShapedClock extends QWidget {
         minuteHand.append(new QPoint(0, -70));
 
         setWindowTitle(tr("Shaped Analog Clock"));
-        
+
         setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu);
         QAction quitAction = new QAction(tr("E&xit"), this);
         quitAction.setShortcut("Ctrl+Q");
         quitAction.triggered.connect(this, "close()");
         addAction(quitAction);
-        
-        setToolTip(tr("Drag the clock with the left mouse button.\n" + 
+
+        setToolTip(tr("Drag the clock with the left mouse button.\n" +
                       "Use the right mouse button to open a context menu."));
     }
 //! [2]
@@ -95,7 +95,7 @@ public class ShapedClock extends QWidget {
 //! [4]
     public void mouseMoveEvent(QMouseEvent event) {
         if (event.buttons().isSet(MouseButton.LeftButton)) {
-            move(new QPoint(event.globalPos().x() - dragPosition.x(), 
+            move(new QPoint(event.globalPos().x() - dragPosition.x(),
                             event.globalPos().y() - dragPosition.y()));
             event.accept();
         }

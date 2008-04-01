@@ -23,12 +23,12 @@ class MainWindow extends QMainWindow
     public MainWindow()
     {
         setWindowTitle("Selected items in a table model");
-    
+
         //model = new TableModel(8, 4, this);
-    
+
         table = new QTableView(this);
         table.setModel(model);
-    
+
         selectionModel = table.selectionModel();
         /*connect(selectionModel,
             SIGNAL(selectionChanged(QItemSelection , QItemSelection )),
@@ -36,32 +36,32 @@ class MainWindow extends QMainWindow
         connect(selectionModel,
             SIGNAL(currentChanged(QModelIndex , QModelIndex )),
             this, SLOT(changeCurrent(QModelIndex , QModelIndex )));*/
-    
+
         statusBar();
         setCentralWidget(table);
     }
-    
+
     //! [0]
     public void updateSelection(QItemSelection selected,
         QItemSelection deselected)
     {
         List<QModelIndex> items = selected.indexes();
-    
+
         for (QModelIndex index : items) {
             String text = "(" + index.row() + ", " + index.column() +")";
             model.setData(index, text);
     //! [0] //! [1]
         }
     //! [1]
-    
+
     //! [2]
         items = deselected.indexes();
-    
+
         for (QModelIndex index : items)
             model.setData(index, "");
     }
     //! [2]
-    
+
     //! [3]
     public void changeCurrent(QModelIndex current, QModelIndex previous)
     {

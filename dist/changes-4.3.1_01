@@ -68,7 +68,7 @@ ____________________
 
 ____________________
 
-Fixes: 
+Fixes:
 ____________________
 
  * The generator would crash when parsing complex class hierarchies
@@ -76,7 +76,7 @@ ____________________
 
  * The generator would crash when parsing function definitions on the
    form "void (function)()".
- 
+
  * The generator would create non-compiling code for "const QString"
    function arguments.
 

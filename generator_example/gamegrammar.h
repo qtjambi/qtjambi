@@ -41,7 +41,7 @@ protected:
     virtual GameAction *command();
     virtual GameAction *verb();
     virtual AbstractGameObject *object();
-    
+
     virtual bool filler();
     virtual bool and_token();
     virtual QString currentToken(int token_count = 1) const;

@@ -42,28 +42,28 @@ body { color: black; }</style>
             private QSize resultSize;
             private boolean restart;
             private boolean abort;
-    
+
             final int ColormapSize = 512;
             int[] colormap = new int[ColormapSize];
-    
+
             RenderThread() {
                 restart = false;
                 abort = false;
-    
+
                 for (int i = 0; i &lt; ColormapSize; ++i) {
-                    colormap[i] = rgbFromWaveLength(380.0 
+                    colormap[i] = rgbFromWaveLength(380.0
                                                     + (i * 400.0 / ColormapSize));
                 }
             }</pre>
 <p>The class inherits <tt>Thread</tt> so that it gains the ability to run in a separate thread.</p>
 <p>In the constructor, we initialize the <tt>restart</tt> and <tt>abort</tt> variables to <tt>false</tt>. These variables control the flow of the <tt>run()</tt> method. We also initialize the <tt>colormap</tt> array, which contains a series of RGB colors.</p>
-<pre>&nbsp;           synchronized void render(double centerX, double centerY, 
+<pre>&nbsp;           synchronized void render(double centerX, double centerY,
                                      double scaleFactor, QSize resultSize) {
                 this.centerX = centerX;
                 this.centerY = centerY;
                 this.scaleFactor = scaleFactor;
                 this.resultSize = resultSize;
-    
+
                 if (!isAlive()) {
                     start();
                 } else {
@@ -78,7 +78,7 @@ body { color: black; }</style>
                 double scaleFactor;
                 double centerX;
                 double centerY;
-    
+
                 while (true) {
                     synchronized (this) {
                         resultSize = this.resultSize;
@@ -88,52 +88,52 @@ body { color: black; }</style>
                     }</pre>
 <p><tt>run()</tt> is quite a big method, so we'll break it down into parts.</p>
 <p>The method body is an infinite loop which starts by storing the rendering parameters in local variables. As usual, we protect accesses to the member variables using the synchronized keyword. Storing the member variables in local variables allows us to minimize the amount of code that needs to be protected. This ensures that the main thread will never have to block for too long when it needs to access <tt>RenderThread</tt>'s member variables (e.g., in <tt>render()</tt>).</p>
-<pre>&nbsp;   
+<pre>&nbsp;
                     int halfWidth = resultSize.width() / 2;
                     int halfHeight = resultSize.height() / 2;
                     QImage image = new QImage(resultSize,
                                               QImage.Format.Format_RGB32);
-    
+
                     final int NumPasses = 8;
                     int pass = 0;
                     while (pass &lt; NumPasses) {
                         final int MaxIterations = (1 &lt;&lt; (2 * pass + 6)) + 32;
                         final int Limit = 4;
                         boolean allBlack = true;
-    
+
                         for (int y = -halfHeight; y &lt; halfHeight; ++y) {
                             if (restart)
                                 break;
                             if (abort)
                                 return;
-    
+
                             double ay = centerY + (y * scaleFactor);
-    
+
                             for (int x = -halfWidth; x &lt; halfWidth; ++x) {
                                 double ax = centerX + (x * scaleFactor);
                                 double a1 = ax;
                                 double b1 = ay;
                                 int numIterations = 0;
-    
+
                                 do {
                                     ++numIterations;
                                     double a2 = (a1 * a1) - (b1 * b1) + ax;
                                     double b2 = (2 * a1 * b1) + ay;
                                     if ((a2 * a2) + (b2 * b2) &gt; Limit)
                                         break;
-    
+
                                     ++numIterations;
                                     a1 = (a2 * a2) - (b2 * b2) + ax;
                                     b1 = (2 * a2 * b2) + ay;
                                     if ((a1 * a1) + (b1 * b1) &gt; Limit)
                                         break;
                                 } while (numIterations &lt; MaxIterations);
-    
+
                                 if (numIterations &lt; MaxIterations) {
                                     int index = numIterations % ColormapSize;
-                                    image.setPixel(x + halfWidth, y + halfHeight, 
+                                    image.setPixel(x + halfWidth, y + halfHeight,
                                                    colormap[index]);
-    
+
                                     allBlack = false;
                                 } else {
                                     image.setPixel(x + halfWidth, y + halfHeight,
@@ -169,7 +169,7 @@ body { color: black; }</style>
                 double red= 0.0;
                 double green = 0.0;
                 double blue = 0.0;
-    
+
                 if (wave &gt;= 380.0 &amp;&amp; wave &lt;= 440.0) {
                     red = -1.0 * (wave - 440.0) / (440.0 - 380.0);
                     blue = 1.0;
@@ -188,17 +188,17 @@ body { color: black; }</style>
                 } else if (wave &gt;= 645.0 &amp;&amp; wave &lt;= 780.0) {
                     red= 1.0;
                 }
-    
+
                 double s = 1.0;
                 if (wave &gt; 700.0)
                     s = 0.3 + 0.7 * (780.0 - wave) / (780.0 - 700.0);
                 else if (wave &lt; 420.0)
                     s = 0.3 + 0.7 * (wave - 380.0) / (420.0 - 380.0);
-    
+
                 red = Math.pow(red * s, 0.8) * 255;
                 green = Math.pow(green * s, 0.8) * 255;
                 blue = Math.pow(blue * s, 0.8) * 255;
-    
+
                 return new QColor((int) red, (int) green, (int) blue).rgb();
             }
         }</pre>
@@ -207,7 +207,7 @@ body { color: black; }</style>
 <h2>Mandelbrot Class Implementation</h2>
 <p>The <tt>Mandelbrot</tt> class uses <tt>RenderThread</tt> to draw the Mandelbrot set on screen.</p>
 <pre>&nbsp;   public class Mandelbrot extends QWidget {
-    
+
         private RenderThread thread = new RenderThread();
         private QPixmap pixmap = new QPixmap();
         private QPoint pixmapOffset = new QPoint();
@@ -216,16 +216,16 @@ body { color: black; }</style>
         private double centerY;
         private double pixmapScale;
         private double currentScale;
-    
+
         final double DefaultCenterX = -0.637011f;
         final double DefaultCenterY = -0.0395159f;
         final double DefaultScale = 0.00403897f;
-    
+
         final double ZoomInFactor = 0.8f;
         final double ZoomOutFactor = 1 / ZoomInFactor;
         final int ScrollStep = 20;
-    
-        private Signal2&lt;QImage, Double&gt; renderImageSignal = 
+
+        private Signal2&lt;QImage, Double&gt; renderImageSignal =
                 new Signal2&lt;QImage, Double&gt;();</pre>
 <p>The implementation starts with a few constants that we'll need later on. We also declare a signal: Whenever a thread is done rendering an image, it emits the <tt>renderedImage()</tt> signal.</p>
 <pre>&nbsp;       public Mandelbrot() {
@@ -233,9 +233,9 @@ body { color: black; }</style>
             centerY = DefaultCenterY;
             pixmapScale = DefaultScale;
             currentScale = DefaultScale;
-    
+
             renderImageSignal.connect(this, &quot;updatePixmap(QImage, Double)&quot;);
-    
+
             setWindowTitle(tr(&quot;Mandelbrot&quot;));
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             setCursor(new QCursor(Qt.CursorShape.CrossCursor));
@@ -246,14 +246,14 @@ body { color: black; }</style>
             QPainter painter = new QPainter();
             painter.begin(this);
             painter.fillRect(rect(), new QBrush(QColor.black));
-    
+
             if (pixmap.isNull()) {
                 String message = tr(&quot;Rendering initial image, please wait...&quot;);
                 painter.setPen(QColor.white);
-                painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(), 
+                painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(),
                                  message);
                 painter.end();
-    
+
                 return;
             }</pre>
 <p>In paintEvent(), we start by filling the background with black. If we have nothing yet to paint (<tt>pixmap</tt> is null), we print a message on the widget asking the user to be patient, returning from the method immediately.</p>
@@ -263,29 +263,29 @@ body { color: black; }</style>
                 double scaleFactor = pixmapScale / currentScale;
                 int newWidth = (int) (pixmap.width() * scaleFactor);
                 int newHeight = (int) (pixmap.height() * scaleFactor);
-                int newX = pixmapOffset.x() 
+                int newX = pixmapOffset.x()
                            + (pixmap.width() - newWidth) / 2;
-                int newY = pixmapOffset.y() 
+                int newY = pixmapOffset.y()
                            + (pixmap.height() - newHeight) / 2;
-    
+
                 painter.save();
                 painter.translate(newX, newY);
                 painter.scale(scaleFactor, scaleFactor);
-    
+
                 QMatrix invertedMatrix = painter.matrix().inverted();
                 QRect exposed = invertedMatrix.mapRect(rect());
                 exposed = exposed.adjusted(-1, -1, 1, 1);
-    
+
                 painter.drawPixmap(exposed, pixmap, exposed);
                 painter.restore();
             }</pre>
 <p>If the pixmap has the right scale factor, we draw the pixmap directly onto the widget. Otherwise, we scale and translate the coordinate system before we draw the pixmap. By reverse mapping the widget's rectangle using the scaled painter matrix, we also make sure that only the exposed areas of the pixmap are drawn. The calls to QPainter.save() and QPainter.restore() make sure that any painting performed afterwards uses the standard coordinate system.</p>
-<pre>&nbsp;           String text = tr(&quot;Use mouse wheel to zoom.&quot;) 
+<pre>&nbsp;           String text = tr(&quot;Use mouse wheel to zoom.&quot;)
                           + tr(&quot;Press and hold left mouse button to scroll.&quot;);
             QFontMetrics metrics = painter.fontMetrics();
             int textWidth = metrics.width(text);
             int offset = (width() - textWidth) / 2;
-    
+
             painter.setPen(QPen.NoPen);
             painter.setBrush(new QColor(0, 0, 0, 127));
             painter.drawRect(offset - 5, 0, textWidth + 10, metrics.lineSpacing() + 5);
@@ -349,7 +349,7 @@ body { color: black; }</style>
                 // pixmapOffset += event.pos() - lastDragPos;
                 pixmapOffset.operator_add_assign(event.pos());
                 pixmapOffset.operator_subtract_assign(lastDragPos);
-    
+
                 lastDragPos = event.pos();
                 update();
             }
@@ -360,7 +360,7 @@ body { color: black; }</style>
                 pixmapOffset.operator_add_assign(event.pos());
                 pixmapOffset.operator_subtract_assign(lastDragPos);
                 lastDragPos = new QPoint();
-    
+
                 int deltaX = (width() - pixmap.width()) / 2 - pixmapOffset.x();
                 int deltaY = (height() - pixmap.height()) / 2 - pixmapOffset.y();
                 scrollImage(deltaX, deltaY);

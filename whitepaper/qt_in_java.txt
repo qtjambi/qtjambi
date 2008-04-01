@@ -35,7 +35,7 @@ Things we don't mention:
 
 ---
 
-[section] 
+[section]
 Qt in Java
 
 Qt in Java is implemented as a thin layer around the Qt/C++
@@ -48,7 +48,7 @@ the C++ class.
 Signals and slots are used for communication between components. The
 signals and slots mechanism is a central feature of Qt and probably
 the part that differs most from the features provided by other
-frameworks. 
+frameworks.
 
 The traditional approach for inter-component communcation in Java is
 using the listener pattern. This has the disadvantage that when
@@ -102,7 +102,7 @@ returns a \c{java.lang.Thread}.
 
 Existing threading concepts from Qt/C++ are present in Qt/Java, such
 as posting events to objects in another thread and queued signal/slot
-connections across different threads. 
+connections across different threads.
 
 
 [subsection] Application Resource Management
@@ -110,7 +110,7 @@ connections across different threads.
 Qt 4 has a system for embedding resources, binary and textual, into an
 application and for accessing these at runtime, making it possible to
 install a single binary with out external dependencies on icons,
-translation files, etc. 
+translation files, etc.
 
 In Java it is common to bundle all these resources into a .jar file
 and ship the application as a .jar file instead. Accessing arbitrary
@@ -123,7 +123,7 @@ file in the classpath in the subdirectory \c {images}.
 QPixmap pixmap = new QPixmap(":cp:images/file_new.png");
 
 
-[subsection] Objects ownership and garbage collection 
+[subsection] Objects ownership and garbage collection
 
 When native API's are mapped through the JNI it is common that
 resources need to
@@ -283,7 +283,7 @@ will encapsulate their use with more convenient and bulletproof API's.
 
 Qt/Java comes with its own generator for UIC. UIC is a tool for
 generating code from UI forms created with Qt Designer, a powerful
-user interface builder that is tailored for the Qt API. 
+user interface builder that is tailored for the Qt API.
 
 UIC for Java generates Qt/Java code and provides features that makes
 it easy to integrate into a build environment or for stand alone use

@@ -4,6 +4,6 @@ $DEPOT/private/gunnar/qsengine_mac $DEPOT/private/gunnar/utils.qs mkdist.qs -arg
 scp qtjambi-mac-eval-*.tar.gz gunnar@anarki:~/public_html/packages/eval
 scp qtjambi-mac-gpl-*.tar.gz gunnar@anarki:~/public_html/packages/gpl
 scp qtjambi-mac-commercial-*.tar.gz  gunnar@anarki:~/public_html/packages/commercial
-scp qtjambi-mac-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart 
+scp qtjambi-mac-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart
 scp qtjambi-commercial-src*.tar.gz gunnar@anarki:~/public_html/packages/commercial
 scp qtjambi-gpl-src*.tar.gz gunnar@anarki:~/public_html/packages/gpl

@@ -17,7 +17,7 @@ ____________________
 
  - Added com.trolltech.qt.core.QMessageHandler.
 
- - Support loading Qt's C++ plugins via .jar files using the 
+ - Support loading Qt's C++ plugins via .jar files using the
    -Dcom.trolltech.qt.pluginjars=[filelist] system property.
 
 ____________________
@@ -34,7 +34,7 @@ ____________________
 
  - It was previously not possible to queue connections from signals to
    slots that had fewer arguments.
- 
+
  - Fixed QFtp.read() to work similar to C++ version.
 
  - It was previously not possible to have a QTreeModel which layout
@@ -89,13 +89,13 @@ ____________________
 
  - Support pointers to container classes
 
- - Generator no longer produces "inconsistent functions", to work 
+ - Generator no longer produces "inconsistent functions", to work
    around Java's limitation of not being able to do function
    shadowing. Each such case is instead handled by the typesystem.
 
 ____________________
 
-Fixes: 
+Fixes:
 ____________________
 
  - Global comparison operators in C++ are now included in the generated
@@ -152,4 +152,4 @@ Other things
    first release against Qt / C++ 4.3.0 is named Qt Jambi 4.3.0_01
    where _01 is used to indicate the build number of this release. A
    patch release of Qt Jambi against Qt / C++ 4.3.0 will be called
-   4.3.0_02, 4.3.0_03, etc. 
+   4.3.0_02, 4.3.0_03, etc.

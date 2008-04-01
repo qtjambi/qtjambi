@@ -29,7 +29,7 @@ public class TestFileEngine extends QApplicationTest{
     public void run_classPathFileEngine() {
         QFileInfo info = new QFileInfo("classpath:com/trolltech/autotests/TestClassFunctionality.jar");
         assertTrue(info.exists());
-        
+
         QFile af = new QFile(info.absoluteFilePath());
         assertTrue(af.exists());
         assertTrue(af.open(QIODevice.OpenModeFlag.ReadOnly));

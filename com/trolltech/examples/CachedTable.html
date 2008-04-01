@@ -33,7 +33,7 @@ body { color: black; }</style>
 <p>We are also going to show how a table view can be used to cache any changes to the data until the user explicitly requests to submit them. For that reason we need to declare a <tt>submit()</tt> slot in additon to the model and the editor's buttons.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Connecting to a Database</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Before we can use the <tt>CachedTable</tt> class, we must create a connection to the database containing the table we want to edit. We do this by defining a <tt>SqlCommon</tt> class containing a method that performs this task:<pre>&nbsp;   class SqlCommon 
+<tr valign="top" bgcolor="#f0f0f0"><td>Before we can use the <tt>CachedTable</tt> class, we must create a connection to the database containing the table we want to edit. We do this by defining a <tt>SqlCommon</tt> class containing a method that performs this task:<pre>&nbsp;   class SqlCommon
     {
         static boolean createConnection()
         {
@@ -45,12 +45,12 @@ body { color: black; }</style>
                              &quot;This example needs SQLite support. Please read &quot; +
                              &quot;the Qt SQL driver documentation for information how &quot; +
                              &quot;to build it.\n\n&quot; +
-                             &quot;Click Cancel to exit.&quot;), 
+                             &quot;Click Cancel to exit.&quot;),
                              new QMessageBox.StandardButtons(QMessageBox.StandardButton.Cancel,
                                                              QMessageBox.StandardButton.NoButton));
                 return false;
             }
-    
+
             QSqlQuery query = new QSqlQuery();
             query.exec(&quot;create table person (id int primary key, &quot; +
                        &quot;firstname varchar(20), lastname varchar(20))&quot;);
@@ -59,9 +59,9 @@ body { color: black; }</style>
             query.exec(&quot;insert into person values(103, 'Lars', 'Gordon')&quot;);
             query.exec(&quot;insert into person values(104, 'Roberto', 'Robitaille')&quot;);
             query.exec(&quot;insert into person values(105, 'Maria', 'Papadopoulos')&quot;);
-            
+
             return true;
-            
+
         }
     }</pre>
 <p>The <tt>createConnection()</tt> method is a helper method provided for convenience. It opens a connection to an in-memory SQLITE database and creates a test table. If you want to use another database, simply modify this function's code.</p>
@@ -71,7 +71,7 @@ body { color: black; }</style>
 <pre>&nbsp;       public CachedTable(QWidget parent)
         {
             super(parent);
-    
+
             if (!SqlCommon.createConnection())
                 throw new RuntimeException(&quot;Couldn't connect to SQLITE server&quot;);</pre>
 <p>First we create the data model and set the SQL database table we want the model to operate on. Note that the QSqlTableModel::setTable() function does not select data from the table; it only fetches its field information. For that reason we call the QSqlTableModel::select() function later on, populating the model with data from the table. The selection can be customized by specifying filters and sort conditions (see the QSqlTableModel class documentation for more details).</p>
@@ -79,7 +79,7 @@ body { color: black; }</style>
             model.setTable(tableName);
             model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit);
             model.select();
-    
+
             model.setHeaderData(0, Qt.Orientation.Horizontal, tr(&quot;ID&quot;));
             model.setHeaderData(1, Qt.Orientation.Horizontal, tr(&quot;First name&quot;));
             model.setHeaderData(2, Qt.Orientation.Horizontal, tr(&quot;Last name&quot;));</pre>
@@ -93,7 +93,7 @@ body { color: black; }</style>
             submitButton.setDefault(true);
             revertButton = new QPushButton(tr(&quot;&amp;Revert&quot;));
             quitButton = new QPushButton(tr(&quot;Quit&quot;));
-    
+
             submitButton.clicked.connect(this, &quot;submit()&quot;);
             revertButton.clicked.connect(model, &quot;revertAll()&quot;);
             quitButton.clicked.connect(this, &quot;close()&quot;);</pre>
@@ -103,12 +103,12 @@ body { color: black; }</style>
             buttonLayout.addWidget(revertButton);
             buttonLayout.addWidget(quitButton);
             buttonLayout.addStretch(1);
-    
+
             QHBoxLayout mainLayout = new QHBoxLayout();
             mainLayout.addWidget(view);
             mainLayout.addLayout(buttonLayout);
             setLayout(mainLayout);
-    
+
             setWindowTitle(tr(&quot;Cached Table&quot;));
         }</pre>
 <p>In the end we add all the buttons and the table view to a layout, install the layout on the table editor widget, and set the editor's window title.</p>

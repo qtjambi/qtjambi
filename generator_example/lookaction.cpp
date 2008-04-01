@@ -13,7 +13,7 @@
 
 #include "lookaction.h"
 
-bool LookAction::perform(GameScene *scene) 
+bool LookAction::perform(GameScene *scene)
 {
     if (objects.size() > 0) {
         return false;

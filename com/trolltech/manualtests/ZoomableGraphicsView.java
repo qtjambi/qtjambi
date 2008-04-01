@@ -8,7 +8,7 @@ import com.trolltech.qt.gui.QWheelEvent;
 public class ZoomableGraphicsView extends QGraphicsView {
 	// Zoom on wheel events
     protected void wheelEvent(QWheelEvent event) {
-        double scaleFactor = Math.pow(2, -event.delta() / 240.0); 
+        double scaleFactor = Math.pow(2, -event.delta() / 240.0);
         QMatrix m = matrix();
         m.scale(scaleFactor, scaleFactor);
         double factor = m.mapRect(new QRectF(0, 0, 1, 1)).width();
@@ -16,7 +16,7 @@ public class ZoomableGraphicsView extends QGraphicsView {
             return;
 
         scale(scaleFactor, scaleFactor);
-        
-    }    
+
+    }
 
 }

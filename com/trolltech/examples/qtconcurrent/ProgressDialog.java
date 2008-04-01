@@ -6,18 +6,18 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 class MutableInteger {
-    public int value;        
-    
+    public int value;
+
     public MutableInteger(int i) { value = i; }
-    
+
     @Override
-    public String toString() { return ((Integer)value).toString(); } 
+    public String toString() { return ((Integer)value).toString(); }
 }
 
 public class ProgressDialog implements QtConcurrent.MapFunctor<MutableInteger> {
     static final int ITERATIONS = 20;
     static final int WORK = 1000 * 1000 * 40;
-    
+
     public void map(MutableInteger iteration) {
         int v = 0;
         for (int j = 0; j < WORK; ++j)
@@ -38,7 +38,7 @@ public class ProgressDialog implements QtConcurrent.MapFunctor<MutableInteger> {
         // Create a progress dialog.
         QProgressDialog dialog = new QProgressDialog();
         dialog.setLabelText("Progressing using " + QThreadPool.globalInstance().maxThreadCount() + " thread(s).");
-     
+
         // Create a QFutureWatcher and conncect signals and slots.
         QFutureWatcherVoid futureWatcher = new QFutureWatcherVoid();
         futureWatcher.finished.connect(dialog, "reset()");
@@ -51,8 +51,8 @@ public class ProgressDialog implements QtConcurrent.MapFunctor<MutableInteger> {
 
         // Display the dialog and start the event loop.
         dialog.exec();
-        
-        futureWatcher.waitForFinished();        
+
+        futureWatcher.waitForFinished();
 
         // Query the future to check if was canceled.
         if (futureWatcher.future().isCanceled())

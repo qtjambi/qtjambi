@@ -7,7 +7,7 @@ public class src_3rdparty_kdelibs_phonon_effect extends QObject {
         MediaNodeInterface source = null;
         MediaNodeInterface sink = null;
         EffectDescription description = null;
-        
+
 //! [0]
      Path path = Phonon.createPath(source, sink);
      Effect effect = new Effect(description, this);

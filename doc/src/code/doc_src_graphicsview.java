@@ -7,9 +7,9 @@ public class doc_src_graphicsview {
 //! [2]
             public class View extends QGraphicsView
             {
-            
+
             //...
-            
+
             public void zoomIn() { scale(1.2, 1.2); }
             public void zoomOut() { scale(1 / 1.2, 1 / 1.2); }
             public void rotateLeft() { rotate(-10); }
@@ -37,9 +37,9 @@ public class doc_src_graphicsview {
             // item == rect
 //! [0]
             if (item != null && rect != null) {}
-            
+
         }
-        
+
 
 
         if (true)
@@ -116,7 +116,7 @@ public class doc_src_graphicsview {
             }
 //! [5]
             public void paint(QPainter painter, QStyleOptionGraphicsItem option, QWidget widget) {}
-            public QRectF boundingRect() { return null; } 
+            public QRectF boundingRect() { return null; }
             }
 
 }

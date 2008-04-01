@@ -2,13 +2,13 @@
 
 
 function dohelp() {
-    echo 
+    echo
     echo Failed to set environment variables.
     echo The script needs to be sourced from within the Qt Jambi root directory...
-    echo 
+    echo
     echo \> cd JAMBIDIR
     echo \> source set_qtjambi_env.sh
-    echo 
+    echo
 }
 
 ROOT=$PWD

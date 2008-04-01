@@ -1,7 +1,7 @@
 For individuals and/or legal entities resident in the American
 Continent (including those resident in Canada, South America, and
 the United States of America), the applicable licensing terms are
-specified under the heading "Trolltech Technology Preview License 
+specified under the heading "Trolltech Technology Preview License
 Agreement: American Continent".
 
 For individuals and/or legal entities not resident in the American
@@ -16,7 +16,7 @@ Agreement version 2.0
 Qt COMMERCIAL LICENSE AGREEMENT
 Agreement version 3.3
 
-IMPORTANT-READ CAREFULLY: 
+IMPORTANT-READ CAREFULLY:
 
 1. This Trolltech End-User License Agreement ("Agreement") is a legal
 agreement between you (either an individual or a legal entity)
@@ -24,11 +24,11 @@ agreement between you (either an individual or a legal entity)
 software product(s) accompanying this Agreement, which include(s)
 computer software and may include "online" or electronic documentation,
 associated media, and printed materials, including the source code,
-example programs and the documentation ("Licensed Software"). 
+example programs and the documentation ("Licensed Software").
 
 2. The Licensed Software is protected by copyright laws and
 international copyright treaties, as well as other intellectual property
-laws and treaties. The Licensed Software is licensed, not sold. 
+laws and treaties. The Licensed Software is licensed, not sold.
 
 3. Some of the files in the Licensed Software have been grouped into
 Modules. These files contain specific notices defining the Module of
@@ -37,7 +37,7 @@ the license certificate ("License Certificate") accompanying the
 Licensed Software. The terms of the License Certificate are considered
 part of the Agreement. In the event of inconsistency or conflict between
 the language of this Agreement and the License Certificate, the
-provisions of this Agreement shall govern. 
+provisions of this Agreement shall govern.
 
 4. By installing, copying, or otherwise using the Licensed Software,
 Licensee agrees to be bound by the terms of this Agreement. If Licensee
@@ -50,11 +50,11 @@ receives separately as part of the Licensed Software ("Updates"),
 Licensee agrees to be bound by any additional license terms that
 accompany such Updates, if any. If Licensee does not agree to the
 additional license terms that accompany such Updates, Licensee may not
-install, copy, or otherwise use such Updates. 
+install, copy, or otherwise use such Updates.
 
 5. Upon Licensee's acceptance of the terms and conditions of this
 Agreement, Trolltech grants Licensee the right to use the Licensed
-Software in the manner provided below. 
+Software in the manner provided below.
 
 6. Trolltech grants to Licensee a non-exclusive, non-transferable,
 perpetual license to make, use and modify copies of the Licensed
@@ -63,7 +63,7 @@ organization ("Named User"(s)) specified in the License Certificate for
 the sole purposes of designing, developing, and testing Licensee's
 software product(s), which may include the Licensed Software
 ("Applications"). Modified Licensed Software shall be considered as
-Licensed Software for the purposes of this Agreement. 
+Licensed Software for the purposes of this Agreement.
 
 7. Licensee may install copies of the Licensed Software on an unlimited
 number of computers provided that only the Named Users use the Licensed
@@ -72,7 +72,7 @@ Licensee's organization to replace a then-current Named User by
 notifying Trolltech, provided that a) the then-current Named User has
 not been designated as a replacement during the last six (6) months; and
 b) there is no more than the specified number of Named Users at any
-given time. 
+given time.
 
 8. Verification: Trolltech or a certified auditor on Trolltech's behalf,
 may, upon its reasonable request and at its expense, audit Licensee with
@@ -90,7 +90,7 @@ costs of conducting the audit. In the case of a material violation,
 Licensee agrees to pay Trolltech any amounts owing that are attributable
 to the unauthorized use. In the alternative, Trolltech reserves the
 right, at Trolltech's sole option, to terminate the licenses for the
-Licensed Software. 
+Licensed Software.
 
 9. The Licensed Software may provide links to third party libraries or
 code (collectively "Third Party Libraries") to implement various
@@ -104,7 +104,7 @@ the Licensed Software. Licensee acknowledges (1) that some Third Party
 Libraries may require additional licensing of copyright and patents from
 the owners of such, and (2) that distribution of any of the Licensed
 Software referencing any portion of a Third Party Library may require
-appropriate licensing from such third parties. 
+appropriate licensing from such third parties.
 
 GENERAL TERMS THAT APPLY TO APPLICATIONS AND REDISTRIBUTABLES
 10. a) Trolltech grants Licensee a nonexclusive, royalty-free right to
@@ -118,7 +118,7 @@ Licensed Software. Under no circumstances may any copies of
 Redistributables be distributed separately. This Agreement does not give
 Licensee any rights to distribute any of the parts of the Licensed
 Software listed in Appendix 1, Section 2, neither as a whole nor as
-parts or snippets of code. 
+parts or snippets of code.
 
 b) Licensee may not distribute, transfer, assign or otherwise dispose of
 Redistributables, solely or as part of an Application, its source code,
@@ -130,7 +130,7 @@ distribution shall be defined as either: (i) distribution of a hardware
 device that includes the Licensed Software; or (ii) distribution of the
 Licensed Software onto a device designed to facilitate the installation
 of the Licensed Software onto the same device and where the core
-functionality of the device will depend on the Licensed Software. 
+functionality of the device will depend on the Licensed Software.
 
 c) If the combination of the Licensed Software and hardware and/or
 software ("Product"), in the final working end-user configuration either
@@ -144,11 +144,11 @@ depends on modules in the Licensed Software's Console edition (Qt Core,
 Database, Network, XML) and is not dependent on a window system (such as
 the X Windows system or similar) or the Java Virtual Machine ("JVM") to
 operate, then Licensee is hereby granted an exception from the
-requirement for a runtime distribution license agreement. 
+requirement for a runtime distribution license agreement.
 
 d) In all instances not covered above, Licensee shall contact Trolltech
 or one of Trolltech's authorized distributors to obtain a distribution
-license agreement. 
+license agreement.
 
 11. The license granted in this Agreement for Licensee to create
 Applications and distribute them and the Redistributables (if any) to
@@ -171,7 +171,7 @@ it possible for others to create software with the Licensed Software;
 (viii) Applications may not compete with the Licensed Software; (ix)
 Licensee may not use Trolltech's or any of its suppliers' names, logos,
 or trademarks to market Application(s), except to state that Application
-was developed using the Licensed Software. 
+was developed using the Licensed Software.
 
 NOTE: Qt Open Source Edition is licensed under the terms of the GPL and
 not under this Agreement. If Licensee has, at any time, developed all
@@ -185,14 +185,14 @@ http://www.gnu.org/copyleft/gpl.html#SEC1 (i.e., any Product(s) and/or
 parts, components, portions thereof developed using GPL licensed
 software, including Qt Open Source Edition, must be licensed under the
 terms of the GPL, and the GPL-based source code must be made available
-upon request). 
+upon request).
 
 12. WARRANTY DISCLAIMER: THE LICENSED SOFTWARE IS LICENSED TO LICENSEE
 "AS IS". TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, TROLLTECH ON
 BEHALF OF ITSELF AND ITS SUPPLIERS, DISCLAIMS ALL WARRANTIES AND
 CONDITIONS, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
 IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-TITLE AND NON-INFRINGEMENT WITH REGARD TO THE LICENSED SOFTWARE. 
+TITLE AND NON-INFRINGEMENT WITH REGARD TO THE LICENSED SOFTWARE.
 
 13. LIMITATION OF LIABILITY: IF, TROLLTECH'S WARRANTY DISCLAIMER
 NOTWITHSTANDING, TROLLTECH IS HELD LIABLE TO LICENSEE, WHETHER IN
@@ -209,7 +209,7 @@ UNDER ANY CIRCUMSTANCES BE LIABLE FOR SPECIAL DAMAGES, PUNITIVE OR
 EXEMPLARY DAMAGES, DAMAGES FOR LOSS OF PROFITS OR INTERRUPTION OF
 BUSINESS OR FOR LOSS OR CORRUPTION OF DATA. ANY AWARD OF DAMAGES FROM
 TROLLTECH TO LICENSEE SHALL NOT EXCEED THE TOTAL AMOUNT LICENSEE HAS
-PAID TO TROLLTECH IN CONNECTION WITH THIS AGREEMENT. 
+PAID TO TROLLTECH IN CONNECTION WITH THIS AGREEMENT.
 
 14. Support and Updates: Licensee will be eligible to receive email
 based software developer support and access to Updates to the Licensed
@@ -219,16 +219,16 @@ Trolltech's then current policies and procedures, if any. Such policies
 and procedures may be changed from time to time. Following the Initial
 Term, Trolltech will no longer make the Licensed Software available to
 Licensee unless Licensee purchases additional Support and Updates
-according to section 15 below. 
+according to section 15 below.
 
 15. Renewal of Support and Updates: Licensee may purchase additional
 Support and Updates following the Initial Term at Trolltech's terms and
-conditions applicable at the time of renewal. 
+conditions applicable at the time of renewal.
 
 
 GENERAL PROVISIONS
 16. Marketing: Trolltech may include Licensee's company name and logo in
-a publicly available list of Trolltech customers. 
+a publicly available list of Trolltech customers.
 
 17. No Assignment: Neither this Agreement nor Licensee's rights under
 this Agreement are assignable or transferable by Licensee either in
@@ -236,7 +236,7 @@ whole or in part to any third party without Trolltech's written consent.
 Any attempted assignment or transfer in violation of the foregoing shall
 be void. Trolltech may assign or transfer this Agreement to any third
 party who acquires substantially all of Trolltech copyrights in and to
-the Licensed Software. 
+the Licensed Software.
 
 18. Termination: Trolltech may terminate the Agreement at any time
 immediately upon written notice by Trolltech to Licensee if Licensee
@@ -247,7 +247,7 @@ return to Trolltech all copies of Licensed Software that were supplied
 by Trolltech. All other copies of Licensed Software in the possession or
 control of Licensee must be erased or destroyed. An officer of Licensee
 must promptly deliver to Trolltech a written confirmation that this has
-occurred. 
+occurred.
 
 19. Government End Users: A "U.S. Government End User" shall mean any
 agency or entity of the government of the United States. The following
@@ -260,7 +260,7 @@ C.F.R. 227.7202-1 through 227.7202-4 (June 1995), all U.S. Government
 End Users acquire the Licensed Software with only those rights set forth
 herein. The Licensed Software (including related documentation) is
 provided to U.S. Government End Users: (a) only as a commercial end
-item; and (b) only pursuant to this Agreement. 
+item; and (b) only pursuant to this Agreement.
 
 20. Compliance with local laws: Licensee shall comply with all
 applicable laws and regulations relating to the Licensed Software in the
@@ -269,11 +269,11 @@ the Licensed Software. Without limiting the generality of the foregoing,
 Licensee shall not export, re-export, disclose or distribute any of the
 Licensed Software in violation of any applicable laws or regulations,
 including the export laws and regulations of the United States, and
-shall comply with all such laws and regulations. 
+shall comply with all such laws and regulations.
 
 21. Clauses that survive termination: Sections 2, 6, 7, 8, 9, 13, 22, 23
 and 24 shall survive the termination of this Agreement, however Sections
-6 and 7 shall not survive if the Agreement is terminated for cause. 
+6 and 7 shall not survive if the Agreement is terminated for cause.
 
 22. Entire Agreement: This Agreement constitutes the complete agreement
 between the parties and supersedes all prior or contemporaneous
@@ -286,7 +286,7 @@ Trolltech in writing. If any provision of the Agreement is found void or
 unenforceable, the remainder will remain valid and enforceable according
 to its terms. If any remedy provided is determined to have failed for
 its essential purpose, all limitations of liability and exclusions of
-damages set forth in this Agreement shall remain in effect. 
+damages set forth in this Agreement shall remain in effect.
 
 23. Confidentiality: Each party acknowledges that during the Term of
 this Agreement it will have access to information about the other
@@ -326,7 +326,7 @@ Section shall continue during the Term and for a period of twelve (12)
 months after expiration or termination thereof; provided, however, that
 with respect to trade secret information, the obligations of the
 Receiving Party under this Section shall continue as long as such
-information remains a trade secret under applicable law. 
+information remains a trade secret under applicable law.
 
 24. Governing law, legal venue: This Agreement shall be construed,
 interpreted and governed by the laws of the State of California, USA.
@@ -337,30 +337,30 @@ each party irrevocably submits to the personal jurisdiction of any such
 court in any such action or proceeding. The Agreement gives Licensee
 specific legal rights; Licensee may have others, which vary from state
 to state and from country to country. Trolltech reserves all rights not
-specifically granted in this Agreement. 
+specifically granted in this Agreement.
 
- 
+
 Appendix 1:
 
 1. Parts of the Licensed Software that are permitted for distribution
-("Redistributables"): 
+("Redistributables"):
 
 - The Licensed Software's main and plug-in libraries in object code form
 - The Licensed Software's configuration tool ("qtconfig")
 - The Licensed Software's help tool in object code/executable form ("Qt
-Assistant") 
+Assistant")
 - The Licensed Software's internationalization tools in object
-code/executable form ("Qt Linguist", "lupdate", "lrelease") 
+code/executable form ("Qt Linguist", "lupdate", "lrelease")
 
 2.	Parts of the Licensed Software that are not permitted for
-distribution include, but are not limited to: 
+distribution include, but are not limited to:
 
 - The Licensed Software's source code and header files
 - The Licensed Software's documentation
 - The Licensed Software's designer tool ("Qt Designer")
 - The Licensed Software's tool for writing makefiles ("qmake")
 - The Licensed Software's Meta Object Compiler ("moc")
-- The Licensed Software's User Interface Compiler ("uic" or in the case 
+- The Licensed Software's User Interface Compiler ("uic" or in the case
 of Qt Jambi: "juic")
 - The Licensed Software's Resource Compiler ("rcc")
 - The Licensed Software’s generator (only in the case of Qt Jambi)
@@ -374,7 +374,7 @@ South America:
 Qt COMMERCIAL LICENSE AGREEMENT
 Agreement version 3.3
 
-IMPORTANT-READ CAREFULLY: 
+IMPORTANT-READ CAREFULLY:
 
 1. This Trolltech End-User License Agreement ("Agreement") is a legal
 agreement between you (either an individual or a legal entity)
@@ -382,11 +382,11 @@ agreement between you (either an individual or a legal entity)
 product(s) accompanying this Agreement, which include(s) computer
 software and may include "online" or electronic documentation,
 associated media, and printed materials, including the source code,
-example programs and the documentation ("Licensed Software"). 
+example programs and the documentation ("Licensed Software").
 
 2. The Licensed Software is protected by copyright laws and
 international copyright treaties, as well as other intellectual property
-laws and treaties. The Licensed Software is licensed, not sold. 
+laws and treaties. The Licensed Software is licensed, not sold.
 
 3. Some of the files in the Licensed Software have been grouped into
 Modules. These files contain specific notices defining the Module of
@@ -395,7 +395,7 @@ the license certificate ("License Certificate") accompanying the
 Licensed Software. The terms of the License Certificate are considered
 part of the Agreement. In the event of inconsistency or conflict between
 the language of this Agreement and the License Certificate, the
-provisions of this Agreement shall govern. 
+provisions of this Agreement shall govern.
 
 4. By installing, copying, or otherwise using the Licensed Software,
 Licensee agrees to be bound by the terms of this Agreement. If Licensee
@@ -408,11 +408,11 @@ receives separately as part of the Licensed Software ("Updates"),
 Licensee agrees to be bound by any additional license terms that
 accompany such Updates, if any. If Licensee does not agree to the
 additional license terms that accompany such Updates, Licensee may not
-install, copy, or otherwise use such Updates. 
+install, copy, or otherwise use such Updates.
 
 5. Upon Licensee's acceptance of the terms and conditions of this
 Agreement, Trolltech grants Licensee the right to use the Licensed
-Software in the manner provided below. 
+Software in the manner provided below.
 
 6. Trolltech grants to Licensee a non-exclusive, non-transferable,
 perpetual license to make, use and modify copies of the Licensed
@@ -421,7 +421,7 @@ organization ("Named User"(s)) specified in the License Certificate for
 the sole purposes of designing, developing, and testing Licensee's
 software product(s), which may include the Licensed Software
 ("Applications"). Modified Licensed Software shall be considered as
-Licensed Software for the purposes of this Agreement. 
+Licensed Software for the purposes of this Agreement.
 
 7. Licensee may install copies of the Licensed Software on an unlimited
 number of computers provided that only the Named Users use the Licensed
@@ -430,7 +430,7 @@ Licensee's organization to replace a then-current Named User by
 notifying Trolltech, provided that a) the then-current Named User has
 not been designated as a replacement during the last six (6) months; and
 b) there is no more than the specified number of Named Users at any
-given time. 
+given time.
 
 8. Verification: Trolltech or a certified auditor on Trolltech's behalf,
 may, upon its reasonable request and at its expense, audit Licensee with
@@ -448,7 +448,7 @@ costs of conducting the audit. In the case of a material violation,
 Licensee agrees to pay Trolltech any amounts owing that are attributable
 to the unauthorized use. In the alternative, Trolltech reserves the
 right, at Trolltech's sole option, to terminate the licenses for the
-Licensed Software. 
+Licensed Software.
 
 9. The Licensed Software may provide links to third party libraries or
 code (collectively "Third Party Libraries") to implement various
@@ -462,7 +462,7 @@ the Licensed Software. Licensee acknowledges (1) that some Third Party
 Libraries may require additional licensing of copyright and patents from
 the owners of such, and (2) that distribution of any of the Licensed
 Software referencing any portion of a Third Party Library may require
-appropriate licensing from such third parties. 
+appropriate licensing from such third parties.
 
 GENERAL TERMS THAT APPLY TO APPLICATIONS AND REDISTRIBUTABLES
 10. a) Trolltech grants Licensee a nonexclusive, royalty-free right to
@@ -476,7 +476,7 @@ Licensed Software. Under no circumstances may any copies of
 Redistributables be distributed separately. This Agreement does not give
 Licensee any rights to distribute any of the parts of the Licensed
 Software listed in Appendix 1, Section 2, neither as a whole nor as
-parts or snippets of code. 
+parts or snippets of code.
 
 b) Licensee may not distribute, transfer, assign or otherwise dispose of
 Redistributables, solely or as part of an Application, its source code,
@@ -488,7 +488,7 @@ distribution shall be defined as either: (i) distribution of a hardware
 device that includes the Licensed Software; or (ii) distribution of the
 Licensed Software onto a device designed to facilitate the installation
 of the Licensed Software onto the same device and where the core
-functionality of the device will depend on the Licensed Software. 
+functionality of the device will depend on the Licensed Software.
 
 c) If the combination of the Licensed Software and hardware and/or
 software ("Product"), in the final working end-user configuration either
@@ -502,11 +502,11 @@ depends on modules in the Licensed Software's Console edition (Qt Core,
 Database, Network, XML) and is not dependent on a window system (such as
 the X Windows system or similar) or the Java Virtual Machine ("JVM") to
 operate, then Licensee is hereby granted an exception from the
-requirement for a runtime distribution license agreement. 
+requirement for a runtime distribution license agreement.
 
 d) In all instances not covered above, Licensee shall contact Trolltech
 or one of Trolltech's authorized distributors to obtain a distribution
-license agreement. 
+license agreement.
 
 
 11. The license granted in this Agreement for Licensee to create
@@ -530,7 +530,7 @@ it possible for others to create software with the Licensed Software;
 (viii) Applications may not compete with the Licensed Software; (ix)
 Licensee may not use Trolltech's or any of its suppliers' names, logos,
 or trademarks to market Application(s), except to state that Application
-was developed using the Licensed Software. 
+was developed using the Licensed Software.
 
 NOTE: Qt Open Source Edition is licensed under the terms of the GPL and
 not under this Agreement. If Licensee has, at any time, developed all
@@ -544,14 +544,14 @@ http://www.gnu.org/copyleft/gpl.html#SEC1 (i.e., any Product(s) and/or
 parts, components, portions thereof developed using GPL licensed
 software, including Qt Open Source Edition, must be licensed under the
 terms of the GPL, and the GPL-based source code must be made available
-upon request). 
+upon request).
 
 12. Warranty Disclaimer: The Licensed Software is licensed to Licensee
 "as is". To the maximum extent permitted by applicable law, Trolltech on
 behalf of itself and its suppliers, disclaims all warranties and
 conditions, either express or implied, including, but not limited to,
 implied warranties of merchantability, fitness for a particular purpose,
-title and non-infringement with regard to the Licensed Software. 
+title and non-infringement with regard to the Licensed Software.
 
 13. Limitation of Liability: If, Trolltech's warranty disclaimer
 notwithstanding, Trolltech is held liable to Licensee, whether in
@@ -568,7 +568,7 @@ under any circumstances be liable for special damages, punitive or
 exemplary damages, damages for loss of profits or interruption of
 business or for loss or corruption of data. Any award of damages from
 Trolltech to Licensee shall not exceed the total amount Licensee has
-paid to Trolltech in connection with this Agreement. 
+paid to Trolltech in connection with this Agreement.
 
 14. Support and Updates: Licensee will be eligible to receive email
 based software developer support and access to Updates to the Licensed
@@ -578,16 +578,16 @@ Trolltech's then current policies and procedures, if any. Such policies
 and procedures may be changed from time to time. Following the Initial
 Term, Trolltech will no longer make the Licensed Software available to
 Licensee unless Licensee purchases additional Support and Updates
-according to section 15 below. 
+according to section 15 below.
 
 15. Renewal of Support and Updates: Licensee may purchase additional
 Support and Updates following the Initial Term at Trolltech's terms and
-conditions applicable at the time of renewal. 
+conditions applicable at the time of renewal.
 
 
 GENERAL PROVISIONS
 16. Marketing: Trolltech may include Licensee's company name and logo in
-a publicly available list of Trolltech customers. 
+a publicly available list of Trolltech customers.
 
 17. No Assignment: Neither this Agreement nor Licensee's rights under
 this Agreement are assignable or transferable by Licensee either in
@@ -595,7 +595,7 @@ whole or in part to any third party without Trolltech's written consent.
 Any attempted assignment or transfer in violation of the foregoing shall
 be void. Trolltech may assign or transfer this Agreement to any third
 party who acquires substantially all of Trolltech copyrights in and to
-the Licensed Software. 
+the Licensed Software.
 
 18. Termination: Trolltech may terminate the Agreement at any time
 immediately upon written notice by Trolltech to Licensee if Licensee
@@ -606,11 +606,11 @@ return to Trolltech all copies of Licensed Software that were supplied
 by Trolltech. All other copies of Licensed Software in the possession or
 control of Licensee must be erased or destroyed. An officer of Licensee
 must promptly deliver to Trolltech a written confirmation that this has
-occurred. 
+occurred.
 
 19. Clauses that survive termination: Sections 2, 6, 7, 8, 9, 13, 20, 21
 and 22 shall survive the termination of this Agreement, however Sections
-6 and 7 shall not survive if the Agreement is terminated for cause. 
+6 and 7 shall not survive if the Agreement is terminated for cause.
 
 20. Entire Agreement: This Agreement constitutes the complete agreement
 between the parties and supersedes all prior or contemporaneous
@@ -623,7 +623,7 @@ Trolltech in writing. If any provision of the Agreement is found void or
 unenforceable, the remainder will remain valid and enforceable according
 to its terms. If any remedy provided is determined to have failed for
 its essential purpose, all limitations of liability and exclusions of
-damages set forth in this Agreement shall remain in effect. 
+damages set forth in this Agreement shall remain in effect.
 
 21. Confidentiality: Each party acknowledges that during the Term of
 this Agreement it will have access to information about the other
@@ -663,35 +663,35 @@ Section shall continue during the Term and for a period of twelve (12)
 months after expiration or termination thereof; provided, however, that
 with respect to trade secret information, the obligations of the
 Receiving Party under this Section shall continue as long as such
-information remains a trade secret under applicable law. 
+information remains a trade secret under applicable law.
 
 22. Governing law, legal venue: This Agreement shall be construed,
 interpreted and governed by the laws of Norway, the legal venue to be
 Oslo City Court. Trolltech reserves all rights not specifically granted
-in this Agreement. 
+in this Agreement.
 
- 
+
 Appendix 1:
 
 1.	Parts of the Licensed Software that are permitted for
-distribution ("Redistributables"): 
+distribution ("Redistributables"):
 
 - The Licensed Software's main and plug-in libraries in object code form
 - The Licensed Software's configuration tool ("qtconfig")
 - The Licensed Software's help tool in object code/executable form ("Qt
-Assistant") 
+Assistant")
 - The Licensed Software's internationalization tools in object
-code/executable form ("Qt Linguist", "lupdate", "lrelease") 
+code/executable form ("Qt Linguist", "lupdate", "lrelease")
 
 2.	Parts of the Licensed Software that are not permitted for
-distribution include, but are not limited to: 
+distribution include, but are not limited to:
 
 - The Licensed Software's source code and header files
 - The Licensed Software's documentation
 - The Licensed Software's designer tool ("Qt Designer")
 - The Licensed Software's tool for writing makefiles ("qmake")
 - The Licensed Software's Meta Object Compiler ("moc")
-- The Licensed Software's User Interface Compiler ("uic" or in the case 
+- The Licensed Software's User Interface Compiler ("uic" or in the case
 of Qt Jambi: "juic"))
 - The Licensed Software's Resource Compiler ("rcc")
 - The Licensed Software's generator (only in the case of Qt Jambi)

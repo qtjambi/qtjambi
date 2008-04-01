@@ -113,7 +113,7 @@ public:
         connect(this, SIGNAL(  signal6( const QString &, int   ) ), this, SLOT(          unnormalized_signature(   String,   int   )));
     }
 
-    void javaSignalToCppSlot() 
+    void javaSignalToCppSlot()
     {
         connect(this, SIGNAL(aJavaSignal(const QString &, const QByteArray &)), this, SLOT(aCppSlot(const QString &, const QByteArray &)));
     }
@@ -188,12 +188,12 @@ public:
 
     void resetCppProperty() { m_cppProperty = "it was the darkest and stormiest night evar"; }
 
-    int numberOfEnumTypes() 
+    int numberOfEnumTypes()
     {
         return metaObject()->enumeratorCount();
     }
 
-    QStringList namesOfEnumType(const QString &name) 
+    QStringList namesOfEnumType(const QString &name)
     {
         QStringList returned;
 
@@ -206,7 +206,7 @@ public:
         return returned;
     }
 
-    QList<int> valuesOfEnumType(const QString &name) 
+    QList<int> valuesOfEnumType(const QString &name)
     {
         QList<int> returned;
 
@@ -215,23 +215,23 @@ public:
         for (int i=0; i<count; ++i) {
             returned.append(metaEnum.value(i));
         }
-        
+
         return returned;
     }
 
-    bool isFlagsType(const QString &name) 
+    bool isFlagsType(const QString &name)
     {
         QMetaEnum metaEnum = metaObject()->enumerator(metaObject()->indexOfEnumerator(name.toUtf8().constData()));
         return metaEnum.isFlag();
     }
 
-    bool isValidEnum(const QString &name) 
+    bool isValidEnum(const QString &name)
     {
         QMetaEnum metaEnum = metaObject()->enumerator(metaObject()->indexOfEnumerator(name.toUtf8().constData()));
         return metaEnum.isValid();
     }
 
-    static QString metaObjectMethodSignature(QObject *obj, const QString &name) 
+    static QString metaObjectMethodSignature(QObject *obj, const QString &name)
     {
         for (int i=0; i<obj->metaObject()->methodCount(); ++i) {
             if (QString(obj->metaObject()->method(i).signature()).contains(name)) {
@@ -242,7 +242,7 @@ public:
         return "";
     }
 
-    static bool invokeMethod(QObject *obj, const QString &name, jobject arg) 
+    static bool invokeMethod(QObject *obj, const QString &name, jobject arg)
     {
         JNIEnv *env = qtjambi_current_environment();
         return QMetaObject::invokeMethod(obj, name.toLatin1(), Qt::DirectConnection, Q_ARG(JObjectWrapper, JObjectWrapper(env, arg)));

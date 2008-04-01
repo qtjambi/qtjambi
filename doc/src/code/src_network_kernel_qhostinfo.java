@@ -73,7 +73,7 @@ public class src_network_kernel_qhostinfo {
 	    // To find the IP address of www.trolltech.com
 	    QHostInfo.lookupHost("www.trolltech.com",
 				 this, "printResults(QHostInfo)");
-	    
+
 	    // To find the host name for 4.2.2.1
 	    QHostInfo.lookupHost("4.2.2.1",
 				 this, "printResults(QHostInfo)");

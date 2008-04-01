@@ -3,6 +3,7 @@
 
 #include "generator.h"
 #include "abstractmetalang.h"
+#include "prigenerator.h"
 
 typedef QHash<QString, AbstractMetaFunctionList> SignatureTable;
 typedef QHash<QString, SignatureTable> PackageJumpTable;
@@ -29,8 +30,9 @@ class JumpTableGenerator : public Generator
 {
     Q_OBJECT
 public:
-    JumpTableGenerator(JumpTablePreprocessor *pp)
-        : m_preprocessor(pp)
+    JumpTableGenerator(JumpTablePreprocessor *pp, PriGenerator *pri)
+        : m_preprocessor(pp),
+          m_prigenerator(pri)
     {
     }
 
@@ -39,6 +41,7 @@ public:
 
 private:
     JumpTablePreprocessor *m_preprocessor;
+    PriGenerator *m_prigenerator;
 };
 
 #endif

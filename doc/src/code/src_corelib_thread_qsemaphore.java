@@ -1,7 +1,7 @@
 import com.trolltech.qt.core.*;
 
 class fooBarSemaphore {
-	
+
 	{
 //! [0]
         QSemaphore sem = new QSemaphore(5);      // sem.available() == 5

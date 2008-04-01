@@ -17,100 +17,100 @@ import com.trolltech.qt.gui.QAbstractButton;
 import com.trolltech.qt.gui.QCheckBox;
 
 public class TestProperties extends QApplicationTest {
-    
-    private static class FullOfProperties extends QObject 
+
+    private static class FullOfProperties extends QObject
     {
         private boolean isDesignableTest;
         private FullOfProperties(boolean isDesignableTest) {
             this.isDesignableTest = isDesignableTest;
         }
-        
+
         public final int ordinaryProperty() { return 0; }
         public final void setOrdinaryProperty(int i) { }
-        
+
         @QtPropertyReader(name="annotatedProperty")
         public final int fooBar() { return 0; }
-        
+
         @QtPropertyWriter(name="annotatedProperty")
         public final void fooBarSetIt(int i) { }
-                
+
         @QtPropertyReader()
         public final int ordinaryReadOnlyProperty() { return 0; }
 
         @QtPropertyReader()
         public final int readOnlyProperty() { return 0; }
-        
+
         @QtPropertyWriter(enabled=false)
         public final void setReadOnlyProperty(int i) { }
-        
+
         @QtPropertyDesignable(value="false")
         public final int ordinaryNonDesignableProperty() { return 0; }
-        
+
         public final void setOrdinaryNonDesignableProperty(int i) { }
-        
+
         @QtPropertyDesignable(value="false")
         @QtPropertyReader(name="annotatedNonDesignableProperty")
         public final int fooBarXyz() { return 0; }
         @QtPropertyWriter()
         public final void setAnnotatedNonDesignableProperty(int i) { }
-                
+
         public final boolean hasBooleanProperty() { return false; }
         public final void setBooleanProperty(boolean b) { }
-        
+
         public final boolean isOtherBooleanProperty() { return false; }
         public final void setOtherBooleanProperty(boolean b) { }
-        
+
         @QtPropertyReader
         public final int resettableProperty() { return 0; }
-        
+
         @QtPropertyWriter
         public final void setResettableProperty(int i) { }
-        
+
         @QtPropertyResetter(name="resettableProperty")
         public final void resetResettableProperty() { }
 
         @QtPropertyDesignable(value="test")
-        public final int testDesignableProperty() { return 0; }        
+        public final int testDesignableProperty() { return 0; }
         public final void setTestDesignableProperty(int i) { }
 
         @QtPropertyReader
         @QtPropertyUser
         public final int annotatedUserProperty() { return 0; }
-        
+
         @QtPropertyWriter
         public final void setAnnotatedUserProperty(int i) {}
-        
+
         @QtPropertyUser
-        public final int myUserProperty() { return 0; }        
+        public final int myUserProperty() { return 0; }
         public final void setMyUserProperty(int i) {}
-        
-        
+
+
         public boolean test() {
             return isDesignableTest;
         }
     }
-    
+
     private static class ExpectedValues {
         private boolean writable;
         private boolean resettable;
         private boolean designable;
         private boolean user;
         private String name;
-        
+
         private ExpectedValues(String name, boolean writable, boolean resettable, boolean designable, boolean user)
         {
-            this.name = name;        
+            this.name = name;
             this.writable = writable;
             this.resettable = resettable;
             this.designable = designable;
             this.user = user;
         }
     }
-    
+
     @Test
     public void testProperties() {
-        ExpectedValues expectedValues[] = 
-        {                 
+        ExpectedValues expectedValues[] =
+        {
                 new ExpectedValues("ordinaryProperty", true, false, true, false),
                 new ExpectedValues("annotatedProperty", true, false, true, false),
                 new ExpectedValues("ordinaryReadOnlyProperty", false, false, true, false),
@@ -125,15 +125,15 @@ public class TestProperties extends QApplicationTest {
                 new ExpectedValues("myUserProperty", true, false, true, true),
                 new ExpectedValues("annotatedUserProperty", true, false, true, true)
         };
-                
+
         FullOfProperties fop = new FullOfProperties(true);
         List<QtProperty> properties = fop.properties();
-                
+
         for (ExpectedValues e : expectedValues) {
             System.err.println("Current property: " + e.name);
             boolean found = false;
             for (QtProperty property : properties) {
-                if (property.name().equals(e.name)) {                    
+                if (property.name().equals(e.name)) {
                     assertEquals(e.writable, property.isWritable());
                     assertEquals(e.resettable, property.isResettable());
                     assertEquals(e.designable, property.isDesignable());
@@ -142,43 +142,43 @@ public class TestProperties extends QApplicationTest {
                     break;
                 }
             }
-            assertTrue(found);            
+            assertTrue(found);
         }
         assertEquals(expectedValues.length, properties.size());
     }
-    
+
     @Test
     public void testFunctionDesignableProperty() {
         {
             FullOfProperties fop = new FullOfProperties(true);
             int idx = fop.indexOfProperty("testDesignableProperty");
             assertTrue(idx >= 0);
-            
+
             List<QtProperty> properties = fop.properties();
             QtProperty property = properties.get(idx);
-            
+
             assertTrue(property.isDesignable());
         }
-        
+
         {
             FullOfProperties fop = new FullOfProperties(false);
             int idx = fop.indexOfProperty("testDesignableProperty");
             assertTrue(idx >= 0);
-            
+
             List<QtProperty> properties = fop.properties();
             QtProperty property = properties.get(idx);
-            
-            assertFalse(property.isDesignable());          
+
+            assertFalse(property.isDesignable());
         }
     }
-    
+
     @Test
     public void testUserPropertyInQt() {
         QAbstractButton b = new QCheckBox();
-        
+
         QtProperty property = b.userProperty();
         assertEquals("checked", property.name());
         assertEquals(true, property.isUser());
     }
-    
+
 }

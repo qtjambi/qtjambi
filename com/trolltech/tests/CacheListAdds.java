@@ -25,19 +25,19 @@ public class CacheListAdds {
      */
     public static void main(String[] args) {
         long t1 = System.currentTimeMillis();
-        int COUNT = 100000; 
-        
+        int COUNT = 100000;
+
         ArrayList<QPair<Double, QColor>> list = new ArrayList<QPair<Double, QColor>>();
         for (int i=0; i<10; ++i) {
             QPair<Double, QColor> p = new QPair<Double, QColor>(i / 9.0, new QColor(i * 255 / 9, 0, 0));
             list.add(p);
         }
-        
+
         for (int c=0; c<COUNT; ++c) {
 //            QLinearGradient grad = new QLinearGradient(0, 0, 100, 0);
 //            grad.setStops(list);
         }
-        
+
         long time =  (System.currentTimeMillis() - t1);
         System.out.println("did " + COUNT + ", took=" + time + ", average=" + time / (double) COUNT + "ms");
     }

@@ -27,25 +27,25 @@ int main(int argc, char *argv[])
 TestDialog::TestDialog(QWidget *parent)
     : QDialog(parent)
 {
-   
+
     browseButton = new QPushButton(tr("&Browse..."));
     findButton = new QPushButton(tr("&Find"));
-    
+
     fileComboBox = new QComboBox();
     textComboBox = new QComboBox();
     directoryComboBox = new QComboBox();
-    
+
     fileLabel = new QLabel(tr("Named:"));
     textLabel = new QLabel(tr("Containing text:"));
     directoryLabel = new QLabel(tr("In directory:"));
     filesFoundLabel = new QLabel;
-    
+
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch();
     buttonsLayout->addWidget(findButton);
-    
+
     filesTable = new QTableWidget();
-    
+
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(fileLabel, 0, 0);
     mainLayout->addWidget(fileComboBox, 0, 1, 1, 2);
@@ -58,8 +58,8 @@ TestDialog::TestDialog(QWidget *parent)
     mainLayout->addWidget(filesFoundLabel, 4, 0);
     mainLayout->addLayout(buttonsLayout, 5, 0, 1, 3);
     setLayout(mainLayout);
-    
+
     setWindowTitle(tr("Find Files"));
     resize(700, 300);
-} 
+}
 

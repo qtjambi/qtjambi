@@ -226,5 +226,5 @@ inline QtJambiLink *QtJambiLink::findQObjectLink(JNIEnv *env, jobject java)
     QtJambiLink *link = findLink(env, java);
     return link && link->isQObject() ? link : 0;
 }
-  
+
 #endif

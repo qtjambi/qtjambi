@@ -13,8 +13,8 @@ public class src_gui_image_qpixmap {
 //! [0]
         String start_xpm[] = {
             "16 15 8 1",
-            "a c #cec6bd", 
-            // ... 
+            "a c #cec6bd",
+            // ...
             };
 //! [0]
 

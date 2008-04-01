@@ -19,12 +19,12 @@
 class UseAction: public GameAction
 {
 public:
-    inline UseAction() : GameAction(Game::Use) 
+    inline UseAction() : GameAction(Game::Use)
     {
     }
     virtual ~UseAction(){}
 
-    virtual GameAction *clone() const;  
+    virtual GameAction *clone() const;
 };
 
 #endif

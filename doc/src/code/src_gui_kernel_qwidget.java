@@ -234,7 +234,7 @@ public class src_gui_kernel_qwidget extends QWidget{
         setTabOrder(a, b); // a to b AND c to d
         setTabOrder(b, c); // a to b to c, but not c to d
 //! [10]
-    
+
 //! [13]
         setUpdatesEnabled(false);
         bigVisualChanges();
@@ -261,5 +261,5 @@ public class src_gui_kernel_qwidget extends QWidget{
 //! [11]
 
     static void bigVisualChanges() {}
-    
+
 }

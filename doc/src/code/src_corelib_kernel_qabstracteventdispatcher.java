@@ -21,7 +21,7 @@ public class src_corelib_kernel_qabstracteventdispatcher {
         QApplication.initialize(args);
 /*
  * This has been commented out because it is not part of the QtJambi api
- * 
+ *
 //! [0]
         boolean myEventFilter(void message);
 //! [0]

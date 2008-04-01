@@ -38,10 +38,10 @@ class MainWindowState extends QMainWindow {
 
     public static void main(String args[]) {
         QApplication.initialize(args);
-        
+
         MainWindowState widget = new MainWindowState();
         widget.show();
-        
+
         QApplication.exec();
     }
 }

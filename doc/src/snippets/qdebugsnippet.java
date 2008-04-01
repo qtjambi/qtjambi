@@ -17,7 +17,7 @@ This code is not applicable for Qt Jambi.
 QDebug operator<<(QDebug dbg, const Coordinate &c)
 {
     dbg.nospace() << "(" << c.x() << ", " << c.y() << ")";
-    
+
     return dbg.space();
 }
 //! [0]

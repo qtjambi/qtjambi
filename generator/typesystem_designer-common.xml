@@ -38,11 +38,11 @@
   <rejection class="JambiPropertySheet" />
   <rejection class="QDesignerMemberSheetExtension" />
   <rejection class="JambiMemberSheet" />
-  
+
   <object-type name="QDesignerResourceBrowserInterface">
     <include file-name="abstractresourcebrowser.h" location="global"/>
   </object-type>
-  
+
   <object-type name="JambiResourceBrowser" />
 
 </typesystem>

@@ -21,14 +21,14 @@ body { color: black; }</style>
 <h2>SystemTrayExample Class Implementation</h2>
 <p>The SystemTrayExample class extends QWidget and provides an editor for the system tray icon.</p>
 <pre>&nbsp;   public class SystemTrayExample extends QWidget {
-    
+
         private QSystemTrayIcon trayIcon;
         private QMenu trayIconMenu;
-    
+
         private QLineEdit titleEdit;
         private QTextEdit messageEdit;
         private QComboBox typeCombo;
-    
+
         private QTextEdit infoDisplay;
         private QComboBox iconCombo;</pre>
 <p>The editor enables the user to modify the message title, edit the actual message and choose the message type. The information display will contain status messages for the icon. In addition, the user can select an icon of the preferred size.</p>
@@ -36,7 +36,7 @@ body { color: black; }</style>
 <pre>&nbsp;       public SystemTrayExample() {
             this(null);
         }
-        
+
         public SystemTrayExample(QWidget parent) {
             super(parent);
             if (!QSystemTrayIcon.isSystemTrayAvailable())
@@ -50,21 +50,21 @@ body { color: black; }</style>
 <pre>&nbsp;           toggleVisibilityAction = new QAction(&quot;Show/Hide&quot;, this);
             toggleVisibilityAction.triggered.connect(this, &quot;toggleVisibility()&quot;);
             trayIconMenu.addAction(toggleVisibilityAction);
-    
+
             QAction restoreAction = new QAction(&quot;Restore&quot;, this);
             restoreAction.triggered.connect(this, &quot;showNormal()&quot;);
             trayIconMenu.addAction(restoreAction);
-    
+
             QAction minimizeAction = new QAction(&quot;Minimize&quot;, this);
             minimizeAction.triggered.connect(this, &quot;showMinimized()&quot;);
             trayIconMenu.addAction(minimizeAction);
-    
+
             QAction maximizeAction = new QAction(&quot;Maximize&quot;, this);
             maximizeAction.triggered.connect(this, &quot;showMaximized()&quot;);
             trayIconMenu.addAction(maximizeAction);
-    
+
             trayIconMenu.addSeparator();
-    
+
             QAction quitAction = new QAction(&quot;&amp;Quit&quot;, this);
             quitAction.triggered.connect(this, &quot;close()&quot;);
             trayIconMenu.addAction(quitAction);</pre>
@@ -72,21 +72,21 @@ body { color: black; }</style>
 <pre>&nbsp;           trayIcon = new QSystemTrayIcon(this);
             trayIcon.setToolTip(&quot;System trayIcon example&quot;);
             trayIcon.setContextMenu(trayIconMenu);
-    
+
             trayIcon.activated.connect(this, &quot;activated(com.trolltech.qt.gui.QSystemTrayIcon$ActivationReason)&quot;);
             trayIcon.messageClicked.connect(this, &quot;balloonClicked()&quot;);
-    
+
             changeIcon(0);
             trayIcon.show();</pre>
 <p>It is the QSystemTrayIcon class that actually provides the icon in the system tray. When we create our icon, we first set its tooltip to be the message title and ensure that our newly created menu appears as the icon's context menu.</p>
 <p>To provide respons to user interaction, we then connect the icon's activated() and messageClicked() signals to the editor's <tt>activated()</tt> and <tt>balloonClicked()</tt> methods, respectively. Before we show the icon, we also choose its initial size using the editor's <tt>changeIcon()</tt> method. We will take a look at the editor's methods shortly.</p>
 <pre>&nbsp;           QLabel titleLabel = new QLabel(tr(&quot;Message Title&quot;));
             titleEdit = new QLineEdit(tr(&quot;Message Title&quot;));
-    
+
             QLabel messageLabel = new QLabel(tr(&quot;Message Contents&quot;));
             messageEdit = new QTextEdit(tr(&quot;Man is more ape than many of the apes&quot;));
             messageEdit.setAcceptRichText(false);
-    
+
             QLabel typeLabel = new QLabel(tr(&quot;Message Type&quot;));
             typeCombo = new QComboBox();
             Vector&lt;String&gt; types = new Vector&lt;String&gt;();
@@ -96,18 +96,18 @@ body { color: black; }</style>
             types.add(&quot;Critical&quot;);
             typeCombo.addItems(types);
             typeCombo.setCurrentIndex(2);
-    
+
             QPushButton balloonButton = new QPushButton(tr(&quot;Balloon message&quot;));
             balloonButton.setToolTip(tr(&quot;Click here to balloon the message&quot;));
             balloonButton.clicked.connect(this, &quot;showMessage()&quot;);
-    
+
             infoDisplay = new QTextEdit(tr(&quot;Status messages will be visible here&quot;));
             infoDisplay.setMaximumHeight(100);
-    
+
             QCheckBox toggleIconCheckBox = new QCheckBox(tr(&quot;Show system tray icon&quot;));
             toggleIconCheckBox.setChecked(true);
             toggleIconCheckBox.clicked.connect(trayIcon, &quot;setVisible(boolean)&quot;);
-    
+
             QLabel iconLabel = new QLabel(&quot;Select icon&quot;);
             iconCombo = new QComboBox();
             Vector&lt;String&gt; icons = new Vector&lt;String&gt;();
@@ -129,13 +129,13 @@ body { color: black; }</style>
             layout.addWidget(iconLabel, 7, 0);
             layout.addWidget(iconCombo, 7, 1);
             setLayout(layout);
-    
+
             setWindowTitle(tr(&quot;System Tray Example&quot;));
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
         }</pre>
 <p>Finally, we create the editor's various window elements and use a QGridLayout to organize them. The QGridLayout class takes the space made available to it, divides it up into rows and columns, and puts each widget it manages into the correct cell.</p>
 <pre>&nbsp;       public void closeEvent(QCloseEvent e) {
-            
+
         }</pre>
 <p>It is important to note that QObject subclasses normally have a lifetime beyond what is visible to the garbage collector. To ensure that such a object is deleted, you must either assign the object to a parent (child widgets are automatically disposed of by their parents upon destruction) or call the <tt>dispose()</tt> method explicitly.</p>
 <p>Since we use the QSystemTrayIcon class (which is a QObject subclass) without giving our icon a parent, we must reimplement QWidget's closeEvent() method to dispose the icon when the application is terminated.</p>
@@ -180,11 +180,11 @@ body { color: black; }</style>
             case 0:
                 iconName = &quot;classpath:com/trolltech/examples/classpath:com/trolltech/images/icon_16x16.png&quot;;
                 break;
-    
+
             case 1:
                 iconName = &quot;classpath:com/trolltech/examples/classpath:com/trolltech/images/icon_22x22.png&quot;;
                 break;
-    
+
             case 2:
                 iconName = &quot;classpath:com/trolltech/examples/classpath:com/trolltech/images/icon_32x32.png&quot;;
                 break;
@@ -195,10 +195,10 @@ body { color: black; }</style>
 <p>The <tt>changeIcon()</tt> method is used to change the icon pixmap, and is called whenever the user select a different size for the system tray icon.</p>
 <pre>&nbsp;       public static void main(String[] args) {
             QApplication.initialize(args);
-    
+
             SystemTrayExample editor = new SystemTrayExample();
             editor.show();
-    
+
             QApplication.exec();
         }
     }</pre>

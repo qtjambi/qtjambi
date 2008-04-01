@@ -47,16 +47,16 @@ public class TestQMessageHandler extends QMessageHandler {
 
     @BeforeClass
     public static void testInitialize() throws Exception {
-        
+
         QApplication.initialize(new String[] {});
     }
 
     @AfterClass
     public static void testDispose() throws Exception {
         QApplication.quit();
-        QApplication.instance().dispose();        
+        QApplication.instance().dispose();
     }
-    
+
     @Test
     public void test() {
         QMessageHandler.installMessageHandler(this);

@@ -24,7 +24,7 @@ class GameScene ;
 class GameAction
 {
 public:
-    inline GameAction(Game::ActionType type) : m_type(type) 
+    inline GameAction(Game::ActionType type) : m_type(type)
     {
     }
     virtual ~GameAction(){}

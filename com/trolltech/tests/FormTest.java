@@ -23,7 +23,7 @@ public class FormTest extends QDialog
 	ui.setupUi(this);
     }
 
-    public static void main(String args[]) 
+    public static void main(String args[])
     {
 	QApplication.initialize(args);
 

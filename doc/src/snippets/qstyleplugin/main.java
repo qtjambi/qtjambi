@@ -26,7 +26,7 @@ class StarBusterStyle extends QCommonStyle
 
 class MyStylePlugin extends QStylePlugin
 {
-    
+
     //! [0]
     List<String> keys()
     {
@@ -37,7 +37,7 @@ class MyStylePlugin extends QStylePlugin
         return keyList;
     }
     //! [0]
-    
+
     //! [1]
     QStyle create(String key)
     {

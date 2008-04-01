@@ -21,7 +21,7 @@ class SimpleExecution
 
 //! [2]
         List<String> arguments = new Vector<String>();
-        arguments.add("-style"); 
+        arguments.add("-style");
         arguments.add("motif");
 
         QProcess myProcess = new QProcess(parent);

@@ -57,9 +57,9 @@ public class src_gui_image_qimagereader {
         }
 
         {
-//! [2]         
+//! [2]
         QImageReader reader = new QImageReader("icon_64x64.bmp");
-        QImage icon = reader.read();        
+        QImage icon = reader.read();
         if (!icon.isNull()) {
             // Display icon
         }

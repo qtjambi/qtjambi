@@ -2,11 +2,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0">
   <xsl:output method="xml" indent="yes"/>
-  <xsl:param name="lang" />   
-  <xsl:param name="source" />   
+  <xsl:param name="lang" />
+  <xsl:param name="source" />
 
   <xsl:template match="processing-instruction()" />
-  
+
   <xsl:template match="/typesystem">
     <xsl:copy>
       <xsl:for-each select="@*">
@@ -20,8 +20,8 @@
           <xsl:value-of select="." />
         </xsl:copy>
       </xsl:for-each>
-  
-      <xsl:variable name="other" select="document($source)/typesystem/*[not(self::object-type | self::value-type | self::interface-type | self::namespace-type)]" />  
+
+      <xsl:variable name="other" select="document($source)/typesystem/*[not(self::object-type | self::value-type | self::interface-type | self::namespace-type)]" />
       <xsl:if test="$other">
           <xsl:choose>
           <xsl:when test="$lang != ''">
@@ -37,7 +37,7 @@
       </xsl:if>
 
       <xsl:apply-templates select="node()" />
-      
+
     </xsl:copy>
   </xsl:template>
 
@@ -45,7 +45,7 @@
 
   <xsl:template match="/typesystem/*[self::object-type | self::value-type | self::interface-type | self::namespace-type]">
     <xsl:variable name="name" select="name()" />
-    <xsl:variable name="other" select="document($source)/typesystem/*[name() = $name][@name = current()/@name]" />    
+    <xsl:variable name="other" select="document($source)/typesystem/*[name() = $name][@name = current()/@name]" />
     <xsl:copy>
       <xsl:for-each select="@*">
         <xsl:copy>
@@ -56,7 +56,7 @@
         <xsl:copy>
           <xsl:value-of select="." />
         </xsl:copy>
-      </xsl:for-each>  
+      </xsl:for-each>
 
       <xsl:apply-templates select="node()" />
       <xsl:if test="$other">

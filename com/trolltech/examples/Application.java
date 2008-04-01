@@ -205,17 +205,17 @@ public class Application extends QMainWindow {
         aboutAct = new QAction(tr("&About"), this);
         aboutAct.setStatusTip(tr("Show the application's About box"));
         aboutAct.triggered.connect(this, "about()");
-        
+
         aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
         aboutQtJambiAct.setStatusTip(tr("Show the Qt Jambi library's About box"));
         aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
-        
+
 //! [19]
         aboutQtAct = new QAction(tr("About Q&t"), this);
         aboutQtAct.setStatusTip(tr("Show the Qt library's About box"));
         aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
 //! [19]
-        
+
 
 //! [20]
         cutAct.setEnabled(false);
@@ -247,7 +247,7 @@ public class Application extends QMainWindow {
         helpMenu.addAction(aboutAct);
         helpMenu.addSeparator();
         helpMenu.addAction(aboutQtJambiAct);
-        helpMenu.addAction(aboutQtAct);        
+        helpMenu.addAction(aboutQtAct);
     }
 //! [21]
 
@@ -297,7 +297,7 @@ public class Application extends QMainWindow {
                                                                  tr("The document has been modified.\n" +
                                                                     "Save your changes?"),
                                                                  new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok,
-                                                                                                 QMessageBox.StandardButton.Discard, 
+                                                                                                 QMessageBox.StandardButton.Discard,
                                                                                                  QMessageBox.StandardButton.Cancel));
             if (ret == QMessageBox.StandardButton.Ok) {
                 return save();

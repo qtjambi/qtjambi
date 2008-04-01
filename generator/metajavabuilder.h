@@ -23,37 +23,37 @@ class MetaJavaBuilder : public AbstractMetaBuilder
  protected:
     virtual MetaJavaClass *createMetaClass()
         {
-            return new MetaJavaClass();            
+            return new MetaJavaClass();
         };
 
     virtual MetaJavaEnum *createMetaEnum()
         {
-            return new MetaJavaEnum();    
+            return new MetaJavaEnum();
         };
 
     virtual MetaJavaEnumValue *createMetaEnumValue()
         {
-            return new MetaJavaEnumValue();    
+            return new MetaJavaEnumValue();
         };
-    
+
     virtual MetaJavaField *createMetaField()
         {
-            return new MetaJavaField();    
+            return new MetaJavaField();
         };
 
     virtual MetaJavaFunction *createMetaFunction()
         {
-            return new MetaJavaFunction(); 
+            return new MetaJavaFunction();
         };
 
     virtual MetaJavaArgument *createMetaArgument()
         {
-            return new MetaJavaArgument(); 
+            return new MetaJavaArgument();
         };
 
     virtual MetaJavaType *createMetaType()
         {
-            return new MetaJavaType(); 
+            return new MetaJavaType();
         };
 
 };

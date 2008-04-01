@@ -9,7 +9,7 @@ public class splitter extends QSplitter
     public splitter(Qt.Orientation orientation, QWidget parent)
     {
         super(orientation, parent);
-    }    
+    }
 
     //! [1]
     protected QSplitterHandle createHandle()
@@ -31,7 +31,7 @@ class SplitterHandle extends QSplitterHandle
         gradient.setColorAt(0.25, new QColor(Qt.GlobalColor.white));
         gradient.setColorAt(1.0, new QColor(Qt.GlobalColor.darkGreen));
     }
-    
+
     //! [0]
     protected void paintEvent(QPaintEvent event)
     {

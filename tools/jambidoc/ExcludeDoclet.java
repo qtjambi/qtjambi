@@ -7,7 +7,7 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// Thanks to Chris Nokleberg for releasing this Doclet 
+// Thanks to Chris Nokleberg for releasing this Doclet
 // in the public domain.
 public class ExcludeDoclet
 {
@@ -22,12 +22,12 @@ public class ExcludeDoclet
     {
         return Standard.validOptions(options, reporter);
     }
-    
+
     public static int optionLength(String option)
     {
         return Standard.optionLength(option);
     }
-        
+
     public static boolean start(RootDoc root)
     throws java.io.IOException
     {
@@ -72,7 +72,7 @@ public class ExcludeDoclet
     implements InvocationHandler
     {
         private Object target;
-        
+
         public ExcludeHandler(Object target)
         {
             this.target = target;

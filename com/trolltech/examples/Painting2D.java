@@ -51,7 +51,7 @@ public class  Painting2D extends QWidget
             super(new QGLFormat(), parent);
 
             this.helper = helper;
-            setFixedSize(200, 200);    
+            setFixedSize(200, 200);
         }
 //! [3]
 
@@ -77,9 +77,9 @@ public class  Painting2D extends QWidget
 //! [6]
     class Widget extends QWidget {
         private int elapsed;
-        private Helper helper; 
+        private Helper helper;
 //! [6]
-    
+
 //! [7]
         public Widget(Helper helper, QWidget parent) {
             super(parent);
@@ -122,7 +122,7 @@ public class  Painting2D extends QWidget
                 new QLinearGradient(new QPointF(50, -20), new QPointF(80, 20));
             gradient.setColorAt(0.0, new QColor(Qt.GlobalColor.white));
             gradient.setColorAt(1.0, new QColor(0xa6, 0xce, 0x39));
-            
+
             background = new QBrush(new QColor(64, 32, 64));
             circleBrush = new QBrush(gradient);
             circlePen = new QPen(new QColor(Qt.GlobalColor.black));
@@ -139,13 +139,13 @@ public class  Painting2D extends QWidget
             painter.fillRect(event.rect(), background);
             painter.translate(100, 100);
 //! [12]
-            
+
 //! [13]
             painter.save();
             painter.setBrush(circleBrush);
             painter.setPen(circlePen);
             painter.rotate(elapsed * 0.030);
-            
+
             double r = (elapsed)/1000.0;
             int n = 30;
             for (int i = 0; i < n; ++i) {

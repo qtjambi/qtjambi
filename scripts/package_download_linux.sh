@@ -6,8 +6,8 @@ function failure {
 
 function download {
     echo Downloading $1
-    if [ -e $1 ] 
-    then 
+    if [ -e $1 ]
+    then
 	echo - deleting old file...
 	rm $1
     fi
@@ -24,14 +24,14 @@ function unpack_and_build {
     tar xzf $PACKAGE_NAME.tar.gz > /dev/null 2>&1
     mv $PACKAGE_NAME $DIRECTORY_NAME
 
-    if [ "$2" == "eval" ] 
+    if [ "$2" == "eval" ]
     then
 	echo - copying eval contents...
 	rm -rf $4 > /dev/null 2>&1
 	unzip $3.zip > /dev/null
-	cp -R $4/* $DIRECTORY_NAME 
+	cp -R $4/* $DIRECTORY_NAME
 	CONFIGURE_EXTRA=-DQT_EVAL
-    else 
+    else
 	CONFIGURE_EXTRA=
     fi
 
@@ -44,7 +44,7 @@ function unpack_and_build {
     echo - configuring
     ./configure -no-qt3support -fast -release -no-rpath -no-xfixes -no-xcursor -shared -prefix $PWD -no-mmx -no-3dnow -no-sse -no-sse2 -D QT_JAMBI_BUILD $CONFIGURE_EXTRA<input
     echo - building
-    cd src 
+    cd src
       make || failure "failed to build source $DIRECTORY_NAME"
       cd ..
     cd tools

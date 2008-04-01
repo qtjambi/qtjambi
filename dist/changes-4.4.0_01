@@ -29,7 +29,7 @@ Qt Jambi 4.3 before the user base is too large.
    * qtjambi-$OS-$COMPILER-4.4.0_01.jar; The native libraries
    * qtjambi-examples-4.4.0_01.jar; The examples and demos
    * qtjambi-designer-4.4.0_01.jar; Classes used by Qt Designer
-   
+
    The classes jar and native library jar files are the only two files
    needed to run Qt Jambi applications. The libraries in the bin and
    lib subdirectories are there solely for running Qt Designer, Qt
@@ -55,7 +55,7 @@ Qt Jambi 4.3 before the user base is too large.
    * com.trolltech.tools.ant; Some conveneince ANT tasks for use with
      Qt Jambi build systems.
 
-   * com.trolltech.qt.core now contains Qt Concurrent; 
+   * com.trolltech.qt.core now contains Qt Concurrent;
 
    * com.trolltech.qt.sql now contains QJdbc; A JDBC bridge.
 

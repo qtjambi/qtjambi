@@ -5,7 +5,7 @@
     </inject-code>
 
 
-    
+
     <value-type name="QSqlDatabase">
         <inject-code>
             <import-file name="typesystem_sql-java.java" quote-after-line="class QSqlDatabase___" quote-before-line="}// class"/>
@@ -39,23 +39,23 @@
             <access modifier="private"/>
             <rename to="defaultConnection_private"/>
         </modify-field>
-        
+
     </value-type>
 
-    <object-type name="QSqlTableModel">  
-        
+    <object-type name="QSqlTableModel">
+
         <template name="sql.convert_sqlrecord_reference_to_java">
             jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QSqlRecord", "com/trolltech/qt/sql/", false);
             Q_ASSERT(%out);
         </template>
-        
+
         <template name="sql.convert_sqlrecord_reference_from_java">
             QSqlRecord *__ptr_record = (QSqlRecord *) qtjambi_to_object(__jni_env, %in);
-            
+
             QSqlRecord dummy;
             QSqlRecord &amp;%out = __ptr_record == 0 ? dummy : *__ptr_record;
         </template>
-        
+
         <modify-function signature="beforeInsert(QSqlRecord&amp;)">
             <modify-argument index="1">
                 <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord"/>
@@ -64,10 +64,10 @@
                 </conversion-rule>
                 <conversion-rule class="native">
                     <insert-template name="sql.convert_sqlrecord_reference_from_java"/>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
         </modify-function>
-        
+
         <modify-function signature="beforeUpdate(int,QSqlRecord&amp;)">
             <modify-argument index="2">
                 <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord"/>
@@ -76,10 +76,10 @@
                 </conversion-rule>
                 <conversion-rule class="native">
                     <insert-template name="sql.convert_sqlrecord_reference_from_java"/>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
         </modify-function>
-        
+
         <modify-function signature="primeInsert(int,QSqlRecord&amp;)">
             <modify-argument index="2">
                 <replace-type modified-type="com.trolltech.qt.sql.QSqlRecord"/>
@@ -88,7 +88,7 @@
                 </conversion-rule>
                 <conversion-rule class="native">
                     <insert-template name="sql.convert_sqlrecord_reference_from_java"/>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
         </modify-function>
 

@@ -39,7 +39,7 @@ public class main
     public static void main(String args[])
     {
         QApplication.initialize(args);
-        
+
         new Widget().show();
 
         QApplication.exec();

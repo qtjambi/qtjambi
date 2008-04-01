@@ -7,7 +7,7 @@ Qt Jambi Library
 
  - Pure virtual C++ functions are given the abstract attrbiute
    in Java where possible.
- 
+
  - The "native id" of Qt objects is set to null when they are deleted
    to provide safer execution.
 
@@ -40,13 +40,13 @@ Generator
    make for safer integer enums.
 
  - Better handling of shadowed and reimplemented functions.
-  
+
  - Make pure virtual functions as abstract in the generated Java API.
 
  - Set default include file for C++ files to the file where the
    class was defined.
 
- - Automatically include necessary files for classes used as return 
+ - Automatically include necessary files for classes used as return
    types or argument types in functions.
 
 ************************************************************************
@@ -55,7 +55,7 @@ Juic
  - Added -e option for excluding source folders. This is primarily used
    by the eclipse plugin when project has nested source folders.
 
- - Added -i option for including only specific folders. This is 
+ - Added -i option for including only specific folders. This is
    primarily used by the eclipse plugin.
 
  - Added -a option to force regeneration of files.xs.
@@ -71,7 +71,7 @@ Eclipse Integration
  - Optionally generate java classes into a separate source folder. Add
    option for this to property sheet.
 
- - Bugfix: Make integration work with source folders and 
+ - Bugfix: Make integration work with source folders and
    exclusion/inclusion patterns.
 
  - Bugfix: Some common key sequences caused actions to be invoked twice
@@ -80,7 +80,7 @@ Eclipse Integration
  - Bugfix: Form editor did not respond to keyboard shortcuts, e.g. for
    layout actions.
 
- - Bugfix: Possible infinite recursion on startup of Eclipse if 
+ - Bugfix: Possible infinite recursion on startup of Eclipse if
    workbench is in a specific state.
 
 

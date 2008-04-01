@@ -28,14 +28,14 @@ class GameObject: public QObject, public AbstractGameObject
 {
     Q_OBJECT
 public:
-    enum { 
-        Type = UserType + 1 
+    enum {
+        Type = UserType + 1
     };
 
     GameObject(GameScene *scene, const QString &name = QString());
     ~GameObject();
 
-    int type() const 
+    int type() const
     {
         return Type;
     }
@@ -47,17 +47,17 @@ public:
     inline void setShape(const QPainterPath &path) { m_shape = path; }
     inline void setMovementFactor(qreal movement_factor) { m_movement_factor = movement_factor; }
     inline void setDescription(const QString &description) { m_description = description; }
-    
-    inline void setAnimation(GameAnimation *animation) 
-    { 
-        if (animation != 0 && animation->parent() == 0) { 
+
+    inline void setAnimation(GameAnimation *animation)
+    {
+        if (animation != 0 && animation->parent() == 0) {
             animation->setParent(this);
-            m_animations[animation->type()] = animation; 
+            m_animations[animation->type()] = animation;
         } else {
             qWarning("Attempted to add invalid animation to object '%s'", qPrintable(m_name));
         }
     }
-    inline void setCurrentAnimation(Game::AnimationType type, bool looping = false) 
+    inline void setCurrentAnimation(Game::AnimationType type, bool looping = false)
     {
         m_current_animation = type;
         GameAnimation *a = animation(type);
@@ -67,34 +67,34 @@ public:
         }
     }
     void addName(const QString &other_name);
-    
-    inline void setFlipped(bool on) 
+
+    inline void setFlipped(bool on)
     {
-        if (on && !(m_flags & Game::Flipped)) {            
+        if (on && !(m_flags & Game::Flipped)) {
             m_flags |= Game::Flipped;
             scale(-1.0, 1.0);
-        } else if (!on && (m_flags & Game::Flipped)) {            
+        } else if (!on && (m_flags & Game::Flipped)) {
             m_flags &= ~Game::Flipped;
             scale(-1.0, 1.0);
         }
     }
 
-    
+
 
     inline Point3D &rposition() { return m_position; }
 
-    inline QString description() const { return m_description; }        
+    inline QString description() const { return m_description; }
     inline qreal sizeInDepth() const { return m_size_in_depth; }
-    inline GameAnimation *animation(Game::AnimationType type) const { return m_animations.value(type, 0); }    
-    inline GameScene *gameScene() const { return m_scene; }    
-    inline qreal movementFactor() const { return m_movement_factor; }    
-    inline Game::AnimationType currentAnimation() const { return m_current_animation; }    
+    inline GameAnimation *animation(Game::AnimationType type) const { return m_animations.value(type, 0); }
+    inline GameScene *gameScene() const { return m_scene; }
+    inline qreal movementFactor() const { return m_movement_factor; }
+    inline Game::AnimationType currentAnimation() const { return m_current_animation; }
     bool inProximityOfEgo() const;
-    
+
     virtual QPainterPath shape() const;
 
     bool canMove(const Point3D &pos);
-   
+
     void showDescription() const;
 
     virtual QRectF boundingRect() const;
@@ -109,7 +109,7 @@ public:
 
 protected:
     virtual void timerEvent(QTimerEvent *);
-      
+
 signals:
     void usedWith(AbstractGameObject *other);
     void used();

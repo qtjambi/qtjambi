@@ -31,13 +31,13 @@ public class ResourceBrowser extends JambiResourceBrowser {
             QAbstractItemModel model;
 
             if (UNFILTERED) {
-                model = browserModel;                                   
+                model = browserModel;
             } else {
                 filterModel = new ResourceBrowserModel.FilterModel(this);
                 filterModel.setSourceModel(browserModel);
                 model = filterModel;
             }
-            
+
             selection = new QItemSelectionModel(model);
 
             view = new QTreeView(this);
@@ -58,7 +58,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
             preview.setFixedSize(new QSize(64, 64));
         preview.setAlignment(Qt.AlignmentFlag.AlignHCenter, Qt.AlignmentFlag.AlignVCenter);
-            
+
             hourGlass = new HourGlass(this);
 
             QGridLayout layout = new QGridLayout(this);
@@ -202,7 +202,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
     private void checkOnlyOne() {
         if (UNFILTERED || filterModel.rowCount() != 1)
             return;
-        
+
         QModelIndex i = filterModel.index(0, 0, null);
 
         if (filterModel.rowCount(i) == 1) {

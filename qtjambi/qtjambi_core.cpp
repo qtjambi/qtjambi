@@ -464,7 +464,7 @@ void qtjambi_invalidate_object(JNIEnv *env, jobject java_object, bool checkJavaO
         link->resetObject(env);
 }
 
-void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection, bool checkJavaOwnership) 
+void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection, bool checkJavaOwnership)
 {
     jobjectArray java_array = qtjambi_collection_toArray(env, java_collection);
     qtjambi_invalidate_array(env, java_array, checkJavaOwnership);
@@ -758,11 +758,11 @@ jobject qtjambi_to_resolvedentity(JNIEnv *env, bool success, void *inputSource)
     return env->NewObject(sc->ResolvedEntity.class_ref, sc->ResolvedEntity.constructor, !success, java_inputSource);
 }
 
-bool qtjambi_from_resolvedentity(JNIEnv *env, void *&inputSource, jobject resolvedEntity) 
+bool qtjambi_from_resolvedentity(JNIEnv *env, void *&inputSource, jobject resolvedEntity)
 {
     StaticCache *sc = StaticCache::instance();
     sc->resolveResolvedEntity();
-    
+
     jobject java_inputSource = env->GetObjectField(resolvedEntity, sc->ResolvedEntity.inputSource);
     inputSource = qtjambi_to_object(env, java_inputSource);
 

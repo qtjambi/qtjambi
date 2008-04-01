@@ -7,13 +7,13 @@ TARGET = JambiLanguage
 # Have to include after TARGET...
 include($$PWD/../pri/jambi.pri)
 
-HEADERS += \ 
+HEADERS += \
 	jambilanguageplugin.h \
         qtjambiintrospection_p.h \
 
 
-SOURCES += \ 
-	jambilanguageplugin.cpp \ 
+SOURCES += \
+	jambilanguageplugin.cpp \
         qtjambiintrospection.cpp \
 
 CONFIG(debug, debug|release) {

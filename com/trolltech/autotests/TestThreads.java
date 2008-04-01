@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 import org.junit.*;
 
 public class TestThreads extends QApplicationTest{
-    
+
     /**
      */
     private static class AffinityTester implements Runnable {
@@ -41,11 +41,11 @@ public class TestThreads extends QApplicationTest{
         assertTrue(tester.ok);
     }
 
-    
-    
-    
+
+
+
     /*************************************************************************/
-    
+
     private static class PingPong extends QObject{
         private static final QEvent.Type ID_PING = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
         public int numPings = 0;
@@ -57,7 +57,7 @@ public class TestThreads extends QApplicationTest{
             if (e.type() == ID_PING) {
                 numPings++;
                 QCoreApplication.postEvent(other, new QEvent(ID_PING));
-                if (numPings == 100) {                	
+                if (numPings == 100) {
                     done.emit();
                 }
             }
@@ -65,7 +65,7 @@ public class TestThreads extends QApplicationTest{
             return super.event(e);
         }
     }
-        
+
     private static class PingPongRunner extends Thread {
         public PingPong object;
         public boolean ping;
@@ -74,69 +74,69 @@ public class TestThreads extends QApplicationTest{
             this.ping = ping;
         }
         @Override
-        public void run() {            
+        public void run() {
             synchronized (this) {
                 object = new PingPong();
-                notifyAll(); // let the main thread set the 
+                notifyAll(); // let the main thread set the
                 if (object.other == null)
                     try { wait(); } catch (InterruptedException e) { };
-            }            
-            
+            }
+
             if (ping) {
                 QCoreApplication.postEvent(object.other, new QEvent(PingPong.ID_PING));
             }
-            QEventLoop loop = new QEventLoop();            
+            QEventLoop loop = new QEventLoop();
             object.done.connect(loop, "quit()");
             loop.exec();
         }
-        
+
         public synchronized void setOtherObject(PingPong ppr) {
             object.other = ppr;
             notifyAll();
         }
-        
+
         public synchronized void waitUntilObjectCreated() {
             if (object == null)
                 try { wait(); } catch (InterruptedException e) { };
         }
     }
-    
+
     @Test
     public void run_pingPong() {
         try {
             PingPongRunner ping = new PingPongRunner(true);
             PingPongRunner pong = new PingPongRunner(false);
-            
+
             ping.start();
             pong.start();
-            
+
             ping.waitUntilObjectCreated();
             pong.waitUntilObjectCreated();
-            
+
             ping.setOtherObject(pong.object);
             pong.setOtherObject(ping.object);
-            
+
             ping.join();
             pong.join();
-            
+
             assertEquals(ping.object.numPings, 100);
-            assertEquals(pong.object.numPings, 100); 
-            
+            assertEquals(pong.object.numPings, 100);
+
             assertTrue(ping.object.affinityOk);
             assertTrue(ping.object.affinityOk);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    
+
+
     private static class PingPongSS extends QObject{
         public int numPings = 0;
         public PingPongSS other;
         public boolean affinityOk = true;
         Signal0 done = new Signal0();
         Signal0 ping = new Signal0();
-        
+
         public void pong() {
             numPings++;
             ping.emit();
@@ -144,12 +144,12 @@ public class TestThreads extends QApplicationTest{
                 done.emit();
             affinityOk &= thread() == Thread.currentThread();
         }
-        
+
         public void firePing() {
-            ping.emit(); 
+            ping.emit();
         }
     }
-        
+
     private static class PingPongSSRunner extends Thread {
         public PingPongSS object;
         public boolean ping;
@@ -164,7 +164,7 @@ public class TestThreads extends QApplicationTest{
             if (ping) {
                 object.firePing();
             }
-            QEventLoop loop = new QEventLoop();            
+            QEventLoop loop = new QEventLoop();
             object.done.connect(loop, "quit()");
             loop.exec();
         }
@@ -174,34 +174,34 @@ public class TestThreads extends QApplicationTest{
     public void run_pingPongSignalSlot() throws Exception {
         PingPongSSRunner ping = new PingPongSSRunner(true);
         PingPongSSRunner pong = new PingPongSSRunner(false);
-        
+
         ping.start();
-        pong.start();        
+        pong.start();
         Thread.sleep(50);
-              
+
         ping.object.other = pong.object;
         pong.object.other = ping.object;
-        
+
         ping.object.ping.connect(pong.object, "pong()");
         pong.object.ping.connect(ping.object, "pong()");
-        
+
         ping.join(1000);
         pong.join(1000);
-        
+
         assertEquals(ping.object.numPings, 100);
-        assertEquals(pong.object.numPings, 100); 
-        
+        assertEquals(pong.object.numPings, 100);
+
         assertTrue(ping.object.affinityOk);
         assertTrue(ping.object.affinityOk);
     }
-    
-    
-    
+
+
+
     /*private static class MoveToThreadObject extends QObject {
         Thread timerEventThread;
         Thread customEventThread;
         Thread slotThread;
-        
+
         Signal0 theSignal = new Signal0();
         Signal0 done = new Signal0();
 
@@ -214,7 +214,7 @@ public class TestThreads extends QApplicationTest{
 
         protected void customEvent(QEvent e)
         {
-            if (customEventThread != null) 
+            if (customEventThread != null)
                 throw new RuntimeException("customEventThread expected to be null at this point");
             customEventThread = Thread.currentThread();
             theSignal.emit();
@@ -222,7 +222,7 @@ public class TestThreads extends QApplicationTest{
 
         protected void timerEvent(QTimerEvent e)
         {
-            if (timerEventThread != null) 
+            if (timerEventThread != null)
                 throw new RuntimeException("timerEventThread expected to be null at this point");
             timerEventThread = Thread.currentThread();
             theSignal.emit();
@@ -235,14 +235,14 @@ public class TestThreads extends QApplicationTest{
             slotThread = Thread.currentThread();
             theSignal.emit();
         }
-        
-        public void emitDone() { 
+
+        public void emitDone() {
             done.emit();
         }
     }*/
-    
-    
-   
+
+
+
     /*private static class MoveToThreadThread extends QObject implements Runnable {
         Signal0 started = new Signal0();
         Thread thread = new Thread(this);
@@ -250,13 +250,13 @@ public class TestThreads extends QApplicationTest{
         public void start() {
             QEventLoop eventLoop = new QEventLoop();
             started.connect(eventLoop, "quit()");
-            
+
             thread.start();
-            
+
             // wait for thread to start
             eventLoop.exec();
         }
-        
+
         public void run() {
             started.emit();
             loop = new QEventLoop();
@@ -264,7 +264,7 @@ public class TestThreads extends QApplicationTest{
         }
     }
     */
-    
+
     @Test
     public void run_moveToThread() throws Exception
     {
@@ -289,7 +289,7 @@ public class TestThreads extends QApplicationTest{
         }
 
         /*
-        {            
+        {
             MoveToThreadThread thread;
             thread.start();
 

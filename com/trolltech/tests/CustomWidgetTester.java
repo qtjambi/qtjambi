@@ -12,7 +12,7 @@
 ****************************************************************************/
 
 package com.trolltech.tests;
- 
+
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -21,7 +21,7 @@ public class CustomWidgetTester extends QWidget {
 
     public Signal1<String> textChanged = new Signal1<String>();
     public Signal1<String> positionChanged = new Signal1<String>();
-    
+
     public CustomWidgetTester(QWidget parent) {
         super(parent);
         resetText();
@@ -31,19 +31,19 @@ public class CustomWidgetTester extends QWidget {
         this(null);
     }
 
-    
+
     public String text() {
         return text;
     }
-    
-    
+
+
     public void setText(String text) {
         this.text = text;
         update();
         textChanged.emit(text);
     }
-    
-    
+
+
     @QtPropertyResetter
     public void resetText() {
         setText("Qt Jambi Dummy Widget..");
@@ -53,12 +53,12 @@ public class CustomWidgetTester extends QWidget {
     public QPoint position() {
         return position;
     }
-    
+
     public boolean canDesignText() {
         return position.x() >= 50;
     }
-    
-    
+
+
     public void setPosition(QPoint position) {
         this.position = position;
         update();
@@ -68,29 +68,29 @@ public class CustomWidgetTester extends QWidget {
 
     public void setPositionX(int x) { setPosition(new QPoint(x, position.y())); }
     public void setPositionY(int y) { setPosition(new QPoint(position.x(), y)); }
-    
+
     @Override
     public QSize sizeHint() {
         return new QSize(200, 200);
     }
-    
+
     @Override
     protected void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter();
         p.begin(this);
 
         p.setPen(new QPen(palette().brush(QPalette.ColorRole.WindowText), 0));
-        
+
         p.drawText(position.x(), position.y(), text);
-        
+
         p.end();
     }
-        
+
     private String text;
     private QPoint position = new QPoint(50, 50);
-    
+
     public static void main(String args[]) throws Exception {
-        
-        
+
+
     }
 }

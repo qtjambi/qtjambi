@@ -225,7 +225,7 @@ public class TestQTransform extends QApplicationTest {
 		// FIXME missing equal operator
 		assertEquals(tranInv.map(pt).x(), matInv.map(pt).x());
 		assertEquals(tranInv.map(pt).x(), matInv.map(pt).x());
-		
+
 		QPainterPath path = new QPainterPath();
 		path.moveTo(55, 60);
 		path.lineTo(110, 110);
@@ -233,11 +233,11 @@ public class TestQTransform extends QApplicationTest {
 		path.closeSubpath();
 		assertTrue(tranInv.map(path).equals(matInv.map(path)));
 	}
-	
+
 	@Test
 	public void squareToQuad() {
 		QPolygonF pol = new QPolygonF();
-		
+
 		System.gc();
 		QPointF p1 = new QPointF(0,0);
 		pol.append(p1);
@@ -247,23 +247,23 @@ public class TestQTransform extends QApplicationTest {
 		pol.append(p3);
 		QPointF p4 = new QPointF(0,10);
 		pol.append(p4);
-		
-		
+
+
 		QTransform res = QTransform.squareToQuad(pol);
-		
+
 //		assertTrue(transform.operator_multiply(res).equals(res));
-		
+
 		QPolygonF polRes = new QPolygonF();
 		polRes.append(new QPointF(0,0));
 		polRes.append(new QPointF(1,0));
 		polRes.append(new QPointF(1,1));
 		polRes.append(new QPointF(0,1));
-		
+
 		assertTrue(res.map(polRes).equals(pol.toList()));
-		
+
 		QTransform inverted = res.inverted();
 		QPolygonF ident = inverted.map(pol);
-		
+
 		assertTrue(ident.equals(polRes.toList()));
 	}
 }

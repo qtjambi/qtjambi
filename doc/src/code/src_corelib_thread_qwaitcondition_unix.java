@@ -4,10 +4,10 @@ class fooBarWaitCondition {
 
 	QMutex mutex;
 	QWaitCondition keyPressed;
-	
+
 	public void do_something(){}
 	public void getchar(){}
-	
+
 	public void foobar1() {
 //! [0]
         while (true) {
@@ -18,8 +18,8 @@ class fooBarWaitCondition {
         }
 //! [0]
 	}
-	
-        public void foobar2() { 
+
+        public void foobar2() {
 //! [1]
         while (true) {
             getchar();
@@ -63,7 +63,7 @@ class fooBarWaitCondition {
                 mutex.lock();
             }
             keyPressed.wakeAll();
-            mutex.unlock();          
+            mutex.unlock();
         }
 //! [3]
         }

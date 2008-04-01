@@ -60,7 +60,7 @@ void UiConverter::convertToJui(const QString &uiFile, const QString &customWidge
 
     QDomNodeList customWidgets = dom.documentElement().elementsByTagName("customwidget");
     for (int i=0; i<customWidgets.size(); ++i) {
-        QDomNode customWidget = customWidgets.at(i); 
+        QDomNode customWidget = customWidgets.at(i);
 
         QDomElement el = customWidget.toElement();
         fixCustomWidgetNode(el, &dom);
@@ -87,7 +87,7 @@ void UiConverter::traverseCustomWidgetFile(const QString &customWidgetFile)
     QFile file(customWidgetFile);
     if (!file.open(QIODevice::ReadOnly)) {
         ReportHandler::warning("Can't read custom widget file '"
-                               + customWidgetFile 
+                               + customWidgetFile
                                + "'");
         return;
     }
@@ -98,7 +98,7 @@ void UiConverter::traverseCustomWidgetFile(const QString &customWidgetFile)
         if (reader.isStartElement() && reader.name() == "qt-jambi-custom-widget") {
             QXmlStreamAttributes attributes = reader.attributes();
             QString className = attributes.value("class").toString();
-            
+
             int pos = className.lastIndexOf(".");
             m_custom_widgets.insertMulti(className.mid(pos+1), CustomWidget(className, 0));
         }
@@ -155,7 +155,7 @@ void UiConverter::fixUiNode(QDomElement el, QDomDocument *)
     el.setAttribute("language", "jambi");
 }
 
-void UiConverter::fixCustomWidgetNode(QDomElement el, QDomDocument *) 
+void UiConverter::fixCustomWidgetNode(QDomElement el, QDomDocument *)
 {
     QDomNodeList classes = el.elementsByTagName("class");
     if (classes.size() < 1) {
@@ -180,7 +180,7 @@ void UiConverter::fixCustomWidgetNode(QDomElement el, QDomDocument *)
 
     QList<CustomWidget> fullNames = m_custom_widgets.values(className);
     if (fullNames.size() == 0) {
-        ReportHandler::warning("Couldn't find custom widget entry for '" + className + "'." 
+        ReportHandler::warning("Couldn't find custom widget entry for '" + className + "'."
                                " You need to specify this class in a custom widget file and"
                                " pass the file name on the command line using the --custom-widgets option.");
         return;
@@ -190,10 +190,10 @@ void UiConverter::fixCustomWidgetNode(QDomElement el, QDomDocument *)
         ReportHandler::warning("More than custom widget type matching '" + className + "'. "
                                + "Will use first seen entry: '" + fullNames.at(0).first + "'");
     }
-    
+
     QString fullName = fullNames.at(0).first;
     classes.at(0).namedItem("#text").toText().setData(fullName);
-    
+
     QMap<QString, CustomWidget>::iterator it;
     for (it=m_custom_widgets.begin(); it!=m_custom_widgets.end(); ++it) {
         if (it.key() == className)
@@ -272,14 +272,14 @@ void UiConverter::fixWidgetNode(QDomElement el, QDomDocument *)
     QString className = el.attribute(QLatin1String("class"));
     QList<CustomWidget> customWidgetNames = m_custom_widgets.values(className);
     QString customWidgetName = customWidgetNames.size() > 0 ? customWidgetNames.at(0).first : QString();
-    
+
     AbstractMetaClass *javaClass = customWidgetName.isEmpty() ? m_java_classes.findClass(className) : customWidgetNames.at(0).second;
     if (!javaClass) {
         ReportHandler::warning(QString::fromLatin1("Class '%1' is unknown").arg(className));
         return;
     }
 
-    if (!customWidgetName.isEmpty()) 
+    if (!customWidgetName.isEmpty())
         el.setAttribute(QLatin1String("class"), customWidgetName);
     else if (javaClass->package() != QLatin1String("com.trolltech.qt.gui"))
         el.setAttribute(QLatin1String("class"), javaClass->fullName());

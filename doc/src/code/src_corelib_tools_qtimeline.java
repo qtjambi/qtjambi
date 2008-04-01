@@ -10,7 +10,7 @@ import com.trolltech.qt.svg.*;
 public class src_corelib_tools_qtimeline extends QWidget{
     public void mainy(String args[]) {
         QApplication.initialize(args);
-        
+
         QPushButton pushButton;
         QProgressBar progressBar;
 //! [0]

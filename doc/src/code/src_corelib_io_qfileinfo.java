@@ -102,7 +102,7 @@ public class src_corelib_io_qfileinfo {
     {
 //! [10]
         QFileInfo fi = new QFileInfo("/tmp/archive.tar.gz");
-        QFile.Permissions permissions1 
+        QFile.Permissions permissions1
             = new QFile.Permissions(QFile.Permission.WriteUser, QFile.Permission.ReadGroup);
         if (fi.permission(permissions1))
             System.out.println("I can change the file; my group can read the file");

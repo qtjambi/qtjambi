@@ -115,10 +115,10 @@ class EventReceiver extends QWidget {
 }
 
 public class TestClassFunctionality extends QApplicationTest {
-    
+
     public static void main(String args[]) {
         QApplication.initialize(args);
-        
+
         TestClassFunctionality test = new TestClassFunctionality();
         test.testVirtualCallToFixup();
         test.testFinalCallToFixup();
@@ -136,7 +136,7 @@ public class TestClassFunctionality extends QApplicationTest {
         test.run_testOwnershipTranfer();
         test.run_XPMConstructors();
     }
-    
+
     @BeforeClass
     public static void testInitialize() throws Exception {
         String args[] = new String[3];
@@ -145,22 +145,22 @@ public class TestClassFunctionality extends QApplicationTest {
         args[2] = "C";
         QApplication.initialize(new String[] {});
     }
-    
+
     static class GraphicsSceneSubclassSubclass extends GraphicsSceneSubclass {
         public static QGraphicsItemInterface items[];
         public static QStyleOptionGraphicsItem options[];
 
         @Override
         protected void drawItems(QPainter painter, QGraphicsItemInterface[] items, QStyleOptionGraphicsItem[] options, QWidget widget) {
-            GraphicsSceneSubclassSubclass.items = items;                        
-            GraphicsSceneSubclassSubclass.options = options;            
-                        
-            options[1].setLevelOfDetail(3.0);                                  
+            GraphicsSceneSubclassSubclass.items = items;
+            GraphicsSceneSubclassSubclass.options = options;
+
+            options[1].setLevelOfDetail(3.0);
             super.drawItems(painter, items, options, widget);
-        }              
+        }
     }
-        
-    @Test 
+
+    @Test
     public void testGraphicsSceneDrawItemsInjections() {
         GraphicsSceneSubclassSubclass gsss = new GraphicsSceneSubclassSubclass();
         QGraphicsView view = new QGraphicsView();
@@ -170,19 +170,19 @@ public class TestClassFunctionality extends QApplicationTest {
         item2.setZValue(1.0);
         gsss.addItem(item1);
         gsss.addItem(item2);
-        
+
         view.setScene(gsss);
         view.show();
-        
+
         QApplication.processEvents();
-        
+
         assertTrue(GraphicsSceneSubclassSubclass.items != null);
         assertTrue(GraphicsSceneSubclassSubclass.options != null);
         assertEquals(2, GraphicsSceneSubclassSubclass.items.length);
         assertEquals(2, GraphicsSceneSubclassSubclass.options.length);
         assertTrue(GraphicsSceneSubclassSubclass.items[0] == item2);
         assertTrue(GraphicsSceneSubclassSubclass.items[1] == item1);
-        
+
         QRectF brect = GraphicsSceneSubclassSubclass.items[0].boundingRect();
         assertEquals(2.0, brect.left());
         assertEquals(3.0, brect.top());
@@ -194,9 +194,9 @@ public class TestClassFunctionality extends QApplicationTest {
         assertEquals(2.0, brect.top());
         assertEquals(3.0, brect.width());
         assertEquals(4.0, brect.height());
-        
+
         assertEquals(2, gsss.numItems());
-        
+
         brect = gsss.firstBoundingRect();
         assertEquals(2.0, brect.left());
         assertEquals(3.0, brect.top());
@@ -207,26 +207,26 @@ public class TestClassFunctionality extends QApplicationTest {
         assertEquals(1.0, brect.left());
         assertEquals(2.0, brect.top());
         assertEquals(3.0, brect.width());
-        assertEquals(4.0, brect.height());        
-        
+        assertEquals(4.0, brect.height());
+
         assertTrue(gsss.firstItem() == item2);
         assertTrue(gsss.secondItem() == item1);
-        
+
         assertEquals(QStyleOption.OptionType.SO_GraphicsItem.value(), gsss.firstStyleOptionType());
         assertEquals(QStyleOption.OptionType.SO_GraphicsItem.value(), gsss.secondStyleOptionType());
         assertEquals(QStyleOptionGraphicsItem.StyleOptionVersion.Version.value(), gsss.firstStyleOptionVersion());
         assertEquals(QStyleOptionGraphicsItem.StyleOptionVersion.Version.value(), gsss.secondStyleOptionVersion());
-        
+
         QStyleOption option = gsss.firstStyleOption();
         assertTrue(option instanceof QStyleOptionGraphicsItem);
         assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 1.0);
-        
+
         option = gsss.secondStyleOption();
         assertTrue(option instanceof QStyleOptionGraphicsItem);
         assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 3.0);
-        
+
     }
-    
+
     static class TestQObject extends QObject {
         private Signal0 a = new Signal0();
 
@@ -245,7 +245,7 @@ public class TestClassFunctionality extends QApplicationTest {
             slot_called = true;
         }
     }
-    
+
     @Test
     public void testEquals()
     {
@@ -253,49 +253,49 @@ public class TestClassFunctionality extends QApplicationTest {
         QHostAddress address2 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
         QHostAddress address3 = new QHostAddress(QHostAddress.SpecialAddress.Broadcast);
         QByteArray array = new QByteArray("127.0.0.1");
-        
+
         assertFalse(address1 == address2);
-        assertFalse(address2 == address3);        
+        assertFalse(address2 == address3);
         assertTrue(address1.equals(address2));
         assertTrue(address2.equals(address1));
         assertTrue(address3.equals(address3));
         assertEquals(false, address1.equals(address3));
         assertFalse(address2.equals(array));
     }
-    
-    @Test 
+
+    @Test
     public void testHashCodeAndEquals()
     {
         Hashtable<QHostAddress, QByteArray> address_hash = new Hashtable<QHostAddress, QByteArray>();
-        
+
         QHostAddress address1 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
         QHostAddress address2 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
         QHostAddress address3 = new QHostAddress(QHostAddress.SpecialAddress.Broadcast);
-        
+
         QByteArray ba_address1 = new QByteArray("127.0.0.1 - 1");
         QByteArray ba_address2 = new QByteArray("127.0.0.1 - 2");
         QByteArray ba_address3 = new QByteArray("255.255.255.255");
-        
+
         address_hash.put(address1, ba_address1);
         assertFalse(address_hash.containsKey(new QHostAddress(QHostAddress.SpecialAddress.Broadcast)));
-        assertTrue(address_hash.containsKey(new QHostAddress(QHostAddress.SpecialAddress.LocalHost)));        
+        assertTrue(address_hash.containsKey(new QHostAddress(QHostAddress.SpecialAddress.LocalHost)));
         assertTrue(address_hash.get(new QHostAddress(QHostAddress.SpecialAddress.LocalHost)) == ba_address1);
-        
+
         address_hash.put(address2, ba_address2); // overwrites the first entry of this type
         address_hash.put(address3, ba_address3);
         assertTrue(address_hash.containsKey(address1));
         assertTrue(address_hash.containsKey(new QHostAddress(QHostAddress.SpecialAddress.Broadcast)));
-        
+
         QHostAddress lookup_key1 = new QHostAddress(QHostAddress.SpecialAddress.LocalHost);
-        QHostAddress lookup_key2 = new QHostAddress(QHostAddress.SpecialAddress.Broadcast);                
-     
+        QHostAddress lookup_key2 = new QHostAddress(QHostAddress.SpecialAddress.Broadcast);
+
         QByteArray value = address_hash.get(lookup_key1);
         assertTrue(value == ba_address2);
-        
+
         value = address_hash.get(lookup_key2);
         assertTrue(value == ba_address3);
     }
-    
+
     @Test
     public void testToString()
     {
@@ -305,7 +305,7 @@ public class TestClassFunctionality extends QApplicationTest {
 
     @Test
     public void run_testCallQtJambiInternalNativeFunctions() {
-        
+
         Field field = null;
         try {
             field = TestQObject.class.getDeclaredField("a");
@@ -426,7 +426,7 @@ public class TestClassFunctionality extends QApplicationTest {
             QObject qobject = new QObjectSubclass(null, this);
             qobject.disposeLater();
             QApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
-            
+
             assertEquals(disposed, 1);
             assertEquals(qobject.nativeId(), 0L);
         }
@@ -569,11 +569,11 @@ public class TestClassFunctionality extends QApplicationTest {
         }
         some_widget.dispose();
     }
-    
+
     @Test
     public void testDialog(){
         String[] childrenClassList = {"QGridLayout","QLabel","QComboBox","QLabel","QComboBox","QLabel","QComboBox","QPushButton","QTableWidget","QLabel", "QPushButton"};
-        
+
         TestDialog dialog = new TestDialog();
         dialog.show();
         int i = 0;
@@ -606,7 +606,7 @@ public class TestClassFunctionality extends QApplicationTest {
         } catch (Exception e) {
             assertTrue(false);
         }
-        
+
         assertTrue(tester.msec >= 1000);
         assertTrue(tester.msec <= 1500);
     }
@@ -690,9 +690,9 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(fe != null);
         assertTrue(fe instanceof IllegalArgumentException);
     }
-    
+
     static class MySpinBox extends QDoubleSpinBox {
-        
+
         public String receivedString;
         public int receivedPos;
 
@@ -701,36 +701,36 @@ public class TestClassFunctionality extends QApplicationTest {
             receivedString = input;
             return "As aught of " + input.substring(2, 8) + " birth";
         }
-        
+
         @Override
-        public QValidator.State validate(QValidator.QValidationData data) 
+        public QValidator.State validate(QValidator.QValidationData data)
         {
             receivedString = data.string;
             receivedPos = data.position;
-            
+
             data.string = "The " + data.string.substring(9, 13) + " where Death has set his seal";
             data.position += 13;
-            
+
             return QValidator.State.Acceptable;
         }
-        
-        
+
+
     }
-    
+
     @Test public void testVirtualCallToFixup() {
         MySpinBox spinBox = new MySpinBox();
         SpinBoxHandler handler = new SpinBoxHandler();
-        
+
         handler.tryFixup(spinBox, "Immortal love, forever full");
-                
+
         assertEquals("Immortal love, forever full", spinBox.receivedString);
         assertEquals("As aught of mortal birth", handler.my_returned_string());
     }
-    
+
     @Test public void testVirtualCallToValidate() {
         MySpinBox spinBox = new MySpinBox();
         SpinBoxHandler handler = new SpinBoxHandler();
-        
+
         handler.tryValidate(spinBox, "Immortal love, forever full", 15);
         assertEquals("Immortal love, forever full", spinBox.receivedString);
         assertEquals(15, spinBox.receivedPos);
@@ -738,26 +738,26 @@ public class TestClassFunctionality extends QApplicationTest {
         assertEquals(28, handler.my_returned_pos());
         assertEquals(QValidator.State.Acceptable, handler.my_returned_state());
     }
-    
+
     @Test public void testFinalCallToFixup() {
         SpinBoxSubclass sbs = new SpinBoxSubclass();
-        
-        String returned = sbs.fixup("Thou dost hang canary birds in parlour windows");        
+
+        String returned = sbs.fixup("Thou dost hang canary birds in parlour windows");
         assertEquals("And Thou art dead", returned);
         assertEquals("Thou dost hang canary birds in parlour windows", sbs.my_received_string());
     }
-    
+
     @Test public void testFinalCallToValidate() {
         SpinBoxSubclass sbs = new SpinBoxSubclass();
-        
+
         QValidator.QValidationData data = new QValidator.QValidationData("dream and you have a sloppy body from being brought to bed of crocuses", 14);
         QValidator.State returned = sbs.validate(data);
-        
+
         assertEquals(QValidator.State.Intermediate, returned);
         assertEquals("dream and you have a sloppy body from being brought to bed of crocuses", sbs.my_received_string());
         assertEquals(14, sbs.my_received_pos());
         assertEquals("The silence of that dreamless sleep", data.string);
-        assertEquals(27, data.position);        
+        assertEquals(27, data.position);
     }
 
     // Tests the ownership transfer that we need to have objects like
@@ -871,60 +871,60 @@ public class TestClassFunctionality extends QApplicationTest {
 
         public Thread thread;
     }
-    
+
     public QPainter painterReference;
-    
+
     @Test
     public void resetAfterUseTemporary() {
     	painterReference = null;
-    	
+
     	QCalendarWidget w = new QCalendarWidget() {
     		@Override
     		public void paintCell(QPainter painter, QRect rect, QDate date) {
     			painterReference = painter;
     		}
     	};
-    	
+
     	// painter == null passes a temporary C++ painter
     	General.callPaintCell(w, null);
-    	
+
     	assertTrue(painterReference != null);
     	assertEquals(0, painterReference.nativeId());
     }
-    
+
     @Test
     public void resetAfterUseNonTemporary() {
     	painterReference = null;
-    	
+
     	QCalendarWidget w = new QCalendarWidget() {
     		@Override
     		public void paintCell(QPainter painter, QRect rect, QDate date) {
     			painterReference = painter;
     		}
     	};
-    	
+
     	QPainter p = new QPainter();
     	General.callPaintCell(w, p);
-    	
+
     	assertTrue(painterReference != null);
     	assertTrue(0 != painterReference.nativeId());
     	assertEquals(p, painterReference);
     }
-    
+
     @Test
     public void resetAfterUseNull() {
     	painterReference = new QPainter();
-    	
+
     	QCalendarWidget w = new QCalendarWidget() {
     		@Override
     		public void paintCell(QPainter painter, QRect rect, QDate date) {
     			painterReference = painter;
     		}
     	};
-    	
+
     	General.callPaintCellNull(w);
-    	
-    	assertEquals(null, painterReference);    	
+
+    	assertEquals(null, painterReference);
     }
 
     /**
@@ -945,7 +945,7 @@ public class TestClassFunctionality extends QApplicationTest {
     private static boolean invokeLater_in_otherThread;
 
     @SuppressWarnings("unused")
-    private static Invokable invokable_in_otherThread;    
+    private static Invokable invokable_in_otherThread;
 
     /**
      * Same as the test above, except that the invokable is now created in a

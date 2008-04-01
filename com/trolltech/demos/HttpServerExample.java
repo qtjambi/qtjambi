@@ -56,7 +56,7 @@ public class HttpServerExample extends QWidget {
 		layout.addWidget(editor);
 
 		publishButton.clicked.connect(this, "publish()");
-		
+
         setWindowTitle(tr("Simple HTTP Server"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 	}

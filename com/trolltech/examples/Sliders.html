@@ -30,7 +30,7 @@ body { color: black; }</style>
         private SlidersGroup horizontalSliders;
         private SlidersGroup verticalSliders;
         private QStackedWidget stackedWidget;
-    
+
         private QGroupBox controlsGroup;
         private QLabel minimumLabel;
         private QLabel maximumLabel;
@@ -46,27 +46,27 @@ body { color: black; }</style>
         {
             horizontalSliders = new SlidersGroup(Qt.Orientation.Horizontal, tr(&quot;Horizontal&quot;));
             verticalSliders = new SlidersGroup(Qt.Orientation.Vertical, tr(&quot;Vertical&quot;));
-    
+
             stackedWidget = new QStackedWidget();
             stackedWidget.addWidget(horizontalSliders);
             stackedWidget.addWidget(verticalSliders);
-    
+
             createControls(tr(&quot;Controls&quot;));</pre>
 <p>In the constructor we first create the two <tt>SlidersGroup</tt> widgets that display the slider widgets horizontally and vertically, and add them to the QStackedWidget. QStackedWidget provides a stack of widgets where only the top widget is visible. With <tt>createControls()</tt> we create a connection from a controlling widget to the QStackedWidget, making the user able to choose between horizontal and vertical orientation of the slider widgets. The rest of the controlling mechanisms are implemented by the same function call.</p>
-<pre>&nbsp;   
+<pre>&nbsp;
             horizontalSliders.valueChanged.connect(verticalSliders, &quot;setValue(int)&quot;);
             verticalSliders.valueChanged.connect(valueSpinBox, &quot;setValue(int)&quot;);
-            valueSpinBox.valueChanged.connect(horizontalSliders, &quot;setValue(int)&quot;);    
-    
+            valueSpinBox.valueChanged.connect(horizontalSliders, &quot;setValue(int)&quot;);
+
             QHBoxLayout layout = new QHBoxLayout();
             layout.addWidget(controlsGroup);
             layout.addWidget(stackedWidget);
             setLayout(layout);
-    
+
             minimumSpinBox.setValue(0);
             maximumSpinBox.setValue(20);
             valueSpinBox.setValue(5);
-    
+
             setWindowTitle(tr(&quot;Sliders&quot;));
         }</pre>
 <p>Then we connect the <tt>horizontalSliders</tt>, <tt>verticalSliders</tt> and <tt>valueSpinBox</tt> to each other, so that the slider widgets and the control widget will behave synchronized when the current value of one of them changes. The <tt>valueChanged()</tt> signal is emitted with the new value as argument. The <tt>setValue()</tt> slot sets the current value of the widget to the new value, and emits <tt>valueChanged()</tt> if the new value is different from the old one.</p>
@@ -74,11 +74,11 @@ body { color: black; }</style>
 <pre>&nbsp;       private void createControls(String title)
         {
             controlsGroup = new QGroupBox(title);
-    
+
             minimumLabel = new QLabel(tr(&quot;Minimum value:&quot;));
             maximumLabel = new QLabel(tr(&quot;Maximum value:&quot;));
             valueLabel = new QLabel(tr(&quot;Current value:&quot;));
-    
+
             invertedAppearance = new QCheckBox(tr(&quot;Inverted appearance&quot;));
             invertedKeyBindings = new QCheckBox(tr(&quot;Inverted key bindings&quot;));</pre>
 <p>In the private <tt>createControls()</tt> function, we let a QGroupBox (<tt>controlsGroup</tt>) display the control widgets. A group box can provide a frame, a title and a keyboard shortcut, and displays various other widgets inside itself. The group of control widgets is composed by two checkboxes, three spin boxes (with labels) and one combobox.</p>
@@ -95,15 +95,15 @@ body { color: black; }</style>
 <pre>&nbsp;           minimumSpinBox = new QSpinBox();
             minimumSpinBox.setRange(-100, 100);
             minimumSpinBox.setSingleStep(1);
-    
+
             maximumSpinBox = new QSpinBox();
             maximumSpinBox.setRange(-100, 100);
             maximumSpinBox.setSingleStep(1);
-    
+
             valueSpinBox = new QSpinBox();
             valueSpinBox.setRange(-100, 100);
             valueSpinBox.setSingleStep(1);
-    
+
             orientationCombo = new QComboBox();
             orientationCombo.addItem(tr(&quot;Horizontal slider-like widgets&quot;));
             orientationCombo.addItem(tr(&quot;Vertical slider-like widgets&quot;));</pre>
@@ -115,10 +115,10 @@ body { color: black; }</style>
             maximumSpinBox.valueChanged.connect(horizontalSliders, &quot;setMaximum(int)&quot;);
             maximumSpinBox.valueChanged.connect(verticalSliders, &quot;setMaximum(int)&quot;);
             invertedAppearance.toggled.connect(horizontalSliders, &quot;invertAppearance(boolean)&quot;);
-            invertedAppearance.toggled.connect(verticalSliders, &quot;invertAppearance(boolean)&quot;); 
+            invertedAppearance.toggled.connect(verticalSliders, &quot;invertAppearance(boolean)&quot;);
             invertedKeyBindings.toggled.connect(horizontalSliders, &quot;invertedKeyBindings(boolean)&quot;);
             invertedKeyBindings.toggled.connect(verticalSliders, &quot;invertedKeyBindings(boolean)&quot;);
-    
+
             QGridLayout controlsLayout = new QGridLayout();
             controlsLayout.addWidget(minimumLabel, 0, 0);
             controlsLayout.addWidget(maximumLabel, 1, 0);
@@ -139,7 +139,7 @@ body { color: black; }</style>
         private QSlider slider;
         private QScrollBar scrollBar;
         private QDial dial;
-    
+
         public Signal1&lt;Integer&gt; valueChanged = new Signal1&lt;Integer&gt;();</pre>
 <p>The <tt>SlidersGroup</tt> class inherits from QGroupBox. It provides a frame and a title, and contains a QSlider, a QScrollBar and a QDial.</p>
 <p>We provide a <tt>valueChanged</tt> signal and a public <tt>setValue()</tt> slot with equivalent functionality to the ones in QAbstractSlider and QSpinBox. In addition, we implement several other public slots to set the minimum and maximum value, and invert the slider widgets' appearance as well as key bindings. We will now review these slots and the <tt>SlidersGroup's</tt> constructor.</p>
@@ -150,13 +150,13 @@ body { color: black; }</style>
             slider.setTickPosition(QSlider.TickPosition.TicksBothSides);
             slider.setTickInterval(10);
             slider.setSingleStep(1);
-    
+
             scrollBar = new QScrollBar(orientation);
             scrollBar.setFocusPolicy(Qt.FocusPolicy.StrongFocus);
-    
+
             dial = new QDial();
             dial.setFocusPolicy(Qt.FocusPolicy.StrongFocus);
-    
+
             slider.valueChanged.connect(scrollBar, &quot;setValue(int)&quot;);
             scrollBar.valueChanged.connect(dial, &quot;setValue(int)&quot;);</pre>
 <p>First we create the slider-like widgets with the appropriate properties. In particular we set the focus policy for each widget. Qt::FocusPolicy is an enum type that defines the various policies a widget can have with respect to acquiring keyboard focus. The Qt::StrongFocus policy means that the widget accepts focus by both tabbing and clicking.</p>
@@ -165,12 +165,12 @@ body { color: black; }</style>
             dial.valueChanged.connect(valueChanged);</pre>
 <p>We connect <tt>dial</tt>'s <tt>valueChanged()</tt> signal to the <tt>SlidersGroup</tt>'s <tt>valueChanged()</tt> signal, to notify the other widgets in the application (i.e., the control widgets) of the changed value.</p>
 <pre>&nbsp;           QBoxLayout.Direction direction;
-    
+
             if (orientation == Qt.Orientation.Horizontal)
                 direction = QBoxLayout.Direction.TopToBottom;
             else
                 direction = QBoxLayout.Direction.LeftToRight;
-    
+
             QBoxLayout slidersLayout = new QBoxLayout(direction);
             slidersLayout.addWidget(slider);
             slidersLayout.addWidget(scrollBar);

@@ -15,7 +15,7 @@ public class src_gui_graphicsview_qgraphicslinearlayout {
 
         QGraphicsWidget form = new QGraphicsWidget();
         form.setLayout(layout);
-        scene.addItem(form);    
+        scene.addItem(form);
 //! [0]
 
 

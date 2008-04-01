@@ -28,13 +28,13 @@ class Options:
         self.p4Client = "qt-builder"
         self.startDir = os.getcwd()
         self.p4Resync = True
-        
+
         self.buildMac = True
         self.buildWindows = True
         self.buildLinux = True
         self.build32 = True
         self.build64 = True
-        
+
 options = Options()
 
 gpl_header = pkgutil.readLicenseHeader(pkgutil.LICENSE_GPL, options.startDir)
@@ -46,7 +46,7 @@ class BuildServer:
     def __init__(self, platform, arch):
         self.arch = arch
         self.platform = platform
-        
+
 servers = []
 
 
@@ -76,7 +76,7 @@ def setupServers():
     if options.buildWindows and options.build32:
         win32 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32)
         win32.host = "tirionvm-win32.troll.no"
-        win32.task = options.startDir + "/build_qt_windows.bat" 
+        win32.task = options.startDir + "/build_qt_windows.bat"
         win64.compiler = "msvc2005"
         servers.append(win32)
 
@@ -93,10 +93,10 @@ def prepareSourceTree():
     # remove and recreat dir and cd into it...
     if os.path.isdir(options.packageRoot):
         shutil.rmtree(options.packageRoot)
-        
+
     os.makedirs(options.packageRoot)
     os.chdir(options.packageRoot)
-    
+
     # set up the perforce client...
     tmpFile = open("p4spec.tmp", "w")
     tmpFile.write("Root: %s\n" % (options.packageRoot))
@@ -127,7 +127,7 @@ def prepareSourceTree():
 
 def packageAndSend(server):
     pkgutil.debug("sending to %s, script=%s..." % (server.host, server.task))
-    
+
     os.chdir(options.packageRoot)
 
     if os.path.isdir("tmptree"):
@@ -137,11 +137,11 @@ def packageAndSend(server):
     print " - setting up gpl subdir..."
     shutil.copytree("qt", "tmptree/gpl");
     pkgutil.expandMacroes("tmptree/gpl", gpl_header)
-    
+
     print " - setting up commercial subdir..."
     shutil.copytree("qt", "tmptree/commercial");
     pkgutil.expandMacroes("tmptree/commercial", commercial_header)
-    
+
     print " - setting up eval subdir..."
     shutil.copytree("qt", "tmptree/eval");
     pkgutil.expandMacroes("tmptree/eval", eval_header)
@@ -162,7 +162,7 @@ def packageAndSend(server):
 def waitForResponse():
     packagesRemaining = len(servers)
     pkgutil.debug("Waiting for build server responses...")
-    
+
     while packagesRemaining:
         (sock, (host, port)) = serversocket.accept()
         pkgutil.debug(" - got response from %s:%d" % (host, port))
@@ -179,13 +179,13 @@ def waitForResponse():
                     print "Build server: %s Failed!!!!" % server.host
                 else:
                     print "Build server: %s ok!" % server.host
-                    
+
                 match = True
-                    
+
         if match:
             packagesRemaining = packagesRemaining - 1
 
-    
+
 
 
 def main():
@@ -237,8 +237,8 @@ def main():
         packageAndSend(server)
 
     waitForResponse()
-    
-    
+
+
 
 
 if __name__ == "__main__":

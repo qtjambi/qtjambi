@@ -52,10 +52,10 @@ namespace NameSpace
         int x;
     };
 
-    namespace NameSpace2 
+    namespace NameSpace2
     {
 
-        namespace NameSpace3 
+        namespace NameSpace3
         {
             class ObjectD;
 
@@ -81,7 +81,7 @@ namespace NameSpace
             class ObjectD: public ObjectC, InterfaceA
             {
             public:
-                ObjectD(const QString &s) : ObjectC(s) {} 
+                ObjectD(const QString &s) : ObjectC(s) {}
 
                 ObjectD *fooBar2(ObjectC *obj)
                 {
@@ -100,7 +100,7 @@ namespace NameSpace
                 ValueB() : m_i(0) {}
                 ValueB(int i) : m_i(i) {}
                 ValueB(const ValueB &myValue) : m_i(myValue.m_i) {}
-               
+
             private:
                 int m_i;
             };
@@ -113,7 +113,7 @@ namespace NameSpace
 
 
 inline NameSpace::NameSpace2::NameSpace3::ObjectC *NameSpace::NameSpace2::NameSpace3::ObjectC::fooBar(NameSpace::NameSpace2::NameSpace3::ObjectD *obj)
-{                
+{
     return new NameSpace::NameSpace2::NameSpace3::ObjectC(obj->str());
 }
 inline NameSpace::ObjectA *NameSpace::ObjectA::aFunc(NameSpace::ObjectA *a) { return a; }

@@ -38,16 +38,16 @@ public class src_corelib_io_qabstractfileengine
     public static void main(String args[])
     {
         QApplication.initialize(args);
-        
+
         ZipEngineHandler engine = new ZipEngineHandler();
-        
+
         MainWindow window = new MainWindow(null);
         window.show();
-        
+
         QApplication.exec();
     }
 //! [0]
-    
+
 
 
 //! [1]

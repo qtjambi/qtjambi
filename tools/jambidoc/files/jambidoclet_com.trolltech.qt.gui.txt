@@ -98,7 +98,7 @@ Creates a new action with the icon <tt>icon</tt> and text <tt>text</tt>. This
 action is added to the end of the toolbar. The action's QAction.triggered()
 signal is connected to <tt>method</tt> in <tt>receiver</tt>.
 <p>
-Finally, it returns the created action. 
+Finally, it returns the created action.
 */
 
 
@@ -224,38 +224,38 @@ entered by the user.
 
 $$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double, double, int, com.trolltech.qt.core.Qt.WindowType...)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 
 */
 
 
 $$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double, double, int)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double, double)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double, double)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, double)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getDouble(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
@@ -280,37 +280,37 @@ This function returns the integer which has been entered by the user.
 
 $$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int, int, int, com.trolltech.qt.core.Qt.WindowType...)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int, int, int)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int, int)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int, int)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, int)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getInteger(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
@@ -336,25 +336,25 @@ This function returns the text of the current item, or if
 
 $$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>, int, boolean, com.trolltech.qt.core.Qt.WindowType...)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>, int, boolean)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>, int)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getItem(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, java.util.List<java.lang.String>)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
@@ -365,7 +365,7 @@ Static convenience function to get a string from the user.
 dialog. <tt>label</tt> is the text which is shown to the user (it should
 say what should be entered). <tt>text</tt> is the default text which is
 placed in the line edit. The <tt>mode</tt> is the echo mode the line
-edit will use. 
+edit will use.
 <p>
 The dialog's parent is <tt>parent</tt>. The dialog will be
 modal and uses the widget flags <tt>f</tt>.
@@ -378,37 +378,37 @@ edit. It will not return an empty string.
 
 $$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QLineEdit.EchoMode, java.lang.String, com.trolltech.qt.core.Qt.WindowType...)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QLineEdit.EchoMode, java.lang.String)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String, com.trolltech.qt.gui.QLineEdit.EchoMode)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QInputDialog.getText(com.trolltech.qt.gui.QWidget, java.lang.String, java.lang.String)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QLineEdit.initStyleOption(com.trolltech.qt.gui.QStyleOptionFrame)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
 $$QRubberBand.initStyleOption(com.trolltech.qt.gui.QStyleOptionRubberBand)
 /**
-This is a overloaded function provided for convenience. 
+This is a overloaded function provided for convenience.
 */
 
 
@@ -1539,7 +1539,7 @@ This convenience function creates a new action with the text
 <tt>text</tt>. The action's QAction.triggered() signal is connected to
 the <tt>receiver</tt>'s <tt>method</tt> slot. The function adds the
 newly created action to the menu's list of actions and returns it.
- 
+
 */
 
 
@@ -1550,7 +1550,7 @@ This convenience function creates a new action with the given
 
 <tt>text</tt>
 <tt>signal</tt>
-@return 
+@return
 */
 
 
@@ -1881,7 +1881,7 @@ The <tt>flags</tt> argument is the bitwise OR of the following flags:
 <li> Qt.AlignTop aligns to the top border.
 <li> Qt.AlignBottom aligns to the bottom border.
 <li> Qt.AlignVCenter aligns vertically centered
-<li> Qt.AlignCenter 
+<li> Qt.AlignCenter
 <li> Qt.TextSingleLine ignores newline characters in the text.
 <li> Qt.TextExpandTabs expands tabs (see below)
 <li> Qt.TextShowMnemonic interprets "&amp;x" as \underline{x}, i.e.
@@ -2317,7 +2317,7 @@ This is an overloaded method provided for convenience.
 
 $$QPainterPath.toFillPolygons(com.trolltech.qt.gui.QMatrix)
 /**
-Converts the path into a list of polygons using the 
+Converts the path into a list of polygons using the
 QMatrix <tt>matrix</tt>, and returns the list.
 <p>
 The function differs from the toFillPolygon() function in that it
@@ -2509,7 +2509,7 @@ $$QImage.copyOfBytes()
 /**
 Returns a copy of the image data.
 
-@return 
+@return
 */
 
 
@@ -2546,7 +2546,7 @@ The file name can either refer to an actual file on disk or to one of
 the application's embedded resources. See the
 \l{resources.html}{Resource System} overview for details on how to
 embed images and other resource files in the application's executable.
- 
+
 */
 
 
@@ -3099,7 +3099,7 @@ constructor.
 
 $$QAbstractGraphicsShapeItem.QAbstractGraphicsShapeItem()
 /**
-Constructs a parentless QAbstractGraphicsShapeItem. 
+Constructs a parentless QAbstractGraphicsShapeItem.
 
 
 */
@@ -3288,7 +3288,7 @@ Returns this QTextEdit's overwrite mode.
 If FALSE (the default) characters entered by the user are inserted with any
 characters to the right being moved out of the way. If TRUE, the editor is in
 overwrite mode, i.e. characters entered by the user overwrite any characters
-to the right of the cursor position. 
+to the right of the cursor position.
 
 */
 
@@ -3300,7 +3300,7 @@ This property holds the text edit's overwrite mode to <tt>overwrite</tt>.
 If FALSE (the default) characters entered by the user are inserted with any
 characters to the right being moved out of the way. If TRUE, the editor is in
 overwrite mode, i.e. characters entered by the user overwrite any characters
-to the right of the cursor position. 
+to the right of the cursor position.
 
 */
 

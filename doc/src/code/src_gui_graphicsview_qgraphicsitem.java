@@ -239,11 +239,11 @@ import com.trolltech.qt.svg.*;
 
 
 public class src_gui_graphicsview_qgraphicsitem {
-	
+
 	QGraphicsItem item = null;
 	QGraphicsView view = null;
 	QGraphicsScene scene = null;
-	
+
     public static void main(String args[]) {
         QApplication.initialize(args);
     }
@@ -267,7 +267,7 @@ public class src_gui_graphicsview_qgraphicsitem {
     public class QGraphicsItem extends com.trolltech.qt.gui.QGraphicsItem {
     	double radius = 666;
     	double diameter = 666;
-    	
+
     	public QRectF boundingRect() {return null;}
 		public void paint(QPainter arg0, QStyleOptionGraphicsItem arg1,QWidget arg2) {}
     }
@@ -288,21 +288,21 @@ public class src_gui_graphicsview_qgraphicsitem {
 //! [2]
 	   item.setCursor(new QCursor(Qt.CursorShape.IBeamCursor));
 //! [2]
-      
+
 
 
 //! [3]
 	   item.setCursor(new QCursor(Qt.CursorShape.IBeamCursor));
 //! [3]
-   
+
 
 //! [4]
 	    QGraphicsRectItem rect = new QGraphicsRectItem();
 	    rect.setPos(100, 100);
-	
+
 	    rect.sceneTransform().map(new QPointF(0, 0));
 	    // returns QPointF(100, 100);
-	
+
 	    rect.sceneTransform().inverted().map(new QPointF(100, 100));
 	    // returns QPointF(0, 0);
 //! [4]
@@ -312,14 +312,14 @@ public class src_gui_graphicsview_qgraphicsitem {
 //! [5]
 	    QGraphicsRectItem rect = new QGraphicsRectItem();
         rect.setPos(100, 100);
-        
+
         rect.deviceTransform(view.viewportTransform()).map(new QPointF(0, 0));
         // returns the item's (0, 0) point in view's viewport coordinates
 
         rect.deviceTransform(view.viewportTransform()).inverted().map(new QPointF(100, 100));
         // returns view's viewport's (100, 100) coordinate in item coordinates
 //! [5]
-   
+
         int x = 666;
         int y = 666;
 
@@ -341,7 +341,7 @@ public class src_gui_graphicsview_qgraphicsitem {
 //! [7]
    }
 
-   
+
 //! [8]
 	public class CircleItem extends QGraphicsItem
 	{
@@ -384,7 +384,7 @@ public class src_gui_graphicsview_qgraphicsitem {
 //! [10]
 
 	public class ButtonItem extends QGraphicsItem {}
-	
+
 	public void snippetWrapper4() {
 //! [11]
         int ObjectName = 0;
@@ -438,7 +438,7 @@ public class src_gui_graphicsview_qgraphicsitem {
 	            setAcceptDrops(true);
 	            // ...
 	        }
-	
+
 	        public void dragEnterEvent(QGraphicsSceneDragDropEvent event)
 	        {
 	            event.setAccepted(event.mimeData().hasFormat("text/plain"));
@@ -447,7 +447,7 @@ public class src_gui_graphicsview_qgraphicsitem {
 		}
 //! [14]
 	}
-	
+
 	public class ClassWrapper3 {
 
 		public class CutsomItem extends QGraphicsItem {
@@ -465,7 +465,7 @@ public class src_gui_graphicsview_qgraphicsitem {
 	                    return newPos;
 	                }
 	            }
-	            
+
 	            return super.itemChange(change, value);
 	        }
 //! [15]
@@ -476,7 +476,7 @@ public class src_gui_graphicsview_qgraphicsitem {
 	public class ClassWrapper4 {
 //! [16]
 		public class CircleItem extends QGraphicsItem {
-			
+
 			// ...
 			public void setRadius(double newRadius)
 	        {
@@ -484,7 +484,7 @@ public class src_gui_graphicsview_qgraphicsitem {
 	                prepareGeometryChange();
 	                radius = newRadius;
 	            }
-	        }	
+	        }
 		}
 //! [16]
 	}

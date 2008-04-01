@@ -29,7 +29,7 @@ class ResourceItem extends QTreeWidgetItem
 
     public ResourceItem(QTreeWidgetItem parent, QFileInfo info, boolean recurse)
     {
-        super(parent); 
+        super(parent);
         setInfo(info, recurse);
     }
 
@@ -38,7 +38,7 @@ class ResourceItem extends QTreeWidgetItem
         super(parent);
         setInfo(info, recurse);
     }
-    
+
     public QFileInfo getInfo()
     {
         return mainInfo;
@@ -195,21 +195,21 @@ public class ResourceSystem extends QWidget
     private void setupSelection()
     {
         selection.clear();
-        
+
         String searchPath = null;
-        if (!browseClassPath) { 
+        if (!browseClassPath) {
         	String fileName = QFileDialog.getOpenFileName(this, "Select a .jar file",
         			null, new QFileDialog.Filter("Jar Files (*.jar)"));
-        	
+
         	if (fileName.length() == 0) {
         		browseClassPath = true;
         		browseClassPathButton.setChecked(true);
         	}
-        	
-        	QFileInfo jarInfo = new QFileInfo(fileName);        	
+
+        	QFileInfo jarInfo = new QFileInfo(fileName);
             searchPath = "classpath:" + jarInfo.canonicalFilePath() + "#/";
         }
-        
+
         if (browseClassPath) {
             searchPath = "classpath:/";
         }

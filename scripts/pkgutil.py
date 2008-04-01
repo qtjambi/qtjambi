@@ -58,18 +58,18 @@ def uncompress(zipFile, rootDir):
         raise "   - uncompress: rootdir " + rootDir + " exists and is a file!"
     elif not os.path.isdir(rootDir):
         os.makedirs(rootDir, 0777)
-        
+
     file = zipfile.ZipFile(zipFile);
     for name in file.namelist():
         absPath = os.path.join(rootDir, "/".join(os.path.split(name)[: -1]))
         if not os.path.isdir(absPath):
             os.makedirs(absPath)
-        
+
         outName = os.path.join(rootDir, name)
         outfile = open(outName, 'wb')
         outfile.write(file.read(name))
         outfile.close()
-        
+
     file.close()
 
 
@@ -128,7 +128,7 @@ def getDataFile(socket, dataFile):
 
 
 # Recursively deletes the directory specified with root
-#  - 0: root: The root directory. 
+#  - 0: root: The root directory.
 def rmdirs(root):
     for (dir, dirs, names) in os.walk(root, False):
         for name in names:
@@ -216,5 +216,5 @@ def expandMacroes(dir, header):
                 handle.write(content)
                 handle.close()
 
-        
-            
+
+

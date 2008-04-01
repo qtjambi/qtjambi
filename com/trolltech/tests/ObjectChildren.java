@@ -19,24 +19,24 @@ import java.util.*;
 
 public class ObjectChildren extends QObject {
 
-    
+
     public static void display(QObject object, int level) {
-        
+
         for (int i=0; i<level * 2; ++i) {
             System.out.print(" ");
         }
         System.out.println(object.toString() + ", children=" + object.children().size());
-        
+
         for (QObject child : object.children()) {
             display(child, level+1);
-        }        
+        }
     }
-    
-    
+
+
     public static void main(String[] args) {
-        QApplication app = new QApplication(args);        
+        QApplication app = new QApplication(args);
         PaintWidget pw = new PaintWidget();
         display(pw, 1);
-    }  
+    }
 }
 */

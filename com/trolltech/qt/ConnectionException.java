@@ -14,7 +14,7 @@
 package com.trolltech.qt;
 
 /**
- * The ConnectionException class is thrown when connecting to a signal fails. 
+ * The ConnectionException class is thrown when connecting to a signal fails.
  */
 public class ConnectionException extends RuntimeException {
     private static final long serialVersionUID = 1L;

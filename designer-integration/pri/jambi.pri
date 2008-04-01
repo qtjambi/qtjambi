@@ -55,4 +55,4 @@ macx:{
 } else {
     LIBS += -L../../lib -l$${LIB_QTJAMBI}
 }
-        
+

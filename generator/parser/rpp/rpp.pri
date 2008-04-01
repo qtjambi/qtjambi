@@ -15,6 +15,6 @@ HEADERS += \
 	$$RXXPATH/rpp/pp-string.h \
 	$$RXXPATH/rpp/pp-symbol.h \
 	$$RXXPATH/rpp/pp.h \
-	$$RXXPATH/rpp/preprocessor.h 
+	$$RXXPATH/rpp/preprocessor.h
 
 INCLUDEPATH += $$PWD $$RXXPATH/rpp

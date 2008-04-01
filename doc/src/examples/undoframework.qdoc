@@ -205,7 +205,7 @@
 
     The item is removed from the scene.
 
-    \section1 MoveCommand Class 
+    \section1 MoveCommand Class
 
     \snippet UndoFramework.java 20
 

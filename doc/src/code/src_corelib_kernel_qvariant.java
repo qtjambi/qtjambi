@@ -113,7 +113,7 @@ import com.trolltech.qt.svg.*;
 public class src_corelib_kernel_qvariant {
     public static void main(String args[]) {
         QApplication.initialize(args);
-        
+
         /*
 //! [0]
         QDataStream out = new QDataStream(ioDevice);

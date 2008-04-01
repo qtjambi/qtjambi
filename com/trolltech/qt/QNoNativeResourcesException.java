@@ -33,15 +33,15 @@ package com.trolltech.qt;
  * no longer be used and this exception is thrown.
  * <p>
  * If you are encountering this exception, it is likely due to one of
- * the following reasons: 
+ * the following reasons:
  * <li>The object you are accessing is owned by Qt Jambi
  * and has been destroyed.</li>
- * <li>The object you are accessing is an object created by Qt Jambi and 
+ * <li>The object you are accessing is an object created by Qt Jambi and
  * then passed to you via a call to a non-final method you have overridden (e.g. an
  * event handler.) Many such objects are temporary and you should not retain
  * references to them.</li>
  * <li>You have manually called dispose() or disposeLater() on the object to delete
- * the native resources.</li>   
+ * the native resources.</li>
  * </p>
  * <p>
  * It is possible to check if an object has a valid C++ part or not

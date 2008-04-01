@@ -61,15 +61,15 @@ public class XMLHighlighter extends QSyntaxHighlighter {
         rule = new HighlightingRule(pattern, tagNameFormat);
         highlightingRules.add(rule);
 
-        // Attribute 
+        // Attribute
         brush = new QBrush(QColor.darkGreen);
         attributeFormat.setForeground(brush);
         attributeFormat.setFontWeight(QFont.Weight.Bold.value());
         pattern = new QRegExp("[A-Za-z//-]+=");
         rule = new HighlightingRule(pattern, attributeFormat);
         highlightingRules.add(rule);
-        
-        
+
+
         // String
         brush = new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern);
         pattern = new QRegExp("\".*\"");
@@ -77,11 +77,11 @@ public class XMLHighlighter extends QSyntaxHighlighter {
         quotationFormat.setForeground(brush);
         rule = new HighlightingRule(pattern, quotationFormat);
         highlightingRules.add(rule);
-        
+
         // Block comment
         brush = new QBrush(QColor.gray, Qt.BrushStyle.SolidPattern);
         commentFormat.setForeground(brush);
-        
+
         commentStartExpression = new QRegExp("<!--");
         commentEndExpression = new QRegExp("-->");
     }

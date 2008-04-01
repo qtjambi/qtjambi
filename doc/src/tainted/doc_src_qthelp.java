@@ -16,7 +16,7 @@
 
 
 //! [3]
-    <?xml version="1.0" encoding="utf-8" ?> 
+    <?xml version="1.0" encoding="utf-8" ?>
     <QHelpCollectionProject version="1.0">
         <docFiles>
             <register>
@@ -52,15 +52,15 @@
 //! [6]
     QHelpEngineCore helpEngine("mycollection.qhc");
     ...
-    
+
     // get all file references for the identifier
-    QMap<QString, QUrl> links = 
-        helpEngine.linksForIdentifier(QLatin1String("MyDialog::ChangeButton"));    
-    
+    QMap<QString, QUrl> links =
+        helpEngine.linksForIdentifier(QLatin1String("MyDialog::ChangeButton"));
+
     // If help is available for this keyword, get the help data
     // of the first file reference.
     if (links.count()) {
-        QByteArray helpData = helpEngine->fileData(links.constBegin().value());        
+        QByteArray helpData = helpEngine->fileData(links.constBegin().value());
         // show the documentation to the user
         if (!helpData.isEmpty())
             displayHelp(helpData);
@@ -72,7 +72,7 @@
     <?xml version="1.0" encoding="UTF-8"?>
     <QtHelpProject version="1.0">
         <namespace>mycompany.com.myapplication.1_0</namespace>
-        <virtualFolder>doc</virtualFolder>	    
+        <virtualFolder>doc</virtualFolder>
         <customFilter name="My Application 1.0">
             <filterAttribute>myapp</filterAttribute>
             <filterAttribute>1.0</filterAttribute>
@@ -193,7 +193,7 @@ public class doc_src_qthelp {
 
 
 //! [3]
-    <?xml version="1.0" encoding="utf-8" ?> 
+    <?xml version="1.0" encoding="utf-8" ?>
     <QHelpCollectionProject version="1.0">
         <docFiles>
             <register>
@@ -229,15 +229,15 @@ public class doc_src_qthelp {
 //! [6]
     QHelpEngineCore helpEngine("mycollection.qhc");
     ...
-    
+
     // get all file references for the identifier
-    QMap<QString, QUrl> links = 
-        helpEngine.linksForIdentifier(QLatin1String("MyDialog.ChangeButton"));    
-    
+    QMap<QString, QUrl> links =
+        helpEngine.linksForIdentifier(QLatin1String("MyDialog.ChangeButton"));
+
     // If help is available for this keyword, get the help data
     // of the first file reference.
     if (links.count()) {
-        QByteArray helpData = helpEngine.fileData(links.constBegin().value());        
+        QByteArray helpData = helpEngine.fileData(links.constBegin().value());
         // show the documentation to the user
         if (!helpData.isEmpty())
             displayHelp(helpData);
@@ -249,7 +249,7 @@ public class doc_src_qthelp {
     <?xml version="1.0" encoding="UTF-8"?>
     <QtHelpProject version="1.0">
         <namespace>mycompany.com.myapplication.1_0</namespace>
-        <virtualFolder>doc</virtualFolder>	    
+        <virtualFolder>doc</virtualFolder>
         <customFilter name="My Application 1.0">
             <filterAttribute>myapp</filterAttribute>
             <filterAttribute>1.0</filterAttribute>

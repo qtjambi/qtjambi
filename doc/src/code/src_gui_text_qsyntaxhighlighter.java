@@ -110,7 +110,7 @@ class MyHighlighter extends QSyntaxHighlighter {
     {
         super(document);
     }
-  
+
 //! [1]
         protected void highlightBlock(String text)
         {
@@ -184,7 +184,7 @@ class MyHighlighter2 extends QSyntaxHighlighter {
          }
 //! [3]
 
-       
+
 //! [4]
         class ParenthesisInfo
         {

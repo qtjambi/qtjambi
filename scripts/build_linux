@@ -4,4 +4,4 @@
 scp qtjambi-linux32-eval-*.tar.gz gunnar@anarki:~/public_html/packages/eval
 scp qtjambi-linux32-gpl-*.tar.gz gunnar@anarki:~/public_html/packages/gpl
 scp qtjambi-linux32-commercial-*.tar.gz  gunnar@anarki:~/public_html/packages/commercial
-scp qtjambi-linux32-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart 
+scp qtjambi-linux32-gpl-*.jar gunnar@anarki:~/public_html/packages/webstart

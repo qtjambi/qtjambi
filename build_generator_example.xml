@@ -1,6 +1,6 @@
 <project default="all" basedir=".">
 
-    <property environment="env"/> 
+    <property environment="env"/>
 
     <tstamp/>
 
@@ -21,13 +21,13 @@
         <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
         <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
         <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
-        
+
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
 
         <mkdir dir="${outputDir}/platform-output"/>
     </target>
 
-    <target name="compile" 
+    <target name="compile"
 	    depends="init">
 
         <generator dir="${outputDir}/generator_example"
@@ -88,7 +88,7 @@
         </jar>
 
         <delete dir="${outputDir}/platform-output"/>
-        
+
     </target>
 
     <target name="all"

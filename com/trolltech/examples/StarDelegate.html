@@ -34,7 +34,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index)
             {
                 Object data = index.data();
-    
+
                 if (data != null &amp;&amp; data instanceof StarRating) {
                     if (option.state().isSet(QStyle.StateFlag.State_Selected)) {
                         painter.fillRect(option.rect(), option.palette().highlight());
@@ -52,7 +52,7 @@ body { color: black; }</style>
                                         QModelIndex index)
             {
                 Object data = index.data();
-    
+
                 if (data instanceof StarRating)
                     return new StarEditor(parent, (StarRating) data);
                 else
@@ -63,7 +63,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public void setEditorData(QWidget editor, QModelIndex index)
             {
                 Object data = index.data();
-    
+
                 if (data instanceof StarRating)
                     ((StarEditor) editor).setStarRating((StarRating) data);
                 else
@@ -84,7 +84,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index)
             {
                 Object data = index.data();
-    
+
                 if (data instanceof StarRating)
                     return ((StarRating) data).sizeHint();
                 else
@@ -99,7 +99,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public StarEditor(QWidget parent, StarRating rating)
             {
                 super(parent);
-    
+
                 starRating = rating;
                 setMouseTracking(true);
                 setAutoFillBackground(true);
@@ -115,7 +115,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public void mouseMoveEvent(QMouseEvent event)
             {
                 int star = starAtPosition(event.x());
-    
+
                 if (star != starRating.getRating() &amp;&amp; star &gt; 0) {
                     starRating.setRating(star);
                     update();
@@ -126,10 +126,10 @@ body { color: black; }</style>
             {
                 int star = (x / (starRating.sizeHint().width()
                                 / starRating.getMaxRating())) + 1;
-    
+
                 if (star &lt;= 0 || star &gt; starRating.getMaxRating())
                     return -1;
-    
+
                 return star;
             }</pre>
 <p>The <tt>starAtPosition()</tt> function uses basic linear algebra to find out which star is under the cursor.</p>
@@ -148,28 +148,28 @@ body { color: black; }</style>
                           int mode)
             {
                 painter.save();
-    
+
                 painter.setRenderHint(QPainter.RenderHint.Antialiasing, true);
                 painter.setPen(Qt.PenStyle.NoPen);
-    
+
                 if (mode == ReadWrite)
                     painter.setBrush(palette.highlight());
                 else
                     painter.setBrush(palette.text());
-    
+
                 int yOffset = (rect.height() - PaintingFactor) / 2;
                 painter.translate(rect.x(), rect.y() + yOffset);
                 painter.scale(PaintingFactor, PaintingFactor);
-    
+
                 for (int i = 0; i &lt; maxCount; i++) {
                     if (i &lt; starCount)
                         painter.drawPolygon(starPolygon, Qt.FillRule.WindingFill);
                     else
                         painter.drawPolygon(diamondPolygon, Qt.FillRule.WindingFill);
-    
+
                     painter.translate(1.0, 0.0);
                 }
-    
+
                 painter.restore();
             }</pre>
 <p>We first set the pen and brush we will use for painting. The <tt>mode</tt> parameter can be either <tt>ReadWrite</tt> or <tt>ReadOnly</tt>. If <tt>mode</tt> is read and write, we use the Highlight color instead of the Foreground color to draw the stars.</p>
@@ -178,7 +178,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index)
             {
                 Object data = index.data();
-    
+
                 if (data instanceof StarRating)
                     return ((StarRating) data).sizeHint();
                 else
@@ -192,11 +192,11 @@ body { color: black; }</style>
 <pre>&nbsp;       public void createTable()
         {
             LinkedList&lt;String&gt; headers = new LinkedList&lt;String&gt;();
-    
+
             table = new QTableWidget(4, 4);
-    
+
             table.setItemDelegate(new Delegate(table));
-    
+
             table.setEditTriggers(QAbstractItemView.EditTrigger.DoubleClicked,
                                   QAbstractItemView.EditTrigger.SelectedClicked);
             table.setSelectionBehavior(

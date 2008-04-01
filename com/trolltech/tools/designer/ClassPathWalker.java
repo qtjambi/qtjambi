@@ -67,10 +67,10 @@ public class ClassPathWalker extends QObject {
     protected void timerEvent(QTimerEvent e) {
         if(stopped)
             return;
-        
+
 		if (stack.isEmpty()) {
             kill();
-			doneSearching.emit();            
+			doneSearching.emit();
 			return;
 		}
 
@@ -119,7 +119,7 @@ public class ClassPathWalker extends QObject {
 							Qt.AspectRatioMode.IgnoreAspectRatio,
 							Qt.TransformationMode.SmoothTransformation);
 				}
-				
+
 				image.dispose();
 
 				if (!smallImage.isNull()) {
@@ -137,7 +137,7 @@ public class ClassPathWalker extends QObject {
     private int timerId = 0;
     public void start() {
         stopped = false;
-        
+
         stack = new Stack<QPair<Object, String>>();
         for (String s : roots) {
             if (!s.equals("")) {
@@ -151,7 +151,7 @@ public class ClassPathWalker extends QObject {
         beginSearching.emit();
         timerId = startTimer(50);
     }
-    
+
     public synchronized void kill() {
         if (timerId != 0)
             killTimer(timerId);

@@ -61,7 +61,7 @@ import com.trolltech.qt.svg.*;
 public class src_gui_dialogs_qfontdialog extends QWidget {
     public static void main(String args[]) {
         QApplication.initialize(args);
- 
+
         }
     public void doFontDialog() {
 

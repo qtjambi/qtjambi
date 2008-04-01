@@ -10,15 +10,15 @@ Qt Jambi Library
 
  - Qt Jambi now makes use of real Java enums and typesafe QFlags.
 
- - QPainter opened on a widget in the paintEvent() will be closed 
-   automatically, so there is no longer a need for an explicit call to 
+ - QPainter opened on a widget in the paintEvent() will be closed
+   automatically, so there is no longer a need for an explicit call to
    QPainter.end()
 
  - Added Annotation @QtBlockedSlot which makes it possible to block
    a method to be used as a slot.
 
  - Added Property Annotations support.
-   Annotations 
+   Annotations
    - @QtPropertyReader
    - @QtPropertyWriter
    - @QtPropertyResetter
@@ -34,7 +34,7 @@ Qt Jambi Library
  - Added QCoreApplication.invokeLater(Runnable exec) which executes
    the runnable in the gui thread when available.
 
- - finalize() is final to preserve our memory model. Added virtual 
+ - finalize() is final to preserve our memory model. Added virtual
    function disposed() which will be called when the native resource
    or the java object is finalized.
 
@@ -50,7 +50,7 @@ Qt Jambi Library
 
  - Bugfix: Potential deadlocks
 
- - Bugfix: For virtual functions in C++ that are overriden as private in 
+ - Bugfix: For virtual functions in C++ that are overriden as private in
    subclasses are now marked @deprecated since they cannot be called.
 
  - Bugfix: Passing null to functions would sometimes crash
@@ -66,7 +66,7 @@ Qt Jambi JNI Layer
 
 
 ************************************************************************
-JUIC 
+JUIC
 
  - Added support for Font kerning and antialiasing
 
@@ -84,13 +84,13 @@ JUIC
 ************************************************************************
 Qt Jambi Generator
 
- - Removed several warnings that would appear when generating certain 
+ - Removed several warnings that would appear when generating certain
    small projects.
 
- - Added more flexibility to disable-gc-tag 
+ - Added more flexibility to disable-gc-tag
 
  - Added support for containers parameterized by pointer types
-  
+
  - Bugfix: Bogus dependencies would be generated for some small projects.
 
 
@@ -103,10 +103,10 @@ Eclipse integration
 
  - Close editor when resource is deleted from the project
 
- - Bugfix: Changing the case of letters in a form name and regenerating 
+ - Bugfix: Changing the case of letters in a form name and regenerating
    would create uncompilable code on Windows
 
- - Bugfix: The Qt Jambi property page would sometimes not appear in 
+ - Bugfix: The Qt Jambi property page would sometimes not appear in
    the properties list
 
  - Bugfix: A form would not be marked as dirty when it was resized
@@ -115,16 +115,16 @@ Eclipse integration
 ************************************************************************
 Documentation
 
- - Java Doc is now available for the Qt Jambi library   
+ - Java Doc is now available for the Qt Jambi library
 
 
 ************************************************************************
 Examples and demos
 
- - Added examples: 
+ - Added examples:
     - Calculator
     - Colliding Mice
-    - Custom Sort / Filter Model 
+    - Custom Sort / Filter Model
     - Elastic Nodes
     - SVG Cards" example
     - SimpleUiExample

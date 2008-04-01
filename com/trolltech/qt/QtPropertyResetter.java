@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 
 /**
  * QtPropertyResetter annotates a method as being a resetter for
- * a property. 
+ * a property.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QtPropertyResetter {

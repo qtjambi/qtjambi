@@ -19,7 +19,7 @@ public class QMarginsF {
         this.top = top;
         this.right = right;
         this.bottom = bottom;
-    }            
+    }
     public double left;
     public double top;
     public double right;

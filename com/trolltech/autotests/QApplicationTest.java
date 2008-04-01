@@ -19,7 +19,7 @@ import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.gui.QApplication;
 
 public abstract class QApplicationTest extends QSignalEmitter {
-  
+
     @BeforeClass
     public static void testInitialize() throws Exception {
         QApplication.initialize(new String[] {});
@@ -28,6 +28,6 @@ public abstract class QApplicationTest extends QSignalEmitter {
     @AfterClass
     public static void testDispose() throws Exception {
         QApplication.quit();
-        QApplication.instance().dispose();        
+        QApplication.instance().dispose();
     }
 }

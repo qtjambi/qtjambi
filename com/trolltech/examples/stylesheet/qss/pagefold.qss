@@ -34,7 +34,7 @@ QMessageBox {
     /* LinksAccessibleByMouse | TextSelectableByMouse */
     messagebox-text-interaction-flags: 5;
 }
-   
+
 /* Set the selection colors for all widgets. */
 QWidget {
     selection-color: black;
@@ -195,7 +195,7 @@ QComboBox[editable="true"]::drop-down {
 QComboBox[editable="true"]::drop-down,
 QComboBox[editable="true"]::drop-down:hover,
 QComboBox[editable="true"]::drop-down:on {
-    border-width: 0px;  
+    border-width: 0px;
     border-left-width: 3px; /* we need only left and center part */
 }
 
@@ -259,7 +259,7 @@ QMenuBar {
 
 /* Customize spin boxes. */
 
-QSpinBox { 
+QSpinBox {
     padding-right: 15px;
 }
 

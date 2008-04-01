@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -e binpatch ];
-then 
+then
     ./binpatch
 fi
 

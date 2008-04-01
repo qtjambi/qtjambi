@@ -19,15 +19,15 @@
 class SetupLayout
 {
 public:
-    static void setupLayout(QLayout *layout) 
+    static void setupLayout(QLayout *layout)
     {
         QPushButton *button1 = new QPushButton("Test", layout->parentWidget());
         QPushButton *button2 = new QPushButton("Test2", layout->parentWidget());
         QSpacerItem *spacer = new QSpacerItem(10, 10);
-        
+
         layout->addWidget(button1);
         layout->addItem(spacer);
-        layout->addWidget(button2);        
+        layout->addWidget(button2);
 
         {
             QHBoxLayout *other_layout = new QHBoxLayout;

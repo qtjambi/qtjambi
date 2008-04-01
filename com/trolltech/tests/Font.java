@@ -15,9 +15,9 @@ package com.trolltech.tests;
 
 import com.trolltech.qt.gui.*;
 
-public class Font extends QLabel 
+public class Font extends QLabel
 {
-    public Font() 
+    public Font()
     {
         super();
 
@@ -27,7 +27,7 @@ public class Font extends QLabel
         setText("Test font");
     }
 
-        public static void main(String args[]) 
+        public static void main(String args[])
         {
             QApplication.initialize(args);
 

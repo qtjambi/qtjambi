@@ -11,7 +11,7 @@ include(../generator/parser/rpp/rpp.pri)
 
 GENERATOR_DIR = ../generator
 
-HEADERS += \ 
+HEADERS += \
 	$$GENERATOR_DIR/reporthandler.h \
 	$$GENERATOR_DIR/typesystem.h \
         $$GENERATOR_DIR/main.h \
@@ -26,7 +26,7 @@ HEADERS += \
         $$GENERATOR_DIR/metainfogenerator.h \
         $$GENERATOR_DIR/juicdatagenerator.h \
         $$GENERATOR_DIR/customtypes.h \
-	
+
 SOURCES += \
 	$$GENERATOR_DIR/reporthandler.cpp \
 	$$GENERATOR_DIR/typesystem.cpp \

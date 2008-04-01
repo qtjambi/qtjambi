@@ -19,7 +19,7 @@ cd src && make && make clean && cd ..
 cd tools && make && make clean && cd ..
 cd ..
 
-cd qt-commercial 
+cd qt-commercial
 chmod -R u+rx .
 touch LICENSE
 QTDIR=$PWD perl bin/syncqt -check-includes

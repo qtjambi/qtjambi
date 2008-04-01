@@ -39,21 +39,21 @@ body { color: black; }</style>
 <pre>&nbsp;           createSpinBoxes();
             createDateTimeEdits();
             createDoubleSpinBoxes();
-    
+
             QHBoxLayout layout = new QHBoxLayout();
             layout.addWidget(spinBoxesGroup);
             layout.addWidget(editsGroup);
             layout.addWidget(doubleSpinBoxesGroup);
             setLayout(layout);
-    
+
             setWindowTitle(tr(&quot;Spin Boxes&quot;));
-    
+
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
         }
-    
+
         public void createSpinBoxes() {
             spinBoxesGroup = new QGroupBox(tr(&quot;Spinboxes&quot;));
-    
+
             QLabel integerLabel = new QLabel(String.format(tr(&quot;Enter a value between %1$d and %2$d:&quot;), -20, 20));
             QSpinBox integerSpinBox = new QSpinBox();
             integerSpinBox.setRange(-20, 20);
@@ -77,7 +77,7 @@ body { color: black; }</style>
             priceSpinBox.setPrefix(&quot;$&quot;);
             priceSpinBox.setValue(99);</pre>
 <p>For simplicity, we show a spin box with a prefix and no suffix. It is also possible to use both at the same time.</p>
-<pre>&nbsp;   
+<pre>&nbsp;
             QVBoxLayout spinBoxLayout = new QVBoxLayout();
             spinBoxLayout.addWidget(integerLabel);
             spinBoxLayout.addWidget(integerSpinBox);
@@ -91,7 +91,7 @@ body { color: black; }</style>
 <p>The <tt>createDateTimeEdits()</tt> function constructs another group box with a selection of spin boxes used for editing dates and times.</p>
 <pre>&nbsp;       public void createDateTimeEdits() {
             editsGroup = new QGroupBox(tr(&quot;Date and time spin boxes&quot;));
-    
+
             QLabel dateLabel = new QLabel();
             QDateEdit dateEdit = new QDateEdit(QDate.currentDate());
             dateEdit.setDateRange(new QDate(2005, 1, 1), new QDate(2010, 12, 31));
@@ -118,7 +118,7 @@ body { color: black; }</style>
             formatComboBox.addItem(&quot;hh:mm:ss dd/MM/yyyy&quot;);
             formatComboBox.addItem(&quot;hh:mm:ss&quot;);
             formatComboBox.addItem(&quot;hh:mm ap&quot;);
-    
+
             formatComboBox.activated.connect(this, &quot;setFormatString(String)&quot;);</pre>
 <p>A signal from this combobox is connected to a slot in the <tt>Window</tt> class (shown later).</p>
 <pre>&nbsp;           QVBoxLayout editsLayout = new QVBoxLayout();
@@ -150,7 +150,7 @@ body { color: black; }</style>
 <p>The <tt>createDoubleSpinBoxes()</tt> function constructs three spin boxes that are used to input double-precision floating point numbers:</p>
 <pre>&nbsp;       public void createDoubleSpinBoxes() {
             doubleSpinBoxesGroup = new QGroupBox(tr(&quot;Double precision spinboxes&quot;));
-    
+
             QLabel precisionLabel = new QLabel(tr(&quot;Number of decimal places to show:&quot;));
             QSpinBox precisionSpinBox = new QSpinBox();
             precisionSpinBox.setRange(0, 13);
@@ -178,7 +178,7 @@ body { color: black; }</style>
             priceSpinBox.setSingleStep(1.0);
             priceSpinBox.setPrefix(&quot;$&quot;);
             priceSpinBox.setValue(99.99);
-    
+
             precisionSpinBox.valueChanged.connect(this, &quot;changePrecision(int)&quot;);</pre>
 <p>We connect the QSpinBox widget that specifies the precision to a slot in the <tt>Window</tt> class.</p>
 <pre>&nbsp;           QVBoxLayout spinBoxLayout = new QVBoxLayout();
@@ -203,10 +203,10 @@ body { color: black; }</style>
 <p>Finally, we provide a <tt>main()</tt> function to create and show the <tt>SpinBoxes</tt> widget when the example is run:</p>
 <pre>&nbsp;       public static void main(String args[]) {
             QApplication.initialize(args);
-    
+
             SpinBoxes spinBoxes = new SpinBoxes();
             spinBoxes.show();
-    
+
             QApplication.exec();
         }
     }</pre>

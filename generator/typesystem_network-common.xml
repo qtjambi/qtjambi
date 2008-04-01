@@ -2,7 +2,7 @@
   <namespace-type name="QSsl">
     <include file-name="qssl.h" location="global" />
   </namespace-type>
-  
+
   <enum-type name="QAbstractSocket::NetworkLayerProtocol" />
   <enum-type name="QAbstractSocket::SocketError" />
   <enum-type name="QAbstractSocket::SocketState" />
@@ -20,7 +20,7 @@
   <enum-type name="QNetworkProxy::ProxyType" />
   <enum-type name="QUdpSocket::BindFlag" flags="QUdpSocket::BindMode" />
   <enum-type name="QUrlInfo::PermissionSpec" />
-  <enum-type name="QHostInfo::HostInfoError" />    
+  <enum-type name="QHostInfo::HostInfoError" />
   <enum-type name="QSsl::KeyType" />
   <enum-type name="QSsl::EncodingFormat" />
   <enum-type name="QSsl::KeyAlgorithm"/>
@@ -42,9 +42,9 @@
       <modify-function signature="closeConnection()" remove="all"/>
   </object-type>
   <object-type name="QTcpServer" />
-  <object-type name="QTcpSocket" />  
+  <object-type name="QTcpSocket" />
   <object-type name="QUdpSocket" />
-    
+
   <object-type name="QHttpHeader">
     <modify-function signature="operator=(QHttpHeader)" remove="all"/>
   </object-type>
@@ -65,11 +65,11 @@
     <modify-function signature="setAddress(unsigned char*)" remove="all"/>
     <modify-function signature="operator=(QString)" remove="all"/>
     <modify-function signature="operator=(QHostAddress)" remove="all"/>
-  </value-type>  
+  </value-type>
 
   <value-type name="QHostInfo">
         <modify-function signature="operator=(QHostInfo)" remove="all"/>
-        <modify-function signature="lookupHost(QString,QObject*,const char*)" access="private" />        
+        <modify-function signature="lookupHost(QString,QObject*,const char*)" access="private" />
   </value-type>
 
   <value-type name="QHttpRequestHeader">
@@ -83,11 +83,11 @@
   <value-type name="QNetworkAddressEntry">
     <modify-function signature="operator=(QNetworkAddressEntry)" remove="all"/>
   </value-type>
-  
+
   <value-type name="QNetworkInterface">
     <modify-function signature="operator=(QNetworkInterface)" remove="all"/>
   </value-type>
-  
+
   <value-type name="QNetworkProxy">
     <modify-function signature="operator=(QNetworkProxy)" remove="all"/>
   </value-type>
@@ -102,9 +102,9 @@
     </modify-function>
     <modify-function signature="operator[](int)">
         <remove/>
-    </modify-function>    
+    </modify-function>
   </value-type>
-  
+
   <value-type name="QAuthenticator">
     <modify-function signature="operator=(QAuthenticator)" remove="all"/>
   </value-type>
@@ -127,7 +127,7 @@
   <value-type name="QSslConfiguration" />
 
   <object-type name="QSslSocket" />
-  
+
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrlInfo' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QAuthenticator' has equals operators but no qHash() function" />
@@ -137,7 +137,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCertificate' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCipher' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslConfiguration' has equals operators but no qHash() function"/>
-  
+
   <!-- For people building without SSL support -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslSocket' for enum 'SslMode' is not declared" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslError' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
@@ -149,6 +149,6 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslCertificate' for enum 'SubjectInfo' is not declared"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslConfiguration' is specified in typesystem, but not defined. This could potentially lead to compilation errors."/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QSslSocket' is specified in typesystem, but not defined. This could potentially lead to compilation errors."/>
-  <!-- -->    
-  
+  <!-- -->
+
 </typesystem>

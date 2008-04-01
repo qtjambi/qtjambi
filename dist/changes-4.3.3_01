@@ -19,8 +19,8 @@ ____________________
  * Added QtProperty class and QObject.properties() accessor which deprecates
    QtPropertyManager. QtPropertyManager will be removed in Qt Jambi
    4.4.
-   
- * Deprecated QtPropertyOrder because it will be removed in Qt Jambi 4.4 
+
+ * Deprecated QtPropertyOrder because it will be removed in Qt Jambi 4.4
    where it is no longer needed.
 
 ____________________
@@ -48,15 +48,15 @@ ____________________
 
  * Some use cases would cause crashes on VM shutdown because Qt C++
    objects would do virtual calls into Java after the VM had closed
-   down. 
-   
+   down.
+
  * Fixed exceptions such as IllegalArgumentException and ClassCastException
    in certain, rare cases, e.g. when calling addSubWindow() on a
    QMdiArea widget which reimplemented the eventFilter() method.
-   
- * QObject.properties() now returns the same set of properties as it 
+
+ * QObject.properties() now returns the same set of properties as it
    does in Qt.
- 
+
  * Mac OS X: The deployment target for the binaries has properly been
    set to 10.4.
 
@@ -74,12 +74,12 @@ New Implementation:
 ____________________
 
  * Allow injection of code into a class' destructor function.
- 
+
  * Support nested namespaces.
 
 ____________________
 
-Fixes: 
+Fixes:
 ____________________
 
  * The Generator would generate empty directories for packages it knew
@@ -88,7 +88,7 @@ ____________________
  * The Generator now properly handles interface-type's declared inside
    namespaces.
 
- * The Generator now correctly supports forward declarations of classes 
+ * The Generator now correctly supports forward declarations of classes
    inside namespaces.
 
 
@@ -96,7 +96,7 @@ ____________________
  Qt Jambi Designer
 ************************************************************************
 
-  * A few missing properties have been added to the property editor and 
+  * A few missing properties have been added to the property editor and
     some run time properties have been removed.
 
 
@@ -105,11 +105,11 @@ ____________________
 ************************************************************************
 ____________________
 
-Fixes: 
+Fixes:
 ____________________
 
  * Part of the Qt Jambi Eclipse Integration would fail to load in some cases.
-  
+
  * If you launched Eclipse with the property editor open and no current
    form, no changes made in the property editor would affect the form.
 

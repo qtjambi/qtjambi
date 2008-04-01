@@ -100,7 +100,7 @@ public class Utilities {
     public static void loadQtLibrary(String library) {
         loadQtLibrary(library, "4");
     }
-    
+
     public static void loadQtLibrary(String library, String version) {
         com.trolltech.qt.internal.NativeLibraryManager.loadQtLibrary(library, version);
 

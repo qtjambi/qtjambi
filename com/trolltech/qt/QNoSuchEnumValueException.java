@@ -14,7 +14,7 @@
 package com.trolltech.qt;
 
 /**
- * 
+ *
  *
  */
 public class QNoSuchEnumValueException extends RuntimeException {
@@ -23,5 +23,5 @@ public class QNoSuchEnumValueException extends RuntimeException {
     public QNoSuchEnumValueException(int value) {
         super(String.valueOf(value));
     }
-    
+
 }

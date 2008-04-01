@@ -29,24 +29,24 @@
             <inject-code position="end">
             if (oldRenderer != null)
                 oldRenderer.reenableGarbageCollection();
-            </inject-code>       
+            </inject-code>
         </modify-function>
         <modify-function signature="QGraphicsSvgItem(QGraphicsItem*)">
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1" />
             if (%1 != null) disableGarbageCollection();
             </inject-code>
-        </modify-function>  
+        </modify-function>
         <modify-function signature="QGraphicsSvgItem(const QString &amp;,QGraphicsItem*)">
             <inject-code position="end">
                 <argument-map index="2" meta-name="%2" />
             if (%2 != null) disableGarbageCollection();
             </inject-code>
         </modify-function>
-        
-    </object-type> 
-    
+
+    </object-type>
+
     <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />  
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />  
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />
 </typesystem>

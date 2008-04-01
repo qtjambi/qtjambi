@@ -29,7 +29,7 @@ $$QTcpServer.waitForNewConnection()
 /**
 This is an overloaded method provided for convenience.
 
-@return 
+@return
 */
 
 

@@ -32,7 +32,7 @@ class QJdbcSqlResult extends QSqlResult
     {
         return statement;
     }
-    
+
     protected Object data(int i)
     {
         try {
@@ -175,7 +175,7 @@ class QJdbcSqlResult extends QSqlResult
         	if (connection.getMetaData().supportsGetGeneratedKeys())
         		executionResult = statement.execute(query, Statement.RETURN_GENERATED_KEYS);
         	else
-        		executionResult = statement.execute(query, Statement.NO_GENERATED_KEYS);        	
+        		executionResult = statement.execute(query, Statement.NO_GENERATED_KEYS);
         } catch (SQLException ex) {
             setError(ex, tr("Unable to execute query"), QSqlError.ErrorType.ConnectionError);
             resultSet = null;
@@ -205,14 +205,14 @@ class QJdbcSqlResult extends QSqlResult
 
         return true;
     }
-    
+
     protected boolean exec()
     {
         if ((statement == null) || !(statement instanceof PreparedStatement))
             return false;
-        
+
         PreparedStatement ps = (PreparedStatement)statement;
-        
+
         try {
             for (int i = 0; i<boundValueCount(); ++i) {
         		ps.setObject(i + 1, QJdbcSqlUtil.qtToJava(boundValue(i)));
@@ -309,10 +309,10 @@ class QJdbcSqlResult extends QSqlResult
             return null;
 
         try {
-            ResultSet keys = connection.getMetaData().supportsGetGeneratedKeys() 
+            ResultSet keys = connection.getMetaData().supportsGetGeneratedKeys()
                              ? statement.getGeneratedKeys()
                              : null;
-            
+
             if (keys == null)
                 return null;
 

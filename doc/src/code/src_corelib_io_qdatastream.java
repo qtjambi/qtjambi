@@ -106,7 +106,7 @@ public class src_corelib_io_qdatastream {
             data_new_in_XXX_version_1_2.readFrom(in);
         other_interesting_data.readFrom(in);
 //! [4]
-        
+
 
 //! [5]
         QDataStream out = new QDataStream(file);

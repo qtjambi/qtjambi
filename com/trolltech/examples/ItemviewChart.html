@@ -24,36 +24,36 @@ body { color: black; }</style>
 <h2>ItemviewChart Class Implementation</h2>
 <p>The <tt>ItemviewChart</tt> class contains functions to handle the user interface and set up a model with data obtained from a file. It also contains the implementation of the <tt>PieView</tt> class (<a href="#pieview-class-implementation">shown later</a>).</p>
 <pre>&nbsp;   public class ItemviewChart extends QMainWindow {
-    
+
         private QAbstractItemModel model;</pre>
 <p>We define private variables for the model so that we can access and modify it as required.</p>
 <p>The constructor sets up the user interface, connecting actions used in the menus to slots in the class, constructs a model, and arranges the views in the window:</p>
 <pre>&nbsp;       public ItemviewChart() {
             QMenu fileMenu = new QMenu(tr(&quot;&amp;File&quot;), this);
-    
+
             QAction openAction = new QAction(tr(&quot;&amp;Open...&quot;), this);
             openAction.setShortcut(new QKeySequence(tr(&quot;Ctrl+O&quot;)));
             openAction.triggered.connect(this, &quot;openFile()&quot;);
             fileMenu.addAction(openAction);
-    
+
             QAction saveAction = new QAction(tr(&quot;&amp;Save As...&quot;), this);
             saveAction.setShortcut(new QKeySequence(tr(&quot;Ctrl+S&quot;)));
             saveAction.triggered.connect(this, &quot;saveFile()&quot;);
             fileMenu.addAction(saveAction);
-    
+
             QAction quitAction = new QAction(tr(&quot;&amp;Quit&quot;), this);
             quitAction.setShortcut(new QKeySequence(tr(&quot;Ctrl+Q&quot;)));
             quitAction.triggered.connect(this, &quot;close()&quot;);
             fileMenu.addAction(quitAction);
-    
+
             setupModel();
             setupViews();
-    
+
             menuBar().addMenu(fileMenu);
             statusBar();
-    
+
             openFile(&quot;classpath:com/trolltech/examples/qtdata.cht&quot;);
-    
+
             setWindowTitle(tr(&quot;Chart&quot;));
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             resize(750, 500);
@@ -75,14 +75,14 @@ body { color: black; }</style>
             splitter.addWidget(pieChart);
             splitter.setStretchFactor(0, 0);
             splitter.setStretchFactor(1, 1);
-    
+
             table.setModel(model);
             pieChart.setModel(model);
-    
+
             QItemSelectionModel selectionModel = new QItemSelectionModel(model);
             table.setSelectionModel(selectionModel);
             pieChart.setSelectionModel(selectionModel);
-    
+
             setCentralWidget(splitter);
         }</pre>
 <p>We construct a selection model for both views to share, before setting the splitter as the central widget for the main window.</p>
@@ -124,7 +124,7 @@ body { color: black; }</style>
 <p>The <tt>PieView</tt> class is subclassed from QAbstractItemView rather than one of the standard view classes because it represents data obtained from a model in a way that is quite different from those views.</p>
 <p>To operate correctly, the view needs to record certain pieces of information about the data supplied by the model, including the sum of all values in the second column of the model and the number of valid items:</p>
 <pre>&nbsp;       private class PieView extends QAbstractItemView {
-    
+
             private int margin;
             private int totalSize;
             private int pieSize;
@@ -137,7 +137,7 @@ body { color: black; }</style>
                 super(parent);
                 horizontalScrollBar().setRange(0, 0);
                 verticalScrollBar().setRange(0, 0);
-    
+
                 margin = 8;
                 totalSize = 300;
                 pieSize = totalSize - 2 * margin;
@@ -150,15 +150,15 @@ body { color: black; }</style>
 <p>When data in the model is changed, the <tt>dataChanged()</tt> slot is called:</p>
 <pre>&nbsp;           protected void dataChanged(final QModelIndex topLeft, final QModelIndex bottomRight) {
                 super.dataChanged(topLeft, bottomRight);
-    
+
                 validItems = 0;
                 totalValue = 0.0;
-    
+
                 for (int row = 0; row &lt; model().rowCount(rootIndex()); ++row) {
-    
+
                     QModelIndex index = model().index(row, 1, rootIndex());
                     double value = toDouble(model().data(index));
-    
+
                     if (value &gt; 0.0) {
                         totalValue += value;
                         validItems++;
@@ -170,22 +170,22 @@ body { color: black; }</style>
 <p>The <tt>rowsInserted()</tt> and <tt>rowsAboutToBeRemoved()</tt> slots are able to modify the running total and update the number of valid items:</p>
 <pre>&nbsp;           protected void rowsInserted(final QModelIndex parent, int start, int end) {
                 for (int row = start; row &lt;= end; ++row) {
-    
+
                     QModelIndex index = model().index(row, 1, rootIndex());
                     double value = toDouble(model().data(index));
-    
+
                     if (value &gt; 0.0) {
                         totalValue += value;
                         validItems++;
                     }
                 }
-    
+
                 super.rowsInserted(parent, start, end);
             }
-    
+
             protected void rowsAboutToBeRemoved(final QModelIndex parent, int start, int end) {
                 for (int row = start; row &lt;= end; ++row) {
-    
+
                     QModelIndex index = model().index(row, 1, rootIndex());
                     double value = toDouble(model().data(index));
                     if (value &gt; 0.0) {
@@ -193,7 +193,7 @@ body { color: black; }</style>
                         validItems--;
                     }
                 }
-    
+
                 super.rowsAboutToBeRemoved(parent, start, end);
             }</pre>
 <p>The <tt>edit()</tt> slot handles item editing:</p>
@@ -208,7 +208,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public QModelIndex indexAt(final QPoint point) {
                 if (validItems == 0)
                     return null;
-    
+
                 int wx = point.x() + horizontalScrollBar().value();
                 int wy = point.y() + verticalScrollBar().value();</pre>
 <p>The initial conversion between viewport and view (contents) coordinates is straightforward for this view, requiring a simple translation based on the scroll offsets.</p>
@@ -217,32 +217,32 @@ body { color: black; }</style>
                     double cx = wx - totalSize / 2;
                     double cy = totalSize / 2 - wy;
                     double d = Math.pow(Math.pow(cx, 2) + Math.pow(cy, 2), 0.5);
-    
+
                     if (d == 0 || d &gt; pieSize / 2)
                         return null;
-    
+
                     double angle = (180 / Math.PI) * Math.acos(cx / d);
                     if (cy &lt; 0)
                         angle = 360 - angle;
-    
+
                     double startAngle = 0.0;
-    
+
                     for (int row = 0; row &lt; model().rowCount(rootIndex()); ++row) {
-    
+
                         QModelIndex index = model().index(row, 1, rootIndex());
                         double value = toDouble(model().data(index));
-    
+
                         if (value &gt; 0.0) {
                             double sliceAngle = 360 * value / totalValue;
-    
+
                             if (angle &gt;= startAngle &amp;&amp; angle &lt; (startAngle + sliceAngle))
                                 return model().index(row, 1, rootIndex());
-    
+
                             startAngle += sliceAngle;
                         }
                     }
                 }
-    
+
                 return null;
             }</pre>
 <p>If the point did not lie within any parts of the view that correspond to model indexes, null is returned.</p>
@@ -250,10 +250,10 @@ body { color: black; }</style>
 <pre>&nbsp;           QRect itemRect(final QModelIndex index) {
                 if (index == null)
                     return new QRect();
-    
+
                 if (index.column() != 1)
                     return new QRect();
-    
+
                 if (toDouble(model().data(index)) &gt; 0.0) {
                     return new QRect(margin, margin, pieSize, pieSize);
                 }
@@ -264,35 +264,35 @@ body { color: black; }</style>
 <pre>&nbsp;           QRegion itemRegion(final QModelIndex index) {
                 if (index == null)
                     return null;
-    
+
                 if (index.column() != 1)
                     return null;
-    
+
                 if (toDouble(model().data(index)) &lt;= 0.0)
                     return null;</pre>
 <p>We are only interested in items in the second column in the model that contain positive double values, so we return null for all other model indexes.</p>
 <p>For each suitable model index, we use a QPainterPath to define the geometry of the item, and convert it to a filled polygon to construct a new QRegion object:</p>
 <pre>&nbsp;               double startAngle = 0.0;
                 for (int row = 0; row &lt; model().rowCount(rootIndex()); ++row) {
-    
+
                     QModelIndex sliceIndex = model().index(row, 1, rootIndex());
                     double value = toDouble(model().data(sliceIndex));
-    
+
                     if (value &gt; 0.0) {
                         double angle = 360 * value / totalValue;
-    
+
                         if (sliceIndex.equals(index)) {
                             QPainterPath slicePath = new QPainterPath();
                             slicePath.moveTo(totalSize / 2, totalSize / 2);
                             slicePath.arcTo(margin, margin, margin + pieSize, margin + pieSize, startAngle, angle);
                             slicePath.closeSubpath();
-    
+
                             return new QRegion(slicePath.toFillPolygon().toPolygon());
                         }
                         startAngle += angle;
                     }
                 }
-    
+
                 return null;
             }</pre>
 <p>If the model index supplied was invalid, null is returned.</p>
@@ -307,10 +307,10 @@ body { color: black; }</style>
 <p>The <tt>visualRegionForSelection()</tt> function is similar to <tt>visualRect()</tt> but, where <tt>visualRect()</tt>, <tt>itemRect()</tt>, and <tt>itemRegion()</tt> are only used to obtain geometric information about individual items, this function is used to obtain regions that correspond to a number of selected items in viewport coordinates:</p>
 <pre>&nbsp;           protected QRegion visualRegionForSelection(final QItemSelection selection) {
                 int ranges = selection.size();
-    
+
                 if (ranges == 0)
                     return new QRegion(new QRect());
-    
+
                 QRegion region = new QRegion();
                 for (int i = 0; i &lt; ranges; ++i) {
                     QItemSelectionRange range = selection.at(i);
@@ -338,7 +338,7 @@ body { color: black; }</style>
 <pre>&nbsp;           public void scrollTo(final QModelIndex index, ScrollHint hint) {
                 QRect area = viewport().rect();
                 QRect rect = visualRect(index);
-    
+
                 if (rect.left() &lt; area.left())
                     horizontalScrollBar().setValue(
                         horizontalScrollBar().value() + rect.left() - area.left());
@@ -346,7 +346,7 @@ body { color: black; }</style>
                     horizontalScrollBar().setValue(
                         horizontalScrollBar().value() + Math.min(
                             rect.right() - area.right(), rect.left() - area.left()));
-    
+
                 if (rect.top() &lt; area.top())
                     verticalScrollBar().setValue(
                         verticalScrollBar().value() + rect.top() - area.top());
@@ -354,7 +354,7 @@ body { color: black; }</style>
                     verticalScrollBar().setValue(
                         verticalScrollBar().value() + Math.min(
                             rect.bottom() - area.bottom(), rect.top() - area.top()));
-    
+
                 update();
             }</pre>
 <p>We find the position of the item in viewport coordinates, and calculate the displacement from the top-left of the viewport. The result is used to provide new values for the horizontal and vertical scroll bars.</p>
@@ -372,7 +372,7 @@ body { color: black; }</style>
 <p>In this model, we only handle actions for the cursor keys:</p>
 <pre>&nbsp;           protected QModelIndex moveCursor(QAbstractItemView.CursorAction cursorAction, Qt.KeyboardModifiers modifiers) {
                 QModelIndex current = currentIndex();
-    
+
                 switch (cursorAction) {
                 case MoveLeft:
                 case MoveUp:
@@ -391,7 +391,7 @@ body { color: black; }</style>
                 default:
                     break;
                 }
-    
+
                 viewport().update();
                 return current;
             }</pre>
@@ -400,36 +400,36 @@ body { color: black; }</style>
 <p>First, we obtain model indexes from the model for each item of data, using <tt>itemRegion()</tt> to obtain a region for each item.</p>
 <pre>&nbsp;           protected void setSelection(final QRect rect, QItemSelectionModel.SelectionFlags command) {
                 QRect contentsRect = rect.translated(horizontalScrollBar().value(), verticalScrollBar().value()).normalized();
-    
+
                 int rows = model().rowCount(rootIndex());
                 int columns = model().columnCount(rootIndex());
                 Vector&lt;QModelIndex&gt; indexes = new Vector&lt;QModelIndex&gt;();
-    
+
                 for (int row = 0; row &lt; rows; ++row) {
                     for (int column = 0; column &lt; columns; ++column) {
                         QModelIndex index = model().index(row, column, rootIndex());
                         QRegion region = itemRegion(index);
-    
+
                         if (region != null &amp;&amp; region.intersects(contentsRect))
                             indexes.add(index);
                     }
                 }</pre>
 <p>If an item's region intersects the selection rectangle, we add the model index to a vector of indexes.</p>
 <p>Once we have examined the regions of each item, we check whether any indexes were stored in the vector. If so, we construct a selection by extending the current selection to cover a range of indexes.</p>
-<pre>&nbsp;   
+<pre>&nbsp;
                 if (indexes.size() &gt; 0) {
                     int firstRow = indexes.elementAt(0).row();
                     int lastRow = indexes.elementAt(0).row();
                     int firstColumn = indexes.elementAt(0).column();
                     int lastColumn = indexes.elementAt(0).column();
-    
+
                     for (int i = 1; i &lt; indexes.size(); ++i) {
                         firstRow = Math.min(firstRow, indexes.elementAt(i).row());
                         lastRow = Math.max(lastRow, indexes.elementAt(i).row());
                         firstColumn = Math.min(firstColumn, indexes.elementAt(i).column());
                         lastColumn = Math.max(lastColumn, indexes.elementAt(i).column());
                     }
-    
+
                     QItemSelection selection = new QItemSelection(
                         model().index(firstRow, firstColumn, rootIndex()),
                         model().index(lastRow, lastColumn, rootIndex()));
@@ -439,7 +439,7 @@ body { color: black; }</style>
                     QItemSelection selection = new QItemSelection(noIndex, noIndex);
                     selectionModel().select(selection, command);
                 }
-    
+
                 update();
             }</pre>
 <p>Note that we still apply a selection even if there are no model indexes to select; this ensures that selection commands such as Clear have an effect on the selection.</p>
@@ -461,7 +461,7 @@ body { color: black; }</style>
                 QRect rect = new QRect(origin, event.pos()).normalized();
                 rubberBand.setRubberBandGeometry(rect);
                 super.mouseMoveEvent(event);
-    
+
                 QModelIndex underMouseIndex = indexAt(event.pos());
                 if (underMouseIndex == null)
                     setSelection(rect, selectionCommand(underMouseIndex, event));

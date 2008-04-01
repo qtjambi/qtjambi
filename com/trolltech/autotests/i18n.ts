@@ -24,7 +24,7 @@
     </message>
     <message>
         <location filename="TestI18N.java" line="36"/>
-        <source>not translated 
+        <source>not translated
 123</source>
         <translation type="unfinished"></translation>
     </message>

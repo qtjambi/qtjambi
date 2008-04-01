@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
  * The QtBlockedSlot annotation prevents a method from being used as a slot.
  * It is provided for consistency with Qt, in which functions
  * must be declared as slots. Also, many methods are not suited
- * for editing in the Qt Designer. 
+ * for editing in the Qt Designer.
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,7 +1,7 @@
 /*!
     \page qtjambi-signalsandslots.html
 
-    \title Signals and Slots    
+    \title Signals and Slots
 
     When we change a widget in GUI programming, we often want another
     widget to be notified. More generally, we want objects of any kind
@@ -9,7 +9,7 @@
     user clicks a \gui{Close} button, we probably want the window's
     \l{QWidget::close()}{close()} function to be called. Signals and
     slots are Qt Jambi's mechanism for such communication between
-    objects.  
+    objects.
 
     \omit (Could be a separate section though)
     Other Java toolkits apply different methods for inter-object
@@ -23,7 +23,7 @@
     leads to longer application start-up times and also runtime
     overhead.
     \endomit
-    
+
     In this overview, we will examine how to implement and use signals
     and slots in Qt Jambi. We look at how the mechanism works, its
     intended usage, and give an example.
@@ -31,7 +31,7 @@
     \tableofcontents
 
     \section1 Signal and Slots
-    
+
     A signal is emitted when a particular event occurs. Qt Jambi's
     widgets have many predefined signals, but we can always subclass
     widgets to add our own signals to them. A slot is a method that is
@@ -79,7 +79,7 @@
     A minimal Java class using signals and slots may read:
 
     \snippet doc/src/snippets/SignalsSlotsExample.java 1
-    
+
     The class manages a counter, which is stored in the private member
     \c value.  The signal \c valueChanged is emitted whenever \c value
     changes. We will now go through the class step-by-step to describe
@@ -91,7 +91,7 @@
     Signal2 to Signal9. The number of the class indicates the number
     of parameters the signal has. The type of each parameter is
     specified as a generic. It is customary to declare signals as
-    public rather than to provide access methods for them. 
+    public rather than to provide access methods for them.
 
     \snippet doc/src/snippets/SignalsSlotsExample.java 3
 
@@ -118,7 +118,7 @@
     will receive the signal and the method signature of the slot. It
     is only the type of the method parameters that should be specified
     and not the parameter names.
-   
+
     Calling \c{a.setValue(12)} makes \c{a} emit a
     \c{valueChanged(12)} signal, which \c{b} will receive in its
     \c{setValue()} slot, i.e. \c{b.setValue(12)} is called. Then
@@ -130,11 +130,11 @@
     duplicate a connection, two signals will be emitted. You can
     always break a connection using the signal classes \c
     {disconnect()} method.
-    
+
     This example illustrates that objects can work together without
     needing to know any information about each other. To enable this,
     the objects only need to be connected together, and this can be
-    achieved with the signal classes \c {connect()} method calls. 
+    achieved with the signal classes \c {connect()} method calls.
 
     \section1 Signals
 

@@ -236,9 +236,9 @@ public class src_corelib_tools_qbitarray {
 
 //! [8]
 
-        
+
        //The following snipplet is not applicable in Java since there are no
-       //support for operator overloading. 
+       //support for operator overloading.
         /*QBitArray a(3);
         QBitArray b(2);
         a[0] = 1; a[1] = 0; a[2] = 1;   // a: [ 1, 0, 1 ]
@@ -250,7 +250,7 @@ public class src_corelib_tools_qbitarray {
 
 //! [9]
        //The following snipplet is not applicable in Java since there are no
-       //support for operator overloading. 
+       //support for operator overloading.
         /*QBitArray a(3);
         QBitArray b(2);
         a[0] = 1; a[1] = 0; a[2] = 1;   // a: [ 1, 0, 1 ]
@@ -261,7 +261,7 @@ public class src_corelib_tools_qbitarray {
 
 //! [10]
        //The following snipplet is not applicable in Java since there are no
-       //support for operator overloading. 
+       //support for operator overloading.
        /* QBitArray a(3);
         QBitArray b(2);
         a[0] = 1; a[1] = 0; a[2] = 1;   // a: [ 1, 0, 1 ]
@@ -272,7 +272,7 @@ public class src_corelib_tools_qbitarray {
 
 //! [11]
        //The following snipplet is not applicable in Java since there are no
-       //support for operator overloading. 
+       //support for operator overloading.
        /* QBitArray a(3);
         QBitArray b;
         a[0] = 1; a[1] = 0; a[2] = 1;   // a: [ 1, 0, 1 ]

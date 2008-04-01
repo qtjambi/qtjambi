@@ -165,14 +165,14 @@ class Backend {
             }
             return null;
         }
- 
+
         Set<Integer> objectDescriptionIndexes(Phonon.ObjectDescriptionType type) {
             Set<Integer> set;
             switch(type)
             {
             case AudioOutputDeviceType:
                 // use AudioDeviceEnumerator to list ALSA and OSS devices
-                set.add(10000); 
+                set.add(10000);
                 set.add(10001);
                 break;
             case AudioCaptureDeviceType:
@@ -195,7 +195,7 @@ class Backend {
       }
       return set;
   }
- 
+
   QHash<QByteArray, QVariant> Backend.objectDescriptionProperties(ObjectDescriptionType type, int index)
   {
       QHash<QByteArray, QVariant> ret;

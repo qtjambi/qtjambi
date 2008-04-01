@@ -16,7 +16,7 @@ public class customstyle extends QWindowsStyle
         }
     //! [1]
     }
-    
+
     //! [2]
     public void drawPrimitive(QStyle.PrimitiveElement element, QStyleOption option,
                               QPainter painter, QWidget widget)
@@ -30,7 +30,7 @@ public class customstyle extends QWindowsStyle
     	int h = option.rect().height() / 2;
     	x += (option.rect().width() - w) / 2;
     	y += (option.rect().height() - h) / 2;
-    
+
     	if (element.equals(QStyle.PrimitiveElement.PE_IndicatorSpinUp)) {
     	    points.add(new QPoint(x, y + h));
     	    points.add(new QPoint(x + w, y + h));
@@ -40,7 +40,7 @@ public class customstyle extends QWindowsStyle
     	    points.add(new QPoint(x + w, y));
     	    points.add(new QPoint(x + w / 2, y + h));
     	}
-    
+
     	if (option.state().isSet(QStyle.StateFlag.State_Enabled)) {
     	    painter.setPen(option.palette().mid().color());
     	    painter.setBrush(option.palette().buttonText());

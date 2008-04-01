@@ -9,40 +9,40 @@ public class mainwindow extends QMainWindow
     public mainwindow()
     {
         QMenu fileMenu = new QMenu(tr("File"));
-    
+
         fileMenu.addAction(tr("Exit"), this, "close()",
             new QKeySequence(tr("Ctrl+Q", "File|Exit")));
-    
+
         QMenu actionsMenu = new QMenu(tr("Actions"));
         actionsMenu.addAction(tr("Highlight List Items"),
                               this, "highlightListItems()");
         actionsMenu.addAction(tr("Show Current List"), this, "showList()");
-    
+
         QMenu insertMenu = new QMenu(tr("Insert"));
-    
+
         insertMenu.addAction(tr("List"), this, "insertList()",
             new QKeySequence(tr("Ctrl+L", "Insert|List")));
-    
+
         menuBar().addMenu(fileMenu);
         menuBar().addMenu(insertMenu);
         menuBar().addMenu(actionsMenu);
-    
+
         editor = new QTextEdit(this);
         document = new QTextDocument(this);
         editor.setDocument(document);
-    
+
         setCentralWidget(editor);
         setWindowTitle(tr("Text Document List Items"));
     }
-    
+
     public void highlightListItems()
     {
         QTextCursor cursor = editor.textCursor();
         QTextList list = cursor.currentList();
-    
+
         if (list == null)
             return;
-    
+
         cursor.beginEditBlock();
     //! [0]
         for (int index = 0; index < list.count(); ++index) {
@@ -66,36 +66,36 @@ public class mainwindow extends QMainWindow
     //! [2]
         cursor.endEditBlock();
     }
-    
+
     public void showList()
     {
         QTextCursor cursor = editor.textCursor();
         QTextFrame frame = cursor.currentFrame();
-    
+
         if (frame == null)
             return;
-    
+
         QTreeWidget treeWidget = new QTreeWidget();
         treeWidget.setColumnCount(1);
         List<String> headerLabels = new Vector<String>();
         headerLabels.add(tr("Lists"));
         treeWidget.setHeaderLabels(headerLabels);
-    
+
         QTreeWidgetItem parentItem = null;
         QTreeWidgetItem item = new QTreeWidgetItem();
         QTreeWidgetItem lastItem = null;
         parentItems.clear();
         previousItems.clear();
-    
+
     //! [3]
         QTextFrame_iterator it;
         for (it = frame.begin(); !(it.atEnd()); it.next()) {
             QTextBlock block = it.currentBlock();
-    
+
             if (block.isValid()) {
-    
+
                 QTextList list = block.textList();
-    
+
                 if (list != null) {
                     int index = list.itemNumber(block);
     //! [3]
@@ -105,12 +105,12 @@ public class mainwindow extends QMainWindow
                         listStructures.add(list);
                         parentItem = lastItem;
                         lastItem = null;
-    
+
                         if (parentItem != null)
                             item = new QTreeWidgetItem(parentItem, lastItem);
                         else
                             item = new QTreeWidgetItem(treeWidget, lastItem);
-    
+
                     } else {
                         while (parentItem != null  &&
                               !listStructures.get(listStructures.size()-1).equals(list)) {
@@ -137,25 +137,25 @@ public class mainwindow extends QMainWindow
     //! [6] //! [7]
         }
     //! [7]
-    
+
         treeWidget.setWindowTitle(tr("List Contents"));
         treeWidget.show();
     }
-    
+
     public void insertList()
     {
         QTextCursor cursor = editor.textCursor();
         cursor.beginEditBlock();
-    
+
         QTextList list = cursor.currentList();
         QTextListFormat listFormat = new QTextListFormat();
         if (list != null)
             listFormat = (QTextListFormat) list.format();
-    
+
         listFormat.setStyle(QTextListFormat.Style.ListDisc);
         listFormat.setIndent(listFormat.indent() + 1);
         cursor.insertList(listFormat);
-    
+
         cursor.endEditBlock();
     }
 
@@ -173,5 +173,5 @@ public class mainwindow extends QMainWindow
         new mainwindow().show();
 
         QApplication.exec();
-    }    
+    }
 }

@@ -6,7 +6,7 @@
     </inject-code>
 
     <value-type name="QXmlNodeModelIndex">
-      <inject-code> 
+      <inject-code>
             <import-file name="typesystem_xmlpatterns-java.java" quote-after-line="class QXmlNodeModelIndex___" quote-before-line="}// class"/>
       </inject-code>
     </value-type>

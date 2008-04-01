@@ -193,7 +193,7 @@ public class Launchable {
                     } catch (Exception e) {
                         constructor = cl.getConstructor(QWidget.class);
                     }
-    
+
                     String visibleName = className;
 
                     boolean canIndeed = false;
@@ -216,13 +216,13 @@ public class Launchable {
 
                     if (info.name().length() > 0)
                         visibleName = info.name();
-                    
+
                     if (constructor != null
                             && Modifier.isPublic(constructor.getModifiers())) {
                         Launchable l = new Launchable(visibleName, className);
                         return l;
                     }
-                    
+
                 }
 
             }

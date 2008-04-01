@@ -72,7 +72,7 @@ $$QStringRef.constData()
 /**
 Same as unicode().
 
-@return 
+@return
 */
 
 
@@ -86,7 +86,7 @@ Returns the number of characters in this string.
 $$QStringRef.data()
 /**
 Same as unicode().
- 
+
 */
 
 
@@ -301,7 +301,7 @@ Example:
     b = ~a;                         // b: [ 0, 1, 0 ]
 </pre>
 </code>
- 
+
 */
 
 
@@ -399,14 +399,14 @@ Reads a byte from the stream.
 $$QTextStream.readShort()
 /**
 Reads a short from the stream
- 
+
 */
 
 
 $$QTextStream.readInt()
 /**
 Reads an int from the stream.
- 
+
 */
 
 
@@ -867,7 +867,7 @@ $$QByteArray.setNum(double, char, int)
 /**
     Sets the byte array to the printed value of <tt>n</tt>, formatted in format
     <tt>f</tt> with precision <tt>prec</tt>, and returns a reference to the
-    byte array. 
+    byte array.
 */
 
 
@@ -929,7 +929,7 @@ from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- 
+
 */
 
 
@@ -1108,8 +1108,8 @@ This function ignores leading and trailing whitespace.
 $$QLocale.toInt(java.lang.String)
 /**
 Returns the int represented by the localized string <tt>s</tt>, using
-base 10. 
- 
+base 10.
+
 */
 
 
@@ -1124,7 +1124,7 @@ be octal; otherwise it is assumed to be decimal.
 If the conversion fails the function returns 0.
 
 This function ignores leading and trailing whitespace.
- 
+
 */
 
 
@@ -1606,7 +1606,7 @@ $$QPoint.multiply(double)
 Multiplies this QPoint by factor <tt>d</tt> and returns the result.
 
 <tt>d</tt>
-@return 
+@return
 */
 
 
@@ -1782,8 +1782,8 @@ $$QIODevice.read(byte[])
 /**
 Reads from the device into <tt>data</tt>. Returns the number of bytes read. If
 an error occurs, such as when attempting to peek a device opened in WriteOnly
-mode, this function returns -1. 
-<p> 
+mode, this function returns -1.
+<p>
 0 is returned when no more data is available for reading.
 
 */
@@ -1793,7 +1793,7 @@ $$QIODevice.readLine(byte[])
 /**
 This functions reads a line of ASCII characters from the device (the maximum
 characters read is the length of <tt>data</tt>). The data is placed in
-<tt>data</tt>. It returns -1 if an error occurs. 
+<tt>data</tt>. It returns -1 if an error occurs.
 
 */
 

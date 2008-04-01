@@ -9,7 +9,7 @@ import com.trolltech.qt.svg.*;
 
 public class src_gui_kernel_qapplication {
     public void fooBar() {
-        
+
         /* QApplication(int&, char**) constructor not available in Jambi
 //! [0]
         int main(int argc, char *rgv)
@@ -41,9 +41,9 @@ public class src_gui_kernel_qapplication {
     }
 //! [2]
         public static void main(String args[]) {
-            QApplication.setColorSpec(QApplication.ColorSpec.ManyColor.value());            
+            QApplication.setColorSpec(QApplication.ColorSpec.ManyColor.value());
             QApplication.initialize(args);
-            
+
             /* ... */
             QApplication.exec();
         }
@@ -80,9 +80,9 @@ class FooBar extends QtJambiObject {
         public static void main(String args[]) {
             QApplication.setDesktopSettingsAware(false);
             QApplication.initialize(args);
-            
+
             /* ... */
-            
+
             QApplication.exec();
         }
 //! [6]
@@ -109,7 +109,7 @@ class FooBar extends QtJambiObject {
                                                     tr("My Application"),
                                                     tr("Save changes to document?"),
                                                     QMessageBox.StandardButton.createQFlags(
-                                                            QMessageBox.StandardButton.Save, 
+                                                            QMessageBox.StandardButton.Save,
                                                             QMessageBox.StandardButton.Discard,
                                                             QMessageBox.StandardButton.Cancel)
                                                  );
@@ -145,7 +145,7 @@ class FooBar extends QtJambiObject {
             for (String command : mySession.restartCommand())
                 do_something(command);
 //! [10]
-       
+
 
 
 //! [11]

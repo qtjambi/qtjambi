@@ -1,6 +1,6 @@
 /*!
     \page qtjambi-simplehttpserver.html
-    \title Simple HTTP Server 
+    \title Simple HTTP Server
 
     This demo shows how to create a http server by inheriting
     QTcpServer.

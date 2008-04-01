@@ -18,7 +18,7 @@ public class src_corelib_kernel_qabstractitemmodel extends QStandardItemModel{
         //! [0]
         itemModel.beginInsertRows(null, 2, 4);
         //! [0]
-        
+
 
         //! [1]
         itemModel.beginInsertRows(null, 4, 5);

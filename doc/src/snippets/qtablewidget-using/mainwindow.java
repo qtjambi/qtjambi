@@ -10,23 +10,23 @@ public class mainwindow extends QMainWindow
     public mainwindow()
     {
         QMenu fileMenu = new QMenu(tr("File"));
-    
+
         QAction quitAction = fileMenu.addAction(tr("Exit"));
         quitAction.setShortcut(tr("Ctrl+Q"));
-    
+
         QMenu itemsMenu = new QMenu(tr("Items"));
-    
+
         QAction sumItemsAction = itemsMenu.addAction(tr("Sum Items"));
         QAction averageItemsAction = itemsMenu.addAction(tr("Average Items"));
-    
+
         menuBar().addMenu(fileMenu);
         menuBar().addMenu(itemsMenu);
-    
+
     //! [0]
         tableWidget = new QTableWidget(12, 3, this);
     //! [0]
         tableWidget.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection);
-    
+
     //! [1]
         QTableWidgetItem valuesHeaderItem = new QTableWidgetItem(tr("Values"));
         tableWidget.setHorizontalHeaderItem(0, valuesHeaderItem);
@@ -42,17 +42,17 @@ public class mainwindow extends QMainWindow
     //! [2]
         tableWidget.setHorizontalHeaderItem(1, squaresHeaderItem);
         tableWidget.setHorizontalHeaderItem(2, cubesHeaderItem);
-    
+
         quitAction.triggered.connect(this, "close()");
         sumItemsAction.triggered.connect(this, "sumItems()");
         averageItemsAction.triggered.connect(this, "averageItems()");
-    
+
         setupTableItems();
-    
+
         setCentralWidget(tableWidget);
         setWindowTitle(tr("Table Widget"));
     }
-    
+
     void setupTableItems()
     {
         for (int row = 0; row < tableWidget.rowCount()-1; ++row) {
@@ -70,17 +70,17 @@ public class mainwindow extends QMainWindow
             tableWidget.setItem(tableWidget.rowCount()-1, column, newItem);
         }
     }
-    
+
     void averageItems()
     {
         List<QTableWidgetItem > selected = tableWidget.selectedItems();
         int number = 0;
         double total = 0;
-    
+
         for (QTableWidgetItem item : selected) {
             boolean ok;
             double value = Double.parseDouble(item.text());
-            
+
             if (!item.text().equals("")) {
                 total += value;
                 number++;
@@ -89,17 +89,17 @@ public class mainwindow extends QMainWindow
         if (number > 0)
             tableWidget.currentItem().setText(String.valueOf(total/number));
     }
-    
+
     void sumItems()
     {
     //! [4]
         List<QTableWidgetItem> selected = tableWidget.selectedItems();
         int number = 0;
         double total = 0;
-    
+
         for (QTableWidgetItem item : selected) {
             double value = Double.parseDouble(item.text());
-    
+
             if (!item.text().equals("")) {
                 total += value;
                 ++number;

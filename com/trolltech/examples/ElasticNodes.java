@@ -441,7 +441,7 @@ public class ElasticNodes extends QGraphicsView {
 
             if (line.dy() >= 0)
                 angle = (Math.PI * 2) - angle;
-                   
+
             sourceArrowP1.setX(sourcePoint.x() + Math.sin(angle + Math.PI / 3) * arrowSize);
             sourceArrowP1.setY(sourcePoint.y() + Math.cos(angle + Math.PI / 3) * arrowSize);
 
@@ -460,7 +460,7 @@ public class ElasticNodes extends QGraphicsView {
             pol1.append(line.p1());
             pol1.append(sourceArrowP1);
             pol1.append(sourceArrowP2);
-          
+
             pol2.append(line.p2());
             pol2.append(destArrowP1);
             pol2.append(destArrowP2);

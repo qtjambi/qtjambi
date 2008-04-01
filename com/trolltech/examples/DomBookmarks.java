@@ -48,7 +48,7 @@ public class DomBookmarks extends QMainWindow {
 
         createActions();
         createMenus();
-        
+
         loadFile("classpath:com/trolltech/examples/frank.xbel");
         statusBar().showMessage(tr("Ready"));
 
@@ -67,10 +67,10 @@ public class DomBookmarks extends QMainWindow {
 
         if (xbelTree.read(file))
             statusBar().showMessage(tr("File loaded"), 2000);
-        
+
         file.dispose();
     }
-    
+
     @SuppressWarnings("unused")
     private void open() {
         String fileName = QFileDialog.getOpenFileName(this, tr("Open Bookmark File"), QDir
@@ -97,7 +97,7 @@ public class DomBookmarks extends QMainWindow {
 
         if (xbelTree.write(file))
             statusBar().showMessage(tr("File saved"), 2000);
-        
+
         file.dispose();
     }
 
@@ -126,9 +126,9 @@ public class DomBookmarks extends QMainWindow {
 
         aboutQtJambiAct = new QAction(tr("About &Qt Jambi"), this);
         aboutQtJambiAct.triggered.connect(QApplication.instance(), "aboutQtJambi()");
-        
+
         aboutQtAct = new QAction(tr("About Q&t"), this);
-        aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");        
+        aboutQtAct.triggered.connect(QApplication.instance(), "aboutQt()");
     }
 
     private void createMenus() {
@@ -161,14 +161,14 @@ public class DomBookmarks extends QMainWindow {
 
             header().setResizeMode(QHeaderView.ResizeMode.Stretch);
             setHeaderLabels(labels);
-            
+
             folderIcon.addPixmap(style().standardIcon(QStyle.StandardPixmap.SP_DirClosedIcon).pixmap(new QSize(24,24),
                     QIcon.Mode.Normal, QIcon.State.Off));
-            
+
             folderIcon.addPixmap(style().standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon).pixmap(new QSize(24,24),
                     QIcon.Mode.Normal, QIcon.State.On));
-            
-            bookmarkIcon = style().standardIcon(QStyle.StandardPixmap.SP_FileIcon); 
+
+            bookmarkIcon = style().standardIcon(QStyle.StandardPixmap.SP_FileIcon);
         }
 
         private boolean read(QIODevice device) {

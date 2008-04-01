@@ -18,19 +18,19 @@ public class src_gui_text_qtextcursor extends QWidget {
 
         QTextDocument textDocument = textEdit.document();
         QTextCursor cursor = new QTextCursor(textDocument);
-        
+
         String searchText = "Hello";
         cursor = textDocument.find(searchText, cursor, QTextDocument.FindFlag.FindWholeWords);
-        
+
         if (!cursor.isNull()) {
             cursor.movePosition(QTextCursor.MoveOperation.WordRight, QTextCursor.MoveMode.KeepAnchor);
             insertHelloWorld(cursor);
             insertImage(textDocument, cursor);
-            
+
             //clearDocument();
             insertMoreText(textDocument);
             //insertEvenMoreText(textDocument);
-        }        
+        }
     }
 
     public static void insertHelloWorld(QTextCursor cursor) {
@@ -40,7 +40,7 @@ public class src_gui_text_qtextcursor extends QWidget {
         cursor.insertText("Hello World");
         //! [0]
     }
-    
+
     public static void insertImage(QTextDocument textDocument, QTextCursor cursor) {
         //! [1]
         QImage img = new QImage();
@@ -48,7 +48,7 @@ public class src_gui_text_qtextcursor extends QWidget {
         cursor.insertImage("myimage");
         //! [1]
     }
-    
+
     public static void clearDocument(QTextDocument textDocument) {
         textDocument.clear();
     }
@@ -64,7 +64,7 @@ public class src_gui_text_qtextcursor extends QWidget {
         textDocument.undo();
         //! [2]
     }
-    
+
     public static void insertEvenMoreText(QTextDocument textDocument) {
         //! [3]
         QTextCursor cursor = new QTextCursor(textDocument);
@@ -80,6 +80,6 @@ public class src_gui_text_qtextcursor extends QWidget {
         cursor.endEditBlock();
 
         textDocument.undo();
-        //! [3] 
+        //! [3]
     }
 }

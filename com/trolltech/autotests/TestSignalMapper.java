@@ -21,7 +21,7 @@ import org.junit.*;
 
 public class TestSignalMapper extends QApplicationTest{
 
-   
+
     /**
      * Receiver class for the various mapped signals in this test.
      */
@@ -76,29 +76,29 @@ public class TestSignalMapper extends QApplicationTest{
             emitters[i].emitSignal();
             assertEquals(receiver.lastInteger, i);
         }
-        
+
         Thread thread = new Thread("Reciver Thread"){
             @Override
             public void run() {
                 new QEventLoop().exec();
             }
         };
-         
+
         receiver.moveToThread(thread);
         thread.start();
-        
-        
+
+
         for (int i = 0; i < 10; ++i) {
             emitters[i].emitSignal();
-            
+
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-    
+
             assertEquals(receiver.lastInteger, i);
-        }  
+        }
     }
 
     @Test

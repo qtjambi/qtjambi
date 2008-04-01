@@ -18,7 +18,7 @@ public class main
         process.start("myapp");
         //! [0]
     }
-        
+
     public static void main(String args[])
     {
         QApplication.initialize(args);

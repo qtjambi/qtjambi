@@ -31,17 +31,17 @@ public:
     ~GameScene();
 
     void addGameObject(AbstractGameObject *gameObject);
-    void setEgoObject(AbstractGameObject *ego_object);    
-    bool inProximityOfEgo(const AbstractGameObject *o) const;    
+    void setEgoObject(AbstractGameObject *ego_object);
+    bool inProximityOfEgo(const AbstractGameObject *o) const;
     void addToEgoInventory(AbstractGameObject *o);
     void lookAround();
-    virtual void message(const QString &msg); 
+    virtual void message(const QString &msg);
 
     inline QList<AbstractGameObject *> egoInventory() const { return m_ego_inventory; }
     inline void removeFromEgoInventory(AbstractGameObject *o) { m_ego_inventory.removeAll(o); }
-    inline bool egoHasInInventory(AbstractGameObject *o) { return m_ego_inventory.contains(o); }        
+    inline bool egoHasInInventory(AbstractGameObject *o) { return m_ego_inventory.contains(o); }
     inline QString description() const { return m_description; }
-    inline QImage background() const { return m_current_background; }   
+    inline QImage background() const { return m_current_background; }
     inline bool blocked() const { return !m_message.isEmpty(); }
     inline qreal closestZ() const { return m_closest_z; }
     inline qreal farthestZ() const { return m_farthest_z; }
@@ -58,7 +58,7 @@ public:
     {
         m_grammar->addNameToGameObject(o, other_name);
     }
-   
+
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
     virtual void drawForeground(QPainter *painter, const QRectF &);
@@ -68,7 +68,7 @@ private:
     GameGrammar *m_grammar;
     QString m_description;
     AbstractGameObject *m_ego_object;
-    QList<AbstractGameObject *> m_ego_inventory;     
+    QList<AbstractGameObject *> m_ego_inventory;
     QStringList m_message;
     QString m_current_input;
     QImage m_current_background;

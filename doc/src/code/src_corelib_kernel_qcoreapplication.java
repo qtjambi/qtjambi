@@ -13,8 +13,8 @@ public class src_corelib_kernel_qcoreapplication {
         QPoint pos = null;
         QMainWindow mainWindow = null;
 //! [0]
-        QMouseEvent event = new QMouseEvent(QEvent.Type.MouseButtonPress, pos, Qt.MouseButton.NoButton, 
-                                            new Qt.MouseButtons(Qt.MouseButton.NoButton), 
+        QMouseEvent event = new QMouseEvent(QEvent.Type.MouseButtonPress, pos, Qt.MouseButton.NoButton,
+                                            new Qt.MouseButtons(Qt.MouseButton.NoButton),
                                             new Qt.KeyboardModifiers(Qt.KeyboardModifier.NoModifier));
         QApplication.sendEvent(mainWindow, event);
 //! [0]

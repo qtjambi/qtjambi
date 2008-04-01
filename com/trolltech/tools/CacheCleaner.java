@@ -91,7 +91,7 @@ public class CacheCleaner {
                 delete(f);
         }
         System.out.print(" - deleting: " + d.getAbsolutePath() + "...");
-        d.delete();   
+        d.delete();
         System.out.println("ok!");
     }
 
@@ -110,5 +110,5 @@ public class CacheCleaner {
         });
         return dirs;
     }
-    
+
 }

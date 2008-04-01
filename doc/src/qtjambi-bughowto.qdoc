@@ -24,7 +24,7 @@
     \endlist
 
     If you have a source package, we also need to know about your Qt installation:
-    
+
     \list 1
     \o The name and version number of your compiler
     \o The version of Qt you are using, and what configure options it was

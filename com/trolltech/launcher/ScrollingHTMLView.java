@@ -27,7 +27,7 @@ public class ScrollingHTMLView extends QWidget {
     private QPixmap rightFade = new QPixmap(32, 1);
 
     private QPixmap background;
-    
+
     private boolean wrap = true;
     private int margine = 200;
 
@@ -114,7 +114,7 @@ public class ScrollingHTMLView extends QWidget {
         p.drawTiledPixmap(0, 0, width(), topFade.height(), topFade);
         p.drawTiledPixmap(0, height() - bottomFade.height(), width(), bottomFade.height(),
                           bottomFade);
-        p.drawTiledPixmap(width() - rightFade.width(), 0, rightFade.width(), height(), rightFade);  
+        p.drawTiledPixmap(width() - rightFade.width(), 0, rightFade.width(), height(), rightFade);
         p.end();
     }
 

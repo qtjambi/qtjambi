@@ -47,7 +47,7 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const AbstractMetaType *type, O
     }
 
     if (type->instantiations().size() > 0
-        && (!type->isContainer() 
+        && (!type->isContainer()
             || (static_cast<const ContainerTypeEntry *>(te))->type() != ContainerTypeEntry::StringListContainer)) {
         s << '<';
         QList<AbstractMetaType *> args = type->instantiations();
@@ -88,13 +88,13 @@ void CppGenerator::writeFunctionArguments(QTextStream &s,
         if (!(option & SkipName))
             s << " " << arg->indexedName();
         if ((option & IncludeDefaultExpression) && !arg->originalDefaultValueExpression().isEmpty()) {
-            s << " = "; 
+            s << " = ";
 
             QString expr = arg->originalDefaultValueExpression();
             if (arg->type()->typeEntry()->isEnum() && expr.indexOf("::") < 0)
                 s << ((EnumTypeEntry *)arg->type()->typeEntry())->qualifier() << "::";
 
-            s << expr; 
+            s << expr;
         }
     }
 }

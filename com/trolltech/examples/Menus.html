@@ -57,20 +57,20 @@ body { color: black; }</style>
             setCentralWidget(widget);</pre>
 <p>In the constructor, we start off by creating a regular QWidget and make it our main window's central widget. Note that the main window takes ownership of the widget pointer and deletes it at the appropriate time.</p>
 <pre>&nbsp;           QWidget topFiller = new QWidget();
-            topFiller.setSizePolicy(QSizePolicy.Policy.Expanding, 
+            topFiller.setSizePolicy(QSizePolicy.Policy.Expanding,
                                     QSizePolicy.Policy.Expanding);
-    
-            infoLabel = new QLabel(tr(&quot;&lt;i&gt;Choose a menu option, &quot; 
+
+            infoLabel = new QLabel(tr(&quot;&lt;i&gt;Choose a menu option, &quot;
                                       + &quot;or right-click to invoke &quot;
                                       + &quot;a context menu&lt;/i&gt;&quot;));
-            infoLabel.setFrameStyle(QFrame.Shape.StyledPanel.value() 
+            infoLabel.setFrameStyle(QFrame.Shape.StyledPanel.value()
                                     | QFrame.Shadow.Sunken.value());
             infoLabel.setAlignment(AlignmentFlag.AlignCenter);
-    
+
             QWidget bottomFiller = new QWidget();
-            bottomFiller.setSizePolicy(QSizePolicy.Policy.Expanding, 
+            bottomFiller.setSizePolicy(QSizePolicy.Policy.Expanding,
                                        QSizePolicy.Policy.Expanding);
-    
+
             QVBoxLayout layout = new QVBoxLayout();
             layout.setMargin(5);
             layout.addWidget(topFiller);
@@ -80,7 +80,7 @@ body { color: black; }</style>
 <p>Then we create the information label as well as a top and bottom filler that we add to a layout which we install on the central widget. QMainWindow objects come with their own customized layout and setting a layout on a the actual main window, or creating a layout with a main window as a parent, is considered an error. You should always set your own layout on the central widget instead.</p>
 <pre>&nbsp;           createActions();
             createMenus();
-    
+
             statusBar().showMessage(tr(&quot;A context menu is available by &quot;
                                        + &quot;right-clicking&quot;));
             setWindowTitle(tr(&quot;Menus&quot;));
@@ -118,7 +118,7 @@ body { color: black; }</style>
             fileMenu.addAction(printAct);
             fileMenu.addSeparator();
             fileMenu.addAction(exitAct);
-    
+
             editMenu = menuBar().addMenu(tr(&quot;&amp;Edit&quot;));
             editMenu.addAction(undoAct);
             editMenu.addAction(redoAct);
@@ -127,7 +127,7 @@ body { color: black; }</style>
             editMenu.addAction(copyAct);
             editMenu.addAction(pasteAct);
             editMenu.addSeparator();
-    
+
             helpMenu = menuBar().addMenu(tr(&quot;&amp;Help&quot;));
             helpMenu.addAction(aboutAct);
             helpMenu.addSeparator();

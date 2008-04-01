@@ -3,14 +3,14 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
 SOURCES += main.cpp
 
-QT = 
+QT =
 CONFIG -= qt
 CONFIG += console
 

@@ -56,15 +56,15 @@
     \o Converts the given \c .ui file to a Java user interface file
     (\c .jui). The \c .jui file format's datastructure is based on
     Java syntax.
-    
+
     \row
     \o --custom-widgets=[files]
     \o To be used together with --convert-to-jui in order to specify
     the names of xml files containing lists of promoted widgets
     used in the original .ui file. These custom widgets will then
-    be replaced by their specified Java counter part. The class 
-    name in Java should be the same as the type to which the widget 
-    has been promoted, and there should only be a single class 
+    be replaced by their specified Java counter part. The class
+    name in Java should be the same as the type to which the widget
+    has been promoted, and there should only be a single class
     specified for each class name. If several files are required,
     separate the file names using ';' on Windows and ':' on other
     platforms.
@@ -229,155 +229,155 @@
     Finally, interface types are handled equivalently to object type
     classes, primitive types are always passed by value, and enum
     types are handled like primitive integers.
-    
+
     \endomit
-    
+
     \section1 Log files produced by the generator
-    
-    As it parses C++ headers and generates code, the Qt Jambi generator 
-    creates a set of log files that can be useful in determining and 
+
+    As it parses C++ headers and generates code, the Qt Jambi generator
+    creates a set of log files that can be useful in determining and
     anticipating problems in the resulting Java library.
-    
+
     The following is an overview of the log files it produces and how they
     can be interpreted to tweak a Qt Jambi type system into providing a
     better mapping into Java.
-    
+
     \section2 Rejected declarations
-    
-    The Qt Jambi generator produces four files to list types and other 
+
+    The Qt Jambi generator produces four files to list types and other
     declarations that have been discovered while parsing the original
-    C++ headers, but that for some reason have not made it into the 
-    generated code. These are the \c mjb_rejected_classes.log, 
-    \c mjb_rejected_enums.log, \c mjb_rejected_fields.log, 
+    C++ headers, but that for some reason have not made it into the
+    generated code. These are the \c mjb_rejected_classes.log,
+    \c mjb_rejected_enums.log, \c mjb_rejected_fields.log,
     and \c mjb_rejected_functions.log files.
-        
-    The interesting section of either of these log files is called 
-    "Not in type system." This lists the declarations that have 
-    been rejected because they do not have any corresponding entry 
+
+    The interesting section of either of these log files is called
+    "Not in type system." This lists the declarations that have
+    been rejected because they do not have any corresponding entry
     in the type system. Remove them from this list by either rejecting
-    them explicitly (use \c rejection tags, \c modify-function tags 
-    and \c modify-field tags) or by giving them appropriate type 
+    them explicitly (use \c rejection tags, \c modify-function tags
+    and \c modify-field tags) or by giving them appropriate type
     system entries.
-    
+
     \section2 Native pointer API
-    
+
     When the Qt Jambi generator comes over a type declaration for
     a field or function and it is unable to convert it to Java, it
     will substitute it with the \c com.trolltech.qt.QNativePointer
-    class in the generated Java code. This is a Java wrapper for 
-    a C++ pointer and can be powerful, but quite hazardous and 
-    difficult to use. 
-    
+    class in the generated Java code. This is a Java wrapper for
+    a C++ pointer and can be powerful, but quite hazardous and
+    difficult to use.
+
     Since you might want to provide a more usable API in place of
     the \c QNativePointer, the generator will provide you with a
     log file called \c mjb_nativepointer_api.log which lists all
-    public or protected functions that have been mapped using 
-    native pointers. 
-    
+    public or protected functions that have been mapped using
+    native pointers.
+
     A good pattern for tackling such cases is to first divide the list
     into virtual and final functions, then altering the inconvertible
-    types in the signatures of the virtual functions by using the 
+    types in the signatures of the virtual functions by using the
     \c replace-type and \c conversion-rule tags.
-    
-    The problematic types in the signatures of final functions can be 
+
+    The problematic types in the signatures of final functions can be
     handled more easily: Use the \c modify-function tag to make the
-    original function \c private in the Java API, and then use the 
+    original function \c private in the Java API, and then use the
     \c inject-code tag to inject a new method with the same name, but
-    with more user friendly types in its signature. In the injected 
+    with more user friendly types in its signature. In the injected
     method, you can convert the types correctly and call the original
     function with the converted arguments. If needed, you can also
     use the \c modify-function tag to rename the original function.
-    
+
     In a few cases, native pointer API cannot be translated into Java,
     even manually. This is specifically the case when it grants access
     to internal POD data. You are then left with the choice of either
-    rejecting the function from the API (by using \c modify-function) 
-    or leaving it. The former would be a good choice if the same 
+    rejecting the function from the API (by using \c modify-function)
+    or leaving it. The former would be a good choice if the same
     functionality is provided by other API (the \c rwidth() function
     in \c QSize is an example of this, since the class also has a
-    \c setWidth() function.) 
-    
-    In some cases, the API is unique (see \c bits() in \c QImage), in 
-    which case it would be a good idea to provide the low level 
+    \c setWidth() function.)
+
+    In some cases, the API is unique (see \c bits() in \c QImage), in
+    which case it would be a good idea to provide the low level
     native pointer API for people who need it.
-    
-    \section2 Candidates for reference counting 
-    
+
+    \section2 Candidates for reference counting
+
     Since the code produced by the Qt Jambi generator is simply a thin
     mapping on top of C++ code, there are certain cases where you need
     to manually specify how the Java objects should be reference counted
-    by the generated code. 
-    
+    by the generated code.
+
     This is true for any C++ function which takes a pointer to an object
     and retains the pointer for an undetermined length of time. In cases
     such as these, we need to make sure that the Java mapping of the object
-    is not finalized as long as there is a reference to it in C++, since 
-    the finalization would delete the C++ object and could 
+    is not finalized as long as there is a reference to it in C++, since
+    the finalization would delete the C++ object and could
     cause erratic behavior or crashes. Note that a special case of this is
     objects of \c QObject subclasses which are reparented by the function
-    in question. Giving a \c QObject a parent will turn ownership of the 
+    in question. Giving a \c QObject a parent will turn ownership of the
     object over to the parent object, meaning that it will live as long as
     the parent lives, and be destroyed when the parent is destroyed.
-    
+
     The generator attempts to identify potential candidates for such behaviors
-    by looking for certain naming patterns of functions combined with 
+    by looking for certain naming patterns of functions combined with
     arguments of object types in the signature. It produces the
     \c mjb_reference_count_candidates.log file.
-    
+
     There are two specific ways of handling such problems. If the function
-    takes ownership of the object (meaning that it will delete the C++ 
-    object once it is done with it) you can use the \c define-ownership 
-    tag to grant ownership of the Java object to C++. This means that the 
+    takes ownership of the object (meaning that it will delete the C++
+    object once it is done with it) you can use the \c define-ownership
+    tag to grant ownership of the Java object to C++. This means that the
     Java object will not be finalized until the C++ object is deleted by
     its new owner. If the function does not take ownership, but still saves
-    a reference to the object, you can use the \c reference-count tag to 
+    a reference to the object, you can use the \c reference-count tag to
     make the generated code retain a reference to the Java object in order
-    to prevent the garbage collector from collecting it. The idea here is 
+    to prevent the garbage collector from collecting it. The idea here is
     to have a reference counting mechanism in place which follows the same
     pattern as in the C++ API, which means you can have single references
     to objects which are overwritten when the function is called again
     (e.g. \c setDocument() in \c QGraphicsTextItem) or you can have several
     references added and removed from a list (e.g. \c addAction() in
-    \c QWidget.) 
-    
+    \c QWidget.)
+
     If you know the default behavior to be safe for the particular function
     (the function does not retain a reference, or it is handled through the
     parenting mechanism of \c QObject) you can use \c reference-count with
     the \c action attribute set to \c ignore to make sure the function is
     removed from the log file.
-    
+
     \section2 Virtual functions taking arguments of object types
-    
+
     In certain cases, when a user has overridden a virtual function in her
-    Java code, and objects are passed to it, it may be necessary to 
-    prevent the objects from being accessible after the function call has 
+    Java code, and objects are passed to it, it may be necessary to
+    prevent the objects from being accessible after the function call has
     terminated. The reason for this is that the object in question may have
     been created in the C++ code and may be destroyed at some undeterminable
     point later on.
-    
+
     An example of this is the event handlers in Qt Jambi. Each event handler
     takes an object of a \c QEvent subclass, and in cases where the event is
-    triggered by a system event, the C++ object will be created by Qt Jambi 
+    triggered by a system event, the C++ object will be created by Qt Jambi
     prior to calling the event handler, and deleted directly after the call
     is done. If the user had her event handler save a reference to the event,
-    and later attempts to access it, the application will crash. Note that 
+    and later attempts to access it, the application will crash. Note that
     this does not apply to \c QObject subclasses, since reference counting of
     such classes are handled automatically.
-    
-    The \c mjb_object_type_usage.log file lists all virtual functions that 
+
+    The \c mjb_object_type_usage.log file lists all virtual functions that
     take one or more object types as arguments, as long as the type is not
     a subclass of \c QObject. These can be handled either by use of the
     \c define-ownership tag (if the receiver of the object is expected to
-    delete it) or by using the \c modify-argument tag with the 
+    delete it) or by using the \c modify-argument tag with the
     \c invalidate-after-use attribute set to \c yes. The latter will cause the
     generator to produce code which invalidates the Java object after the
     virtual method call has completed. When a Java object is invalid, it
-    will throw a \c QNoNativeResourcesException whenever it is accessed, 
+    will throw a \c QNoNativeResourcesException whenever it is accessed,
     alterting the user that the object is no longer usable. Note that the
-    object will only be invalidated if any part of it is owned by C++ 
-    (objects created in Java code and thus owned by Java will not suffer 
+    object will only be invalidated if any part of it is owned by C++
+    (objects created in Java code and thus owned by Java will not suffer
     from this problem, as C++ will not attempt to delete it.)
-    
+
 */
 
 /*!
@@ -909,10 +909,10 @@
     The \c signature attribute is a normalized C++ signature,
     excluding return values but including potential \c const
     declarations.
-    
+
 	The \c remove, \c access and \c rename attributes are optional
 	attributes for added convenience; they serve the same purpose as
-	the tags \l remove, \l access and \l rename. 
+	the tags \l remove, \l access and \l rename.
 
     \row
     \o \bold  include
@@ -1047,7 +1047,7 @@
 
     \code
         <modify-function ...>
-            <modify-argument index="return | this | 1 ..." 
+            <modify-argument index="return | this | 1 ..."
                  invalidate-after-use="yes | no" (optional) >
                 modifications
             </modify-argument>
@@ -1058,12 +1058,12 @@
     the second one and so on. Alternatively, set it to "return" or
     "this" if you want to modify the function's return value or the
     object the function is called upon, respectively.
-    
+
     The \c invalidate-after-use attribute is optional and defaults to "no".
     Setting it to "yes" is only applicable for modifications to virtual
-    functions and will cause the Java object passed as the argument 
+    functions and will cause the Java object passed as the argument
     to be invalidated after the virtual function call is complete, if the
-    object is owned by C++ and not by Java. This is used as a measure 
+    object is owned by C++ and not by Java. This is used as a measure
     against crashes caused by users retaining references to objects that
     are later deleted in the underlying C++ code.
 
@@ -1218,25 +1218,25 @@
     Typically, when changing the type of an argument, some conversion
     rules must be specified. This can be done using the \l
     conversion-rule node.
-    
+
     \row
     \o \bold reference-count \target reference-count
     \o
-    
+
     The \c reference-count tag indicates that the function holds
     a reference to the argument object without assuming ownership
-    of it. 
-    
+    of it.
+
     \code
         <modify-argument ...>
-            <reference-count action="add | add-all | remove | set | ignore" 
+            <reference-count action="add | add-all | remove | set | ignore"
                              variable-name="..."
                              declare-variable="..."
                              conditional="..."
                              access="public | private | protected | friendly" />
         </modify-argument>
     \endcode
-    
+
 	The \c action attribute specifies the action to be taken. \c add,
 	\c add-all and \c remove are collection actions. They will add a
 	single object to a list of references, add all objects in a
@@ -1247,40 +1247,40 @@
 	specific actions.) \c ignore will not inject any code, but will
 	cause the method in question to be removed from the log of
 	possible reference counting API.
-    
+
     The \c variable-name attribute specifies the name used for the variable that holds the
-    reference(s). 
-    
-    The \c declare-variable attribute can be used to specify the fully qualified name of 
-    the class that owns the reference. This attribute is optional, and should only 
-    be specified if the variable should not be declared in the current class. 
+    reference(s).
+
+    The \c declare-variable attribute can be used to specify the fully qualified name of
+    the class that owns the reference. This attribute is optional, and should only
+    be specified if the variable should not be declared in the current class.
     The specified must be in the superclass hierarchy of the current class.
-    
-    The \c conditional attribute is optional, and specifies a conditional expression which 
+
+    The \c conditional attribute is optional, and specifies a conditional expression which
     must be true in order for the action of the \c reference-count tag to be taken.
-    
-    The \c access attribute gives the visibility of the variable. Only applicable if 
+
+    The \c access attribute gives the visibility of the variable. Only applicable if
     \c declare-variable is not specified. The default value of \c access is \c private.
 
     \row
     \o \bold define-ownership \target define-ownership
     \o
- 
-    The \c define-ownership tag indicates that the function changes the 
+
+    The \c define-ownership tag indicates that the function changes the
     ownership rules of the arguemnt object. The \c class attribute
     specifies the class of function in which to inject the ownership
     altering code. The \c owner attribute specifies the new ownership
     of the object. It accepts the following values:
-    
+
     \list
         \o \c java: Java will assume full ownership of the object. The native resources will be deleted when the Java object is finalized.
         \o \c c++: The native code assumes full ownership of the object. The Java object will not be garbage collected.
         \o \c default: The object will get default ownership, depending on how it was created.
     \endlist
-    
+
     \code
         <modify-argument ...>
-             <define-ownership class="java | shell" 
+             <define-ownership class="java | shell"
                                owner="java | c++ | default" />
         </modify-argument>
     \endcode

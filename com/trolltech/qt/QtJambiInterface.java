@@ -17,15 +17,15 @@ package com.trolltech.qt;
  * The super interface of all interface types in Qt Jambi.
  */
 public interface QtJambiInterface {
-    
+
     /**
      * Function that returns a unique identifier for a Qt Jambi object.
      * @return A value which uniquely identifies the native resources held by an object in their life time.
      */
-    public long nativeId();    
-    
+    public long nativeId();
+
     public void disableGarbageCollection();
-    
+
     public void setJavaOwnership();
     public void reenableGarbageCollection();
     public QNativePointer nativePointer();

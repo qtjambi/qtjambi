@@ -24,9 +24,10 @@ macx:{
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
     QMAKE_MACOSX_DEPLOYMENT_TARGET=10.4
+    QMAKE_LFLAGS += -Wl,-x
 } else {
     INCLUDEPATH += $$(JAVADIR)/include
-    win32 { 
+    win32 {
         INCLUDEPATH += $$(JAVADIR)/include/win32
     } else {
 	solaris-g++ | solaris-cc {
@@ -40,7 +41,7 @@ macx:{
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
     CONFIG += debug_and_release build_all
-}	
+}
 
 # make install related...
 !isEmpty(INSTALL_PREFIX) {
@@ -57,3 +58,5 @@ macx{
 
 # gcc reports some functions as unused when they are not.
 linux-g++:QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
+
+CONFIG += hide_symbols

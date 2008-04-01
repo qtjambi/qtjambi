@@ -77,9 +77,9 @@ public class Screenshot extends QWidget {
 //! [3]
     public void resizeEvent(QResizeEvent event) {
         QSize scaledSize = originalPixmap.size();
-        scaledSize.scale(screenshotLabel.size(), 
+        scaledSize.scale(screenshotLabel.size(),
                          AspectRatioMode.KeepAspectRatio);
-        if (screenshotLabel.pixmap() != null 
+        if (screenshotLabel.pixmap() != null
             || scaledSize != screenshotLabel.pixmap().size())
                 updateScreenshotLabel();
     }
@@ -91,7 +91,7 @@ public class Screenshot extends QWidget {
             hide();
         newScreenshotButton.setDisabled(true);
 
-        QTimer.singleShot(delaySpinBox.value() * 1000, 
+        QTimer.singleShot(delaySpinBox.value() * 1000,
                           this, "shootScreen()");
     }
 //! [4]
@@ -119,7 +119,7 @@ public class Screenshot extends QWidget {
 
 //! [7]
         originalPixmap = null;
-        
+
         originalPixmap = QPixmap.grabWindow(
                 QApplication.desktop().winId());
         updateScreenshotLabel();
@@ -162,10 +162,10 @@ public class Screenshot extends QWidget {
 
 //! [10]
     void createButtonsLayout() {
-        newScreenshotButton = createButton(tr("New Screenshot"), this, 
+        newScreenshotButton = createButton(tr("New Screenshot"), this,
                                            "newScreenshot()");
 
-        saveScreenshotButton = createButton(tr("Save Screenshot"), this, 
+        saveScreenshotButton = createButton(tr("Save Screenshot"), this,
                                             "saveScreenshot()");
 
         quitScreenshotButton = createButton(tr("Quit"), this, "close()");
@@ -179,7 +179,7 @@ public class Screenshot extends QWidget {
 //! [10]
 
 //! [11]
-    QPushButton createButton(final String text, QWidget receiver, 
+    QPushButton createButton(final String text, QWidget receiver,
                              String member) {
         QPushButton button = new QPushButton(text);
         button.clicked.connect(receiver, member);
@@ -190,7 +190,7 @@ public class Screenshot extends QWidget {
 //! [12]
     void updateScreenshotLabel() {
         screenshotLabel.setPixmap(originalPixmap.scaled(screenshotLabel.size(),
-                                  AspectRatioMode.KeepAspectRatio, 
+                                  AspectRatioMode.KeepAspectRatio,
                                   TransformationMode.SmoothTransformation));
     }
 //! [12] //! [13]

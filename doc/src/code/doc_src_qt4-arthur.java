@@ -9,7 +9,7 @@ import com.trolltech.qt.sql.*;
 import com.trolltech.qt.svg.*;
 
 
-class doc_src_qt4 extends QWidget 
+class doc_src_qt4 extends QWidget
 {
     public static void main(String args[]) {
         QApplication.initialize(args);
@@ -76,7 +76,7 @@ class doc_src_qt4 extends QWidget
     path.addBezier(99, 99,  0, 99,  50, 50,  0, 0);
     painter.drawPath(path);
 //! [5]
- * 
+ *
  */
     }
 

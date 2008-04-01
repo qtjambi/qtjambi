@@ -22,20 +22,20 @@ class SwingWindow extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 1L;
 
-    public SwingWindow() 
+    public SwingWindow()
     {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setDefaultLookAndFeelDecorated(true);
-        
+
         JButton button = new JButton("Hit me");
         button.setActionCommand("hit");
         button.addActionListener(this);
         add(button);
-        
+
         pack();
-        
+
     }
-    
+
     public void actionPerformed(ActionEvent e)
     {
         if (e.getActionCommand().equals("hit")) {
@@ -45,25 +45,25 @@ class SwingWindow extends JFrame implements ActionListener
     }
 }
 
-class QtWindow extends QPushButton 
+class QtWindow extends QPushButton
 {
-    public QtWindow() 
+    public QtWindow()
     {
         super("Hit me");
-        
+
         clicked.connect(this, "openSwingWindow()");
     }
-    
+
     public void openSwingWindow()
     {
         SwingWindow w = new SwingWindow();
         w.setVisible(true);
-    }    
+    }
 }
 
 public class SwingQt extends QPushButton{
-    
-    
+
+
 
     /**
      * @param args
@@ -72,8 +72,8 @@ public class SwingQt extends QPushButton{
         new QApplication(args);
         QtWindow w = new QtWindow();
         w.show();
-        
-        QApplication.exec();        
+
+        QApplication.exec();
     }
 
 }

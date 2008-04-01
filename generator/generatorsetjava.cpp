@@ -162,7 +162,7 @@ QString GeneratorSetJava::generate() {
     }
 
     if (native_jump_table) {
-        jumpTableGenerator = new JumpTableGenerator(jumpTablePreprocessor);
+        jumpTableGenerator = new JumpTableGenerator(jumpTablePreprocessor, priGenerator);
         generators << jumpTableGenerator;
         contexts << "JumpTableGenerator";
     }

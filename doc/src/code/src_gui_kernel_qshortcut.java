@@ -6,7 +6,7 @@ public class src_gui_kernel_qshortcut extends QWidget{
     public static void main(String args[]) {
         QApplication.initialize(args);
     }
-    
+
     public src_gui_kernel_qshortcut(QWidget parent) {
         QShortcut shortcut;
 //! [0]
@@ -14,7 +14,7 @@ public class src_gui_kernel_qshortcut extends QWidget{
                                  parent);
 //! [0]
 
-        
+
 //! [1]
         shortcut.setKey(new QKeySequence(0));                  // no signal emitted
         shortcut.setKey(new QKeySequence());                   // no signal emitted

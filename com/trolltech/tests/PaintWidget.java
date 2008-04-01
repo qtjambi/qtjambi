@@ -19,7 +19,7 @@ import com.trolltech.qt.gui.*;
 import java.util.*;
 
 class PaintWidget extends QWidget {
-    
+
     ArrayList<QPolygon> polygons = new ArrayList<QPolygon>();
     ArrayList<QColor> colors = new ArrayList<QColor>();
     QPolygon current = new QPolygon();
@@ -28,7 +28,7 @@ class PaintWidget extends QWidget {
     public PaintWidget() {
         this(null);
     }
-    
+
     public PaintWidget(Qt.WindowFlags flags) {
         super(null, flags);
         this.setGeometry(new QRect(100, 100, 32 * 16 + 2, 480));
@@ -44,17 +44,17 @@ class PaintWidget extends QWidget {
         current.append(new QPoint(e.x(), e.y()));
         update();
     }
-    
+
     @Override
     public void contextMenuEvent(QContextMenuEvent e)
     {
         QMenu menu = new QMenu(this);
         QAction act = menu.addAction("Oh, nothing");
         act.triggered.connect(menu, "close()");
-        act = menu.addAction("Quit");       
+        act = menu.addAction("Quit");
         act.triggered.connect(QApplication.instance(), "quit()");
-                
-        menu.exec(e.globalPos());        
+
+        menu.exec(e.globalPos());
     }
 
     @Override
@@ -69,7 +69,7 @@ class PaintWidget extends QWidget {
         m_current_color = c;
         update();
     }
-    
+
     @Override
     public void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter();

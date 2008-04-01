@@ -12,7 +12,7 @@ import com.trolltech.qt.svg.*;
 public class src_gui_widgets_qstatusbar extends QMainWindow{
 
     class MyReadWriteIndication extends QWidget {}
-    
+
 	public void test() {
 //! [0]
 	    statusBar().addWidget(new MyReadWriteIndication());

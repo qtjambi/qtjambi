@@ -21,15 +21,15 @@ public class dragwidget extends QFrame
         setFrameStyle(QFrame.Shape.StyledPanel.value() | QFrame.Shadow.Sunken.value());
         dragDropLabel = new QLabel("", this);
         dragDropLabel.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignHCenter));
-    
+
         QHBoxLayout layout = new QHBoxLayout(this);
         layout.addStretch(0);
         layout.addWidget(dragDropLabel);
         layout.addStretch(0);
-    
+
         setAcceptDrops(true);
     }
-    
+
     // Accept all actions, but deal with them separately later.
     //! [0]
     protected void dragEnterEvent(QDragEnterEvent event)
@@ -37,7 +37,7 @@ public class dragwidget extends QFrame
         event.acceptProposedAction();
     }
     //! [0]
-    
+
     //! [1]
     protected void dropEvent(QDropEvent event)
     {
@@ -45,7 +45,7 @@ public class dragwidget extends QFrame
             event.possibleActions().isSet(Qt.DropAction.MoveAction))
             return;
     //! [1]
-    
+
     //! [2]
         if (event.proposedAction().equals(Qt.DropAction.MoveAction)) {
             event.acceptProposedAction();
@@ -65,14 +65,14 @@ public class dragwidget extends QFrame
         }
     //! [4]
         // End of quote
-    
+
         mimeTypes.emit(event.mimeData().formats());
         setData(event.mimeData().formats().get(0),
                 event.mimeData().data(event.mimeData().formats().get(0)));
     //! [5]
     }
     //! [5]
-    
+
     //! [6]
     protected void mousePressEvent(QMouseEvent event)
     {
@@ -80,7 +80,7 @@ public class dragwidget extends QFrame
             dragStartPosition = event.pos();
     }
     //! [6]
-    
+
     //! [7]
     protected void mouseMoveEvent(QMouseEvent event)
     {
@@ -89,17 +89,17 @@ public class dragwidget extends QFrame
         if ((event.pos().subtract(dragStartPosition)).manhattanLength()
              < QApplication.startDragDistance())
             return;
-    
+
         QDrag drag = new QDrag(this);
         QMimeData mimeData = new QMimeData();
-    
+
         mimeData.setData(mimeType, data);
         drag.setMimeData(mimeData);
-    
+
         Qt.DropAction dropAction = drag.exec(Qt.DropAction.CopyAction,
                                              Qt.DropAction.MoveAction);
     //! [7]
-    
+
         switch (dropAction) {
             case CopyAction:
                 dragResult.emit(tr("The text was copied."));
@@ -114,14 +114,14 @@ public class dragwidget extends QFrame
     //! [8]
     }
     //! [8]
-    
+
     void setData(String mimetype, QByteArray newData)
     {
         mimeType = mimetype;
         data = new QByteArray(newData);
-    
+
         dragDropLabel.setText(String.valueOf(data.size()) + " bytes.");
-    
+
         List<String> formats = new Vector<String>();
         formats.add(mimetype);
         mimeTypes.emit(formats);

@@ -34,7 +34,7 @@
     ----------------------------------------------------
 
     this font is provided free for personal or commercial use,
-    it can be redistributed however it may not be sold.  
+    it can be redistributed however it may not be sold.
     ----------------------------------------------------
     (C) 1999 utopiafonts. dale_thorpe@bssc.edu.au
 //! [1]
@@ -86,7 +86,7 @@
     otherwise to promote the sale, use or other dealings in this Font Software
     without prior written authorization from the Gnome Foundation or Bitstream
     Inc., respectively. For further information, contact: fonts at gnome dot
-    org. 
+    org.
 
     Arev Fonts Copyright
     ------------------------------
@@ -113,7 +113,7 @@
     the words "Tavmjong Bah" or the word "Arev".
 
     This License becomes null and void to the extent applicable to Fonts
-    or Font Software that has been modified and is distributed under the 
+    or Font Software that has been modified and is distributed under the
     "Tavmjong Bah Arev" names.
 
     The Font Software may be sold as part of a larger software package but
@@ -289,7 +289,7 @@
     FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
     COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
     IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //! [4]
 
@@ -437,7 +437,7 @@ public class doc_src_licenses {
     ----------------------------------------------------
 
     this font is provided free for personal or commercial use,
-    it can be redistributed however it may not be sold.  
+    it can be redistributed however it may not be sold.
     ----------------------------------------------------
     (C) 1999 utopiafonts. dale_thorpe@bssc.edu.au
 //! [1]
@@ -489,7 +489,7 @@ public class doc_src_licenses {
     otherwise to promote the sale, use or other dealings in this Font Software
     without prior written authorization from the Gnome Foundation or Bitstream
     Inc., respectively. For further information, contact: fonts at gnome dot
-    org. 
+    org.
 
     Arev Fonts Copyright
     ------------------------------
@@ -516,7 +516,7 @@ public class doc_src_licenses {
     the words "Tavmjong Bah" or the word "Arev".
 
     This License becomes null and void to the extent applicable to Fonts
-    or Font Software that has been modified and is distributed under the 
+    or Font Software that has been modified and is distributed under the
     "Tavmjong Bah Arev" names.
 
     The Font Software may be sold as part of a larger software package but
@@ -692,7 +692,7 @@ public class doc_src_licenses {
     FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
     COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
     IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //! [4]
 

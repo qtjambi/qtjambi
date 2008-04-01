@@ -11,7 +11,7 @@ public class dialogs extends QWidget
         void setWordCount(int i) {}
     }
     class FindDialog extends QDialog {
-        public Signal0 findNext = new Signal0(); 
+        public Signal0 findNext = new Signal0();
 
         public FindDialog(QWidget wid) {}
     }
@@ -22,13 +22,13 @@ public class dialogs extends QWidget
     {
         return QApplication.translate(text, text);
     }
-    
+
     class EditorWindow extends QMainWindow
     {
-    
+
     FindDialog findDialog = null;
 
-    
+
     //! [0]
     void find()
     {
@@ -36,13 +36,13 @@ public class dialogs extends QWidget
             findDialog = new FindDialog(this);
             findDialog.findNext.connect(this, "findNext()");
         }
-    
+
         findDialog.show();
         findDialog.raise();
         findDialog.activateWindow();
     }
     //! [0]
-    
+
     //! [1]
     void countWords()
     {
@@ -52,7 +52,7 @@ public class dialogs extends QWidget
     }
     //! [1]
     }
-    
+
     class Document {
         public int wordCount() { return -1; }
     }
@@ -61,16 +61,16 @@ public class dialogs extends QWidget
     {
         return new Document();
     }
-    
+
     boolean boo()
     {
         /*
         QMessageBox.information(this, "Application name",
                                  "Unable to find the user preferences file.\n" +
                                  "The factory default will be used instead.");
-    
+
         String filename;
-        if (QFile.exists(filename) 
+        if (QFile.exists(filename)
             QMessageBox.question(
                 this,
                 tr("Overwrite File? -- Application Name"),
@@ -79,7 +79,7 @@ public class dialogs extends QWidget
                 tr("Yes"), tr("No"),
                 "", 0, 1))
             return false;
-    
+
         switch(QMessageBox.warning(this, "Application name",
                                     "Could not connect to the <mumble> server.\n" +
                                     "This program can't function correctly " +
@@ -93,7 +93,7 @@ public class dialogs extends QWidget
             // exit
             break;
         }
-    
+
         switch(QMessageBox.information(this, "Application name here",
                                         "The document contains unsaved changes\n"
                                         "Do you want to save the changes before exiting?",
@@ -110,7 +110,7 @@ public class dialogs extends QWidget
             // don't exit
             break;
         }
-    
+
         switch(QMessageBox.warning(this, "Application name here",
                                     "Could not save the user preferences,\n"
                                     "because the disk is full. You can delete\n"
@@ -125,21 +125,21 @@ public class dialogs extends QWidget
             // abort
             break;
         }
-    
+
         String errorDetails;
         QMessageBox.critical(0, "Application name here",
                               QString("An internal error occurred. Please ") +
                               "call technical support at 1234-56789 and report\n"+
                               "these numbers:\n\n" + errorDetails +
                               "\n\nApplication will now exit.");
-    
+
         QMessageBox.about(this, "About <Application>",
                            "<Application> is a <one-paragraph blurb>\n\n"
                            "Copyright 1991-2003 Such-and-such. "
                            "<License words here.>\n\n"
                            "For technical support, call 1234-56789 or see\n"
                            "http://www.such-and-such.com/Application/\n");
-    
+
         {
             // saving the file
             QMessageBox mb("Application name here",
@@ -163,8 +163,8 @@ public class dialogs extends QWidget
                 break;
             }
         }*/
-    
-        
+
+
             // hardware failure
     //! [2]
             QMessageBox mb = new QMessageBox(QMessageBox.Icon.Question ,"Application Name",
@@ -179,7 +179,7 @@ public class dialogs extends QWidget
             }
         return true;
     }
-    
+
     void moo()
     {
         int numFiles = 0;
@@ -187,10 +187,10 @@ public class dialogs extends QWidget
         QProgressDialog progress =
             new QProgressDialog("Copying files...", "Abort Copy", 0, numFiles, this);
         progress.setWindowModality(Qt.WindowModality.WindowModal);
-    
+
         for (int i = 0; i < numFiles; i++) {
             progress.setValue(i);
-    
+
             if (progress.wasCanceled())
                 break;
             //... copy one file
@@ -198,13 +198,13 @@ public class dialogs extends QWidget
         progress.setValue(numFiles);
     //! [3]
     }
-    
+
     class Operation extends QObject
     {
         int steps;
         QProgressDialog pd;
         QTimer t;
-    
+
     //! [4]
     // Operationructor
     public Operation(QObject parent)
@@ -216,11 +216,11 @@ public class dialogs extends QWidget
 
         t = new QTimer(this);
         t.timeout.connect(this, "perform()");
-    
+
         t.start(0);
     }
     //! [4] //! [5]
-    
+
     void perform()
     {
         pd.setValue(steps);
@@ -230,7 +230,7 @@ public class dialogs extends QWidget
             t.stop();
     }
     //! [5] //! [6]
-    
+
     void cancel()
     {
         t.stop();

@@ -15,7 +15,7 @@ public class mainwindow extends QMainWindow
     public mainwindow()
     {
         QFrame centralFrame = new QFrame(this);
-    
+
         QLabel nameLabel = new QLabel(tr("Comment:"), centralFrame);
         commentEdit = new QTextEdit(centralFrame);
         QLabel dragLabel = new QLabel(tr("<p>Drag the icon to a filer " +
@@ -24,36 +24,36 @@ public class mainwindow extends QMainWindow
         iconLabel = new QLabel(centralFrame);
         iconPixmap.load("classpath:/images/file.png");
         iconLabel.setPixmap(iconPixmap);
-    
+
         QGridLayout grid = new QGridLayout(centralFrame);
         grid.addWidget(nameLabel, 0, 0);
         grid.addWidget(commentEdit, 1, 0, 1, 2);
         grid.addWidget(dragLabel, 2, 0);
         grid.addWidget(iconLabel, 2, 1);
-    
+
         statusBar();
         setCentralWidget(centralFrame);
         setWindowTitle(tr("Dragging"));
     }
-    
+
     //! [0]
     protected void mousePressEvent(QMouseEvent event)
     {
         if (event.button().equals(Qt.MouseButton.LeftButton)
             && iconLabel.geometry().contains(event.pos())) {
-    
+
     //! [1]
             QDrag drag = new QDrag(this);
             QMimeData mimeData = new QMimeData();
-    
+
             mimeData.setText(commentEdit.toPlainText());
             drag.setMimeData(mimeData);
     //! [1]
             drag.setPixmap(iconPixmap);
-    
+
             Qt.DropAction dropAction = drag.exec();
     //! [0]
-    
+
             String actionText = "";
             switch (dropAction) {
                 case CopyAction:

@@ -24,7 +24,7 @@ class Widget extends QWidget
     //! [0]
         QStringListModel model = new QStringListModel();
         List<String> list = new Vector<String>();
-        list.add("a"); 
+        list.add("a");
         list.add("b");
         list.add("c");
         model.setStringList(list);

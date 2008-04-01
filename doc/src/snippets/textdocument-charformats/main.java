@@ -8,37 +8,37 @@ public class main
     {
         return QApplication.translate(text, text);
     }
-    
+
     public static void main(String args[])
     {
         QApplication.initialize(args);
 
         QTextEdit editor = new QTextEdit();
-    
+
         QTextCursor cursor = new QTextCursor(editor.textCursor());
-        cursor.movePosition(QTextCursor.MoveOperation.Start); 
-    
+        cursor.movePosition(QTextCursor.MoveOperation.Start);
+
         QTextCharFormat plainFormat = cursor.charFormat();
-    
+
         QTextCharFormat headingFormat = cursor.charFormat();
         headingFormat.setFontWeight(QFont.Weight.Bold.value());
         headingFormat.setFontPointSize(16);
-    
+
         QTextCharFormat emphasisFormat = cursor.charFormat();
         emphasisFormat.setFontItalic(true);
-    
+
         QTextCharFormat qtFormat = cursor.charFormat();
         qtFormat.setForeground(new QBrush(new QColor("#990000")));
-    
+
         QTextCharFormat underlineFormat = cursor.charFormat();
         underlineFormat.setFontUnderline(true);
-    
+
     //! [0]
         cursor.insertText(tr("Character formats"),
                           headingFormat);
-    
+
         cursor.insertBlock();
-    
+
         cursor.insertText(tr("Text can be displayed in a variety of " +
                              "different character formats. "), plainFormat);
         cursor.insertText(tr("We can emphasize text by "));
@@ -49,7 +49,7 @@ public class main
         cursor.insertText(tr("to the default text color, "), plainFormat);
         cursor.insertText(tr("underline it"), underlineFormat);
         cursor.insertText(tr(", and use many other effects."), plainFormat);
-    
+
         editor.setWindowTitle(tr("Text Document Character Formats"));
         editor.resize(320, 480);
         editor.show();

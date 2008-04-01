@@ -24,23 +24,23 @@ body { color: black; }</style>
         private QPoint dragPosition = new QPoint();
         private static QPolygon hourHand;
         private static QPolygon minuteHand;
-    
+
         public ShapedClock(QWidget parent) {
             super(parent, new WindowFlags(Qt.WindowType.FramelessWindowHint));
             QTimer timer = new QTimer(this);
             timer.timeout.connect(this, &quot;update()&quot;);
             timer.start(1000);
-    
+
             hourHand = new QPolygon();
             hourHand.append(new QPoint(7, 8));
             hourHand.append(new QPoint(-7, 8));
             hourHand.append(new QPoint(0, -40));
-    
+
             minuteHand = new QPolygon();
             minuteHand.append(new QPoint(7, 8));
             minuteHand.append(new QPoint(-7, 8));
             minuteHand.append(new QPoint(0, -70));
-    
+
             setWindowTitle(tr(&quot;Shaped Analog Clock&quot;));
         }</pre>
 <p>We inform the window manager that the widget is not to be decorated with a window frame by setting the Qt.WindowType.FramelessWindowHint flag on the widget. As a result, we need to provide a way for the user to move the clock around the screen.</p>
@@ -57,7 +57,7 @@ body { color: black; }</style>
 <p align="center"><img src="classpath:com/trolltech/images/shapedclock-dragging.png" /></p><p>The <tt>mouseMoveEvent()</tt> handler is called if the mouse is moved over the widget.</p>
 <pre>&nbsp;       public void mouseMoveEvent(QMouseEvent event) {
             if (event.buttons().isSet(MouseButton.LeftButton)) {
-                move(new QPoint(event.globalPos().x() - dragPosition.x(), 
+                move(new QPoint(event.globalPos().x() - dragPosition.x(),
                                 event.globalPos().y() - dragPosition.y()));
                 event.accept();
             }
@@ -65,43 +65,43 @@ body { color: black; }</style>
 <p>If the left button is held down while the mouse is moved, the top-left corner of the widget is moved to the point given by subtracting the <tt>dragPosition</tt> from the current cursor position in global coordinates. If we drag the widget, we also accept the event.</p>
 <p>The <tt>paintEvent()</tt> method is given for completeness. See the <a href="qtjambi-analogclock.html">Analog Clock</a> example for a description of the process used to render the clock.</p>
 <pre>&nbsp;       public void paintEvent(QPaintEvent event) {
-    
+
             QColor hourColor = new QColor(127, 0, 127);
             QColor minuteColor = new QColor(0, 127, 127, 191);
-    
+
             int side = Math.min(width(), height());
             QTime time = QTime.currentTime();
-    
+
             QPainter painter = new QPainter(this);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
             painter.translate(width() / 2, height() / 2);
             painter.scale(side / 200.0, side / 200.0);
-    
+
             painter.setPen(QPen.NoPen);
             painter.setBrush(hourColor);
-    
+
             painter.save();
             painter.rotate(30.0 * ((time.hour() + time.minute() / 60.0)));
             painter.drawConvexPolygon(hourHand);
             painter.restore();
-    
+
             painter.setPen(hourColor);
-    
+
             for (int i = 0; i &lt; 12; ++i) {
                 painter.drawLine(88, 0, 96, 0);
                 painter.rotate(30.0);
             }
-    
+
             painter.setPen(QPen.NoPen);
             painter.setBrush(minuteColor);
-    
+
             painter.save();
             painter.rotate(6.0 * (time.minute() + time.second() / 60.0));
             painter.drawConvexPolygon(minuteHand);
             painter.restore();
-    
+
             painter.setPen(minuteColor);
-    
+
             for (int j = 0; j &lt; 60; ++j) {
                 if ((j % 5) != 0)
                     painter.drawLine(92, 0, 96, 0);

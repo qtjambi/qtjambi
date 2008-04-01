@@ -29,7 +29,7 @@ const char* colorReset = "\033[0m";
 const char* colorDelete = "";
 const char* colorAdd = "";
 const char* colorInfo = "";
-const char* colorReset = ""; 
+const char* colorReset = "";
 #endif
 
 FileOut::FileOut(QString n):
@@ -53,7 +53,7 @@ static int* lcsLength(QList<QByteArray> a, QList<QByteArray> b) {
 
     for (int row=1; row<height; row++) {
         for (int col=1; col<width; col++) {
-            
+
             if (a[row-1] == b[col-1])
                 res[width * row + col] = res[width * (row-1) + col-1] + 1;
             else
@@ -85,11 +85,11 @@ struct Unit
                     for (int i = start; i <= start+2; i++)
                         printf("  %s\n", a[i].data());
                     printf("%s=\n= %d more lines\n=%s\n", colorInfo, end - start - 6, colorReset);
-                    for (int i = end-2; i <= end; i++) 
+                    for (int i = end-2; i <= end; i++)
                         printf("  %s\n", a[i].data());
                 }
-                else 
-                    for (int i = start; i <= end; i++) 
+                else
+                    for (int i = start; i <= end; i++)
                         printf("  %s\n", a[i].data());
             }
             else if(type == Add) {
@@ -98,14 +98,14 @@ struct Unit
                     printf("+ %s\n", b[i].data());
                 }
                 printf("%s", colorReset);
-            } 
+            }
             else if (type == Delete) {
                 printf("%s", colorDelete);
                 for (int i = start; i <= end; i++) {
                     printf("- %s\n", a[i].data());
                 }
                 printf("%s", colorReset);
-            }    
+            }
         }
     }
 };
@@ -133,13 +133,13 @@ static QList<Unit*> *diffHelper(int *lcs, QList<QByteArray> a, QList<QByteArray>
     }
     else {
         int width = b.size()+1;
-        if ((col > 0) && ((row==0) || 
+        if ((col > 0) && ((row==0) ||
                           lcs[width * row + col-1] >= lcs[width * (row-1) + col]))
             {
                 return unitAppend(diffHelper(lcs, a, b, row, col-1), Add, col-1);
             }
         else if((row > 0) && ((col==0) ||
-                              lcs[width * row + col-1] < lcs[width * (row-1) + col])){ 
+                              lcs[width * row + col-1] < lcs[width * (row-1) + col])){
             return unitAppend(diffHelper(lcs, a, b, row-1, col), Delete, row-1);;
         }
     }
@@ -172,12 +172,12 @@ bool FileOut::done() {
                                    .arg(fileRead.fileName()));
             return false;
         }
-        
+
         original = fileRead.readAll();
         fileRead.close();
         fileEqual = (original == tmp);
     }
-    
+
     if( !fileEqual ) {
         if( !FileOut::dummy ) {
             QDir dir(info.absolutePath());
@@ -186,7 +186,7 @@ bool FileOut::done() {
                                        .arg(dir.absolutePath()));
                 return false;
             }
-            
+
             QFile fileWrite(name);
             if (!fileWrite.open(QIODevice::WriteOnly)) {
                 ReportHandler::warning(QString("failed to open file '%1' for writing")
@@ -198,9 +198,9 @@ bool FileOut::done() {
         }
         if (diff) {
             printf("%sFile: %s%s\n", colorInfo, qPrintable(name), colorReset);
-         
+
             ::diff(original.split('\n'), tmp.split('\n'));
-            
+
             printf("\n");
         }
         return true;

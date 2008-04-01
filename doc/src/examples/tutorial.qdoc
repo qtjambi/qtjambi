@@ -25,7 +25,7 @@
     features are never used in this tutorial.
 
     Chapter one starts with a minimal "Hello world" program and the
-    following chapters introduce new concepts. 
+    following chapters introduce new concepts.
 
     The tutorial's source code is located in Qt Jambis's \c
     com/trolltech/examples/tutorial directory.
@@ -73,7 +73,7 @@
     Qt Jambi application. The \c gui package contain GUI related
     classes, such as widgets, which is a user interface object that
     can process user input and draw graphics.
-  
+
     \snippet tutorial/HelloWorld.java 2
 
     The \c main() method is the entry point to the program. Almost
@@ -120,7 +120,7 @@
     system choose a position.
 
     \snippet tutorial/HelloWorld.java 6
-    
+
     The title of the window in which the button is shown is set with
     QWidget.setWindowTitle().
 
@@ -205,13 +205,13 @@
 
     Here we choose a new font for the button, an 18-point bold font
     from the Times family. It is also possible to change the default
-    font for the entire application, using QApplication::setFont(). 
+    font for the entire application, using QApplication::setFont().
     We fetch the value from the Weight enum as the weight of the
     font is given as an int in the constructor.
 
     \snippet tutorial/Quit.java 4
 
-    
+
     We connect the clicked signal to the \c quit() slot in
     QApplication (\l{QApplication.}instance() returns the
     application's unique QApplication instance). \c clicked is an
@@ -375,14 +375,14 @@
     \l{QtJambiObject.tr()}{tr()} around all user-visible strings, in case
     you decide later to translate your application to other
     languages.
-   
+
     The QWidget.setGeometry() call sets both the widget's screen
     position and the size. It is equivalent to calling
     QWidget.move() followed by QWidget.resize(). If we didn't set
     the widgets geometry, the parent widget will position it using
     the buttons \l{QWidget.}{sizeHint()} method - all widgets are
     able to calculate their preferred size.
-    
+
     \snippet tutorial/Widgets.java 5
 
     Here we instantiate a Widgets, show it, and execute the
@@ -509,7 +509,7 @@
     \quotefromfile tutorial/BlocksGalore.java
     \skipto /class LCDRange/
     \printuntil /^\s\s\s\s\}/
-    \endomit    
+    \endomit
 
     \snippet tutorial/BlocksGalore.java 1
 

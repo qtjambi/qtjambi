@@ -31,7 +31,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
 
     /**
      * @exclude
-     */    
+     */
     protected static class QPrivateConstructor { }
 
     /**
@@ -49,16 +49,16 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     {
         /* intentionally empty */
     }
-    
+
     /**
      * Called either as the native resources that belong to the object are being
      * cleaned up or directly before the object is finalized. Reimplement this
      * function to do clean up when the object is destroyed. The function
-     * will never be called more than once per object, and the object is 
+     * will never be called more than once per object, and the object is
      * guaranteed to be unusable after this function has returned. The default
      * implementation does nothing.
      */
-    protected void disposed() 
+    protected void disposed()
     {
         /* intentionally empty */
     }
@@ -81,7 +81,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * The comment is used to help translators translate the source text.
      * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
 	 * which is a static method.
-     * 
+     *
      * @param source the source text to translate.
      * @param comment helps the translator translate the source text.
      * @return translated version of the source text.
@@ -90,14 +90,14 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     	String scope = getClass().getName();
     	return QCoreApplication.translate(scope, source, comment);
     }
-    
+
     /**
      * Returns a translated version of source, or source itself if there is no appropriate translated version.
      * If %n occurs in the source text, it will be substituted with count.
      * The comment is used to help translators translate the source text.
      * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
 	 * which is a static method.
-     * 
+     *
      * @param source the source text to translate.
      * @param comment helps the translator translate the source text.
      * @param count in source %n will be substituted by count.
@@ -107,10 +107,10 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     	String scope = getClass().getName();
     	return QCoreApplication.translate(scope, source, comment, count);
     }
-    
+
     /**
-     * Called before the java object is removed by the garbage collector. As the 
-     * native resources belonging to an object may be cleaned up prior to the 
+     * Called before the java object is removed by the garbage collector. As the
+     * native resources belonging to an object may be cleaned up prior to the
      * call of this function, it has been set as final. Reimplement disposed() instead,
      * which will be called either as the native resources are being removed
      * or just before the object is finalized, whichever happens first.
@@ -125,29 +125,29 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * reference the object after it has been disposed.
      */
     public final native void dispose();
-    
-    
+
+
     /**
      * Used to check if this object shares native resources with the other object
-     * if the other object is a subtype of QtJambiInterface. Otherwise it will 
+     * if the other object is a subtype of QtJambiInterface. Otherwise it will
      * return the result of calling the super class implementation.
-     * 
+     *
      * @param other The object with which to compare
-     * @return true if the native resources of the two objects are one and the same. 
+     * @return true if the native resources of the two objects are one and the same.
      */
     @Override
     public boolean equals(Object other) {
-        if (other instanceof QtJambiInterface)            
+        if (other instanceof QtJambiInterface)
             return ((QtJambiInterface)other).nativeId() == nativeId();
         else
             return super.equals(other);
     }
-    
+
 
 
     /**
-     * This is an internal function. Calling it can have unexpected results.  
-     * 
+     * This is an internal function. Calling it can have unexpected results.
+     *
      * Disables garbage collection for this object. This should be
      * used when objects created in java are passed to C++ functions
      * that take ownership of the objects. Both the Java and C++ part
@@ -155,10 +155,10 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * @exclude
      */
     public final native void disableGarbageCollection();
-    
+
     /**
-     * This is an internal function. Calling it can have unexpected results.  
-     * 
+     * This is an internal function. Calling it can have unexpected results.
+     *
      * Reenables garbage collection for this object. Should be used
      * on objects for which disableGarbageCollection() has previously
      * been called. After calling this function, the object ownership will be
@@ -166,16 +166,16 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * @exclude
      */
     public final native void reenableGarbageCollection();
-    
+
     /**
      * This is an internal function. Calling it can have unexpected results.
-     * 
+     *
      * Forces Java ownership of both the Java object and its C++ resources.
      * The C++ resources will be cleaned up when the Java object is finalized.
      * @exclude
      */
     public final native void setJavaOwnership();
-    
+
 
     /**
      * Internal function which fetches a wrapper around the pointer to
@@ -193,7 +193,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * @exclude
      */
     public final long nativeId() { return native__id; }
-    
+
     /**
      * In certain, uncommon cases, the native resources of a QtJambiObject object may
      * be out of sync with its class. In such cases this method can be
@@ -225,7 +225,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
         throws InstantiationException
     {
         if (!object.getClass().isAssignableFrom(clazz)) {
-            throw new ClassCastException("The object '" + object.toString() + "' (class: '" + object.getClass().getName() + "') " 
+            throw new ClassCastException("The object '" + object.toString() + "' (class: '" + object.getClass().getName() + "') "
                                          + "must be of class '" + clazz.getName() + "' or one of its superclasses.");
         }
 

@@ -47,19 +47,19 @@ public class Calculator extends QWidget
 
         Button pointButton = createButton(tr("."), digitColor, "pointClicked()");
         Button changeSignButton = createButton(tr("\261"), digitColor, "changeSignClicked()");
-    
+
         Button backspaceButton = createButton(tr("Backspace"), backspaceColor,
                                        "backspaceClicked()");
         Button clearButton = createButton(tr("Clear"), backspaceColor, "clear()");
         Button clearAllButton = createButton(tr("Clear All"), backspaceColor.lighter(120),
                                       "clearAll()");
-    
+
         Button clearMemoryButton = createButton(tr("MC"), memoryColor,
                                          "clearMemory()");
         Button readMemoryButton = createButton(tr("MR"), memoryColor, "readMemory()");
         Button setMemoryButton = createButton(tr("MS"), memoryColor, "setMemory()");
         Button addToMemoryButton = createButton(tr("M+"), memoryColor, "addToMemory()");
-    
+
         Button divisionButton = createButton(tr("\367"), operatorColor,
                                       "multiplicativeOperatorClicked()");
         Button timesButton = createButton(tr("\327"), operatorColor,
@@ -68,7 +68,7 @@ public class Calculator extends QWidget
                                    "additiveOperatorClicked()");
         Button plusButton = createButton(tr("+"), operatorColor,
                                   "additiveOperatorClicked()");
-    
+
         Button squareRootButton = createButton(tr("Sqrt"), operatorColor,
                                         "unaryOperatorClicked()");
         Button powerButton = createButton(tr("x\262"), operatorColor,
@@ -100,12 +100,12 @@ public class Calculator extends QWidget
         mainLayout.addWidget(digitButtons[0], 5, 1);
         mainLayout.addWidget(pointButton, 5, 2);
         mainLayout.addWidget(changeSignButton, 5, 3);
-        
+
         mainLayout.addWidget(divisionButton, 2, 4);
         mainLayout.addWidget(timesButton, 3, 4);
         mainLayout.addWidget(minusButton, 4, 4);
         mainLayout.addWidget(plusButton, 5, 4);
-        
+
         mainLayout.addWidget(squareRootButton, 2, 5);
         mainLayout.addWidget(powerButton, 3, 5);
         mainLayout.addWidget(reciprocalButton, 4, 5);
@@ -121,21 +121,21 @@ public class Calculator extends QWidget
         int digitValue = Integer.parseInt(clickedButton.text());
         if (display.text().equals("0") && digitValue == 0.0)
             return;
-    
+
         if (waitingForOperand) {
             display.clear();
             waitingForOperand = false;
         }
         display.setText(display.text() + String.valueOf(digitValue));
     }
-    
+
     public void unaryOperatorClicked()
     {
         Button clickedButton = (Button) QSignalEmitter.signalSender();
         String clickedOperator = clickedButton.text();
         double operand = parseDouble(display.text());
         double result = 0.0;
-    
+
         if (clickedOperator.equals(tr("Sqrt"))) {
             if (operand < 0.0) {
                 abortOperation();
@@ -160,7 +160,7 @@ public class Calculator extends QWidget
         Button clickedButton = (Button) QSignalEmitter.signalSender();
         String clickedOperator = clickedButton.text();
         double operand = parseDouble(display.text());
-    
+
         if (pendingMultiplicativeOperator.length() != 0) {
             if (!calculate(operand, pendingMultiplicativeOperator)) {
                 abortOperation();
@@ -171,7 +171,7 @@ public class Calculator extends QWidget
             factorSoFar = 0.0;
             pendingMultiplicativeOperator = "";
         }
-    
+
         if (pendingAdditiveOperator.length() != 0) {
             if (!calculate(operand, pendingAdditiveOperator)) {
                 abortOperation();
@@ -181,7 +181,7 @@ public class Calculator extends QWidget
         } else {
             sumSoFar = operand;
         }
-    
+
         pendingAdditiveOperator = clickedOperator;
         waitingForOperand = true;
     }
@@ -191,7 +191,7 @@ public class Calculator extends QWidget
         Button clickedButton = (Button) QSignalEmitter.signalSender();
         String clickedOperator = clickedButton.text();
         double operand = parseDouble(display.text());
-    
+
         if (pendingMultiplicativeOperator.length() != 0) {
             if (!calculate(operand, pendingMultiplicativeOperator)) {
                 abortOperation();
@@ -220,7 +220,7 @@ public class Calculator extends QWidget
     public void equalClicked()
     {
         double operand = parseDouble(display.text());
-    
+
         if (pendingMultiplicativeOperator.length() != 0) {
             if (!calculate(operand, pendingMultiplicativeOperator)) {
                 abortOperation();
@@ -239,7 +239,7 @@ public class Calculator extends QWidget
         } else {
             sumSoFar = operand;
         }
-    
+
         display.setText(String.valueOf(sumSoFar));
         sumSoFar = 0.0;
         waitingForOperand = true;
@@ -253,12 +253,12 @@ public class Calculator extends QWidget
             display.setText(display.text() + tr("."));
         waitingForOperand = false;
     }
-    
+
     public void changeSignClicked()
     {
         String text = display.text();
         double value = parseDouble(text);
-    
+
         if (value > 0.0) {
             text = tr("-") + text;
         } else if (value < 0.0) {
@@ -266,7 +266,7 @@ public class Calculator extends QWidget
         }
         display.setText(text);
     }
-    
+
     public void backspaceClicked()
     {
         if (waitingForOperand)
@@ -285,11 +285,11 @@ public class Calculator extends QWidget
     {
         if (waitingForOperand)
             return;
-    
+
         display.setText("0");
         waitingForOperand = true;
     }
-    
+
     public void clearAll()
     {
         sumSoFar = 0.0;
@@ -299,24 +299,24 @@ public class Calculator extends QWidget
         display.setText("0");
         waitingForOperand = true;
     }
-    
+
     public void clearMemory()
     {
         sumInMemory = 0.0;
     }
-    
+
     public void readMemory()
     {
         display.setText(String.valueOf(sumInMemory));
         waitingForOperand = true;
     }
-    
+
     public void setMemory()
     {
         equalClicked();
         sumInMemory = parseDouble(display.text());
     }
-    
+
     public void addToMemory()
     {
         equalClicked();
@@ -330,13 +330,13 @@ public class Calculator extends QWidget
         button.clicked.connect(this, slot);
         return button;
     }
-    
+
     public void abortOperation()
     {
         clearAll();
         display.setText(tr("####"));
     }
-    
+
     public boolean calculate(double rightOperand, String pendingOperator)
     {
         if (pendingOperator.equals(tr("+"))) {
@@ -364,7 +364,7 @@ public class Calculator extends QWidget
             QPalette newPalette = palette();
             newPalette.setColor(QPalette.ColorRole.Button, color);
             setPalette(newPalette);
-        } 
+        }
 
         @Override
         public QSize sizeHint()
@@ -382,6 +382,6 @@ public class Calculator extends QWidget
 
         new Calculator().show();
 
-        QApplication.exec(); 
+        QApplication.exec();
     }
 }

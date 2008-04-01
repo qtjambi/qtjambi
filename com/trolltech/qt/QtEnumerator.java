@@ -18,12 +18,12 @@ package com.trolltech.qt;
  * and flags. Its sole purpose is to unify the access to the integer
  * value of enumerators and flags using the value() method.
  *
- * If you manually implement this class, your implementation must contain a method 
+ * If you manually implement this class, your implementation must contain a method
  * with the following signature:
- *  
+ *
  *      public static T resolve(int value);
- *      
- * where T is your subclass. This should return the enum value corresponding to the 
+ *
+ * where T is your subclass. This should return the enum value corresponding to the
  * specified int value.
  */
 public interface QtEnumerator {

@@ -17,7 +17,7 @@ HEADERS += \
         metajavabuilder.h \
         qdocgenerator.h \
         uiconverter.h \
-   
+
 SOURCES += \
         classlistgenerator.cpp \
         cppgenerator.cpp \
@@ -31,5 +31,5 @@ SOURCES += \
         metajavabuilder.cpp \
         qdocgenerator.cpp \
         uiconverter.cpp \
-   
+
 include(generator.pri)

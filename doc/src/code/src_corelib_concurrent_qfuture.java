@@ -49,7 +49,7 @@ public class src_corelib_concurrent_qfuture {
 //! [1]
         QFuture<String> future = new QFuture<String>();
         /* ... */
-        
+
         QFutureIterator<String> i = new QFutureIterator<String>(future);
         while (i.hasNext())
             System.out.println(i.next());

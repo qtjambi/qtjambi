@@ -25,20 +25,20 @@
         <mkdir dir="${outputDir}/autotestlib"/>
 	<generator dir="${outputDir}/autotestlib"
 	           header="${sourceDir}/autotestlib/global.h"
-                   typesystem="${sourceDir}/autotestlib/build.txt" 
+                   typesystem="${sourceDir}/autotestlib/build.txt"
 		   outputDirectory="${outputDir}"/>
     </target>
 
-    <target name="compile.autotests" 
+    <target name="compile.autotests"
             depends="qtjambi.init"
             description="Compile Java and c++ files for autotests.">
         <mkdir dir="${outputDir}/autotestlib"/>
-        <qmake dir="${outputDir}/autotestlib/" 
-               recursive="true" 
+        <qmake dir="${outputDir}/autotestlib/"
+               recursive="true"
                config="${qtjambi.configuration}"
                pro="${sourceDir}/autotestlib/autotestlib.pro"/>
 	<make dir="${outputDir}/autotestlib" silent="true"/>
-        
+
         <!-- Compiling to the outputDir crashes the java compiler -->
         <mkdir dir="${outputDir}/auto"/>
         <javac destdir="${outputDir}/auto">
@@ -51,21 +51,21 @@
     <target name="autotests"
             depends="generator.autotests, compile.autotests" />
 
-    <target name="test" 
-            depends="clean.report" 
+    <target name="test"
+            depends="clean.report"
             description="JUnit test with web report">
         <junit printsummary="yes"
                haltonfailure="false"
                timeout="160000"
                tempdir="${outputDir}">
 
-            <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/> 
+            <jvmarg value="-Djava.library.path=${qtLib}:${jambiLib}"/>
 	    <jvmarg value="-Dcom.trolltech.qt.implicit-loading=false" />
 
             <classpath>
                 <pathelement location="${outputDir}" />
-                <pathelement location="${outputDir}/auto" /> 
-                <pathelement location="${sourceDir}" /> 
+                <pathelement location="${outputDir}/auto" />
+                <pathelement location="${sourceDir}" />
             </classpath>
             <formatter type="xml"/>
             <batchtest fork="true" todir="${reportDir}">

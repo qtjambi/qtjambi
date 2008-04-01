@@ -54,11 +54,11 @@ protected:
 //! [0]
     }
 
-    QPixmap channelImage, pixmap; 
+    QPixmap channelImage, pixmap;
     QSize sizeHint() const { return QSize(500, 500); }
 };
 
-    
+
 
 int main(int argc, char **argv)
 {

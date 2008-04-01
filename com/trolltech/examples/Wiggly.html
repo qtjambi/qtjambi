@@ -29,19 +29,19 @@ body { color: black; }</style>
 <p>The <tt>Wiggly</tt> class provides a dialog widget that allows the user to enter a text. The text is then rendered by <tt>WigglyWidget</tt>.</p>
 <pre>&nbsp;       public Wiggly(QWidget parent) {
             super(parent);
-    
+
             WigglyWidget wigglyWidget = new WigglyWidget(null);
             QLineEdit lineEdit = new QLineEdit();
-    
+
             QVBoxLayout layout = new QVBoxLayout();
             layout.addWidget(wigglyWidget);
             layout.addWidget(lineEdit);
             setLayout(layout);
-    
+
             lineEdit.textChanged.connect(wigglyWidget, &quot;setText(String)&quot;);
-    
+
             lineEdit.setText(&quot;Hello world!&quot;);
-    
+
             setWindowTitle(&quot;Wiggly&quot;);
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
             resize(360, 145);
@@ -49,10 +49,10 @@ body { color: black; }</style>
 <p>In the constructor we create a wiggly widget along with a line edit, and we put the two widgets in a vertical layout. We connect the line edit's textChanged() signal to the wiggly widget's <tt>setText()</tt> slot to obtain the real time interaction with the wiggly widget. The widget's default text is &quot;Hello world!&quot;.</p>
 <pre>&nbsp;       public static void main(String args[]) {
             QApplication.initialize(args);
-    
+
             Wiggly d = new Wiggly(null);
             d.show();
-    
+
             QApplication.exec();
         }
     }</pre>
@@ -61,7 +61,7 @@ body { color: black; }</style>
 <h2>WigglyWidget Class Implementation</h2>
 <pre>&nbsp;   class WigglyWidget extends QWidget {
         static final int sineTable[] = { 0, 38, 71, 92, 100, 92, 71, 38, 0, -38, -71, -92, -100, -92, -71, -38 };
-    
+
         private QBasicTimer timer;
         private String text;
         private int step;</pre>
@@ -70,14 +70,14 @@ body { color: black; }</style>
 <pre>&nbsp;       WigglyWidget(QWidget parent) {
             super(parent);
             setBackgroundRole(QPalette.ColorRole.Midlight);
-    
+
             QFont newFont = font();
             newFont.setPointSize(newFont.pointSize() + 20);
             setFont(newFont);</pre>
 <p>The <tt>timer</tt> variable, of type QBasicTimer, is used to update the widget at regular intervals, making the widget move. The <tt>text</tt> variable is used to store the currently displayed text, and <tt>step</tt> to calculate position and color for each character on the wiggly line.</p>
 <p>In the constructor, we make the widget's background slightly lighter than the usual background using the QPalette::Midlight color role. The background role defines the brush from the widget's palette that Qt uses to paint the background. Then we enlarge the widget's font with 20 points.</p>
 <pre>&nbsp;           step = 0;
-    
+
             timer = new QBasicTimer();
             timer.start(60, this);
         }</pre>

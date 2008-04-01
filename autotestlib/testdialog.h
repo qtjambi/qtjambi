@@ -40,7 +40,7 @@ private:
     QLabel *filesFoundLabel;
     QPushButton *browseButton;
     QPushButton *findButton;
-    
+
     QTableWidget *filesTable;
 };
 

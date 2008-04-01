@@ -114,7 +114,7 @@ public class QClassPathEngine extends QAbstractFileEngine
 
         if (classpaths == null)
             findClassPaths();
-        
+
         if (m_selectedSource.equals("*")) {
             List<JarFile> potentialJars = JarCache.jarFiles(m_baseName);
 
@@ -146,14 +146,14 @@ public class QClassPathEngine extends QAbstractFileEngine
         } else
             try {
             	String url = makeUrl(m_selectedSource);
-            	
+
             	// If it's a file (it should be), strip away the scheme and check whether the
             	// file is a directory. Otherwise it's assumed to be a .jar file
             	if (url.startsWith("file:") && new File(url.substring(5)).isDirectory())
                     addFromPath(new URL(url), m_baseName);
                 else
                     addJarFileFromPath(new URL("jar:" + url + "!/"), m_baseName);
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

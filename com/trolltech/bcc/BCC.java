@@ -8,38 +8,38 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 public class BCC extends QWidget {
-    
+
     private QLineEdit leftDirectoryInput = new QLineEdit();
     private QLineEdit rightDirectoryInput = new QLineEdit();
     private QStackedWidget stack;
     private QProgressBar progressBar;
-    
+
     private static class ProblemsWidget extends QTreeWidget {
-        
+
         private static class TopLevelItem extends QTreeWidgetItem {
             private enum Degree {
                 Critical,
                 FeatureAddition
             }
-            
+
             private String title;
-                        
+
             private TopLevelItem(String title, Degree degree) {
                 this.title = title;
                 setForeground(0, new QBrush(degree == Degree.Critical ? QColor.darkRed : QColor.darkGreen));
-                
+
                 updateTitle();
             }
-            
+
             public void addSubItem(QTreeWidgetItem item) {
                 addChild(item);
                 updateTitle();
             }
-            
+
             private void updateTitle() {
                 setText(0, title + " (" + childCount() + ")");
             }
-            
+
             private void writeToLog(QTextStream stream) {
                 stream.writeString(title + "\n");
                 int childCount = childCount();
@@ -50,63 +50,63 @@ public class BCC extends QWidget {
                 stream.writeString("\n\n");
             }
         }
-        
+
         private TopLevelItem missingClasses = new TopLevelItem("Missing classes",TopLevelItem.Degree.Critical);
         private TopLevelItem addedClasses = new TopLevelItem("Added classes", TopLevelItem.Degree.FeatureAddition);
         private TopLevelItem missingMethods = new TopLevelItem("Missing methods", TopLevelItem.Degree.Critical);
         private TopLevelItem missingFields = new TopLevelItem("Missing fields", TopLevelItem.Degree.Critical);
         private TopLevelItem changedMethods = new TopLevelItem("Changed methods", TopLevelItem.Degree.Critical);
         private TopLevelItem changedFields = new TopLevelItem("Changed fields", TopLevelItem.Degree.Critical);
-        private TopLevelItem changedClasses = new TopLevelItem("Changed classes", TopLevelItem.Degree.Critical);        
+        private TopLevelItem changedClasses = new TopLevelItem("Changed classes", TopLevelItem.Degree.Critical);
         private TopLevelItem addedMethods = new TopLevelItem("Added methods", TopLevelItem.Degree.FeatureAddition);
         private TopLevelItem addedFields = new TopLevelItem("Added fields", TopLevelItem.Degree.FeatureAddition);
-        
+
         private ProblemsWidget() {
-            super();            
+            super();
             header().hide();
-            
+
             setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn);
 
             {
                 addTopLevelItem(missingClasses);
-                addTopLevelItem(missingMethods);                
-                addTopLevelItem(missingFields);                
-                addTopLevelItem(changedMethods);                
+                addTopLevelItem(missingMethods);
+                addTopLevelItem(missingFields);
+                addTopLevelItem(changedMethods);
                 addTopLevelItem(changedFields);
                 addTopLevelItem(changedClasses);
                 addTopLevelItem(addedClasses);
-                addTopLevelItem(addedMethods);                
-                addTopLevelItem(addedFields);                
+                addTopLevelItem(addedMethods);
+                addTopLevelItem(addedFields);
             }
-            
+
         }
-        
+
         @SuppressWarnings("unused")
         private void writeLog() {
             String logFileName = QFileDialog.getSaveFileName(this);
             if (logFileName.isEmpty())
                 return;
-            
+
             QFile file = new QFile(logFileName);
             if (!file.open(QIODevice.OpenModeFlag.WriteOnly))
                 return;
-            
+
             QTextStream stream = new QTextStream(file);
-            
+
             int topLevelItemCount = topLevelItemCount();
             for (int i=0; i<topLevelItemCount; ++i) {
                 QTreeWidgetItem item = topLevelItem(i);
                 if (item instanceof TopLevelItem)
                     ((TopLevelItem) item).writeToLog(stream);
             }
-            
+
             file.close();
-            
+
         }
-        
+
     }
-    
-    
+
+
     @SuppressWarnings("unused")
     private void selectJarFile(QWidget w) {
         String selected = QFileDialog.getOpenFileName(this, "Open jar file", null, new QFileDialog.Filter("*.jar"));
@@ -115,9 +115,9 @@ public class BCC extends QWidget {
                 ((QLineEdit) w).setText("classpath:" + selected + "#/");
             }
         }
-        
+
     }
-    
+
     @SuppressWarnings("unused")
     private void selectDirectory(QWidget w) {
         String selected = QFileDialog.getExistingDirectory();
@@ -125,19 +125,19 @@ public class BCC extends QWidget {
             if (w instanceof QLineEdit) {
                 ((QLineEdit) w).setText(selected);
             }
-        }        
+        }
     }
-    
+
     private static class WorkaroundClassLoader extends ClassLoader {
-                
+
         private String path;
         private WorkaroundClassLoader(String path) {
             super(ClassLoader.getSystemClassLoader());
             this.path = path;
         }
-        
+
         private Hashtable<String, Class<?>> classes = new Hashtable<String, Class<?>>();
-        
+
         @Override
         public Class<?> findClass(String name) throws ClassNotFoundException {
             Class<?> cls = loadDataAndDefineClass(name);
@@ -146,22 +146,22 @@ public class BCC extends QWidget {
             else
                 return super.findClass(name);
         }
-        
-        
+
+
         public Class<?> loadDataAndDefineClass(String name) {
             try {
                 if (classes.containsKey(name))
                     return classes.get(name);
-                
-                byte[] b = loadClassData(name);                
-                Class<?> returned;                 
+
+                byte[] b = loadClassData(name);
+                Class<?> returned;
                 if (b != null)
                     returned = defineClass(name.replaceAll("/", "."), b, 0, b.length);
                 else
                     return null;
-                
+
                 classes.put(name, returned);
-                return returned;                
+                return returned;
             } catch (Throwable e) {
                 e.printStackTrace();
                 return null;
@@ -172,33 +172,33 @@ public class BCC extends QWidget {
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             return loadClass(name, false);
         }
-        
+
         @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             Class<?> cls = loadDataAndDefineClass(name);
             if (cls != null)
                 return cls;
-            else 
+            else
                 return super.loadClass(name, resolve);
         }
-        
+
         private byte[] loadClassData(String name) {
             QFileInfo info = new QFileInfo(path + "/" + name.replaceAll("\\.", "/") + ".class");
             return loadClassData(info, name);
         }
-        
+
         private byte[] loadClassData(QFileInfo info, String className) {
             if (!info.exists())
                 return null;
-            
+
             QFile file = new QFile(info.absoluteFilePath());
             if (file.open(QIODevice.OpenModeFlag.ReadOnly)) {
-                return file.readAll().toByteArray();               
+                return file.readAll().toByteArray();
             } else {
                 return null;
-            }                        
+            }
         }
-        
+
         private Class<?> loadClassFromPath(QFileInfo info, String className) {
             try {
                 if (classes.containsKey(className))
@@ -208,20 +208,20 @@ public class BCC extends QWidget {
             } catch (Throwable e) {
                 e.printStackTrace();
             }
-            
+
             return null;
         }
-        
+
     }
-    
-    
+
+
     private void handleDirectoryRecursively(WorkaroundClassLoader classLoader, String path, String packageName, Hashtable<String,Class<?>> classes) {
-        
+
         QDir dir = new QDir(path);
         List<QFileInfo> entryInfoList = dir.entryInfoList(QDir.Filter.createQFlags(QDir.Filter.AllEntries, QDir.Filter.NoDotAndDotDot));
-        
-        for (QFileInfo entryInfo : entryInfoList) {            
-            if (entryInfo.isDir()) 
+
+        for (QFileInfo entryInfo : entryInfoList) {
+            if (entryInfo.isDir())
                 handleDirectoryRecursively(classLoader, entryInfo.absoluteFilePath(), packageName + (packageName.isEmpty() ? "" : ".") + entryInfo.baseName(), classes);
             else if (entryInfo.completeSuffix().equals("class")) {
                 Class<?> clazz = classLoader.loadClassFromPath(entryInfo, packageName + (packageName.isEmpty() ? "" : ".") + entryInfo.baseName());
@@ -232,51 +232,51 @@ public class BCC extends QWidget {
             }
         }
     }
-    
+
     private Hashtable<String,Class<?>> handleDirectory(String path) {
-        
+
         Hashtable<String,Class<?>> classes = new Hashtable<String,Class<?>>();
-        
+
         handleDirectoryRecursively(new WorkaroundClassLoader(path), path, "", classes);
-        
+
         return classes;
     }
-        
+
     QThread thread;
     @SuppressWarnings("unused")
     private void scan() {
         stack.setCurrentIndex(1);
-        
+
         final String leftDir = leftDirectoryInput.text();
         final String rightDir = rightDirectoryInput.text();
-                
+
         packagesCheckVal = packagesCheck.isChecked();
         packagesCheck.setDisabled(true);
         thread = new QThread(new Runnable() {
-            
+
             public void run() {
-                Hashtable<String,Class<?>> leftHandler = handleDirectory(leftDir);                        
+                Hashtable<String,Class<?>> leftHandler = handleDirectory(leftDir);
                 Hashtable<String,Class<?>> rightHandler = handleDirectory(rightDir);
-                
+
                 if (leftHandler == null || rightHandler == null)
                     return ;
-                
+
                 compare(leftHandler, rightHandler);
-        
+
                 QApplication.invokeLater(new Runnable() {
-                    public void run() {               
+                    public void run() {
                         stack.setCurrentIndex(0);
                         packagesCheck.setDisabled(false);
                     }
                 });
-                    
+
             }
         });
-        
+
         thread.setDaemon(true);
-        thread.start();                
+        thread.start();
     }
-    
+
     private boolean isAbstract(int modifiers) {
         return (modifiers & Modifier.ABSTRACT) == Modifier.ABSTRACT;
     }
@@ -284,35 +284,35 @@ public class BCC extends QWidget {
     private boolean isFinal(int modifiers) {
         return (modifiers & Modifier.FINAL) == Modifier.FINAL;
     }
-    
+
     private boolean isInterface(int modifiers) {
         return (modifiers & Modifier.INTERFACE) == Modifier.INTERFACE;
     }
-    
+
     private boolean isNative(int modifiers) {
         return (modifiers & Modifier.NATIVE) == Modifier.NATIVE;
     }
-    
+
     private boolean isPrivate(int modifiers) {
-        return (modifiers & Modifier.PRIVATE) == Modifier.PRIVATE;    
+        return (modifiers & Modifier.PRIVATE) == Modifier.PRIVATE;
     }
-    
+
     private boolean isProtected(int modifiers) {
         return (modifiers & Modifier.PROTECTED) == Modifier.PROTECTED;
-    }    
-    
+    }
+
     private boolean isPublic(int modifiers) {
         return (modifiers & Modifier.PUBLIC) == Modifier.PUBLIC;
-    }    
-    
+    }
+
     private boolean isStatic(int modifiers) {
         return (modifiers & Modifier.STATIC) == Modifier.STATIC;
     }
-    
+
     private boolean isStrict(int modifiers) {
         return (modifiers & Modifier.STRICT) == Modifier.STRICT;
     }
-    
+
     private boolean isSynchronized(int modifiers) {
         return (modifiers & Modifier.SYNCHRONIZED) == Modifier.SYNCHRONIZED;
     }
@@ -320,56 +320,56 @@ public class BCC extends QWidget {
     private boolean isTransient(int modifiers) {
         return (modifiers & Modifier.TRANSIENT) == Modifier.TRANSIENT;
     }
-    
+
     private boolean isVolatile(int modifiers) {
         return (modifiers & Modifier.VOLATILE) == Modifier.VOLATILE;
     }
-    
+
     private Field findField(Class<?> cls, Field field) {
         Field fields[] = cls.getDeclaredFields();
         for (Field otherField : fields) {
             if (otherField.getName().equals(field.getName()))
                 return otherField;
         }
-        
+
         return null;
     }
-    
+
     private Constructor<?> findConstructor(Class<?> cls, Constructor<?> constructor) {
         Constructor<?> constructors[] = cls.getConstructors();
         for (Constructor<?> otherConstructor : constructors) {
             if (otherConstructor.toString().equals(constructor.toString()))
                 return otherConstructor;
         }
-        
+
         return null;
     }
-    
+
     private Method findMethod(Class<?> cls, Method method) {
         Method methods[] = cls.getDeclaredMethods();
-        
+
         Method returned = null;
         for (Method otherMethod : methods) {
             if (otherMethod.getName().equals(method.getName())) {
                 Class<?> parameterTypes[] = otherMethod.getParameterTypes();
                 Class<?> otherParameterTypes[] = method.getParameterTypes();
-                
-                
+
+
                 if (parameterTypes.length == otherParameterTypes.length) {
-                    
+
                     boolean match = true;
                     for (int i=0; i<parameterTypes.length; ++i) {
                         Class<?> parameterType = parameterTypes[i];
-                        
+
                         if (!parameterType.toString().equals(otherParameterTypes[i].toString())) {
                             match = false;
                             break;
                         }
                     }
-                    
+
                     // Prefer the best match (needed for fromNativePointer() functions)
                     if (match) {
-                        if (returned == null) returned = otherMethod; 
+                        if (returned == null) returned = otherMethod;
                         else {
                             if (otherMethod.getReturnType().toString().equals(method.getReturnType().toString()))
                                 returned = otherMethod;
@@ -378,13 +378,13 @@ public class BCC extends QWidget {
                 }
             }
         }
-        
+
         return returned;
     }
-    
+
     private String modifierString(int modifiers) {
         return (isAbstract(modifiers) ? "abstract " : "")
-             + (isFinal(modifiers) ? "final " : "") 
+             + (isFinal(modifiers) ? "final " : "")
              + (isInterface(modifiers) ? "interface " : "")
              + (isNative(modifiers) ? "native " : "")
              + (isPrivate(modifiers) ? "private " : "")
@@ -394,9 +394,9 @@ public class BCC extends QWidget {
              + (isStrict(modifiers) ? "strict " : "")
              + (isSynchronized(modifiers) ? "synchronized " : "")
              + (isTransient(modifiers) ? "transient " : "")
-             + (isVolatile(modifiers) ? "volatile " : "");                     
+             + (isVolatile(modifiers) ? "volatile " : "");
     }
-    
+
     private void compareClasses(final Class<?> oldClass, final Class<?> newClass) {
         try {
             int oldModifiers = oldClass.getModifiers();
@@ -404,29 +404,29 @@ public class BCC extends QWidget {
             if (oldModifiers != newModifiers) {
                 final String oldModifierString = modifierString(oldModifiers);
                 final String newModifierString = modifierString(newModifiers);
-                
+
                 QApplication.invokeLater(new Runnable() {
                     public void run() {
                         QTreeWidgetItem item = new QTreeWidgetItem();
                         item.setText(0, "Modifiers for class '" + oldClass.getName() + "' from '" + oldModifierString + "' to '" + newModifierString + "'");
-                        problemsWidget.changedClasses.addSubItem(item);                    
+                        problemsWidget.changedClasses.addSubItem(item);
                     }
                 });
             }
-            
+
             Method oldMethods[] = oldClass.getDeclaredMethods();
             for (final Method oldMethod : oldMethods) {
                 oldModifiers = oldMethod.getModifiers();
-                if (!isPublic(oldModifiers) && !isProtected(oldModifiers)) 
+                if (!isPublic(oldModifiers) && !isProtected(oldModifiers))
                     continue;
-                
-                Method newMethod = findMethod(newClass, oldMethod);                
+
+                Method newMethod = findMethod(newClass, oldMethod);
                 if (newMethod == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
                             QTreeWidgetItem item = new QTreeWidgetItem();
                             item.setText(0, "'" + oldMethod.toString());
-                            problemsWidget.missingMethods.addSubItem(item);                                            
+                            problemsWidget.missingMethods.addSubItem(item);
                         }
                     });
                 } else {
@@ -434,7 +434,7 @@ public class BCC extends QWidget {
                     if (oldModifiers != newModifiers) {
                         final String oldModifierString = modifierString(oldModifiers);
                         final String newModifierString = modifierString(newModifiers);
-                        
+
                         QApplication.invokeLater(new Runnable() {
                            public void run() {
                               QTreeWidgetItem item = new QTreeWidgetItem();
@@ -443,7 +443,7 @@ public class BCC extends QWidget {
                            }
                         });
                     }
-                    
+
                     final Class<?> oldReturnType = oldMethod.getReturnType();
                     final Class<?> newReturnType = newMethod.getReturnType();
                     if (!oldReturnType.toString().equals(newReturnType.toString())) {
@@ -453,42 +453,42 @@ public class BCC extends QWidget {
                                item.setText(0, "Return type for '" + oldMethod.toString() + "' changed from '" + oldReturnType.getName() + "' to '" + newReturnType.getName());
                                problemsWidget.changedMethods.addSubItem(item);
                             }
-                         });                    
+                         });
                     }
-                }            
+                }
             }
-            
+
             Method newMethods[] = newClass.getDeclaredMethods();
             for (final Method newMethod : newMethods) {
                 newModifiers = newMethod.getModifiers();
                 if (!isPublic(newModifiers) && !isProtected(newModifiers))
                     continue;
-                
-                Method oldMethod = findMethod(oldClass, newMethod);                
+
+                Method oldMethod = findMethod(oldClass, newMethod);
                 if (oldMethod == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
                             QTreeWidgetItem item = new QTreeWidgetItem();
-                            item.setText(0, "'" + newMethod.toString());                        
+                            item.setText(0, "'" + newMethod.toString());
                             problemsWidget.addedMethods.addSubItem(item);
                         }
                     });
-                }            
+                }
             }
-            
+
             Constructor<?> oldConstructors[] = oldClass.getConstructors();
             for (final Constructor<?> oldConstructor : oldConstructors) {
                 oldModifiers = oldConstructor.getModifiers();
-                if (!isPublic(oldModifiers) && !isProtected(oldModifiers)) 
+                if (!isPublic(oldModifiers) && !isProtected(oldModifiers))
                     continue;
-                
-                Constructor<?> newConstructor = findConstructor(newClass, oldConstructor);                
+
+                Constructor<?> newConstructor = findConstructor(newClass, oldConstructor);
                 if (newConstructor == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
                             QTreeWidgetItem item = new QTreeWidgetItem();
                             item.setText(0, "'" + oldConstructor.toString());
-                            problemsWidget.missingMethods.addSubItem(item);                                            
+                            problemsWidget.missingMethods.addSubItem(item);
                         }
                     });
                 } else {
@@ -496,7 +496,7 @@ public class BCC extends QWidget {
                     if (oldModifiers != newModifiers) {
                         final String oldModifierString = modifierString(oldModifiers);
                         final String newModifierString = modifierString(newModifiers);
-                        
+
                         QApplication.invokeLater(new Runnable() {
                            public void run() {
                               QTreeWidgetItem item = new QTreeWidgetItem();
@@ -504,58 +504,58 @@ public class BCC extends QWidget {
                               problemsWidget.changedMethods.addSubItem(item);
                            }
                         });
-                    }                    
-                }            
+                    }
+                }
             }
-            
+
             Constructor<?> newConstructors[] = newClass.getConstructors();
             for (final Constructor<?> newConstructor : newConstructors) {
                 newModifiers = newConstructor.getModifiers();
                 if (!isPublic(newModifiers) && !isProtected(newModifiers))
                     continue;
-                
-                Constructor<?> oldConstructor = findConstructor(oldClass, newConstructor);                
+
+                Constructor<?> oldConstructor = findConstructor(oldClass, newConstructor);
                 if (oldConstructor == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
                             QTreeWidgetItem item = new QTreeWidgetItem();
-                            item.setText(0, "'" + newConstructor.toString() + "'");                        
+                            item.setText(0, "'" + newConstructor.toString() + "'");
                             problemsWidget.addedMethods.addSubItem(item);
                         }
                     });
-                }            
+                }
             }
-            
+
             Field oldFields[] = oldClass.getDeclaredFields();
             for (final Field oldField : oldFields) {
                 oldModifiers = oldField.getModifiers();
                 if (!isPublic(oldModifiers) && !isProtected(oldModifiers))
                     continue;
-                
-                Field newField = findField(newClass, oldField);                
+
+                Field newField = findField(newClass, oldField);
                 if (newField == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
                             QTreeWidgetItem item = new QTreeWidgetItem();
-                            item.setText(0, "'" + oldField.toString());                        
+                            item.setText(0, "'" + oldField.toString());
                             problemsWidget.missingFields.addSubItem(item);
                         }
-                    });                
+                    });
                 } else {
                     newModifiers = newField.getModifiers();
                     if (newModifiers != oldModifiers) {
                         final String oldModifierString = modifierString(oldModifiers);
                         final String newModifierString = modifierString(newModifiers);
-    
+
                         QApplication.invokeLater(new Runnable() {
                             public void run() {
                                QTreeWidgetItem item = new QTreeWidgetItem();
                                item.setText(0, "Modifiers for '" + oldField.toString() + "' changed from '" + oldModifierString + "' to '" + newModifierString + "'");
                                problemsWidget.changedFields.addSubItem(item);
                             }
-                         });                    
+                         });
                     }
-                    
+
                     final Class<?> oldType = oldField.getType();
                     final Class<?> newType = newField.getType();
                     if (!oldType.toString().equals(newType.toString())) {
@@ -565,42 +565,42 @@ public class BCC extends QWidget {
                                item.setText(0, "Type for '" + oldField.toString() + "' changed from '" + oldType.getName() + "' to '" + newType.getName());
                                problemsWidget.changedFields.addSubItem(item);
                             }
-                         });                    
-                        
+                         });
+
                     }
                 }
-            }        
-            
+            }
+
             Field newFields[] = newClass.getDeclaredFields();
             for (final Field newField : newFields) {
                 newModifiers = newField.getModifiers();
                 if (!isPublic(newModifiers) && !isProtected(newModifiers))
                     continue;
-                
+
                 Field oldField = findField(oldClass, newField);
                 if (oldField == null) {
                     QApplication.invokeLater(new Runnable() {
                         public void run() {
                             QTreeWidgetItem item = new QTreeWidgetItem();
-                            item.setText(0, "'" + newField.toString());                        
+                            item.setText(0, "'" + newField.toString());
                             problemsWidget.addedFields.addSubItem(item);
                         }
-                    });                    
+                    });
                 }
             }
         } catch (Throwable e) {
             e.printStackTrace();
         }
     }
-    
+
     private String packageName(String className) {
         int pos = className.lastIndexOf(".");
         if (pos < 0)
-            return "(default)";                      
+            return "(default)";
         else
             return className.substring(0,pos).replaceAll("/", ".");
     }
-    
+
     private void compare(final Hashtable<String, Class<?>> oldClasses, final Hashtable<String, Class<?>> newClasses) {
         QApplication.invokeLater(new Runnable() {
             public void run() {
@@ -609,192 +609,192 @@ public class BCC extends QWidget {
                 progressBar.setValue(0);
             }
         });
-        
-        final Hashtable<String,Boolean> disabledPackages = new Hashtable<String,Boolean>();        
+
+        final Hashtable<String,Boolean> disabledPackages = new Hashtable<String,Boolean>();
         if (packagesCheckVal) {
             QApplication.invokeAndWait(new Runnable() {
-                public void run() {            
+                public void run() {
                     QDialog dialog = new QDialog(BCC.this);
                     dialog.setWindowTitle("In which packages do you want to look?");
-                    
+
                     QVBoxLayout layout = new QVBoxLayout(dialog);
-                    
+
                     QListWidget list = new QListWidget();
-                    Set<String> keys = new HashSet<String>(oldClasses.keySet()); 
+                    Set<String> keys = new HashSet<String>(oldClasses.keySet());
                     keys.addAll(newClasses.keySet());
                     for (String key : keys) {
                         String packageName = packageName(key);
-                                        
+
                         if (!disabledPackages.containsKey(packageName)) {
                             disabledPackages.put(packageName, false);
-                            
+
                             QListWidgetItem item = new QListWidgetItem(packageName);
                             item.setFlags(Qt.ItemFlag.ItemIsUserCheckable, Qt.ItemFlag.ItemIsEnabled);
                             item.setCheckState(Qt.CheckState.Checked);
-                            
+
                             list.addItem(item);
                         }
                     }
                     layout.addWidget(list);
-                    
+
                     QDialogButtonBox box = new QDialogButtonBox(QDialogButtonBox.StandardButton.createQFlags(QDialogButtonBox.StandardButton.Ok, QDialogButtonBox.StandardButton.Cancel));
                     layout.addWidget(box);
-        
+
                     box.accepted.connect(dialog, "accept()");
                     box.rejected.connect(dialog, "reject()");
-                    
+
                     if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
                         int childCount = list.count();
                         for (int i=0; i<childCount; ++i) {
                             QListWidgetItem item = list.item(i);
-                            if (item.checkState() != Qt.CheckState.Checked) 
+                            if (item.checkState() != Qt.CheckState.Checked)
                                 disabledPackages.put(item.text(), true);
                         }
                     }
                 }
             });
         }
-        
+
         Set<String> keys = oldClasses.keySet();
         for (final String key : keys) {
             String packageName = packageName(key);
             if (disabledPackages.containsKey(packageName) && disabledPackages.get(packageName))
                 continue;
-            
+
             Class<?> oldClass = oldClasses.get(key);
             Class<?> newClass = newClasses.containsKey(key) ? newClasses.get(key) : null;
-            
+
             // Only public classes are interesting
             if ((oldClass.getModifiers() & Modifier.PUBLIC) == 0)
                 continue;
-            
+
             if (newClass == null) {
                 QApplication.invokeLater(new Runnable() {
-                    
+
                     public void run() {
                         QTreeWidgetItem item = new QTreeWidgetItem();
-                        item.setText(0, key);                
+                        item.setText(0, key);
                         problemsWidget.missingClasses.addSubItem(item);
                     }
-                    
+
                 });
             } else {
                 compareClasses(oldClass, newClass);
             }
-           
+
             QApplication.invokeLater(new Runnable() {
-                public void run() {                           
+                public void run() {
                     progressBar.setValue(progressBar.value() + 1);
                 }
             });
         }
-        
+
         keys = newClasses.keySet();
         for (final String key : keys) {
             String packageName = packageName(key);
             if (disabledPackages.containsKey(packageName) && disabledPackages.get(packageName))
                 continue;
-            
+
             Class<?> oldClass = oldClasses.containsKey(key) ? oldClasses.get(key) : null;
             Class<?> newClass = newClasses.get(key);
-            
+
             // Only public classes are interesting
             if ((newClass.getModifiers() & Modifier.PUBLIC) == 0)
                 continue;
-                        
+
             if (oldClass == null) {
                 QApplication.invokeLater(new Runnable() {
-                    
+
                     public void run() {
                         QTreeWidgetItem item = new QTreeWidgetItem();
-                        item.setText(0, key);                
+                        item.setText(0, key);
                         problemsWidget.addedClasses.addSubItem(item);
                     }
-                    
-                });                
+
+                });
             }
-            
+
             QApplication.invokeLater(new Runnable() {
-                public void run() {                           
+                public void run() {
                     progressBar.setValue(progressBar.value() + 1);
                 }
             });
-        }        
+        }
     }
-    
+
     private ProblemsWidget problemsWidget;
     private QCheckBox packagesCheck;
     private boolean packagesCheckVal = false;
-    
+
     private BCC() {
         super();
-        
+
         setWindowTitle("Binary Compatibility Clobbering");
-        
-        QGridLayout layout = new QGridLayout(this);                
+
+        QGridLayout layout = new QGridLayout(this);
         QGuiSignalMapper jarFileMapper = new QGuiSignalMapper(this);
         QGuiSignalMapper directoryMapper = new QGuiSignalMapper(this);
-        
+
         {
             QGroupBox leftSide = new QGroupBox("Old root of classes");
-            
+
             QGridLayout leftLayout = new QGridLayout(leftSide);
             leftLayout.addWidget(leftDirectoryInput, 0, 0, 1, 1);
-            
-            QPushButton selectJarFile = new QPushButton("Select Jar File");            
+
+            QPushButton selectJarFile = new QPushButton("Select Jar File");
             jarFileMapper.setMapping(selectJarFile, leftDirectoryInput);
             jarFileMapper.mappedQWidget.connect(this, "selectJarFile(QWidget)");
             selectJarFile.clicked.connect(jarFileMapper, "map()");
             leftLayout.addWidget(selectJarFile, 0, 1, 1, 1);
-            
+
             QPushButton selectDirectory = new QPushButton("Select directory");
             directoryMapper.setMapping(selectDirectory, leftDirectoryInput);
             directoryMapper.mappedQWidget.connect(this, "selectDirectory(QWidget)");
             selectDirectory.clicked.connect(directoryMapper, "map()");
             leftLayout.addWidget(selectDirectory, 0, 2, 1, 1);
-                                    
-            layout.addWidget(leftSide, 0, 0, 1, 1);                        
+
+            layout.addWidget(leftSide, 0, 0, 1, 1);
         }
-                
+
         problemsWidget = new ProblemsWidget();
         layout.addWidget(problemsWidget, 1, 0, 1, 2);
-        
+
         QPushButton scanButton = new QPushButton("Scan");
         progressBar = new QProgressBar();
         progressBar.setMinimum(0);
         progressBar.setMaximum(0);
         progressBar.setTextVisible(false);
-                
-        stack = new QStackedWidget();        
+
+        stack = new QStackedWidget();
         stack.addWidget(scanButton);
         stack.addWidget(progressBar);
-        
+
         QSizePolicy policy = stack.sizePolicy();
         policy.setVerticalPolicy(QSizePolicy.Policy.Maximum);
         stack.setSizePolicy(policy);
-        
+
         layout.addWidget(stack, 2, 0, 1, 2);
-        
+
         QPushButton logButton = new QPushButton("Save to log");
         layout.addWidget(logButton, 3, 0, 1, 1);
-        
-        logButton.clicked.connect(problemsWidget, "writeLog()");                      
+
+        logButton.clicked.connect(problemsWidget, "writeLog()");
         scanButton.clicked.connect(this, "scan()");
-        
+
         packagesCheck = new QCheckBox("Select packages manually");
-        layout.addWidget(packagesCheck, 3, 1, 1, 1);        
-                                       
+        layout.addWidget(packagesCheck, 3, 1, 1, 1);
+
         {
             QGroupBox rightSide = new QGroupBox("New root of classes");
-            
+
             QGridLayout rightLayout = new QGridLayout(rightSide);
             rightLayout.addWidget(rightDirectoryInput, 0, 0, 1, 1);
-            
+
             QPushButton selectJarFile = new QPushButton("Select Jar File");
             jarFileMapper.setMapping(selectJarFile, rightDirectoryInput);
             selectJarFile.clicked.connect(jarFileMapper, "map()");
             rightLayout.addWidget(selectJarFile, 0, 1, 1, 1);
-            
+
             QPushButton selectDirectory = new QPushButton("Select directory");
             directoryMapper.setMapping(selectDirectory, rightDirectoryInput);
             selectDirectory.clicked.connect(directoryMapper, "map()");
@@ -802,16 +802,16 @@ public class BCC extends QWidget {
 
             layout.addWidget(rightSide, 0, 1, 1, 1);
         }
-                
+
     }
-    
+
     public static void main(String args[]) {
         QApplication.initialize(args);
-        
+
         BCC bcc = new BCC();
         bcc.show();
-        
-        QApplication.exec();               
+
+        QApplication.exec();
     }
-    
+
 }

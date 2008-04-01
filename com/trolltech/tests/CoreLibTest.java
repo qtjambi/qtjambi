@@ -19,14 +19,14 @@ public class CoreLibTest {
 
     public static void main(String args[]) {
         QCoreApplication.initialize(args);
-		 
+
         QFile file = new QFile("file_list");
         if (file.exists()) {
             System.out.println("file_list exists...");
         } else {
             System.out.println("file_list doesn't exist...");
         }
-        
+
         QCoreApplication.exec();
 	 }
 }

@@ -6,7 +6,7 @@ public class LcdNumberSignalAndSlots extends QWidget
 {
 
 
-    public LcdNumberSignalAndSlots() 
+    public LcdNumberSignalAndSlots()
     {
         LcdNumber lcd = new LcdNumber();
         QSpinBox box = new QSpinBox();
@@ -39,7 +39,7 @@ public class LcdNumberSignalAndSlots extends QWidget
             System.err.println("We are constructing");
             setFrameShape(Shape.Panel);
             setFrameShadow(Shadow.Sunken);
-    
+
             setSizePolicy(new QSizePolicy(QSizePolicy.Policy.Expanding,
                                           QSizePolicy.Policy.Maximum));
         }
@@ -63,7 +63,7 @@ public class LcdNumberSignalAndSlots extends QWidget
         {
             mode = Mode.Decimal;
         }
-        
+
         public QSize sizeHint()
         {
             return new QFontMetrics(fontMetrics()).

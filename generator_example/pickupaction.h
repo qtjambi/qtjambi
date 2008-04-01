@@ -19,13 +19,13 @@
 class PickUpAction: public GameAction
 {
 public:
-    inline PickUpAction() : GameAction(Game::PickUp) 
+    inline PickUpAction() : GameAction(Game::PickUp)
     {
     }
     virtual ~PickUpAction(){}
 
     virtual bool perform(GameScene *scene);
-    virtual GameAction *clone() const;  
+    virtual GameAction *clone() const;
 };
 
 #endif

@@ -10,26 +10,26 @@ import com.trolltech.qt.core.QByteArray;
 // virtual calls go through Java
 @com.trolltech.qt.QtJambiGeneratedClass
 public class QStandardItemEditorCreator extends QItemEditorCreatorBase {
-	
+
 	public QStandardItemEditorCreator(Class<? extends QWidget> widgetType) {
 		super((QPrivateConstructor) null);
-		
+
 		boolean createWidgetOverride = false;
 		boolean valuePropertyNameOverride = false;
 		try {
 			Method createWidgetMethod = getClass().getMethod("createWidget", QWidget.class);
 			Method valuePropertyNameMethod = getClass().getMethod("valuePropertyName");
-			
+
 			createWidgetOverride = QtJambiInternal.isImplementedInJava(createWidgetMethod);
 			valuePropertyNameOverride = QtJambiInternal.isImplementedInJava(valuePropertyNameMethod);
 		} catch (Throwable t) {
 			throw new RuntimeException("Cannot construct QItemEditorCreator", t);
 		}
-							
-		__qt_QStandardItemEditorCreator(widgetType, createWidgetOverride, valuePropertyNameOverride);		
+
+		__qt_QStandardItemEditorCreator(widgetType, createWidgetOverride, valuePropertyNameOverride);
 	}
 	private native void __qt_QStandardItemEditorCreator(Class<? extends QWidget> widgetType, boolean createWidgetOverride, boolean valuePropertyNameOverride);
-	
+
 	@Override
 	public QWidget createWidget(QWidget parent) {
 		if (nativeId() == 0)

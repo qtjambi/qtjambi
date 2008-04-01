@@ -29,7 +29,7 @@ public class Mandelbrot extends QWidget {
     private double centerY;
     private double pixmapScale;
     private double currentScale;
-    
+
     private boolean abort = false;
 
     final double DefaultCenterX = -0.637011f;
@@ -58,7 +58,7 @@ public class Mandelbrot extends QWidget {
         this(null);
     }
 //! [2]
-    
+
     @Override
     protected void disposed() {
         synchronized (thread) {
@@ -68,7 +68,7 @@ public class Mandelbrot extends QWidget {
             } catch (InterruptedException e) { }
         }
     }
-    
+
     public Mandelbrot(QWidget widget) {
         super(widget);
         centerX = DefaultCenterX;

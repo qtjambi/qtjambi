@@ -16,8 +16,8 @@ public class main
         splash.show();
         QApplication.processEvents();
     //! [0]
-        
-        try {    
+
+        try {
             Thread.currentThread().sleep(5000);
         } catch(Exception e) {}
     //! [1]

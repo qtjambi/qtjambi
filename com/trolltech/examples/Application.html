@@ -29,16 +29,16 @@ body { color: black; }</style>
 <h2>Application Class Implementation</h2>
 <p>The entire example is implemented in a single subclass of QMainWindow:</p>
 <pre>&nbsp;   public class Application extends QMainWindow {
-    
+
         private String curFile;
         private QTextEdit textEdit;
         private QMenu fileMenu;
         private QMenu editMenu;
         private QMenu helpMenu;
-    
+
         private QToolBar fileToolBar;
         private QToolBar editToolBar;
-    
+
         private QAction newAct;
         private QAction openAct;
         private QAction saveAct;
@@ -50,7 +50,7 @@ body { color: black; }</style>
         private QAction aboutAct;
         private QAction aboutQtJambiAct;
         private QAction aboutQtAct;
-    
+
         private String rsrcPath = &quot;classpath:com/trolltech/images&quot;;</pre>
 <p>We declare various variables for widgets, menus, toolbars, and actions that will be explained later.</p>
 <p>In the constructor, we start by creating a menu bar and setting it as the menu bar for the main window:</p>
@@ -70,7 +70,7 @@ body { color: black; }</style>
             createStatusBar();</pre>
 <p>We call <tt>createActions()</tt>, <tt>createMenus()</tt>, <tt>createToolBars()</tt>, and <tt>createStatusBar()</tt>, four private methods that set up the user interface.</p>
 <pre>&nbsp;           textEdit.document().contentsChanged.connect(this, &quot;documentWasModified()&quot;);
-    
+
             setCurrentFile(&quot;&quot;);
         }</pre>
 <p>We establish a signal-slot connection between the QTextEdit's document object and our <tt>documentWasModified()</tt> slot. Whenever the user modifies the text in the QTextEdit, we want to update the title bar to show that the file was modified.</p>
@@ -116,7 +116,7 @@ body { color: black; }</style>
             String fileName = QFileDialog.getSaveFileName(this);
             if (fileName.length() == 0)
                 return false;
-    
+
             return saveFile(fileName);
         }</pre>
 <p>In <tt>saveAs()</tt>, we start by popping up a QFileDialog asking the user to provide a name. If the user clicks <b>Cancel</b>, the returned file name is empty, and we do nothing.</p>
@@ -141,7 +141,7 @@ body { color: black; }</style>
             newAct.setShortcut(new QKeySequence(tr(&quot;Ctrl+N&quot;)));
             newAct.setStatusTip(tr(&quot;Create a new file&quot;));
             newAct.triggered.connect(this, &quot;newFile()&quot;);
-    
+
             openAct = new QAction(new QIcon(rsrcPath + &quot;/open.png&quot;), tr(&quot;&amp;Open...&quot;), this);
             openAct.setShortcut(tr(&quot;Ctrl+O&quot;));
             openAct.setStatusTip(tr(&quot;Open an existing file&quot;));
@@ -169,19 +169,19 @@ body { color: black; }</style>
             fileMenu.addAction(saveAsAct);
             fileMenu.addSeparator();
             fileMenu.addAction(exitAct);
-    
+
             editMenu = menuBar().addMenu(tr(&quot;&amp;Edit&quot;));
             editMenu.addAction(cutAct);
             editMenu.addAction(copyAct);
             editMenu.addAction(pasteAct);
-    
+
             menuBar().addSeparator();
-    
+
             helpMenu = menuBar().addMenu(tr(&quot;&amp;Help&quot;));
             helpMenu.addAction(aboutAct);
             helpMenu.addSeparator();
             helpMenu.addAction(aboutQtJambiAct);
-            helpMenu.addAction(aboutQtAct);        
+            helpMenu.addAction(aboutQtAct);
         }</pre>
 <p>Creating actions isn't sufficient to make them available to the user; we must also add them to the menu system. This is what <tt>createMenus()</tt> does. We create a <b>File</b>, an <b>Edit</b>, and a <b>Help</b> menu. QMainWindow.menuBar() lets us access the window's menu bar widget. We don't have to worry about creating the menu bar ourselves; the first time we call this method, the QMenuBar is created.</p>
 <p>Just before we create the <b>Help</b> menu, we call QMenuBar.addSeparator(). This has no effect for most widget styles (e.g., Windows and Mac OS X styles), but for Motif-based styles this makes sure that <b>Help</b> is pushed to the right side of the menu bar. Try running the application with various styles and see the results:</p>
@@ -195,7 +195,7 @@ body { color: black; }</style>
             fileToolBar.addAction(newAct);
             fileToolBar.addAction(openAct);
             fileToolBar.addAction(saveAct);
-    
+
             editToolBar = addToolBar(tr(&quot;Edit&quot;));
             editToolBar.addAction(cutAct);
             editToolBar.addAction(copyAct);
@@ -214,7 +214,7 @@ body { color: black; }</style>
                                                                      tr(&quot;The document has been modified.\n&quot; +
                                                                         &quot;Save your changes?&quot;),
                                                                      new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok,
-                                                                                                     QMessageBox.StandardButton.Discard, 
+                                                                                                     QMessageBox.StandardButton.Discard,
                                                                                                      QMessageBox.StandardButton.Cancel));
                 if (ret == QMessageBox.StandardButton.Ok) {
                     return save();
@@ -233,12 +233,12 @@ body { color: black; }</style>
                 QMessageBox.warning(this, tr(&quot;Application&quot;), String.format(tr(&quot;Cannot read file %1$s:\n%2$s.&quot;), fileName, file.errorString()));
                 return;
             }
-    
+
             QTextStream in = new QTextStream(file);
             QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
             textEdit.setPlainText(in.readAll());
             QApplication.restoreOverrideCursor();
-    
+
             setCurrentFile(fileName);
             statusBar().showMessage(tr(&quot;File loaded&quot;), 2000);
         }</pre>
@@ -254,12 +254,12 @@ body { color: black; }</style>
                 QMessageBox.warning(this, tr(&quot;Application&quot;), String.format(tr(&quot;Cannot write file %1$s:\n%2$s.&quot;), fileName, file.errorString()));
                 return false;
             }
-    
+
             QTextStream out = new QTextStream(file);
             QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.WaitCursor));
             out.writeString(textEdit.toPlainText());
             QApplication.restoreOverrideCursor();
-    
+
             setCurrentFile(fileName);
             statusBar().showMessage(tr(&quot;File saved&quot;), 2000);
             file.close();
@@ -271,13 +271,13 @@ body { color: black; }</style>
             curFile = fileName;
             textEdit.document().setModified(false);
             setWindowModified(false);
-    
+
             String shownName;
             if (curFile.length() == 0)
                 shownName = &quot;untitled.txt&quot;;
             else
                 shownName = strippedName(curFile);
-    
+
             setWindowTitle(String.format(tr(&quot;%1$s[*] - %2$s&quot;), shownName, tr(&quot;Application&quot;)));
         }</pre>
 <p>The <tt>setCurrentFile()</tt> method is called to reset the state of a few variables when a file is loaded or saved, or when the user starts editing a new file (in which case <tt>fileName</tt> is empty). We update the <tt>curFile</tt> variable, clear the QTextDocument.modified flag and the associated <tt>QWidget.windowModified</tt> flag, and update the window title to contain the new file name (or <tt>untitled.txt</tt>).</p>
@@ -291,10 +291,10 @@ body { color: black; }</style>
 <p>The <tt>main()</tt> function for this application is typical of applications that contain one main window:</p>
 <pre>&nbsp;       public static void main(String[] args) {
             QApplication.initialize(args);
-    
+
             Application application = new Application();
             application.show();
-    
+
             QApplication.exec();
         }</pre>
 </body>

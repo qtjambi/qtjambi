@@ -110,7 +110,7 @@ class QJdbcSqlDriver extends QSqlDriver
         case Unicode:
         case Transactions:
             return true;
-            
+
         case LastInsertId:
         	try {
         		return connection != null && connection.getMetaData().supportsGetGeneratedKeys();

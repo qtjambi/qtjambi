@@ -162,7 +162,7 @@ public class CalendarWidget extends QWidget {
         QTextCharFormat firstFridayFormat = new QTextCharFormat();
         if (firstFridayCheckBox.isChecked())
             firstFridayFormat.setForeground(new QBrush(new QColor(Qt.GlobalColor.blue)));
-        
+
         QDate date = new QDate(calendar.yearShown(), calendar.monthShown(), 1);
 
         calendar.setDateTextFormat(new QDate(date.year(), 5, 1), mayFirstFormat);
@@ -195,7 +195,7 @@ public class CalendarWidget extends QWidget {
 //! [10]
     private void createGeneralOptionsGroupBox() {
         generalOptionsGroupBox = new QGroupBox(tr("General Options"));
-    
+
         localeCombo = new QComboBox();
         int curLocaleIndex = -1;
         int index = 0;
@@ -218,7 +218,7 @@ public class CalendarWidget extends QWidget {
         localeLabel = new QLabel(tr("&Locale"));
         localeLabel.setBuddy(localeCombo);
 //! [10] //! [11]
-    
+
         firstDayCombo = new QComboBox();
         firstDayCombo.addItem(tr("Sunday"), Qt.DayOfWeek.Sunday);
         firstDayCombo.addItem(tr("Monday"), Qt.DayOfWeek.Monday);
@@ -227,25 +227,25 @@ public class CalendarWidget extends QWidget {
         firstDayCombo.addItem(tr("Thursday"), Qt.DayOfWeek.Thursday);
         firstDayCombo.addItem(tr("Friday"), Qt.DayOfWeek.Friday);
         firstDayCombo.addItem(tr("Saturday"), Qt.DayOfWeek.Saturday);
-    
+
         firstDayLabel = new QLabel(tr("Wee&k starts on:"));
         firstDayLabel.setBuddy(firstDayCombo);
 //! [11]
-    
+
         selectionModeCombo = new QComboBox();
         selectionModeCombo.addItem(tr("Single selection"),
                                    QCalendarWidget.SelectionMode.SingleSelection);
         selectionModeCombo.addItem(tr("None"), QCalendarWidget.SelectionMode.NoSelection);
-    
+
         selectionModeLabel = new QLabel(tr("&Selection mode:"));
         selectionModeLabel.setBuddy(selectionModeCombo);
-    
+
         gridCheckBox = new QCheckBox(tr("&Grid"));
         gridCheckBox.setChecked(calendar.isGridVisible());
-    
+
         navigationCheckBox = new QCheckBox(tr("&Navigation bar"));
         navigationCheckBox.setChecked(true);
-    
+
         horizontalHeaderCombo = new QComboBox();
         horizontalHeaderCombo.addItem(tr("Single letter day names"),
                                        QCalendarWidget.HorizontalHeaderFormat.SingleLetterDayNames);
@@ -254,33 +254,33 @@ public class CalendarWidget extends QWidget {
         horizontalHeaderCombo.addItem(tr("None"),
                                        QCalendarWidget.HorizontalHeaderFormat.NoHorizontalHeader);
         horizontalHeaderCombo.setCurrentIndex(1);
-    
+
         horizontalHeaderLabel = new QLabel(tr("&Horizontal header:"));
         horizontalHeaderLabel.setBuddy(horizontalHeaderCombo);
-    
+
         verticalHeaderCombo = new QComboBox();
         verticalHeaderCombo.addItem(tr("ISO week numbers"),
                                      QCalendarWidget.VerticalHeaderFormat.ISOWeekNumbers);
         verticalHeaderCombo.addItem(tr("None"), QCalendarWidget.VerticalHeaderFormat.NoVerticalHeader);
-    
+
         verticalHeaderLabel = new QLabel(tr("&Vertical header:"));
         verticalHeaderLabel.setBuddy(verticalHeaderCombo);
-    
+
 //! [12]
         localeCombo.currentIndexChanged.connect(this, "localeChanged(int)");
         firstDayCombo.currentIndexChanged.connect(this, "firstDayChanged(int)");
         selectionModeCombo.currentIndexChanged.connect(this, "selectionModeChanged(int)");
-        gridCheckBox.toggled.connect(calendar, "setGridVisible(boolean)");        
+        gridCheckBox.toggled.connect(calendar, "setGridVisible(boolean)");
         navigationCheckBox.toggled.connect(calendar, "setNavigationBarVisible(boolean)");
         horizontalHeaderCombo.currentIndexChanged.connect(this, "horizontalHeaderChanged(int)");
         verticalHeaderCombo.currentIndexChanged.connect(this, "verticalHeaderChanged(int)");
 //! [12]
-    
+
         QHBoxLayout checkBoxLayout = new QHBoxLayout();
         checkBoxLayout.addWidget(gridCheckBox);
         checkBoxLayout.addStretch();
         checkBoxLayout.addWidget(navigationCheckBox);
-    
+
         QGridLayout outerLayout = new QGridLayout();
         outerLayout.addWidget(localeLabel, 0, 0);
         outerLayout.addWidget(localeCombo, 0, 1);
@@ -294,7 +294,7 @@ public class CalendarWidget extends QWidget {
         outerLayout.addWidget(verticalHeaderLabel, 5, 0);
         outerLayout.addWidget(verticalHeaderCombo, 5, 1);
         generalOptionsGroupBox.setLayout(outerLayout);
-    
+
 //! [13]
         firstDayChanged(firstDayCombo.currentIndex());
         selectionModeChanged(selectionModeCombo.currentIndex());
@@ -306,26 +306,26 @@ public class CalendarWidget extends QWidget {
 //! [14]
     private void createDatesGroupBox() {
         datesGroupBox = new QGroupBox(tr("Dates"));
-    
+
         minimumDateEdit = new QDateEdit();
         minimumDateEdit.setDisplayFormat("MMM d, yyyy");
         minimumDateEdit.setDateRange(calendar.minimumDate(),
                                       calendar.maximumDate());
         minimumDateEdit.setDate(calendar.minimumDate());
-    
+
 
         minimumDateLabel = new QLabel(tr("&Minimum Date:"));
         minimumDateLabel.setBuddy(minimumDateEdit);
-    
+
         currentDateEdit = new QDateEdit();
         currentDateEdit.setDisplayFormat("MMM d, yyyy");
         currentDateEdit.setDate(calendar.selectedDate());
         currentDateEdit.setDateRange(calendar.minimumDate(),
                                       calendar.maximumDate());
-    
+
         currentDateLabel = new QLabel(tr("&Current Date:"));
         currentDateLabel.setBuddy(currentDateEdit);
-    
+
         maximumDateEdit = new QDateEdit();
         maximumDateEdit.setDisplayFormat("MMM d, yyyy");
         maximumDateEdit.setDateRange(calendar.minimumDate(),
@@ -334,13 +334,13 @@ public class CalendarWidget extends QWidget {
 
         maximumDateLabel = new QLabel(tr("Ma&ximum Date:"));
         maximumDateLabel.setBuddy(maximumDateEdit);
-    
+
 //! [14] //! [15]
         currentDateEdit.dateChanged.connect(calendar, "setSelectedDate(QDate)");
         calendar.selectionChanged.connect(this, "selectedDateChanged()");
         minimumDateEdit.dateChanged.connect(this, "minimumDateChanged(QDate)");
         maximumDateEdit.dateChanged.connect(this, "maximumDateChanged(QDate)");
-   
+
 //! [15]
         QGridLayout dateBoxLayout = new QGridLayout();
         dateBoxLayout.addWidget(currentDateLabel, 1, 0);
@@ -350,7 +350,7 @@ public class CalendarWidget extends QWidget {
         dateBoxLayout.addWidget(maximumDateLabel, 2, 0);
         dateBoxLayout.addWidget(maximumDateEdit, 2, 1);
         dateBoxLayout.setRowStretch(3, 1);
-    
+
         datesGroupBox.setLayout(dateBoxLayout);
 //! [16]
     }
@@ -359,47 +359,47 @@ public class CalendarWidget extends QWidget {
 //! [17]
     private void createTextFormatsGroupBox() {
         textFormatsGroupBox = new QGroupBox(tr("Text Formats"));
-    
+
         weekdayColorCombo = createColorComboBox();
         weekdayColorCombo.setCurrentIndex(
                 weekdayColorCombo.findText(tr("Black")));
-    
+
         weekdayColorLabel = new QLabel(tr("&Weekday color:"));
         weekdayColorLabel.setBuddy(weekdayColorCombo);
-    
+
         weekendColorCombo = createColorComboBox();
         weekendColorCombo.setCurrentIndex(
                 weekendColorCombo.findText(tr("Red")));
-    
+
         weekendColorLabel = new QLabel(tr("Week&end color:"));
         weekendColorLabel.setBuddy(weekendColorCombo);
-    
+
 //! [17] //! [18]
         headerTextFormatCombo = new QComboBox();
         headerTextFormatCombo.addItem(tr("Bold"));
         headerTextFormatCombo.addItem(tr("Italic"));
         headerTextFormatCombo.addItem(tr("Plain"));
-    
+
         headerTextFormatLabel = new QLabel(tr("&Header text:"));
         headerTextFormatLabel.setBuddy(headerTextFormatCombo);
-    
+
         firstFridayCheckBox = new QCheckBox(tr("&First Friday in blue"));
-    
+
         mayFirstCheckBox = new QCheckBox(tr("May &1 in red"));
-    
+
 //! [18] //! [19]
         weekdayColorCombo.currentIndexChanged.connect(this, "weekdayFormatChanged()");
         weekendColorCombo.currentIndexChanged.connect(this, "weekendFormatChanged()");
         headerTextFormatCombo.currentStringChanged.connect(this, "reformatHeaders()");
         firstFridayCheckBox.toggled.connect(this, "reformatCalendarPage()");
         mayFirstCheckBox.toggled.connect(this, "reformatCalendarPage()");
-    
+
 //! [19]
         QHBoxLayout checkBoxLayout = new QHBoxLayout();
         checkBoxLayout.addWidget(firstFridayCheckBox);
         checkBoxLayout.addStretch();
         checkBoxLayout.addWidget(mayFirstCheckBox);
-    
+
         QGridLayout outerLayout = new QGridLayout();
         outerLayout.addWidget(weekdayColorLabel, 0, 0);
         outerLayout.addWidget(weekdayColorCombo, 0, 1);
@@ -409,7 +409,7 @@ public class CalendarWidget extends QWidget {
         outerLayout.addWidget(headerTextFormatCombo, 2, 1);
         outerLayout.addLayout(checkBoxLayout, 3, 0, 1, 2);
         textFormatsGroupBox.setLayout(outerLayout);
-    
+
         weekdayFormatChanged();
         weekendFormatChanged();
 //! [20]

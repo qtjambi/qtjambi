@@ -37,7 +37,7 @@ public class src_gui_widgets_qabstractbutton extends QObject {
     public static void main(String args[]) {
         QApplication.initialize(args);
     }
-  
+
 void snipped()
 {
 //! [0]

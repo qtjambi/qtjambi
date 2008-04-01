@@ -24,7 +24,7 @@ cd tools && make && make clean && cd ..
 cd ..
 
 
-cd qt-commercial 
+cd qt-commercial
 rm -f src/gui/kernel/qapplication_mac.cpp
 rm -f src/gui/kernel/qapplication_qws.cpp
 touch LICENSE

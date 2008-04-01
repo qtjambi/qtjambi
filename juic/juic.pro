@@ -29,7 +29,7 @@ SOURCES += javawritedeclaration.cpp \
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
     CONFIG += debug_and_release build_all
-}	
+}
 
 # make install related...
 !isEmpty(INSTALL_PREFIX) {
@@ -41,7 +41,7 @@ mac {
     contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
     CONFIG -= precompile_header
 }
-	
+
 linux-g++* {
     QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
 }

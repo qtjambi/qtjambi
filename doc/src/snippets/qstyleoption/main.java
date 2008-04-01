@@ -60,32 +60,32 @@ class MyStyle extends QStyle
         QStyleOptionFrame frameOption = null;
         if ((frameOption = (QStyleOptionFrame) option) != null) {
             QStyleOptionFrameV2 frameOptionV2 = new QStyleOptionFrameV2(frameOption);
-    
+
             // draw the frame using frameOptionV2
         }
     //! [1]
-    
+
     //! [2]
         QStyleOptionProgressBar progressBarOption = null;
         if ((progressBarOption = (QStyleOptionProgressBar) option) != null) {
             QStyleOptionProgressBarV2 progressBarV2 =
                 new QStyleOptionProgressBarV2(progressBarOption);
-    
+
             // draw the progress bar using progressBarV2
         }
     //! [2]
-    
+
     //! [3]
         QStyleOptionTab tabOption = null;
         if ((tabOption = (QStyleOptionTab) option) != null) {
             QStyleOptionTabV2 tabV2 =
                     new QStyleOptionTabV2(tabOption);
-    
+
             // draw the tab using tabV2
        }
     //! [3]
     }
-    
+
     //! [4]
     void drawPrimitive(QStyle.PrimitiveElement element,
                        QStyleOption option,

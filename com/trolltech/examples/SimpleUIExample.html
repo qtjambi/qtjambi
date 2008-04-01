@@ -21,14 +21,14 @@ body { color: black; }</style>
 <h2>SimpleUIExample Class Implementation</h2>
 <p>The <tt>SimpleUIExample</tt> class is derived from QMainWindow, and provides a user interface that is implemented by an instance of the <tt>Ui_SimpleUIExampleMainWindow</tt> class:</p>
 <pre>&nbsp;   public class SimpleUIExample extends QMainWindow {
-    
+
         public static void main(String[] args) {
             QApplication.initialize(args);
             SimpleUIExample mainw = new SimpleUIExample();
             mainw.show();
             QApplication.exec();
         }
-    
+
         Ui_SimpleUIExampleMainWindow mainWindowUi = new Ui_SimpleUIExampleMainWindow();</pre>
 <p>The instance of the user interface class is implemented as a member of the <tt>SimpleUIExample</tt> class.</p>
 <p>This user interface class is generated from a user interface file when the example is built, and provides a <tt>setupUi()</tt> method that we use in the <tt>SimpleUIExample</tt> constructor to set up the user interface:</p>
@@ -36,7 +36,7 @@ body { color: black; }</style>
             // Place what you made in Designer onto the main window.
             mainWindowUi.setupUi(this);
             setWindowIcon(new QIcon(&quot;classpath:com/trolltech/classpath:com/trolltech/images/qt-logo.png&quot;));
-    
+
             // Connect the OpenDialog button to the showDialog method.
             mainWindowUi.pushButton_OpenDialog.clicked.connect(this, &quot;showDialog()&quot;);
         }</pre>
@@ -53,11 +53,11 @@ body { color: black; }</style>
                 result += &quot;Name: &quot; + dialogUi.lineEdit_Name.text() + &quot;\n&quot;;
                 result += &quot;E-Mail: &quot; + dialogUi.lineEdit_Email.text() + &quot;\n&quot;;
                 // Get rest of dialog information here
-    
+
             } else {
                 result = &quot;Cancelled by user.&quot;;
             }
-    
+
             mainWindowUi.textBrowser.setText(result);
         }
     }</pre>

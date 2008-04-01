@@ -31,7 +31,7 @@ public class src_3rdparty_kdelibs_phonon_path {
         Path path = Phonon.createPath(media, output);
         assert(path.isValid()); // for this simple case the path should always be
                                 // valid - there are unit tests to ensure it
-        
+
         // insert an effect
         List<EffectDescription> effectList = BackendCapabilities.availableAudioEffects();
         if (!effectList.isEmpty()) {

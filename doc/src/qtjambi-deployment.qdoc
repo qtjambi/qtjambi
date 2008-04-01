@@ -57,7 +57,7 @@
     resources that may be needed by some classes so it should be used
     as-is.
 
-    \section2 Native Libraries    
+    \section2 Native Libraries
 
     In a prebuilt Qt Jambi package there are a number of different
     native libraries, located in certain subdirectories of the root
@@ -85,7 +85,7 @@
     \endtable
 
     \section3 Qt Libraries
-          		
+
     While the Qt Jambi libraries implement the native part of the Java
     functions, they merly translate the Java function calls into C++
     function calls and calls into the Qt libraries. This means that
@@ -126,7 +126,7 @@
 	\row 	\o GCC 3.3 and older	\o libstdc++.so.5
 	\row 	\o GCC 3.4 and newer	\o libstdc++.so.6
 	\row 	\o GCC on Mac OS X	\o no dependencies
-        \row  	\o MSVC 2005 and 2008   \o 
+        \row  	\o MSVC 2005 and 2008   \o
 
     Microsoft Visual Studio 2005 and 2008 introduces manifest files as
     a way of describing dependencies between dll's. This restricts the
@@ -155,8 +155,8 @@
          folder as a plugin it will try to load the the runtime
          libraries as plugins. To prevent this, it is recommended that
          the redistributable runtime libraries are placed in a sub
-         directory under each plugin. 
-       
+         directory under each plugin.
+
        \endlist
 
     \endtable
@@ -164,7 +164,7 @@
     To get a full overview of the dependencies of a library there are
     some tools available.
 
-    \table 
+    \table
     	   \header	\o Platform	\o Tools
 	   \row		\o Windows	\o \c depends.exe, GUI tool part of MSVC
 	   \row		\o Windows	\o \c {dumpbin /dependents}, command line tool part of MSVC
@@ -293,7 +293,7 @@
 
     Where \c {application.jar} has the \c {Class-Path} attribute in
     its Manifest set to include both the platform specific \c {.jar}
-    files, 
+    files,
 
     \code
     Class-Path: qtjambi-4.4.0_01.jar qtjambi-win32-msvc2005-4.4.0_01.jar qtjambi-linux32-gcc3.3-4.4.0_01.jar
@@ -307,7 +307,7 @@
     \endcode
 
     \section3 Creating an Application Bundle using Mac OS X JarBundler
-    
+
     Mac OS X provides a powerful and simple to use tool that lets the
     user build Mac OS X Application Bundles that can be launched using
     Finder. This tool is called \c {Jar Bundler} and is by defualt
@@ -343,7 +343,7 @@
     namely the \c {com.trolltech.tools.ant.PlatformJarTask},
     responsible for packaging the libraries, and the \c
     {com.trolltech.tools.ant.InitializeTask}, responsible for setting
-    up custom variables, etc required by the packaging process. 
+    up custom variables, etc required by the packaging process.
 
     We highly recommend you use the \c ant tasks to build the platform
     archive, as this will automate most of the work for you. Below we
@@ -360,11 +360,11 @@
     used as a source of information on how to build the platform
     archives.
 
-    \code    
+    \code
     <taskdef name="qtjambi-platform-jar"
              classpath="ant-qtjambi.jar"
              classname="com.trolltech.tools.ant.PlatformJarTask"/>
-    <taskdef name="qtjambi-initialize" 
+    <taskdef name="qtjambi-initialize"
     	     classpath="ant-qtjambi.jar"
 	     classname="com.trolltech.tools.ant.InitializeTask"/>
     \endcode
@@ -409,14 +409,14 @@
     Then we go on to specify the Qt libraries that should be
     included. In this case we choose to inly include Qt Core and Qt
     Gui.
-  
+
     \code
         <!-- Qt Libraries... -->
         <library name="QtCore"
-                 type="qt"      
+                 type="qt"
  		 rootPath="${qtjambi.qtdir}" />
-        <library name="QtGui"           
-        	 type="qt"      
+        <library name="QtGui"
+        	 type="qt"
   	         rootPath="${qtjambi.qtdir}" />
     \endcode
 
@@ -432,19 +432,19 @@
     library. On windows for instance, the above results in files the
     following files inside the \c {.jar} file:
 
-    \code 
+    \code
       bin/QtCore4.dll
       bin/QtGui4.dll
     \endcode
 
-    Then we move on to specify the \c jpeg plugin.  
+    Then we move on to specify the \c jpeg plugin.
 
     \code
         <!-- Qt Plugins... -->
-        <library name="qjpeg" 
-                 type="plugin" 
-                 rootPath="${qtjambi.qtdir}" 
-                 subdir="plugins/imageformats" 
+        <library name="qjpeg"
+                 type="plugin"
+                 rootPath="${qtjambi.qtdir}"
+                 subdir="plugins/imageformats"
                  load="never"/>
 
         <plugin path="plugins" />
@@ -461,7 +461,7 @@
     plugins subdirectory contains Qt C++ plugins, which tells Qt that
     the this part of the platform archive should be used by Qt to load
     C++ plugins.
-  
+
     Then we include the Qt Jambi JNI libraries. We always need to
     include the \c qtjambi library in addition to the JNI libraries
     for the Qt modules we are using, in this case Qt Core and Qt Gui,
@@ -476,7 +476,7 @@
 
       </qtjambi-platform-jar>
     \endcode
-  
+
     The \c rootPath of the jambi libraries are referring to the
     environment variable \c JAMBIDIR which we assume is set in this
     case. The type of the libraries are qtjambi which means that they
@@ -487,7 +487,7 @@
 
     Then we move on to packaing the files into a \c {.jar} file and
     clearing the temporary directory.
-  
+
     \code
       <jar destfile="mycustomjar-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
         <fileset dir="platform-output" />
@@ -501,7 +501,7 @@
     platform archive is pretty straight forward.
 
     \section3 Creating Webstart and Executable Archives
-    
+
     Once the previous step is completed you have your own platform
     archive and can perform the steps outlined under section \l
     {Deploying a Pure Qt Jambi Application} above and replace the
@@ -532,7 +532,7 @@
     available through \c {-Djava.library.path}. This is for instance
     done by setting the environment variables:
 
-    \table 
+    \table
       \header \o Platform	\o Environment Variable
       \row    \o Windows	\o PATH
       \row    \o Linux 		\o LD_LIBRARY_PATH
@@ -552,7 +552,7 @@
 
 
     \section2 Troubleshooting
-    
+
     The most common problem when deploying is that the native
     libraries are not found. With the archive based deployment
     techniques this should be significantly simpler that in previous
@@ -577,7 +577,7 @@
          binary package you must build \b every part binary your
          package yourself. If you mix parts from our Qt Jambi binary
          packages with system Qt or Qt binary packages, you will most
-         likely run into problems. 
+         likely run into problems.
 
       \o Verify that the correct libraries are in fact loaded. If a
          Virtual Machine crashes the hs_err_xxx.log file contains a

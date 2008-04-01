@@ -374,10 +374,10 @@ public class TestQVariant extends QApplicationTest {
     @Test
     public void run_QByteArray_toString() {
         byte data[] = {'a', 'e', 'r', 'y', 'n'};
-        
+
         // Normal construction
         assertEquals(new QByteArray(data).toString(), "aeryn");
-        
+
         // String construction
         assertEquals(new QByteArray("aeryn").toString(), "aeryn");
 
@@ -451,7 +451,7 @@ public class TestQVariant extends QApplicationTest {
 
         char the_short = (char) ++value;
         v.pushThrough(the_short);
-        
+
         assertEquals(v.currentQInt16(), the_short);
 
         char the_ushort = (char) ++value;
@@ -466,7 +466,7 @@ public class TestQVariant extends QApplicationTest {
         v.pushThrough(the_ubyte);
         assertEquals(v.currentQUInt8(), the_ubyte);
     }
-    
+
     @Test
     public void run_JObjectWrapper_test() {
         Variants v = new Variants();

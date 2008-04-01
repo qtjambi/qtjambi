@@ -71,7 +71,7 @@ public class ConfigDialog extends QDialog {
 		setLayout(mainLayout);
 
 		setWindowTitle(tr("Config Dialog"));
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));        
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 	}
 
 	private void createIcons() {
@@ -97,7 +97,7 @@ public class ConfigDialog extends QDialog {
 
 		contentsWidget.currentItemChanged.connect(this,
 				"changePage(QListWidgetItem , QListWidgetItem)");
-		
+
 	}
 
 	protected void changePage(QListWidgetItem current, QListWidgetItem previous) {

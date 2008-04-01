@@ -3,7 +3,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 class timers extends QWidget
-{ 
+{
 
     timers()
     {
@@ -37,13 +37,13 @@ class timers extends QWidget
     //! [6]
         }
     }
-    
+
     public static void main(String args[])
     {
         QApplication.initialize(args);
 
         new timers();
-        
+
         QApplication.exec();
     }
 }

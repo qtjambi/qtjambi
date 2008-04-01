@@ -312,7 +312,7 @@
     leave and enter proximity events. We call \c setTabletDevice() in
     \c TabletCanvas.
 
-    \section1 The \c main() method 
+    \section1 The \c main() method
 
     Here is the examples \c main() method:
 

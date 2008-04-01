@@ -53,10 +53,10 @@ class HelloWebKit extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args);
-        
+
         HelloWebKit widget = new HelloWebKit();
         widget.show();
-        
+
         QApplication.exec();
     }
 }

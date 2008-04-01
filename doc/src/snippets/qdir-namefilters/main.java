@@ -25,7 +25,7 @@ public static void main(String args[])
     List<QFileInfo> list = dir.entryInfoList();
     System.out.println("     Bytes Filename");
     for (QFileInfo fileInfo : list) {
-        System.out.println(String.valueOf(fileInfo.size()) + " " + 
+        System.out.println(String.valueOf(fileInfo.size()) + " " +
                            fileInfo.fileName());
     }
 }

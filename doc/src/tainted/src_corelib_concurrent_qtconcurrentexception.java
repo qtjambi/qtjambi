@@ -1,14 +1,14 @@
 /*   Ported from: src.corelib.concurrent.qtconcurrentexception.cpp
 <snip>
 //! [0]
-    
+
     class MyException : public QtConcurrent::Exception
     {
     public:
         void raise() const { throw *this; }
         Exception *clone() const { return new MyException(*this); }
     };
-    
+
 //! [0]
 
 
@@ -56,14 +56,14 @@ public class src_corelib_concurrent_qtconcurrentexception {
     public static void main(String args[]) {
         QApplication.initialize(args);
 //! [0]
-    
+
     class MyException : public QtConcurrent.Exception
     {
     public:
         void raise() { throw his; }
         Exception lone() { return new MyException(his); }
     };
-    
+
 //! [0]
 
 

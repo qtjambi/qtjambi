@@ -29,7 +29,7 @@ import com.trolltech.qt.svg.*;
 public class src_gui_kernel_qclipboard {
     static void main(String args[]) {
         QApplication.initialize(args);
-        
+
         //! [0]
         QClipboard clipboard = QApplication.clipboard();
         String originalText = clipboard.text();
@@ -38,7 +38,7 @@ public class src_gui_kernel_qclipboard {
         //! [0]
 
         QImage image = new QImage();
-        
+
         //! [1]
         QMimeData data = new QMimeData();
         data.setImageData(image);

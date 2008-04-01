@@ -1,6 +1,6 @@
 <project default="all" basedir=".">
 
-    <property environment="env"/> 
+    <property environment="env"/>
 
     <tstamp/>
 
@@ -80,13 +80,13 @@
             depends="init"
             description="Runs qmake on the Qt Jambi project.">
         <delete dir="${jambiLib}" />
-	<qmake recursive="true" 
+	<qmake recursive="true"
                dir="${outputDir}"
                pro="${sourceDir}/java.pro"
                config="${qtjambi.configuration}"/>
 
         <!-- FIXME // Temporary put in here so we get teamtester to compile all files. -->
-        <qmake recursive="true" 
+        <qmake recursive="true"
                dir="${outputDir}"
                pro="${sourceDir}/java.pro"
                config="${qtjambi.configuration}"/>
@@ -95,18 +95,18 @@
     <target name="generator.qmake"
             depends="init, generator.xmlmerge"
             description="Runs qmake on the generator project.">
-	<qmake config="${qtjambi.configuration}" 
+	<qmake config="${qtjambi.configuration}"
                dir="${outputDir}/generator"
                pro="${sourceDir}/generator/generator.pro"/>
     </target>
 
-    <target name="generator.compile" 
+    <target name="generator.compile"
 	    depends="init, generator.qmake"
             description="Compiles the Qt Jambi generator.">
         <make dir="${outputDir}/generator" />
     </target>
 
-    <target name="generator.run" 
+    <target name="generator.run"
             depends="init, generator.compile"
             description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
         <generator dir="${outputDir}/generator"
@@ -115,7 +115,7 @@
                    header="${sourceDir}/generator/qtjambi_masterinclude.h"/>
     </target>
 
-    <target name="library.native.compile" 
+    <target name="library.native.compile"
             depends="init"
             description="Compiles the C++ Qt Jambi bindings.">
 	<make dir="${outputDir}"/>
@@ -254,7 +254,7 @@
     <target name="library.designer.bundle" depends="library.designer.compile">
         <jar destfile="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"
              basedir="${outputDir}">
-            <include name="com/trolltech/tools/designer/*"/> 
+            <include name="com/trolltech/tools/designer/*"/>
             <exclude name="com/trolltech/tools/designer/*.java"/>
            <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
@@ -282,7 +282,7 @@
 	    <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
 	    <library name="QtDBus"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.dbus}"/>
-            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" /> 
+            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" />
             <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}" />
             <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}" />
 
@@ -324,97 +324,97 @@
         </jar>
 
         <delete dir="${outputDir}/platform-output"/>
-        
+
     </target>
 
     <target name="generator.xmlmerge"
 	    description="Merges the XML files used by the Qt Jambi generator.">
-        <xslt in="${sourceDir}/generator/typesystem_core-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_core-common.xml"
               out="${outputDir}/generator/typesystem_core.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_core-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_gui-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_gui-common.xml"
               out="${outputDir}/generator/typesystem_gui.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_gui-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_network-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_network-common.xml"
               out="${outputDir}/generator/typesystem_network.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_network-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_svg-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_svg-common.xml"
               out="${outputDir}/generator/typesystem_svg.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_svg-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_xml-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_xml-common.xml"
               out="${outputDir}/generator/typesystem_xml.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_xml-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_xmlpatterns-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_xmlpatterns-common.xml"
               out="${outputDir}/generator/typesystem_xmlpatterns.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_xmlpatterns-java.xml"/>
         </xslt>
-        <xslt in="generator/typesystem_opengl-common.xml" 
+        <xslt in="generator/typesystem_opengl-common.xml"
               out="${outputDir}/generator/typesystem_opengl.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_opengl-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_sql-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_sql-common.xml"
               out="${outputDir}/generator/typesystem_sql.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_sql-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_designer-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_designer-common.xml"
               out="${outputDir}/generator/typesystem_designer.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_designer-java.xml"/>
         </xslt>
-         <xslt in="${sourceDir}/generator/typesystem_webkit-common.xml" 
+         <xslt in="${sourceDir}/generator/typesystem_webkit-common.xml"
               out="${outputDir}/generator/typesystem_webkit.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_webkit-java.xml"/>
         </xslt>
-        <xslt in="${sourceDir}/generator/typesystem_phonon-common.xml" 
+        <xslt in="${sourceDir}/generator/typesystem_phonon-common.xml"
               out="${outputDir}/generator/typesystem_phonon.xml"
               style="${sourceDir}/generator/merge.xsl"
               force="yes">
             <param name="source"
                    expression="typesystem_phonon-java.xml"/>
-        </xslt>        
+        </xslt>
     </target>
 
     <target name="init"
-	    depends="init.ant, init.taskdef" 
+	    depends="init.ant, init.taskdef"
 	    description="Initializes the Qt Jambi build environment." >
       <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
     </target>
 
-    <target name="generator" 
+    <target name="generator"
 	    depends="init, generator.xmlmerge, generator.qmake, generator.compile, generator.run"
 	    description="Compiles and runs the Qt Jambi Generator."/>
 
@@ -427,7 +427,7 @@
 	    description="Compiles and bundles the Qt Jambi java libraries."/>
 
     <target name="library.designer"
-	    depends="library.designer.compile, library.designer.bundle" 
+	    depends="library.designer.compile, library.designer.bundle"
 	    description="Compiles and bundles the Qt Jambi designer libraries."/>
 
     <target name="library"
@@ -435,7 +435,7 @@
 	    description="Compiles and bundles the Qt Jambi libraries."/>
 
     <target name="examples"
-	    depends="init, examples.juic, examples.bundle" 
+	    depends="init, examples.juic, examples.bundle"
 	    description="Compiles and bundles the Qt Jambi examples."/>
 
     <target name="all"

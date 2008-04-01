@@ -21,7 +21,7 @@
 
 
 //! [4]
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk 
+    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     CONFIG+=x86 ppc
 //! [4]
 
@@ -76,7 +76,7 @@ public class doc_src_platform-notes {
 
 
 //! [4]
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk 
+    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     CONFIG+=x86 ppc
 //! [4]
 

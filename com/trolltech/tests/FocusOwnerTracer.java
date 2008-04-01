@@ -5,34 +5,34 @@ import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-/* Instantiate with current keyboard focus manager, and look at the display. 
- * Found on Internet http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4684090, 
- * so not my copyright.  */ 
+/* Instantiate with current keyboard focus manager, and look at the display.
+ * Found on Internet http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4684090,
+ * so not my copyright.  */
 
 
 public class FocusOwnerTracer implements PropertyChangeListener {
     public static final String FOCUS_OWNER_PROPERTY = "focusOwner";
     protected KeyboardFocusManager focusManager;
-    
+
     public FocusOwnerTracer(KeyboardFocusManager focusManager) {
         this.focusManager = focusManager;
         startListening();
     }
-    
+
     public void startListening() {
         if (focusManager != null) {
-            
+
             focusManager.addPropertyChangeListener(FOCUS_OWNER_PROPERTY, this);
         }
     }
-    
+
     public void stopListening() {
         if (focusManager != null) {
-            
+
             focusManager.removePropertyChangeListener(FOCUS_OWNER_PROPERTY, this);
         }
     }
-    
+
     public void propertyChange(PropertyChangeEvent e) {
         Component oldOwner = (Component) e.getOldValue();
         Component newOwner = (Component) e.getNewValue();
@@ -40,12 +40,12 @@ public class FocusOwnerTracer implements PropertyChangeListener {
         debugClass("  old: ", oldOwner);
         debugClass("  new: ", newOwner);
     }
-    
+
     protected void ebug(String text, Object o) {
         System.err.println(text + o);
     }
-    
+
     protected void debugClass(String msg, Object o) {
         ebug(msg, o != null ? o.getClass() : null);
     }
-}    
+}

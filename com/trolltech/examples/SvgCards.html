@@ -34,10 +34,10 @@ body { color: black; }</style>
             private QSvgRenderer renderer;
             private String fileName;
             private List&lt;Card&gt; cards;
-    
+
             public CardDeck(String file, QObject parent) {
                 super(parent);
-    
+
                 fileName = file;
                 renderer = new QSvgRenderer(fileName, parent);
                 cards = new LinkedList&lt;Card&gt;();
@@ -45,7 +45,7 @@ body { color: black; }</style>
                     Card item = new Card(CARDS[i], renderer);
                     cards.add(item);
                 }
-    
+
             }
             ...
         }</pre>
@@ -56,7 +56,7 @@ body { color: black; }</style>
 <pre>&nbsp;       private static class Card extends QGraphicsSvgItem {
             private double opacity = 1.0;
             private CardManager manager;
-    
+
             public Card(String card, QSvgRenderer renderer) {
                 super();
                 setElementId(card);

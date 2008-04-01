@@ -19,7 +19,7 @@ public class QContentsMargins {
         this.top = top;
         this.right = right;
         this.bottom = bottom;
-    }            
+    }
     public int left;
     public int top;
     public int right;

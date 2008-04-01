@@ -4,7 +4,7 @@ include(../../qtjambi/qtjambi_include.pri)
 SOURCES += jambi.cpp
 
 DESTDIR = ../../bin
-DLLDESTDIR = 
+DLLDESTDIR =
 TEMPLATE = app
 
 TARGET = jambi

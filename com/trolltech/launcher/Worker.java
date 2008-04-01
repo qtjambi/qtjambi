@@ -16,7 +16,7 @@ package com.trolltech.launcher;
 import com.trolltech.qt.core.*;
 
 public abstract class Worker extends QObject {
-    
+
     protected abstract void execute();
 
     public Worker(QObject parent) {
@@ -54,4 +54,4 @@ public abstract class Worker extends QObject {
     private int m_delay = 250;
     private int m_timer_id;
     private boolean m_is_running;
-} 
+}

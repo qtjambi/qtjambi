@@ -90,7 +90,7 @@ public class src_corelib_io_qdir {
         imagesSearchPaths.add(QDir.homePath() + "/images");
 
         List<String> docSearchPaths = new Vector<String>();
-        docSearchPaths.add(":/embeddedDocuments"); 
+        docSearchPaths.add(":/embeddedDocuments");
 
         QDir.setSearchPaths("icons", imagesSearchPaths);
         QDir.setSearchPaths("docs", docSearchPaths);

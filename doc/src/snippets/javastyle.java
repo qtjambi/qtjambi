@@ -63,7 +63,7 @@ QPalette JavaStyle.standardPalette() const
 
     palette.setBrush(QPalette.Inactive, QPalette.Highlight, QColor(184, 207, 229));
     palette.setBrush(QPalette.Inactive, QPalette.HighlightedText, Qt.black);
-    
+
     palette.setBrush(QPalette.Disabled, QPalette.Button,
                      QColor(238, 238, 238));
     palette.setBrush(QPalette.Disabled, QPalette.WindowText,
@@ -395,7 +395,7 @@ void JavaStyle.drawControl(ControlElement control, QStyleOption option,
             QStyleOptionProgressBar bar =
                 qstyleoption_cast<QStyleOptionProgressBar >(option);
             int progress = int((double(bar.progress) /
-                                double(bar.maximum - bar.minimum)) 
+                                double(bar.maximum - bar.minimum))
                                 bar.rect.width());
 
             painter.setBrush(bar.palette.color(QPalette.Light));
@@ -421,7 +421,7 @@ void JavaStyle.drawControl(ControlElement control, QStyleOption option,
                 QRect leftRect;
 
             int progressIndicatorPos = int((double(bar.progress) /
-                    double(bar.maximum - bar.minimum)) 
+                    double(bar.maximum - bar.minimum))
                     bar.rect.width());
 
             QFont font;
@@ -429,7 +429,7 @@ void JavaStyle.drawControl(ControlElement control, QStyleOption option,
             painter.setFont(font);
             painter.setPen(bar.palette.color(QPalette.Midlight));
 
-            if (progressIndicatorPos >= 0 
+            if (progressIndicatorPos >= 0
                 progressIndicatorPos <= rect.width()) {
                 leftRect = QRect(bar.rect.topLeft(),
                                  QPoint(progressIndicatorPos,
@@ -928,7 +928,7 @@ void JavaStyle.drawControl(ControlElement control, QStyleOption option,
                 painter.setBrush(QColor(200, 221, 242));
                 painter.drawPath(outerPath);
                 painter.setPen(QColor(200, 221, 242));
-                painter.drawRect(QRect(bottomLeft + adjustTabPoint( 
+                painter.drawRect(QRect(bottomLeft + adjustTabPoint(
                                         QPoint(2, -3), tab.shape),
                                         bottomRight + adjustTabPoint(
                                         QPoint(-2, 0), tab.shape)));
@@ -936,7 +936,7 @@ void JavaStyle.drawControl(ControlElement control, QStyleOption option,
                 painter.setBrush(Qt.NoBrush);
                 painter.drawPath(whitePath);
 
-                if (option.state  State_HasFocus) { 
+                if (option.state  State_HasFocus) {
                     painter.setPen(option.palette.color(QPalette.Mid));
                     painter.drawPath(innerPath);
                 }
@@ -999,7 +999,7 @@ void JavaStyle.drawControl(ControlElement control, QStyleOption option,
                 if (button.fontMetrics.height() > 14)
                     ir.translate(0, 1);
 
-                drawItemText(painter, ir, tf, button.palette, (button.state 
+                drawItemText(painter, ir, tf, button.palette, (button.state
                                  State_Enabled),
                              button.text, QPalette.ButtonText);
             }
@@ -1501,21 +1501,21 @@ void JavaStyle.drawComplexControl(ComplexControl control,
             QPixmap minimizeDownPixmap(":/images/internalminimizedown.png");
             QPixmap maximizeDownPixmap(":/images/internalmaximizedown.png");
 
-            if (bar.activeSubControls  SC_TitleBarCloseButton 
+            if (bar.activeSubControls  SC_TitleBarCloseButton
                 bar.state  State_Sunken)
                 painter.drawPixmap(closeButtonRect.topLeft(),
                                     internalCloseDownPixmap);
             else
                 painter.drawPixmap(closeButtonRect.topLeft(), closePixmap);
 
-            if (bar.activeSubControls  SC_TitleBarMinButton 
+            if (bar.activeSubControls  SC_TitleBarMinButton
                 bar.state  State_Sunken)
                 painter.drawPixmap(minButtonRect.topLeft(),
                                     minimizeDownPixmap);
             else
                 painter.drawPixmap(minButtonRect.topLeft(), minimizePixmap);
 
-            if (bar.activeSubControls  SC_TitleBarMaxButton 
+            if (bar.activeSubControls  SC_TitleBarMaxButton
                 bar.state  State_Sunken)
                 painter.drawPixmap(maxButtonRect.topLeft(),
                                     maximizeDownPixmap);
@@ -1590,9 +1590,9 @@ void JavaStyle.drawComplexControl(ComplexControl control,
             booleanssunken = (spinner.state  State_Sunken);
             booleansupIsActive = (spinner.activeSubControls == SC_SpinBoxUp);
             booleansdownIsActive = (spinner.activeSubControls == SC_SpinBoxDown);
-            booleansstepUpEnabled = spinner.stepEnabled 
+            booleansstepUpEnabled = spinner.stepEnabled
                              QAbstractSpinBox.StepUpEnabled;
-            booleansstepDownEnabled = spinner.stepEnabled 
+            booleansstepDownEnabled = spinner.stepEnabled
                                QAbstractSpinBox.StepDownEnabled;
 
             painter.setBrush(spinner.palette.color(QPalette.Background));
@@ -1640,7 +1640,7 @@ void JavaStyle.drawComplexControl(ComplexControl control,
 
             QStyleOptionToolButton panelOption = button;
             QRect panelRect;
-            if (!(button.state  State_MouseOver) 
+            if (!(button.state  State_MouseOver)
                 !(button.state  State_On)) {
                 painter.setPen(QColor(153, 153, 153));
                 painter.drawRect(button.rect.adjusted(0, 0, -2, -2));
@@ -1659,7 +1659,7 @@ void JavaStyle.drawComplexControl(ComplexControl control,
             menuOption.rect = menuRect;
 
             QStyleOptionToolButton label = button;
-            int fw = 5; 
+            int fw = 5;
 
             drawControl(CE_ToolButtonLabel, label, painter, widget);
             if (button.subControls  SC_ToolButtonMenu) {
@@ -1673,7 +1673,7 @@ void JavaStyle.drawComplexControl(ComplexControl control,
 
                 drawPrimitive(PE_FrameFocusRect, focusOption, painter, widget);
             }
-            
+
             break;
         }
         case CC_ComboBox: {
@@ -1830,12 +1830,12 @@ void JavaStyle.drawComplexControl(ComplexControl control,
 
                 for (int i = 0; i <= slider.maximum; i += tickInterval) {
                     if (horizontal) {
-                        int pos = int(((i / double(slider.maximum)) 
+                        int pos = int(((i / double(slider.maximum))
                             ticks.width()) - 1);
                         painter.drawLine(QPoint(ticks.left() + pos,
                         ticks.top() + 2), QPoint(ticks.left() + pos, ticks.top() + 8));
                     } else {
-                        int pos = int(((i / double(slider.maximum)) 
+                        int pos = int(((i / double(slider.maximum))
                             ticks.height()) - 1);
                         painter.drawLine(QPoint(ticks.left() + 2, ticks.bottom() - pos),
                                           QPoint(ticks.right() - 2, ticks.bottom() - pos));
@@ -2073,7 +2073,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
                     painter.drawLine(center, QPoint(center.x(),
                                       option.rect.bottom()));
                 }
-                
+
                 if (option.state  State_Children)
                     if (option.state  State_Open)
                         painter.drawPixmap(pixmapRect.topLeft(), closedPixmap);
@@ -2137,7 +2137,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
         case PE_IndicatorSpinUp: {
             QStyleOptionSpinBox spinner =
                 qstyleoption_cast<QStyleOptionSpinBox >(option);
-            int add = spinner.state  State_Sunken 
+            int add = spinner.state  State_Sunken
                     spinner.activeSubControls  SC_SpinBoxUp ? 1 : 0;
 
             QPoint center = option.rect.center();
@@ -2150,7 +2150,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
             QStyleOptionSpinBox spinner =
                 qstyleoption_cast<QStyleOptionSpinBox >(option);
 
-            int add = spinner.state  State_Sunken 
+            int add = spinner.state  State_Sunken
                       spinner.activeSubControls  SC_SpinBoxDown ? 1 : 0;
             QPoint center = option.rect.center();
             painter.drawLine(center.x() + add, center.y() + add,
@@ -2158,7 +2158,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
             painter.drawPoint(center.x() + 1 + add, center.y() + 1 + add);
             break;
         }
-        case PE_FrameDockWidget: { 
+        case PE_FrameDockWidget: {
             drawPrimitive(PE_FrameWindow, option, painter, widget);
             break;
         }
@@ -2186,7 +2186,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
                     painter.drawPoint(offset + xySwitch(QPoint(add + 8, i),
                                        horizontal));
             }
-            
+
             break;
         }
         case PE_IndicatorToolBarSeparator: {
@@ -2227,7 +2227,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
         case PE_PanelButtonCommand: {
             QStyleOptionButton btn =
                 qstyleoption_cast<QStyleOptionButton >(option);
-            booleanshover = (btn.state  State_Enabled) 
+            booleanshover = (btn.state  State_Enabled)
                          (btn.state  State_MouseOver);
             booleanssunken = btn.state  State_Sunken;
             booleansisDefault = btn.features  QStyleOptionButton.DefaultButton;
@@ -2258,7 +2258,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
             drawButtonBackground(option, painter, true);
 
             if (option.state().isSet(QStyle.State.State_Enabled) &&
-                option.state().isSet(QStyle.State.State_MouseOver) && 
+                option.state().isSet(QStyle.State.State_MouseOver) &&
                 !(option.state().isSet(QStyle.State.State_Sunken))) {
                 painter.setPen(option.palette().color(QPalette.ColorRole.Button));
                 QRect rect = option.rect().adjusted(1, 1, -2, -2);
@@ -2279,7 +2279,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
             painter.save();
             QBrush radioBrush = option.palette.button();
 
-            if (!(option.state  State_Sunken) 
+            if (!(option.state  State_Sunken)
                 option.state  State_Enabled)
                 radioBrush = gradientBrush(option.rect);
 
@@ -2291,8 +2291,8 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
                                                       QPalette.WindowText));
             painter.drawEllipse(option.rect.adjusted(0, 0, -1, -1));
 
-            if (option.state  State_MouseOver 
-                option.state  State_Enabled 
+            if (option.state  State_MouseOver
+                option.state  State_Enabled
                 !(option.state  State_Sunken)) {
                 gradientBrush(option.rect);
                 painter.setPen(option.palette.color(QPalette.Button));
@@ -2308,7 +2308,7 @@ void JavaStyle.drawPrimitive(PrimitiveElement element,
                 painter.setPen(Qt.NoPen);
                 painter.drawEllipse(option.rect.adjusted(3, 3, -3, -3));
             }
-            if (option.state  State_Sunken 
+            if (option.state  State_Sunken
                 option.state  State_Enabled) {
                 painter.setPen(option.palette.color(QPalette.Mid));
                 painter.drawArc(option.rect.adjusted(1, 1, -2, -2), 80  16,
@@ -2551,7 +2551,7 @@ int JavaStyle.styleHint(StyleHint hint, QStyleOption option,
             break;
         }
         case QStyle.SH_Menu_Scrollable:
-            ret = 1; 
+            ret = 1;
             break;
         default:
             ret = QWindowsStyle.styleHint(hint, option, widget, returnData);
@@ -2679,7 +2679,7 @@ QSize JavaStyle.sizeFromContents(ContentsType type,
             int height = 0;
 
             if (!menuItem.icon.isNull()) {
-                width += 20; 
+                width += 20;
                 height += 20;
             }
             if (!menuItem.text.isEmpty()) {

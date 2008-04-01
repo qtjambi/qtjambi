@@ -3,55 +3,55 @@
     <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
     </inject-code>
-  
+
     <template name="core.return_string_instead_of_char*">
         public final String %FUNCTION_NAME() {
             QNativePointer np = %FUNCTION_NAME_private();
             String returned = "";
             int i=0;
             while (np.byteAt(i) != 0) returned += (char) np.byteAt(i++);
-            return returned;            
+            return returned;
         }
     </template>
     <template name="core.call_with_string_instead_of_char*">
         public final void %FUNCTION_NAME(String %ARG_NAME) {
-            %FUNCTION_NAME(QNativePointer.createCharPointer(%ARG_NAME));            
+            %FUNCTION_NAME(QNativePointer.createCharPointer(%ARG_NAME));
         }
     </template>
-  
+
     <template name="core.private_function_return_self">
       public final %RETURN_TYPE %FUNCTION_NAME(%ARGUMENTS) {
         %FUNCTION_NAME_private(%ARGUMENT_NAMES);
         return this;
       }
     </template>
-  
+
     <template name="core.unary_other_type">
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="%OUT_TYPE"/>
             <replace from="%ARGUMENTS" to="%IN_TYPE other"/>
             <replace from="%ARGUMENT_NAMES" to="other"/>
-        </insert-template>    
+        </insert-template>
     </template>
-  
+
     <template name="core.unary_self_type">
         <insert-template name="core.unary_other_type">
             <replace from="%IN_TYPE" to="%TYPE"/>
-            <replace from="%OUT_TYPE" to="%TYPE"/>    
+            <replace from="%OUT_TYPE" to="%TYPE"/>
         </insert-template>
-    </template>  
+    </template>
 
     <template name="core.operator_assign_self_type">
         <insert-template name="core.unary_self_type">
             <replace from="%FUNCTION_NAME" to="operator_assign"/>
-        </insert-template>   
-    </template>  
-    
+        </insert-template>
+    </template>
+
     <template name="core.operator_assign_other_type">
         <insert-template name="core.unary_other_type">
             <replace from="%FUNCTION_NAME" to="operator_assign"/>
-        </insert-template>   
-    </template>  
+        </insert-template>
+    </template>
 
     <template name="core.call_through_with_byte[]_instead_of_char*_and_int">
     public final int %FUNCTION_NAME(byte data[]) {
@@ -62,21 +62,21 @@
         return returned;
     }
     </template>
-    
+
     <template name="core.read_with_byte[]_instead_of_char*_and_int">
         <insert-template name="core.call_through_with_byte[]_instead_of_char*_and_int">
             <replace from="%COPY_IN" to=""/>
             <replace from="%COPY_OUT" to="for (int i=0; i&lt;returned; ++i) data[i] = np.byteAt(i);"/>
         </insert-template>
     </template>
-    
+
     <template name="core.write_with_byte[]_instead_of_char*_and_int">
         <insert-template name="core.call_through_with_byte[]_instead_of_char*_and_int">
             <replace from="%COPY_OUT" to=""/>
             <replace from="%COPY_IN" to="for (int i=0; i&lt;data.length; ++i) np.setByteAt(i, data[i]);"/>
         </insert-template>
     </template>
-    
+
     <template name="core.stream_operator_shift_right">
         public final %STREAM_TYPE operator_shift_right(%TYPE array[]) {
             QNativePointer np = new QNativePointer(QNativePointer.Type.%NATIVEPOINTER_TYPE);
@@ -84,10 +84,10 @@
                 operator_shift_right_%TYPE(np);
                 array[i] = np.%VALUE_FUNCTION();
             }
-            
+
             return this;
         }
-    </template>  
+    </template>
 
     <template name="core.convert_primitive_array_to_java">
         %JNITYPEArray %out = __jni_env-&gt;New%JAVATYPEArray((int) %len);
@@ -97,7 +97,7 @@
         %JNITYPEArray __array = %out;
         Q_UNUSED(__array);
     </template>
-    
+
     <template name="core.cleanup_convert_primitive_array_to_java">
         if (%len &gt; 0) __jni_env-&gt;Get%JAVATYPEArrayRegion(__array, 0, %len, __ptr);
     </template>
@@ -117,34 +117,34 @@
 
 
     <primitive-type name="bool" java-name="boolean" jni-name="jboolean"/>
-    
+
     <primitive-type name="double" jni-name="jdouble"/>
-    
-    <primitive-type name="float" jni-name="jfloat"/>  
-    
+
+    <primitive-type name="float" jni-name="jfloat"/>
+
     <primitive-type name="__int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="unsigned __int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="unsigned long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="quintptr" preferred-conversion="no" java-name="long" jni-name="jlong" />
-    
+
     <primitive-type name="short" preferred-conversion="no" java-name="char" jni-name="jchar"/>
     <primitive-type name="short" preferred-java-type="no" java-name="short" jni-name="jshort" />
     <primitive-type name="signed short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
     <primitive-type name="unsigned short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
-    
+
     <primitive-type name="char" java-name="byte" jni-name="jbyte"/>
-    <primitive-type name="signed char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>  
-    <primitive-type name="unsigned char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>  
-    
+    <primitive-type name="signed char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>
+    <primitive-type name="unsigned char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>
+
     <primitive-type name="int" jni-name="jint"/>
     <primitive-type name="signed int" java-name="int" preferred-conversion="no" jni-name="jint"/>
     <primitive-type name="uint" java-name="int" preferred-conversion="no" jni-name="jint"/>
     <primitive-type name="ulong" java-name="int" preferred-conversion="no" jni-name="jint"/>
     <primitive-type name="unsigned int" java-name="int" preferred-conversion="no" jni-name="jint"/>
-    <primitive-type name="signed long" java-name="int" preferred-conversion="no" jni-name="jint"/>  
+    <primitive-type name="signed long" java-name="int" preferred-conversion="no" jni-name="jint"/>
     <primitive-type name="long" java-name="int" preferred-conversion="no" jni-name="jint"/>
-    <primitive-type name="unsigned long" java-name="int" preferred-conversion="no" jni-name="jint"/>  
+    <primitive-type name="unsigned long" java-name="int" preferred-conversion="no" jni-name="jint"/>
 
     <primitive-type name="WId" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="Qt::HANDLE" java-name="long" preferred-conversion="no" jni-name="jlong"/>
@@ -157,11 +157,11 @@
 
     <primitive-type name="jobject" java-name="java.lang.Object" jni-name="jobject"/>
 
-    
+
     <value-type name="QDate">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QDate___" quote-before-line="}// class"/>
-        </inject-code> 
+        </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
@@ -171,16 +171,16 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        
+
     </value-type>
 
-    
+
     <value-type name="QDir">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QDir___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="operator[](int)const" access="private"/>
-        
+
     </value-type>
 
     <template name="core.multiply-devide-add-subtract">
@@ -191,20 +191,20 @@
     </template>
 
     <value-type name="QPoint">
-        <modify-function signature="operator*=(double)" 
+        <modify-function signature="operator*=(double)"
                          access="private"
                          associated-to="multiply(double d)"/>
-        <modify-function signature="operator/=(double)" 
-			 access="private" 
+        <modify-function signature="operator/=(double)"
+			 access="private"
 			 associated-to="divide(double d)"/>
-        <modify-function signature="operator+=(QPoint)" 
-			 access="private" 
+        <modify-function signature="operator+=(QPoint)"
+			 access="private"
 			 associated-to="add(QPoint)"/>
         <modify-function signature="operator-=(QPoint)"
 			 access="private"
 			 associated-to="subtract(QPoint)"/>
-        <modify-function signature="rx()"> <remove/> </modify-function>  
-        <modify-function signature="ry()"> <remove/> </modify-function>      
+        <modify-function signature="rx()"> <remove/> </modify-function>
+        <modify-function signature="ry()"> <remove/> </modify-function>
         <inject-code>
             <insert-template name="core.multiply-devide-add-subtract">
                 <replace from="%TYPE" to="QPoint"/>
@@ -225,8 +225,8 @@
         <modify-function signature="operator-=(QPointF)"
 			 access="private"
 			 associated-to="subtract(QPointF p)"/>
-        <modify-function signature="rx()"> <remove/> </modify-function>  
-        <modify-function signature="ry()"> <remove/> </modify-function>      
+        <modify-function signature="rx()"> <remove/> </modify-function>
+        <modify-function signature="ry()"> <remove/> </modify-function>
         <inject-code>
             <insert-template name="core.multiply-devide-add-subtract">
                 <replace from="%TYPE" to="QPointF"/>
@@ -239,7 +239,7 @@
             <insert-template name="core.multiply-devide-add-subtract">
                 <replace from="%TYPE" to="QSize"/>
             </insert-template>
-        </inject-code>   
+        </inject-code>
     </value-type>
 
     <value-type name="QSizeF">
@@ -250,7 +250,7 @@
         </inject-code>
     </value-type>
 
-    <value-type name="QLocale">  
+    <value-type name="QLocale">
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
@@ -264,26 +264,26 @@
             return returned;
         }
         </template>
-    
-    
+
+
         <template name="core.qlocale_to_type_integer">
             <insert-template name="core.qlocale_to_type_general">
                 <replace from="%EXTRA_ARGUMENTS" to=", int base"/>
                 <replace from="%EXTRA_CALL_ARGUMENTS" to=", base"/>
             </insert-template>
-        
+
         public final %TYPE %FUNCTION_NAME(String s) {
             return %FUNCTION_NAME(s, 0);
         }
         </template>
-        
+
         <template name="core.qlocale_to_type_float">
             <insert-template name="core.qlocale_to_type_general">
                 <replace from="%EXTRA_ARGUMENTS" to=""/>
-                <replace from="%EXTRA_CALL_ARGUMENTS" to=""/>            
+                <replace from="%EXTRA_CALL_ARGUMENTS" to=""/>
             </insert-template>
         </template>
-        
+
         <modify-function signature="toDouble(QString,bool*)const">
             <access modifier="private"/>
             <modify-argument index="2">
@@ -293,88 +293,88 @@
         <inject-code>
             <insert-template name="core.qlocale_to_type_float">
                 <replace from="%TYPE" to="double"/>
-                <replace from="%FUNCTION_NAME" to="toDouble"/>            
+                <replace from="%FUNCTION_NAME" to="toDouble"/>
             </insert-template>
         </inject-code>
-        
+
         <modify-function signature="toFloat(QString,bool*)const">
             <access modifier="private"/>
             <modify-argument index="2">
                 <remove-default-expression/>
-            </modify-argument>                
+            </modify-argument>
         </modify-function>
         <inject-code>
             <insert-template name="core.qlocale_to_type_float">
                 <replace from="%TYPE" to="float"/>
-                <replace from="%FUNCTION_NAME" to="toFloat"/>            
-            </insert-template>    
+                <replace from="%FUNCTION_NAME" to="toFloat"/>
+            </insert-template>
         </inject-code>
-        
+
         <modify-function signature="toInt(QString,bool*,int)const">
             <access modifier="private"/>
             <modify-argument index="2">
                 <remove-default-expression/>
-            </modify-argument>                        
+            </modify-argument>
             <modify-argument index="3">
                 <remove-default-expression/>
-            </modify-argument>                        
-        </modify-function>    
+            </modify-argument>
+        </modify-function>
         <inject-code>
             <insert-template name="core.qlocale_to_type_integer">
                 <replace from="%TYPE" to="int"/>
-                <replace from="%FUNCTION_NAME" to="toInt"/>            
-            </insert-template>        
+                <replace from="%FUNCTION_NAME" to="toInt"/>
+            </insert-template>
         </inject-code>
-        
+
         <modify-function signature="toLongLong(QString,bool*,int)const">
             <access modifier="private"/>
             <rename to="toLong"/>
             <modify-argument index="2">
                 <remove-default-expression/>
-            </modify-argument>                        
+            </modify-argument>
             <modify-argument index="3">
                 <remove-default-expression/>
-            </modify-argument>        
+            </modify-argument>
         </modify-function>
         <inject-code>
             <insert-template name="core.qlocale_to_type_integer">
                 <replace from="%TYPE" to="long"/>
-                <replace from="%FUNCTION_NAME" to="toLong"/>            
-            </insert-template>        
-        </inject-code>    
-        
+                <replace from="%FUNCTION_NAME" to="toLong"/>
+            </insert-template>
+        </inject-code>
+
         <modify-function signature="toShort(QString,bool*,int)const">
             <access modifier="private"/>
             <modify-argument index="2">
                 <remove-default-expression/>
-            </modify-argument>                        
+            </modify-argument>
             <modify-argument index="3">
                 <remove-default-expression/>
-            </modify-argument>        
+            </modify-argument>
         </modify-function>
         <inject-code>
             <insert-template name="core.qlocale_to_type_integer">
                 <replace from="%TYPE" to="short"/>
-                <replace from="%FUNCTION_NAME" to="toShort"/>            
-            </insert-template>        
-        </inject-code>            
-        
+                <replace from="%FUNCTION_NAME" to="toShort"/>
+            </insert-template>
+        </inject-code>
+
         <modify-function signature="toUShort(QString,bool*,int)const">
             <access modifier="private"/>
             <rename to="toChar"/>
             <modify-argument index="2">
                 <remove-default-expression/>
-            </modify-argument>                        
+            </modify-argument>
             <modify-argument index="3">
                 <remove-default-expression/>
-            </modify-argument>        
+            </modify-argument>
         </modify-function>
         <inject-code>
             <insert-template name="core.qlocale_to_type_integer">
                 <replace from="%TYPE" to="char"/>
-                <replace from="%FUNCTION_NAME" to="toChar"/>            
-            </insert-template>        
-        </inject-code>                
+                <replace from="%FUNCTION_NAME" to="toChar"/>
+            </insert-template>
+        </inject-code>
     </value-type>
 
     <object-type name="QAbstractItemModel">
@@ -382,10 +382,10 @@
         <extra-includes>
             <include file-name="QStringList" location="global"/>
             <include file-name="QSize" location="global"/>
-        </extra-includes>  
+        </extra-includes>
         <modify-function signature="match(QModelIndex,int,QVariant,int,QFlags&lt;Qt::MatchFlag&gt;)const">
             <modify-argument index="5">
-                <replace-default-expression with="Qt.MatchFlag.MatchStartsWith, Qt.MatchFlag.MatchWrap"/>         
+                <replace-default-expression with="Qt.MatchFlag.MatchStartsWith, Qt.MatchFlag.MatchWrap"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="createIndex(int, int, int)const">
@@ -404,7 +404,7 @@
         QtJambiShell_QAbstractItemModel *__qt_this =
             (QtJambiShell_QAbstractItemModel *) qtjambi_from_jlong(__this_nativeId);
         QVariant qt_value = qtjambi_to_qvariant(__jni_env, value);
-    
+
         QModelIndex index = __qt_this-&gt;index(row, col, QModelIndex());
         return __qt_this-&gt;setData(index, qt_value, role);
     }
@@ -417,7 +417,7 @@
     {
         QtJambiShell_QAbstractItemModel *__qt_this =
             (QtJambiShell_QAbstractItemModel *) qtjambi_from_jlong(__this_nativeId);
-    
+
         QModelIndex index = __qt_this-&gt;index(row, col, QModelIndex());
         return qtjambi_from_qvariant(__jni_env, __qt_this-&gt;data(index, role));
     }
@@ -430,7 +430,7 @@
         </modify-function>
     </object-type>
 
-    
+
     <value-type name="QByteArray">
         <inject-code class="java">
             <import-file name="typesystem_core-java.java" quote-after-line="class QByteArray___" quote-before-line="}// class"/>
@@ -454,12 +454,12 @@
                 <replace from="%NAME%" to="toChar"/>
                 <replace from="%TYPE%" to="char"/>
             </insert-template>
-            
+
             <insert-template name="QByteArray::toType(base)">
                 <replace from="%NAME%" to="toInt"/>
                 <replace from="%TYPE%" to="int"/>
             </insert-template>
-            
+
             <template name="QByteArray::toType()">
     public final %TYPE% %NAME%() throws NumberFormatException{
         com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
@@ -475,15 +475,15 @@
                 <replace from="%NAME%" to="toDouble"/>
                 <replace from="%TYPE%" to="double"/>
             </insert-template>
-            
+
             <insert-template name="QByteArray::toType()">
                 <replace from="%NAME%" to="toFloat"/>
                 <replace from="%TYPE%" to="float"/>
             </insert-template>
-            
-        </inject-code> 
 
-        
+        </inject-code>
+
+
 
    <modify-function signature="toUShort(bool*, int) const" rename="toChar_private" access="private">
         <modify-argument index="1">
@@ -520,12 +520,12 @@
     </modify-function>
 
     <modify-function signature="QByteArray(const char*)" remove="all"/>
-    
+
     <modify-function signature="QByteArray(const char*,int)">
         <access modifier="private"/>
     </modify-function>
-    
-    
+
+
     <modify-function signature="append(QString)">
         <access modifier="private"/>
         <rename to="append_private"/>
@@ -535,13 +535,13 @@
             <replace from="%IN_TYPE" to="String"/>
             <replace from="%OUT_TYPE" to="QByteArray"/>
             <replace from="%FUNCTION_NAME" to="append"/>
-        </insert-template>        
+        </insert-template>
     </inject-code>
-    
+
     <modify-function signature="append(const char*)">
         <remove/>
-    </modify-function>    
-        
+    </modify-function>
+
     <modify-function signature="append(QByteArray)">
         <access modifier="private"/>
         <rename to="append_private"/>
@@ -552,7 +552,7 @@
             <replace from="%FUNCTION_NAME" to="append"/>
         </insert-template>
     </inject-code>
-    
+
     <modify-function signature="append(char)">
         <access modifier="private"/>
         <rename to="append_private"/>
@@ -562,24 +562,24 @@
             <replace from="%IN_TYPE" to="byte"/>
             <replace from="%OUT_TYPE" to="QByteArray"/>
             <replace from="%FUNCTION_NAME" to="append"/>
-        </insert-template>                
+        </insert-template>
     </inject-code>
-    
+
     <modify-function signature="contains(const char*)const">
         <remove/>
     </modify-function>
-    
-    
+
+
     <modify-function signature="count(const char*)const">
         <remove/>
     </modify-function>
-    
-    
+
+
     <modify-function signature="endsWith(const char*)const">
         <remove/>
     </modify-function>
-    
-    
+
+
     <modify-function signature="fill(char,int)">
         <access modifier="private"/>
         <rename to="fill_private"/>
@@ -594,17 +594,17 @@
             <replace from="%ARGUMENTS" to="byte b, int size"/>
             <replace from="%ARGUMENT_NAMES" to="b, size"/>
         </insert-template>
-        
+
         public QByteArray  fill(byte b) {
             return fill(b, -1);
         }
-                
+
     </inject-code>
-    
+
     <modify-function signature="indexOf(const char*,int)const">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="insert(int,QByteArray)">
         <access modifier="private"/>
         <rename to="insert_private"/>
@@ -615,12 +615,12 @@
             <replace from="%FUNCTION_NAME" to="insert"/>
             <replace from="%ARGUMENTS" to="int i, QByteArray ba"/>
             <replace from="%ARGUMENT_NAMES" to="i, ba"/>
-        </insert-template>        
+        </insert-template>
     </inject-code>
-    
+
     <modify-function signature="insert(int,char)">
         <access modifier="private"/>
-        <rename to="insert_private"/>    
+        <rename to="insert_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.private_function_return_self">
@@ -628,12 +628,12 @@
             <replace from="%FUNCTION_NAME" to="insert"/>
             <replace from="%ARGUMENTS" to="int i, byte b"/>
             <replace from="%ARGUMENT_NAMES" to="i, b"/>
-        </insert-template>                
+        </insert-template>
     </inject-code>
-        
+
     <modify-function signature="insert(int,QString)">
         <access modifier="private"/>
-        <rename to="insert_private"/>        
+        <rename to="insert_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.private_function_return_self">
@@ -641,15 +641,15 @@
             <replace from="%FUNCTION_NAME" to="insert"/>
             <replace from="%ARGUMENTS" to="int i, String str"/>
             <replace from="%ARGUMENT_NAMES" to="i, str"/>
-        </insert-template>        
+        </insert-template>
     </inject-code>
-    
-    <modify-function signature="insert(int,const char*)" remove="all"/>    
+
+    <modify-function signature="insert(int,const char*)" remove="all"/>
     <modify-function signature="lastIndexOf(const char*,int)const" remove="all"/>
-    
+
     <modify-function signature="prepend(QByteArray)">
         <access modifier="private"/>
-        <rename to="prepend_private"/>            
+        <rename to="prepend_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.unary_self_type">
@@ -657,10 +657,10 @@
             <replace from="%FUNCTION_NAME" to="prepend"/>
         </insert-template>
     </inject-code>
-    
+
     <modify-function signature="prepend(char)">
         <access modifier="private"/>
-        <rename to="prepend_private"/>            
+        <rename to="prepend_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.unary_other_type">
@@ -669,12 +669,12 @@
             <replace from="%FUNCTION_NAME" to="prepend"/>
         </insert-template>
     </inject-code>
-    
+
     <modify-function signature="prepend(const char*)">
-        <remove/>    
+        <remove/>
     </modify-function>
-    
-    
+
+
     <modify-function signature="remove(int,int)">
         <access modifier="private"/>
         <rename to="remove_private"/>
@@ -687,11 +687,11 @@
             <replace from="%ARGUMENT_NAMES" to="pos, len"/>
         </insert-template>
     </inject-code>
-    
+
     <modify-function signature="replace(QByteArray,const char*)">
         <remove/>
     </modify-function>
-    
+
 
     <template name="core.qbytearray_replace">
         <insert-template name="core.private_function_return_self">
@@ -699,9 +699,9 @@
             <replace from="%FUNCTION_NAME" to="replace"/>
             <replace from="%ARGUMENTS" to="%BEFORE_TYPE before, %AFTER_TYPE after"/>
             <replace from="%ARGUMENT_NAMES" to="before, after"/>
-        </insert-template>            
+        </insert-template>
     </template>
-    
+
     <modify-function signature="replace(char,QByteArray)">
         <access modifier="private"/>
         <rename to="replace_private"/>
@@ -710,29 +710,29 @@
         <insert-template name="core.qbytearray_replace">
             <replace from="%BEFORE_TYPE" to="byte"/>
             <replace from="%AFTER_TYPE" to="QByteArray"/>
-        </insert-template>        
+        </insert-template>
     </inject-code>
-    
+
     <modify-function signature="replace(QString,const char*)">
         <remove/>
     </modify-function>
-    
-    
+
+
     <modify-function signature="replace(int,int,const char*)">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="replace(const char*,const char*)">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="replace(const char*,QByteArray)">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="replace(int,int,QByteArray)">
         <access modifier="private"/>
-        <rename to="replace_private"/>    
+        <rename to="replace_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.private_function_return_self">
@@ -740,13 +740,13 @@
             <replace from="%FUNCTION_NAME" to="replace"/>
             <replace from="%ARGUMENTS" to="int pos, int len, QByteArray after"/>
             <replace from="%ARGUMENT_NAMES" to="pos, len, after"/>
-        </insert-template>                
+        </insert-template>
     </inject-code>
-    
+
     <modify-function signature="replace(char,const char*)">
         <remove/>
     </modify-function>
-    
+
     <modify-function signature="replace(char,QString)">
         <access modifier="private"/>
         <rename to="replace_private"/>
@@ -755,58 +755,58 @@
         <insert-template name="core.qbytearray_replace">
             <replace from="%BEFORE_TYPE" to="byte"/>
             <replace from="%AFTER_TYPE" to="String"/>
-        </insert-template>        
+        </insert-template>
     </inject-code>
-    
+
     <modify-function signature="replace(char,char)">
         <access modifier="private"/>
-        <rename to="replace_private"/>    
+        <rename to="replace_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.qbytearray_replace">
             <replace from="%BEFORE_TYPE" to="byte"/>
             <replace from="%AFTER_TYPE" to="byte"/>
-        </insert-template>        
+        </insert-template>
     </inject-code>
-    
+
     <modify-function signature="replace(QByteArray,QByteArray)">
         <access modifier="private"/>
-        <rename to="replace_private"/>    
+        <rename to="replace_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.qbytearray_replace">
             <replace from="%BEFORE_TYPE" to="QByteArray"/>
             <replace from="%AFTER_TYPE" to="QByteArray"/>
-        </insert-template>        
-    </inject-code>    
-    
+        </insert-template>
+    </inject-code>
+
     <modify-function signature="replace(QString,QByteArray)">
         <access modifier="private"/>
-        <rename to="replace_private"/>    
+        <rename to="replace_private"/>
     </modify-function>
     <inject-code>
         <insert-template name="core.qbytearray_replace">
             <replace from="%BEFORE_TYPE" to="String"/>
             <replace from="%AFTER_TYPE" to="QByteArray"/>
-        </insert-template>        
-    </inject-code>    
-    
+        </insert-template>
+    </inject-code>
+
     <modify-function signature="setNum(int,int)">
         <access modifier="private"/>
-        <rename to="setNum_private"/>          
+        <rename to="setNum_private"/>
         <modify-argument index="2">
             <remove-default-expression/>
-        </modify-argument>  
+        </modify-argument>
     </modify-function>
-    
+
     <template name="core.qbytearray_setNum_integer">
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QByteArray"/>
             <replace from="%FUNCTION_NAME" to="setNum"/>
             <replace from="%ARGUMENTS" to="%INTEGER_TYPE n, int base"/>
             <replace from="%ARGUMENT_NAMES" to="n, base"/>
-        </insert-template>            
-        
+        </insert-template>
+
         public QByteArray setNum(%INTEGER_TYPE n) {
             return setNum(n, 10);
         }
@@ -817,111 +817,111 @@
             <replace from="%FUNCTION_NAME" to="setNum"/>
             <replace from="%ARGUMENTS" to="%FLOAT_TYPE n, char f, int prec"/>
             <replace from="%ARGUMENT_NAMES" to="n, (byte) f, prec"/>
-        </insert-template>            
-        
+        </insert-template>
+
         public final QByteArray setNum(%FLOAT_TYPE n, char f) {
-            return setNum(n, f, 6); 
+            return setNum(n, f, 6);
         }
-        
+
         public final QByteArray setNum(%FLOAT_TYPE n) {
             return setNum(n, 'g');
         }
     </template>
-    
+
     <inject-code>
         <insert-template name="core.qbytearray_setNum_integer">
             <replace from="%INTEGER_TYPE" to="int"/>
         </insert-template>
     </inject-code>
-    
+
     <inject-code>
         <insert-template name="core.qbytearray_setNum_integer">
             <replace from="%INTEGER_TYPE" to="char"/>
         </insert-template>
     </inject-code>
-    
-    
+
+
     <modify-function signature="setNum(float,char,int)">
         <access modifier="private"/>
-        <rename to="setNum_private"/>                
+        <rename to="setNum_private"/>
         <modify-argument index="2">
             <remove-default-expression/>
-        </modify-argument>  
+        </modify-argument>
         <modify-argument index="3">
             <remove-default-expression/>
-        </modify-argument>                  
-    </modify-function>    
+        </modify-argument>
+    </modify-function>
     <inject-code>
         <insert-template name="core.qbytearray_setNum_float">
             <replace from="%FLOAT_TYPE" to="float"/>
         </insert-template>
     </inject-code>
-    
+
     <modify-function signature="setNum(long long,int)">
         <access modifier="private"/>
-        <rename to="setNum_private"/>                
+        <rename to="setNum_private"/>
         <modify-argument index="2">
             <remove-default-expression/>
-        </modify-argument>          
+        </modify-argument>
     </modify-function>
     <inject-code>
         <insert-template name="core.qbytearray_setNum_integer">
             <replace from="%INTEGER_TYPE" to="long"/>
         </insert-template>
-    </inject-code>    
-    
+    </inject-code>
+
     <modify-function signature="setNum(double,char,int)">
         <access modifier="private"/>
-        <rename to="setNum_private"/>                
+        <rename to="setNum_private"/>
         <modify-argument index="2">
             <remove-default-expression/>
-        </modify-argument>  
+        </modify-argument>
         <modify-argument index="3">
             <remove-default-expression/>
-        </modify-argument>                  
+        </modify-argument>
     </modify-function>
     <inject-code>
         <insert-template name="core.qbytearray_setNum_float">
             <replace from="%FLOAT_TYPE" to="double"/>
         </insert-template>
     </inject-code>
-    
+
     <modify-function signature="setNum(short,int)">
         <access modifier="private"/>
-        <rename to="setNum_private"/>                
+        <rename to="setNum_private"/>
         <modify-argument index="2">
             <remove-default-expression/>
-        </modify-argument>          
+        </modify-argument>
     </modify-function>
     <inject-code>
     <insert-template name="core.qbytearray_setNum_integer">
             <replace from="%INTEGER_TYPE" to="short"/>
         </insert-template>
-    </inject-code>    
-        
+    </inject-code>
+
     <modify-function signature="startsWith(const char*)const">
         <remove/>
     </modify-function>
-    
-    
+
+
     <modify-function signature="fromRawData(const char*,int)">
         <remove/>
     </modify-function>
- 
+
     </value-type>
-        
-    
+
+
     <object-type name="QFile">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QFile___" quote-before-line="}// class"/>
-        </inject-code>  
+        </inject-code>
         <modify-function signature="decodeName(const char*)">
             <access modifier="private"/>
         </modify-function>
-        
+
     </object-type>
 
-    
+
     <object-type name="QIODevice">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QIODevice___" quote-before-line="}// class"/>
@@ -931,13 +931,13 @@
         </extra-includes>
 
         <modify-function signature="putChar(char)" rename="putByte"/>
-        <modify-function signature="ungetChar(char)" rename="ungetByte"/>          
+        <modify-function signature="ungetChar(char)" rename="ungetByte"/>
         <modify-function signature="getChar(char*)">
             <access modifier="private"/>
             <rename to="getByte"/>
         </modify-function>
-        
-        
+
+
         <modify-function signature="peek(char*,long long)">
             <access modifier="private"/>
         </modify-function>
@@ -946,58 +946,58 @@
                 <replace from="%FUNCTION_NAME" to="peek"/>
             </insert-template>
         </inject-code>
-        
+
         <modify-function signature="read(char*,long long)">
             <access modifier="private"/>
         </modify-function>
         <inject-code>
             <insert-template name="core.read_with_byte[]_instead_of_char*_and_int">
                 <replace from="%FUNCTION_NAME" to="read"/>
-            </insert-template>            
+            </insert-template>
         </inject-code>
-        
+
         <modify-function signature="readLine(char*,long long)">
             <access modifier="private"/>
         </modify-function>
         <inject-code>
             <insert-template name="core.read_with_byte[]_instead_of_char*_and_int">
                 <replace from="%FUNCTION_NAME" to="readLine"/>
-            </insert-template>                
-        </inject-code>        
-        
+            </insert-template>
+        </inject-code>
+
         <modify-function signature="write(const char*,long long)">
             <access modifier="private"/>
         </modify-function>
         <inject-code>
-            <insert-template name="core.write_with_byte[]_instead_of_char*_and_int">        
+            <insert-template name="core.write_with_byte[]_instead_of_char*_and_int">
                 <replace from="%FUNCTION_NAME" to="write"/>
             </insert-template>
-        </inject-code>                        
-        
+        </inject-code>
+
         <template name="core.iodevice_convert_char*_to_byte[]">
             <insert-template name="core.convert_primitive_array_to_java">
                 <replace from="%JNITYPE" to="jbyte"/>
                 <replace from="%JAVATYPE" to="Byte"/>
             </insert-template>
         </template>
-        
+
         <template name="core.iodevice_cleanup_to_java">
             <insert-template name="core.cleanup_convert_primitive_array_to_java">
                 <replace from="%JNITYPE" to="jbyte"/>
-                <replace from="%JAVATYPE" to="Byte"/>        
+                <replace from="%JAVATYPE" to="Byte"/>
             </insert-template>
         </template>
-        
-        
+
+
         <template name="core.iodevice_cleanup">
             jint %out = (jint) %in;
             <insert-template name="core.cleanup_convert_primitive_array_from_java">
                 <replace from="%JAVATYPE" to="Byte"/>
                 <replace from="%JNITYPE" to="jbyte"/>
             </insert-template>
-            
+
         </template>
-        
+
         <template name="core.iodevice_convert_byte[]_to_char*">
             <insert-template name="core.convert_primitive_array_from_java">
                 <replace from="%CTYPE" to="char"/>
@@ -1005,21 +1005,21 @@
                 <replace from="%JNITYPE" to="jbyte"/>
             </insert-template>
         </template>
-        
+
         <modify-function signature="readData(char*,long long)">
             <modify-argument index="0">
-                <replace-type modified-type="int"/>            
+                <replace-type modified-type="int"/>
                 <conversion-rule class="native">
-                    <insert-template name="core.iodevice_cleanup"/>                                    
+                    <insert-template name="core.iodevice_cleanup"/>
                 </conversion-rule>
                 <conversion-rule class="shell">
                     qint64 %out = %in;
                     <insert-template name="core.iodevice_cleanup_to_java">
                         <replace from="%len" to="(int) %in"/>
-                    </insert-template>                        
-                </conversion-rule>            
+                    </insert-template>
+                </conversion-rule>
             </modify-argument>
-            
+
             <modify-argument index="1">
                 <replace-type modified-type="byte[]"/>
                 <conversion-rule class="shell">
@@ -1029,9 +1029,9 @@
                 </conversion-rule>
                 <conversion-rule class="native">
                     <insert-template name="core.iodevice_convert_byte[]_to_char*"/>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
-            
+
             <modify-argument index="2">
                 <remove-argument/>
                 <conversion-rule class="shell">
@@ -1041,10 +1041,10 @@
                 <insert-template name="core.get_array_length">
                     <replace from="%ARRAY" to="%1"/>
                 </insert-template>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
         </modify-function>
-        
+
         <modify-function signature="writeData(const char*,long long)">
             <modify-argument index="1">
                 <replace-type modified-type="byte[]"/>
@@ -1055,9 +1055,9 @@
                 </conversion-rule>
                 <conversion-rule class="native">
                     <insert-template name="core.iodevice_convert_byte[]_to_char*"/>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
-            
+
             <modify-argument index="2">
                 <remove-argument/>
                 <conversion-rule class="shell">
@@ -1067,17 +1067,17 @@
                     <insert-template name="core.get_array_length">
                         <replace from="%ARRAY" to="%1"/>
                     </insert-template>
-                </conversion-rule>            
-            </modify-argument>
-            
-            <modify-argument index="0">
-                <replace-type modified-type="int"/>        
-                <conversion-rule class="native">
-                    <insert-template name="core.iodevice_cleanup"/>                    
                 </conversion-rule>
-            </modify-argument>    
+            </modify-argument>
+
+            <modify-argument index="0">
+                <replace-type modified-type="int"/>
+                <conversion-rule class="native">
+                    <insert-template name="core.iodevice_cleanup"/>
+                </conversion-rule>
+            </modify-argument>
         </modify-function>
-        
+
         <modify-function signature="readLineData(char*,long long)">
             <modify-argument index="1">
                 <replace-type modified-type="byte[]"/>
@@ -1088,9 +1088,9 @@
                 </conversion-rule>
                 <conversion-rule class="native">
                     <insert-template name="core.iodevice_convert_byte[]_to_char*"/>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
-            
+
             <modify-argument index="2">
                 <remove-argument/>
                 <conversion-rule class="shell">
@@ -1100,25 +1100,25 @@
                     <insert-template name="core.get_array_length">
                         <replace from="%ARRAY" to="%1"/>
                     </insert-template>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
-            
+
             <modify-argument index="0">
                 <replace-type modified-type="int"/>
                 <conversion-rule class="native">
-                    <insert-template name="core.iodevice_cleanup"/>                    
+                    <insert-template name="core.iodevice_cleanup"/>
                 </conversion-rule>
                 <conversion-rule class="shell">
                     qint64 %out = %in;
                     <insert-template name="core.iodevice_cleanup_to_java">
                         <replace from="%len" to="(int) %in"/>
-                    </insert-template>                        
-                </conversion-rule>            
-            </modify-argument>    
-        </modify-function>       
+                    </insert-template>
+                </conversion-rule>
+            </modify-argument>
+        </modify-function>
     </object-type>
 
-    
+
     <object-type name="QCryptographicHash">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QCryptographicHash___" quote-before-line="}// class"/>
@@ -1126,14 +1126,14 @@
         <modify-function signature="addData(const char*,int)">
             <access modifier="private"/>
         </modify-function>
-        
+
     </object-type>
 
-    
+
     <object-type name="QTextCodec">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QTextCodec___" quote-before-line="}// class"/>
-        </inject-code>       
+        </inject-code>
 
         <modify-function signature="convertFromUnicode(const QChar*,int,QTextCodec::ConverterState*)const">
             <modify-argument index="3" invalidate-after-use="yes" />
@@ -1154,21 +1154,21 @@
                         <replace from="%JAVATYPE" to="Char"/>
                         <replace from="%JNITYPE" to="jchar"/>
                     </insert-template>
-                </conversion-rule>            
-            </modify-argument>        
-            
+                </conversion-rule>
+            </modify-argument>
+
             <modify-argument index="0">
                 <conversion-rule class="native">
                     jobject %out = qtjambi_from_object(__jni_env, &amp;%in, "QByteArray", "com/trolltech/qt/core/", true);
                     <insert-template name="core.cleanup_convert_primitive_array_from_java">
                         <replace from="%JNITYPE" to="jchar"/>
-                        <replace from="%JAVATYPE" to="Char"/>                                
+                        <replace from="%JAVATYPE" to="Char"/>
                     </insert-template>
                 </conversion-rule>
             </modify-argument>
         </modify-function>
-        
-        <modify-function signature="convertToUnicode(const char*,int,QTextCodec::ConverterState*)const">        
+
+        <modify-function signature="convertToUnicode(const char*,int,QTextCodec::ConverterState*)const">
             <modify-argument index="3" invalidate-after-use="yes" />
             <modify-argument index="1">
                 <replace-type modified-type="byte[]"/>
@@ -1177,40 +1177,40 @@
                         <replace from="%JNITYPE" to="jbyte"/>
                         <replace from="%JAVATYPE" to="Byte"/>
                         <replace from="%len" to="%2"/>
-                    </insert-template>                
+                    </insert-template>
                 </conversion-rule>
-                <conversion-rule class="native">               
+                <conversion-rule class="native">
                     <insert-template name="core.convert_primitive_array_from_java">
                         <replace from="%CTYPE" to="char"/>
                         <replace from="%JAVATYPE" to="Byte"/>
                         <replace from="%JNITYPE" to="jbyte"/>
                     </insert-template>
-                </conversion-rule>            
+                </conversion-rule>
             </modify-argument>
-            
+
             <modify-argument index="0">
                 <conversion-rule class="native">
                     jstring %out = qtjambi_from_qstring(__jni_env, %in);
                     <insert-template name="core.cleanup_convert_primitive_array_from_java">
                         <replace from="%JNITYPE" to="jbyte"/>
-                        <replace from="%JAVATYPE" to="Byte"/>                                
+                        <replace from="%JAVATYPE" to="Byte"/>
                     </insert-template>
                 </conversion-rule>
-            </modify-argument>        
+            </modify-argument>
         </modify-function>
-        
+
         <modify-function signature="codecForName(const char*)  ">
             <access modifier="private"/>
         </modify-function>
-            
+
     </object-type>
 
-    <object-type name="QTranslator">  
+    <object-type name="QTranslator">
         <extra-includes>
             <include file-name="QTextCodec" location="global"/>
          </extra-includes>
         <modify-function signature="load(const unsigned char*,int)">
-            <access modifier="private"/>        
+            <access modifier="private"/>
         </modify-function>
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QTranslator___" quote-before-line="}// class"/>
@@ -1218,13 +1218,13 @@
 
         <modify-function signature="translate(const char*,const char*,const char*)const">
             <modify-argument index="1">
-                <replace-type modified-type="java.lang.String"/>            
+                <replace-type modified-type="java.lang.String"/>
                 <conversion-rule class="shell">
         QTextCodec *codec = QTextCodec::codecForName("UTF-8");
         QByteArray b1;
-        if (%in != 0) 
+        if (%in != 0)
             b1 = codec->fromUnicode(%in);
-        
+
         jobject %out = qtjambi_from_qstring(__jni_env, QString(b1));
                 </conversion-rule>
 
@@ -1234,27 +1234,27 @@
                 </conversion-rule>
             </modify-argument>
             <modify-argument index="2">
-                <replace-type modified-type="java.lang.String"/>            
+                <replace-type modified-type="java.lang.String"/>
                 <conversion-rule class="shell">
         QByteArray b2;
-        if (%in != 0) 
+        if (%in != 0)
             b2 = codec->fromUnicode(%in);
-        
+
         jobject %out = qtjambi_from_qstring(__jni_env, QString(b2));
                 </conversion-rule>
                 <conversion-rule class="native">
         QByteArray b2 = qtjambi_to_qstring(__jni_env, (jstring) %in).toUtf8();
         const char* %out = b2.data();
                 </conversion-rule>
- 
+
             </modify-argument>
             <modify-argument index="3">
-                <replace-type modified-type="java.lang.String"/>            
+                <replace-type modified-type="java.lang.String"/>
                 <conversion-rule class="shell">
         QByteArray b3;
-        if (%in != 0) 
+        if (%in != 0)
             b3 = codec->fromUnicode(%in);
-        
+
         jobject %out = qtjambi_from_qstring(__jni_env, QString(b3));
                 </conversion-rule>
                 <conversion-rule class="native">
@@ -1275,10 +1275,10 @@
             <modify-argument index="2">
                 <replace-default-expression with="0xffffffff"/>
             </modify-argument>
-        </modify-function>        
+        </modify-function>
     </object-type>
 
-    
+
     <object-type name="QBuffer">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QBuffer___" quote-before-line="}// class"/>
@@ -1286,25 +1286,25 @@
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
-        
-    
+
+
         <modify-function signature="QBuffer(QByteArray*,QObject*)">
             <access modifier="private"/>
             <modify-argument index="2">
                 <remove-default-expression />
-            </modify-argument>            
+            </modify-argument>
         </modify-function>
-        
-    
+
+
         <modify-function signature="setBuffer(QByteArray*)">
             <access modifier="private"/>
         </modify-function>
-        
-    
+
+
         <modify-function signature="setData(const char*,int)">
             <access modifier="private"/>
         </modify-function>
-        
+
     </object-type>
 
     <object-type name="QTimer">
@@ -1332,13 +1332,13 @@
              <import-file name="typesystem_core-java.java" quote-after-line="class QProcess___" quote-before-line="}// class"/>
         </inject-code>
   </object-type>
-  
-  
+
+
     <object-type name="QSignalMapper">
         <inject-code>
             <import-file name="typesystem_core-java.java" quote-after-line="class QSignalMapper___" quote-before-line="}// class"/>
         </inject-code>
-      
+
 
       <modify-function signature="removeMappings(QObject*)">
           <modify-argument index="1">
@@ -1361,13 +1361,13 @@
               __rcObjectForObject.put(%1,%2);
           </inject-code>
       </modify-function>
-      
+
       <modify-function signature="setMapping(QObject*,QString)">
           <modify-argument index="1">
               <reference-count action="add" variable-name="__rcMappings"/>
           </modify-argument>
       </modify-function>
-      
+
       <modify-function signature="setMapping(QObject*,int)">
           <modify-argument index="1">
               <reference-count action="add" variable-name="__rcMappings"/>
@@ -1376,7 +1376,7 @@
   </object-type>
 
   <object-type name="QObject">
-      <inject-code class="java">    
+      <inject-code class="java">
           <import-file name="typesystem_core-java.java" quote-after-line="class QObject___" quote-before-line="}// class"/>
       </inject-code>
   </object-type>
@@ -1389,20 +1389,20 @@
           <inject-code class="shell">
               qtjambi_register_variant_handler();
           </inject-code>
-      </modify-function> 
+      </modify-function>
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding)">
           <access modifier="private"/>
           <modify-argument index="3">
               <remove-default-expression/>
-          </modify-argument>   
+          </modify-argument>
           <modify-argument index="4">
               <remove-default-expression/>
-          </modify-argument>           
+          </modify-argument>
       </modify-function>
       <inject-code>
           <import-file name="typesystem_core-java.java" quote-after-line="class QCoreApplication___" quote-before-line="}// class"/>
       </inject-code>
-      
+
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding,int)">
           <access modifier="private"/>
       </modify-function>
@@ -1416,27 +1416,27 @@
           <insert-template name="core.stream_operator_shift_right">
               <replace from="%STREAM_TYPE" to="QDataStream"/>
           </insert-template>
-      </template>    
-      
+      </template>
+
       <template name="core.datastream_operator_shift_right_primitive">
           <insert-template name="core.datastream_operator_shift_right">
               <replace from="%VALUE_FUNCTION" to="%TYPEValue"/>
           </insert-template>
-      </template>    
-      
-      <modify-function signature="operator&lt;&lt;(bool)"> 
-          <rename to="writeBoolean"/> 
+      </template>
+
+      <modify-function signature="operator&lt;&lt;(bool)">
+          <rename to="writeBoolean"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
-      <modify-function signature="operator&lt;&lt;(signed char)"> 
-          <rename to="writeByte"/> 
+      <modify-function signature="operator&lt;&lt;(signed char)">
+          <rename to="writeByte"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
       <modify-function signature="operator&lt;&lt;(int)">
           <rename to="writeInt"/>
-          <modify-argument index="0" replace-value="this"/>                    
+          <modify-argument index="0" replace-value="this"/>
       </modify-function>
-      <modify-function signature="operator&lt;&lt;(long long)"> 
+      <modify-function signature="operator&lt;&lt;(long long)">
           <rename to="writeLong"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
@@ -1445,114 +1445,114 @@
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
       <modify-function signature="operator&lt;&lt;(double)">
-          <rename to="writeDouble"/> 
+          <rename to="writeDouble"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
       <modify-function signature="operator&lt;&lt;(short)">
           <rename to="writeShort_char"/>
-          <access modifier="private"/> 
+          <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
-      
+
       <modify-function signature="operator&gt;&gt;(int&amp;)">
-          <rename to="operator_shift_right_int"/>  
-          <modify-argument index="0" replace-value="this"/>
-          <access modifier="private"/>
-      </modify-function>                
-      
-      <modify-function signature="operator&gt;&gt;(bool&amp;)">
-          <rename to="operator_shift_right_boolean"/>  
+          <rename to="operator_shift_right_int"/>
           <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
       </modify-function>
-      
-      <modify-function signature="operator&gt;&gt;(short&amp;)">
-          <rename to="operator_shift_right_short"/>  
-          <modify-argument index="0" replace-value="this"/> 
+
+      <modify-function signature="operator&gt;&gt;(bool&amp;)">
+          <rename to="operator_shift_right_boolean"/>
+          <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
-      </modify-function>                
+      </modify-function>
+
+      <modify-function signature="operator&gt;&gt;(short&amp;)">
+          <rename to="operator_shift_right_short"/>
+          <modify-argument index="0" replace-value="this"/>
+          <access modifier="private"/>
+      </modify-function>
 
       <modify-function signature="operator&gt;&gt;(long long&amp;)">
-          <rename to="operator_shift_right_long"/>  
-          <modify-argument index="0" replace-value="this"/> 
+          <rename to="operator_shift_right_long"/>
+          <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
-      </modify-function>                
-      
+      </modify-function>
+
       <modify-function signature="operator&gt;&gt;(signed char&amp;)">
-          <rename to="operator_shift_right_byte"/>  
-          <modify-argument index="0" replace-value="this"/> 
+          <rename to="operator_shift_right_byte"/>
+          <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
-      </modify-function>                
+      </modify-function>
 
       <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
-          <rename to="operator_shift_right_char"/>   
-          <modify-argument index="0" replace-value="this"/>        
+          <rename to="operator_shift_right_char"/>
+          <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
-      </modify-function>                
+      </modify-function>
 
       <modify-function signature="operator&gt;&gt;(float&amp;)">
-          <rename to="operator_shift_right_float"/>  
-          <modify-argument index="0" replace-value="this"/> 
+          <rename to="operator_shift_right_float"/>
+          <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
-      </modify-function>                
+      </modify-function>
 
       <modify-function signature="operator&gt;&gt;(double&amp;)">
-          <rename to="operator_shift_right_double"/>  
-          <modify-argument index="0" replace-value="this"/> 
+          <rename to="operator_shift_right_double"/>
+          <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
-      </modify-function>                
+      </modify-function>
 
       <inject-code>
           <import-file name="typesystem_core-java.java" quote-after-line="class QDataStream___" quote-before-line="}// class"/>
       </inject-code>
-    
+
       <inject-code class="native">
         extern "C" JNIEXPORT jstring JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_readString_1private)
         (JNIEnv *env, jobject, jlong stream)
         {
-            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");        
+            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");
             QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
-            
+
             jstring returned = 0;
             if (qtStream != 0) {
                 QString qtString;
                 operator&gt;&gt;(*qtStream, qtString);
-                
+
                 returned = qtjambi_from_qstring(env, qtString);
-            } 
-            
+            }
+
             return returned;
         }
-        
+
         extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_writeString_1private)
         (JNIEnv *env, jobject, jlong stream, jstring string)
         {
-            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");        
+            QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%_native");
             QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
-            
+
             if (qtStream != 0) {
                 QString qtString = qtjambi_to_qstring(env, string);
-                operator&lt;&lt;(*qtStream, qtString);                
+                operator&lt;&lt;(*qtStream, qtString);
             }
         }
-        
+
       </inject-code>
 
       <template name="core.stream_constructor_bytearray">
-        // Hold reference to byte array which goes away when the stream dies 
+        // Hold reference to byte array which goes away when the stream dies
         @SuppressWarnings("unused")
-        private QByteArray byteArray = null;                
-        public %CLASSNAME(QByteArray a, QIODevice.OpenMode mode) {            
+        private QByteArray byteArray = null;
+        public %CLASSNAME(QByteArray a, QIODevice.OpenMode mode) {
             this(a.nativePointer(), mode);
             byteArray = a;
         }
-        
+
         public %CLASSNAME(QByteArray a, QIODevice.OpenModeFlag ... mode) {
             this(a.nativePointer(), mode);
             byteArray = a;
-        }    
+        }
       </template>
-      
+
       <modify-function signature="QDataStream(QByteArray*,QFlags&lt;QIODevice::OpenModeFlag&gt;)">
           <access modifier="private"/>
       </modify-function>
@@ -1561,17 +1561,17 @@
               <replace from="%CLASSNAME" to="QDataStream"/>
           </insert-template>
       </inject-code>
-      
+
       <template name="core.qdatastream_readorwrite_bytes">
         extern "C" JNIEXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QDataStream_%FUNCTION_NAME%)
         (JNIEnv *env, jobject, jlong stream, jbyteArray array, jint length)
         {
             QTJAMBI_DEBUG_TRACE("(native) entering: QDataStream::%FUNCTION_NAME%");
             char *rawBuffer = (char *) env-&gt;GetByteArrayElements(array, 0);
-        
+
             QDataStream *qtStream = (QDataStream *) qtjambi_from_jlong(stream);
             int count = qtStream-&gt;%QT_FUNCTION_NAME%(rawBuffer, length);
-        
+
             env-&gt;ReleaseByteArrayElements(array, (jbyte *) rawBuffer, 0);
             QTJAMBI_DEBUG_TRACE("(native) -&gt; leaving: QDataStream::%FUNCTION_NAME%");
             return qMin(count, (int) length);
@@ -1597,17 +1597,17 @@
     </modify-field>
     <inject-code>
         <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_UnMapExtensionOption___" quote-before-line="}// class"/>
-    </inject-code>        
+    </inject-code>
   </object-type>
-  
-  <object-type name="QAbstractFileEngine::MapExtensionReturn">    
+
+  <object-type name="QAbstractFileEngine::MapExtensionReturn">
     <modify-field name="address">
         <access modifier="private" />
         <rename to="address_private" />
     </modify-field>
     <inject-code>
         <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_MapExtensionReturn___" quote-before-line="}// class"/>
-    </inject-code>            
+    </inject-code>
   </object-type>
 
   <object-type name="QTextStream">
@@ -1619,82 +1619,82 @@
           <insert-template name="core.stream_operator_shift_right">
               <replace from="%STREAM_TYPE" to="QTextStream"/>
           </insert-template>
-      </template>    
-      
+      </template>
+
       <template name="core.textstream_operator_shift_right_primitive">
           <insert-template name="core.textstream_operator_shift_right">
               <replace from="%VALUE_FUNCTION" to="%TYPEValue"/>
           </insert-template>
       </template>
 
-      <modify-function signature="operator&lt;&lt;(QBool)"> 
-          <rename to="writeBoolean"/> 
+      <modify-function signature="operator&lt;&lt;(QBool)">
+          <rename to="writeBoolean"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
-      <modify-function signature="operator&lt;&lt;(char)">  
+      <modify-function signature="operator&lt;&lt;(char)">
           <modify-argument index="0" replace-value="this"/>
-          <rename to="writeByte"/> 
+          <rename to="writeByte"/>
       </modify-function>
       <modify-function signature="operator&lt;&lt;(signed int)">
-          <rename to="writeInt"/>  
+          <rename to="writeInt"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
-      <modify-function signature="operator&lt;&lt;(long long)"> 
-          <rename to="writeLong"/>  
+      <modify-function signature="operator&lt;&lt;(long long)">
+          <rename to="writeLong"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
-      <modify-function signature="operator&lt;&lt;(float)"> 
-          <rename to="writeFloat"/>  
+      <modify-function signature="operator&lt;&lt;(float)">
+          <rename to="writeFloat"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
-      <modify-function signature="operator&lt;&lt;(double)"> 
-          <rename to="writeDouble"/>  
+      <modify-function signature="operator&lt;&lt;(double)">
+          <rename to="writeDouble"/>
           <modify-argument index="0" replace-value="this"/>
-      </modify-function> 
+      </modify-function>
       <modify-function signature="operator&lt;&lt;(signed short)">
-          <rename to="writeShort_char"/>  
+          <rename to="writeShort_char"/>
           <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
       </modify-function>
 
       <modify-function signature="operator&gt;&gt;(char&amp;)">
-          <access modifier="private"/>   
+          <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
           <rename to="operator_shift_right_byte"/>
       </modify-function>
       <modify-function signature="operator&gt;&gt;(signed short&amp;)">
-          <access modifier="private"/>   
+          <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
           <rename to="operator_shift_right_short"/>
       </modify-function>
       <modify-function signature="operator&gt;&gt;(signed int&amp;)">
-          <access modifier="private"/>   
+          <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
           <rename to="operator_shift_right_int"/>
       </modify-function>
       <modify-function signature="operator&gt;&gt;(long long&amp;)">
-          <access modifier="private"/>   
+          <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
           <rename to="operator_shift_right_long"/>
       </modify-function>
       <modify-function signature="operator&gt;&gt;(float&amp;)">
-          <access modifier="private"/>   
+          <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
           <rename to="operator_shift_right_float"/>
       </modify-function>
       <modify-function signature="operator&gt;&gt;(double&amp;)">
-          <access modifier="private"/>   
+          <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
           <rename to="operator_shift_right_double"/>
       </modify-function>
-      
+
       <modify-function signature="setCodec(const char*)">
           <access modifier="private"/>
       </modify-function>
       <inject-code>
           <import-file name="typesystem_core-java.java" quote-after-line="class QTextStream___" quote-before-line="}// class"/>
-      </inject-code>    
-      
+      </inject-code>
+
       <inject-code class="native">
         extern "C" JNIEXPORT jstring JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_readString_1native)
         (JNIEnv *env, jobject, jlong id)
@@ -1707,7 +1707,7 @@
             QTJAMBI_DEBUG_TRACE("(native) -&gt; leaving: QTextStream::readString()");
             return s;
         }
-        
+
         extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_writeString_1native)
         (JNIEnv *env, jobject, jlong id, jstring str)
         {
@@ -1722,7 +1722,7 @@
   <value-type name="QBitArray">
       <inject-code>
           <import-file name="typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
-      </inject-code>  
+      </inject-code>
   </value-type>
 
   <template name="convert_qtjambifuture_to_native">
@@ -1731,18 +1731,18 @@
   <template name="convert_futurevoid_to_native">
     QtJambiVoidFuture %out = %in != 0 ? (const QtJambiVoidFuture&amp; ) *(QtJambiVoidFuture *)qtjambi_from_jlong(%in) : QtJambiVoidFuture();
   </template>
-  
+
   <value-type name="QFuture">
     <modify-function signature="operator==(const QFuture &amp;)const">
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.core.QFuture" />
             <conversion-rule class="native">
-                <insert-template name="convert_qtjambifuture_to_native" />    
+                <insert-template name="convert_qtjambifuture_to_native" />
             </conversion-rule>
         </modify-argument>
-    </modify-function>  
+    </modify-function>
   </value-type>
-  
+
   <value-type name="QtJambiFuture">
     <modify-function signature="QFuture(const QFuture &amp;)">
         <modify-argument index="1">
@@ -1751,9 +1751,9 @@
                 <insert-template name="convert_qtjambifuture_to_native" />
             </conversion-rule>
         </modify-argument>
-    </modify-function>  
+    </modify-function>
   </value-type>
-  
+
   <value-type name="QtJambiVoidFuture">
     <modify-function signature="QFuture(const QFuture &amp;)">
         <modify-argument index="1">
@@ -1762,31 +1762,31 @@
                 <insert-template name="convert_futurevoid_to_native" />
             </conversion-rule>
         </modify-argument>
-    </modify-function>    
+    </modify-function>
   </value-type>
-  
+
   <object-type name="QFutureWatcherBase">
     <inject-code class="shell-declaration">
 
         // private, pure virtual and considered internal
         // we need to reimplement them so it will compile
-        QFutureInterfaceBase dummyBase; 
+        QFutureInterfaceBase dummyBase;
         virtual const QFutureInterfaceBase &amp;futureInterface() const { return dummyBase; }
-        virtual QFutureInterfaceBase &amp;futureInterface() { return dummyBase; }            
-    </inject-code>  
+        virtual QFutureInterfaceBase &amp;futureInterface() { return dummyBase; }
+    </inject-code>
   </object-type>
-  
+
   <object-type name="QFutureWatcher">
     <modify-function signature="setFuture(const QFuture &amp;)">
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.core.QFuture&lt;T&gt;" />
             <conversion-rule class="native">
-                <insert-template name="convert_qtjambifuture_to_native" />                
+                <insert-template name="convert_qtjambifuture_to_native" />
             </conversion-rule>
         </modify-argument>
-    </modify-function>       
+    </modify-function>
   </object-type>
-  
+
   <template name="future_function_in_futurewatcher">
         extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QFutureWatcher__1_1qt_1future__J)
         (JNIEnv *__jni_env,
@@ -1802,10 +1802,10 @@
             QtJambiFuture  __qt_return_value = __qt_this->future();
 
             jobject __java_return_value = qtjambi_from_object(__jni_env, &amp;__qt_return_value, "QFuture", "com/trolltech/qt/core/", true);
-            
+
             QTJAMBI_DEBUG_TRACE("(native) -> leaving: QFutureWatcher::future() const");
             return __java_return_value;
-        }  
+        }
   </template>
   <template name="futures_function_in_futuresynchronizer">
         extern "C" JNIEXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QFutureSynchronizer__1_1qt_1futures__J)
@@ -1834,27 +1834,27 @@
             QTJAMBI_EXCEPTION_CHECK(__jni_env);
             QTJAMBI_DEBUG_TRACE("(native) -&gt; leaving: QFutureSynchronizer::futures() const");
             return __java_return_value;
-        }  
+        }
   </template>
-  
+
   <object-type name="QtJambiFutureWatcher">
     <inject-code>
         <import-file name="typesystem_core-java.java" quote-after-line="class QFutureWatcher___" quote-before-line="}// class"/>
     </inject-code>
     <inject-code class="native">
         <insert-template name="future_function_in_futurewatcher" />
-    </inject-code>  
+    </inject-code>
   </object-type>
-  
+
   <object-type name="QtJambiVoidFutureWatcher">
     <modify-function signature="setFuture(const QFuture &amp;)">
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.core.QFutureVoid" />
             <conversion-rule class="native">
-                <insert-template name="convert_futurevoid_to_native" />                
+                <insert-template name="convert_futurevoid_to_native" />
             </conversion-rule>
         </modify-argument>
-    </modify-function>         
+    </modify-function>
     <inject-code>
         <import-file name="typesystem_core-java.java" quote-after-line="class QFutureWatcherVoid___" quote-before-line="}// class"/>
     </inject-code>
@@ -1863,10 +1863,10 @@
             <replace from="QFutureWatcher" to="QFutureWatcherVoid" />
             <replace from="QtJambiFuture" to="QtJambiVoidFuture" />
             <replace from="&quot;QFuture&quot;" to="&quot;QFutureVoid&quot;" />
-        </insert-template>    
-    </inject-code>  
+        </insert-template>
+    </inject-code>
   </object-type>
-  
+
   <object-type name="QtJambiFutureSynchronizer">
       <modify-function signature="QFutureSynchronizer(const QFuture &amp;)">
         <modify-argument index="1">
@@ -1883,7 +1883,7 @@
                 <insert-template name="convert_qtjambifuture_to_native" />
             </conversion-rule>
         </modify-argument>
-      </modify-function>      
+      </modify-function>
       <modify-function signature="setFuture(const QFuture &amp;)">
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.core.QFuture&lt;T&gt;" />
@@ -1891,10 +1891,10 @@
                 <insert-template name="convert_qtjambifuture_to_native" />
             </conversion-rule>
         </modify-argument>
-      </modify-function>            
+      </modify-function>
       <modify-function signature="futures()const" remove="all" />
       <inject-code class="native">
-        <insert-template name="futures_function_in_futuresynchronizer" />        
+        <insert-template name="futures_function_in_futuresynchronizer" />
       </inject-code>
       <inject-code class="java">
         <import-file name="typesystem_core-java.java" quote-after-line="class QFutureSynchronizer___" quote-before-line="}// class"/>
@@ -1916,7 +1916,7 @@
                 <insert-template name="convert_futurevoid_to_native" />
             </conversion-rule>
         </modify-argument>
-      </modify-function>      
+      </modify-function>
       <modify-function signature="setFuture(const QFuture &amp;)">
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.core.QFutureVoid" />
@@ -1924,7 +1924,7 @@
                 <insert-template name="convert_futurevoid_to_native" />
             </conversion-rule>
         </modify-argument>
-      </modify-function>                  
+      </modify-function>
       <modify-function signature="futures()const" remove="all" />
       <inject-code class="native">
         <insert-template name="futures_function_in_futuresynchronizer">
@@ -1936,24 +1936,24 @@
       </inject-code>
       <inject-code class="java">
         <import-file name="typesystem_core-java.java" quote-after-line="class QFutureSynchronizerVoid___" quote-before-line="}// class"/>
-      </inject-code>      
+      </inject-code>
   </object-type>
-  
+
   <object-type name="QtJambiFutureIterator">
     <modify-function signature="QFutureIterator(const QFuture &amp;)">
         <modify-argument index="1">
             <replace-type modified-type="com.trolltech.qt.core.QFuture&lt;T&gt;" />
             <conversion-rule class="native">
-                <insert-template name="convert_qtjambifuture_to_native" />                
+                <insert-template name="convert_qtjambifuture_to_native" />
             </conversion-rule>
         </modify-argument>
-    </modify-function>       
+    </modify-function>
   </object-type>
-    
+
   <namespace-type name="QtConcurrent">
     <inject-code class="java">
         <import-file name="typesystem_core-java.java" quote-after-line="class QtConcurrent___" quote-before-line="}// class"/>
     </inject-code>
   </namespace-type>
-  
+
 </typesystem>

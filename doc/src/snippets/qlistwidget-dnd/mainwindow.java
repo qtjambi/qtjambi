@@ -11,12 +11,12 @@ public class mainwindow extends QMainWindow
     public mainwindow()
     {
         QMenu fileMenu = new QMenu(tr("File"));
-    
+
         QAction quitAction = fileMenu.addAction(tr("Exit"));
         quitAction.setShortcut(tr("Ctrl+Q"));
-    
+
         menuBar().addMenu(fileMenu);
-    
+
     //  For convenient quoting:
     //! [0]
     QListWidget listWidget = new QListWidget(this);
@@ -27,17 +27,17 @@ public class mainwindow extends QMainWindow
     //! [0] //! [1]
     listWidget.setDragDropMode(QAbstractItemView.InternalMove);
     //! [1]
-    
+
         this.listWidget = listWidget;
-    
+
         connect(quitAction, SIGNAL(triggered()), this, SLOT(close()));
-    
+
         setupListItems();
-    
+
         setCentralWidget(listWidget);
         setWindowTitle(tr("List Widget"));
     }
-    
+
     void MainWindow.setupListItems()
     {
         QListWidgetItem item;

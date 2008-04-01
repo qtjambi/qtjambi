@@ -21,7 +21,7 @@ import java.awt.*;
 import javax.swing.*;
 
 public class DrawText {
-    
+
     private static class AwtWidget extends Component {
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +43,7 @@ public class DrawText {
 
 	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
 	    System.out.printf("Awt:   text drawing: ops/sec=%d\n", opsPrSec);
-	    
+
 	    setVisible(false);
 	}
 
@@ -57,7 +57,7 @@ public class DrawText {
     private static class QtWidget extends QWidget {
 	@Override
     protected void paintEvent(QPaintEvent e) {
-	    
+
 	    QPainter p = new QPainter();
 	    p.begin(this);
 
@@ -75,7 +75,7 @@ public class DrawText {
 
 	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
 	    System.out.printf("Qt:    text drawing: ops/sec=%d\n", opsPrSec);
-	    
+
 	    p.end();
 
 	    hide();
@@ -90,7 +90,7 @@ public class DrawText {
     private static class QtGLWidget extends QGLWidget {
 	@Override
     protected void paintEvent(QPaintEvent e) {
-	    
+
 	    QPainter p = new QPainter();
 	    p.begin(this);
 
@@ -108,7 +108,7 @@ public class DrawText {
 
 	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
 	    System.out.printf("Qt/GL: text drawing: ops/sec=%d\n", opsPrSec);
-	    
+
 	    p.end();
 
 	    hide();
@@ -119,7 +119,7 @@ public class DrawText {
 	    return new QSize(512, 512);
 	}
     }
-    
+
     public static void main(String args[]) {
 	{
 	    JFrame f = new JFrame();
@@ -129,7 +129,7 @@ public class DrawText {
 	    f.pack();
 
 	    f.setVisible(true);
-	    
+
 	}
 
 

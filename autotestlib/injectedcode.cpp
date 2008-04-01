@@ -68,13 +68,13 @@ int AccessibleTableInterfaceSubclass::selectedRows(int maxRows, QList<int> *rows
     return 0;
 }
 
-QList<int> AccessibleTableInterfaceSubclass::callSelectedColumns(AccessibleTableInterfaceSubclass *obj, int maxColumns, QList<int> columns) 
+QList<int> AccessibleTableInterfaceSubclass::callSelectedColumns(AccessibleTableInterfaceSubclass *obj, int maxColumns, QList<int> columns)
 {
     obj->selectedColumns(maxColumns, &columns);
     return columns;
 }
 
-QList<int> AccessibleTableInterfaceSubclass::callSelectedRows(AccessibleTableInterfaceSubclass *obj, int maxRows, QList<int> rows) 
+QList<int> AccessibleTableInterfaceSubclass::callSelectedRows(AccessibleTableInterfaceSubclass *obj, int maxRows, QList<int> rows)
 {
     obj->selectedRows(maxRows, &rows);
     return rows;
@@ -87,7 +87,7 @@ void AbstractSocketSubclass::connectProxyAuthenticationRequired(QAbstractSocket 
 
 void AbstractSocketSubclass::emitProxyAuthenticationRequired(QAbstractSocket *socket, const QNetworkProxy &proxy, QAuthenticator *authenticator)
 {
-    ((AbstractSocketSubclass *) socket)->emitSignalAccessor(proxy, authenticator);    
+    ((AbstractSocketSubclass *) socket)->emitSignalAccessor(proxy, authenticator);
 }
 
 void AbstractSocketSubclass::aSlot(const QNetworkProxy &proxy, QAuthenticator *authenticator)
