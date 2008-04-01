@@ -57,168 +57,168 @@ public class TestReferenceCounting extends QApplicationTest {
         }
     }
 
-	private static final int COUNT = 200;
+    private static final int COUNT = 200;
 
-	private int deleted = 0;
-	@Test public void testQWidgetAddAction() {
-		QWidget w = new QWidget();
+    private int deleted = 0;
+    @Test public void testQWidgetAddAction() {
+        QWidget w = new QWidget();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			w.addAction(new QAction("action" + i, null) {
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            w.addAction(new QAction("action" + i, null) {
 
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-
-
-			});
-			System.gc();
-		}
-
-		assertEquals(0, deleted);
-		assertEquals(COUNT, w.actions().size());
-		for (int i=0; i<COUNT; ++i) {
-			assertTrue(w.actions().get(i) != null);
-			assertEquals("action" + i, w.actions().get(i).text());
-		}
-	}
-
-	@Test public void testQWidgetInsertAction() {
-		QWidget w = new QWidget();
-
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			w.insertAction(null, new QAction("action" + i, null) {
-
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
 
-			});
-			System.gc();
-		}
+            });
+            System.gc();
+        }
 
-		assertEquals(0, deleted);
-		assertEquals(COUNT, w.actions().size());
-		for (int i=0; i<COUNT; ++i) {
-			assertTrue(w.actions().get(i) != null);
-			assertEquals("action" + i, w.actions().get(i).text());
-		}
-	}
+        assertEquals(0, deleted);
+        assertEquals(COUNT, w.actions().size());
+        for (int i=0; i<COUNT; ++i) {
+            assertTrue(w.actions().get(i) != null);
+            assertEquals("action" + i, w.actions().get(i).text());
+        }
+    }
+
+    @Test public void testQWidgetInsertAction() {
+        QWidget w = new QWidget();
+
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            w.insertAction(null, new QAction("action" + i, null) {
+
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+
+
+            });
+            System.gc();
+        }
+
+        assertEquals(0, deleted);
+        assertEquals(COUNT, w.actions().size());
+        for (int i=0; i<COUNT; ++i) {
+            assertTrue(w.actions().get(i) != null);
+            assertEquals("action" + i, w.actions().get(i).text());
+        }
+    }
 
 
 
-	@Test public void testQWidgetAddActionDuplicate() {
-		QWidget w = new QWidget();
+    @Test public void testQWidgetAddActionDuplicate() {
+        QWidget w = new QWidget();
 
-		deleted = 0;
+        deleted = 0;
 
-		{
-			QAction act = new QAction("action", null) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+        {
+            QAction act = new QAction("action", null) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
-			w.addAction(act);
+            w.addAction(act);
             w.addAction(act);
 
-			assertEquals(1, w.actions().size());
+            assertEquals(1, w.actions().size());
 
-			w.removeAction(act);
+            w.removeAction(act);
             act = null;
-			assertEquals(0, w.actions().size());
-		}
-		new AssertEquals() {
+            assertEquals(0, w.actions().size());
+        }
+        new AssertEquals() {
             @Override
             protected boolean equals() {
                 return 1 == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQWidgetActionsNull() {
-		QWidget w = new QWidget();
-		w.addAction(null);
-		w.addActions(null);
-		w.removeAction(null);
-		assertEquals(0, w.actions().size());
-	}
+    @Test public void testQWidgetActionsNull() {
+        QWidget w = new QWidget();
+        w.addAction(null);
+        w.addActions(null);
+        w.removeAction(null);
+        assertEquals(0, w.actions().size());
+    }
 
-	@Test public void testQWidgetAddActions() {
-		QWidget w = new QWidget();
+    @Test public void testQWidgetAddActions() {
+        QWidget w = new QWidget();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			{
-				List<QAction> actions = new LinkedList<QAction>();
-				actions.add(new QAction("action" + i, null) {
-					@Override
-					public void disposed() {
-						deleted++;
-					}
-				});
-				w.addActions(actions);
-			}
-			System.gc();
-		}
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            {
+                List<QAction> actions = new LinkedList<QAction>();
+                actions.add(new QAction("action" + i, null) {
+                    @Override
+                    public void disposed() {
+                        deleted++;
+                    }
+                });
+                w.addActions(actions);
+            }
+            System.gc();
+        }
 
-		assertEquals(0, deleted);
-		assertEquals(COUNT, w.actions().size());
-		for (int i=0; i<COUNT; ++i) {
-			assertTrue(w.actions().get(i) != null);
-			assertEquals("action" + i, w.actions().get(i).text());
-		}
-	}
+        assertEquals(0, deleted);
+        assertEquals(COUNT, w.actions().size());
+        for (int i=0; i<COUNT; ++i) {
+            assertTrue(w.actions().get(i) != null);
+            assertEquals("action" + i, w.actions().get(i).text());
+        }
+    }
 
-	@Test public void testQWidgetInsertActions() {
-		QWidget w = new QWidget();
+    @Test public void testQWidgetInsertActions() {
+        QWidget w = new QWidget();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			{
-				List<QAction> actions = new LinkedList<QAction>();
-				actions.add(new QAction("action" + i, null) {
-					@Override
-					public void disposed() {
-						deleted++;
-					}
-				});
-				w.insertActions(null, actions);
-			}
-			System.gc();
-		}
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            {
+                List<QAction> actions = new LinkedList<QAction>();
+                actions.add(new QAction("action" + i, null) {
+                    @Override
+                    public void disposed() {
+                        deleted++;
+                    }
+                });
+                w.insertActions(null, actions);
+            }
+            System.gc();
+        }
 
-		assertEquals(0, deleted);
-		assertEquals(COUNT, w.actions().size());
-		for (int i=0; i<COUNT; ++i) {
-			assertTrue(w.actions().get(i) != null);
-			assertEquals("action" + i, w.actions().get(i).text());
-		}
-	}
+        assertEquals(0, deleted);
+        assertEquals(COUNT, w.actions().size());
+        for (int i=0; i<COUNT; ++i) {
+            assertTrue(w.actions().get(i) != null);
+            assertEquals("action" + i, w.actions().get(i).text());
+        }
+    }
 
-	@Test public void testQWidgetRemoveAction() {
-		final QWidget w = new QWidget();
+    @Test public void testQWidgetRemoveAction() {
+        final QWidget w = new QWidget();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			{
-			    QAction act = new QAction("action" + i, null) {
-			    	@Override
-			    	public void disposed() {
-			    		deleted++;
-			    	}
-			    };
-			    w.addAction(act);
-			    w.removeAction(act);
-			}
-			System.gc();
-		}
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            {
+                QAction act = new QAction("action" + i, null) {
+                    @Override
+                    public void disposed() {
+                        deleted++;
+                    }
+                };
+                w.addAction(act);
+                w.removeAction(act);
+            }
+            System.gc();
+        }
         new AssertEquals() {
             @Override
             protected boolean equals() {
@@ -231,131 +231,131 @@ public class TestReferenceCounting extends QApplicationTest {
                 return 0 == w.actions().size();
             }
         }.test();
-	}
+    }
 
-	@Test public void testQAbstractProxyModelSetSourceModel() {
-		deleted = 0;
+    @Test public void testQAbstractProxyModelSetSourceModel() {
+        deleted = 0;
 
-		QAbstractProxyModel proxy = new QAbstractProxyModel() {
+        QAbstractProxyModel proxy = new QAbstractProxyModel() {
 
-			@Override
-			public QModelIndex mapFromSource(QModelIndex sourceIndex) {
+            @Override
+            public QModelIndex mapFromSource(QModelIndex sourceIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex mapToSource(QModelIndex proxyIndex) {
+            @Override
+            public QModelIndex mapToSource(QModelIndex proxyIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int columnCount(QModelIndex parent) {
+            @Override
+            public int columnCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-			@Override
-			public QModelIndex index(int row, int column, QModelIndex parent) {
+            @Override
+            public QModelIndex index(int row, int column, QModelIndex parent) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex parent(QModelIndex child) {
+            @Override
+            public QModelIndex parent(QModelIndex child) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int rowCount(QModelIndex parent) {
+            @Override
+            public int rowCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-		};
+        };
 
-		{
-			QStandardItemModel model = new QStandardItemModel() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+        {
+            QStandardItemModel model = new QStandardItemModel() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
-			model.setObjectName("source model");
+            model.setObjectName("source model");
 
-			proxy.setSourceModel(model);
-		}
+            proxy.setSourceModel(model);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertEquals(0, deleted);
-		assertEquals("source model", proxy.sourceModel().objectName());
-	}
+        assertEquals(0, deleted);
+        assertEquals("source model", proxy.sourceModel().objectName());
+    }
 
-	@Test public void testQAbstractProxyModelSetSourceModelNull() {
-		deleted = 0;
+    @Test public void testQAbstractProxyModelSetSourceModelNull() {
+        deleted = 0;
 
         final QAbstractProxyModel proxy = new QAbstractProxyModel() {
 
-			@Override
-			public QModelIndex mapFromSource(QModelIndex sourceIndex) {
+            @Override
+            public QModelIndex mapFromSource(QModelIndex sourceIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex mapToSource(QModelIndex proxyIndex) {
+            @Override
+            public QModelIndex mapToSource(QModelIndex proxyIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int columnCount(QModelIndex parent) {
+            @Override
+            public int columnCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-			@Override
-			public QModelIndex index(int row, int column, QModelIndex parent) {
+            @Override
+            public QModelIndex index(int row, int column, QModelIndex parent) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex parent(QModelIndex child) {
+            @Override
+            public QModelIndex parent(QModelIndex child) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int rowCount(QModelIndex parent) {
+            @Override
+            public int rowCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-		};
+        };
 
-		{
-			QStandardItemModel model = new QStandardItemModel() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+        {
+            QStandardItemModel model = new QStandardItemModel() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
 
-			model.setObjectName("source model");
+            model.setObjectName("source model");
 
-			proxy.setSourceModel(model);
-			proxy.setSourceModel(null);
+            proxy.setSourceModel(model);
+            proxy.setSourceModel(null);
 
             model = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -370,130 +370,130 @@ public class TestReferenceCounting extends QApplicationTest {
                 return null == proxy.sourceModel();
             }
         }.test();
-	}
+    }
 
-	@Test public void testQSortFilterProxyModelSetSourceModel() {
-		deleted = 0;
+    @Test public void testQSortFilterProxyModelSetSourceModel() {
+        deleted = 0;
 
-		QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
+        QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
 
-			@Override
-			public QModelIndex mapFromSource(QModelIndex sourceIndex) {
+            @Override
+            public QModelIndex mapFromSource(QModelIndex sourceIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex mapToSource(QModelIndex proxyIndex) {
+            @Override
+            public QModelIndex mapToSource(QModelIndex proxyIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int columnCount(QModelIndex parent) {
+            @Override
+            public int columnCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-			@Override
-			public QModelIndex index(int row, int column, QModelIndex parent) {
+            @Override
+            public QModelIndex index(int row, int column, QModelIndex parent) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex parent(QModelIndex child) {
+            @Override
+            public QModelIndex parent(QModelIndex child) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int rowCount(QModelIndex parent) {
+            @Override
+            public int rowCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-		};
+        };
 
-		{
-			QStandardItemModel model = new QStandardItemModel() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+        {
+            QStandardItemModel model = new QStandardItemModel() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
-			model.setObjectName("source model");
+            model.setObjectName("source model");
 
-			proxy.setSourceModel(model);
-		}
+            proxy.setSourceModel(model);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertEquals(0, deleted);
-		assertEquals("source model", proxy.sourceModel().objectName());
-	}
+        assertEquals(0, deleted);
+        assertEquals("source model", proxy.sourceModel().objectName());
+    }
 
-	@Test public void testQSortFilterProxyModelSetSourceModelNull() {
-		deleted = 0;
+    @Test public void testQSortFilterProxyModelSetSourceModelNull() {
+        deleted = 0;
 
-		final QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
+        final QSortFilterProxyModel proxy = new QSortFilterProxyModel() {
 
-			@Override
-			public QModelIndex mapFromSource(QModelIndex sourceIndex) {
+            @Override
+            public QModelIndex mapFromSource(QModelIndex sourceIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex mapToSource(QModelIndex proxyIndex) {
+            @Override
+            public QModelIndex mapToSource(QModelIndex proxyIndex) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int columnCount(QModelIndex parent) {
+            @Override
+            public int columnCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-			@Override
-			public QModelIndex index(int row, int column, QModelIndex parent) {
+            @Override
+            public QModelIndex index(int row, int column, QModelIndex parent) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public QModelIndex parent(QModelIndex child) {
+            @Override
+            public QModelIndex parent(QModelIndex child) {
 
-				return null;
-			}
+                return null;
+            }
 
-			@Override
-			public int rowCount(QModelIndex parent) {
+            @Override
+            public int rowCount(QModelIndex parent) {
 
-				return 0;
-			}
+                return 0;
+            }
 
-		};
+        };
 
-		{
-			QStandardItemModel model = new QStandardItemModel() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+        {
+            QStandardItemModel model = new QStandardItemModel() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
-			model.setObjectName("source model");
+            model.setObjectName("source model");
 
-			proxy.setSourceModel(model);
-			proxy.setSourceModel(null);
+            proxy.setSourceModel(model);
+            proxy.setSourceModel(null);
 
             model = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -508,99 +508,44 @@ public class TestReferenceCounting extends QApplicationTest {
                 return null == proxy.sourceModel();
             }
         }.test();
-	}
+    }
 
-	@Test public void testQStackedLayoutAddStackedWidget() {
-		QStackedLayout layout = new QStackedLayout();
+    @Test public void testQStackedLayoutAddStackedWidget() {
+        QStackedLayout layout = new QStackedLayout();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			QWidget widget = new QWidget() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			layout.addStackedWidget(widget);
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            QWidget widget = new QWidget() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            layout.addStackedWidget(widget);
 
-			System.gc();
-		}
+            System.gc();
+        }
 
-		assertEquals(COUNT, layout.count());
-		assertEquals(0, deleted);
-	}
+        assertEquals(COUNT, layout.count());
+        assertEquals(0, deleted);
+    }
 
-	@Test public void testQStackLayoutRemoveWidget() {
-		final QStackedLayout layout = new QStackedLayout();
+    @Test public void testQStackLayoutRemoveWidget() {
+        final QStackedLayout layout = new QStackedLayout();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			QWidget widget = new QWidget() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			layout.addStackedWidget(widget);
-			layout.removeWidget(widget);
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            QWidget widget = new QWidget() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            layout.addStackedWidget(widget);
+            layout.removeWidget(widget);
 
-			System.gc();
-		}
-
-        new AssertEquals() {
-            @Override
-            protected boolean equals() {
-                return 0 == layout.count();
-            }
-        }.test();
-        new AssertEquals() {
-            @Override
-            protected boolean equals() {
-                return COUNT == deleted;
-            }
-        }.test();
-	}
-
-	@Test public void testQStackLayoutAddWidget() {
-		QStackedLayout layout = new QStackedLayout();
-
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			QWidget widget = new QWidget() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			layout.addWidget(widget);
-
-			System.gc();
-		}
-
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
-
-		assertEquals(COUNT, layout.count());
-		assertEquals(0, deleted);
-	}
-
-	@Test public void testQStackLayoutAddRemoveWidget() {
-		final QStackedLayout layout = new QStackedLayout();
-
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			QWidget widget = new QWidget() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			layout.addWidget(widget);
-			layout.removeWidget(widget);
-
-			System.gc();
-		}
+            System.gc();
+        }
 
         new AssertEquals() {
             @Override
@@ -614,73 +559,128 @@ public class TestReferenceCounting extends QApplicationTest {
                 return COUNT == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQComboBoxSetCompleter() {
-		QComboBox box = new QComboBox();
-		QLineEdit lineEdit = new QLineEdit();
-		box.setLineEdit(lineEdit);
+    @Test public void testQStackLayoutAddWidget() {
+        QStackedLayout layout = new QStackedLayout();
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			box.setCompleter(completer);
-		}
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            QWidget widget = new QWidget() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            layout.addWidget(widget);
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+            System.gc();
+        }
 
-		assertTrue(box.completer() != null);
-		assertEquals(0, deleted);
-	}
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-	@Test public void testQComboBoxEditableSetCompleter() {
-		QComboBox box = new QComboBox();
-		box.setEditable(true);
+        assertEquals(COUNT, layout.count());
+        assertEquals(0, deleted);
+    }
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			box.setCompleter(completer);
-		}
+    @Test public void testQStackLayoutAddRemoveWidget() {
+        final QStackedLayout layout = new QStackedLayout();
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            QWidget widget = new QWidget() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            layout.addWidget(widget);
+            layout.removeWidget(widget);
 
-		assertTrue(box.completer() != null);
-		assertEquals(0, deleted);
-	}
+            System.gc();
+        }
+
+        new AssertEquals() {
+            @Override
+            protected boolean equals() {
+                return 0 == layout.count();
+            }
+        }.test();
+        new AssertEquals() {
+            @Override
+            protected boolean equals() {
+                return COUNT == deleted;
+            }
+        }.test();
+    }
+
+    @Test public void testQComboBoxSetCompleter() {
+        QComboBox box = new QComboBox();
+        QLineEdit lineEdit = new QLineEdit();
+        box.setLineEdit(lineEdit);
+
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            box.setCompleter(completer);
+        }
+
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
+
+        assertTrue(box.completer() != null);
+        assertEquals(0, deleted);
+    }
+
+    @Test public void testQComboBoxEditableSetCompleter() {
+        QComboBox box = new QComboBox();
+        box.setEditable(true);
+
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            box.setCompleter(completer);
+        }
+
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
+
+        assertTrue(box.completer() != null);
+        assertEquals(0, deleted);
+    }
 
 
-	@Test public void testQComboBoxSetCompleterNull() {
-		final QComboBox box = new QComboBox();
-		QLineEdit lineEdit = new QLineEdit();
-		box.setLineEdit(lineEdit);
+    @Test public void testQComboBoxSetCompleterNull() {
+        final QComboBox box = new QComboBox();
+        QLineEdit lineEdit = new QLineEdit();
+        box.setLineEdit(lineEdit);
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			box.setCompleter(completer);
-			box.setCompleter(null);
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            box.setCompleter(completer);
+            box.setCompleter(null);
             completer = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -694,22 +694,22 @@ public class TestReferenceCounting extends QApplicationTest {
                 return 1 == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQComboBoxSetCompleterNoLineEdit() {
-		final QComboBox box = new QComboBox();
+    @Test public void testQComboBoxSetCompleterNoLineEdit() {
+        final QComboBox box = new QComboBox();
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			box.setCompleter(completer);
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            box.setCompleter(completer);
             completer = null;
-		}
+        }
 
             long millis = System.currentTimeMillis();
             while (System.currentTimeMillis() - millis < 1000)
@@ -717,46 +717,46 @@ public class TestReferenceCounting extends QApplicationTest {
 
             assertEquals(box.completer(), null); // the completer wil newer be set because of missing line edit.
             assertEquals(0, deleted); // and not deleted, since it has been set.
-	}
+    }
 
-	@Test public void testQLineEditSetCompleter() {
-		QLineEdit lineEdit = new QLineEdit();
+    @Test public void testQLineEditSetCompleter() {
+        QLineEdit lineEdit = new QLineEdit();
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			lineEdit.setCompleter(completer);
-		}
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            lineEdit.setCompleter(completer);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(lineEdit.completer() != null);
-		assertEquals(0, deleted);
-	}
+        assertTrue(lineEdit.completer() != null);
+        assertEquals(0, deleted);
+    }
 
-	@Test public void testQLineEditSetCompleterNull() {
-		final QLineEdit lineEdit = new QLineEdit();
+    @Test public void testQLineEditSetCompleterNull() {
+        final QLineEdit lineEdit = new QLineEdit();
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			lineEdit.setCompleter(completer);
-			lineEdit.setCompleter(null);
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            lineEdit.setCompleter(completer);
+            lineEdit.setCompleter(null);
 
             completer = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -770,27 +770,27 @@ public class TestReferenceCounting extends QApplicationTest {
                 return 1 == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQComboBoxLineEditSetCompleterNull() {
-		QComboBox box = new QComboBox();
-		final QLineEdit lineEdit = new QLineEdit();
+    @Test public void testQComboBoxLineEditSetCompleterNull() {
+        QComboBox box = new QComboBox();
+        final QLineEdit lineEdit = new QLineEdit();
 
-		box.setLineEdit(lineEdit);
+        box.setLineEdit(lineEdit);
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			lineEdit.setCompleter(completer);
-			box.lineEdit().setCompleter(null);
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            lineEdit.setCompleter(completer);
+            box.lineEdit().setCompleter(null);
 
             completer = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -805,51 +805,51 @@ public class TestReferenceCounting extends QApplicationTest {
                 return lineEdit.completer() == null;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQLineEditComboBoxSetCompleter() {
-		QComboBox box = new QComboBox();
-		QLineEdit lineEdit = new QLineEdit();
+    @Test public void testQLineEditComboBoxSetCompleter() {
+        QComboBox box = new QComboBox();
+        QLineEdit lineEdit = new QLineEdit();
 
-		box.setLineEdit(lineEdit);
+        box.setLineEdit(lineEdit);
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			box.lineEdit().setCompleter(completer);
-		}
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            box.lineEdit().setCompleter(completer);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(lineEdit.completer() != null);
-		assertEquals(0, deleted);
-	}
+        assertTrue(lineEdit.completer() != null);
+        assertEquals(0, deleted);
+    }
 
-	@Test public void testQLineEditComboBoxSetCompleterNull() {
-		QComboBox box = new QComboBox();
-		final QLineEdit lineEdit = new QLineEdit();
+    @Test public void testQLineEditComboBoxSetCompleterNull() {
+        QComboBox box = new QComboBox();
+        final QLineEdit lineEdit = new QLineEdit();
 
-		box.setLineEdit(lineEdit);
+        box.setLineEdit(lineEdit);
 
-		deleted = 0;
-		{
-			QCompleter completer = new QCompleter() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			box.lineEdit().setCompleter(completer);
-			lineEdit.setCompleter(null);
+        deleted = 0;
+        {
+            QCompleter completer = new QCompleter() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            box.lineEdit().setCompleter(completer);
+            lineEdit.setCompleter(null);
             completer = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -863,173 +863,173 @@ public class TestReferenceCounting extends QApplicationTest {
                 return 1 == deleted;
             }
         }.test();
-	}
+    }
 
 
-	@Test public void testQComboBoxSetItemDelegate() {
-		QComboBox box = new QComboBox();
+    @Test public void testQComboBoxSetItemDelegate() {
+        QComboBox box = new QComboBox();
 
-		deleted = 0;
-		{
-			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+        deleted = 0;
+        {
+            QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
 
-				@Override
-				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-				}
+                @Override
+                public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+                }
 
-				@Override
-				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
-					return null;
-				}
+                @Override
+                public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+                    return null;
+                }
 
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-			};
+            };
 
-			box.setItemDelegate(delegate);
-		}
+            box.setItemDelegate(delegate);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(box.itemDelegate() != null);
-		assertEquals(0, deleted);
-	}
+        assertTrue(box.itemDelegate() != null);
+        assertEquals(0, deleted);
+    }
 
-	@Test public void testQComboBoxSetItemDelegateNull() {
-		QComboBox box = new QComboBox();
+    @Test public void testQComboBoxSetItemDelegateNull() {
+        QComboBox box = new QComboBox();
 
-		deleted = 0;
-		{
-			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+        deleted = 0;
+        {
+            QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
 
-				@Override
-				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-				}
+                @Override
+                public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+                }
 
-				@Override
-				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
-					return null;
-				}
+                @Override
+                public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+                    return null;
+                }
 
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-			};
-			QAbstractItemDelegate delegate2 = new QAbstractItemDelegate() {
+            };
+            QAbstractItemDelegate delegate2 = new QAbstractItemDelegate() {
 
-				@Override
-				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-				}
+                @Override
+                public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+                }
 
-				@Override
-				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
-					return null;
-				}
+                @Override
+                public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+                    return null;
+                }
 
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-			};
+            };
 
 
-			box.setItemDelegate(delegate);
-			box.setItemDelegate(delegate2);
-		}
+            box.setItemDelegate(delegate);
+            box.setItemDelegate(delegate2);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(box.itemDelegate() != null);
-		assertEquals(1, deleted);
-	}
+        assertTrue(box.itemDelegate() != null);
+        assertEquals(1, deleted);
+    }
 
-	@Test public void testQComboBoxSetModel() {
-		QComboBox box = new QComboBox();
+    @Test public void testQComboBoxSetModel() {
+        QComboBox box = new QComboBox();
 
-		deleted = 0;
-		{
-			QStandardItemModel model = new QStandardItemModel() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			box.setModel(model);
-		}
+        deleted = 0;
+        {
+            QStandardItemModel model = new QStandardItemModel() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            box.setModel(model);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(box.model() != null);
-		assertEquals(0, deleted);
+        assertTrue(box.model() != null);
+        assertEquals(0, deleted);
 
-	}
+    }
 
-	@Test public void testQComboBoxSetValidator() {
-		QComboBox box = new QComboBox();
-		box.setEditable(true);
+    @Test public void testQComboBoxSetValidator() {
+        QComboBox box = new QComboBox();
+        box.setEditable(true);
 
-		deleted = 0;
-		{
-			QValidator validator = new QValidator((QObject)null) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+        deleted = 0;
+        {
+            QValidator validator = new QValidator((QObject)null) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-				@Override
-				public State validate(QValidationData arg__1) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			};
+                @Override
+                public State validate(QValidationData arg__1) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            };
 
-			box.setValidator(validator);
-		}
+            box.setValidator(validator);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(box.validator() != null);
-		assertEquals(0, deleted);
-	}
+        assertTrue(box.validator() != null);
+        assertEquals(0, deleted);
+    }
 
-	@Test public void testQComboBoxSetValidatorNull() {
-		final QComboBox box = new QComboBox();
-		box.setEditable(true);
+    @Test public void testQComboBoxSetValidatorNull() {
+        final QComboBox box = new QComboBox();
+        box.setEditable(true);
 
-		deleted = 0;
-		{
-			QValidator validator = new QValidator((QObject)null) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+        deleted = 0;
+        {
+            QValidator validator = new QValidator((QObject)null) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-				@Override
-				public State validate(QValidationData arg__1) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			};
+                @Override
+                public State validate(QValidationData arg__1) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            };
 
-			box.setValidator(validator);
-			box.setValidator(null);
+            box.setValidator(validator);
+            box.setValidator(null);
 
             validator = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -1043,32 +1043,32 @@ public class TestReferenceCounting extends QApplicationTest {
                 return 1 == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQComboBoxLineEditSetValidator() {
-		final QComboBox box = new QComboBox();
-		box.setEditable(true);
+    @Test public void testQComboBoxLineEditSetValidator() {
+        final QComboBox box = new QComboBox();
+        box.setEditable(true);
 
-		deleted = 0;
-		{
-			QValidator validator = new QValidator((QObject)null) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+        deleted = 0;
+        {
+            QValidator validator = new QValidator((QObject)null) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-				@Override
-				public State validate(QValidationData arg__1) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			};
+                @Override
+                public State validate(QValidationData arg__1) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            };
 
-			box.setValidator(validator);
-			box.lineEdit().setValidator(null);
+            box.setValidator(validator);
+            box.lineEdit().setValidator(null);
 
             validator = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -1083,63 +1083,63 @@ public class TestReferenceCounting extends QApplicationTest {
                 return 0 == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQButtonGroupAddButton() {
-		QButtonGroup group = new QButtonGroup();
+    @Test public void testQButtonGroupAddButton() {
+        QButtonGroup group = new QButtonGroup();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			group.addButton(new QPushButton("button" + i) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			});
-			System.gc();
-		}
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            group.addButton(new QPushButton("button" + i) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            });
+            System.gc();
+        }
 
-		assertEquals(COUNT, group.buttons().size());
-		assertEquals(0, deleted);
-		assertEquals("button" + COUNT / 2, group.buttons().get(COUNT / 2).text());
+        assertEquals(COUNT, group.buttons().size());
+        assertEquals(0, deleted);
+        assertEquals("button" + COUNT / 2, group.buttons().get(COUNT / 2).text());
 
-	}
+    }
 
-	@Test public void testQButtonGroupAddButtonId() {
-		QButtonGroup group = new QButtonGroup();
+    @Test public void testQButtonGroupAddButtonId() {
+        QButtonGroup group = new QButtonGroup();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			group.addButton(new QPushButton("button" + i) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			}, i);
-			System.gc();
-		}
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            group.addButton(new QPushButton("button" + i) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            }, i);
+            System.gc();
+        }
 
-		assertEquals(COUNT, group.buttons().size());
-		assertEquals(0, deleted);
-		assertEquals(COUNT / 2, group.id(group.buttons().get(COUNT / 2)));
-		assertEquals("button" + COUNT / 2, group.buttons().get(COUNT / 2).text());
-	}
+        assertEquals(COUNT, group.buttons().size());
+        assertEquals(0, deleted);
+        assertEquals(COUNT / 2, group.id(group.buttons().get(COUNT / 2)));
+        assertEquals("button" + COUNT / 2, group.buttons().get(COUNT / 2).text());
+    }
 
-	@Test public void testQButtonGroupRemoveButton() {
-		final QButtonGroup group = new QButtonGroup();
+    @Test public void testQButtonGroupRemoveButton() {
+        final QButtonGroup group = new QButtonGroup();
 
-		deleted = 0;
-		for (int i=0; i<COUNT; ++i) {
-			QPushButton button = new QPushButton("button" + i) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
-			group.addButton(button);
-			group.removeButton(button);
-			System.gc();
-		}
+        deleted = 0;
+        for (int i=0; i<COUNT; ++i) {
+            QPushButton button = new QPushButton("button" + i) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
+            group.addButton(button);
+            group.removeButton(button);
+            System.gc();
+        }
 
         new AssertEquals() {
             @Override
@@ -1153,167 +1153,167 @@ public class TestReferenceCounting extends QApplicationTest {
                 return COUNT == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQAbstractItemViewSetItemDelegate() {
-		QAbstractItemView view = new QAbstractItemView() {
+    @Test public void testQAbstractItemViewSetItemDelegate() {
+        QAbstractItemView view = new QAbstractItemView() {
 
-			@Override
-			protected int horizontalOffset() {
-				return 0;
-			}
+            @Override
+            protected int horizontalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QModelIndex indexAt(QPoint point) {
-				return null;
-			}
+            @Override
+            public QModelIndex indexAt(QPoint point) {
+                return null;
+            }
 
-			@Override
-			protected boolean isIndexHidden(QModelIndex index) {
-				return false;
-			}
+            @Override
+            protected boolean isIndexHidden(QModelIndex index) {
+                return false;
+            }
 
-			@Override
-			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
-				return null;
-			}
+            @Override
+            protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+                return null;
+            }
 
-			@Override
-			public void scrollTo(QModelIndex index, ScrollHint hint) {
-			}
+            @Override
+            public void scrollTo(QModelIndex index, ScrollHint hint) {
+            }
 
-			@Override
-			protected void setSelection(QRect rect, SelectionFlags command) {
-			}
+            @Override
+            protected void setSelection(QRect rect, SelectionFlags command) {
+            }
 
-			@Override
-			protected int verticalOffset() {
-				return 0;
-			}
+            @Override
+            protected int verticalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QRect visualRect(QModelIndex index) {
-				return null;
-			}
+            @Override
+            public QRect visualRect(QModelIndex index) {
+                return null;
+            }
 
-			@Override
-			protected QRegion visualRegionForSelection(QItemSelection selection) {
-				return null;
-			}
+            @Override
+            protected QRegion visualRegionForSelection(QItemSelection selection) {
+                return null;
+            }
 
-		};
+        };
 
-		deleted = 0;
-		{
-			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+        deleted = 0;
+        {
+            QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
 
-				@Override
-				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-					// TODO Auto-generated method stub
+                @Override
+                public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+                    // TODO Auto-generated method stub
 
-				}
+                }
 
-				@Override
-				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
-					// TODO Auto-generated method stub
-					return null;
-				}
+                @Override
+                public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-			};
+            };
 
-			view.setItemDelegate(delegate);
-		}
+            view.setItemDelegate(delegate);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(view.itemDelegate() != null);
-		assertEquals(0, deleted);
+        assertTrue(view.itemDelegate() != null);
+        assertEquals(0, deleted);
 
-	}
+    }
 
-	@Test public void testQAbstractItemViewSetItemDelegateNull() {
-		final QAbstractItemView view = new QAbstractItemView() {
+    @Test public void testQAbstractItemViewSetItemDelegateNull() {
+        final QAbstractItemView view = new QAbstractItemView() {
 
-			@Override
-			protected int horizontalOffset() {
-				return 0;
-			}
+            @Override
+            protected int horizontalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QModelIndex indexAt(QPoint point) {
-				return null;
-			}
+            @Override
+            public QModelIndex indexAt(QPoint point) {
+                return null;
+            }
 
-			@Override
-			protected boolean isIndexHidden(QModelIndex index) {
-				return false;
-			}
+            @Override
+            protected boolean isIndexHidden(QModelIndex index) {
+                return false;
+            }
 
-			@Override
-			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
-				return null;
-			}
+            @Override
+            protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+                return null;
+            }
 
-			@Override
-			public void scrollTo(QModelIndex index, ScrollHint hint) {
-			}
+            @Override
+            public void scrollTo(QModelIndex index, ScrollHint hint) {
+            }
 
-			@Override
-			protected void setSelection(QRect rect, SelectionFlags command) {
-			}
+            @Override
+            protected void setSelection(QRect rect, SelectionFlags command) {
+            }
 
-			@Override
-			protected int verticalOffset() {
-				return 0;
-			}
+            @Override
+            protected int verticalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QRect visualRect(QModelIndex index) {
-				return null;
-			}
+            @Override
+            public QRect visualRect(QModelIndex index) {
+                return null;
+            }
 
-			@Override
-			protected QRegion visualRegionForSelection(QItemSelection selection) {
-				return null;
-			}
+            @Override
+            protected QRegion visualRegionForSelection(QItemSelection selection) {
+                return null;
+            }
 
-		};
+        };
 
-		deleted = 0;
-		{
-			QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
+        deleted = 0;
+        {
+            QAbstractItemDelegate delegate = new QAbstractItemDelegate() {
 
-				@Override
-				public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-					// TODO Auto-generated method stub
+                @Override
+                public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+                    // TODO Auto-generated method stub
 
-				}
+                }
 
-				@Override
-				public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
-					// TODO Auto-generated method stub
-					return null;
-				}
+                @Override
+                public QSize sizeHint(QStyleOptionViewItem option, QModelIndex index) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 
-				@Override
-				public void disposed() {
-					deleted++;
-				}
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
 
-			};
+            };
 
-			view.setItemDelegate(delegate);
-			view.setItemDelegate(null);
+            view.setItemDelegate(delegate);
+            view.setItemDelegate(null);
 
             delegate = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -1327,138 +1327,138 @@ public class TestReferenceCounting extends QApplicationTest {
                 return 1 == deleted;
             }
         }.test();
-	}
+    }
 
-	@Test public void testQAbstractItemViewSetModel() {
-		QAbstractItemView view = new QAbstractItemView() {
+    @Test public void testQAbstractItemViewSetModel() {
+        QAbstractItemView view = new QAbstractItemView() {
 
-			@Override
-			protected int horizontalOffset() {
-				return 0;
-			}
+            @Override
+            protected int horizontalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QModelIndex indexAt(QPoint point) {
-				return null;
-			}
+            @Override
+            public QModelIndex indexAt(QPoint point) {
+                return null;
+            }
 
-			@Override
-			protected boolean isIndexHidden(QModelIndex index) {
-				return false;
-			}
+            @Override
+            protected boolean isIndexHidden(QModelIndex index) {
+                return false;
+            }
 
-			@Override
-			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
-				return null;
-			}
+            @Override
+            protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+                return null;
+            }
 
-			@Override
-			public void scrollTo(QModelIndex index, ScrollHint hint) {
-			}
+            @Override
+            public void scrollTo(QModelIndex index, ScrollHint hint) {
+            }
 
-			@Override
-			protected void setSelection(QRect rect, SelectionFlags command) {
-			}
+            @Override
+            protected void setSelection(QRect rect, SelectionFlags command) {
+            }
 
-			@Override
-			protected int verticalOffset() {
-				return 0;
-			}
+            @Override
+            protected int verticalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QRect visualRect(QModelIndex index) {
-				return null;
-			}
+            @Override
+            public QRect visualRect(QModelIndex index) {
+                return null;
+            }
 
-			@Override
-			protected QRegion visualRegionForSelection(QItemSelection selection) {
-				return null;
-			}
+            @Override
+            protected QRegion visualRegionForSelection(QItemSelection selection) {
+                return null;
+            }
 
-		};
+        };
 
-		deleted = 0;
-		{
-			QStandardItemModel model = new QStandardItemModel() {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+        deleted = 0;
+        {
+            QStandardItemModel model = new QStandardItemModel() {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
-			view.setModel(model);
-		}
+            view.setModel(model);
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(view.model() != null);
-		assertEquals(0, deleted);
-	}
+        assertTrue(view.model() != null);
+        assertEquals(0, deleted);
+    }
 
-	@Test public void testQAbstractItemViewSetSelectionModelThenSetModel() {
-		final QAbstractItemView view = new QAbstractItemView() {
+    @Test public void testQAbstractItemViewSetSelectionModelThenSetModel() {
+        final QAbstractItemView view = new QAbstractItemView() {
 
-			@Override
-			protected int horizontalOffset() {
-				return 0;
-			}
+            @Override
+            protected int horizontalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QModelIndex indexAt(QPoint point) {
-				return null;
-			}
+            @Override
+            public QModelIndex indexAt(QPoint point) {
+                return null;
+            }
 
-			@Override
-			protected boolean isIndexHidden(QModelIndex index) {
-				return false;
-			}
+            @Override
+            protected boolean isIndexHidden(QModelIndex index) {
+                return false;
+            }
 
-			@Override
-			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
-				return null;
-			}
+            @Override
+            protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+                return null;
+            }
 
-			@Override
-			public void scrollTo(QModelIndex index, ScrollHint hint) {
-			}
+            @Override
+            public void scrollTo(QModelIndex index, ScrollHint hint) {
+            }
 
-			@Override
-			protected void setSelection(QRect rect, SelectionFlags command) {
-			}
+            @Override
+            protected void setSelection(QRect rect, SelectionFlags command) {
+            }
 
-			@Override
-			protected int verticalOffset() {
-				return 0;
-			}
+            @Override
+            protected int verticalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QRect visualRect(QModelIndex index) {
-				return null;
-			}
+            @Override
+            public QRect visualRect(QModelIndex index) {
+                return null;
+            }
 
-			@Override
-			protected QRegion visualRegionForSelection(QItemSelection selection) {
-				return null;
-			}
+            @Override
+            protected QRegion visualRegionForSelection(QItemSelection selection) {
+                return null;
+            }
 
-		};
+        };
 
-		deleted = 0;
-		{
-			QItemSelectionModel model = new QItemSelectionModel(view.model()) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+        deleted = 0;
+        {
+            QItemSelectionModel model = new QItemSelectionModel(view.model()) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
-			view.setSelectionModel(model);
-			view.setModel(new QStandardItemModel());
+            view.setSelectionModel(model);
+            view.setModel(new QStandardItemModel());
 
             model = null;
-		}
+        }
 
         new AssertEquals() {
             @Override
@@ -1473,83 +1473,83 @@ public class TestReferenceCounting extends QApplicationTest {
             }
         }.test();
 
-	}
+    }
 
-	@Test public void testQAbstractItemViewSetSelectionModel() {
-		QAbstractItemView view = new QAbstractItemView() {
+    @Test public void testQAbstractItemViewSetSelectionModel() {
+        QAbstractItemView view = new QAbstractItemView() {
 
-			@Override
-			protected int horizontalOffset() {
-				return 0;
-			}
+            @Override
+            protected int horizontalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QModelIndex indexAt(QPoint point) {
-				return null;
-			}
+            @Override
+            public QModelIndex indexAt(QPoint point) {
+                return null;
+            }
 
-			@Override
-			protected boolean isIndexHidden(QModelIndex index) {
-				return false;
-			}
+            @Override
+            protected boolean isIndexHidden(QModelIndex index) {
+                return false;
+            }
 
-			@Override
-			protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
-				return null;
-			}
+            @Override
+            protected QModelIndex moveCursor(CursorAction cursorAction, KeyboardModifiers modifiers) {
+                return null;
+            }
 
-			@Override
-			public void scrollTo(QModelIndex index, ScrollHint hint) {
-			}
+            @Override
+            public void scrollTo(QModelIndex index, ScrollHint hint) {
+            }
 
-			@Override
-			protected void setSelection(QRect rect, SelectionFlags command) {
-			}
+            @Override
+            protected void setSelection(QRect rect, SelectionFlags command) {
+            }
 
-			@Override
-			protected int verticalOffset() {
-				return 0;
-			}
+            @Override
+            protected int verticalOffset() {
+                return 0;
+            }
 
-			@Override
-			public QRect visualRect(QModelIndex index) {
-				return null;
-			}
+            @Override
+            public QRect visualRect(QModelIndex index) {
+                return null;
+            }
 
-			@Override
-			protected QRegion visualRegionForSelection(QItemSelection selection) {
-				return null;
-			}
+            @Override
+            protected QRegion visualRegionForSelection(QItemSelection selection) {
+                return null;
+            }
 
-		};
+        };
 
-		deleted = 0;
-		{
+        deleted = 0;
+        {
             view.setModel(new QDirModel());
 
-			QItemSelectionModel model = new QItemSelectionModel(view.model()) {
-				@Override
-				public void disposed() {
-					deleted++;
-				}
-			};
+            QItemSelectionModel model = new QItemSelectionModel(view.model()) {
+                @Override
+                public void disposed() {
+                    deleted++;
+                }
+            };
 
-			view.setSelectionModel(model);
+            view.setSelectionModel(model);
 
             model = null;
-		}
+        }
 
-		long millis = System.currentTimeMillis();
-		while (System.currentTimeMillis() - millis < 1000)
-			System.gc();
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            System.gc();
 
-		assertTrue(view.selectionModel() != null);
-		assertEquals(0, deleted);
+        assertTrue(view.selectionModel() != null);
+        assertEquals(0, deleted);
 
 
-	}
+    }
 
-	private static int deletedEngines = 0;
+    private static int deletedEngines = 0;
     private static class MyIconEngine extends QIconEngineV2 {
         private int i;
         public MyIconEngine(int i) {

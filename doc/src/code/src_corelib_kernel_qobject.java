@@ -339,7 +339,7 @@
                    [DESIGNABLE bool]
                    [SCRIPTABLE bool]
                    [STORED bool]
-		   [USER bool])
+           [USER bool])
 //! [36]
 
 
@@ -751,7 +751,7 @@ public class src_corelib_kernel_qobject extends QObject {
                    [DESIGNABLE bool]
                    [SCRIPTABLE bool]
                    [STORED bool]
-		   [USER bool])
+           [USER bool])
 //! [36]
 
 

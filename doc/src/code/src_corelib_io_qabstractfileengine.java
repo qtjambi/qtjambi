@@ -70,8 +70,8 @@ public class src_corelib_io_qabstractfileengine
             super(filters, filterNames);
         }
         public String next() { return ""; }
-        public boolean	hasNext() { return true; }
-        public String	currentFileName() { return ""; }
+        public boolean  hasNext() { return true; }
+        public String   currentFileName() { return ""; }
     }
 
 

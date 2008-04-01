@@ -1092,17 +1092,17 @@ void StaticCache::resolveQtJambiInternal_internal()
 
 
     QtJambiInternal.writeSerializableJavaObject = env->GetStaticMethodID(QtJambiInternal.class_ref,
-									 "writeSerializableJavaObject",
-									 "(Lcom/trolltech/qt/core/QDataStream;"
-									 "Ljava/lang/Object;"
-									 ")V");
+                                     "writeSerializableJavaObject",
+                                     "(Lcom/trolltech/qt/core/QDataStream;"
+                                     "Ljava/lang/Object;"
+                                     ")V");
     Q_ASSERT(QtJambiInternal.writeSerializableJavaObject);
 
 
     QtJambiInternal.readSerializableJavaObject = env->GetStaticMethodID(QtJambiInternal.class_ref,
-									 "readSerializableJavaObject",
-									 "(Lcom/trolltech/qt/core/QDataStream;)"
-									 "Ljava/lang/Object;");
+                                     "readSerializableJavaObject",
+                                     "(Lcom/trolltech/qt/core/QDataStream;)"
+                                     "Ljava/lang/Object;");
     Q_ASSERT(QtJambiInternal.readSerializableJavaObject);
 
     QtJambiInternal.buildMetaData = env->GetStaticMethodID(QtJambiInternal.class_ref,

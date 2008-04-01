@@ -141,9 +141,9 @@ class Util {
     public static File findInLibraryPath(String name) {
         String libraryPath = System.getProperty("java.library.path");
 
-	    // Make /usr/lib an implicit part of library path
-	    if (OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)
-    	    libraryPath += File.pathSeparator + "/usr/lib";
+        // Make /usr/lib an implicit part of library path
+        if (OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)
+            libraryPath += File.pathSeparator + "/usr/lib";
 
         String PATH[] = libraryPath.split(File.pathSeparator);
         for (String p : PATH) {

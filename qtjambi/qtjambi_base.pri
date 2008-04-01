@@ -30,9 +30,9 @@ macx:{
     win32 {
         INCLUDEPATH += $$(JAVADIR)/include/win32
     } else {
-	solaris-g++ | solaris-cc {
-	    INCLUDEPATH += $$(JAVADIR)/include/solaris
-	} else {
+    solaris-g++ | solaris-cc {
+        INCLUDEPATH += $$(JAVADIR)/include/solaris
+    } else {
             INCLUDEPATH += $$(JAVADIR)/include/linux
         }
     }

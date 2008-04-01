@@ -8,14 +8,14 @@
                    [DESIGNABLE bool]
                    [SCRIPTABLE bool]
                    [STORED bool]
-		   [USER bool])
+           [USER bool])
 //! [0]
 
 
 //! [1]
         Q_PROPERTY(bool focus READ hasFocus)
-	Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
-	Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor RESET unsetCursor)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
+    Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor RESET unsetCursor)
 //! [1]
 
 
@@ -34,15 +34,15 @@
 
 
 //! [4]
-	QObject *object = ...
+    QObject *object = ...
         const QMetaObject *metaobject = object->metaObject();
-	int count = metaobject->propertyCount();
-	for (int i=0; i<count; ++i) {
-	    QMetaProperty metaproperty = metaobject->property(i);
-	    const char *name = metaproperty.name();
-	    QVariant value = object->property(name);
-	    ...
-	}
+    int count = metaobject->propertyCount();
+    for (int i=0; i<count; ++i) {
+        QMetaProperty metaproperty = metaobject->property(i);
+        const char *name = metaproperty.name();
+        QVariant value = object->property(name);
+        ...
+    }
 //! [4]
 
 
@@ -101,14 +101,14 @@ public class doc_src_properties {
                    [DESIGNABLE bool]
                    [SCRIPTABLE bool]
                    [STORED bool]
-		   [USER bool])
+           [USER bool])
 //! [0]
 
 
 //! [1]
         Q_PROPERTY(booleansfocus READ hasFocus)
-	Q_PROPERTY(booleansenabled READ isEnabled WRITE setEnabled)
-	Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor RESET unsetCursor)
+    Q_PROPERTY(booleansenabled READ isEnabled WRITE setEnabled)
+    Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor RESET unsetCursor)
 //! [1]
 
 
@@ -127,15 +127,15 @@ public class doc_src_properties {
 
 
 //! [4]
-	QObject bject = ...
+    QObject bject = ...
         QMetaObject etaobject = object.metaObject();
-	int count = metaobject.propertyCount();
-	for (int i=0; i<count; ++i) {
-	    QMetaProperty metaproperty = metaobject.property(i);
-	    char ame = metaproperty.name();
-	    QVariant value = object.property(name);
-	    ...
-	}
+    int count = metaobject.propertyCount();
+    for (int i=0; i<count; ++i) {
+        QMetaProperty metaproperty = metaobject.property(i);
+        char ame = metaproperty.name();
+        QVariant value = object.property(name);
+        ...
+    }
 //! [4]
 
 

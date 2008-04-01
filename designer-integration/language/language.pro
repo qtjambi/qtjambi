@@ -8,12 +8,12 @@ TARGET = JambiLanguage
 include($$PWD/../pri/jambi.pri)
 
 HEADERS += \
-	jambilanguageplugin.h \
+    jambilanguageplugin.h \
         qtjambiintrospection_p.h \
 
 
 SOURCES += \
-	jambilanguageplugin.cpp \
+    jambilanguageplugin.cpp \
         qtjambiintrospection.cpp \
 
 CONFIG(debug, debug|release) {

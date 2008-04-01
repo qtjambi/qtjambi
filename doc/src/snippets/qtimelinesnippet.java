@@ -16,7 +16,7 @@ public class qtimelinesnippet
         timeLine.frame
 
         QObject.connect(timeLine, SIGNAL(frameChanged(int)),
-		     progressBar, SLOT(setValue(int)));
+             progressBar, SLOT(setValue(int)));
 
         progressBar.show();
 

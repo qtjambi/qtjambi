@@ -6,9 +6,9 @@ package com.trolltech.qt;
  */
 @Deprecated
 public class QNoSuchPropertyException extends QPropertyException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public QNoSuchPropertyException(String message) {
-		super(message);
-	}
+    public QNoSuchPropertyException(String message) {
+        super(message);
+    }
 }

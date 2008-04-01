@@ -380,7 +380,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 
             if (QCoreApplication::instance()) {
                 QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(this, m_pointer, m_meta_type, m_ownership, m_destructor_function));
-	        }
+            }
 
         } else if (m_ownership == JavaOwnership && m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0
                    || (m_meta_type < QMetaType::FirstGuiType || m_meta_type > QMetaType::LastGuiType))) {
@@ -619,7 +619,7 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
         m_link->setAsQObjectDeleted();
         m_link->resetObject(env);
 
-	if (m_link->readyForDelete())
-	    delete m_link;
+    if (m_link->readyForDelete())
+        delete m_link;
     }
 }

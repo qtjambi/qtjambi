@@ -191,14 +191,14 @@ void QDocGenerator::writeOverload(QTextStream &s,
             if (m.no_null_pointers)
                 s << "              no-null=\"yes\"" << endl;
             if (!m.modified_type.isEmpty())
-	      s << "              modified-type=\"" << protect(m.modified_type.toLatin1()) << "\"" << endl;
+          s << "              modified-type=\"" << protect(m.modified_type.toLatin1()) << "\"" << endl;
             if (!m.replaced_default_expression.isEmpty()) {
                 s << "              default-expression=\"" << m.replaced_default_expression
                   << "\"" << endl;
             }
             if (!m.referenceCounts.isEmpty())
                 s << "              reference-counted=\"...\"" << endl;
-	    s << "/>" << endl;
+        s << "/>" << endl;
         }
     }
 

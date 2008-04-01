@@ -15,19 +15,19 @@ public class src_gui_util_qdesktopservices {
         QApplication.initialize(args);
 
 //! [0]
-		QDesktopServices.setUrlHandler("help", new QDesktopServices.UrlHandler() {
-			public void handleUrl(QUrl url) {
-				// respond to url...
-			}
-			});
+        QDesktopServices.setUrlHandler("help", new QDesktopServices.UrlHandler() {
+            public void handleUrl(QUrl url) {
+                // respond to url...
+            }
+            });
 //! [0]
 
 
-	/*
+    /*
 //! [1]
     mailto:user@foo.com?subject=Testody=Just a test
 //! [1]
-	*/
+    */
 
     }
 }

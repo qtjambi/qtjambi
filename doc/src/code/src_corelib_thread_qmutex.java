@@ -27,7 +27,7 @@ class FooBar1 {
             number /= 2;
         }
 //! [0]
-	public void method3() {
+    public void method3() {
 
 //! [1]
         // method1()

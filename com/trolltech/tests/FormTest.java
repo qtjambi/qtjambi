@@ -20,15 +20,15 @@ public class FormTest extends QDialog
     private Ui_ComplexForm ui = new Ui_ComplexForm();
 
     public FormTest() {
-	ui.setupUi(this);
+    ui.setupUi(this);
     }
 
     public static void main(String args[])
     {
-	QApplication.initialize(args);
+    QApplication.initialize(args);
 
-	new FormTest().show();
+    new FormTest().show();
 
-	QApplication.exec();
+    QApplication.exec();
     }
 }

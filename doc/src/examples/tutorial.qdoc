@@ -153,7 +153,7 @@
 
     \code
         javac com/trolltech/examples/tutorial/HelloWorld.java
-	java com.trolltech.examples.tutorial.HelloWorld.java
+    java com.trolltech.examples.tutorial.HelloWorld.java
     \endcode
 
     \section1 Running the Application

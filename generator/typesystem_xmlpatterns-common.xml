@@ -27,9 +27,9 @@
   <value-type name="QAbstractXmlNodeModel">
     <modify-function signature="QAbstractXmlNodeModel()" remove="all" />
     <modify-function signature="namespaceForPrefix(QXmlNodeModelIndex,short) const"
-		     remove="all" />
+             remove="all" />
     <modify-function signature="isDeepEqual(QXmlNodeModelIndex,QXmlNodeModelIndex) const"
-		     remove="all" />
+             remove="all" />
   </value-type>
 
   <rejection class="QAbstractXmlReceiver" function-name="item" />
@@ -55,16 +55,16 @@
   <value-type name="QXmlName">
     <modify-function signature="QXmlName(QXmlNamePool&amp;,QString,QString,QString)" access="private">
       <modify-argument index="3">
-	<remove-default-expression />
+    <remove-default-expression />
       </modify-argument>
       <modify-argument index="4">
-	<remove-default-expression />
+    <remove-default-expression />
       </modify-argument>
     </modify-function>
 
     <modify-function signature="operator=(QXmlName)" remove="all" />
     <modify-function signature="QXmlName(short,short,short)"
-		     remove="all" />
+             remove="all" />
     <modify-function signature="localName()const" remove="all" />
     <modify-function signature="prefix()const" remove="all" />
     <modify-function signature="hasPrefix()const" remove="all" />
@@ -114,17 +114,17 @@
     <modify-function signature="evaluateTo(QStringList&lt;QString&gt;*)const" remove="all" />
     <modify-function signature="setMessageHandler(QAbstractMessageHandler*)">
       <modify-argument index="1">
-	<reference-count action="set" variable-name="__rcMessageHandler" />
+    <reference-count action="set" variable-name="__rcMessageHandler" />
       </modify-argument>
     </modify-function>
     <modify-function signature="setQuery(QIODevice*, QUrl)">
       <modify-argument index="1">
-	<reference-count action="ignore" /> <!-- Data from IODevice is readAll()'d immediately and the pointer is not stored -->
+    <reference-count action="ignore" /> <!-- Data from IODevice is readAll()'d immediately and the pointer is not stored -->
       </modify-argument>
     </modify-function>
     <modify-function signature="setUriResolver(const QAbstractUriResolver*)">
       <modify-argument index="1">
-	<reference-count action="set" variable-name="__rcUriResolver" />
+    <reference-count action="set" variable-name="__rcUriResolver" />
       </modify-argument>
     </modify-function>
   </object-type>
@@ -142,7 +142,7 @@
     <modify-function signature="isBindingInScope(QXmlName)const" remove="all" />
     <modify-function signature="setCodec(const QTextCodec *)">
       <modify-argument index="1">
-	<reference-count action="set" variable-name="__rcCodec" />
+    <reference-count action="set" variable-name="__rcCodec" />
       </modify-argument>
     </modify-function>
   </object-type>

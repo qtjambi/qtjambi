@@ -910,9 +910,9 @@
     excluding return values but including potential \c const
     declarations.
 
-	The \c remove, \c access and \c rename attributes are optional
-	attributes for added convenience; they serve the same purpose as
-	the tags \l remove, \l access and \l rename.
+    The \c remove, \c access and \c rename attributes are optional
+    attributes for added convenience; they serve the same purpose as
+    the tags \l remove, \l access and \l rename.
 
     \row
     \o \bold  include
@@ -1237,16 +1237,16 @@
         </modify-argument>
     \endcode
 
-	The \c action attribute specifies the action to be taken. \c add,
-	\c add-all and \c remove are collection actions. They will add a
-	single object to a list of references, add all objects in a
-	collection to a list of references or remove a single object from
-	a list of references. \c set will assign the argument to the
-	variable containing the reference (the argument must be a
-	collection if the variable is also used for any of the collection
-	specific actions.) \c ignore will not inject any code, but will
-	cause the method in question to be removed from the log of
-	possible reference counting API.
+    The \c action attribute specifies the action to be taken. \c add,
+    \c add-all and \c remove are collection actions. They will add a
+    single object to a list of references, add all objects in a
+    collection to a list of references or remove a single object from
+    a list of references. \c set will assign the argument to the
+    variable containing the reference (the argument must be a
+    collection if the variable is also used for any of the collection
+    specific actions.) \c ignore will not inject any code, but will
+    cause the method in question to be removed from the log of
+    possible reference counting API.
 
     The \c variable-name attribute specifies the name used for the variable that holds the
     reference(s).
@@ -1363,14 +1363,14 @@
 
     \row
     \o \bold replace-value \target replace-value
-	\o
+    \o
 
-	The \c replace-value attribute lets you replace the return
-	statement of a function with a fixed string. This attribute can
-	only be used for the argument at index 0, which is always the
-	function's return value.
+    The \c replace-value attribute lets you replace the return
+    statement of a function with a fixed string. This attribute can
+    only be used for the argument at index 0, which is always the
+    function's return value.
 
-	Here is an example of how to use \c modify-argument:
+    Here is an example of how to use \c modify-argument:
 
     \code
         <modify-argument index="0" replace-value="this"/>

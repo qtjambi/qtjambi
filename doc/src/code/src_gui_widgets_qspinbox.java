@@ -24,13 +24,13 @@ public class src_gui_widgets_qspinbox {
 
     int minimum=0, maximum=10;
 //! [2]
-    	spinbox.setRange(minimum, maximum);
+        spinbox.setRange(minimum, maximum);
 //! [2]
 
 
 //! [3]
-    	spinbox.setMinimum(minimum);
-    	spinbox.setMaximum(maximum);
+        spinbox.setMinimum(minimum);
+        spinbox.setMaximum(maximum);
 //! [3]
 
 

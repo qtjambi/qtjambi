@@ -67,7 +67,7 @@ class JarCache {
                 JarFile file = ((JarURLConnection) url.openConnection()).getJarFile();
 
                 // Add root dir for all jar files (event empty ones)
-            	add("", file);
+                add("", file);
 
                 Enumeration<JarEntry> entries = file.entries();
                 while (entries.hasMoreElements()) {
@@ -615,5 +615,5 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
 public class QClassPathFileEngineHandler
 {
-	public native static void initialize();
+    public native static void initialize();
 }

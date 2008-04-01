@@ -45,9 +45,9 @@ void astToXML(QString name) {
 
     QFile outputFile;
     if (!outputFile.open(stdout, QIODevice::WriteOnly))
-	{
-	    return;
-	}
+    {
+        return;
+    }
 
     QXmlStreamWriter s( &outputFile);
     s.setAutoFormatting( true );

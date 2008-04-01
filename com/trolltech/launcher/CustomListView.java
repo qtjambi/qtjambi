@@ -23,7 +23,7 @@ public class CustomListView extends QListView
 
     @Override
     public QSize sizeHint() {
-	QSize s = new QSize(sizeHintForColumn(0), sizeHintForRow(0) /** model().rowCount()*/);
-	return s;
+    QSize s = new QSize(sizeHintForColumn(0), sizeHintForRow(0) /** model().rowCount()*/);
+    return s;
     }
 }

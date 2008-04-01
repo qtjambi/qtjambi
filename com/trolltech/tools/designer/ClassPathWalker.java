@@ -68,38 +68,38 @@ public class ClassPathWalker extends QObject {
         if(stopped)
             return;
 
-		if (stack.isEmpty()) {
+        if (stack.isEmpty()) {
             kill();
-			doneSearching.emit();
-			return;
-		}
+            doneSearching.emit();
+            return;
+        }
 
-		QPair<Object, String> data = stack.pop();
-		if (data.first instanceof QDir) {
-			QDir dir = (QDir) data.first;
-			String dirPath = QDir.toNativeSeparators(dir.absolutePath());
-			if (processedDirs.contains(dirPath))
-				return;
-			processedDirs.add(dirPath);
+        QPair<Object, String> data = stack.pop();
+        if (data.first instanceof QDir) {
+            QDir dir = (QDir) data.first;
+            String dirPath = QDir.toNativeSeparators(dir.absolutePath());
+            if (processedDirs.contains(dirPath))
+                return;
+            processedDirs.add(dirPath);
 
-			QDir.Filters filters = new QDir.Filters();
-			filters.set(QDir.Filter.Readable);
-			filters.set(QDir.Filter.Files);
-			List<String> imgs = dir.entryList(fileExtensions, filters);
+            QDir.Filters filters = new QDir.Filters();
+            filters.set(QDir.Filter.Readable);
+            filters.set(QDir.Filter.Files);
+            List<String> imgs = dir.entryList(fileExtensions, filters);
 
-			for (String file : imgs) {
-				stack.push(new QPair<Object, String>(new QFileInfo(dir.absoluteFilePath(file)), data.second));
-			}
+            for (String file : imgs) {
+                stack.push(new QPair<Object, String>(new QFileInfo(dir.absoluteFilePath(file)), data.second));
+            }
 
-			filters.clear(QDir.Filter.Files);
-			filters.set(QDir.Filter.NoDotAndDotDot);
-			filters.set(QDir.Filter.Dirs);
-			List<String> dirs = dir.entryList(filters);
-			for (String dirName: dirs) {
-				stack.push(new QPair<Object, String>(new QDir(dir.absoluteFilePath(dirName)), data.second));
-			}
-		} else if (data.first instanceof QFileInfo) {
-		    String name = ((QFileInfo) data.first).absoluteFilePath();
+            filters.clear(QDir.Filter.Files);
+            filters.set(QDir.Filter.NoDotAndDotDot);
+            filters.set(QDir.Filter.Dirs);
+            List<String> dirs = dir.entryList(filters);
+            for (String dirName: dirs) {
+                stack.push(new QPair<Object, String>(new QDir(dir.absoluteFilePath(dirName)), data.second));
+            }
+        } else if (data.first instanceof QFileInfo) {
+            String name = ((QFileInfo) data.first).absoluteFilePath();
             int pos = name.lastIndexOf('#') + 1;
 
             name = name.substring(pos);
@@ -107,33 +107,33 @@ public class ClassPathWalker extends QObject {
                 name = name.substring(1);
             name = "classpath:" + name;
 
-			QImage image = new QImage(name);
-			if (!image.isNull()) {
-				QImage smallImage = image.scaled(size,
-						Qt.AspectRatioMode.KeepAspectRatio,
-						Qt.TransformationMode.SmoothTransformation);
+            QImage image = new QImage(name);
+            if (!image.isNull()) {
+                QImage smallImage = image.scaled(size,
+                        Qt.AspectRatioMode.KeepAspectRatio,
+                        Qt.TransformationMode.SmoothTransformation);
 
-				// aspect ration makes one dimension < 1, thus, problems...
-				if (smallImage.isNull()) {
-					smallImage = image.scaled(size,
-							Qt.AspectRatioMode.IgnoreAspectRatio,
-							Qt.TransformationMode.SmoothTransformation);
-				}
+                // aspect ration makes one dimension < 1, thus, problems...
+                if (smallImage.isNull()) {
+                    smallImage = image.scaled(size,
+                            Qt.AspectRatioMode.IgnoreAspectRatio,
+                            Qt.TransformationMode.SmoothTransformation);
+                }
 
-				image.dispose();
+                image.dispose();
 
-				if (!smallImage.isNull()) {
+                if (!smallImage.isNull()) {
                     resourceFound.emit(name, smallImage);
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
     /**
-	 * Starts the traversal of the directory structure... This is done in a
-	 * separate thread and feedback can be received through the resourceFound
-	 * signal.
-	 */
+     * Starts the traversal of the directory structure... This is done in a
+     * separate thread and feedback can be received through the resourceFound
+     * signal.
+     */
     private int timerId = 0;
     public void start() {
         stopped = false;

@@ -43,31 +43,31 @@ public class Utilities {
     /** A formated String with versioning*/
     public static final String VERSION_STRING = Version.STRING;
 
-	/** Enum for defining the operation system. */
+    /** Enum for defining the operation system. */
     public enum OperatingSystem {
-	/** Windows */
+    /** Windows */
         Windows,
-	/** MacOSX */
+    /** MacOSX */
         MacOSX,
-	/** Linux */
+    /** Linux */
         Linux
     }
 
-	/** Defines whether Qt is build in Release or Debug. */
+    /** Defines whether Qt is build in Release or Debug. */
     public enum Configuration {
-	/** Release build. */
+    /** Release build. */
         Release,
-	/** Debug build. */
+    /** Debug build. */
         Debug
     }
 
-	/** The operating system Qt Jambi is running on. */
+    /** The operating system Qt Jambi is running on. */
     public static OperatingSystem operatingSystem = decideOperatingSystem();
-	/** The configuration of Qt Jambi. */
+    /** The configuration of Qt Jambi. */
     public static Configuration configuration = decideConfiguration();
-	/** Whether Qt Jambi has implicit loading. */
+    /** Whether Qt Jambi has implicit loading. */
     public static boolean implicitLoading = !matchProperty("com.trolltech.qt.implicit-loading", "false");
-	/** The library sub path. */
+    /** The library sub path. */
     public static String libSubPath = decideLibSubPath();
     /** Whether Qt Jambi should prefer to load libraries from its cache */
     public static boolean loadFromCache = matchProperty("com.trolltech.qt.load-from-cache", "true");
@@ -104,8 +104,8 @@ public class Utilities {
     public static void loadQtLibrary(String library, String version) {
         com.trolltech.qt.internal.NativeLibraryManager.loadQtLibrary(library, version);
 
-//     	String excludeLibraries = System.getProperty(EXCLUDE_STRING);
-//     	if (excludeLibraries != null) {
+//      String excludeLibraries = System.getProperty(EXCLUDE_STRING);
+//      if (excludeLibraries != null) {
 //             StringTokenizer tokenizer = new StringTokenizer(excludeLibraries,
 //                                                             File.pathSeparator);
 //             while (tokenizer.hasMoreElements()) {
@@ -115,7 +115,7 @@ public class Utilities {
 //                     return;
 //                 }
 //             }
-//     	}
+//      }
 //         String lib = qtLibraryName(library);
 //         loadLibrary(lib);
     }
@@ -123,10 +123,10 @@ public class Utilities {
     public static void loadJambiLibrary(String library) {
         com.trolltech.qt.internal.NativeLibraryManager.loadLibrary(library);
 
-//     	if (configuration == Configuration.Debug)
+//      if (configuration == Configuration.Debug)
 //             library += DEBUG_SUFFIX;
-//     	String lib = jniLibraryName(library);
-//     	loadLibrary(lib);
+//      String lib = jniLibraryName(library);
+//      loadLibrary(lib);
     }
 
     private static boolean loadFromEnv(String env, String lib, LibraryLoadingInfo debug) {
@@ -350,12 +350,12 @@ public class Utilities {
 
 
     private static ClassLoader classLoader() {
-	ClassLoader loader = Thread.currentThread().getContextClassLoader();
-	if (loader == null) {
-	    loader = Utilities.class.getClassLoader();
-	    assert loader != null;
-	}
-	return loader;
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    if (loader == null) {
+        loader = Utilities.class.getClassLoader();
+        assert loader != null;
+    }
+    return loader;
     }
 
     public static String unpackPlugins() {

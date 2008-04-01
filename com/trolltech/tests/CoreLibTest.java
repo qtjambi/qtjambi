@@ -28,5 +28,5 @@ public class CoreLibTest {
         }
 
         QCoreApplication.exec();
-	 }
+     }
 }

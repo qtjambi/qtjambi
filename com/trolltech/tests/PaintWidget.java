@@ -101,7 +101,7 @@ class PaintWidget extends QWidget {
         p.setBrush(new QBrush(m_current_color));
 
         p.drawRect(1, height() - 11, width() - 2, 10);
-	p.end();
+    p.end();
     }
 
     int foo;

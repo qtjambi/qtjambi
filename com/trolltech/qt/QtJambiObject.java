@@ -26,7 +26,7 @@ import java.lang.reflect.*;
 public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInterface
 {
     static {
-    	QtJambi_LibraryInitializer.init();
+        QtJambi_LibraryInitializer.init();
     }
 
     /**
@@ -66,29 +66,29 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
     /**
      * Returns a translated version of source, or source itself if there is no appropriate translated version.
      * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
-	 * which is a static method.
-	 *
+     * which is a static method.
+     *
      * @param source the source text to translate.
      * @return translated version of the source text.
      */
     public String tr(String source) {
-    	String scope = getClass().getName();
-    	return QCoreApplication.translate(scope, source);
+        String scope = getClass().getName();
+        return QCoreApplication.translate(scope, source);
     }
 
     /**
      * Returns a translated version of source, or source itself if there is no appropriate translated version.
      * The comment is used to help translators translate the source text.
      * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
-	 * which is a static method.
+     * which is a static method.
      *
      * @param source the source text to translate.
      * @param comment helps the translator translate the source text.
      * @return translated version of the source text.
      */
     public String tr(String source, String comment) {
-    	String scope = getClass().getName();
-    	return QCoreApplication.translate(scope, source, comment);
+        String scope = getClass().getName();
+        return QCoreApplication.translate(scope, source, comment);
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * If %n occurs in the source text, it will be substituted with count.
      * The comment is used to help translators translate the source text.
      * Note that if you need to translate in a static context, you can use QCoreApplication::translate(),
-	 * which is a static method.
+     * which is a static method.
      *
      * @param source the source text to translate.
      * @param comment helps the translator translate the source text.
@@ -104,8 +104,8 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * @return translated version of the source text.
      */
     public String tr(String source, String comment, int count) {
-    	String scope = getClass().getName();
-    	return QCoreApplication.translate(scope, source, comment, count);
+        String scope = getClass().getName();
+        return QCoreApplication.translate(scope, source, comment, count);
     }
 
     /**

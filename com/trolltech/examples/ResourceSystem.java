@@ -198,15 +198,15 @@ public class ResourceSystem extends QWidget
 
         String searchPath = null;
         if (!browseClassPath) {
-        	String fileName = QFileDialog.getOpenFileName(this, "Select a .jar file",
-        			null, new QFileDialog.Filter("Jar Files (*.jar)"));
+            String fileName = QFileDialog.getOpenFileName(this, "Select a .jar file",
+                    null, new QFileDialog.Filter("Jar Files (*.jar)"));
 
-        	if (fileName.length() == 0) {
-        		browseClassPath = true;
-        		browseClassPathButton.setChecked(true);
-        	}
+            if (fileName.length() == 0) {
+                browseClassPath = true;
+                browseClassPathButton.setChecked(true);
+            }
 
-        	QFileInfo jarInfo = new QFileInfo(fileName);
+            QFileInfo jarInfo = new QFileInfo(fileName);
             searchPath = "classpath:" + jarInfo.canonicalFilePath() + "#/";
         }
 

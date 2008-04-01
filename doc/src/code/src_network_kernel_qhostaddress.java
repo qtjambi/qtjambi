@@ -25,7 +25,7 @@ import com.trolltech.qt.svg.*;
 public class src_network_kernel_qhostaddress {
     public static void main(String args[]) {
         QApplication.initialize(args);
-	QHostAddress hostAddr = new QHostAddress();
+    QHostAddress hostAddr = new QHostAddress();
 //! [0]
         QIPv6Address addr = hostAddr.toIPv6Address();
         // addr contains 16 unsigned characters

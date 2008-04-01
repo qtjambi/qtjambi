@@ -57,21 +57,21 @@ int patchLibrary(const char *name)
             char *c = strstr(buffer+i, ekey_source);
             if (c) {
                 memcpy(c, ekey_result, 512+12);
-	    }
+        }
         }
 
-	f = fopen(name, "w");
-	if (f) {
-	    int wrote = fwrite(buffer, sizeof(char), length, f);
-	    if (wrote != length) {
-	        printf("failed to write patched binary...\n");
-	        success = false;
-	    }
-	    fclose(f);
-	} else {
-	    success = 0;
-	    printf(" - failed to write file...\n");
-	}
+    f = fopen(name, "w");
+    if (f) {
+        int wrote = fwrite(buffer, sizeof(char), length, f);
+        if (wrote != length) {
+            printf("failed to write patched binary...\n");
+            success = false;
+        }
+        fclose(f);
+    } else {
+        success = 0;
+        printf(" - failed to write file...\n");
+    }
 
     } else {
       printf(" - failed to read file...\n");

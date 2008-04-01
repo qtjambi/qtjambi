@@ -112,12 +112,12 @@ class QJdbcSqlDriver extends QSqlDriver
             return true;
 
         case LastInsertId:
-        	try {
-        		return connection != null && connection.getMetaData().supportsGetGeneratedKeys();
-        	} catch (SQLException e) {
-        		setError(e, "Can't determine availability of LastInsertId", QSqlError.ErrorType.UnknownError);
-        		return false;
-        	}
+            try {
+                return connection != null && connection.getMetaData().supportsGetGeneratedKeys();
+            } catch (SQLException e) {
+                setError(e, "Can't determine availability of LastInsertId", QSqlError.ErrorType.UnknownError);
+                return false;
+            }
 
         case QuerySize: // we can only retrieve the fetch count - not the actual result set size
         case NamedPlaceholders: // JDBC supports only positional placeholders

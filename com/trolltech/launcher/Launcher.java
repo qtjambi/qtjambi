@@ -57,7 +57,7 @@ public class Launcher extends QWidget {
             protected void updateHtml(String html) {
                 ui.source.setHtml(html);
             }
-	};
+    };
 
     private HtmlUpdater m_description_updater = new HtmlUpdater(this) {
             @Override
@@ -69,7 +69,7 @@ public class Launcher extends QWidget {
             protected void updateHtml(String html) {
                 ui.description.setHtml(html);
             }
-	};
+    };
 
     private Ui_Launcher ui = new Ui_Launcher();
     private LaunchableListModel m_model = new LaunchableListModel();
@@ -244,7 +244,7 @@ public class Launcher extends QWidget {
         m_current.widget().show();
         m_current.widget().installEventFilter(this);
 
-        // 	ui.description.stop();
+        //  ui.description.stop();
     }
 
     /**
@@ -258,7 +258,7 @@ public class Launcher extends QWidget {
 
         m_current = null;
 
-        // 	ui.description.start();
+        //  ui.description.start();
     }
 
     /**

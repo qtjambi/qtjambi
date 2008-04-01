@@ -2,35 +2,35 @@
     <import file="./build.xml"/>
 
     <target name="application.jar">
-	<jar destfile="./application.jar">
-	    <manifest>
-		<attribute name="Built-By" value="Trolltech ASA - ${TODAY}"/>
-		<attribute name="Main-Class" value="com.trolltech.examples.Application"/>
-	    </manifest>
+    <jar destfile="./application.jar">
+        <manifest>
+        <attribute name="Built-By" value="Trolltech ASA - ${TODAY}"/>
+        <attribute name="Main-Class" value="com.trolltech.examples.Application"/>
+        </manifest>
 
-	    <fileset dir="${qtLib}">
-		<include name="libQtCore.so.4"/>
-		<include name="libQtGui.so.4"/>
-	    </fileset>
+        <fileset dir="${qtLib}">
+        <include name="libQtCore.so.4"/>
+        <include name="libQtGui.so.4"/>
+        </fileset>
 
-	    <fileset dir="${jambiLib}">
-		<include name="libcom_trolltech_qt_core_debuglib.so"/>
-		<include name="libcom_trolltech_qt_gui_debuglib.so"/>
-		<include name="libqtjambi_debuglib.so"/>
-	    </fileset>
+        <fileset dir="${jambiLib}">
+        <include name="libcom_trolltech_qt_core_debuglib.so"/>
+        <include name="libcom_trolltech_qt_gui_debuglib.so"/>
+        <include name="libqtjambi_debuglib.so"/>
+        </fileset>
 
-	    <fileset dir="${sourceDir}">
-		<include name="com/trolltech/qt/*.class"/>
-		<include name="com/trolltech/qt/gui/*.class"/>
-		<include name="com/trolltech/qt/core/*class"/>
-		<include name="com/trolltech/images/*png"/>
-		<include name="com/trolltech/examples/Application.class"/>
-		<include name="qt_system_libs"/>
-	    </fileset>
+        <fileset dir="${sourceDir}">
+        <include name="com/trolltech/qt/*.class"/>
+        <include name="com/trolltech/qt/gui/*.class"/>
+        <include name="com/trolltech/qt/core/*class"/>
+        <include name="com/trolltech/images/*png"/>
+        <include name="com/trolltech/examples/Application.class"/>
+        <include name="qt_system_libs"/>
+        </fileset>
 
-	    <fileset dir="/usr/lib">
-		<include name="libstdc++.so.6"/>
-	    </fileset>
-	</jar>
+        <fileset dir="/usr/lib">
+        <include name="libstdc++.so.6"/>
+        </fileset>
+    </jar>
     </target>
 </project>

@@ -26,7 +26,7 @@ public class src_gui_painting_qregion extends QWidget {
         QRegion r3 = r1.intersected(r2);
 
         QPainter painter = new QPainter(this);
-	    painter.setClipRegion(r3);
+        painter.setClipRegion(r3);
 
         // paint clipped graphics
     }

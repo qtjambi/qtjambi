@@ -9,8 +9,8 @@ function download {
     echo Downloading $1
     if [ -e $1 ]
     then
-	echo - deleting old file...
-	rm $1
+    echo - deleting old file...
+    rm $1
     fi
     curl -O http://ares.troll.no/~qt/packages/$1 || failure "download of package $1 failed..."
 }
@@ -27,13 +27,13 @@ function unpack_and_build {
 
     if [ "$2" == "eval" ]
     then
-	echo - copying eval contents...
-	rm -rf $4 > /dev/null 2>&1
-	unzip $3.zip > /dev/null
-	cp -R $4/* $DIRECTORY_NAME
-	CONFIGURE_EXTRA=-DQT_EVAL
+    echo - copying eval contents...
+    rm -rf $4 > /dev/null 2>&1
+    unzip $3.zip > /dev/null
+    cp -R $4/* $DIRECTORY_NAME
+    CONFIGURE_EXTRA=-DQT_EVAL
     else
-	CONFIGURE_EXTRA=
+    CONFIGURE_EXTRA=
     fi
 
     cd $DIRECTORY_NAME

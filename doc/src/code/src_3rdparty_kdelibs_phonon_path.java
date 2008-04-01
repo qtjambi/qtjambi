@@ -22,7 +22,7 @@ import java.util.*;
 
 
 public class src_3rdparty_kdelibs_phonon_path {
-	@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     public void fooBar() {
 //! [0]
 

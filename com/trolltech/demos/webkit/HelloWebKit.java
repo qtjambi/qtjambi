@@ -16,11 +16,11 @@ public class HelloWebKit extends QMainWindow {
     private QAction stop;
 
     public HelloWebKit() {
-	this(null);
+    this(null);
     }
 
     public HelloWebKit(QWidget parent) {
-	super(parent);
+    super(parent);
 
         field = new QLineEdit();
         browser = new QWebView();

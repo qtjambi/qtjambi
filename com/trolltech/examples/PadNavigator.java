@@ -144,7 +144,7 @@ public class PadNavigator extends QGraphicsView {
     }
 
     public PadNavigator() {
-	this(3, 3);
+    this(3, 3);
     }
 
 

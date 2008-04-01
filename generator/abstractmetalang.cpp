@@ -25,7 +25,7 @@ AbstractMetaType *AbstractMetaType::copy() const
     cpy->setConstant(isConstant());
     cpy->setReference(isReference());
     cpy->setIndirections(indirections());
-	cpy->setInstantiations(instantiations());
+    cpy->setInstantiations(instantiations());
     cpy->setArrayElementCount(arrayElementCount());
     cpy->setOriginalTypeDescription(originalTypeDescription());
     cpy->setOriginalTemplateType(originalTemplateType() ? originalTemplateType()->copy() : 0);
@@ -1135,7 +1135,7 @@ QPropertySpec *AbstractMetaClass::propertySpecForReset(const QString &name) cons
 static bool functions_contains(const AbstractMetaFunctionList &l, const AbstractMetaFunction *func)
 {
     foreach (const AbstractMetaFunction *f, l) {
-		if ((f->compareTo(func) & AbstractMetaFunction::PrettySimilar) == AbstractMetaFunction::PrettySimilar)
+        if ((f->compareTo(func) & AbstractMetaFunction::PrettySimilar) == AbstractMetaFunction::PrettySimilar)
             return true;
     }
     return false;

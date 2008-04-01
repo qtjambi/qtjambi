@@ -15,9 +15,9 @@ package com.trolltech.qt;
 
 public class QSysInfo {
 
-	static {
-		QtJambi_LibraryInitializer.init();
-	}
+    static {
+        QtJambi_LibraryInitializer.init();
+    }
 
     // Windows enum values
     public static final int Windows_32s      = 0x0001;
@@ -45,42 +45,42 @@ public class QSysInfo {
     public static final int MacOS_10_3 = 0x0005;
     public static final int MacOS_10_4 = 0x0006;
 
-    public static final int MacOS_CHEETAH 	= MacOS_10_0;
-    public static final int MacOS_PUMA 		= MacOS_10_1;
-    public static final int MacOS_JAGUAR	= MacOS_10_2;
-    public static final int MacOS_PANTHER 	= MacOS_10_3;
-    public static final int MacOS_TIGER 	= MacOS_10_4;
+    public static final int MacOS_CHEETAH   = MacOS_10_0;
+    public static final int MacOS_PUMA      = MacOS_10_1;
+    public static final int MacOS_JAGUAR    = MacOS_10_2;
+    public static final int MacOS_PANTHER   = MacOS_10_3;
+    public static final int MacOS_TIGER     = MacOS_10_4;
 
 
     // Operating system enum values.
-    public static final int OS_AIX 	=  1;
-    public static final int OS_BSD4 	=  2;
-    public static final int OS_BSDI	=  3;
-    public static final int OS_CYGWIN	=  4;
-    public static final int OS_DARWIN	=  5;
-    public static final int OS_DGUX	=  6;
-    public static final int OS_DYNIX	=  7;
-    public static final int OS_FREEBSD	=  8;
-    public static final int OS_HPUX	=  9;
-    public static final int OS_HURD	= 10;
-    public static final int OS_IRIX	= 11;
-    public static final int OS_LINUX	= 12;
-    public static final int OS_LYNX	= 13;
-    public static final int OS_MSDOS	= 14;
-    public static final int OS_NETBSD	= 15;
-    public static final int OS_OPENBSD	= 16;
-    public static final int OS_OS2	= 17;
-    public static final int OS_OS2EMX	= 18;
-    public static final int OS_OSF	= 19;
-    public static final int OS_QNX	= 20;
-    public static final int OS_QNX6	= 21;
-    public static final int OS_RELIANT	= 22;
-    public static final int OS_SCO	= 23;
-    public static final int OS_SOLARIS	= 24;
-    public static final int OS_ULTRIX	= 25;
-    public static final int OS_UNIXWARE	= 26;
-    public static final int OS_WIN32	= 27;
-    public static final int OS_WIN64	= 28;
+    public static final int OS_AIX  =  1;
+    public static final int OS_BSD4     =  2;
+    public static final int OS_BSDI =  3;
+    public static final int OS_CYGWIN   =  4;
+    public static final int OS_DARWIN   =  5;
+    public static final int OS_DGUX =  6;
+    public static final int OS_DYNIX    =  7;
+    public static final int OS_FREEBSD  =  8;
+    public static final int OS_HPUX =  9;
+    public static final int OS_HURD = 10;
+    public static final int OS_IRIX = 11;
+    public static final int OS_LINUX    = 12;
+    public static final int OS_LYNX = 13;
+    public static final int OS_MSDOS    = 14;
+    public static final int OS_NETBSD   = 15;
+    public static final int OS_OPENBSD  = 16;
+    public static final int OS_OS2  = 17;
+    public static final int OS_OS2EMX   = 18;
+    public static final int OS_OSF  = 19;
+    public static final int OS_QNX  = 20;
+    public static final int OS_QNX6 = 21;
+    public static final int OS_RELIANT  = 22;
+    public static final int OS_SCO  = 23;
+    public static final int OS_SOLARIS  = 24;
+    public static final int OS_ULTRIX   = 25;
+    public static final int OS_UNIXWARE = 26;
+    public static final int OS_WIN32    = 27;
+    public static final int OS_WIN64    = 28;
 
     public static native int windowsVersion();
     public static native int macVersion();

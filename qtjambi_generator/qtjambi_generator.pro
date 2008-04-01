@@ -12,8 +12,8 @@ include(../generator/parser/rpp/rpp.pri)
 GENERATOR_DIR = ../generator
 
 HEADERS += \
-	$$GENERATOR_DIR/reporthandler.h \
-	$$GENERATOR_DIR/typesystem.h \
+    $$GENERATOR_DIR/reporthandler.h \
+    $$GENERATOR_DIR/typesystem.h \
         $$GENERATOR_DIR/main.h \
         $$GENERATOR_DIR/typeparser.h \
         $$GENERATOR_DIR/metajavabuilder.h \
@@ -28,8 +28,8 @@ HEADERS += \
         $$GENERATOR_DIR/customtypes.h \
 
 SOURCES += \
-	$$GENERATOR_DIR/reporthandler.cpp \
-	$$GENERATOR_DIR/typesystem.cpp \
+    $$GENERATOR_DIR/reporthandler.cpp \
+    $$GENERATOR_DIR/typesystem.cpp \
         $$GENERATOR_DIR/typeparser.cpp \
         $$GENERATOR_DIR/metajavabuilder.cpp \
         $$GENERATOR_DIR/metajava.cpp \

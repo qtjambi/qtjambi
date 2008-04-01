@@ -22,35 +22,35 @@ import java.lang.reflect.*;
 public class Launchable {
 
     private static class SourceFormatter {
-	private static String KEYWORDS[] = new String[] {
-	    "for ",
-	    "if ",
-	    "switch ",
-	    " int ",
-	    "const",
-	    "void ",
-	    "case ",
-	    "double ",
-	    "static",
-	    "new",
-	    "this",
-	    "package",
-	    "true",
-	    "false",
-	    "public",
-	    "protected",
-	    "private",
-	    "final",
-	    "native",
-	    "import",
-	    "extends",
-	    "implements",
-	    "else",
-	    "class",
-	    "super",
-	};
+    private static String KEYWORDS[] = new String[] {
+        "for ",
+        "if ",
+        "switch ",
+        " int ",
+        "const",
+        "void ",
+        "case ",
+        "double ",
+        "static",
+        "new",
+        "this",
+        "package",
+        "true",
+        "false",
+        "public",
+        "protected",
+        "private",
+        "final",
+        "native",
+        "import",
+        "extends",
+        "implements",
+        "else",
+        "class",
+        "super",
+    };
 
-	static public String format(String source) {
+    static public String format(String source) {
         int start = -1;
         int end = -1;
         boolean stop = false;
@@ -64,28 +64,28 @@ public class Launchable {
             }
         } while (!stop);
 
-		source = source.replace("&", "&amp;");
-	    source = source.replace("<", "&lt;");
-	    source = source.replace(">", "&gt;");
+        source = source.replace("&", "&amp;");
+        source = source.replace("<", "&lt;");
+        source = source.replace(">", "&gt;");
 
-	    source = source.replace("\t", "   ");
+        source = source.replace("\t", "   ");
 
-	    for (int i=0; i<KEYWORDS.length; ++i) {
-	    	String keyword = KEYWORDS[i];
-	    	source = source.replace(keyword, "<font color=olive>" + keyword + "</font>");
-	    }
-	    source = source.replace("(int ", "(<font color=olive><b>int </b></font>");
-	    source = source.replaceAll("(\\d\\d?)", "<font color=navy>$1</font>");
+        for (int i=0; i<KEYWORDS.length; ++i) {
+            String keyword = KEYWORDS[i];
+            source = source.replace(keyword, "<font color=olive>" + keyword + "</font>");
+        }
+        source = source.replace("(int ", "(<font color=olive><b>int </b></font>");
+        source = source.replaceAll("(\\d\\d?)", "<font color=navy>$1</font>");
 
-	    String commentRe = "(//+[.[^\n]]*\n)";
-	    source = source.replaceAll(commentRe, "<font color=darkgreen><i>$1</i></font>");
+        String commentRe = "(//+[.[^\n]]*\n)";
+        source = source.replaceAll(commentRe, "<font color=darkgreen><i>$1</i></font>");
 
-	    String stringLiteralRe = "(\".+\")";
-	    source = source.replaceAll(stringLiteralRe, "<font color=green>$1</font>");
+        String stringLiteralRe = "(\".+\")";
+        source = source.replaceAll(stringLiteralRe, "<font color=green>$1</font>");
 
-	    source = "<html style=\"white-space:pre-wrap;font-family:courier new\">" + source + "</html>";
-	    return source;
-	}
+        source = "<html style=\"white-space:pre-wrap;font-family:courier new\">" + source + "</html>";
+        return source;
+    }
 } // end of SourceFormatter
 
 
@@ -101,9 +101,9 @@ public class Launchable {
     }
 
     public QWidget widget() {
-	if (m_widget == null)
-	    createWidget();
-	return m_widget;
+    if (m_widget == null)
+        createWidget();
+    return m_widget;
     }
 
     public String name() {
@@ -111,16 +111,16 @@ public class Launchable {
     }
 
     public String description() {
-	if (m_description == null)
-	    loadDescription();
-	return m_description;
+    if (m_description == null)
+        loadDescription();
+    return m_description;
 
     }
 
     public String source() {
-	if (m_source == null)
-	    loadSource();
-	return m_source;
+    if (m_source == null)
+        loadSource();
+    return m_source;
     }
 
     public void killWidget() {
@@ -130,19 +130,19 @@ public class Launchable {
     }
 
     private final String resourceFile(String fileType) {
-	QFile f = new QFile("classpath:" + m_className.replace(".", "/") + "." + fileType);
-	if (f.exists() && f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text)))
-	    return f.readAll().toString();
-	return null;
+    QFile f = new QFile("classpath:" + m_className.replace(".", "/") + "." + fileType);
+    if (f.exists() && f.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly, QFile.OpenModeFlag.Text)))
+        return f.readAll().toString();
+    return null;
     }
 
     /**
      * Searches for the description and loads it if possible
      */
     private void loadDescription() {
-	m_description = resourceFile("html");
-	if (m_description == null)
-	    m_description = "<h1 align=\"center\">" + m_name + "</h1>" +
+    m_description = resourceFile("html");
+    if (m_description == null)
+        m_description = "<h1 align=\"center\">" + m_name + "</h1>" +
         "<p>The '<i>" + m_name + "</i>' demo does not have a description.</p>" +
         "<p>Investigate this demo further:<ul><li>Run it, by clicking the '<i>Launch</i>' button.</li>" +
         "<li>Look at the source code, by clicking the '<i>View Source</i>' button.</li></ul></p>";
@@ -152,35 +152,35 @@ public class Launchable {
        Searches for the source file and loads and HTMLifies it if possible.
     */
     private void loadSource() {
-	m_source = resourceFile("java");
-     	if (m_source == null) {
-	    m_source = "<i>No source</i>";
-	} else {
-	    m_source = SourceFormatter.format(m_source);
-	}
+    m_source = resourceFile("java");
+        if (m_source == null) {
+        m_source = "<i>No source</i>";
+    } else {
+        m_source = SourceFormatter.format(m_source);
+    }
     }
 
     private void createWidget() {
-	if (m_widget != null)
-	    throw new RuntimeException("widget shouldn't exist at this point");
+    if (m_widget != null)
+        throw new RuntimeException("widget shouldn't exist at this point");
 
-	try {
-	    Class<?> cl = Class.forName(m_className);
+    try {
+        Class<?> cl = Class.forName(m_className);
 
-	    try {
-		cl.getConstructor();
-		m_widget = (QWidget) cl.newInstance();
-	    } catch(Exception e) {
-		Constructor<?> constructor = cl.getConstructor(QWidget.class);
-		m_widget = (QWidget) constructor.newInstance((QWidget) null);
-	    }
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+        try {
+        cl.getConstructor();
+        m_widget = (QWidget) cl.newInstance();
+        } catch(Exception e) {
+        Constructor<?> constructor = cl.getConstructor(QWidget.class);
+        m_widget = (QWidget) constructor.newInstance((QWidget) null);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 
     public static Launchable create(String className) {
-	try {
+    try {
             Class<?> cl = Class.forName(className);
 
             if (Modifier.isPublic(cl.getModifiers()) && QWidget.class.isAssignableFrom(cl)) {

@@ -10,7 +10,7 @@ import com.trolltech.qt.svg.*;
 public class src_sql_kernel_qsqldatabase {
     public static void main(String args[]) {
         QApplication.initialize(args);
-	{
+    {
 //! [0]
     // WRONG
     QSqlDatabase db = QSqlDatabase.database("sales");
@@ -20,8 +20,8 @@ public class src_sql_kernel_qsqldatabase {
     // "db" is now a dangling invalid database connection,
     // "query" contains an invalid result set
 //! [0]
-	}
-	{
+    }
+    {
 //! [1]
     {
         QSqlDatabase db = QSqlDatabase.database("sales");
@@ -30,8 +30,8 @@ public class src_sql_kernel_qsqldatabase {
     // Both "db" and "query" are destroyed because they are out of scope
     QSqlDatabase.removeDatabase("sales"); // correct
 //! [1]
-	}
-	{
+    }
+    {
 /*
 //! [2]
      QSqlDatabase.registerSqlDriver("MYDRIVER",
@@ -39,9 +39,9 @@ public class src_sql_kernel_qsqldatabase {
      QSqlDatabase db = QSqlDatabase.addDatabase("MYDRIVER");
 //! [2]
 */
-	}
-	{
-	    QSqlDatabase db;
+    }
+    {
+        QSqlDatabase db;
 //! [3]
     // ...
     db = QSqlDatabase.addDatabase("QODBC");
@@ -51,17 +51,17 @@ public class src_sql_kernel_qsqldatabase {
     }
     // ...
 //! [3]
-	}
+    }
 
-	{
-	    QSqlDatabase db = QSqlDatabase.addDatabase("QODBC");
+    {
+        QSqlDatabase db = QSqlDatabase.addDatabase("QODBC");
 //! [4]
     // ...
     // MySQL connection
     db.setConnectOptions("CLIENT_SSL=1;CLIENT_IGNORE_SPACE=1"); // use an SSL connection to the server
     if (!db.open()) {
         db.setConnectOptions(); // clears the connect option string
-	// ...
+    // ...
     }
     // ...
     // PostgreSQL connection
@@ -78,7 +78,7 @@ public class src_sql_kernel_qsqldatabase {
         // ...
     }
 //! [4]
-	}
+    }
 /*
 //! [5]
         #include "qtdir/src/sql/drivers/psql/qsql_psql.cpp"
@@ -86,7 +86,7 @@ public class src_sql_kernel_qsqldatabase {
 */
 /*
 //! [6]
-	PGconn on = PQconnectdb("host=server user=bart password=simpson dbname=springfield");
+    PGconn on = PQconnectdb("host=server user=bart password=simpson dbname=springfield");
         QPSQLDriver rv =  new QPSQLDriver(con);
         QSqlDatabase db = QSqlDatabase.addDatabase(drv); // becomes the new default connection
         QSqlQuery query;
@@ -97,10 +97,10 @@ public class src_sql_kernel_qsqldatabase {
 /*
 //! [7]
          unix:LIBS += -lpq
-	 win32:LIBS += libpqdll.lib
+     win32:LIBS += libpqdll.lib
 //! [7]
 */
-	{
+    {
 //! [8]
         QSqlDatabase db = new QSqlDatabase();
         System.out.println(db.isValid());    // Returns false
@@ -111,6 +111,6 @@ public class src_sql_kernel_qsqldatabase {
         QSqlDatabase.removeDatabase("sales");
         System.out.println(db.isValid());    // Returns false
 //! [8]
-	}
+    }
     }
 }

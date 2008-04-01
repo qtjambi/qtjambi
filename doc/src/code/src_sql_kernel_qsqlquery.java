@@ -17,7 +17,7 @@ public class src_sql_kernel_qsqlquery {
         SELECT forename, surname FROM people;
 //! [0]
 */
-	{
+    {
 //! [1]
     QSqlQuery q = new QSqlQuery("select * from employees");
     QSqlRecord rec = q.record();
@@ -28,35 +28,35 @@ public class src_sql_kernel_qsqlquery {
     while (q.next())
         System.out.println(q.value(nameCol).toString()); // output all names
 //! [1]
-	}
-	{
+    }
+    {
 //! [2]
         QSqlQuery q = new QSqlQuery();
         q.prepare("insert into myTable values (?, ?)");
 
-	List<Integer> ints = new ArrayList<Integer>();
+    List<Integer> ints = new ArrayList<Integer>();
         ints.add(1);
-	ints.add(2);
-	ints.add(3);
-	ints.add(4);
+    ints.add(2);
+    ints.add(3);
+    ints.add(4);
         q.addBindValue(ints);
 
-	List<String> names = new ArrayList<String>();
-	names.add("Harald");
-	names.add("Boris");
-	names.add("Trond");
- 	names.add(null);
+    List<String> names = new ArrayList<String>();
+    names.add("Harald");
+    names.add("Boris");
+    names.add("Trond");
+    names.add(null);
         q.addBindValue(names);
 
         if (!q.execBatch())
             System.out.println(q.lastError());
 //! [2]
-	}
+    }
 /*
 //! [3]
-	1  Harald
-	2  Boris
-	3  Trond
+    1  Harald
+    2  Boris
+    3  Trond
         4  NULL
 //! [3]
 */

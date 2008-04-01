@@ -78,10 +78,10 @@
     following:
 
     \table
-	\header \o Platform	\o Prefix	\o Suffix	\o Example
-	\row    \o Windows  	\o \i none 	\o .dll   	\o qtjambi.dll
-	\row	\o Linux	\o lib		\o .so		\o libqtjambi.so
-	\row 	\o Mac OS X	\o lib		\o .jnilib	\o libqtjambi.jnilib
+    \header \o Platform \o Prefix   \o Suffix   \o Example
+    \row    \o Windows      \o \i none  \o .dll     \o qtjambi.dll
+    \row    \o Linux    \o lib      \o .so      \o libqtjambi.so
+    \row    \o Mac OS X \o lib      \o .jnilib  \o libqtjambi.jnilib
     \endtable
 
     \section3 Qt Libraries
@@ -98,10 +98,10 @@
     and dependecies are resolved.
 
     \table
-	\header \o Platform	\o Prefix	\o Suffix	\o Example
-	\row    \o Windows  	\o \i none 	\o .dll   	\o QtCore4.dll
-	\row	\o Linux	\o lib		\o .so.4	\o libQtCore.so.4
-	\row 	\o Mac OS X	\o lib		\o .4.dylib	\o libQtCore.4.dylib
+    \header \o Platform \o Prefix   \o Suffix   \o Example
+    \row    \o Windows      \o \i none  \o .dll     \o QtCore4.dll
+    \row    \o Linux    \o lib      \o .so.4    \o libQtCore.so.4
+    \row    \o Mac OS X \o lib      \o .4.dylib \o libQtCore.4.dylib
     \endtable
 
     \section3 Runtime Libraries
@@ -118,15 +118,15 @@
     system.
 
     \table 75%
-        \header \o Compiler		\o Runtime Libraries
-        \row 	\o MSVC 6.0		\o msvcr60.dll, msvcp60.dll
-        \row 	\o MSVC 2002		\o msvcr70.dll, msvcp70.dll
-	\row  	\o MSVC 2003 		\o msvcr71.dll, msvcp71.dll
-	\row 	\o MinGW		\o mingwm10.dll
-	\row 	\o GCC 3.3 and older	\o libstdc++.so.5
-	\row 	\o GCC 3.4 and newer	\o libstdc++.so.6
-	\row 	\o GCC on Mac OS X	\o no dependencies
-        \row  	\o MSVC 2005 and 2008   \o
+        \header \o Compiler     \o Runtime Libraries
+        \row    \o MSVC 6.0     \o msvcr60.dll, msvcp60.dll
+        \row    \o MSVC 2002        \o msvcr70.dll, msvcp70.dll
+    \row    \o MSVC 2003        \o msvcr71.dll, msvcp71.dll
+    \row    \o MinGW        \o mingwm10.dll
+    \row    \o GCC 3.3 and older    \o libstdc++.so.5
+    \row    \o GCC 3.4 and newer    \o libstdc++.so.6
+    \row    \o GCC on Mac OS X  \o no dependencies
+        \row    \o MSVC 2005 and 2008   \o
 
     Microsoft Visual Studio 2005 and 2008 introduces manifest files as
     a way of describing dependencies between dll's. This restricts the
@@ -165,11 +165,11 @@
     some tools available.
 
     \table
-    	   \header	\o Platform	\o Tools
-	   \row		\o Windows	\o \c depends.exe, GUI tool part of MSVC
-	   \row		\o Windows	\o \c {dumpbin /dependents}, command line tool part of MSVC
-	   \row 	\o Linux 	\o \c ldd, command line tool, part of GCC
-	   \row 	\o Mac OS X	\o \c otool -L, standard tool
+           \header  \o Platform \o Tools
+       \row     \o Windows  \o \c depends.exe, GUI tool part of MSVC
+       \row     \o Windows  \o \c {dumpbin /dependents}, command line tool part of MSVC
+       \row     \o Linux    \o \c ldd, command line tool, part of GCC
+       \row     \o Mac OS X \o \c otool -L, standard tool
     \endtable
 
     \section3 Plugins
@@ -365,8 +365,8 @@
              classpath="ant-qtjambi.jar"
              classname="com.trolltech.tools.ant.PlatformJarTask"/>
     <taskdef name="qtjambi-initialize"
-    	     classpath="ant-qtjambi.jar"
-	     classname="com.trolltech.tools.ant.InitializeTask"/>
+             classpath="ant-qtjambi.jar"
+         classname="com.trolltech.tools.ant.InitializeTask"/>
     \endcode
 
     These steps define the Qt Jambi ant tasks in the \c
@@ -393,7 +393,7 @@
 
     \code
     <target name="qtjambi-customplatform.jar"
-	    description="Creating .jar file with native libs...">
+        description="Creating .jar file with native libs...">
 
       <qtjambi-platform-jar cacheKey="MyCompany.Application.${DSTAMP}.${TSTAMP}"
                             outdir="platform-output">
@@ -414,10 +414,10 @@
         <!-- Qt Libraries... -->
         <library name="QtCore"
                  type="qt"
- 		 rootPath="${qtjambi.qtdir}" />
+         rootPath="${qtjambi.qtdir}" />
         <library name="QtGui"
-        	 type="qt"
-  	         rootPath="${qtjambi.qtdir}" />
+             type="qt"
+             rootPath="${qtjambi.qtdir}" />
     \endcode
 
     We specify the name of the library, excluding the platform
@@ -472,7 +472,7 @@
         <library name="qtjambi"                  type="qtjambi" rootPath="${env.JAMBIDIR}" />
         <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${env.JAMBIDIR}" />
         <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${env.JAMBIDIR}" />
- 	<library name="customlibrary"		 type="qtjambi" rootPath="." subdir="." />
+    <library name="customlibrary"        type="qtjambi" rootPath="." subdir="." />
 
       </qtjambi-platform-jar>
     \endcode
@@ -533,10 +533,10 @@
     done by setting the environment variables:
 
     \table
-      \header \o Platform	\o Environment Variable
-      \row    \o Windows	\o PATH
-      \row    \o Linux 		\o LD_LIBRARY_PATH
-      \row    \o Mac OS X	\o DYLD_LIBRARY_PATH
+      \header \o Platform   \o Environment Variable
+      \row    \o Windows    \o PATH
+      \row    \o Linux      \o LD_LIBRARY_PATH
+      \row    \o Mac OS X   \o DYLD_LIBRARY_PATH
     \endtable
 
     It is also possible to explicitly set these variables using calls

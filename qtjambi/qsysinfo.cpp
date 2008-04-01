@@ -14,7 +14,7 @@
 #include "qtjambi_core.h"
 
 
-#define QTJAMBI_OS_AIX 	        1
+#define QTJAMBI_OS_AIX          1
 #define QTJAMBI_OS_BSD4          2
 #define QTJAMBI_OS_BSDI          3
 #define QTJAMBI_OS_CYGWIN        4

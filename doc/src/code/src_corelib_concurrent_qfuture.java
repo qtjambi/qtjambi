@@ -22,7 +22,7 @@
         QFutureIterator<QString> i(future);
         i.toBack();
         while (i.hasPrevious())
-	    qDebug() << i.previous();
+        qDebug() << i.previous();
 //! [2]
 
 

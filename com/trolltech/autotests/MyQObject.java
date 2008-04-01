@@ -63,8 +63,8 @@ class MyQObject extends QObject
     @Override
     protected void disposed()
     {
-    	if (destroyed != null)
-    		this.destroyed.emit();
+        if (destroyed != null)
+            this.destroyed.emit();
         super.disposed();
     }
 

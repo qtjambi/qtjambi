@@ -110,8 +110,8 @@ int main(int argc, char *argv[])
     }
 
     if (args.contains("ast-to-xml")) {
-	astToXML(pp_file);
-	return 0;
+    astToXML(pp_file);
+    return 0;
     }
 
     gs->buildModel(pp_file);

@@ -51,7 +51,7 @@ if (array_contains(args, "-help") || array_contains(args, "-h")) {
     displayHelp();
 } else {
     for (var i in option)
-	verbose("'%1': %2".arg(i).arg(option[i]));
+    verbose("'%1': %2".arg(i).arg(option[i]));
     verbose("");
     for (var i in command)
         verbose("using command '%1' in: %2".arg(i).arg(command[i]));
@@ -231,10 +231,10 @@ function setupBinaryPackage(pkg) {
         if (pkg.license == "gpl") {
             pkg.copyFiles.push([find_executable("mingwm10.dll"), "bin"]);
         } else {
-	    if (!File.exists(option.crtRedist + "/msvcr80.dll")) {
-		throw "Failed to locate '" + option.crtRedist
-		    + "/msvcr80.dll', is --crt-redist properly specified?";
-	    }
+        if (!File.exists(option.crtRedist + "/msvcr80.dll")) {
+        throw "Failed to locate '" + option.crtRedist
+            + "/msvcr80.dll', is --crt-redist properly specified?";
+        }
 
             var crtPluginDests = ["plugins/accessible/Microsoft.VC80.CRT",
                                   "plugins/codecs/Microsoft.VC80.CRT",
@@ -496,9 +496,9 @@ function setupGPLBinaryPackage() {
         return undefined;
 
     if (os_name() == OS_NAME_WINDOWS) {
-	pkg.maketool = find_executable("mingw32-make");
-	pkg.qmakespec = "win32-g++";
-	pkg.originalPath = System.getenv("PATH");
+    pkg.maketool = find_executable("mingw32-make");
+    pkg.qmakespec = "win32-g++";
+    pkg.originalPath = System.getenv("PATH");
         pkg.copyFiles.push([find_executable("mingwm10.dll"), "bin"]);
 
 
@@ -513,15 +513,15 @@ function setupGPLBinaryPackage() {
             }
         }
 
-	pkg.preCompileStep = function(pkg) {
-	    setPathForMinGW(pkg);
-	}
+    pkg.preCompileStep = function(pkg) {
+        setPathForMinGW(pkg);
+    }
 
-	pkg.postCompileStep = function(pkg) {
-	    if (os_name() == OS_NAME_WINDOWS) {
-		System.setenv("PATH", pkg.originalPath);
-	    }
-	}
+    pkg.postCompileStep = function(pkg) {
+        if (os_name() == OS_NAME_WINDOWS) {
+        System.setenv("PATH", pkg.originalPath);
+        }
+    }
     }
 
     finalizeDefaultPackage(pkg);
@@ -790,13 +790,13 @@ function moveFiles(pkg) {
             execute([command.chmod, "u+rw", source]);
         }
 
-	try {
-	    new Dir(source).setCurrent(); // check if its a directory?
-	    dir.setCurrent(); // and set it back...
-	    execute([command.cp, "-R", source, javaDir + "/" + target]);
-	} catch (e) {
-	    execute([command.cp, source, target]); // straight copy as -R only does symbolic links...
-	}
+    try {
+        new Dir(source).setCurrent(); // check if its a directory?
+        dir.setCurrent(); // and set it back...
+        execute([command.cp, "-R", source, javaDir + "/" + target]);
+    } catch (e) {
+        execute([command.cp, source, target]); // straight copy as -R only does symbolic links...
+    }
 
     }
 }
@@ -826,8 +826,8 @@ function removeFiles(pkg) {
             files.push(name);
         else if (name.indexOf("/plugins/") >= 0 && name.endsWith(".lib"))
             files.push(name);
-	else if (name.endsWith(".debug") || name.indexOf("_debuglib.") > 0)
-	    files.push(name);
+    else if (name.endsWith(".debug") || name.indexOf("_debuglib.") > 0)
+        files.push(name);
         else if (name.endsWith(".a"))
             files.push(name);
         else if (name.endsWith(".o") || name.endsWith(".obj"))

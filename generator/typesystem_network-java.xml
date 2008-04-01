@@ -42,7 +42,7 @@ proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequire
         <modify-function signature="disconnectFromHostImplementation()" access="non-final" />
         <modify-function signature="flush()" access="non-final" />
         <modify-function signature="setReadBufferSize(long long)" access="non-final" />
-	<modify-function signature="setSocketDescriptor(int,QAbstractSocket::SocketState,QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="non-final" />
+    <modify-function signature="setSocketDescriptor(int,QAbstractSocket::SocketState,QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="non-final" />
         <modify-function signature="waitForConnected(int)" access="non-final" />
         <modify-function signature="waitForDisconnected(int)" access="non-final" />
 

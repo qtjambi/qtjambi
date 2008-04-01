@@ -34,136 +34,136 @@ public class DrawLines {
 
     @Override
     public void paint(Graphics g) {
-	    g.setColor(new Color(255, 0, 0));
+        g.setColor(new Color(255, 0, 0));
 
-	    int runningTime = 1000;
+        int runningTime = 1000;
 
-	    for (int size=8; size<=512; size*=2) {
+        for (int size=8; size<=512; size*=2) {
 
-		long drawCount = 0;
-		long startTime = System.currentTimeMillis();
-		long endTime = startTime + runningTime;
-		while (System.currentTimeMillis() < endTime) {
-		    for (int j=0; j<100; ++j) {
-			g.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
-			++drawCount;
-		    }
-		}
+        long drawCount = 0;
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + runningTime;
+        while (System.currentTimeMillis() < endTime) {
+            for (int j=0; j<100; ++j) {
+            g.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
+            ++drawCount;
+            }
+        }
 
-		long opsPrSec = (drawCount * 1000 / (endTime - startTime));
-		System.out.printf("Awt:   diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
-	    }
+        long opsPrSec = (drawCount * 1000 / (endTime - startTime));
+        System.out.printf("Awt:   diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
+        }
 
-	    setVisible(false);
-	}
+        setVisible(false);
+    }
 
-	@Override
+    @Override
     public Dimension getPreferredSize() {
-	    return new Dimension(SIZE, SIZE);
-	}
+        return new Dimension(SIZE, SIZE);
+    }
     }
 
 
     private static class QtWidget extends QWidget {
-	@Override
+    @Override
     protected void paintEvent(QPaintEvent e) {
 
-	    QPainter p = new QPainter();
-	    p.begin(this);
+        QPainter p = new QPainter();
+        p.begin(this);
 
-	    p.setPen(new QPen(QColor.red));
+        p.setPen(new QPen(QColor.red));
 
-	    int runningTime = 1000;
+        int runningTime = 1000;
 
-	    for (int size=8; size<=512; size*=2) {
-		long drawCount = 0;
-		long startTime = System.currentTimeMillis();
-		long endTime = startTime + runningTime;
-		while (System.currentTimeMillis() < endTime) {
-		    for (int j=0; j<100; ++j) {
-			p.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
-			++drawCount;
-		    }
-		}
+        for (int size=8; size<=512; size*=2) {
+        long drawCount = 0;
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + runningTime;
+        while (System.currentTimeMillis() < endTime) {
+            for (int j=0; j<100; ++j) {
+            p.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
+            ++drawCount;
+            }
+        }
 
-		long opsPrSec = (drawCount / (endTime - startTime) * 1000);
-		System.out.printf("Qt:    diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
-	    }
+        long opsPrSec = (drawCount / (endTime - startTime) * 1000);
+        System.out.printf("Qt:    diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
+        }
 
-	    p.end();
+        p.end();
 
-	    hide();
-	}
+        hide();
+    }
 
-	@Override
+    @Override
     public QSize sizeHint() {
-	    return new QSize(SIZE, SIZE);
-	}
+        return new QSize(SIZE, SIZE);
+    }
     }
 
     private static class QtGLWidget extends QGLWidget {
-	@Override
+    @Override
     protected void paintEvent(QPaintEvent e) {
 
-	    QPainter p = new QPainter();
-	    p.begin(this);
+        QPainter p = new QPainter();
+        p.begin(this);
 
-	    p.setPen(new QPen(QColor.red));
+        p.setPen(new QPen(QColor.red));
 
-	    int runningTime = 1000;
+        int runningTime = 1000;
 
-	    for (int size=8; size<=512; size*=2) {
-		long drawCount = 0;
-		long startTime = System.currentTimeMillis();
-		long endTime = startTime + runningTime;
-		while (System.currentTimeMillis() < endTime) {
-		    for (int j=0; j<100; ++j) {
-			p.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
-			++drawCount;
-		    }
-		}
+        for (int size=8; size<=512; size*=2) {
+        long drawCount = 0;
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + runningTime;
+        while (System.currentTimeMillis() < endTime) {
+            for (int j=0; j<100; ++j) {
+            p.drawLine(0, 0, HOR_MULT * size, VER_MULT * size);
+            ++drawCount;
+            }
+        }
 
-		long opsPrSec = (drawCount / (endTime - startTime) * 1000);
-		System.out.printf("Qt/GL: diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
-	    }
+        long opsPrSec = (drawCount / (endTime - startTime) * 1000);
+        System.out.printf("Qt/GL: diagonal lines: size=%3d: ops/sec=%d\n", size, opsPrSec);
+        }
 
-	    p.end();
+        p.end();
 
-	    hide();
-	}
+        hide();
+    }
 
-	@Override
+    @Override
     public QSize sizeHint() {
-	    return new QSize(SIZE, SIZE);
-	}
+        return new QSize(SIZE, SIZE);
+    }
     }
 
     public static void main(String args[]) {
-	{
-	    JFrame f = new JFrame();
-	    AwtWidget awt = new AwtWidget();
-	    f.add(awt);
+    {
+        JFrame f = new JFrame();
+        AwtWidget awt = new AwtWidget();
+        f.add(awt);
 
-	    f.pack();
+        f.pack();
 
-	    f.setVisible(true);
+        f.setVisible(true);
 
-	}
+    }
 
 
-	try { Thread.sleep(10 * 1000); } catch (Exception e) { }
+    try { Thread.sleep(10 * 1000); } catch (Exception e) { }
 
-	{
-	    QApplication.initialize(args);
+    {
+        QApplication.initialize(args);
 
-	    QtWidget w = new QtWidget();
-	    w.show();
+        QtWidget w = new QtWidget();
+        w.show();
 
-	    QtGLWidget wgl = new QtGLWidget();
-	    wgl.show();
+        QtGLWidget wgl = new QtGLWidget();
+        wgl.show();
 
-	    QApplication.exec();
-	}
+        QApplication.exec();
+    }
 
 
 

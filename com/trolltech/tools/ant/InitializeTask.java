@@ -19,7 +19,7 @@ public class InitializeTask extends Task {
         MinGW("mingw"),
         OldGCC("gcc3.3"),
         GCC("gcc"),
-	SUNCC("suncc"),
+    SUNCC("suncc"),
         Other("unknown");
 
         Compiler(String n) {

@@ -115,23 +115,23 @@ public class TestQObject extends QApplicationTest{
 
     public static class DyingObject extends QObject {
         public DyingObject() {
-        	alive.add(id);
+            alive.add(id);
         }
 
         @Override
         public void disposed() {
-        	alive.remove((Integer)id);
+            alive.remove((Integer)id);
         }
 
         static public void waitForEmpty(int timeout){
             // we need to wait for gc to collect the parent.
-        	while(timeout>0 && !alive.isEmpty()){
-        		System.gc();
-        		try {
-                	Thread.sleep(10);
-            	} catch (Exception e) {}
-            	timeout-=10;
-        	}
+            while(timeout>0 && !alive.isEmpty()){
+                System.gc();
+                try {
+                    Thread.sleep(10);
+                } catch (Exception e) {}
+                timeout-=10;
+            }
         }
 
         static List<Integer> alive = new ArrayList<Integer>();
@@ -234,7 +234,7 @@ public class TestQObject extends QApplicationTest{
 
     @Test
     public void disposal_gcInQThread_objectWithParent() {
-    	DyingObject.alive.clear();
+        DyingObject.alive.clear();
         threadExecutor(runnable_objectWithParent, true);
 
         // we need to wait for gc to collect the parent.
@@ -271,9 +271,9 @@ public class TestQObject extends QApplicationTest{
 
 
         try {
-        	Thread.sleep(1000); // make sure we do an effort to make this test fail.
+            Thread.sleep(1000); // make sure we do an effort to make this test fail.
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
 
         assertEquals(1, DyingObject.alive.size());

@@ -27,30 +27,30 @@ protected:
          pmp.fillRect(0, 0, 100, 100, rg);
          pmp.end();*/
 
-	createImage();
+    createImage();
 
-	QPainter p(this);
-	p.fillRect(rect(), Qt::white);
+    QPainter p(this);
+    p.fillRect(rect(), Qt::white);
 
-	p.drawPixmap(0, 0, pixmap);
+    p.drawPixmap(0, 0, pixmap);
 
-	p.drawPixmap(100, 0, channelImage);
+    p.drawPixmap(100, 0, channelImage);
      }
 
     void createImage()
     {
 //! [0]
-	pixmap = QPixmap(100, 100);
-	pixmap.fill(Qt::transparent);
+    pixmap = QPixmap(100, 100);
+    pixmap.fill(Qt::transparent);
 
-	QRadialGradient gradient(50, 50, 50, 50, 50);
-	gradient.setColorAt(0, QColor::fromRgbF(1, 0, 0, 1));
-	gradient.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
-	QPainter painter(&pixmap);
-	painter.fillRect(0, 0, 100, 100, gradient);
+    QRadialGradient gradient(50, 50, 50, 50, 50);
+    gradient.setColorAt(0, QColor::fromRgbF(1, 0, 0, 1));
+    gradient.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
+    QPainter painter(&pixmap);
+    painter.fillRect(0, 0, 100, 100, gradient);
 
-	channelImage = pixmap.alphaChannel();
-	update();
+    channelImage = pixmap.alphaChannel();
+    update();
 //! [0]
     }
 

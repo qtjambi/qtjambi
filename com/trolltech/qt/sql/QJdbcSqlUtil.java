@@ -120,31 +120,31 @@ class QJdbcSqlUtil
     }
 
     static Object javaToQt(Object input) {
-    	if (input instanceof java.sql.Date) {
-    		java.sql.Date date = (java.sql.Date) input;
-    		GregorianCalendar c = new GregorianCalendar();
-    		c.setTime(date);
+        if (input instanceof java.sql.Date) {
+            java.sql.Date date = (java.sql.Date) input;
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(date);
 
-    		return new QDate(c.get(Calendar.YEAR),
+            return new QDate(c.get(Calendar.YEAR),
                              c.get(Calendar.MONTH)+1,
                              c.get(Calendar.DAY_OF_MONTH));
 
-    	} else if (input instanceof java.sql.Time) {
+        } else if (input instanceof java.sql.Time) {
 
-    		java.sql.Time time = (java.sql.Time) input;
-    		GregorianCalendar c = new GregorianCalendar();
-    		c.setTime(time);
+            java.sql.Time time = (java.sql.Time) input;
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(time);
 
-    		return new QTime(c.get(Calendar.HOUR),
+            return new QTime(c.get(Calendar.HOUR),
                              c.get(Calendar.MINUTE)+1,
                              c.get(Calendar.SECOND));
 
-    	} else if (input instanceof java.util.Date) {
-    		java.util.Date date = (java.util.Date) input;
-    		GregorianCalendar c = new GregorianCalendar();
-    		c.setTime(date);
+        } else if (input instanceof java.util.Date) {
+            java.util.Date date = (java.util.Date) input;
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(date);
 
-    		return new QDateTime(new QDate(c.get(Calendar.YEAR),
+            return new QDateTime(new QDate(c.get(Calendar.YEAR),
                                            c.get(Calendar.MONTH)+1,
                                            c.get(Calendar.DAY_OF_MONTH)),
                                  new QTime(c.get(Calendar.HOUR_OF_DAY),
@@ -152,57 +152,57 @@ class QJdbcSqlUtil
                                            c.get(Calendar.SECOND),
                                            c.get(Calendar.MILLISECOND)));
 
-    	} else if (input instanceof URL) {
+        } else if (input instanceof URL) {
 
-    		URL url = (URL) input;
-    		return new QUrl(url.toString());
+            URL url = (URL) input;
+            return new QUrl(url.toString());
 
-    	} else {
-    		return input;
-    	}
+        } else {
+            return input;
+        }
 
     }
 
     @SuppressWarnings("deprecation")
     static Object qtToJava(Object input) {
-    	if (input instanceof QDateTime) {
-			QDateTime dt = (QDateTime) input;
+        if (input instanceof QDateTime) {
+            QDateTime dt = (QDateTime) input;
 
-			QDate date = dt.date();
-			QTime time = dt.time();
+            QDate date = dt.date();
+            QTime time = dt.time();
 
-			return new java.sql.Timestamp(date.year() - 1900,
-					                      date.month() - 1,
-					                      date.day(),
-					                      time.hour(),
-					                      time.minute(),
-					                      time.second(),
-					                      time.msec());
-    	} else if (input instanceof QDate) {
+            return new java.sql.Timestamp(date.year() - 1900,
+                                          date.month() - 1,
+                                          date.day(),
+                                          time.hour(),
+                                          time.minute(),
+                                          time.second(),
+                                          time.msec());
+        } else if (input instanceof QDate) {
 
-    		QDate date = (QDate) input;
-    		return new java.sql.Date(date.year() - 1900,
-					                 date.month() - 1,
-					                 date.day());
+            QDate date = (QDate) input;
+            return new java.sql.Date(date.year() - 1900,
+                                     date.month() - 1,
+                                     date.day());
 
-    	} else if (input instanceof QTime) {
+        } else if (input instanceof QTime) {
 
-    		QTime time = (QTime) input;
-    		return new java.sql.Time(time.hour(), time.minute(), time.second());
+            QTime time = (QTime) input;
+            return new java.sql.Time(time.hour(), time.minute(), time.second());
 
-    	} else if (input instanceof QUrl) {
+        } else if (input instanceof QUrl) {
 
-    		QUrl url = (QUrl) input;
-    		try {
-    			return new URL(url.toString());
-    		} catch (MalformedURLException e) {
-    			e.printStackTrace();
-    			return input;
-    		}
+            QUrl url = (QUrl) input;
+            try {
+                return new URL(url.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return input;
+            }
 
-    	} else {
-    		return input;
-    	}
+        } else {
+            return input;
+        }
     }
 
 

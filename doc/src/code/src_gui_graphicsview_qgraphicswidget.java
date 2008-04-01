@@ -42,14 +42,14 @@ import com.trolltech.qt.svg.*;
 public class src_gui_graphicsview_qgraphicswidget extends QGraphicsWidget {
 
 
-	public int lineWidth() { return 0; }
+    public int lineWidth() { return 0; }
 
 //! [0]
         @Override
         protected void initStyleOption(QStyleOption option) {
             super.initStyleOption(option);
             if (option instanceof QStyleOptionGroupBox) {
-            	QStyleOptionGroupBox box = (QStyleOptionGroupBox)option;
+                QStyleOptionGroupBox box = (QStyleOptionGroupBox)option;
                 // Add group box specific state.
                 box.setLineWidth(lineWidth());
                 // ...

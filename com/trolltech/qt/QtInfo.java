@@ -20,7 +20,7 @@ package com.trolltech.qt;
 public class QtInfo {
 
     static {
-    	QtJambi_LibraryInitializer.init();
+        QtJambi_LibraryInitializer.init();
     }
 
     /**

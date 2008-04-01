@@ -11,7 +11,7 @@ import com.trolltech.qt.opengl.*;
 public class src_opengl_qglpixelbuffer {
     public static void main(String args[]) {
         QApplication.initialize(args);
-	{
+    {
 //! [0]
         QGLPixelBuffer pbuffer = new QGLPixelBuffer(256, 256);
         //...
@@ -21,8 +21,8 @@ public class src_opengl_qglpixelbuffer {
         //...
         pbuffer.releaseFromDynamicTexture();
 //! [0]
-	}
-	{
+    }
+    {
 //! [1]
         QGLPixelBuffer pbuffer = new QGLPixelBuffer(256, 256);
         // ...
@@ -31,7 +31,7 @@ public class src_opengl_qglpixelbuffer {
         // ...
         pbuffer.updateDynamicTexture(dynamicTexture);
 //! [1]
-	}
+    }
 
     }
 }

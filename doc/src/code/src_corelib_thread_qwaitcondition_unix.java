@@ -2,13 +2,13 @@ import com.trolltech.qt.core.*;
 
 class fooBarWaitCondition {
 
-	QMutex mutex;
-	QWaitCondition keyPressed;
+    QMutex mutex;
+    QWaitCondition keyPressed;
 
-	public void do_something(){}
-	public void getchar(){}
+    public void do_something(){}
+    public void getchar(){}
 
-	public void foobar1() {
+    public void foobar1() {
 //! [0]
         while (true) {
             mutex.lock();
@@ -17,7 +17,7 @@ class fooBarWaitCondition {
             mutex.unlock();
         }
 //! [0]
-	}
+    }
 
         public void foobar2() {
 //! [1]
@@ -26,7 +26,7 @@ class fooBarWaitCondition {
             keyPressed.wakeAll();
         }
 //! [1]
-	}
+    }
 
         int count;
         public void foobar3() {
@@ -56,9 +56,9 @@ class fooBarWaitCondition {
             while (count > 0) {
                 mutex.unlock();
                 try {
-                	Thread.sleep(1);
+                    Thread.sleep(1);
                 } catch (InterruptedException e) {
-                	// handle exception
+                    // handle exception
                 }
                 mutex.lock();
             }

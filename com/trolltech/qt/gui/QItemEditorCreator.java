@@ -11,41 +11,41 @@ import com.trolltech.qt.core.QByteArray;
 @com.trolltech.qt.QtJambiGeneratedClass
 public class QItemEditorCreator extends QItemEditorCreatorBase {
 
-	public QItemEditorCreator(String valuePropertyName, Class<? extends QWidget> widgetType) {
-		super((QPrivateConstructor) null);
+    public QItemEditorCreator(String valuePropertyName, Class<? extends QWidget> widgetType) {
+        super((QPrivateConstructor) null);
 
-		boolean createWidgetOverride = false;
-		boolean valuePropertyNameOverride = false;
-		try {
-			Method createWidgetMethod = getClass().getMethod("createWidget", QWidget.class);
-			Method valuePropertyNameMethod = getClass().getMethod("valuePropertyName");
+        boolean createWidgetOverride = false;
+        boolean valuePropertyNameOverride = false;
+        try {
+            Method createWidgetMethod = getClass().getMethod("createWidget", QWidget.class);
+            Method valuePropertyNameMethod = getClass().getMethod("valuePropertyName");
 
-			createWidgetOverride = QtJambiInternal.isImplementedInJava(createWidgetMethod);
-			valuePropertyNameOverride = QtJambiInternal.isImplementedInJava(valuePropertyNameMethod);
-		} catch (Throwable t) {
-			throw new RuntimeException("Cannot construct QItemEditorCreator", t);
-		}
+            createWidgetOverride = QtJambiInternal.isImplementedInJava(createWidgetMethod);
+            valuePropertyNameOverride = QtJambiInternal.isImplementedInJava(valuePropertyNameMethod);
+        } catch (Throwable t) {
+            throw new RuntimeException("Cannot construct QItemEditorCreator", t);
+        }
 
-		QByteArray valuePropertyNameByteArray = new QByteArray(valuePropertyName);
-		__qt_QItemEditorCreator(valuePropertyNameByteArray.nativeId(), widgetType,
-				createWidgetOverride, valuePropertyNameOverride);
-	}
-	private native void __qt_QItemEditorCreator(long valuePropertyNameId, Class<? extends QWidget> widgetType, boolean createWidgetOverride, boolean valuePropertyNameOverride);
+        QByteArray valuePropertyNameByteArray = new QByteArray(valuePropertyName);
+        __qt_QItemEditorCreator(valuePropertyNameByteArray.nativeId(), widgetType,
+                createWidgetOverride, valuePropertyNameOverride);
+    }
+    private native void __qt_QItemEditorCreator(long valuePropertyNameId, Class<? extends QWidget> widgetType, boolean createWidgetOverride, boolean valuePropertyNameOverride);
 
-	@Override
-	public QWidget createWidget(QWidget parent) {
-		if (nativeId() == 0)
-			throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
-		return __qt_createWidget(nativeId(), parent.nativeId());
-	}
-	private native QWidget __qt_createWidget(long nativeId, long parentId);
+    @Override
+    public QWidget createWidget(QWidget parent) {
+        if (nativeId() == 0)
+            throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+        return __qt_createWidget(nativeId(), parent.nativeId());
+    }
+    private native QWidget __qt_createWidget(long nativeId, long parentId);
 
-	@Override
-	public QByteArray valuePropertyName() {
-		if (nativeId() == 0)
-			throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
-		return valuePropertyName(nativeId());
-	}
-	private native QByteArray valuePropertyName(long nativeId);
+    @Override
+    public QByteArray valuePropertyName() {
+        if (nativeId() == 0)
+            throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+        return valuePropertyName(nativeId());
+    }
+    private native QByteArray valuePropertyName(long nativeId);
 
 }

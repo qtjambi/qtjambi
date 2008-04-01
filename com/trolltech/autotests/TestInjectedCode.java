@@ -250,8 +250,8 @@ public class TestInjectedCode extends QApplicationTest {
         }
 
         public void somethingElse() {
-        	// nothing here
-        	System.out.println("here");
+            // nothing here
+            System.out.println("here");
         }
 
         public Signal0 myActionTriggered = new Signal0();
@@ -259,24 +259,24 @@ public class TestInjectedCode extends QApplicationTest {
 
     static class ValidatorSubclassSubclass extends ValidatorSubclass {
 
-    	public String inputString;
-    	public int inputPos;
+        public String inputString;
+        public int inputPos;
 
-		@Override
-		public String fixup(String input) {
-			inputString = input;
-			return super.fixup(input) + "javaPostfix";
-		}
+        @Override
+        public String fixup(String input) {
+            inputString = input;
+            return super.fixup(input) + "javaPostfix";
+        }
 
-		@Override
-		public QValidator.State validate(QValidator.QValidationData input) {
-			inputString = input.string;
-			inputPos = input.position;
-			QValidator.State state = super.validate(input);
-			input.string = "javaPrefix" + input.string;
+        @Override
+        public QValidator.State validate(QValidator.QValidationData input) {
+            inputString = input.string;
+            inputPos = input.position;
+            QValidator.State state = super.validate(input);
+            input.string = "javaPrefix" + input.string;
 
-			return state;
-		}
+            return state;
+        }
 
     }
 
@@ -424,263 +424,263 @@ public class TestInjectedCode extends QApplicationTest {
     {
 
 
-		@Override
-		public QAccessibleInterface accessibleAt(int row, int column) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public QAccessibleInterface accessibleAt(int row, int column) {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public QAccessibleInterface caption() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public QAccessibleInterface caption() {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public int childIndex(int rowIndex, int columnIndex) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int childIndex(int rowIndex, int columnIndex) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public int columnCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int columnCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public String columnDescription(int column) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public String columnDescription(int column) {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public QAccessibleInterface columnHeader() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public QAccessibleInterface columnHeader() {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public int columnIndex(int childIndex) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int columnIndex(int childIndex) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public int columnSpan(int row, int column) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int columnSpan(int row, int column) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public boolean isColumnSelected(int column) {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        @Override
+        public boolean isColumnSelected(int column) {
+            // TODO Auto-generated method stub
+            return false;
+        }
 
-		@Override
-		public boolean isRowSelected(int row) {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        @Override
+        public boolean isRowSelected(int row) {
+            // TODO Auto-generated method stub
+            return false;
+        }
 
-		@Override
-		public boolean isSelected(int row, int column) {
-			// TODO Auto-generated method stub
-			return false;
-		}
+        @Override
+        public boolean isSelected(int row, int column) {
+            // TODO Auto-generated method stub
+            return false;
+        }
 
-		@Override
-		public int rowCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int rowCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public String rowDescription(int row) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public String rowDescription(int row) {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public QAccessibleInterface rowHeader() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public QAccessibleInterface rowHeader() {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public int rowIndex(int childIndex) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int rowIndex(int childIndex) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public int rowSpan(int row, int column) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int rowSpan(int row, int column) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public void selectColumn(int column) {
-			// TODO Auto-generated method stub
+        @Override
+        public void selectColumn(int column) {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public void selectRow(int row) {
-			// TODO Auto-generated method stub
+        @Override
+        public void selectRow(int row) {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public int selectedColumnCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int selectedColumnCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public int selectedColumns(int maxColumns, List<Integer> columns) {
-			columns.add(maxColumns);
-			return super.selectedColumns(maxColumns + 2, columns);
-		}
+        @Override
+        public int selectedColumns(int maxColumns, List<Integer> columns) {
+            columns.add(maxColumns);
+            return super.selectedColumns(maxColumns + 2, columns);
+        }
 
-		@Override
-		public int selectedRowCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public int selectedRowCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 
-		@Override
-		public int selectedRows(int maxRows, List<Integer> rows) {
-			rows.add(maxRows);
-			return super.selectedRows(maxRows - 2, rows);
-		}
+        @Override
+        public int selectedRows(int maxRows, List<Integer> rows) {
+            rows.add(maxRows);
+            return super.selectedRows(maxRows - 2, rows);
+        }
 
-		@Override
-		public QAccessibleInterface summary() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public QAccessibleInterface summary() {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
-		public void unselectColumn(int column) {
-			// TODO Auto-generated method stub
+        @Override
+        public void unselectColumn(int column) {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public void unselectRow(int row) {
+        @Override
+        public void unselectRow(int row) {
 
-		}
+        }
 
-		@Override
-		public CellAtIndex cellAtIndex(int index) {
-			return super.cellAtIndex(index + 1);
-		}
+        @Override
+        public CellAtIndex cellAtIndex(int index) {
+            return super.cellAtIndex(index + 1);
+        }
 
     }
 
     @Test
     public void testQAccessibleSelectedColumns()
     {
-    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+        MyAccessibleTableInterface m = new MyAccessibleTableInterface();
 
-    	List<Integer> ints = new ArrayList<Integer>();
-    	ints.add(43);
+        List<Integer> ints = new ArrayList<Integer>();
+        ints.add(43);
 
-    	ints = AccessibleTableInterfaceSubclass.callSelectedColumns(m, 55, ints);
+        ints = AccessibleTableInterfaceSubclass.callSelectedColumns(m, 55, ints);
 
-    	assertEquals(3, ints.size());
-    	assertEquals((Integer)43, ints.get(0));
-    	assertEquals((Integer)55, ints.get(1));
-    	assertEquals((Integer)57, ints.get(2));
+        assertEquals(3, ints.size());
+        assertEquals((Integer)43, ints.get(0));
+        assertEquals((Integer)55, ints.get(1));
+        assertEquals((Integer)57, ints.get(2));
     }
 
     @Test
     public void testQAccessibleSelectedRows()
     {
-    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+        MyAccessibleTableInterface m = new MyAccessibleTableInterface();
 
-    	List<Integer> ints = new ArrayList<Integer>();
-    	ints.add(43);
+        List<Integer> ints = new ArrayList<Integer>();
+        ints.add(43);
 
-    	ints = AccessibleTableInterfaceSubclass.callSelectedRows(m, 55, ints);
+        ints = AccessibleTableInterfaceSubclass.callSelectedRows(m, 55, ints);
 
-    	assertEquals(3, ints.size());
-    	assertEquals((Integer)43, ints.get(0));
-    	assertEquals((Integer)55, ints.get(1));
-    	assertEquals((Integer)53, ints.get(2));
+        assertEquals(3, ints.size());
+        assertEquals((Integer)43, ints.get(0));
+        assertEquals((Integer)55, ints.get(1));
+        assertEquals((Integer)53, ints.get(2));
     }
 
     @Test
     public void testQAccessibleCellAtIndexIsSelectedFalse()
     {
-    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+        MyAccessibleTableInterface m = new MyAccessibleTableInterface();
 
-    	QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer col = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer isSelected = new QNativePointer(QNativePointer.Type.Boolean);
+        QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer col = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer isSelected = new QNativePointer(QNativePointer.Type.Boolean);
 
-    	AccessibleTableInterfaceSubclass.callCellAtIndex(m, 10, row, col, rowSpan, columnSpan, isSelected);
+        AccessibleTableInterfaceSubclass.callCellAtIndex(m, 10, row, col, rowSpan, columnSpan, isSelected);
 
-    	assertEquals(12, row.intValue());
-    	assertEquals(13, col.intValue());
-    	assertEquals(14, rowSpan.intValue());
-    	assertEquals(15, columnSpan.intValue());
-    	assertEquals(false, isSelected.booleanValue());
+        assertEquals(12, row.intValue());
+        assertEquals(13, col.intValue());
+        assertEquals(14, rowSpan.intValue());
+        assertEquals(15, columnSpan.intValue());
+        assertEquals(false, isSelected.booleanValue());
     }
 
     @Test
     public void testQAccessibleCellAtIndexIsSelectedTrue()
     {
-    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+        MyAccessibleTableInterface m = new MyAccessibleTableInterface();
 
-    	QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer col = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
-    	QNativePointer isSelected = new QNativePointer(QNativePointer.Type.Boolean);
+        QNativePointer row = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer col = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer rowSpan = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer columnSpan = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer isSelected = new QNativePointer(QNativePointer.Type.Boolean);
 
-    	AccessibleTableInterfaceSubclass.callCellAtIndex(m, 21, row, col, rowSpan, columnSpan, isSelected);
+        AccessibleTableInterfaceSubclass.callCellAtIndex(m, 21, row, col, rowSpan, columnSpan, isSelected);
 
-    	assertEquals(23, row.intValue());
-    	assertEquals(24, col.intValue());
-    	assertEquals(25, rowSpan.intValue());
-    	assertEquals(26, columnSpan.intValue());
-    	assertEquals(true, isSelected.booleanValue());
+        assertEquals(23, row.intValue());
+        assertEquals(24, col.intValue());
+        assertEquals(25, rowSpan.intValue());
+        assertEquals(26, columnSpan.intValue());
+        assertEquals(true, isSelected.booleanValue());
     }
 
     @Test
     public void testQAccessibleCellAtIndexDontCrashOnNull()
     {
-    	MyAccessibleTableInterface m = new MyAccessibleTableInterface();
-    	AccessibleTableInterfaceSubclass.callCellAtIndex(m, 10, null, null, null, null, null);
+        MyAccessibleTableInterface m = new MyAccessibleTableInterface();
+        AccessibleTableInterfaceSubclass.callCellAtIndex(m, 10, null, null, null, null, null);
     }
 
     private QPalette savedPalette = null;
     @Test
     public void testQApplicationSetStyleOverridePolish() {
-    	savedPalette = null;
+        savedPalette = null;
 
-    	QApplication.setStyle(new QPlastiqueStyle() {
-    		@Override
+        QApplication.setStyle(new QPlastiqueStyle() {
+            @Override
             public void polish(QPalette palette) {
-    			savedPalette = palette;
-    			super.polish(palette);
-    		}
-    	});
+                savedPalette = palette;
+                super.polish(palette);
+            }
+        });
 
-    	// The palette is automatically invalidated after the virtual
-    	// call to polish
-    	assertEquals(0l, savedPalette.nativeId());
+        // The palette is automatically invalidated after the virtual
+        // call to polish
+        assertEquals(0l, savedPalette.nativeId());
     }
 
     @Test
     public void testQApplicationSetStyleNotOverridePolish() {
-    	QApplication.setStyle(new QPlastiqueStyle());
-    	// got here, didn't crash
+        QApplication.setStyle(new QPlastiqueStyle());
+        // got here, didn't crash
     }
 
 
@@ -954,77 +954,77 @@ public class TestInjectedCode extends QApplicationTest {
 
     @Test
     public void testValidatorFixup() {
-    	ValidatorSubclassSubclass vss = new ValidatorSubclassSubclass();
+        ValidatorSubclassSubclass vss = new ValidatorSubclassSubclass();
 
-    	QNativePointer input = new QNativePointer(QNativePointer.Type.String);
-    	input.setStringValue("acceptable");
-    	QNativePointer pos = new QNativePointer(QNativePointer.Type.Int);
-    	pos.setIntValue(13);
-    	assertEquals(QValidator.State.Acceptable, vss.callValidate(input, pos));
-    	assertEquals("javaPrefixacceptablesomePostfix", input.stringValue());
-    	assertEquals("acceptable".length(), pos.intValue());
-    	assertEquals("acceptable", vss.inputString);
-    	assertEquals(13, vss.inputPos);
-    	assertEquals("acceptable", vss.inputString());
-    	assertEquals(13, vss.inputPos());
+        QNativePointer input = new QNativePointer(QNativePointer.Type.String);
+        input.setStringValue("acceptable");
+        QNativePointer pos = new QNativePointer(QNativePointer.Type.Int);
+        pos.setIntValue(13);
+        assertEquals(QValidator.State.Acceptable, vss.callValidate(input, pos));
+        assertEquals("javaPrefixacceptablesomePostfix", input.stringValue());
+        assertEquals("acceptable".length(), pos.intValue());
+        assertEquals("acceptable", vss.inputString);
+        assertEquals(13, vss.inputPos);
+        assertEquals("acceptable", vss.inputString());
+        assertEquals(13, vss.inputPos());
 
-    	input.setStringValue("intermediate");
-    	pos.setIntValue(14);
-    	assertEquals(QValidator.State.Intermediate, vss.callValidate(input, pos));
-    	assertEquals("javaPrefixintermediatesomePostfix", input.stringValue());
-    	assertEquals("intermediate".length(), pos.intValue());
-    	assertEquals("intermediate", vss.inputString);
-    	assertEquals(14, vss.inputPos);
-    	assertEquals("intermediate", vss.inputString());
-    	assertEquals(14, vss.inputPos());
+        input.setStringValue("intermediate");
+        pos.setIntValue(14);
+        assertEquals(QValidator.State.Intermediate, vss.callValidate(input, pos));
+        assertEquals("javaPrefixintermediatesomePostfix", input.stringValue());
+        assertEquals("intermediate".length(), pos.intValue());
+        assertEquals("intermediate", vss.inputString);
+        assertEquals(14, vss.inputPos);
+        assertEquals("intermediate", vss.inputString());
+        assertEquals(14, vss.inputPos());
 
     }
 
     @Test
     public void testQShortcutConstructor() {
-    	QShortcut shortcut = new QShortcut(new QKeySequence("Ctrl+F1"), new QWidget());
-    	assertEquals("Ctrl+F1", shortcut.key().toString());
-    	assertEquals(Qt.ShortcutContext.WindowShortcut, shortcut.context());
+        QShortcut shortcut = new QShortcut(new QKeySequence("Ctrl+F1"), new QWidget());
+        assertEquals("Ctrl+F1", shortcut.key().toString());
+        assertEquals(Qt.ShortcutContext.WindowShortcut, shortcut.context());
 
-    	shortcut = new QShortcut(new QKeySequence("Ctrl+F2"), new QWidget(), Qt.ShortcutContext.ApplicationShortcut);
-    	assertEquals("Ctrl+F2", shortcut.key().toString());
-    	assertEquals(Qt.ShortcutContext.ApplicationShortcut, shortcut.context());
+        shortcut = new QShortcut(new QKeySequence("Ctrl+F2"), new QWidget(), Qt.ShortcutContext.ApplicationShortcut);
+        assertEquals("Ctrl+F2", shortcut.key().toString());
+        assertEquals(Qt.ShortcutContext.ApplicationShortcut, shortcut.context());
 
     }
 
     @Test
     public void testQPixmapCacheFind() {
-    	{
-    		QPixmap pm = new QPixmap("classpath:com/trolltech/examples/images/cheese.png");
-    		QPixmapCache.insert("myPixmap", pm);
-    	}
+        {
+            QPixmap pm = new QPixmap("classpath:com/trolltech/examples/images/cheese.png");
+            QPixmapCache.insert("myPixmap", pm);
+        }
 
-    	{
-    		QPixmap pm = new QPixmap();
-    		assertTrue(QPixmapCache.find("myPixmap", pm));
-    		assertEquals(94, pm.width());
+        {
+            QPixmap pm = new QPixmap();
+            assertTrue(QPixmapCache.find("myPixmap", pm));
+            assertEquals(94, pm.width());
 
-    		assertFalse(QPixmapCache.find("noSuchPixmap", pm));
-    	}
+            assertFalse(QPixmapCache.find("noSuchPixmap", pm));
+        }
     }
 
     @Test
     public void testQPictureParameters() {
-    	QPictureIO pictureIO = new QPictureIO("someFile", "PNG");
+        QPictureIO pictureIO = new QPictureIO("someFile", "PNG");
 
-    	pictureIO.setParameters("my parameters");
-    	assertEquals("my parameters", pictureIO.parameters());
+        pictureIO.setParameters("my parameters");
+        assertEquals("my parameters", pictureIO.parameters());
     }
 
     @Test
     public void testQPictureConstructor() {
-    	QPictureIO pictureIO = new QPictureIO(new QTemporaryFile(), "JPEG");
-    	assertEquals("JPEG", pictureIO.format());
-    	assertEquals("", pictureIO.fileName());
+        QPictureIO pictureIO = new QPictureIO(new QTemporaryFile(), "JPEG");
+        assertEquals("JPEG", pictureIO.format());
+        assertEquals("", pictureIO.fileName());
 
-    	pictureIO = new QPictureIO("someFile", "PNG");
-    	assertEquals("PNG", pictureIO.format());
-    	assertEquals("someFile", pictureIO.fileName());
+        pictureIO = new QPictureIO("someFile", "PNG");
+        assertEquals("PNG", pictureIO.format());
+        assertEquals("someFile", pictureIO.fileName());
     }
 
     static boolean called = false;

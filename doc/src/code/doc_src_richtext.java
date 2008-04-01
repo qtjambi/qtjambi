@@ -7,13 +7,13 @@ public class doc_src_richtext {
 //! [0]
 QTextDocument newDocument = new QTextDocument();
 //! [0]
-	if (newDocument != null) {}
+    if (newDocument != null) {}
 
 //! [1]
 QTextEdit editor = new QTextEdit();
 QTextDocument editorDocument = editor.document();
 //! [1]
-	if (editorDocument != null) {}
+    if (editorDocument != null) {}
 
     theRest();
 }

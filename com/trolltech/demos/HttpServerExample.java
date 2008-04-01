@@ -22,98 +22,98 @@ import com.trolltech.qt.network.QHostAddress.SpecialAddress;
 @QtJambiExample(name = "Simple HTTP Server")
 public class HttpServerExample extends QWidget {
 
-	public static void main(String[] args) {
-		QApplication.initialize(args);
+    public static void main(String[] args) {
+        QApplication.initialize(args);
 
-		HttpServerExample example = new HttpServerExample(null);
-		example.show();
+        HttpServerExample example = new HttpServerExample(null);
+        example.show();
 
-		QApplication.exec();
-	}
+        QApplication.exec();
+    }
 
-	HttpServer server;
-	QTextEdit editor;
+    HttpServer server;
+    QTextEdit editor;
 
-	public HttpServerExample(QWidget parent) {
-		server = new HttpServer(this);
-		if (!server.start()) {
-			QMessageBox.critical(this, tr("HTTP Server"),
-					tr("Unable to start the server: ") + server.errorString());
-			close();
-		}
+    public HttpServerExample(QWidget parent) {
+        server = new HttpServer(this);
+        if (!server.start()) {
+            QMessageBox.critical(this, tr("HTTP Server"),
+                    tr("Unable to start the server: ") + server.errorString());
+            close();
+        }
 
-		QPushButton publishButton = new QPushButton(this);
-		publishButton.setText("Publish");
-		editor = new QTextEdit(this);
+        QPushButton publishButton = new QPushButton(this);
+        publishButton.setText("Publish");
+        editor = new QTextEdit(this);
 
-		editor.setPlainText("<h1>Server is up and running!</h1>"
-				+ "You should be able to view it in a normal web browser."
-				+ " Try this address: http://localhost:" + server.serverPort());
+        editor.setPlainText("<h1>Server is up and running!</h1>"
+                + "You should be able to view it in a normal web browser."
+                + " Try this address: http://localhost:" + server.serverPort());
 
-		QGridLayout layout = new QGridLayout(this);
-		setLayout(layout);
-		layout.addWidget(publishButton);
-		layout.addWidget(editor);
+        QGridLayout layout = new QGridLayout(this);
+        setLayout(layout);
+        layout.addWidget(publishButton);
+        layout.addWidget(editor);
 
-		publishButton.clicked.connect(this, "publish()");
+        publishButton.clicked.connect(this, "publish()");
 
         setWindowTitle(tr("Simple HTTP Server"));
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
-	}
+    }
 
-	protected void publish() {
-		server.publish(editor.toPlainText());
-	}
+    protected void publish() {
+        server.publish(editor.toPlainText());
+    }
 
-	class HttpServer extends QTcpServer {
-		private String text;
+    class HttpServer extends QTcpServer {
+        private String text;
 
-		public HttpServer(QObject parent) {
-			super(parent);
-		}
+        public HttpServer(QObject parent) {
+            super(parent);
+        }
 
-		public void publish(String text) {
-			this.text = text;
-		}
+        public void publish(String text) {
+            this.text = text;
+        }
 
-		public boolean start() {
-			if (!listen(new QHostAddress(SpecialAddress.Any), (char) 8080)) {
-				close();
-				return false;
-			}
+        public boolean start() {
+            if (!listen(new QHostAddress(SpecialAddress.Any), (char) 8080)) {
+                close();
+                return false;
+            }
 
-			this.newConnection.connect(this, "newConnection()");
+            this.newConnection.connect(this, "newConnection()");
 
-			return true;
-		}
+            return true;
+        }
 
-		protected void newConnection() {
-			QTcpSocket socket = nextPendingConnection();
-			if (socket != null) {
-				socket.readyRead.connect(this, "readClient()");
-				socket.disconnected.connect(socket, "disposeLater()");
-			}
-		}
+        protected void newConnection() {
+            QTcpSocket socket = nextPendingConnection();
+            if (socket != null) {
+                socket.readyRead.connect(this, "readClient()");
+                socket.disconnected.connect(socket, "disposeLater()");
+            }
+        }
 
-		protected void readClient() {
-			QTcpSocket socket = (QTcpSocket) signalSender();
+        protected void readClient() {
+            QTcpSocket socket = (QTcpSocket) signalSender();
 
-			if (socket.canReadLine()) {
-				if (socket.readLine().startsWith("GET ")) {
-					QTextStream os = new QTextStream(socket);
-					os.setCodec("utf-8");
+            if (socket.canReadLine()) {
+                if (socket.readLine().startsWith("GET ")) {
+                    QTextStream os = new QTextStream(socket);
+                    os.setCodec("utf-8");
 
-					os.writeString("HTTP/1.0 200 Ok\r\n");
-					os.writeString("Content-Type: text/html; charset=\"utf-8\"\r\n");
-					os.writeString("\r\n");
-					if (text != null && !text.equals("")) {
-						os.writeString(text);
-					} else {
-						os.writeString("<h1>This page is empty</h1>");
-					}
-					socket.close();
-				}
-			}
-		}
-	}
+                    os.writeString("HTTP/1.0 200 Ok\r\n");
+                    os.writeString("Content-Type: text/html; charset=\"utf-8\"\r\n");
+                    os.writeString("\r\n");
+                    if (text != null && !text.equals("")) {
+                        os.writeString(text);
+                    } else {
+                        os.writeString("<h1>This page is empty</h1>");
+                    }
+                    socket.close();
+                }
+            }
+        }
+    }
 }

@@ -1306,8 +1306,8 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
             jstring className = qtjambi_from_qstring(env, qtClassName);
             returned = (jclass) env->CallObjectMethod(classLoader, sc->ClassLoader.loadClass, className);
         } else {
-	  env->Throw(exception);
-	}
+      env->Throw(exception);
+    }
     }
 
     return returned;
@@ -1518,28 +1518,28 @@ static QString locate_vm()
 
     for (int i = 0; i < envVariables.size(); ++i) {
         QString jpath = !vm_location_override.isEmpty() ?
-	  vm_location_override.append(QLatin1String("/lib/")) :
-	  qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"));
+      vm_location_override.append(QLatin1String("/lib/")) :
+      qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"));
 
 #ifdef _LP64
         QString jmach = QLatin1String("amd64");
 #else
-	QString jmach = QLatin1String("i386");
+    QString jmach = QLatin1String("i386");
 #endif
 
-	jpath += jmach;
+    jpath += jmach;
 
-	jpath = QDir::cleanPath(jpath);
+    jpath = QDir::cleanPath(jpath);
 
-	if (! jpath.endsWith(QLatin1Char('/')))
+    if (! jpath.endsWith(QLatin1Char('/')))
             jpath += QLatin1Char('/');
 
-	QFileInfo fileClient(jpath + "/client/libjvm.so");
-	if(fileClient.exists())
+    QFileInfo fileClient(jpath + "/client/libjvm.so");
+    if(fileClient.exists())
             return fileClient.absoluteFilePath();
 
-	QFileInfo fileServer(jpath + "/server/libjvm.so");
-	if(fileServer.exists())
+    QFileInfo fileServer(jpath + "/server/libjvm.so");
+    if(fileServer.exists())
             return fileServer.absoluteFilePath();
     }
 
@@ -1953,10 +1953,10 @@ static bool qtjambi_event_notify(void **data)
             QtJambiLink *link = QtJambiLink::findLinkForQObject(e->child());
             if (link) {
                 if (link->qobject()) {
-	 	  if (e->added())
- 		    link->setCppOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
-		  else
-		    link->setDefaultOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
+          if (e->added())
+            link->setCppOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
+          else
+            link->setDefaultOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
                 } else if (event->type() == QEvent::ChildAdded) {
                     qWarning("%s [%s] was garbage collected before it was reparented to %s [%s]",
                              qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
@@ -1985,8 +1985,8 @@ void qtjambi_register_callbacks()
 #endif
 
     QMetaType::registerStreamOperators(QMetaType::typeName(qMetaTypeId<JObjectWrapper>()),
-				       reinterpret_cast<QMetaType::SaveOperator>(jobjectwrapper_save),
-				       reinterpret_cast<QMetaType::LoadOperator>(jobjectwrapper_load));
+                       reinterpret_cast<QMetaType::SaveOperator>(jobjectwrapper_save),
+                       reinterpret_cast<QMetaType::LoadOperator>(jobjectwrapper_load));
 }
 
 

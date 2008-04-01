@@ -161,7 +161,7 @@ class QJdbcSqlResult extends QSqlResult
                                     ResultSet.CONCUR_READ_ONLY);
             } else {
                 statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                		ResultSet.CONCUR_READ_ONLY);
+                        ResultSet.CONCUR_READ_ONLY);
             }
         } catch (SQLException ex) {
             setError(ex, tr("Unable to create statement"), QSqlError.ErrorType.StatementError);
@@ -172,10 +172,10 @@ class QJdbcSqlResult extends QSqlResult
         // execute the query
         boolean executionResult;
         try {
-        	if (connection.getMetaData().supportsGetGeneratedKeys())
-        		executionResult = statement.execute(query, Statement.RETURN_GENERATED_KEYS);
-        	else
-        		executionResult = statement.execute(query, Statement.NO_GENERATED_KEYS);
+            if (connection.getMetaData().supportsGetGeneratedKeys())
+                executionResult = statement.execute(query, Statement.RETURN_GENERATED_KEYS);
+            else
+                executionResult = statement.execute(query, Statement.NO_GENERATED_KEYS);
         } catch (SQLException ex) {
             setError(ex, tr("Unable to execute query"), QSqlError.ErrorType.ConnectionError);
             resultSet = null;
@@ -215,7 +215,7 @@ class QJdbcSqlResult extends QSqlResult
 
         try {
             for (int i = 0; i<boundValueCount(); ++i) {
-        		ps.setObject(i + 1, QJdbcSqlUtil.qtToJava(boundValue(i)));
+                ps.setObject(i + 1, QJdbcSqlUtil.qtToJava(boundValue(i)));
             }
         } catch (SQLException ex) {
             setError(ex, tr("Unable to bind parameters"), QSqlError.ErrorType.StatementError);

@@ -28,13 +28,13 @@ public class src_sql_kernel_qsqldriver {
     if (v.typeName() == "PGconn*") {
         PGconn handle = tatic_cast<PGconn **>(v.data());
         if (handle != 0)
-	    ; // ...
+        ; // ...
     }
 
     if (v.typeName() == "MYSQL*") {
         MYSQL handle = static_cast<MYSQL **>(v.data());
         if (handle != 0)
-	    ; // ...
+        ; // ...
     }
 //! [1]
 */

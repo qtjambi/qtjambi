@@ -18,9 +18,9 @@ public class src_gui_painting_qpainter extends QWidget {
 }
 
 class painterfoobar extends QWidget {
-	QLine line;
+    QLine line;
 //! [1]
-	@Override
+    @Override
     protected void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter();
         p.begin(this);
@@ -32,8 +32,8 @@ class painterfoobar extends QWidget {
 
 class painterfoobar2 extends painterfoobar {
 //! [2]
-	@Override
-	protected void paintEvent(QPaintEvent e) {
+    @Override
+    protected void paintEvent(QPaintEvent e) {
         QPainter p = new QPainter(this);
         p.drawLine(line);        // drawing code
         p.end();
@@ -41,9 +41,9 @@ class painterfoobar2 extends painterfoobar {
 //! [2]
 
 
-	public void abc(QPainter painter) {
-		QWidget myWidget = null;
-		QPainter painter2 = null;
+    public void abc(QPainter painter) {
+        QWidget myWidget = null;
+        QPainter painter2 = null;
 
 //! [3]
         painter.begin(null); // impossible - paint device cannot be null
@@ -54,10 +54,10 @@ class painterfoobar2 extends painterfoobar {
         painter.begin(myWidget);
         painter2.begin(myWidget); // impossible - only one painter at a time
 //! [3]
-	}
+    }
 
 
-	void setWorldMatrix(QMatrix matrix, boolean b) {}
+    void setWorldMatrix(QMatrix matrix, boolean b) {}
 
 //! [4]
     void rotate(double angle) {
@@ -69,7 +69,7 @@ class painterfoobar2 extends painterfoobar {
 
 
     void abcdef() {
-    	{
+        {
 //! [5]
     QPainterPath path = new QPainterPath();
     path.moveTo(20, 80);
@@ -80,7 +80,7 @@ class painterfoobar2 extends painterfoobar {
     painter.drawPath(path);
     painter.end();
 //! [5]
-    	}
+        }
 
     {
 //! [6]
@@ -215,7 +215,7 @@ class painterfoobar2 extends painterfoobar {
     }
 
     {
-    	QRectF rect = null;
+        QRectF rect = null;
 //! [17]
         QPainter painter = new QPainter(this);
         painter.drawText(rect, Qt.AlignmentFlag.AlignCenter.value(), tr("Qt by\nTrolltech"));
@@ -239,7 +239,7 @@ class painterfoobar2 extends painterfoobar {
     public void fillRect(int a, int b) {}
     public int background()
     {
-    	int rectangle = 0;
+        int rectangle = 0;
 //! [19]
         fillRect(rectangle, background());
 //! [19]

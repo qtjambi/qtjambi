@@ -44,7 +44,7 @@ public class src_network_socket_qudpsocket {
     }
 //! [0]
     public class Server extends QObject {
-	private QUdpSocket udpSocket;
+    private QUdpSocket udpSocket;
 
         public void initSocket()
         {
@@ -58,7 +58,7 @@ public class src_network_socket_qudpsocket {
         {
             while (udpSocket.hasPendingDatagrams()) {
                 byte[] datagram = new byte[(int)udpSocket.pendingDatagramSize()];
-		QUdpSocket.HostInfo senderInfo = new QUdpSocket.HostInfo();
+        QUdpSocket.HostInfo senderInfo = new QUdpSocket.HostInfo();
 
                 udpSocket.readDatagram(datagram, senderInfo);
 

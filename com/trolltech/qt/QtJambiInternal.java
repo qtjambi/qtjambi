@@ -99,9 +99,9 @@ public class QtJambiInternal {
                         connection.receiver,
                         connection.slot.toString());
                 if (e.getCause() != null)
-                	e.getCause().printStackTrace();
+                    e.getCause().printStackTrace();
                 else
-                	e.printStackTrace();
+                    e.printStackTrace();
             }
             if (updateSender) {
                 QtJambiInternal.resetQObjectSender(((QObject) connection.receiver).nativeId(),
@@ -555,37 +555,37 @@ public class QtJambiInternal {
 
     public static void setField(Object owner, Class<?> declaringClass, String fieldName, Object newValue) {
 
-    	Field f = null;
-    	try {
-    		f = declaringClass.getDeclaredField(fieldName);
-    		f.setAccessible(true);
-    		f.set(owner, newValue);
-    	} catch (Exception e) {
-    		if (!setFieldNative(owner, f, newValue)) {
-    			throw new RuntimeException("Cannot set field '" + fieldName);
-    		}
-    	}
+        Field f = null;
+        try {
+            f = declaringClass.getDeclaredField(fieldName);
+            f.setAccessible(true);
+            f.set(owner, newValue);
+        } catch (Exception e) {
+            if (!setFieldNative(owner, f, newValue)) {
+                throw new RuntimeException("Cannot set field '" + fieldName);
+            }
+        }
     }
     public static native boolean setFieldNative(Object owner, Field field, Object newValue);
 
     public static Object fetchField(Object owner, Class<?> declaringClass, String fieldName) {
 
-    	Field f = null;
-    	try {
-    		f = declaringClass.getDeclaredField(fieldName);
-    		f.setAccessible(true);
-    		return f.get(owner);
-    	} catch (Exception e) {
-    		return fetchFieldNative(owner, f);
-    	}
+        Field f = null;
+        try {
+            f = declaringClass.getDeclaredField(fieldName);
+            f.setAccessible(true);
+            return f.get(owner);
+        } catch (Exception e) {
+            return fetchFieldNative(owner, f);
+        }
     }
     public static native Object fetchFieldNative(Object owner, Field field);
 
     public static void threadCheck(QObject obj) {
-    	if (threadAsserts)
+        if (threadAsserts)
 
-    	    if (obj.thread() != null && obj.thread() != Thread.currentThread()) {
-    	        throw new QThreadAffinityException("QObject used from outside its own thread",
+            if (obj.thread() != null && obj.thread() != Thread.currentThread()) {
+                throw new QThreadAffinityException("QObject used from outside its own thread",
                                                    obj,
                                                    Thread.currentThread());
             }

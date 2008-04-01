@@ -1473,7 +1473,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunc
     QString new_return_type = java_function->typeReplaced(0);
     bool has_function_type = new_return_type != "void"
                              && (!new_return_type.isEmpty() || function_type != 0)
-	                     && java_function->argumentReplaced(0).isEmpty();
+                         && java_function->argumentReplaced(0).isEmpty();
 
     const QString qt_object_name = java_function->isStatic() ? shellClassName(cls) : "__qt_this";
     const QString java_object_name = java_function->isStatic() ? "__jni_class" : "__jni_object";
@@ -1575,7 +1575,7 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunc
         }
     }
     if(!java_function->argumentReplaced(0).isEmpty()) {
-	s << INDENT << "return 0;" << endl;
+    s << INDENT << "return 0;" << endl;
     }
 
     s << endl << "}";
@@ -1719,14 +1719,14 @@ void CppImplGenerator::writeFinalDestructor(QTextStream &s, const AbstractMetaCl
 {
   if (cls->hasConstructors()) {
       s << INDENT << "static void qtjambi_destructor(void *ptr)" << endl
-	<< INDENT << "{" << endl;
+    << INDENT << "{" << endl;
 
       {
-	Indentation indent(INDENT);
-	if (!cls->isQObject() && !cls->generateShellClass()) {
-	  s << INDENT << "QtJambiLink *link = QtJambiLink::findLinkForUserObject(ptr);" << endl
+    Indentation indent(INDENT);
+    if (!cls->isQObject() && !cls->generateShellClass()) {
+      s << INDENT << "QtJambiLink *link = QtJambiLink::findLinkForUserObject(ptr);" << endl
             << INDENT << "if (link) link->resetObject(qtjambi_current_environment());" << endl;
-	}
+    }
 
         // Code injectsions...
         foreach (const CodeSnip &snip, cls->typeEntry()->codeSnips()) {
@@ -1735,7 +1735,7 @@ void CppImplGenerator::writeFinalDestructor(QTextStream &s, const AbstractMetaCl
             }
         }
 
-	s << INDENT << "delete (" << shellClassName(cls) << " *)ptr;" << endl;
+    s << INDENT << "delete (" << shellClassName(cls) << " *)ptr;" << endl;
       }
 
       s << INDENT << "}" << endl << endl;
@@ -1798,7 +1798,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     }
 
     if (cls->typeEntry()->typeFlags() & ComplexTypeEntry::DeleteInMainThread)
-	s << INDENT << "__qt_java_link->setDeleteInMainThread(true);" << endl;
+    s << INDENT << "__qt_java_link->setDeleteInMainThread(true);" << endl;
 
     if (!cls->hasVirtualFunctions() && !cls->hasInconsistentFunctions() && !cls->typeEntry()->isObject())
         return;

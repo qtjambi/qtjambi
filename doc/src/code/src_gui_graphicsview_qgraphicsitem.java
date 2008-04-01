@@ -240,9 +240,9 @@ import com.trolltech.qt.svg.*;
 
 public class src_gui_graphicsview_qgraphicsitem {
 
-	QGraphicsItem item = null;
-	QGraphicsView view = null;
-	QGraphicsScene scene = null;
+    QGraphicsItem item = null;
+    QGraphicsView view = null;
+    QGraphicsScene scene = null;
 
     public static void main(String args[]) {
         QApplication.initialize(args);
@@ -265,11 +265,11 @@ public class src_gui_graphicsview_qgraphicsitem {
 
     // Fake QGraphicsItem that has no abstract methods
     public class QGraphicsItem extends com.trolltech.qt.gui.QGraphicsItem {
-    	double radius = 666;
-    	double diameter = 666;
+        double radius = 666;
+        double diameter = 666;
 
-    	public QRectF boundingRect() {return null;}
-		public void paint(QPainter arg0, QStyleOptionGraphicsItem arg1,QWidget arg2) {}
+        public QRectF boundingRect() {return null;}
+        public void paint(QPainter arg0, QStyleOptionGraphicsItem arg1,QWidget arg2) {}
     }
 
 //! [1]
@@ -286,31 +286,31 @@ public class src_gui_graphicsview_qgraphicsitem {
 
    public void snippetWrapper2() {
 //! [2]
-	   item.setCursor(new QCursor(Qt.CursorShape.IBeamCursor));
+       item.setCursor(new QCursor(Qt.CursorShape.IBeamCursor));
 //! [2]
 
 
 
 //! [3]
-	   item.setCursor(new QCursor(Qt.CursorShape.IBeamCursor));
+       item.setCursor(new QCursor(Qt.CursorShape.IBeamCursor));
 //! [3]
 
 
 //! [4]
-	    QGraphicsRectItem rect = new QGraphicsRectItem();
-	    rect.setPos(100, 100);
+        QGraphicsRectItem rect = new QGraphicsRectItem();
+        rect.setPos(100, 100);
 
-	    rect.sceneTransform().map(new QPointF(0, 0));
-	    // returns QPointF(100, 100);
+        rect.sceneTransform().map(new QPointF(0, 0));
+        // returns QPointF(100, 100);
 
-	    rect.sceneTransform().inverted().map(new QPointF(100, 100));
-	    // returns QPointF(0, 0);
+        rect.sceneTransform().inverted().map(new QPointF(100, 100));
+        // returns QPointF(0, 0);
 //! [4]
    }
 
    public void snippetWrapper3() {
 //! [5]
-	    QGraphicsRectItem rect = new QGraphicsRectItem();
+        QGraphicsRectItem rect = new QGraphicsRectItem();
         rect.setPos(100, 100);
 
         rect.deviceTransform(view.viewportTransform()).map(new QPointF(0, 0));
@@ -343,49 +343,49 @@ public class src_gui_graphicsview_qgraphicsitem {
 
 
 //! [8]
-	public class CircleItem extends QGraphicsItem
-	{
-		// ...
-		public QRectF boundingRect() {
-			double penWidth = 1;
-			return new QRectF(-radius - penWidth / 2, -radius - penWidth / 2,
-			              diameter + penWidth, diameter + penWidth);
-   	    }
+    public class CircleItem extends QGraphicsItem
+    {
+        // ...
+        public QRectF boundingRect() {
+            double penWidth = 1;
+            return new QRectF(-radius - penWidth / 2, -radius - penWidth / 2,
+                          diameter + penWidth, diameter + penWidth);
+        }
       // ...
     }
 //! [8]
 
 
 //! [9]
-	public class RoundItem extends QGraphicsItem
-	{
-		// ...
-		public QPainterPath shape() {
-			QPainterPath path = new QPainterPath();
-			path.addEllipse(boundingRect());
-			return path;
-		}
-		// ...
-	}
+    public class RoundItem extends QGraphicsItem
+    {
+        // ...
+        public QPainterPath shape() {
+            QPainterPath path = new QPainterPath();
+            path.addEllipse(boundingRect());
+            return path;
+        }
+        // ...
+    }
 //! [9]
 
 
 //! [10]
-	public class RoundRectItem extends QGraphicsItem
-	{
-		// ...
-		public void paint(QPainter painter,
+    public class RoundRectItem extends QGraphicsItem
+    {
+        // ...
+        public void paint(QPainter painter,
                 QStyleOptionGraphicsItem option,
                 QWidget widget) {
-			painter.drawRoundRect(-10, -10, 20, 20, 5, 5);
-			}
-		// ...
-	}
+            painter.drawRoundRect(-10, -10, 20, 20, 5, 5);
+            }
+        // ...
+    }
 //! [10]
 
-	public class ButtonItem extends QGraphicsItem {}
+    public class ButtonItem extends QGraphicsItem {}
 
-	public void snippetWrapper4() {
+    public void snippetWrapper4() {
 //! [11]
         int ObjectName = 0;
 
@@ -395,9 +395,9 @@ public class src_gui_graphicsview_qgraphicsitem {
                 item.setData(ObjectName, "Button");
         }
 //! [11]
-	}
+    }
 
-	public void snippetWrapper5() {
+    public void snippetWrapper5() {
 //! [12]
         QGraphicsScene scene = new QGraphicsScene();
         QGraphicsEllipseItem ellipse = scene.addEllipse(new QRectF(-10, -10, 20, 20));
@@ -409,85 +409,85 @@ public class src_gui_graphicsview_qgraphicsitem {
         ellipse.installSceneEventFilter(line);
         // ellipse's events are filtered by line's sceneEventFilter() function.
 //! [12]
-	}
+    }
 
-	public class ClassWrapper1 {
+    public class ClassWrapper1 {
 
 //! [13]
-		public class CutsomItem extends QGraphicsItem
-		{
-			// ...
-	        public void contextMenuEvent(QGraphicsSceneContextMenuEvent event) {
-	            QMenu menu = new QMenu();
-	            QAction emoveAction = menu.addAction("Remove");
-	            QAction arkAction = menu.addAction("Mark");
-	            QAction electedAction = menu.exec(event.screenPos());
-	            // ...
-	        }
-	        // ...
-		}
+        public class CutsomItem extends QGraphicsItem
+        {
+            // ...
+            public void contextMenuEvent(QGraphicsSceneContextMenuEvent event) {
+                QMenu menu = new QMenu();
+                QAction emoveAction = menu.addAction("Remove");
+                QAction arkAction = menu.addAction("Mark");
+                QAction electedAction = menu.exec(event.screenPos());
+                // ...
+            }
+            // ...
+        }
 //! [13]
-	}
+    }
 
-	public class ClassWrapper2 {
+    public class ClassWrapper2 {
 //! [14]
-		public class CutsomItem extends QGraphicsItem
-		{
-	        public CutsomItem()
-	        {
-	            setAcceptDrops(true);
-	            // ...
-	        }
+        public class CutsomItem extends QGraphicsItem
+        {
+            public CutsomItem()
+            {
+                setAcceptDrops(true);
+                // ...
+            }
 
-	        public void dragEnterEvent(QGraphicsSceneDragDropEvent event)
-	        {
-	            event.setAccepted(event.mimeData().hasFormat("text/plain"));
-	        }
-	        // ...
-		}
+            public void dragEnterEvent(QGraphicsSceneDragDropEvent event)
+            {
+                event.setAccepted(event.mimeData().hasFormat("text/plain"));
+            }
+            // ...
+        }
 //! [14]
-	}
+    }
 
-	public class ClassWrapper3 {
+    public class ClassWrapper3 {
 
-		public class CutsomItem extends QGraphicsItem {
+        public class CutsomItem extends QGraphicsItem {
 //! [15]
-			public Object itemChange(GraphicsItemChange change, Object value)
-	        {
-	            if (change == GraphicsItemChange.ItemPositionChange && scene() != null) {
-	                // value is the new position.
-	                QPointF newPos = (QPointF)value;
-	                QRectF rect = scene().sceneRect();
-	                if (!rect.contains(newPos)) {
-	                    // Keep the item inside the scene rect.
-	                    newPos.setX(Math.min(rect.right(), Math.max(newPos.x(), rect.left())));
-	                    newPos.setY(Math.min(rect.bottom(), Math.max(newPos.y(), rect.top())));
-	                    return newPos;
-	                }
-	            }
+            public Object itemChange(GraphicsItemChange change, Object value)
+            {
+                if (change == GraphicsItemChange.ItemPositionChange && scene() != null) {
+                    // value is the new position.
+                    QPointF newPos = (QPointF)value;
+                    QRectF rect = scene().sceneRect();
+                    if (!rect.contains(newPos)) {
+                        // Keep the item inside the scene rect.
+                        newPos.setX(Math.min(rect.right(), Math.max(newPos.x(), rect.left())));
+                        newPos.setY(Math.min(rect.bottom(), Math.max(newPos.y(), rect.top())));
+                        return newPos;
+                    }
+                }
 
-	            return super.itemChange(change, value);
-	        }
+                return super.itemChange(change, value);
+            }
 //! [15]
-	}
+    }
 
-	}
+    }
 
-	public class ClassWrapper4 {
+    public class ClassWrapper4 {
 //! [16]
-		public class CircleItem extends QGraphicsItem {
+        public class CircleItem extends QGraphicsItem {
 
-			// ...
-			public void setRadius(double newRadius)
-	        {
-	            if (radius != newRadius) {
-	                prepareGeometryChange();
-	                radius = newRadius;
-	            }
-	        }
-		}
+            // ...
+            public void setRadius(double newRadius)
+            {
+                if (radius != newRadius) {
+                    prepareGeometryChange();
+                    radius = newRadius;
+                }
+            }
+        }
 //! [16]
-	}
+    }
 
     public void snippetWrapper6() {
 //! [17]

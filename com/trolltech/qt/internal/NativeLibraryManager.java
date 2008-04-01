@@ -290,10 +290,10 @@ public class NativeLibraryManager {
      * @param library The name of the library..
      */
     public static void loadLibrary(String library) {
-    	if (Utilities.configuration == Utilities.Configuration.Debug)
+        if (Utilities.configuration == Utilities.Configuration.Debug)
             library += DEBUG_SUFFIX;
-    	String lib = jniLibraryName(library);
-    	loadNativeLibrary(lib);
+        String lib = jniLibraryName(library);
+        loadNativeLibrary(lib);
     }
 
 
@@ -369,12 +369,12 @@ public class NativeLibraryManager {
      * @return The classloader
      */
     private static ClassLoader classLoader() {
-	ClassLoader loader = Thread.currentThread().getContextClassLoader();
-	if (loader == null) {
-	    loader = NativeLibraryManager.class.getClassLoader();
-	    assert loader != null;
-	}
-	return loader;
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    if (loader == null) {
+        loader = NativeLibraryManager.class.getClassLoader();
+        assert loader != null;
+    }
+    return loader;
     }
 
     /**

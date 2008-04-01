@@ -29,97 +29,97 @@ public class TestInjectedCodeV2 extends QApplicationTest {
     @Test
     public void testAbstractSocketProxyAuthenticationRequiredFromJavaToCpp()
     {
-    	AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
+        AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
 
-    	QAbstractSocket as = new QAbstractSocket(QAbstractSocket.SocketType.TcpSocket, null);
-    	ass.connectProxyAuthenticationRequired(as);
+        QAbstractSocket as = new QAbstractSocket(QAbstractSocket.SocketType.TcpSocket, null);
+        ass.connectProxyAuthenticationRequired(as);
 
-    	QNetworkProxy proxy = new QNetworkProxy();
-    	proxy.setUser("FOO");
-    	proxy.setPassword("BAR");
+        QNetworkProxy proxy = new QNetworkProxy();
+        proxy.setUser("FOO");
+        proxy.setPassword("BAR");
 
-    	QAuthenticator authenticator = new QAuthenticator();
-    	authenticator.setUser("ZIM");
-    	authenticator.setPassword("ZUM");
+        QAuthenticator authenticator = new QAuthenticator();
+        authenticator.setUser("ZIM");
+        authenticator.setPassword("ZUM");
 
-    	as.proxyAuthenticationRequired.emit(proxy, authenticator);
+        as.proxyAuthenticationRequired.emit(proxy, authenticator);
 
-    	assertEquals("FOO", authenticator.user());
-    	assertEquals("BAR", authenticator.password());
+        assertEquals("FOO", authenticator.user());
+        assertEquals("BAR", authenticator.password());
     }
 
 
     @SuppressWarnings("unused")
     private void myJavaSlot(QNetworkProxy proxy, QAuthenticator authenticator)
     {
-    	authenticator.setUser(proxy.password());
-    	authenticator.setPassword(proxy.user());
+        authenticator.setUser(proxy.password());
+        authenticator.setPassword(proxy.user());
     }
 
     @Test
     public void testAbstractSocketProxyAuthenticationFromCppToJava()
     {
-    	AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
+        AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
 
-    	QAbstractSocket as = new QAbstractSocket(QAbstractSocket.SocketType.TcpSocket, null);
-    	as.proxyAuthenticationRequired.connect(this, "myJavaSlot(QNetworkProxy, QAuthenticator)");
+        QAbstractSocket as = new QAbstractSocket(QAbstractSocket.SocketType.TcpSocket, null);
+        as.proxyAuthenticationRequired.connect(this, "myJavaSlot(QNetworkProxy, QAuthenticator)");
 
-    	QNetworkProxy proxy = new QNetworkProxy();
-    	proxy.setUser("FOO");
-    	proxy.setPassword("BAR");
+        QNetworkProxy proxy = new QNetworkProxy();
+        proxy.setUser("FOO");
+        proxy.setPassword("BAR");
 
-    	QAuthenticator authenticator = new QAuthenticator();
-    	authenticator.setUser("ZIM");
-    	authenticator.setPassword("ZUM");
+        QAuthenticator authenticator = new QAuthenticator();
+        authenticator.setUser("ZIM");
+        authenticator.setPassword("ZUM");
 
-    	ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
+        ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
 
-    	assertEquals("BAR", authenticator.user());
-    	assertEquals("FOO", authenticator.password());
+        assertEquals("BAR", authenticator.user());
+        assertEquals("FOO", authenticator.password());
     }
 
     @Test
     public void testTcpSocketProxyAuthenticationFromCppToJava()
     {
-    	AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
+        AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
 
-    	QTcpSocket as = new QTcpSocket(null);
-    	as.proxyAuthenticationRequired.connect(this, "myJavaSlot(QNetworkProxy, QAuthenticator)");
+        QTcpSocket as = new QTcpSocket(null);
+        as.proxyAuthenticationRequired.connect(this, "myJavaSlot(QNetworkProxy, QAuthenticator)");
 
-    	QNetworkProxy proxy = new QNetworkProxy();
-    	proxy.setUser("FOO");
-    	proxy.setPassword("BAR");
+        QNetworkProxy proxy = new QNetworkProxy();
+        proxy.setUser("FOO");
+        proxy.setPassword("BAR");
 
-    	QAuthenticator authenticator = new QAuthenticator();
-    	authenticator.setUser("ZIM");
-    	authenticator.setPassword("ZUM");
+        QAuthenticator authenticator = new QAuthenticator();
+        authenticator.setUser("ZIM");
+        authenticator.setPassword("ZUM");
 
-    	ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
+        ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
 
-    	assertEquals("BAR", authenticator.user());
-    	assertEquals("FOO", authenticator.password());
+        assertEquals("BAR", authenticator.user());
+        assertEquals("FOO", authenticator.password());
     }
 
     @Test
     public void testUdpSocketProxyAuthenticationFromCppToJava()
     {
-    	AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
+        AbstractSocketSubclass ass = new AbstractSocketSubclass(QAbstractSocket.SocketType.TcpSocket, null);
 
-    	QUdpSocket as = new QUdpSocket(null);
-    	as.proxyAuthenticationRequired.connect(this, "myJavaSlot(QNetworkProxy, QAuthenticator)");
+        QUdpSocket as = new QUdpSocket(null);
+        as.proxyAuthenticationRequired.connect(this, "myJavaSlot(QNetworkProxy, QAuthenticator)");
 
-    	QNetworkProxy proxy = new QNetworkProxy();
-    	proxy.setUser("FOO");
-    	proxy.setPassword("BAR");
+        QNetworkProxy proxy = new QNetworkProxy();
+        proxy.setUser("FOO");
+        proxy.setPassword("BAR");
 
-    	QAuthenticator authenticator = new QAuthenticator();
-    	authenticator.setUser("ZIM");
-    	authenticator.setPassword("ZUM");
+        QAuthenticator authenticator = new QAuthenticator();
+        authenticator.setUser("ZIM");
+        authenticator.setPassword("ZUM");
 
-    	ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
+        ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
 
-    	assertEquals("BAR", authenticator.user());
-    	assertEquals("FOO", authenticator.password());
+        assertEquals("BAR", authenticator.user());
+        assertEquals("FOO", authenticator.password());
     }
 
 
@@ -237,72 +237,72 @@ public class TestInjectedCodeV2 extends QApplicationTest {
 
     static class GraphicsWidgetSubclassSubclass extends GraphicsWidgetSubclass {
 
-    	@Override
-    	protected void initStyleOption(QStyleOption option) {
-    		if (option instanceof QStyleOptionGroupBox) {
-    			QStyleOptionGroupBox box = (QStyleOptionGroupBox) option;
-    			box.setLineWidth(321);
-    		}
+        @Override
+        protected void initStyleOption(QStyleOption option) {
+            if (option instanceof QStyleOptionGroupBox) {
+                QStyleOptionGroupBox box = (QStyleOptionGroupBox) option;
+                box.setLineWidth(321);
+            }
 
-    		super.initStyleOption(option);
-    	}
+            super.initStyleOption(option);
+        }
 
     }
 
     @Test
     public void QGraphicsWidgetInitStyleOption() {
-    	GraphicsWidgetSubclassSubclass gwss = new GraphicsWidgetSubclassSubclass();
-		int ret = GraphicsWidgetSubclass.callInitStyleOption(gwss);
-		assertEquals(444, ret);
+        GraphicsWidgetSubclassSubclass gwss = new GraphicsWidgetSubclassSubclass();
+        int ret = GraphicsWidgetSubclass.callInitStyleOption(gwss);
+        assertEquals(444, ret);
     }
 
     static class XmlEntityResolverSubclassSubclass extends XmlEntityResolverSubclass{
 
-		@Override
-		public ResolvedEntity resolveEntity(String publicId, String systemId) {
-			if (publicId.equals("In java")) {
-				QXmlInputSource src = new QXmlInputSource();
-				src.setData("Made in Java");
-				return new ResolvedEntity(systemId.equals("error"), src);
-			} else {
-				return super.resolveEntity(publicId, systemId);
-			}
-		}
+        @Override
+        public ResolvedEntity resolveEntity(String publicId, String systemId) {
+            if (publicId.equals("In java")) {
+                QXmlInputSource src = new QXmlInputSource();
+                src.setData("Made in Java");
+                return new ResolvedEntity(systemId.equals("error"), src);
+            } else {
+                return super.resolveEntity(publicId, systemId);
+            }
+        }
 
-		@Override
-		public String errorString() {
-			return null;
-		}
+        @Override
+        public String errorString() {
+            return null;
+        }
 
     }
 
 
     @Test
     public void QXmlEntityResolverResolveEntityMadeInJava() {
-    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
-    	QXmlInputSource src = xerss.callResolveEntity("In java", "");
-    	assertEquals("Made in Java", src.data());
+        XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+        QXmlInputSource src = xerss.callResolveEntity("In java", "");
+        assertEquals("Made in Java", src.data());
     }
 
     @Test
     public void QXmlEntityResolverResolveEntityMadeInJavaWithError() {
-    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
-    	QXmlInputSource src = xerss.callResolveEntity("In java", "error");
-    	assertEquals("Made in Java with error", src.data());
+        XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+        QXmlInputSource src = xerss.callResolveEntity("In java", "error");
+        assertEquals("Made in Java with error", src.data());
     }
 
     @Test
     public void QXmlEntityResolverResolveEntityMadeInCpp() {
-    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
-    	QXmlInputSource src = xerss.callResolveEntity("c++", "");
-    	assertEquals("Made in C++", src.data());
+        XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+        QXmlInputSource src = xerss.callResolveEntity("c++", "");
+        assertEquals("Made in C++", src.data());
     }
 
     @Test
     public void QXmlEntityResolverResolveEntityMadeInCppWithError() {
-    	XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
-    	QXmlInputSource src = xerss.callResolveEntity("c++", "error");
-    	assertEquals("Made in C++ with error", src.data());
+        XmlEntityResolverSubclassSubclass xerss = new XmlEntityResolverSubclassSubclass();
+        QXmlInputSource src = xerss.callResolveEntity("c++", "error");
+        assertEquals("Made in C++ with error", src.data());
     }
 
 }

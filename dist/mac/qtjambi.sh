@@ -14,7 +14,7 @@ then
     echo "is available in the PATH environment."
 else
     for lib in $(ls qtjambi*.jar); do
-	CP=$lib:$CP
+    CP=$lib:$CP
     done
     java -XstartOnFirstThread -cp $CP com.trolltech.launcher.Launcher
 fi

@@ -88,10 +88,10 @@ public class src_gui_dialogs_qmessagebox extends QWidget {
     private void snippetWrapper0() {
 
 //! [0]
-    	QMessageBox.StandardButtons buttons = new QMessageBox.StandardButtons();
-    	buttons.set(QMessageBox.StandardButton.Save);
-    	buttons.set(QMessageBox.StandardButton.Discard);
-    	buttons.set(QMessageBox.StandardButton.Cancel);
+        QMessageBox.StandardButtons buttons = new QMessageBox.StandardButtons();
+        buttons.set(QMessageBox.StandardButton.Save);
+        buttons.set(QMessageBox.StandardButton.Discard);
+        buttons.set(QMessageBox.StandardButton.Cancel);
         QMessageBox.StandardButton ret = QMessageBox.warning(this, tr("My Application"),
                           tr("The document has been modified.\n"
                              + "Do you want to save your changes?"),

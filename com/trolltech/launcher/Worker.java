@@ -24,31 +24,31 @@ public abstract class Worker extends QObject {
     }
 
     public void start() {
-	if (m_is_running)
-	    stop();
-	m_is_running = true;
-	m_timer_id = startTimer(m_delay);
+    if (m_is_running)
+        stop();
+    m_is_running = true;
+    m_timer_id = startTimer(m_delay);
     }
 
     public void stop() {
-	killTimer(m_timer_id);
-	m_is_running = false;
+    killTimer(m_timer_id);
+    m_is_running = false;
     }
 
     public void setDelay(int delay) {
-	m_delay = delay;
+    m_delay = delay;
     }
 
     public int delay() {
-	return m_delay;
+    return m_delay;
     }
 
     @Override
     protected void timerEvent(QTimerEvent e) {
-	if (e.timerId() == m_timer_id) {
-	    execute();
-	    stop();
-	}
+    if (e.timerId() == m_timer_id) {
+        execute();
+        stop();
+    }
     }
 
     private int m_delay = 250;

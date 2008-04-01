@@ -41,9 +41,9 @@ primitives and objects. Primitives are passed by value and objects are
 passed by reference. Qt/Java maps the signatures in Qt/C++ to those in
 Qt/Java according to the following table:
 
-Object Types	passed by pointer
-Value Types	passed by value or const &
-Primitives 	primitives
+Object Types    passed by pointer
+Value Types passed by value or const &
+Primitives  primitives
 
 If a type does not fit into this category, such as the signature
 
@@ -132,48 +132,48 @@ with existing functions of that class. The operators are named
 according to names used in [The C++ Programming Language, Bjarne
 Stroustrup] and are as follows:
 
-+	add
--	subtract
-*	multiply
-/	divide
-%	modulo
-&	and
-|	or
-^	xor
-~	negate
-<<	shift_left
->>	shift_right
++   add
+-   subtract
+*   multiply
+/   divide
+%   modulo
+&   and
+|   or
+^   xor
+~   negate
+<<  shift_left
+>>  shift_right
 
-=	assign
-+=	add_assign
--=	subtract_assign
-*=	multiply_assign
-/=	divide_assign
-%=	modulo_assign
-&=	and_assign
-|=	or_assign
-^=	xor_assign
-<<=	shift_left_assign
->>=	shift_right_assign
+=   assign
++=  add_assign
+-=  subtract_assign
+*=  multiply_assign
+/=  divide_assign
+%=  modulo_assign
+&=  and_assign
+|=  or_assign
+^=  xor_assign
+<<= shift_left_assign
+>>= shift_right_assign
 
-&&	logical_and
-||	logical_or
-!	not
+&&  logical_and
+||  logical_or
+!   not
 
-++	increment
---	decrement
+++  increment
+--  decrement
 
-<	less
->	greater
-<=	less_or_equal
->=	greater_or_equal
-!=	not_equal
-==	equal
+<   less
+>   greater
+<=  less_or_equal
+>=  greater_or_equal
+!=  not_equal
+==  equal
 
-[]	subscript
-->	pointer
+[]  subscript
+->  pointer
 
-cast	cast_[ClassName]
+cast    cast_[ClassName]
 
 [section] TypeMapping
 

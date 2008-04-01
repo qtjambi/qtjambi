@@ -19,41 +19,41 @@ public class OnConnection extends QWidget
 {
 
     public OnConnection() {
-	QVBoxLayout layout = new QVBoxLayout(this);
+    QVBoxLayout layout = new QVBoxLayout(this);
 
-	QPushButton ok = new QPushButton("OK", this);
-	ok.setObjectName("okButton");
-	ok.setCheckable(true);
-	layout.addWidget(ok);
+    QPushButton ok = new QPushButton("OK", this);
+    ok.setObjectName("okButton");
+    ok.setCheckable(true);
+    layout.addWidget(ok);
 
-	QPushButton cancel = new QPushButton("cancel", this);
-	cancel.setObjectName("cancelButton");
-	layout.addWidget(cancel);
+    QPushButton cancel = new QPushButton("cancel", this);
+    cancel.setObjectName("cancelButton");
+    layout.addWidget(cancel);
 
-	connectSlotsByName();
+    connectSlotsByName();
     }
 
     public void on_okButton_clicked() {
-	System.out.println("ok button clicked");
+    System.out.println("ok button clicked");
     }
 
     public void on_cancelButton_clicked() {
-	System.out.println("cancel button clicked");
-	QApplication.quit();
+    System.out.println("cancel button clicked");
+    QApplication.quit();
     }
 
     public void on_okButton_toggled(boolean ok)
     {
-	System.out.println("ok button toggled: " + ok);
+    System.out.println("ok button toggled: " + ok);
     }
 
     public static void main(String args[])
     {
-	QApplication.initialize(args);
+    QApplication.initialize(args);
 
-	OnConnection oc = new OnConnection();
-	oc.show();
+    OnConnection oc = new OnConnection();
+    oc.show();
 
-	QApplication.exec();
+    QApplication.exec();
     }
 }

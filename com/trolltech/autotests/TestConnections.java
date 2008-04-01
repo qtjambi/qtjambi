@@ -1259,89 +1259,89 @@ public class TestConnections extends QApplicationTest implements Qt
 
 
       @Test public void run_queuedConnection() {
-    	  MyQObject sender = new MyQObject();
-    	  MyQObject receiver = new MyQObject();
+          MyQObject sender = new MyQObject();
+          MyQObject receiver = new MyQObject();
 
-    	  sender.signalBoolean.connect(receiver, "javaSlotboolean(boolean)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalBoolean.connect(receiver, "javaSlotBoolean(java.lang.Boolean)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalCharacter.connect(receiver, "javaSlotchar(char)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalCharacter.connect(receiver, "javaSlotCharacter(java.lang.Character)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalShort.connect(receiver, "javaSlotshort(short)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalShort.connect(receiver, "javaSlotShort(java.lang.Short)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalInteger.connect(receiver, "javaSlotint(int)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalInteger.connect(receiver, "javaSlotInteger(java.lang.Integer)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalLong.connect(receiver, "javaSlotlong(long)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalLong.connect(receiver, "javaSlotLong(java.lang.Long)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalFloat.connect(receiver, "javaSlotfloat(float)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalFloat.connect(receiver, "javaSlotFloat(java.lang.Float)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalDouble.connect(receiver, "javaSlotdouble(double)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalDouble.connect(receiver, "javaSlotDouble(java.lang.Double)", Qt.ConnectionType.QueuedConnection);
-    	  sender.signalString.connect(receiver, "javaSlotString(java.lang.String)", Qt.ConnectionType.QueuedConnection);
+          sender.signalBoolean.connect(receiver, "javaSlotboolean(boolean)", Qt.ConnectionType.QueuedConnection);
+          sender.signalBoolean.connect(receiver, "javaSlotBoolean(java.lang.Boolean)", Qt.ConnectionType.QueuedConnection);
+          sender.signalCharacter.connect(receiver, "javaSlotchar(char)", Qt.ConnectionType.QueuedConnection);
+          sender.signalCharacter.connect(receiver, "javaSlotCharacter(java.lang.Character)", Qt.ConnectionType.QueuedConnection);
+          sender.signalShort.connect(receiver, "javaSlotshort(short)", Qt.ConnectionType.QueuedConnection);
+          sender.signalShort.connect(receiver, "javaSlotShort(java.lang.Short)", Qt.ConnectionType.QueuedConnection);
+          sender.signalInteger.connect(receiver, "javaSlotint(int)", Qt.ConnectionType.QueuedConnection);
+          sender.signalInteger.connect(receiver, "javaSlotInteger(java.lang.Integer)", Qt.ConnectionType.QueuedConnection);
+          sender.signalLong.connect(receiver, "javaSlotlong(long)", Qt.ConnectionType.QueuedConnection);
+          sender.signalLong.connect(receiver, "javaSlotLong(java.lang.Long)", Qt.ConnectionType.QueuedConnection);
+          sender.signalFloat.connect(receiver, "javaSlotfloat(float)", Qt.ConnectionType.QueuedConnection);
+          sender.signalFloat.connect(receiver, "javaSlotFloat(java.lang.Float)", Qt.ConnectionType.QueuedConnection);
+          sender.signalDouble.connect(receiver, "javaSlotdouble(double)", Qt.ConnectionType.QueuedConnection);
+          sender.signalDouble.connect(receiver, "javaSlotDouble(java.lang.Double)", Qt.ConnectionType.QueuedConnection);
+          sender.signalString.connect(receiver, "javaSlotString(java.lang.String)", Qt.ConnectionType.QueuedConnection);
 
-    	  // Boolean
-    	  receiver.slotResult = null;
-    	  sender.javaSignalboolean(true);
-    	  assertEquals(receiver.slotResult, null);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Boolean(true));
-    	  sender.javaSignalBoolean(false);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Boolean(false));
+          // Boolean
+          receiver.slotResult = null;
+          sender.javaSignalboolean(true);
+          assertEquals(receiver.slotResult, null);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Boolean(true));
+          sender.javaSignalBoolean(false);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Boolean(false));
 
-    	  // Byte ?
+          // Byte ?
 
-    	  // Character
-    	  sender.javaSignalchar('x');
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Character('x'));
-    	  sender.javaSignalCharacter(new Character('y'));
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Character('y'));
+          // Character
+          sender.javaSignalchar('x');
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Character('x'));
+          sender.javaSignalCharacter(new Character('y'));
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Character('y'));
 
-    	  // Shorts
-    	  sender.javaSignalShort((short) 40);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Short((short) 40));
-    	  sender.javaSignalShort((short) 41);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Short((short) 41));
+          // Shorts
+          sender.javaSignalShort((short) 40);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Short((short) 40));
+          sender.javaSignalShort((short) 41);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Short((short) 41));
 
-    	  // Integer
-    	  sender.javaSignalint(42);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Integer(42));
-    	  sender.javaSignalInteger(43);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Integer(43));
+          // Integer
+          sender.javaSignalint(42);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Integer(42));
+          sender.javaSignalInteger(43);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Integer(43));
 
-    	  // Long
-    	  sender.javaSignalLong((long)44);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Long(44));
-    	  sender.javaSignalLong((long) 45);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Long(45));
+          // Long
+          sender.javaSignalLong((long)44);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Long(44));
+          sender.javaSignalLong((long) 45);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Long(45));
 
-    	  // Float
-    	  sender.javaSignalFloat((float) 3.14);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Float(3.14));
-    	  sender.javaSignalFloat((float) 3.15);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Float(3.15));
+          // Float
+          sender.javaSignalFloat((float) 3.14);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Float(3.14));
+          sender.javaSignalFloat((float) 3.15);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Float(3.15));
 
-    	  // Double
-    	  sender.javaSignalDouble(3.16);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Double(3.16));
-    	  sender.javaSignalDouble(3.17);
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, new Double(3.17));
+          // Double
+          sender.javaSignalDouble(3.16);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Double(3.16));
+          sender.javaSignalDouble(3.17);
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, new Double(3.17));
 
-    	  // Strings
-    	  sender.javaSignalString("once upon a time...");
-    	  QCoreApplication.processEvents();
-    	  assertEquals(receiver.slotResult, "once upon a time...");
+          // Strings
+          sender.javaSignalString("once upon a time...");
+          QCoreApplication.processEvents();
+          assertEquals(receiver.slotResult, "once upon a time...");
       }
 
     private class ConnectInEmitTester extends QSignalEmitter {
@@ -1685,24 +1685,24 @@ public class TestConnections extends QApplicationTest implements Qt
     }
 
     static class RecursiveSignalEmission extends QPushButton {
-    	public static final int COUNT = 100;
+        public static final int COUNT = 100;
 
-    	public int emitted = 0;
-    	public void slot() {
-    		if (++emitted < COUNT)
-    			clicked.emit(true);
-    	}
+        public int emitted = 0;
+        public void slot() {
+            if (++emitted < COUNT)
+                clicked.emit(true);
+        }
     }
 
     @Test
     public void recursiveSignalEmission() {
-    	RecursiveSignalEmission e = new RecursiveSignalEmission();
+        RecursiveSignalEmission e = new RecursiveSignalEmission();
 
-    	assertEquals(0, e.emitted);
-    	e.clicked.connect(e, "slot()");
-    	e.slot();
+        assertEquals(0, e.emitted);
+        e.clicked.connect(e, "slot()");
+        e.slot();
 
-    	assertEquals(RecursiveSignalEmission.COUNT, e.emitted);
+        assertEquals(RecursiveSignalEmission.COUNT, e.emitted);
     }
 
 }

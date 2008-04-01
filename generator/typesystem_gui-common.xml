@@ -892,7 +892,7 @@
         <access modifier="private"/>
     </modify-function>
     <modify-function signature="QImage(const unsigned char*,int,int,int,QImage::Format)">
-	    <remove/>
+        <remove/>
     </modify-function>
     <modify-function signature="bits()const">
         <remove/>
@@ -4620,10 +4620,10 @@
         <access modifier="private"/>
     </modify-function>
     <modify-function signature="QApplication(int &amp;, char **, QApplication::Type, int)">
-	    <remove/>
+        <remove/>
     </modify-function>
     <modify-function signature="QApplication(int &amp;, char **, bool, int)">
-	    <remove/>
+        <remove/>
     </modify-function>
 
     <modify-function signature="font(const char*)">

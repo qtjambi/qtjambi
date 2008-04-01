@@ -130,7 +130,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
         if (filterModel != null && index != null && !UNFILTERED)
             index = filterModel.mapFromSource(index);
         if (selection != null)
-        	selection.setCurrentIndex(index, QItemSelectionModel.SelectionFlag.SelectCurrent);
+            selection.setCurrentIndex(index, QItemSelectionModel.SelectionFlag.SelectCurrent);
         }
 
     @Override
@@ -270,7 +270,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
         List<String> oldExtraPaths = new ArrayList<String>();
         if (oldExtraPath != null && oldExtraPath instanceof String) {
-        	Collections.addAll(oldExtraPaths, ((String) oldExtraPath).split(java.io.File.pathSeparator));
+            Collections.addAll(oldExtraPaths, ((String) oldExtraPath).split(java.io.File.pathSeparator));
 
         }
 

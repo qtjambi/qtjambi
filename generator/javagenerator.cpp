@@ -601,9 +601,9 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
     s << ")";
 
     if ( !java_function->argumentReplaced(0).isEmpty() ) {
-	s << ";" << endl;
-	s << INDENT << "return " << java_function->argumentReplaced(0) << ";" << endl;
-	return;
+    s << ";" << endl;
+    s << INDENT << "return " << java_function->argumentReplaced(0) << ";" << endl;
+    return;
     }
 
     if (return_type && (return_type->isTargetLangEnum() || return_type->isTargetLangFlags()))

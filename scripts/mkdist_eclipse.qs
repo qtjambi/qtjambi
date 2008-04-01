@@ -369,8 +369,8 @@ function buildLinuxQtJarFile() {
     var suffixes = [".4"];
     for (var i=0; i<dlls.length; ++i) {
         for (var j=0; j<suffixes.length; ++j) {
-	    copyFiles([option.qtdir + "/lib/" + dlls[i] + suffixes[j]], option.qtdir, linuxQtDest);
-	}
+        copyFiles([option.qtdir + "/lib/" + dlls[i] + suffixes[j]], option.qtdir, linuxQtDest);
+    }
     }
 }
 
@@ -381,20 +381,20 @@ function buildDesignerPlatform() {
 
     var designerRootDir = os_name() == OS_NAME_WINDOWS
                           ? packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.win32." + System.getenv("ARCH")
-	: packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH");
+    : packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH");
 
     if (os_name() != OS_NAME_WINDOWS) {
-	    var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux."+ System.getenv("ARCH") + "_" + version;
-	    dir = new Dir(pluginsDir);
-	    dir.mkdirs(pluginsDir);
-	    var suffixes = ["", ".4", ".4.3", "." + qtVersion];
-	    for (var i=0; i<suffixes.length; ++i) {
-	        copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH") + "/lib/libqtdesigner.so"
+        var pluginsDir = packageDir + "/output/plugins/com.trolltech.qtdesigner.linux."+ System.getenv("ARCH") + "_" + version;
+        dir = new Dir(pluginsDir);
+        dir.mkdirs(pluginsDir);
+        var suffixes = ["", ".4", ".4.3", "." + qtVersion];
+        for (var i=0; i<suffixes.length; ++i) {
+            copyFiles([packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH") + "/lib/libqtdesigner.so"
                         + suffixes[i]],
                         packageDir + "/eclipse/" + eclipseBranch + "/com.trolltech.qtdesigner.linux." + System.getenv("ARCH"),
                         pluginsDir);
-	    }
-	    copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);
+        }
+        copyFiles([designerRootDir + "/META-INF/MANIFEST.MF"], designerRootDir, pluginsDir);
     } else {
         // nothing needed atm
     }

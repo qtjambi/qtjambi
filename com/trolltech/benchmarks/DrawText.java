@@ -27,125 +27,125 @@ public class DrawText {
 
     @Override
     public void paint(Graphics g) {
-	    g.setColor(new Color(0, 0, 0));
+        g.setColor(new Color(0, 0, 0));
 
-	    int runningTime = 5000;
+        int runningTime = 5000;
 
-	    long drawCount = 0;
-	    long startTime = System.currentTimeMillis();
-	    long endTime = startTime + runningTime;
-	    while (System.currentTimeMillis() < endTime) {
-		for (int j=0; j<100; ++j) {
-		    g.drawString("hello world!!", 100, 100);
-		    ++drawCount;
-		}
-	    }
+        long drawCount = 0;
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + runningTime;
+        while (System.currentTimeMillis() < endTime) {
+        for (int j=0; j<100; ++j) {
+            g.drawString("hello world!!", 100, 100);
+            ++drawCount;
+        }
+        }
 
-	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
-	    System.out.printf("Awt:   text drawing: ops/sec=%d\n", opsPrSec);
+        long opsPrSec = (drawCount * 1000 / (endTime - startTime));
+        System.out.printf("Awt:   text drawing: ops/sec=%d\n", opsPrSec);
 
-	    setVisible(false);
-	}
+        setVisible(false);
+    }
 
-	@Override
+    @Override
     public Dimension getPreferredSize() {
-	    return new Dimension(512, 512);
-	}
+        return new Dimension(512, 512);
+    }
     }
 
 
     private static class QtWidget extends QWidget {
-	@Override
+    @Override
     protected void paintEvent(QPaintEvent e) {
 
-	    QPainter p = new QPainter();
-	    p.begin(this);
+        QPainter p = new QPainter();
+        p.begin(this);
 
-	    int runningTime = 1000;
+        int runningTime = 1000;
 
-	    long drawCount = 0;
-	    long startTime = System.currentTimeMillis();
-	    long endTime = startTime + runningTime;
-	    while (System.currentTimeMillis() < endTime) {
-		for (int j=0; j<100; ++j) {
-		    p.drawText(100, 100, "hello world!!");
-		    ++drawCount;
-		}
-	    }
+        long drawCount = 0;
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + runningTime;
+        while (System.currentTimeMillis() < endTime) {
+        for (int j=0; j<100; ++j) {
+            p.drawText(100, 100, "hello world!!");
+            ++drawCount;
+        }
+        }
 
-	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
-	    System.out.printf("Qt:    text drawing: ops/sec=%d\n", opsPrSec);
+        long opsPrSec = (drawCount * 1000 / (endTime - startTime));
+        System.out.printf("Qt:    text drawing: ops/sec=%d\n", opsPrSec);
 
-	    p.end();
+        p.end();
 
-	    hide();
-	}
+        hide();
+    }
 
-	@Override
+    @Override
     public QSize sizeHint() {
-	    return new QSize(512, 512);
-	}
+        return new QSize(512, 512);
+    }
     }
 
     private static class QtGLWidget extends QGLWidget {
-	@Override
+    @Override
     protected void paintEvent(QPaintEvent e) {
 
-	    QPainter p = new QPainter();
-	    p.begin(this);
+        QPainter p = new QPainter();
+        p.begin(this);
 
-	    int runningTime = 1000;
+        int runningTime = 1000;
 
-	    long drawCount = 0;
-	    long startTime = System.currentTimeMillis();
-	    long endTime = startTime + runningTime;
-	    while (System.currentTimeMillis() < endTime) {
-		for (int j=0; j<100; ++j) {
-		    p.drawText(100, 100, "hello world!");
-		    ++drawCount;
-		}
-	    }
+        long drawCount = 0;
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + runningTime;
+        while (System.currentTimeMillis() < endTime) {
+        for (int j=0; j<100; ++j) {
+            p.drawText(100, 100, "hello world!");
+            ++drawCount;
+        }
+        }
 
-	    long opsPrSec = (drawCount * 1000 / (endTime - startTime));
-	    System.out.printf("Qt/GL: text drawing: ops/sec=%d\n", opsPrSec);
+        long opsPrSec = (drawCount * 1000 / (endTime - startTime));
+        System.out.printf("Qt/GL: text drawing: ops/sec=%d\n", opsPrSec);
 
-	    p.end();
+        p.end();
 
-	    hide();
-	}
+        hide();
+    }
 
-	@Override
+    @Override
     public QSize sizeHint() {
-	    return new QSize(512, 512);
-	}
+        return new QSize(512, 512);
+    }
     }
 
     public static void main(String args[]) {
-	{
-	    JFrame f = new JFrame();
-	    AwtWidget awt = new AwtWidget();
-	    f.add(awt);
+    {
+        JFrame f = new JFrame();
+        AwtWidget awt = new AwtWidget();
+        f.add(awt);
 
-	    f.pack();
+        f.pack();
 
-	    f.setVisible(true);
+        f.setVisible(true);
 
-	}
+    }
 
 
-	try { Thread.sleep(10 * 1000); } catch (Exception e) { }
+    try { Thread.sleep(10 * 1000); } catch (Exception e) { }
 
-	{
-	    QApplication.initialize(args);
+    {
+        QApplication.initialize(args);
 
-	    QtWidget w = new QtWidget();
-	    w.show();
+        QtWidget w = new QtWidget();
+        w.show();
 
-	    QtGLWidget wgl = new QtGLWidget();
-	    wgl.show();
+        QtGLWidget wgl = new QtGLWidget();
+        wgl.show();
 
-	    QApplication.exec();
-	}
+        QApplication.exec();
+    }
 
 
 

@@ -24,6 +24,6 @@ public class QPaintingOutsidePaintEventException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public QPaintingOutsidePaintEventException(String message) {
-	super(message);
+    super(message);
     }
 }

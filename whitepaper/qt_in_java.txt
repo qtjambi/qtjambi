@@ -221,12 +221,12 @@ can write code using the familiar and convenient constructs of Java
 while still accessing the power of Qt.
 
 The following classes are mapped from Qt to Java:
-Qt 		| Java
+Qt      | Java
 ----------------+---------------
-QString 	| java.lang.String
-QChar 		| char and java.lang.Character
-QMap		| java.util.Map
-QList		| java.util.List
+QString     | java.lang.String
+QChar       | char and java.lang.Character
+QMap        | java.util.Map
+QList       | java.util.List
 
 
 [subsection] Member Variable Access

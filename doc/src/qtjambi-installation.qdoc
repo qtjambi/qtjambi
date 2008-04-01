@@ -146,7 +146,7 @@
     \header \o Configuration \o Comment
 
     \row \o Mac OS X \o Qt Jambi only supports Qt configured with \c
-     	    	     {-no-framework}
+                     {-no-framework}
 
     \row \o Linux \o Sun's Java Virtual Machine has a bug preventing
     it from using MMX and SSE instructions. For deployment against 1.5
@@ -328,7 +328,7 @@
     To build the generator example from the source package simply do:
 
     \code
-	ant -f build_generator_example.xml
+    ant -f build_generator_example.xml
     \endcode
 
     \warning The \QJ generator is written to handle Qt based source

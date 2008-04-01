@@ -11,7 +11,7 @@
 
     <target name="help"
             description="Provides detailed help.">
-	<echo>Generates an executable .jar file that runs the generator example...</echo>
+    <echo>Generates an executable .jar file that runs the generator example...</echo>
     </target>
 
 
@@ -28,32 +28,32 @@
     </target>
 
     <target name="compile"
-	    depends="init">
+        depends="init">
 
         <generator dir="${outputDir}/generator_example"
-		   outputDirectory="${outputDir}"
-		   typesystem="${sourceDir}/generator_example/typesystem_generatorexample.txt"
-		   header="${sourceDir}/generator_example/global.h"/>
+           outputDirectory="${outputDir}"
+           typesystem="${sourceDir}/generator_example/typesystem_generatorexample.txt"
+           header="${sourceDir}/generator_example/global.h"/>
 
-	<qmake config="${qtjambi.configuration}"
-	       dir="${outputDir}/generator_example"
-	       pro="${sourceDir}/generator_example/generator_example.pro" />
+    <qmake config="${qtjambi.configuration}"
+           dir="${outputDir}/generator_example"
+           pro="${sourceDir}/generator_example/generator_example.pro" />
 
-	<make dir="${outputDir}/generator_example" />
+    <make dir="${outputDir}/generator_example" />
 
 
-	<javac destdir="${outputDir}/platform-output"
-	       debug="true">
+    <javac destdir="${outputDir}/platform-output"
+           debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/examples/generator/*.java"/>
             <include name="com/trolltech/examples/GeneratorExample.java"/>
-	</javac>
+    </javac>
     </target>
 
     <target name="package"
-	    depends="init"
-	    description="Creating .jar file with native libs...">
+        depends="init"
+        description="Creating .jar file with native libs...">
 
         <qtjambi-platform-jar cacheKey="genex-${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
                               outdir="${outputDir}/platform-output">
@@ -64,21 +64,21 @@
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
-	    <plugin path="plugins" />
+        <plugin path="plugins" />
 
             <!-- Qt Jambi Libraries -->
             <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${outputDir}" />
             <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${outputDir}" />
 
-	    <!-- The generator examplelibrary -->
+        <!-- The generator examplelibrary -->
             <library name="com_trolltech_examples_generator" type="qtjambi" rootPath="${outputDir}" />
 
         </qtjambi-platform-jar>
 
         <jar destfile="${outputDir}/qtjambi-generator-example-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
             <fileset dir="${outputDir}/platform-output" />
-	    <fileset dir="${sourceDir}" includes="com/trolltech/examples/generator/images/*"/>
+        <fileset dir="${sourceDir}" includes="com/trolltech/examples/generator/images/*"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
                 <attribute name="Main-Class" value="com.trolltech.examples.GeneratorExample"/>
@@ -92,6 +92,6 @@
     </target>
 
     <target name="all"
-	    depends="init, compile, package" />
+        depends="init, compile, package" />
 
 </project>

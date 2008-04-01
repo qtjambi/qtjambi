@@ -516,10 +516,10 @@ class TetrixPiece
 //! [46]
     public TetrixPiece(TetrixPiece copy)
     {
-    	pieceShape = copy.shape();
+        pieceShape = copy.shape();
         for (int i=0; i<4; ++i) {
-	    	setX(i, copy.x(i));
-	    	setY(i, copy.y(i));
+            setX(i, copy.x(i));
+            setY(i, copy.y(i));
         }
 //! [46] //! [47]
     }

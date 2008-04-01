@@ -212,7 +212,7 @@ public class src_corelib_kernel_qvariant {
     QObject bject = getObjectFromSomewhere();
     QVariant data = qVariantFromValue(object);
 //! [8]
-	*/
+    */
 
     }
 }

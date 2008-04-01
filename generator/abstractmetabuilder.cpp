@@ -285,21 +285,21 @@ void AbstractMetaBuilder::traverseStreamOperator(FunctionModelItem item)
 }
 
 void AbstractMetaBuilder::fixQObjectForScope(TypeDatabase *types,
-					 NamespaceModelItem scope)
+                     NamespaceModelItem scope)
 {
     foreach (ClassModelItem item, scope->classes()) {
         QString qualified_name = item->qualifiedName().join("::");
         TypeEntry *entry = types->findType(qualified_name);
         if (entry) {
-	    if (isQObject(qualified_name) && entry->isComplex()) {
+        if (isQObject(qualified_name) && entry->isComplex()) {
                 ((ComplexTypeEntry *) entry)->setQObject(true);
-	    }
-	}
+        }
+    }
     }
 
     foreach (NamespaceModelItem item, scope->namespaceMap().values()) {
         if (scope != item)
-	  fixQObjectForScope(types, item);
+      fixQObjectForScope(types, item);
     }
 }
 

@@ -98,7 +98,7 @@ public:
     bool isEnum(const QStringList &qualified_name);
 
     void fixQObjectForScope  (TypeDatabase *types,
-			      NamespaceModelItem item);
+                  NamespaceModelItem item);
 protected:
     AbstractMetaClass *argumentToClass(ArgumentModelItem);
 

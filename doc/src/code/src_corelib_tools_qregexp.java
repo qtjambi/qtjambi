@@ -237,8 +237,8 @@ public class src_corelib_tools_qregexp {
     {
 //! [3]
         QRegExp mark = new QRegExp("\\b"      // word boundary
-				 + "[Mm]ark"  // the word we want to match
-				   );
+                 + "[Mm]ark"  // the word we want to match
+                   );
 //! [3]
     }
 
@@ -292,7 +292,7 @@ public class src_corelib_tools_qregexp {
     {
 //! [9]
         String str = "One Eric another Eirik, and an Ericsson. "
-	           + "How many Eiriks, Eric?";
+               + "How many Eiriks, Eric?";
         QRegExp rx = new QRegExp("\\b(Eric|Eirik)\\b"); // match Eric or Eirik
         int pos = 0;    // where we are in the string
         int count = 0;  // how many Eric and Eirik's we've counted
@@ -378,7 +378,7 @@ public class src_corelib_tools_qregexp {
         List<String> list = rx.capturedTexts();
         ListIterator<String> it = list.listIterator();
         while (it.hasNext()) {
-	    String t = it.next();
+        String t = it.next();
             //myProcessing();
         }
 //! [16]
@@ -413,8 +413,8 @@ public class src_corelib_tools_qregexp {
 
     public void foo15()
     {
-	String s1;
-	String s2;
+    String s1;
+    String s2;
 //! [19]
         s1 = QRegExp.escape("bingo");   // s1 == "bingo"
         s2 = QRegExp.escape("f(x)");    // s2 == "f\\(x\\)"
@@ -423,11 +423,11 @@ public class src_corelib_tools_qregexp {
 
     public void foo16()
     {
-	String name = new String();
-	String alias = new String();
+    String name = new String();
+    String alias = new String();
 //! [20]
         QRegExp rx = new QRegExp("(" + QRegExp.escape(name) +
-				 "|" + QRegExp.escape(alias) + ")");
+                 "|" + QRegExp.escape(alias) + ")");
 //! [20]
     }
 }

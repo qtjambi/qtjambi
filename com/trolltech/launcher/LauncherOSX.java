@@ -39,10 +39,10 @@ public class LauncherOSX {
 
     public static void main(String args[]) throws Exception {
 
-	if (!System.getProperty("os.name").toLowerCase().contains("mac os x")) {
-	    Launcher.main(args);
-	    return;
-	}
+    if (!System.getProperty("os.name").toLowerCase().contains("mac os x")) {
+        Launcher.main(args);
+        return;
+    }
 
         Utilities.loadSystemLibraries();
 
@@ -85,19 +85,19 @@ public class LauncherOSX {
         // library path...
         cmd.append(" -Djava.library.path=" + tmp);
 
-	cmd.append(" -XstartOnFirstThread");
+    cmd.append(" -XstartOnFirstThread");
         cmd.append(" -Dcom.trolltech.launcher.webstart=true");
 
         // the app itself...
         cmd.append(" com.trolltech.launcher.Launcher");
 
-	System.out.println(cmd.toString());
+    System.out.println(cmd.toString());
 
         ProcessBuilder procBuilder = new ProcessBuilder(cmd.toString().split(" "));
         procBuilder.environment().put("QT_PLUGIN_PATH", tmp + "/plugins");
-	procBuilder.environment().put("DYLD_LIBRARY_PATH", tmp);
+    procBuilder.environment().put("DYLD_LIBRARY_PATH", tmp);
         Process proc = procBuilder.start();
 
-	proc.waitFor();
+    proc.waitFor();
     }
 }
