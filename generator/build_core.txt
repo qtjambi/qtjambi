@@ -1,4 +1,3 @@
 <typesystem>
   <load-typesystem name="typesystem_core.xml" generate="yes" />
-  <load-typesystem name="typesystem_gui.xml" generate="no" />
 </typesystem>
