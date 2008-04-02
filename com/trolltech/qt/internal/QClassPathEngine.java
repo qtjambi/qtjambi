@@ -546,30 +546,27 @@ public class QClassPathEngine extends QAbstractFileEngine
 
 
     private static void findClassPaths() {
-        synchronized(QClassPathEngine.class){
+        synchronized(QClassPathEngine.class) {
             classpaths = new HashSet<String>();
 
-                List<URL> cpUrls = new ArrayList<URL>();
+            List<URL> cpUrls = new ArrayList<URL>();
 
             try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            if (loader == null)
-            loader = QClassPathFileEngineHandler.class.getClassLoader();
+                ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                if (loader == null)
+                loader = QClassPathFileEngineHandler.class.getClassLoader();
 
                 Enumeration<URL> urls = loader.getResources("META-INF/MANIFEST.MF");
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
-
                     if (url.getProtocol().equals("jar")) try {
-
                         String f = url.getFile();
                         int bang = f.indexOf("!");
                         if (bang >= 0)
                             f = f.substring(0, bang);
 
-
-                        if (f.trim().length() > 0) {
-                classpaths.add(f);
+                            if (f.trim().length() > 0) {
+                                classpaths.add(f);
                                 cpUrls.add(new URL(f));
                             }
                     } catch (Exception e) {
@@ -582,28 +579,28 @@ public class QClassPathEngine extends QAbstractFileEngine
 
             String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
 
-                // Only add the .jar files that are not already added...
-        int k=0;
+            // Only add the .jar files that are not already added...
+            int k=0;
             for (String p : paths) {
             if (p.trim().length() > 0) {
-            k++; // count all paths, invalid and valid
-                        String url = makeUrl(p);
-                        boolean match = false;
-                        try {
-                            JarFile jarFile2 = ((JarURLConnection) new URL("jar:" + url + "!/").openConnection()).getJarFile();
-                            for (URL otherURL : cpUrls) {
-                                JarFile jarFile1 = ((JarURLConnection) new URL("jar:" + otherURL.toString() + "!/").openConnection()).getJarFile();
+                k++; // count all paths, invalid and valid
 
-                                if (new File(jarFile1.getName()).getCanonicalPath().equals(new File(jarFile2.getName()).getCanonicalPath())) {
-                                    match = true;
-                                    break;
-                                }
-                            }
-                        } catch (Exception e) { }
+                String url = makeUrl(p);
+                boolean match = false;
+                try {
+                    JarFile jarFile2 = ((JarURLConnection) new URL("jar:" + url + "!/").openConnection()).getJarFile();
+                    for (URL otherURL : cpUrls) {
+                        JarFile jarFile1 = ((JarURLConnection) new URL("jar:" + otherURL.toString() + "!/").openConnection()).getJarFile();
 
-                        if (!match)
-                            classpaths.add(url);
+                        if (new File(jarFile1.getName()).getCanonicalPath().equals(new File(jarFile2.getName()).getCanonicalPath())) {
+                            match = true;
+                            break;
+                        }
+                    }
+                } catch (Exception e) { }
 
+                if (!match)
+                    classpaths.add(url);
             }
         }
 
