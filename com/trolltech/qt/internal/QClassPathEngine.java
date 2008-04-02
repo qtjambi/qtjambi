@@ -469,6 +469,25 @@ public class QClassPathEngine extends QAbstractFileEngine
             addEngine(engine);
     }
 
+    /**
+     * The JarEntry.isDirectory() method in Java returns false
+     * even for directories, so we need this extra check
+     * which tries to read a byte from the entry in order
+     * to trigger an exception when the entry is a directory.
+     */
+    static boolean checkIsDirectory(JarFile jarFile, JarEntry fileInJar) {
+        try {
+
+            InputStream s = jarFile.getInputStream(fileInJar);
+            int x = s.read();
+
+        } catch (Exception e) {
+            return true;
+        }
+
+        return false;
+    }
+
     private void addJarFileFromPath(URL jarFileURL, String fileName) {
         try {
             JarFile jarFile = ((JarURLConnection)jarFileURL.openConnection()).getJarFile();
@@ -479,21 +498,9 @@ public class QClassPathEngine extends QAbstractFileEngine
             // If the entry exists in the given file, look it up and
             // check if its a dir or not
             if (fileInJar != null) {
-                try {
-                    isDirectory = fileInJar.isDirectory();
-
-                    // JarEntry will return a directory even though it
-                    // is not a directory, so we try to read a byte
-                    // from the entry in order to trigger an exception
-                    // in the case where it is a directory...
-                    if (!isDirectory) {
-                        InputStream s = jarFile.getInputStream(fileInJar);
-                        int x = s.read();
-                    }
-                } catch (Exception e) {
-                    isDirectory = true;
-                }
-
+                isDirectory = fileInJar.isDirectory();
+                if (!isDirectory)
+                    isDirectory = checkIsDirectory(jarFile, fileInJar);
             }
 
             if (!isDirectory) {

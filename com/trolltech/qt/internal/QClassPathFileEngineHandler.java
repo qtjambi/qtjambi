@@ -283,7 +283,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
         List<String> result = new LinkedList<String>();
 
-        if (!filters.isSet(QDir.Filter.NoDotAndDotDot)) {
+        if (!filters.isSet(QDir.Filter.NoDotAndDotDot) && filters.isSet(QDir.Filter.Dirs)) {
             result.add(".");
             if (m_entryFileName.length() > 0)
                 result.add("..");
@@ -318,6 +318,8 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
                 isDir = true;
             } else {
                 isDir = entry.isDirectory();
+                if (!isDir)
+                    isDir = QClassPathEngine.checkIsDirectory(m_jarFile, entry);
             }
 
             if (!filters.isSet(QDir.Filter.Readable))
