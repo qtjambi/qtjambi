@@ -563,7 +563,7 @@ class QWizardPage___ extends QWizardPage {
      * @see com.trolltech.qt.gui.QWizardPage#setField
      */
     protected final void registerField(String name, QWidget widget, String property, String changedSignal) {
-        String signalSignature = com.trolltech.qt.QtJambiInternal.cppSignalSignature(widget, changedSignal);
+        String signalSignature = com.trolltech.qt.internal.MetaObjectTools.cppSignalSignature(widget, changedSignal);
         if (signalSignature.length() == 0)
             throw new QNoSuchSignalException("Signal '" + changedSignal
                     + "' does not exist or has argument types that cannot be converted to Qt Jambi or java.lang types.");

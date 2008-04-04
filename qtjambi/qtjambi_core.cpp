@@ -2106,9 +2106,9 @@ QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_n
     }
 
     StaticCache *sc = StaticCache::instance();
-    sc->resolveQtJambiInternal();
+    sc->resolveMetaObjectTools();
 
-    jclass enum_class = reinterpret_cast<jclass>(env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.getEnumForQFlags, flags_class));
+    jclass enum_class = reinterpret_cast<jclass>(env->CallStaticObjectMethod(sc->MetaObjectTools.class_ref, sc->MetaObjectTools.getEnumForQFlags, flags_class));
     if (enum_class == 0) {
         qWarning("No enum type found for flags type '%s'", qPrintable(qualified_name));
         qtjambi_exception_check(env);

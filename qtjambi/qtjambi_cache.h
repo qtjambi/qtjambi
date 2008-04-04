@@ -290,14 +290,18 @@ struct QTJAMBI_EXPORT StaticCache
         jmethodID lookupSlot;
         jmethodID writeSerializableJavaObject;
         jmethodID readSerializableJavaObject;
-        jmethodID buildMetaData;
         jmethodID isGeneratedClass;
-        jmethodID methodSignature;
-        jmethodID methodSignature2;
         jmethodID signalParameters;
-        jmethodID getEnumForQFlags;
         jmethodID signalMatchesSlot;
     } QtJambiInternal;
+
+    struct {
+        jclass class_ref;
+        jmethodID buildMetaData;
+        jmethodID methodSignature;
+        jmethodID methodSignature2;
+        jmethodID getEnumForQFlags;
+    } MetaObjectTools;
 
     struct {
         jclass class_ref;
@@ -471,6 +475,7 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(QClassPathEngine);
     DECLARE_RESOLVE_FUNCTIONS(QItemEditorCreatorBase);
     DECLARE_RESOLVE_FUNCTIONS(ResolvedEntity);
+    DECLARE_RESOLVE_FUNCTIONS(MetaObjectTools);
 
 public:
     static StaticCache *instance();

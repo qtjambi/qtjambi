@@ -15,6 +15,7 @@ package com.trolltech.qt;
 
 import com.trolltech.qt.QtJambiInternal.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.internal.MetaObjectTools;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -25,58 +26,6 @@ import java.util.*;
  * QtJambiObject.
  */
 public class QSignalEmitter {
-
-    static class ResolvedSignal {
-        Class<?> types[] = new Class[0];
-        int arrayDimensions[] = new int[0];
-        String name = "";
-    }
-
-    static ResolvedSignal resolveSignal(Field field, Class<?> declaringClass) {
-        ResolvedSignal resolvedSignal = new ResolvedSignal();
-        resolvedSignal.name = field.getName();
-
-        Type t = field.getGenericType();
-
-        // either t is a parameterized type, or it is Signal0
-        if (t instanceof ParameterizedType) {
-            ParameterizedType p = (ParameterizedType) t;
-            Type actualTypes[] = p.getActualTypeArguments();
-
-            resolvedSignal.types = new Class[actualTypes.length];
-            resolvedSignal.arrayDimensions = new int[actualTypes.length];
-            for (int j = 0; j < resolvedSignal.types.length; ++j) {
-
-                Type actualType = actualTypes[j];
-                int arrayDims = 0;
-                while (actualType instanceof GenericArrayType
-                        || actualType instanceof ParameterizedType) {
-                    if (actualType instanceof GenericArrayType) {
-                        actualType = ((GenericArrayType) actualType)
-                                .getGenericComponentType();
-                        ++arrayDims;
-                    } else { // ParameterizedType
-                        actualType = ((ParameterizedType) actualType)
-                                .getRawType();
-                    }
-                }
-
-                if (actualType instanceof Class) {
-                    resolvedSignal.types[j] = (Class<?>) actualType;
-                    resolvedSignal.arrayDimensions[j] = arrayDims;
-                } else {
-                    throw new RuntimeException(
-                            "Signals of generic types not supported: "
-                                    + actualTypes[j]
-                                    .toString());
-                }
-            }
-        }
-
-        return resolvedSignal;
-    }
-
-
 
     /**
      * QSignalEmitter is a class used internally by Qt Jambi.
@@ -381,7 +330,7 @@ public class QSignalEmitter {
                                 found = true;
                                 declaringClass = field.getDeclaringClass();
 
-                                ResolvedSignal resolvedSignal = QSignalEmitter.resolveSignal(field, declaringClass);
+                                ResolvedSignal resolvedSignal = QtJambiInternal.resolveSignal(field, declaringClass);
 
                                 name = resolvedSignal.name;
                                 types = resolvedSignal.types;
@@ -420,7 +369,7 @@ public class QSignalEmitter {
         private String cppSignalSignature = null;
         private String cppSignalSignature() {
             if (cppSignalSignature == null)
-                cppSignalSignature = QtJambiInternal.cppSignalSignature(this);
+                cppSignalSignature = MetaObjectTools.cppSignalSignature(this);
 
             return cppSignalSignature;
         }
@@ -441,7 +390,7 @@ public class QSignalEmitter {
             // need to make magic and dynamically fake a signal emission
             // in c++ for the signal.
             if (!isGenerated() && QSignalEmitter.this instanceof QObject) {
-                QtJambiInternal.emitNativeSignal((QObject) QSignalEmitter.this, name() + "(" + signalParameters() + ")", cppSignalSignature(), args);
+                MetaObjectTools.emitNativeSignal((QObject) QSignalEmitter.this, name() + "(" + signalParameters() + ")", cppSignalSignature(), args);
             }
 
             inJavaEmission = true;

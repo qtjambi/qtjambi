@@ -1105,43 +1105,54 @@ void StaticCache::resolveQtJambiInternal_internal()
                                      "Ljava/lang/Object;");
     Q_ASSERT(QtJambiInternal.readSerializableJavaObject);
 
-    QtJambiInternal.buildMetaData = env->GetStaticMethodID(QtJambiInternal.class_ref,
-                                                           "buildMetaData",
-                                                           "(Ljava/lang/Class;)"
-                                                           "Lcom/trolltech/qt/QtJambiInternal$MetaData;");
-    Q_ASSERT(QtJambiInternal.buildMetaData);
-
     QtJambiInternal.isGeneratedClass = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                               "isGeneratedClass",
                                                               "(Ljava/lang/Class;)Z");
     Q_ASSERT(QtJambiInternal.isGeneratedClass);
 
-    QtJambiInternal.methodSignature = env->GetStaticMethodID(QtJambiInternal.class_ref, "methodSignature",
-                                                             "(Ljava/lang/reflect/Method;)Ljava/lang/String;");
-    Q_ASSERT(QtJambiInternal.methodSignature);
-
-    QtJambiInternal.methodSignature2 = env->GetStaticMethodID(QtJambiInternal.class_ref, "methodSignature",
-                                                              "(Ljava/lang/reflect/Method;Z)Ljava/lang/String;");
-    Q_ASSERT(QtJambiInternal.methodSignature2);
 
     QtJambiInternal.signalParameters = env->GetStaticMethodID(QtJambiInternal.class_ref, "signalParameters",
                                                               "(Lcom/trolltech/qt/QSignalEmitter$AbstractSignal;)Ljava/lang/String;");
     Q_ASSERT(QtJambiInternal.signalParameters);
 
-    QtJambiInternal.getEnumForQFlags = env->GetStaticMethodID(QtJambiInternal.class_ref, "getEnumForQFlags",
-                                                              "(Ljava/lang/Class;)Ljava/lang/Class;");
-    Q_ASSERT(QtJambiInternal.getEnumForQFlags);
 
     QtJambiInternal.signalMatchesSlot = env->GetStaticMethodID(QtJambiInternal.class_ref, "signalMatchesSlot",
                                                                "(Ljava/lang/String;Ljava/lang/String;)Z");
     Q_ASSERT(QtJambiInternal.signalMatchesSlot);
 }
 
+void StaticCache::resolveMetaObjectTools_internal()
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    MetaObjectTools.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/internal/MetaObjectTools"));
+    Q_ASSERT(MetaObjectTools.class_ref);
+
+    MetaObjectTools.buildMetaData = env->GetStaticMethodID(MetaObjectTools.class_ref,
+                                                           "buildMetaData",
+                                                           "(Ljava/lang/Class;)"
+                                                           "Lcom/trolltech/qt/internal/MetaObjectTools$MetaData;");
+    Q_ASSERT(MetaObjectTools.buildMetaData);
+
+    MetaObjectTools.methodSignature = env->GetStaticMethodID(MetaObjectTools.class_ref, "methodSignature",
+                                                             "(Ljava/lang/reflect/Method;)Ljava/lang/String;");
+    Q_ASSERT(MetaObjectTools.methodSignature);
+
+    MetaObjectTools.methodSignature2 = env->GetStaticMethodID(MetaObjectTools.class_ref, "methodSignature",
+                                                              "(Ljava/lang/reflect/Method;Z)Ljava/lang/String;");
+    Q_ASSERT(MetaObjectTools.methodSignature2);
+
+    MetaObjectTools.getEnumForQFlags = env->GetStaticMethodID(MetaObjectTools.class_ref, "getEnumForQFlags",
+                                                              "(Ljava/lang/Class;)Ljava/lang/Class;");
+    Q_ASSERT(MetaObjectTools.getEnumForQFlags);
+
+}
+
 void StaticCache::resolveMetaData_internal()
 {
     JNIEnv *env = qtjambi_current_environment();
 
-    MetaData.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiInternal$MetaData"));
+    MetaData.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/internal/MetaObjectTools$MetaData"));
     Q_ASSERT(MetaData.class_ref);
 
     MetaData.metaData = env->GetFieldID(MetaData.class_ref, "metaData", "[I");

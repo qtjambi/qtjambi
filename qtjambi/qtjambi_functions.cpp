@@ -258,7 +258,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_fetchFieldNative)
 }
 
 extern "C" JNIEXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_emitNativeSignal)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_MetaObjectTools_emitNativeSignal)
 (JNIEnv *env,
  jclass,
  jobject owner,
@@ -325,7 +325,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_removeMessage
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_internalTypeName)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_MetaObjectTools_internalTypeName)
 (JNIEnv *env, jclass, jstring s, jint varContext)
 {
     QString signature = qtjambi_to_qstring(env, s);

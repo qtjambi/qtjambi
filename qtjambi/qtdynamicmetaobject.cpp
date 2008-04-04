@@ -64,11 +64,11 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
     Q_Q(QtDynamicMetaObject);
 
     StaticCache *sc = StaticCache::instance();
-    sc->resolveQtJambiInternal();
+    sc->resolveMetaObjectTools();
 
     env->PushLocalFrame(100);
 
-    jobject meta_data_struct = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.buildMetaData, java_class);
+    jobject meta_data_struct = env->CallStaticObjectMethod(sc->MetaObjectTools.class_ref, sc->MetaObjectTools.buildMetaData, java_class);
     qtjambi_exception_check(env);
     Q_ASSERT(meta_data_struct);
 
@@ -153,9 +153,9 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &_signature) const
 {
     StaticCache *sc = StaticCache::instance();
-    sc->resolveQtJambiInternal();
+    sc->resolveMetaObjectTools();
 
-    jobject method_signature = env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.methodSignature2, method_object, true);
+    jobject method_signature = env->CallStaticObjectMethod(sc->MetaObjectTools.class_ref, sc->MetaObjectTools.methodSignature2, method_object, true);
     Q_ASSERT(method_signature != 0);
 
     // If no signature is specified, we look it up
