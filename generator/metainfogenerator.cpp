@@ -696,6 +696,25 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
           << constructorName
           << "));" << endl;
     } else {
+        // Look for default constructor and copy constructor since both
+        // of these are required for registerMetaType()
+        if (cls != 0) {
+            AbstractMetaFunctionList functions = cls->queryFunctions(AbstractMetaClass::WasPublic | AbstractMetaClass::Constructors);
+
+            bool hasDefaultConstructor = false;
+            foreach (AbstractMetaFunction *function, functions) {
+                // Default constructor has to be present
+                if (function->wasPublic() && function->actualMinimumArgumentCount() == 0)
+                    hasDefaultConstructor = true;
+            }
+
+            if (!hasDefaultConstructor) {
+                ReportHandler::warning(QString("Value type '%1' is missing a default constructor. "
+                                       "The resulting C++ code will not compile. If necessary, use <custom-constructor> and "
+                                       "<custom-destructor> tags to provide the constructors.").arg(cls->fullName()));
+            }
+
+        }
         s << "    qRegisterMetaType<" << entry->qualifiedCppName() << ">(\"" << entry->qualifiedCppName() << "\");" << endl;
     }
 
