@@ -59,4 +59,3 @@ macx{
 # gcc reports some functions as unused when they are not.
 linux-g++:QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
 
-CONFIG += hide_symbols
