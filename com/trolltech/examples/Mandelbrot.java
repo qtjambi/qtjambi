@@ -238,7 +238,6 @@ public class Mandelbrot extends QWidget {
     }
 //! [13]
 
-    @SuppressWarnings("unused")
 //! [14]
     private void updatePixmap(QImage image, Double scaleFactor) {
         if (!lastDragPosition.isNull())

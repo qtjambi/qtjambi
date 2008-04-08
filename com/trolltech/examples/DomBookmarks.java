@@ -71,7 +71,6 @@ public class DomBookmarks extends QMainWindow {
         file.dispose();
     }
 
-    @SuppressWarnings("unused")
     private void open() {
         String fileName = QFileDialog.getOpenFileName(this, tr("Open Bookmark File"), QDir
                 .currentPath(), new QFileDialog.Filter(tr("XBEL Files (*.xbel *.xml)")));
@@ -81,7 +80,6 @@ public class DomBookmarks extends QMainWindow {
         loadFile(fileName);
     }
 
-    @SuppressWarnings("unused")
     private void saveAs() {
         String fileName = QFileDialog.getSaveFileName(this, tr("Save Bookmark File"), QDir
                 .currentPath(), new QFileDialog.Filter(tr("XBEL Files (*.xbel *.xml)")));
@@ -101,7 +99,6 @@ public class DomBookmarks extends QMainWindow {
         file.dispose();
     }
 
-    @SuppressWarnings("unused")
     private void about() {
         QMessageBox.about(this, tr("About DOM Bookmarks"),
                 tr("The <b>DOM Bookmarks</b> example demonstrates how to "
@@ -215,7 +212,6 @@ public class DomBookmarks extends QMainWindow {
             return true;
         }
 
-        @SuppressWarnings("unused")
         private void updateDomElement(QTreeWidgetItem item, int column) {
             QDomElement element = domElementForItem.get(item);// .value(item);
             if (!element.isNull()) {

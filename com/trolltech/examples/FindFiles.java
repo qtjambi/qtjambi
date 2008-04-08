@@ -73,7 +73,6 @@ public class FindFiles extends QDialog
     }
 //! [1]
 
-    @SuppressWarnings("unused")
 //! [2]
     private void browse()
     {
@@ -86,7 +85,6 @@ public class FindFiles extends QDialog
     }
 //! [2]
 
-    @SuppressWarnings("unused")
 //! [3]
     private void find()
     {

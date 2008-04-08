@@ -56,7 +56,6 @@ public class QtJambiGuiInternal {
         return painter.begin((QPaintDeviceInterface) widget);
     }
 
-    @SuppressWarnings("unused")
     private static void endPaint(QWidget widget) {
         QPainter p = painters.get(widget);
         if (p != null) {

@@ -1448,9 +1448,12 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
                     .arg(variableName).arg(java_class->fullName());
                 ReportHandler::warning(warn);
             }
-            s << endl
-            << INDENT << "@SuppressWarnings(\"unused\")" << endl
-            << INDENT;
+            s << endl;
+
+            if (TypeDatabase::instance()->includeEclipseWarnings())
+                s << INDENT << "@SuppressWarnings(\"unused\")" << endl;
+
+            s << INDENT;
             switch (access) {
             case ReferenceCount::Private:
                 s << "private "; break;
@@ -1498,9 +1501,12 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     if (!java_class->isInterface() && java_class->isAbstract()) {
-        s << endl
-          << INDENT << "@SuppressWarnings(\"unused\")" << endl
-          << INDENT << "private static class ConcreteWrapper extends " << java_class->fullName() << " {" << endl;
+        s << endl;
+
+        if (TypeDatabase::instance()->includeEclipseWarnings())
+            s << INDENT << "@SuppressWarnings(\"unused\")" << endl;
+
+        s << INDENT << "private static class ConcreteWrapper extends " << java_class->fullName() << " {" << endl;
 
         {
             Indentation indent(INDENT);
@@ -1604,9 +1610,11 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     if (java_class->isQObject()) {
-        s << endl
-          << INDENT << "@SuppressWarnings(\"unused\")" << endl
-          << INDENT << "private static native long originalMetaObject();" << endl;
+        s << endl;
+        if (TypeDatabase::instance()->includeEclipseWarnings())
+            s << INDENT << "@SuppressWarnings(\"unused\")" << endl;
+
+        s << INDENT << "private static native long originalMetaObject();" << endl;
     }
 
     // The __qt_signalInitialization() function
@@ -1832,7 +1840,8 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         if (java_function->isEmptyFunction()
             || java_function->isDeprecated()) s << INDENT << "@Deprecated" << endl;
 
-        bool needsSuppressUnusedWarning = java_function->isSignal()
+        bool needsSuppressUnusedWarning = TypeDatabase::instance()->includeEclipseWarnings()
+                                          && java_function->isSignal()
                                           && (((excluded_attributes & AbstractMetaAttributes::Private) == 0)
                                                && (java_function->isPrivate()
                                                    || ((included_attributes & AbstractMetaAttributes::Private) != 0)));

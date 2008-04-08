@@ -96,7 +96,6 @@ public class ItemviewChart extends QMainWindow {
     }
 //! [3]
 
-    @SuppressWarnings("unused")
     private void openFile() {
         openFile("");
     }
@@ -140,7 +139,6 @@ public class ItemviewChart extends QMainWindow {
         }
     }
 
-    @SuppressWarnings("unused")
     private void saveFile() {
         String fileName = QFileDialog.getSaveFileName(this, tr("Save file as"), "", new QFileDialog.Filter("*.cht"));
 

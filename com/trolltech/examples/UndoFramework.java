@@ -148,7 +148,6 @@ public class UndoFramework extends QMainWindow
     }
 //! [8]
 
-    @SuppressWarnings("unused")
 //! [9]
     private void deleteItem()
     {
@@ -160,7 +159,6 @@ public class UndoFramework extends QMainWindow
     }
 //! [9]
 
-    @SuppressWarnings("unused")
 //! [10]
     private void itemMenuAboutToHide()
     {
@@ -168,7 +166,6 @@ public class UndoFramework extends QMainWindow
     }
 //! [10]
 
-    @SuppressWarnings("unused")
 //! [11]
     private void itemMenuAboutToShow()
     {
@@ -178,7 +175,6 @@ public class UndoFramework extends QMainWindow
     }
 //! [11]
 
-    @SuppressWarnings("unused")
 //! [12]
     private void addBox()
     {
@@ -187,7 +183,6 @@ public class UndoFramework extends QMainWindow
     }
 //! [12]
 
-    @SuppressWarnings("unused")
 //! [13]
     private void addTriangle()
     {
@@ -197,7 +192,6 @@ public class UndoFramework extends QMainWindow
     }
 //! [13]
 
-    @SuppressWarnings("unused")
 //! [14]
     private void about()
     {

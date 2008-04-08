@@ -81,7 +81,6 @@ public class BCC extends QWidget {
 
         }
 
-        @SuppressWarnings("unused")
         private void writeLog() {
             String logFileName = QFileDialog.getSaveFileName(this);
             if (logFileName.isEmpty())
@@ -107,7 +106,6 @@ public class BCC extends QWidget {
     }
 
 
-    @SuppressWarnings("unused")
     private void selectJarFile(QWidget w) {
         String selected = QFileDialog.getOpenFileName(this, "Open jar file", null, new QFileDialog.Filter("*.jar"));
         if (!selected.isEmpty()) {
@@ -118,7 +116,6 @@ public class BCC extends QWidget {
 
     }
 
-    @SuppressWarnings("unused")
     private void selectDirectory(QWidget w) {
         String selected = QFileDialog.getExistingDirectory();
         if (!selected.isEmpty()) {
@@ -243,7 +240,6 @@ public class BCC extends QWidget {
     }
 
     QThread thread;
-    @SuppressWarnings("unused")
     private void scan() {
         stack.setCurrentIndex(1);
 

@@ -60,6 +60,11 @@ int main(int argc, char *argv[])
         db->setSuppressWarnings(false);
     }
 
+    if (args.contains("include-eclipse-warnings")) {
+        TypeDatabase *db = TypeDatabase::instance();
+        db->setIncludeEclipseWarnings(true);
+    }
+
     if (args.contains("debug-level")) {
         QString level = args.value("debug-level");
         if (level == "sparse")
@@ -141,6 +146,7 @@ void displayHelp(GeneratorSet* generatorSet) {
            "  --dump-object-tree                        \n"
            "  --help, -h or -?                          \n"
            "  --no-suppress-warnings                    \n"
+           "  --include-eclipse-warnings                \n"
            "  --output-directory=[dir]                  \n"
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n",

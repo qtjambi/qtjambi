@@ -1540,7 +1540,6 @@
 
       <template name="core.stream_constructor_bytearray">
         // Hold reference to byte array which goes away when the stream dies
-        @SuppressWarnings("unused")
         private QByteArray byteArray = null;
         public %CLASSNAME(QByteArray a, QIODevice.OpenMode mode) {
             this(a.nativePointer(), mode);

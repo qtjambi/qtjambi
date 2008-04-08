@@ -66,7 +66,6 @@ public class CalendarWidget extends QWidget {
     }
 //! [0]
 
-    @SuppressWarnings("unused")
     private void localeChanged(int index) {
         calendar.setLocale((QLocale) localeCombo.itemData(index));
     }
@@ -91,14 +90,12 @@ public class CalendarWidget extends QWidget {
             verticalHeaderCombo.itemData(index));
     }
 
-    @SuppressWarnings("unused")
 //! [2]
     private void selectedDateChanged() {
         currentDateEdit.setDate(calendar.selectedDate());
     }
 //! [2]
 
-    @SuppressWarnings("unused")
 //! [3]
     private void minimumDateChanged(QDate date) {
         calendar.setMinimumDate(date);
@@ -106,7 +103,6 @@ public class CalendarWidget extends QWidget {
     }
 //! [3]
 
-    @SuppressWarnings("unused")
 //! [4]
     private void maximumDateChanged(QDate date) {
         calendar.setMaximumDate(date);

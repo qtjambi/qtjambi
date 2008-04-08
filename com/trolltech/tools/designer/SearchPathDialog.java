@@ -162,7 +162,6 @@ public class SearchPathDialog extends QDialog {
             addPathEntry(file, pm);
     }
 
-    @SuppressWarnings("unused")
     private void updateAddButtonState(String s) {
         addButton.setEnabled(pixmapForPath(s) != null);
     }

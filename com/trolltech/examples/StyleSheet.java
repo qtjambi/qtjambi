@@ -51,13 +51,11 @@ public class StyleSheet extends QMainWindow {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
-    @SuppressWarnings("unused")
     private void on_editStyleAction_triggered() {
         styleSheetEditor.show();
         styleSheetEditor.activateWindow();
     }
 
-    @SuppressWarnings("unused")
     private void on_aboutAction_triggered() {
         QMessageBox.about(this, tr("About Style sheet"),
                 tr("The <b>Style Sheet</b> example shows how widgets can be styled "

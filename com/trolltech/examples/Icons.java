@@ -78,7 +78,6 @@ public class Icons extends QMainWindow
     }
 //! [0]
 
-    @SuppressWarnings("unused")
 //! [1]
     private void about()
     {
@@ -89,7 +88,6 @@ public class Icons extends QMainWindow
     }
 //! [1]
 
-    @SuppressWarnings("unused")
 //! [2]
     private void changeStyle(boolean checked)
     {
@@ -128,7 +126,6 @@ public class Icons extends QMainWindow
     }
 //! [4]
 
-    @SuppressWarnings("unused")
 //! [5]
     private void changeSize(int value)
     {
@@ -214,7 +211,6 @@ public class Icons extends QMainWindow
     }
 //! [11]
 
-    @SuppressWarnings("unused")
 //! [12]
     private void addImages()
     {
@@ -272,7 +268,6 @@ public class Icons extends QMainWindow
     }
 //! [19]
 
-    @SuppressWarnings("unused")
 //! [20]
     private void removeAllImages()
     {
@@ -541,7 +536,6 @@ public class Icons extends QMainWindow
         }
 //! [37]
 
-        @SuppressWarnings("unused")
 //! [38]
         private void emitCommitData()
         {

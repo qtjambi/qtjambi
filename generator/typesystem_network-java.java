@@ -51,7 +51,6 @@ class QAbstractSocket___ extends QAbstractSocket {
     public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
     private boolean inEmission = false;
 
-    @SuppressWarnings("unused")
     private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) {
         if (!inEmission) {
             inEmission = true;
@@ -60,7 +59,6 @@ class QAbstractSocket___ extends QAbstractSocket {
         }
     }
 
-    @SuppressWarnings("unused")
     private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) {
         if (!inEmission) {
             inEmission = true;
@@ -145,7 +143,6 @@ class QHttp___ extends QHttp {
     public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
     private boolean inEmission = false;
 
-    @SuppressWarnings("unused")
     private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) {
         if (!inEmission) {
             inEmission = true;
@@ -154,7 +151,6 @@ class QHttp___ extends QHttp {
         }
     }
 
-    @SuppressWarnings("unused")
     private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator) {
         if (!inEmission) {
             inEmission = true;
@@ -166,7 +162,6 @@ class QHttp___ extends QHttp {
     public Signal3<String, Integer, QAuthenticator> authenticationRequired = new Signal3<String, Integer, QAuthenticator>();
     private boolean inEmissionAuthenticationRequired = false;
 
-    @SuppressWarnings("unused")
     private void emitAuthenticationRequiredPrivate(String hostName, int port, QAuthenticator authenticator) {
         if (!inEmissionAuthenticationRequired) {
             inEmissionAuthenticationRequired = true;
@@ -175,7 +170,6 @@ class QHttp___ extends QHttp {
         }
     }
 
-    @SuppressWarnings("unused")
     private void emitAuthenticationRequired(String hostName, char port, QNativePointer authenticator) {
         if (!inEmissionAuthenticationRequired) {
             inEmissionAuthenticationRequired = true;
@@ -366,7 +360,6 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
     private boolean inEmission = false;
 
-    @SuppressWarnings("unused")
     private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator)
     {
         if (!inEmission)
@@ -377,7 +370,6 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
         }
     }
 
-    @SuppressWarnings("unused")
     private void emitProxyAuthenticationRequired(QNetworkProxy proxy, QNativePointer authenticator)
     {
         if (!inEmission)
@@ -391,7 +383,6 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
     public Signal2<QNetworkReply, QAuthenticator> authenticationRequired = new Signal2<QNetworkReply, QAuthenticator>();
     private boolean inEmissionAuthenticationRequired = false;
 
-    @SuppressWarnings("unused")
     private void emitAuthenticationRequiredPrivate(QNetworkReply reply, QAuthenticator authenticator)
     {
         if (!inEmissionAuthenticationRequired)
@@ -402,7 +393,6 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
         }
     }
 
-    @SuppressWarnings("unused")
     private void emitAuthenticationRequired(QNetworkReply reply, QNativePointer authenticator)
     {
         if (!inEmissionAuthenticationRequired)

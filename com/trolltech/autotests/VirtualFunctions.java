@@ -88,7 +88,6 @@ public class VirtualFunctions extends QApplicationTest {
             m_size = size;
         }
 
-        @SuppressWarnings("unused")
         private QSize m_size = new QSize(0, 0);
     }
 

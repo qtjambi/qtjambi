@@ -240,7 +240,6 @@ public class TestClassFunctionality extends QApplicationTest {
             return a == signal;
         }
 
-        @SuppressWarnings("unused")
         private void slot() {
             slot_called = true;
         }
@@ -941,10 +940,8 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(invokable.wasRun());
     }
 
-    @SuppressWarnings("unused")
     private static boolean invokeLater_in_otherThread;
 
-    @SuppressWarnings("unused")
     private static Invokable invokable_in_otherThread;
 
     /**

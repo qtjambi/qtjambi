@@ -43,10 +43,8 @@ public class QSignalEmitter {
         private boolean             connectedToCpp      = false;
         private boolean             inDisconnect        = false;
 
-        @SuppressWarnings("unused")
         private boolean             inJavaEmission      = false;
 
-        @SuppressWarnings("unused")
         private int                 cppConnections      = 0;
 
         /**

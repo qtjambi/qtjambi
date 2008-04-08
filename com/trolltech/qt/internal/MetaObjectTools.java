@@ -356,7 +356,6 @@ public class MetaObjectTools {
         return MetaObjectTools.bunchOfClassNamesInARow(resolvedSignal.types, resolvedSignal.arrayDimensions);
     }
 
-    @SuppressWarnings("unused")
     private static String signalParameters(Field field, Class<?> declaringClass) {
         QtJambiInternal.ResolvedSignal resolvedSignal = QtJambiInternal.resolveSignal(field, declaringClass);
         return signalParameters(resolvedSignal);

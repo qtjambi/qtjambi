@@ -15,7 +15,6 @@ package com.trolltech.qt.core;
 
 public class QModelIndex
 {
-    @SuppressWarnings("unused")
     private QModelIndex(int row, int column, long internalId, QAbstractItemModel model) {
         this.row = row;
         this.column = column;

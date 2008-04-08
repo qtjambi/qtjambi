@@ -68,7 +68,6 @@ public class CustomWidgetManager {
         }
     }
 
-    @SuppressWarnings("unused")
     private void loadPlugins(String path) {
         customWidgets.clear();
         String paths[] = path.split(System.getProperty("path.separator"));

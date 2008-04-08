@@ -64,7 +64,6 @@ public class MillionList {
         }
     }
 
-    @SuppressWarnings("unused")
     private static class FakeModelIndex {
         int row, col;
         Object data;

@@ -184,7 +184,6 @@ public class QtJambiInternal {
         }
     }
 
-    @SuppressWarnings("unused")
     public static QSignalEmitter.AbstractSignal lookupSignal(QSignalEmitter signalEmitter, String name)
     {
         if (name == null || signalEmitter == null) {
@@ -330,7 +329,6 @@ public class QtJambiInternal {
      */
     public static native void resetQObjectSender(long receiver, long data);
 
-    @SuppressWarnings("unused")
     private static boolean signalMatchesSlot(String signal, String slot) {
         // void slots always match...
         if (slot.contains("()"))

@@ -68,7 +68,6 @@ public class Http extends QDialog
         urlLineEdit.setFocus();
     }
 
-    @SuppressWarnings("unused")
     private void downloadFile()
     {
         String text = urlLineEdit.text();
@@ -119,7 +118,6 @@ public class Http extends QDialog
         downloadButton.setEnabled(false);
     }
 
-    @SuppressWarnings("unused")
     private void cancelDownload()
     {
         statusLabel.setText(tr("Download canceled."));
@@ -128,7 +126,6 @@ public class Http extends QDialog
         downloadButton.setEnabled(true);
     }
 
-    @SuppressWarnings("unused")
     private void httpRequestFinished(int requestId, boolean error)
     {
         if (requestId != httpGetId)
@@ -164,7 +161,6 @@ public class Http extends QDialog
         file = null;
     }
 
-    @SuppressWarnings("unused")
     private void readResponseHeader(QHttpResponseHeader responseHeader)
     {
         if (responseHeader.statusCode() != 200) {
@@ -177,7 +173,6 @@ public class Http extends QDialog
         }
     }
 
-    @SuppressWarnings("unused")
     private void updateDataReadProgress(int bytesRead, int totalBytes)
     {
         if (httpRequestAborted)
@@ -187,13 +182,11 @@ public class Http extends QDialog
         progressDialog.setValue(bytesRead);
     }
 
-    @SuppressWarnings("unused")
     private void enableDownloadButton()
     {
         downloadButton.setEnabled(!urlLineEdit.text().equals(""));
     }
 
-    @SuppressWarnings("unused")
     private void slotAuthenticationRequired(String hostName, int i, QAuthenticator authenticator)
     {
         QDialog dlg = new QDialog();

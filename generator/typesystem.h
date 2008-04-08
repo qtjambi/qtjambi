@@ -1094,6 +1094,9 @@ public:
     TemplateEntry *findTemplate(const QString &name) { return m_templates[name]; }
     void addTemplate(TemplateEntry *t) { m_templates[t->name()] = t; }
 
+    void setIncludeEclipseWarnings(bool on) { m_includeEclipseWarnings = on; }
+    bool includeEclipseWarnings() const { return m_includeEclipseWarnings; }
+
     void setSuppressWarnings(bool on) { m_suppressWarnings = on; }
     void addSuppressedWarning(const QString &s)
     {
@@ -1133,7 +1136,10 @@ public:
     bool parseFile(const QString &filename, bool generate = true);
 
 private:
-    bool m_suppressWarnings;
+    uint m_suppressWarnings : 1;
+    uint m_includeEclipseWarnings : 1;
+    uint m_reserved : 30;
+
     TypeEntryHash m_entries;
     SingleTypeEntryHash m_flags_entries;
     TemplateEntryHash m_templates;

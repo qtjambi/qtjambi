@@ -164,7 +164,6 @@ class QCoreApplication___ extends QCoreApplication {
             QtJambiInternal.setupDefaultPluginPath();
     }
 
-    @SuppressWarnings("unused")
     private void disposeOfMyself() {
         m_instance = null;
         System.gc();
@@ -560,7 +559,6 @@ class QTextCodec___ extends QTextCodec {
 class QBuffer___ extends QBuffer {
 
     // retain a reference to avoid gc
-    @SuppressWarnings("unused")
     private Object strongDataReference = null;
 
     public QBuffer(QByteArray byteArray, QObject parent) {

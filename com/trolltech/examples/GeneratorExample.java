@@ -74,7 +74,6 @@ class ChickenObject extends GameObject {
         used.connect(this, "youCantUseTheChicken()");
     }
 
-    @SuppressWarnings("unused")
     private void youCantUseTheChicken() {
         gameScene().message("You can't use the rubber chicken for anything");
     }
@@ -190,7 +189,6 @@ public class GeneratorExample extends GameScene {
         return ego;
     }
 
-    @SuppressWarnings("unused")
     public static void main(String[] args) {
         QApplication.initialize(args);
         GeneratorExample ex = new GeneratorExample();

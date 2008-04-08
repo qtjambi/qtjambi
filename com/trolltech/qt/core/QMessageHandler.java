@@ -73,7 +73,6 @@ public abstract class QMessageHandler {
         }
     }
 
-    @SuppressWarnings("unused")
     private static boolean process(int id, String message) {
         if (handlers == null)
             return false;

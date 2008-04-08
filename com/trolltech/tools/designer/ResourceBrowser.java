@@ -187,7 +187,6 @@ public class ResourceBrowser extends JambiResourceBrowser {
         currentPathChanged.emit(path);
     }
 
-    @SuppressWarnings("unused")
     private void selectionChanged(QModelIndex current, QModelIndex old) {
         QModelIndex index = current;
         if (index != null) {
@@ -198,7 +197,6 @@ public class ResourceBrowser extends JambiResourceBrowser {
         }
     }
 
-    @SuppressWarnings("unused")
     private void checkOnlyOne() {
         if (UNFILTERED || filterModel.rowCount() != 1)
             return;
@@ -218,7 +216,6 @@ public class ResourceBrowser extends JambiResourceBrowser {
         addAction(action);
     }
 
-    @SuppressWarnings("unused")
     private void expand(QModelIndex parent) {
         if (UNFILTERED) {
             view.expand(parent);
@@ -286,7 +283,6 @@ public class ResourceBrowser extends JambiResourceBrowser {
         settings.sync();
     }
 
-    @SuppressWarnings("unused")
     private void changeSearchPath() {
         SearchPathDialog pathDialog = new SearchPathDialog(this);
         pathDialog.setPaths(ClassPathWalker.roots());

@@ -188,7 +188,6 @@ public class CustomFilter extends QWidget {
     }
 //! [10]
 
-    @SuppressWarnings("unused")
 //! [11]
     private void textFilterChanged() {
         QRegExp.PatternSyntax syntax;
@@ -207,7 +206,6 @@ public class CustomFilter extends QWidget {
     }
 //! [11]
 
-    @SuppressWarnings("unused")
 //! [12]
     private void dateFilterChanged() {
         proxyModel.setFilterMinimumDate(fromDateEdit.date());

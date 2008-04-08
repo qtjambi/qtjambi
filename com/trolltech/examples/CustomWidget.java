@@ -576,14 +576,12 @@ public class CustomWidget extends QWidget {
         return startAngle() + step * ((double)speed / (double)skip);
     }
 
-    @SuppressWarnings("unused")
     private void noLongerAnimating() {
         isAnimating = false;
     }
 
     private QMatrix matrix = new QMatrix();
 
-    @SuppressWarnings("unused")
     private void animateSpeed(double value) {
         if (tail.length > 0) {
             tail[endTail++] = currentSpeed;

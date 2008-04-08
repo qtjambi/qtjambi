@@ -1384,7 +1384,7 @@ TypeDatabase *TypeDatabase::instance()
     return db;
 }
 
-TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
+TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarnings(false)
 {
     addType(new StringTypeEntry("QString"));
 

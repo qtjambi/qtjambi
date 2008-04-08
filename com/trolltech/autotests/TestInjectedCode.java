@@ -240,7 +240,6 @@ public class TestInjectedCode extends QApplicationTest {
     static class AnyClass extends QWidget {
         public QUrl url;
 
-        @SuppressWarnings("unused")
         private void myUrlHandler(QUrl url) {
             this.url = url;
         }
@@ -709,7 +708,6 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals("bar", element.attributeNS("something", "foo"));
     }
 
-    @SuppressWarnings("unused")
     private void receiveBeforeInsert(QSqlRecord record) {
         record.append(new QSqlField("javaInt", QVariant.Int));
         record.setValue("javaInt", 3456);

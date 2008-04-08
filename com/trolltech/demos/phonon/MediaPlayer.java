@@ -147,7 +147,6 @@ public class MediaPlayer extends QWidget {
     }
 
 
-    @SuppressWarnings("unused")
     private void stateChanged(Phonon.State newstate, Phonon.State oldstate)
     {
         switch (newstate) {
@@ -188,7 +187,6 @@ public class MediaPlayer extends QWidget {
 
     }
 
-    @SuppressWarnings("unused")
     private void showSettingsDialog() {
         Ui_Dialog ui = new Ui_Dialog();
         QDialog dialog = new QDialog();
@@ -278,7 +276,6 @@ public class MediaPlayer extends QWidget {
 
     }
 
-    @SuppressWarnings("unused")
     private void handleVideoChanged(boolean hasVideo) {
         if (hasVideo){
             QDesktopWidget desktop = new QDesktopWidget();
@@ -289,7 +286,6 @@ public class MediaPlayer extends QWidget {
         videoWindow.setVisible(hasVideo);
     }
 
-    @SuppressWarnings("unused")
     private void pause() {
         mediaObject.pause();
     }
@@ -327,7 +323,6 @@ public class MediaPlayer extends QWidget {
         mediaObject.play();
     }
 
-    @SuppressWarnings("unused")
     private void setVolume(int volume) {
         audioOutput.setVolume(volume/100.0f);
     }
@@ -339,29 +334,24 @@ public class MediaPlayer extends QWidget {
             mediaObject.setCurrentSource(new MediaSource(fileName));
     }
 
-    @SuppressWarnings("unused")
     private void openFile() {
         String fileName = QFileDialog.getOpenFileName();
         if (fileName.length() > 0)
             setFile(fileName);
     }
 
-    @SuppressWarnings("unused")
     private void setSaturation(int val) {
         videoWidget.setSaturation(val / (float)SLIDER_RANGE);
     }
 
-    @SuppressWarnings("unused")
     private void setHue(int val) {
         videoWidget.setHue(val / (float)SLIDER_RANGE);
     }
 
-    @SuppressWarnings("unused")
     private void setBrightness(int val) {
         videoWidget.setBrightness(val / (float)SLIDER_RANGE);
     }
 
-    @SuppressWarnings("unused")
     private void setContrast(int val) {
         videoWidget.setContrast(val / (float)SLIDER_RANGE);
     }
@@ -417,19 +407,16 @@ public class MediaPlayer extends QWidget {
         info.setHtml(title + artist + time);
     }
 
-    @SuppressWarnings("unused")
     private void rewind() {
         mediaObject.setTickInterval(50);
         mediaObject.seek(0);
         updateInfo();
     }
 
-    @SuppressWarnings("unused")
     private void finished() {
         updateInfo();
     }
 
-    @SuppressWarnings("unused")
     private void showContextMenu(QPoint p) {
         fileMenu.popup(mapToGlobal(p));
     }

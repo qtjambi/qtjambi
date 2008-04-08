@@ -70,7 +70,6 @@ class SignalsAndSlotsSubclass extends SignalsAndSlots
 }
 
 class NonQObject {
-    @SuppressWarnings("unused")
     private void foobar(String foo, int bar) {
         receivedBar = bar;
         receivedFoo = foo;

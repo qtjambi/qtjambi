@@ -186,7 +186,6 @@ class SplashScreen extends QSplashScreen {
         return splashScreenRect;
     }
 
-    @SuppressWarnings("unused")
     private void updateProgress(String progressMessage) {
         QPixmap pm = cleanSplash.copy();
         QPainter p = new QPainter(pm);

@@ -42,7 +42,6 @@ public class SimpleUIExample extends QMainWindow {
     }
 //! [2]
 
-    @SuppressWarnings("unused")
 //! [3]
     private void showDialog() {
         // Make the dialog.

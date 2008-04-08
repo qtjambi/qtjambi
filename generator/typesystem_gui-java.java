@@ -494,7 +494,6 @@ class QDesktopServices___ extends QDesktopServices {
             this.urlHandler = urlHandler;
         }
 
-        @SuppressWarnings("unused")
         private void handleUrl(com.trolltech.qt.core.QUrl url) {
             urlHandler.handleUrl(url);
         }

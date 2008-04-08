@@ -86,6 +86,11 @@
     \o The generator will not generate any meta-info files.
 
     \row
+    \o --include-eclipse-warnings
+    \o Generate SuppressWarnings annotations that are understood
+    by the Eclipse IDE in particular.
+
+    \row
     \o --no-suppress-warnings
     \o All warnings are shown even if they are suppressed by the type
     system specification (see the \l {The Qt Jambi Type

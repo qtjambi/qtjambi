@@ -49,7 +49,6 @@ public class TestInjectedCodeV2 extends QApplicationTest {
     }
 
 
-    @SuppressWarnings("unused")
     private void myJavaSlot(QNetworkProxy proxy, QAuthenticator authenticator)
     {
         authenticator.setUser(proxy.password());
@@ -128,7 +127,6 @@ public class TestInjectedCodeV2 extends QApplicationTest {
     private class SenderQObjectSubclass extends SenderQObject {
         public Signal2<String, Integer> mappedJavaSignal = new Signal2<String, Integer>();
 
-        @SuppressWarnings("unused")
         private void receiverSlot(QWidget widget) {
             receivedWidget = widget;
         }

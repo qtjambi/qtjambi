@@ -68,7 +68,6 @@ public class Chips extends QWidget {
         populateScene.emit();
     }
 
-    @SuppressWarnings("unused")
     private void populateScene() {
         QImage image = new QImage("classpath:/com/trolltech/images/qt4logo.png");
 
