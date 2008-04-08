@@ -683,6 +683,17 @@ void _FunctionModelItem::setAbstract(bool isAbstract)
   _M_isAbstract = isAbstract;
 }
 
+// Qt
+bool _FunctionModelItem::isInvokable() const
+{
+    return _M_isInvokable;
+}
+
+void _FunctionModelItem::setInvokable(bool isInvokable)
+{
+    _M_isInvokable = isInvokable;
+}
+
 // ---------------------------------------------------------------------------
 TypeInfo _TypeAliasModelItem::type() const
 {

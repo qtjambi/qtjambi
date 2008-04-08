@@ -822,6 +822,10 @@ void Binder::applyFunctionSpecifiers(const ListNode<std::size_t> *it, FunctionMo
           case Token_explicit:
             item->setExplicit(true);
             break;
+
+          case Token_Q_INVOKABLE:
+            item->setInvokable(true);
+            break;
         }
       it = it->next;
     }

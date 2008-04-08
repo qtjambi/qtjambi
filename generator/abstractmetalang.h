@@ -82,6 +82,8 @@ public:
 
         Fake                        = 0x00020000,
 
+        Invokable                   = 0x00040000,
+
         Final                       = FinalInTargetLang | FinalInCpp
     };
 
@@ -106,6 +108,7 @@ public:
     bool isForcedShellImplementation() const { return m_attributes & ForceShellImplementation; }
     bool isInterfaceFunction() const { return m_attributes & InterfaceFunction; }
     bool isFinalOverload() const { return m_attributes & FinalOverload; }
+    bool isInvokable() const { return m_attributes & Invokable; }
 
     bool isPropertyReader() const { return m_attributes & PropertyReader; }
     bool isPropertyWriter() const { return m_attributes & PropertyWriter; }

@@ -1480,6 +1480,9 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
     if (!function_item->isVirtual())
         *meta_function += AbstractMetaAttributes::Final;
 
+    if (function_item->isInvokable())
+        *meta_function += AbstractMetaAttributes::Invokable;
+
     if (function_item->isStatic()) {
         *meta_function += AbstractMetaAttributes::Static;
         *meta_function += AbstractMetaAttributes::Final;
