@@ -479,7 +479,7 @@ public class QClassPathEngine extends QAbstractFileEngine
         try {
 
             InputStream s = jarFile.getInputStream(fileInJar);
-            int x = s.read();
+            s.read();
 
         } catch (Exception e) {
             return true;

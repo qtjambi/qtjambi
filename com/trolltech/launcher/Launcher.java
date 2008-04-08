@@ -16,7 +16,6 @@ package com.trolltech.launcher;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-import java.io.*;
 import java.util.*;
 
 public class Launcher extends QWidget {

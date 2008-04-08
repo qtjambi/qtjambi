@@ -16,7 +16,6 @@ import com.trolltech.qt.QtBlockedEnum;
 import com.trolltech.qt.QtBlockedSlot;
 import com.trolltech.qt.QtEnumerator;
 import com.trolltech.qt.QtJambiInternal;
-import com.trolltech.qt.QtProperty;
 import com.trolltech.qt.QtPropertyDesignable;
 import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyResetter;
@@ -31,7 +30,7 @@ import com.trolltech.qt.core.Qt;
  * Methods to help construct the fake meta object.
  */
 public class MetaObjectTools {
-	
+
     private static class Container {
         private enum AnnotationType {
             Reader,
@@ -119,7 +118,7 @@ public class MetaObjectTools {
         }
 
     }
-    
+
     private static class MetaData {
         public int metaData[];
         public byte stringData[];
@@ -150,7 +149,7 @@ public class MetaObjectTools {
     private final static int PropertyResolveDesignable              = 0x00002000;
     private final static int PropertyStored                         = 0x00010000;
     private final static int PropertyUser                           = 0x00100000;
-    
+
     private static Method notBogus(Method method, String propertyName, Class<?> paramType) {
         if (method == null)
             return null;
@@ -165,7 +164,7 @@ public class MetaObjectTools {
             return method;
         }
     }
-    
+
     private static int queryEnums(Class<?> clazz, Hashtable<String, Class<?>> enums) {
         int enumConstantCount = 0;
 
@@ -279,7 +278,7 @@ public class MetaObjectTools {
     public static String bunchOfClassNamesInARow(Class<?> classes[]) {
         return bunchOfClassNamesInARow(classes, null);
     }
-    
+
     public static String bunchOfClassNamesInARow(Class<?> classes[], int arrayDimensions[]) {
         String classNames = "";
 
@@ -315,25 +314,25 @@ public class MetaObjectTools {
 
     public static String methodSignature(Method m) {
         return methodSignature(m, false);
-    }    
-    
-    
-    private static int addString(int metaData[],
-            				     Hashtable<String, Integer> strings,
-            				     List<String> stringsInOrder,
-            				     String string, int offset, int metaDataOffset) {
-    	
-    			if (strings.containsKey(string)) {
-    				metaData[metaDataOffset] = strings.get(string);
-    				return 0;
-    			}
-
-    			metaData[metaDataOffset] = offset;
-    			strings.put(string, offset);
-    			stringsInOrder.add(string);
-    			return string.length() + 1;
     }
-    
+
+
+    private static int addString(int metaData[],
+                                 Hashtable<String, Integer> strings,
+                                 List<String> stringsInOrder,
+                                 String string, int offset, int metaDataOffset) {
+
+                if (strings.containsKey(string)) {
+                    metaData[metaDataOffset] = strings.get(string);
+                    return 0;
+                }
+
+                metaData[metaDataOffset] = offset;
+                strings.put(string, offset);
+                stringsInOrder.add(string);
+                return string.length() + 1;
+    }
+
     public native static void emitNativeSignal(QObject object, String signalSignature, String signalCppSignature, Object args[]);
 
     public static String cppSignalSignature(QSignalEmitter signalEmitter, String signalName) {
@@ -352,7 +351,7 @@ public class MetaObjectTools {
         else
             return signal.name() + "(" + params + ")";
     }
-    
+
     private static String signalParameters(ResolvedSignal resolvedSignal) {
         return MetaObjectTools.bunchOfClassNamesInARow(resolvedSignal.types, resolvedSignal.arrayDimensions);
     }
@@ -362,10 +361,10 @@ public class MetaObjectTools {
         QtJambiInternal.ResolvedSignal resolvedSignal = QtJambiInternal.resolveSignal(field, declaringClass);
         return signalParameters(resolvedSignal);
     }
-    
-    
-    public native static String internalTypeName(String s, int varContext);            
-    	
+
+
+    public native static String internalTypeName(String s, int varContext);
+
     private static MetaData buildMetaData(Class<? extends QObject> clazz) {
         MetaData metaData = new MetaData();
 
@@ -436,7 +435,6 @@ public class MetaObjectTools {
             Container writer = Container.writerAnnotation(declaredMethod);
             {
 
-                Class<?> parameterTypes[] = declaredMethod.getParameterTypes();
                 if (writer != null
                     && writer.enabled()
                     && isValidSetter(declaredMethod)) {
