@@ -106,6 +106,7 @@ public:
 
 private:
     QString subDirectoryForPackage(const QString &package) const { return QString(package).replace(".", "/"); }
+    void writeInstantiatedType(QTextStream &s, const AbstractMetaType *abstractMetaType) const;
 
 protected:
     QString m_package_name;

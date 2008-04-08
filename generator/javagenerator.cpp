@@ -1151,6 +1151,26 @@ void JavaGenerator::writeEnumOverload(QTextStream &s, const AbstractMetaFunction
     }
 }
 
+void JavaGenerator::writeInstantiatedType(QTextStream &s, const AbstractMetaType *abstractMetaType) const
+{
+    Q_ASSERT(abstractMetaType != 0);
+
+    const TypeEntry *type = abstractMetaType->typeEntry();
+    s << type->qualifiedTargetLangName();
+
+    if (abstractMetaType->hasInstantiations()) {
+        s << "<";
+        QList<AbstractMetaType *> instantiations = abstractMetaType->instantiations();
+        for(int i=0; i<instantiations.size(); ++i) {
+            if (i > 0)
+                s << ", ";
+
+            writeInstantiatedType(s, instantiations.at(i));
+        }
+        s << ">";
+    }
+}
+
 void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFunction *java_function,
                                            uint include_attributes, uint exclude_attributes)
 {
@@ -1228,11 +1248,15 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFun
                         if (arg_type->isNativePointer()) {
                             s << "(com.trolltech.qt.QNativePointer)";
                         } else {
-                            const TypeEntry *type = arguments.at(j)->type()->typeEntry();
+                            const AbstractMetaType *abstractMetaType = arguments.at(j)->type();
+                            const TypeEntry *type = abstractMetaType->typeEntry();
                             if (type->designatedInterface())
                                 type = type->designatedInterface();
-                            if (!type->isEnum() && !type->isFlags())
-                                s << "(" << type->qualifiedTargetLangName() << ")";
+                            if (!type->isEnum() && !type->isFlags()) {
+                                s << "(";
+                                writeInstantiatedType(s, abstractMetaType);
+                                s << ")";
+                            }
                         }
                     } else {
                         s << "(" << modified_type.replace('$', '.') << ")";
