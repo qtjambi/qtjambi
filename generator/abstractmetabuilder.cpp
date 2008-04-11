@@ -2399,17 +2399,26 @@ void AbstractMetaBuilder::setupComparable(AbstractMetaClass *cls)
 
 void AbstractMetaBuilder::setupClonable(AbstractMetaClass *cls)
 {
-    QString op_assign = QLatin1String("operator_assign");
+    // All value types are required to have a copy constructor,
+    // or they will not work as value types (it won't even compile,
+    // because of calls to qRegisterMetaType(). Thus all value types
+    // should be cloneable.
+    if (cls->typeEntry()->isValue()) {
+        cls->setHasCloneOperator(true);
+        return;
+    } else {
+        QString op_assign = QLatin1String("operator_assign");
 
-    AbstractMetaFunctionList functions = cls->queryFunctions(AbstractMetaClass::ClassImplements);
-    foreach (AbstractMetaFunction *f, functions) {
-        if ((f->name() == op_assign || f->isConstructor()) && f->isPublic()) {
-            AbstractMetaArgumentList arguments = f->arguments();
-            if (arguments.size() == 1) {
-                if (cls->typeEntry()->qualifiedCppName() == arguments.at(0)->type()->typeEntry()->qualifiedCppName()) {
-                    if (cls->typeEntry()->isValue()) {
-                        cls->setHasCloneOperator(true);
-                        return;
+        AbstractMetaFunctionList functions = cls->queryFunctions(AbstractMetaClass::ClassImplements);
+        foreach (AbstractMetaFunction *f, functions) {
+            if ((f->name() == op_assign || f->isConstructor()) && f->isPublic()) {
+                AbstractMetaArgumentList arguments = f->arguments();
+                if (f->actualMinimumArgumentCount() == 1) {
+                    if (cls->typeEntry()->qualifiedCppName() == arguments.at(0)->type()->typeEntry()->qualifiedCppName()) {
+                        if (cls->typeEntry()->isValue()) {
+                            cls->setHasCloneOperator(true);
+                            return;
+                        }
                     }
                 }
             }
