@@ -105,9 +105,12 @@ class JarCache {
                 // since all have roots
                 add("", file);
             } catch (FileNotFoundException e) {
+
+                // Do nothing when the dir/jar file is not found
+
+            } catch (Exception e) {
                 // Expected as directories will fail when doing openConnection.getJarFile()
                 classPathDirs.add(jarFileName);
-            } catch (Exception e) {
             }
         }
 
