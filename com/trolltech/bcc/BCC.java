@@ -83,7 +83,7 @@ public class BCC extends QWidget {
 
         private void writeLog() {
             String logFileName = QFileDialog.getSaveFileName(this);
-            if (logFileName.isEmpty())
+            if (logFileName.length() == 0)
                 return;
 
             QFile file = new QFile(logFileName);
@@ -108,7 +108,7 @@ public class BCC extends QWidget {
 
     private void selectJarFile(QWidget w) {
         String selected = QFileDialog.getOpenFileName(this, "Open jar file", null, new QFileDialog.Filter("*.jar"));
-        if (!selected.isEmpty()) {
+        if (selected.length() != 0) {
             if (w instanceof QLineEdit) {
                 ((QLineEdit) w).setText("classpath:" + selected + "#/");
             }
@@ -118,7 +118,7 @@ public class BCC extends QWidget {
 
     private void selectDirectory(QWidget w) {
         String selected = QFileDialog.getExistingDirectory();
-        if (!selected.isEmpty()) {
+        if (selected.length() != 0) {
             if (w instanceof QLineEdit) {
                 ((QLineEdit) w).setText(selected);
             }
@@ -219,13 +219,13 @@ public class BCC extends QWidget {
 
         for (QFileInfo entryInfo : entryInfoList) {
             if (entryInfo.isDir())
-                handleDirectoryRecursively(classLoader, entryInfo.absoluteFilePath(), packageName + (packageName.isEmpty() ? "" : ".") + entryInfo.baseName(), classes);
+                handleDirectoryRecursively(classLoader, entryInfo.absoluteFilePath(), packageName + (packageName.length() == 0 ? "" : ".") + entryInfo.baseName(), classes);
             else if (entryInfo.completeSuffix().equals("class")) {
-                Class<?> clazz = classLoader.loadClassFromPath(entryInfo, packageName + (packageName.isEmpty() ? "" : ".") + entryInfo.baseName());
+                Class<?> clazz = classLoader.loadClassFromPath(entryInfo, packageName + (packageName.length() ==  0 ? "" : ".") + entryInfo.baseName());
                 if (clazz != null)
                     classes.put(clazz.getName(), clazz);
                 else
-                    System.err.println("Failed to load class file: " + packageName + (packageName.isEmpty() ? "" : ".") + entryInfo.baseName());
+                    System.err.println("Failed to load class file: " + packageName + (packageName.length() == 0 ? "" : ".") + entryInfo.baseName());
             }
         }
     }
