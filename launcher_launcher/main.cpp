@@ -37,15 +37,125 @@ static void clean_up()
     });
 }
 
-static int bug_out(const char *title)
+static char *clearExceptionAndCopyString(const char *stringToCopy)
+{
+    char *newString = new char[strlen(stringToCopy) + 1];
+    if (newString == 0)
+        return 0;
+
+    strcpy(newString, stringToCopy);
+
+    return newString;
+}
+
+static char *getExceptionStackTrace(JNIEnv *jni_env)
+{
+    if (jni_env == 0)
+        return 0;
+
+    jthrowable exception = jni_env->ExceptionOccurred();
+    if (exception == 0)
+        return 0;
+
+    jni_env->ExceptionClear();
+
+    jclass stringWriterClass = jni_env->FindClass("java/io/StringWriter");
+    if (stringWriterClass == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace due to missing java.io.StringWriter class.");
+
+    jmethodID stringWriterConstructor = jni_env->GetMethodID(stringWriterClass, "<init>", "()V");
+    if (stringWriterConstructor == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace due to missing StringWriter() constructor.");
+
+    jobject stringWriter = jni_env->NewObject(stringWriterClass, stringWriterConstructor);
+    if (stringWriter == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace because of failure to create StringWriter object.");
+
+    jclass printWriterClass = jni_env->FindClass("java/io/PrintWriter");
+    if (printWriterClass == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace due to missing java.io.PrintWriter class.");
+
+    jmethodID printWriterConstructor = jni_env->GetMethodID(printWriterClass, "<init>", "(Ljava/io/Writer;)V");
+    if (printWriterConstructor == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace due to missing PrintWriter(java.io.Writer) constructor.");
+
+    jobject printWriter = jni_env->NewObject(printWriterClass, printWriterConstructor, stringWriter);
+    if (printWriter == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace because of failure to create PrintWriter object.");
+
+    jclass throwableClass = jni_env->FindClass("java/lang/Throwable");
+    if (throwableClass == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace due to missing java.lang.Throwable class.");
+
+    jmethodID printStackTraceMethod = jni_env->GetMethodID(throwableClass, "printStackTrace", "(Ljava/io/PrintWriter;)V");
+    if (printStackTraceMethod == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace due to missing Throwable.printStackTrace(java.io.PrintWriter) method.");
+
+    jni_env->CallVoidMethod(exception, printStackTraceMethod, printWriter);
+    if (jni_env->ExceptionOccurred())
+        return clearExceptionAndCopyString("Exception occurred while retrieving exception stack trace.");
+
+    jmethodID stringWriterToStringMethod = jni_env->GetMethodID(stringWriterClass, "toString", "()Ljava/lang/String;");
+    if (stringWriterToStringMethod == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace due to missing StringWriter.toString() method.");
+
+    jstring string = reinterpret_cast<jstring>(jni_env->CallObjectMethod(stringWriter, stringWriterToStringMethod));
+    if (string == 0)
+        return clearExceptionAndCopyString("Cannot get stack trace because of failure to retrieve string from StringWriter object.");
+
+    int stringLength = jni_env->GetStringLength(string);
+    if (stringLength == 0)
+        return clearExceptionAndCopyString("No exception stack trace available.");
+
+    char *cString = new char[stringLength + 1];
+    if (cString == 0)
+        return clearExceptionAndCopyString("Not enough memory to get exception stack trace.");
+
+    jni_env->GetStringUTFRegion(string, 0, stringLength, cString);
+    if (jni_env->ExceptionOccurred())
+        return clearExceptionAndCopyString("Exception occurred while converting exception stack trace to C string.");
+
+    return cString;
+}
+
+static int bug_out(const char *title, JNIEnv *jni_env)
 {
     clean_up();
-    MessageBoxA(NULL,
-        "Qt Jambi requires Java 1.5.0 or higher to be preinstalled\n"
-        "to work. If Java is installed then make sure that the\n"
-        "'java.exe' executable is available in the PATH environment.\n",
-        title,
-        MB_OK);
+
+    char *exceptionStackTrace = getExceptionStackTrace(jni_env);
+
+    const char *errorMessage =
+        "There was a problem running the Qt Jambi demos and\n"
+        "examples. Please make sure that you have Java 1.5.0\n"
+        "installed and that java.exe is available in the PATH\n"
+        "environment. For further debugging you can try adding\n"
+        "all bundled .jar files to your classpath and running\n"
+        "the com.trolltech.launcher.Launcher class.\n"
+        "\n"
+        "The specific error was:\n"
+        "  %s\n"
+        "%s\n";
+
+    const char *doYouWantToSeeTheStackTrace = "Do you want to see the Java exception stack trace?";
+
+    char *tmp = new char[strlen(errorMessage) + strlen(title) + strlen(doYouWantToSeeTheStackTrace)];
+    sprintf(tmp, errorMessage, title, exceptionStackTrace != 0 ? doYouWantToSeeTheStackTrace : "");
+
+    int aok = MessageBoxA(NULL,
+        tmp,
+        "Error running Qt Jambi examples",
+        exceptionStackTrace != 0 ? MB_YESNO : MB_OK);
+
+    if (exceptionStackTrace != 0 && aok == IDYES) {
+        MessageBoxA(NULL,
+                    exceptionStackTrace,
+                    "Exception caught by Java when running com.trolltech.launcher.Launcher",
+                    MB_OK);
+    }
+
+    delete exceptionStackTrace;
+    delete tmp;
+
     return 1;
 }
 
@@ -256,31 +366,22 @@ static bool launch_launcher(JNIEnv *jni_env)
     const char *launcher = "com/trolltech/launcher/Launcher";
 
     jclass launcher_class = jni_env->FindClass(launcher);
-    if (jni_env->ExceptionOccurred()) {
-        //jni_env->ExceptionDescribe();
-        jni_env->ExceptionClear(); // DestroyVM will crash if there's an exception on stack
-    }
 
     jmethodID main_function = 0;
     if (launcher_class != 0)
         main_function = jni_env->GetStaticMethodID(launcher_class, "main", "([Ljava/lang/String;)V");
     else
-        return bug_out("Cannot find com.trolltech.launcher.Launcher") != 0;
-    if (jni_env->ExceptionOccurred()) {
-        //jni_env->ExceptionDescribe();
-        jni_env->ExceptionClear(); // DestroyVM will crash if there's an exception on stack
-    }
+        return bug_out("Cannot find com.trolltech.launcher.Launcher", jni_env) != 0;
 
     if (main_function != 0)
         jni_env->CallStaticVoidMethod(launcher_class, main_function, jobject(0));
     else
-        return bug_out("Cannot find main function in Launcher class") != 0;
+        return bug_out("Cannot find main function in Launcher class", jni_env) != 0;
 
     // Fail on exception
     if (jni_env->ExceptionOccurred()) {
-        jni_env->ExceptionDescribe();
         jni_env->ExceptionClear();
-        return bug_out("Exception in Launcher") != 0;
+        return bug_out("Exception in Launcher", jni_env) != 0;
     }
 
     return true;
@@ -576,7 +677,7 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     char version[] = "4.X.Y_0Z";
     if (!decide_library_version(version)) {
-        bug_out("Failed to detect library versions...\n");
+        bug_out("Failed to detect library versions...\n", 0);
     }
 
     // Set up VM options
@@ -593,12 +694,12 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     {
         if (!setup_path_w(new_class_path, (wchar_t *)extra_class_path,
                           L"CLASSPATH")) {
-            return bug_out("Failed to set CLASSPATH environment");
+            return bug_out("Failed to set CLASSPATH environment", 0);
         }
     }, {
         if (!setup_path_a(new_class_path, (char *)extra_class_path,
                           "CLASSPATH")) {
-            return bug_out("Failed to set CLASSPATH environment");
+            return bug_out("Failed to set CLASSPATH environment", 0);
         }
     });
 
@@ -626,19 +727,19 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     if (jvm_dll == 0)
         jvm_dll = QT_WA_INLINE(search_path_for_jvm_dll_w(), search_path_for_jvm_dll_a());
     if (jvm_dll == 0)
-        return bug_out("Failed to find jvm.dll");
+        return bug_out("Failed to find jvm.dll", 0);
 
     addr_JNI_CreateJavaVM = (Proc_JNI_CreateJavaVM)GetProcAddress(jvm_dll, "JNI_CreateJavaVM");
     if (addr_JNI_CreateJavaVM == 0)
-        return bug_out("Failed to find CreateJavaVM procedure");
+        return bug_out("Failed to find CreateJavaVM procedure", 0);
 
     {
         jint result = addr_JNI_CreateJavaVM(&vm, (void **)&jni_env, &args);
         if (result != 0 || vm == 0 || jni_env == 0)
-            return bug_out("Failed to create Java Virtual Machine");
+            return bug_out("Failed to create Java Virtual Machine", 0);
 
         if (!check_java_version(jni_env))
-            return bug_out("Wrong Java version detected");
+            return bug_out("Wrong Java version detected", jni_env);
 
     }
 
