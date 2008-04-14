@@ -1418,23 +1418,91 @@ bool qtjambi_initialize_vm()
     return true;
 }
 
+#if defined(Q_OS_LINUX) || defined(Q_OS_SOLARIS)
+static QString locate_vm_linux_and_solaris()
+{
+    QStringList envVariables;
+    envVariables << "JAVADIR"  << "JAVAHOME" << "JDK_HOME" << "JAVA_HOME" << "JAVA_DIR";
+
+    for (int i = 0; i < envVariables.size(); ++i) {
+        QStringList jpaths;
+        if (!vm_location_override.isEmpty())
+            jpaths << vm_location_override.append(QLatin1String("/lib/"));
+        else
+            jpaths << qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"))
+                   << qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/lib/"));
+
+        QStringList jmachs;
+
 #if defined(Q_OS_SOLARIS)
-#if defined(_ILP32) && (_FILE_OFFSET_BITS != 32)
-#define FILE_OFFSET_BITS_HACK 1
-#undef _FILE_OFFSET_BITS
-#define _FILE_OFFSET_BITS 32
+#  if defined(__sparc) || defined(__sparcv9)
+#    ifdef _LP64
+        jmachs << QLatin1String("sparcv9/server");
+#    else
+        jmachs << QLatin1String("sparc/client");
+#    endif
+#  else
+#    ifdef _LP64
+        jmachs << QLatin1String("amd64/server");
+#    else // _LP64
+        jmachs << QLatin1String("i386/client");
+#    endif
+#  endif
 #else
-#define FILE_OFFSET_BITS_HACK 0
+#  ifdef _LP64
+        jmachs << QLatin1String("amd64/client");
+        jmachs << QLatin1String("amd64/server");
+#  else
+        jmachs << QLatin1String("i386/client");
+        jmachs << QLatin1String("i386/server");
+#  endif
 #endif
 
-#include <dlfcn.h>
-#include <link.h>
-#include <limits.h>
+        for (int j=0; j<jpaths.size(); ++j) {
+            QString jpath = jpaths.at(j);
 
-#if ((FILE_OFFSET_BITS_HACK + 0x0) == 0x1)
-#undef _FILE_OFFSET_BITS
-#define _FILE_OFFSET_BITS 64
-#endif
+            for (int k=0; k<jmachs.size(); ++k) {
+                QString jmach = jmachs.at(k);
+                jpath += jmach;
+
+                jpath = QDir::cleanPath(jpath);
+
+                if (! jpath.endsWith(QLatin1Char('/')))
+                    jpath += QLatin1Char('/');
+
+                QFileInfo file(jpath + "libjvm.so");
+                if (file.exists())
+                    return file.absoluteFilePath();
+            }
+        }
+    }
+
+    qWarning("QtJambi: failed to locate the JVM. Make sure JAVADIR is set, "
+             "and pointing to your Java installation.");
+
+    return QString();
+}
+#endif // Q_OS_LINUX || Q_OS_SOLARIS
+
+
+#if defined(Q_OS_SOLARIS)
+
+#  if defined(_ILP32) && (_FILE_OFFSET_BITS != 32)
+#    define FILE_OFFSET_BITS_HACK 1
+#    undef _FILE_OFFSET_BITS
+#    define _FILE_OFFSET_BITS 32
+#  else
+#    define FILE_OFFSET_BITS_HACK 0
+#  endif
+
+#  include <dlfcn.h>
+#  include <link.h>
+#  include <limits.h>
+
+#  if ((FILE_OFFSET_BITS_HACK + 0x0) == 0x1)
+#    undef _FILE_OFFSET_BITS
+#    define _FILE_OFFSET_BITS 64
+#  endif
 
 static QString locate_vm()
 {
@@ -1455,49 +1523,13 @@ static QString locate_vm()
         lmap = lmap->l_next;
     }
 
-    QList<QString> envVariables;
-    envVariables << "JAVADIR"  << "JAVAHOME" << "JDK_HOME" << "JAVA_HOME" << "JAVA_DIR";
-
-    for (int i = 0; i < envVariables.size(); ++i) {
-        QString jpath;
-        if (!vm_location_override.isEmpty())
-            jpath = vm_location_override.append(QLatin1String("/lib/"));
-        else
-            jpath = qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"));
-
-        QString jmach;
-#if defined(__sparc) || defined(__sparcv9)
-#ifdef _LP64
-        jmach = QLatin1String("sparcv9/server");
-#else
-        jmach = QLatin1String("sparc/client");
-#endif
-#else
-#ifdef _LP64
-        jmach = QLatin1String("amd64/server");
-#else
-        jmach = QLatin1String("i386/client");
-#endif
-#endif
-        jpath += jmach;
-
-        jpath = QDir::cleanPath(jpath);
-
-        if (! jpath.endsWith(QLatin1Char('/')))
-            jpath += QLatin1Char('/');
-
-        QFileInfo file(jpath + "libjvm.so");
-
-        if (file.exists())
-            return file.absoluteFilePath();
-    }
-
-    qWarning("QtJambi: failed to locate the JVM. Make sure JAVADIR is set, and pointing to your Java installation.");
-    return QString();
+    return locate_vm_linux_and_solaris();
 }
 
 
 #elif defined(Q_OS_LINUX)
+
+
 static QString locate_vm()
 {
     // If libjvm is already loaded, make sure we report the same jvm.
@@ -1513,39 +1545,7 @@ static QString locate_vm()
         }
     }
 
-    QList<QString> envVariables;
-    envVariables << "JAVADIR"  << "JAVAHOME" << "JDK_HOME" << "JAVA_HOME" << "JAVA_DIR";
-
-    for (int i = 0; i < envVariables.size(); ++i) {
-        QString jpath = !vm_location_override.isEmpty() ?
-      vm_location_override.append(QLatin1String("/lib/")) :
-      qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"));
-
-#ifdef _LP64
-        QString jmach = QLatin1String("amd64");
-#else
-    QString jmach = QLatin1String("i386");
-#endif
-
-    jpath += jmach;
-
-    jpath = QDir::cleanPath(jpath);
-
-    if (! jpath.endsWith(QLatin1Char('/')))
-            jpath += QLatin1Char('/');
-
-    QFileInfo fileClient(jpath + "/client/libjvm.so");
-    if(fileClient.exists())
-            return fileClient.absoluteFilePath();
-
-    QFileInfo fileServer(jpath + "/server/libjvm.so");
-    if(fileServer.exists())
-            return fileServer.absoluteFilePath();
-    }
-
-    qWarning("QtJambi: failed to locate the JVM. Make sure JAVADIR is set, and pointing to your Java installation.");
-
-    return QString();
+    return locate_vm_linux_and_solaris();
 }
 
 #elif defined(Q_OS_WIN)
@@ -1611,7 +1611,7 @@ static QString locate_vm()
     return QString();
 }
 
-#endif
+#endif // OS-switch
 
 struct ResolvedConnectionData
 {
