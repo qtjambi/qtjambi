@@ -174,8 +174,8 @@ QWidget *JambiCustomWidget::createWidget(QWidget *parent)
 
 QString JambiCustomWidget::domXml() const
 {
-    QString className = name().split('.').last();
-    className[0] = className[0].toLower();
+    QString objectName = callStringMethod(method_name);
+    objectName[0] = objectName[0].toLower();
 
     const char *xml_data = "<widget class=\"%1\"  name=\"%2\">"
                            "  <property name=\"objectName\">"
@@ -185,15 +185,15 @@ QString JambiCustomWidget::domXml() const
 
     return QString::fromUtf8(xml_data)
         .arg(name())
-        .arg(callStringMethod(method_name))
-        .arg(className);
+        .arg(objectName)
+        .arg(objectName);
 }
 
 QString JambiCustomWidget::name() const
 {
     JNIEnv *env = qtjambi_current_environment();
     jclass cl = (jclass) env->CallObjectMethod(m_object, method_pluginClass);
-    return qtjambi_class_name(env, cl);
+    return qtjambi_class_name(env, cl).split(".").last();
 }
 
 bool JambiCustomWidget::isContainer() const

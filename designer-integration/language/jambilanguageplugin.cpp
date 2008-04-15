@@ -147,7 +147,7 @@ QString JambiLanguage::classNameOf(QObject *object) const
     if (link && link->createdByJava()) {
         JNIEnv *env = qtjambi_current_environment();
         jobject jobj = link->javaObject(env);
-        QString name = qtjambi_class_name(env, env->GetObjectClass(jobj));
+        QString name = qtjambi_class_name(env, env->GetObjectClass(jobj)).split(".").last();
         return name;
     }
     return object->metaObject()->className();

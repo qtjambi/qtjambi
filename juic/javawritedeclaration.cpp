@@ -21,6 +21,7 @@
 #include "javautils.h"
 
 #include <QTextStream>
+#include <QSet>
 
 #define JUIC_NO_EMBEDDED_ICON
 
@@ -50,6 +51,26 @@ void WriteDeclaration::acceptUI(DomUI *node)
     output << "import com.trolltech.qt.core.*;\n"
            << "import com.trolltech.qt.gui.*;\n"
            << "\n";
+
+    if (DomCustomWidgets *customWidgets = node->elementCustomWidgets()) {
+        QList<DomCustomWidget *> list = customWidgets->elementCustomWidget();
+        QSet<QString> usedImports;
+        usedImports.insert("com.trolltech.qt.core");
+        usedImports.insert("com.trolltech.qt.gui");
+
+        for (int i=0; i<list.size(); ++i) {
+            DomCustomWidget *customWidget = list.at(i);
+            if (customWidget != 0 && customWidget->hasElementHeader()) {
+                QString import = customWidget->elementHeader()->text();
+                if (!import.isEmpty() && !usedImports.contains(import)) {
+                    output << "import " << import << ".*;\n";
+                    usedImports.insert(import);
+                }
+            }
+        }
+
+        output << "\n";
+    }
 
     output << "public class " << option.prefix << className << "\n"
            << "{\n";
