@@ -129,42 +129,41 @@ public class CustomWidgetManager {
                     }
                 }
 
-                if (type == null)
-                    throw new NullPointerException("Failed to load class: " + className);
+                if (type != null) {
+                    CustomWidget customWidget = new CustomWidget(type);
+                    customWidgets.add(customWidget);
 
-                CustomWidget customWidget = new CustomWidget(type);
-                customWidgets.add(customWidget);
+                    // The simple properties...
+                    String group = e.attribute("group");
+                    if (group.length() == 0)
+                        group = "Qt Jambi Custom Widgets";
+                    customWidget.setGroup(group);
+                    customWidget.setTooltip(e.attribute("tool-tip"));
+                    customWidget.setWhatsThis(e.attribute("whats-this"));
+                    customWidget.setName(e.attribute("name"));
+                    customWidget.setIncludeFile(e.attribute("import"));
 
-                // The simple properties...
-                String group = e.attribute("group");
-                if (group.length() == 0)
-                    group = "Qt Jambi Custom Widgets";
-                customWidget.setGroup(group);
-                customWidget.setTooltip(e.attribute("tool-tip"));
-                customWidget.setWhatsThis(e.attribute("whats-this"));
-                customWidget.setName(e.attribute("name"));
-                customWidget.setIncludeFile(e.attribute("import"));
-
-                // The icon
-                String iconPath = e.attribute("icon");
-                QIcon icon = null;
-                if (iconPath.length() != 0) {
-                    icon = new QIcon(iconPath);
-                    if (icon.isNull()) {
-                        warn(errorPrefix + "; icon '" + iconPath + "' not loaded");
-                        icon = null;
+                    // The icon
+                    String iconPath = e.attribute("icon");
+                    QIcon icon = null;
+                    if (iconPath.length() != 0) {
+                        icon = new QIcon(iconPath);
+                        if (icon.isNull()) {
+                            warn(errorPrefix + "; icon '" + iconPath + "' not loaded");
+                            icon = null;
+                        }
                     }
-                }
-                customWidget.setIcon(icon);
+                    customWidget.setIcon(icon);
 
-                // is it a container?
-                boolean isContainer = false;
-                String container = e.attribute("container");
-                if (container != null) {
-                    container = container.toLowerCase();
-                    isContainer = container.equals("yes") || container.equals("true");
+                    // is it a container?
+                    boolean isContainer = false;
+                    String container = e.attribute("container");
+                    if (container != null) {
+                        container = container.toLowerCase();
+                        isContainer = container.equals("yes") || container.equals("true");
+                    }
+                    customWidget.setContainer(isContainer);
                 }
-                customWidget.setContainer(isContainer);
 
             } catch (Exception ex) {
                 warn("class=" + className

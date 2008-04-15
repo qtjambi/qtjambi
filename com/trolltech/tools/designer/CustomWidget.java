@@ -66,7 +66,10 @@ public class CustomWidget {
     }
 
     public String includeFile() {
-        return includeFile;
+        if (includeFile.length() == 0)
+            return pluginClass.getPackage().getName();
+        else
+            return includeFile;
     }
 
     public void setIncludeFile(String includeFile) {
@@ -74,7 +77,10 @@ public class CustomWidget {
     }
 
     public String name() {
-        return name;
+        if (name.length() == 0)
+            return pluginClass.getSimpleName();
+        else
+            return name;
     }
 
     public void setName(String name) {

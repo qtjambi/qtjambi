@@ -1,0 +1,10 @@
+<qt-jambi-custom-widget-list>
+
+  <qt-jambi-custom-widget
+    name="webView"
+    class="com.trolltech.qt.webkit.QWebView"
+    group="Display Widgets"
+    icon="classpath:com/trolltech/images/qwebview.png"
+  />
+
+</qt-jambi-custom-widget-list>
