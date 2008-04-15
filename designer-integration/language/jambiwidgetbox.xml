@@ -61,6 +61,22 @@
             </layout>
         </widget>
 
+        <widget class="QWidget"  name="Form Layout" icon="win/editform.png">
+            <property name="objectName">
+                <string notr="true">formLayoutWidget</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>160</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <layout class="QFormLayout">
+            </layout>
+        </widget>
+
     </category>
 
     <category name="Spacers">
@@ -147,6 +163,19 @@
                 <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
             </property>
         </widget>
+
+        <widget class="QCommandLinkButton" name="Command Link Button" icon="widgets/commandlinkbutton.png">
+          <property name="text" >
+            <string>CommandLinkButton</string>
+          </property>
+          <property name="objectName">
+            <string notr="true">commandLinkButton</string>
+          </property>
+	  <property name="focusPolicy">
+	    <enum>com.trolltech.qt.core.Qt.FocusPolicy.StrongFocus</enum>
+          </property>
+        </widget>
+
         <widget class="QDialogButtonBox" name="Button Box" icon="widgets/dialogbuttonbox.png">
             <property name="standardButtons" >
                 <set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok|com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel</set>
@@ -244,6 +273,28 @@
             </property>
         </widget>
 
+        <widget class="QScrollArea" icon="widgets/scrollarea.png"  type="default" name="Scroll Area" >
+          <!-- geometry set on contents, will else have 0,0
+               Make the area resize the widget, it will otherwise behave
+               strange as long as the child does not have a layout -->
+          <property name="objectName" >
+            <string notr="true" >scrollArea</string>
+          </property>
+                <property name="widgetResizable" >
+                  <bool>true</bool>
+		</property>
+		<widget class="QWidget" name="scrollAreaWidgetContents">
+                  <property name="geometry" >
+                        <rect>
+                          <x>0</x>
+                          <y>0</y>
+                          <width>120</width>
+                          <height>80</height>
+                        </rect>
+                    </property>
+                </widget>
+        </widget>
+	
         <widget class="QToolBox" name="Tool Box" icon="widgets/toolbox.png">
             <property name="currentIndex" >
                 <number>0</number>
@@ -426,6 +477,20 @@
             </property>
         </widget>
 
+        <widget class="QPlainTextEdit" name="Plain Text Edit" icon="widgets/textedit.png">
+          <property name="objectName">
+            <string notr="true">plainTextEdit</string>
+          </property>
+          <property name="geometry" >
+            <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>104</width>
+              <height>64</height>
+            </rect>
+          </property>
+        </widget>
+	
         <widget class="QSpinBox" name="Spin Box" icon="widgets/spinbox.png">
             <property name="geometry" >
                 <rect>
