@@ -1908,6 +1908,12 @@ void AbstractMetaBuilder::decideUsagePattern(AbstractMetaType *meta_type)
                    || !meta_type->isReference())) {
         meta_type->setTypeUsagePattern(AbstractMetaType::ValuePattern);
 
+    } else if (type->isObject() && meta_type->actualIndirections() == 0) {
+
+        ReportHandler::warning(QString("Object type '%1' passed as value. Resulting code will not compile.")
+                               .arg(meta_type->cppSignature()));
+        meta_type->setTypeUsagePattern(AbstractMetaType::NativePointerPattern);
+
     } else {
         meta_type->setTypeUsagePattern(AbstractMetaType::NativePointerPattern);
         ReportHandler::debugFull(QString("native pointer pattern for '%1'")
