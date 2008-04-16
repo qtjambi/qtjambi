@@ -663,12 +663,13 @@ void WriteInitialization::writeProperties(const QString &varName,
             continue;
         }
 
+
+
         bool stdset = m_stdsetdef;
         if (p->hasAttributeStdset())
             stdset = p->attributeStdset();
 
         QString setFunction;
-
         if (stdset) {
             setFunction = QLatin1String(".set")
                 + propertyName.left(1).toUpper()
@@ -681,6 +682,14 @@ void WriteInitialization::writeProperties(const QString &varName,
         }
 
         switch (p->kind()) {
+    enum Kind {
+
+
+
+
+        Char, Url,
+        Brush };
+
         case DomProperty::Bool: {
             propertyValue = p->elementBool();
             break;
@@ -706,6 +715,12 @@ void WriteInitialization::writeProperties(const QString &varName,
                 fprintf(stderr, "Malformed enum value %s, C++ syntax not allowed\n",
                         qPrintable(propertyValue));
             break;
+        case DomProperty::Locale: {
+             const DomLocale *locale = p->elementLocale();
+             propertyValue = QString::fromLatin1("new QLocale(QLocale.Language.%1, QLocale.Country.%2)")
+                             .arg(locale->attributeLanguage()).arg(locale->attributeCountry());
+            break;
+        }
         case DomProperty::Set: {
             propertyValue = p->elementSet();
 
@@ -800,11 +815,25 @@ void WriteInitialization::writeProperties(const QString &varName,
                             .arg(po->elementX()).arg(po->elementY());
             break;
         }
+        case DomProperty::PointF: {
+            const DomPointF *pof = p->elementPointF();
+            propertyValue = QString::fromLatin1("new QPointF(%1, %2)")
+                            .arg(pof->elementX()).arg(pof->elementY());
+            break;
+        }
+
         case DomProperty::Rect: {
             DomRect *r = p->elementRect();
             propertyValue = QString::fromLatin1("new QRect(%1, %2, %3, %4)")
                             .arg(r->elementX()).arg(r->elementY())
                             .arg(r->elementWidth()).arg(r->elementHeight());
+            break;
+        }
+        case DomProperty::RectF: {
+            const DomRectF *rf = p->elementRectF();
+            propertyValue = QString::fromLatin1("new QRectF(%1, %2, %3, %4)")
+                            .arg(rf->elementX()).arg(rf->elementY())
+                            .arg(rf->elementWidth()).arg(rf->elementHeight());
             break;
         }
 
@@ -843,6 +872,12 @@ void WriteInitialization::writeProperties(const QString &varName,
                              .arg(s->elementWidth()).arg(s->elementHeight());
             break;
         }
+        case DomProperty::SizeF: {
+            const DomSizeF *sf = p->elementSizeF();
+             propertyValue = QString::fromLatin1("new QSizeF(%1, %2)")
+                            .arg(sf->elementWidth()).arg(sf->elementHeight());
+            break;
+        }
         case DomProperty::String: {
             if (propertyName == QLatin1String("objectName")) {
                 QString v = p->elementString()->text();
@@ -863,11 +898,38 @@ void WriteInitialization::writeProperties(const QString &varName,
         case DomProperty::Number:
             propertyValue = QString::number(p->elementNumber());
             break;
+        case DomProperty::UInt:
+            propertyValue = QString::number(p->elementUInt());
+            break;
         case DomProperty::Float:
             propertyValue = QString::number(p->elementFloat());
             break;
         case DomProperty::Double:
             propertyValue = QString::number(p->elementDouble());
+            break;
+        case DomProperty::Char:
+            propertyValue = p->elementChar()->elementUnicode();
+            break;
+        case DomProperty::Url: {
+            const DomUrl* u = p->elementUrl();
+            propertyValue = QString::fromLatin1("new QUrl(%1)")
+                            .arg(javaFixString(u->elementString()->text()));
+            break;
+        }
+        case DomProperty::CursorShape:
+            propertyValue = QString::fromLatin1("new QCursor(Qt.CursorShape.%1)")
+                            .arg(p->elementCursorShape());
+            break;
+        case DomProperty::Brush: {
+            DomBrush *brush = p->elementBrush();
+            const QString brushName = driver->unique(QLatin1String("brush"));
+            writeBrush(brush, brushName);
+            propertyValue = brushName;
+            break;
+        }
+        case DomProperty::ULongLong:
+        case DomProperty::LongLong:
+            propertyValue = QString::number(p->elementLongLong());
             break;
         case DomProperty::Date: {
             DomDate *d = p->elementDate();
@@ -898,24 +960,21 @@ void WriteInitialization::writeProperties(const QString &varName,
         }
 
         case DomProperty::StringList:
-        // ### port me
-#if 0
-            propertyValue = QLatin1String("QStringList()");
+            propertyValue = QLatin1String("java.util.Arrays.asList(new String[] {");
             if (p->elementStringList()->elementString().size()) {
                 QStringList lst = p->elementStringList()->elementString();
                 for (int i=0; i<lst.size(); ++i) {
-                    propertyValue += QLatin1String(" << ") + javaFixString(lst.at(i));
+                    if (i > 0)
+                        propertyValue += QLatin1String(", ");
+                    propertyValue += javaFixString(lst.at(i));
                 }
             }
-#endif
+            propertyValue += QLatin1String("})");
             break;
 
         case DomProperty::Unknown:
             break;
 
-        default:
-            // fewer warnings...
-            break;
         }
 
 
@@ -941,6 +1000,74 @@ void WriteInitialization::writeProperties(const QString &varName,
                << QString::number(bottomMargin) << QLatin1String(");\n");
     }
 
+}
+
+void WriteInitialization::writeBrush(const DomBrush *brush, const QString &brushName)
+{
+    QString style = QLatin1String("SolidPattern");
+    if (brush->hasAttributeBrushStyle())
+        style = brush->attributeBrushStyle();
+
+    if (style == QLatin1String("LinearGradientPattern") ||
+            style == QLatin1String("RadialGradientPattern") ||
+            style == QLatin1String("ConicalGradientPattern")) {
+        const DomGradient *gradient = brush->elementGradient();
+        const QString gradientType = gradient->attributeType();
+        const QString gradientName = driver->unique(QLatin1String("gradient"));
+        if (gradientType == QLatin1String("LinearGradient")) {
+            output << option.indent << "QLinearGradient " << gradientName
+                   << " = new QLinearGradient(" << gradient->attributeStartX()
+                   << ", " << gradient->attributeStartY()
+                   << ", " << gradient->attributeEndX()
+                   << ", " << gradient->attributeEndY() << ");\n";
+        } else if (gradientType == QLatin1String("RadialGradient")) {
+            output << option.indent << "QRadialGradient " << gradientName
+                     << " = new QRadialGradient(" << gradient->attributeCentralX()
+                     << ", " << gradient->attributeCentralY()
+                     << ", " << gradient->attributeRadius()
+                     << ", " << gradient->attributeFocalX()
+                     << ", " << gradient->attributeFocalY() << ");\n";
+        } else if (gradientType == QLatin1String("ConicalGradient")) {
+            output << option.indent << "QConicalGradient " << gradientName
+                     << " = new QConicalGradient(" << gradient->attributeCentralX()
+                     << ", " << gradient->attributeCentralY()
+                     << ", " << gradient->attributeAngle() << ");\n";
+        }
+
+        output << option.indent << gradientName << ".setSpread(QGradient.Spread."
+               << gradient->attributeSpread() << ");\n";
+
+        if (gradient->hasAttributeCoordinateMode()) {
+            output << gradientName << ".setCoordinateMode(QGradient.CoordinateMode."
+                   << gradient->attributeCoordinateMode() << ");\n";
+        }
+
+       const  QList<DomGradientStop *> stops = gradient->elementGradientStop();
+        QListIterator<DomGradientStop *> it(stops);
+        while (it.hasNext()) {
+            const DomGradientStop *stop = it.next();
+            DomColor *color = stop->elementColor();
+            output << option.indent << gradientName << ".setColorAt("
+                   << stop->attributePosition() << ", "
+                   << domColor2QString(color) << ");\n";
+        }
+        output << option.indent << "QBrush " << brushName << " = new QBrush("
+               << gradientName << ");\n";
+    } else if (style == QLatin1String("TexturePattern")) {
+        qWarning("juic: Brushes with TexturePattern not supported yet");
+        /*const DomProperty *property = brush->elementTexture();
+        const QString iconValue = iconCall(property);
+
+        output << option.indent << "QBrush " << brushName << " = new QBrush("
+        << iconValue << ");\n";*/
+    } else {
+        DomColor *color = brush->elementColor();
+        output << option.indent << "QBrush " << brushName << " = new QBrush("
+               << domColor2QString(color) << ");\n";
+
+        output << option.indent << brushName << ".setStyle("
+            << "Qt.BrushStyle." << style << ");\n";
+    }
 }
 
 QString WriteInitialization::domColor2QString(DomColor *c)
