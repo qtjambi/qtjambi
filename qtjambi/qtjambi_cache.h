@@ -189,7 +189,6 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
         jmethodID getName;
         jmethodID getDeclaredMethods;
-        jmethodID isEnum;
         jmethodID getEnumConstants;
     } Class;
 

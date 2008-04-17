@@ -923,15 +923,11 @@ void StaticCache::resolveClass_internal()
     Q_ASSERT(Class.class_ref);
 
     Class.getName = env->GetMethodID(Class.class_ref, "getName", "()Ljava/lang/String;");
-
     Q_ASSERT(Class.getName);
 
     Class.getDeclaredMethods = env->GetMethodID(Class.class_ref, "getDeclaredMethods",
         "()[Ljava/lang/reflect/Method;");
     Q_ASSERT(Class.getDeclaredMethods);
-
-    Class.isEnum = env->GetMethodID(Class.class_ref, "isEnum", "()Z");
-    Q_ASSERT(Class.isEnum);
 
     Class.getEnumConstants = env->GetMethodID(Class.class_ref, "getEnumConstants", "()[Ljava/lang/Object;");
     Q_ASSERT(Class.getEnumConstants);
