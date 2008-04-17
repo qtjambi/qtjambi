@@ -1096,8 +1096,17 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
     }
 
     if (resolved == 0) {
+
+#ifndef QTJAMBI_RETRO_JAVA
         sc->resolveClass();
         jobjectArray enum_constants = reinterpret_cast<jobjectArray>(mEnvironment->CallObjectMethod(clazz, sc->Class.getEnumConstants));
+#else
+        sc->resolveRetroTranslatorHelper();
+        jobjectArray enum_constants = reinterpret_cast<jobjectArray>(mEnvironment->CallStaticObjectMethod(sc->RetroTranslatorHelper.class_ref,
+                                                                                                          sc->RetroTranslatorHelper.getEnumConstants,
+                                                                                                          clazz));
+#endif
+
         resolved = mEnvironment->GetObjectArrayElement(enum_constants, value);
     }
 

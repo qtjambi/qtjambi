@@ -189,7 +189,11 @@ struct QTJAMBI_EXPORT StaticCache
         jclass class_ref;
         jmethodID getName;
         jmethodID getDeclaredMethods;
+
+#ifndef QTJAMBI_RETRO_JAVA
         jmethodID getEnumConstants;
+#endif
+
     } Class;
 
     struct {
@@ -420,6 +424,15 @@ struct QTJAMBI_EXPORT StaticCache
         jfieldID error;
         jfieldID inputSource;
     } ResolvedEntity;
+
+#ifdef QTJAMBI_RETRO_JAVA
+    struct {
+        jclass class_ref;
+        jmethodID getEnumConstants;
+    } RetroTranslatorHelper;
+
+    DECLARE_RESOLVE_FUNCTIONS(RetroTranslatorHelper);
+#endif
 
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);

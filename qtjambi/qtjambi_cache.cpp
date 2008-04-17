@@ -929,8 +929,10 @@ void StaticCache::resolveClass_internal()
         "()[Ljava/lang/reflect/Method;");
     Q_ASSERT(Class.getDeclaredMethods);
 
+#if !defined(QTJAMBI_RETRO_JAVA)
     Class.getEnumConstants = env->GetMethodID(Class.class_ref, "getEnumConstants", "()[Ljava/lang/Object;");
     Q_ASSERT(Class.getEnumConstants);
+#endif
 }
 
 
@@ -1473,4 +1475,19 @@ void StaticCache::resolveResolvedEntity_internal()
     ResolvedEntity.inputSource = env->GetFieldID(ResolvedEntity.class_ref, "inputSource", "Lcom/trolltech/qt/xml/QXmlInputSource;");
     Q_ASSERT(ResolvedEntity.inputSource);
 }
+
+#ifdef QTJAMBI_RETRO_JAVA
+void StaticCache::resolveRetroTranslatorHelper_internal()
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    Q_ASSERT(!RetroTranslatorHelper.class_ref);
+
+    RetroTranslatorHelper.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/internal/RetroTranslatorHelper"));
+    Q_ASSERT(RetroTranslatorHelper.class_ref);
+
+    RetroTranslatorHelper.getEnumConstants = env->GetStaticMethodID(RetroTranslatorHelper.class_ref, "getEnumConstants", "(Ljava/lang/Class;)[Ljava/lang/Object;");
+    Q_ASSERT(RetroTranslatorHelper.getEnumConstants);
+}
+#endif
 
