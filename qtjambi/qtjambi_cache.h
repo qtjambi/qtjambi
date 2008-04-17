@@ -370,11 +370,6 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
-        jmethodID ordinal;
-    } Enum;
-
-    struct {
-        jclass class_ref;
     } Qt;
 
     struct {
@@ -429,10 +424,20 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID getEnumConstants;
+        jmethodID isEnumType;
+        jmethodID enumOrdinal;
     } RetroTranslatorHelper;
 
     DECLARE_RESOLVE_FUNCTIONS(RetroTranslatorHelper);
+#else
+    struct {
+        jclass class_ref;
+        jmethodID ordinal;
+    } Enum;
+
+    DECLARE_RESOLVE_FUNCTIONS(Enum);
 #endif
+
 
     DECLARE_RESOLVE_FUNCTIONS(AbstractSignal);
     DECLARE_RESOLVE_FUNCTIONS(ArrayList);
@@ -476,7 +481,6 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(QTableArea);
     DECLARE_RESOLVE_FUNCTIONS(CellAtIndex);
     DECLARE_RESOLVE_FUNCTIONS(MetaData);
-    DECLARE_RESOLVE_FUNCTIONS(Enum);
     DECLARE_RESOLVE_FUNCTIONS(Qt);
     DECLARE_RESOLVE_FUNCTIONS(QFlags);
     DECLARE_RESOLVE_FUNCTIONS(QtProperty);

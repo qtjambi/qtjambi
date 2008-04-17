@@ -935,7 +935,6 @@ void StaticCache::resolveClass_internal()
 #endif
 }
 
-
 void StaticCache::resolveSystem_internal()
 {
     JNIEnv *env = qtjambi_current_environment();
@@ -1325,19 +1324,6 @@ void StaticCache::resolveCellAtIndex_internal()
     Q_ASSERT(CellAtIndex.isSelected);
 }
 
-void StaticCache::resolveEnum_internal()
-{
-    JNIEnv *env = qtjambi_current_environment();
-
-    Q_ASSERT(!Enum.class_ref);
-
-    Enum.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Enum"));
-    Q_ASSERT(Enum.class_ref);
-
-    Enum.ordinal = env->GetMethodID(Enum.class_ref, "ordinal", "()I");
-    Q_ASSERT(Enum.ordinal);
-}
-
 void StaticCache::resolveQt_internal()
 {
     JNIEnv *env = qtjambi_current_environment();
@@ -1488,6 +1474,26 @@ void StaticCache::resolveRetroTranslatorHelper_internal()
 
     RetroTranslatorHelper.getEnumConstants = env->GetStaticMethodID(RetroTranslatorHelper.class_ref, "getEnumConstants", "(Ljava/lang/Class;)[Ljava/lang/Object;");
     Q_ASSERT(RetroTranslatorHelper.getEnumConstants);
+
+    RetroTranslatorHelper.isEnumType = env->GetStaticMethodID(RetroTranslatorHelper.class_ref, "isEnumType", "(Ljava/lang/Class;)Z");
+    Q_ASSERT(RetroTranslatorHelper.isEnumType);
+
+    RetroTranslatorHelper.enumOrdinal = env->GetStaticMethodID(RetroTranslatorHelper.class_ref, "enumOrdinal", "(Ljava/lang/Object;)I");
+    Q_ASSERT(RetroTranslatorHelper.enumOrdinal);
+}
+#else
+void StaticCache::resolveEnum_internal()
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    Q_ASSERT(!Enum.class_ref);
+
+    Enum.class_ref = ref_class(qtjambi_find_class(env, "java/lang/Enum"));
+    Q_ASSERT(Enum.class_ref);
+
+    Enum.ordinal = env->GetMethodID(Enum.class_ref, "ordinal", "()I");
+    Q_ASSERT(Enum.ordinal);
 }
 #endif
+
 

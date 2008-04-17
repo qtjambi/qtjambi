@@ -805,17 +805,28 @@ int QtJambiTypeManager::intForQtEnumerator(jobject enum_value) const
     if (mEnvironment->IsInstanceOf(enum_value, sc->QtEnumerator.class_ref)) {
         return mEnvironment->CallIntMethod(enum_value, sc->QtEnumerator.value);
     } else {
+#ifndef QTJAMBI_RETRO_JAVA
         sc->resolveEnum();
         return mEnvironment->CallIntMethod(enum_value, sc->Enum.ordinal);
+#else
+        sc->resolveRetroTranslatorHelper();
+        return mEnvironment->CallStaticIntMethod(sc->RetroTranslatorHelper.class_ref, sc->RetroTranslatorHelper.enumOrdinal, enum_value);
+#endif
     }
 }
 
 bool QtJambiTypeManager::isEnumType(jclass clazz) const
 {
     Q_ASSERT(clazz != 0);
+#ifndef QTJAMBI_RETRO_JAVA
     StaticCache *sc = StaticCache::instance();
     sc->resolveEnum();
     return mEnvironment->IsAssignableFrom(clazz, sc->Enum.class_ref);
+#else
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveRetroTranslatorHelper();
+    return mEnvironment->CallStaticBooleanMethod(sc->RetroTranslatorHelper.class_ref, sc->RetroTranslatorHelper.isEnumType, clazz);
+#endif
 }
 
 bool QtJambiTypeManager::isFlagsType(jclass clazz) const
