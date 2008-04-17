@@ -116,16 +116,21 @@ public class CustomWidgetManager {
                 try {
                     type = Class.forName(e.attribute("class"));
                 } catch (ClassNotFoundException f) {
-                    String classPathsProperty = System.getProperty("com.trolltech.qtjambi.internal.current.classpath");
-                    if (classPathsProperty != null) {
-                        String classpaths[] = classPathsProperty.split(";");
+                    try {
+                        String classPathsProperty = System.getProperty("com.trolltech.qtjambi.internal.current.classpath");
+                        if (classPathsProperty != null) {
+                            String classpaths[] = classPathsProperty.split(";");
 
-                        URL urls[] = new URL[classpaths.length];
-                        for (int j=0; j<classpaths.length; ++j)
-                            urls[j] = new URL(classpaths[j]);
+                            URL urls[] = new URL[classpaths.length];
+                            for (int j=0; j<classpaths.length; ++j)
+                                urls[j] = new URL(classpaths[j]);
 
-                        URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
-                        type = loader.loadClass(e.attribute("class"));
+                            URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
+                            type = loader.loadClass(e.attribute("class"));
+                        }
+                    } catch (ClassNotFoundException g) {
+                        // Never mind. Some classes, like QWebView are not present in
+                        // all configurations, so we have to silently ignore these exceptions
                     }
                 }
 
