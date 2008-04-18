@@ -13,6 +13,9 @@
 
 package com.trolltech.qt.internal;
 
+// !!NOTE!! This class can have no dependencies on Qt since
+// it is used by the NativeLibraryManager
+
 /**
  * The Version class contains the version number for the this version
  * of Qt Jambi as separate numbers and as a combined string.

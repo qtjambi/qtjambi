@@ -12,6 +12,9 @@ import org.xml.sax.helpers.*;
 
 import com.trolltech.qt.Utilities;
 
+// !!NOTE!! This class can have no dependencies on Qt since
+// it is required for loading the libraries.
+
 
 class DeploymentSpecException extends RuntimeException {
     private static final long serialVersionUID = 1L;
@@ -434,7 +437,7 @@ public class NativeLibraryManager {
             }
 
             if (libPaths != null) {
-                String paths[] = libPaths.split(File.pathSeparator);
+                String paths[] = RetroTranslatorHelper.split(libPaths, File.pathSeparator);
                 for (String path : paths) {
                     File f = new File(path, lib);
                     if (f.exists()) {

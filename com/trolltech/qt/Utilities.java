@@ -17,7 +17,10 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import com.trolltech.qt.internal.*;
+// !!NOTE!! This class can have no dependencies on Qt since
+//          it is used by the NativeLibraryManager
+import com.trolltech.qt.internal.RetroTranslatorHelper;
+import com.trolltech.qt.internal.Version;
 
 /**
 This class contains static members that gives information and performs Qt Jambi
@@ -134,7 +137,7 @@ public class Utilities {
         try {
             String envPath = System.getProperty(env);
             if (envPath != null) {
-                String envPaths[] = envPath.split(File.pathSeparator);
+                String envPaths[] = RetroTranslatorHelper.split(envPath, File.pathSeparator);
                 for (String path : envPaths) {
                     File f = new File(path, lib);
 

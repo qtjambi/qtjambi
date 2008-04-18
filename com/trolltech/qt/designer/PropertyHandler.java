@@ -15,6 +15,7 @@ package com.trolltech.qt.designer;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.internal.RetroTranslatorHelper;
 import com.trolltech.qt.xml.*;
 
 import java.lang.reflect.*;
@@ -258,7 +259,7 @@ class RectPropertyHandler extends PropertyHandler {
 class SetPropertyHandler extends PropertyHandler {
 
     public Object create(QDomElement e) throws QUiLoaderException {
-        String flagsValues[] = childStringValue(e).split("\\|");
+        String flagsValues[] = RetroTranslatorHelper.split(childStringValue(e), "|");
 
         Object enumsPreprocess[] = new Object[flagsValues.length];
         Class<?> enumClass = null;

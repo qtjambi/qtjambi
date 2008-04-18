@@ -22,7 +22,6 @@ import com.trolltech.qt.core.QIODevice;
 public class QClassPathEngine extends QAbstractFileEngine
 {
     public final static String FileNameDelim = "#";
-    public final static String FileNameDelimRegExp = "\\x23";
     public final static String FileNameIndicator = "classpath";
     public final static String FileNamePrefix = FileNameIndicator + ":";
 
@@ -89,7 +88,7 @@ public class QClassPathEngine extends QAbstractFileEngine
             throw new IllegalArgumentException("Invalid format of path: '" + fileName + "'");
         m_fileName = fileName.substring(FileNamePrefix.length());
 
-        String searchPath[] = m_fileName.split(FileNameDelimRegExp, 2);
+        String searchPath[] = RetroTranslatorHelper.split(m_fileName, "#", 2);
 
         m_selectedSource = "*";
         if (searchPath.length == 1) {
@@ -584,7 +583,8 @@ public class QClassPathEngine extends QAbstractFileEngine
                 e.printStackTrace();
             }
 
-            String paths[] = System.getProperty("java.class.path").split(File.pathSeparator);
+            String paths[] = RetroTranslatorHelper.split(System.getProperty("java.class.path"),
+                                                         File.pathSeparator);
 
             // Only add the .jar files that are not already added...
             int k=0;

@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Vector;
 
+import com.trolltech.qt.internal.RetroTranslatorHelper;
+
 public class QNoSuchSlotException extends ConnectionException {
     private static final long serialVersionUID = 1L;
     private Object reciver;
@@ -91,7 +93,7 @@ public class QNoSuchSlotException extends ConnectionException {
         if (strTypes.length() == 0)
             argumentTypes = new String[0];
         else
-            argumentTypes = strTypes.split(",");
+            argumentTypes = RetroTranslatorHelper.split(strTypes, ",");
 
         for (int i = 0; i < argumentTypes.length; ++i)
             argumentTypes[i] = argumentTypes[i].replace(" ", "");

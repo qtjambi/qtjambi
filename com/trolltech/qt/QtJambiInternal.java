@@ -16,6 +16,7 @@ package com.trolltech.qt;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.internal.MetaObjectTools;
 import com.trolltech.qt.internal.QClassPathEngine;
+import com.trolltech.qt.internal.RetroTranslatorHelper;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -249,7 +250,7 @@ public class QtJambiInternal {
         if (strTypes.length() == 0)
             argumentTypes = new String[0];
         else
-            argumentTypes = strTypes.split(",");
+            argumentTypes = RetroTranslatorHelper.split(strTypes, ",");
 
         for (int i = 0; i < argumentTypes.length; ++i)
             argumentTypes[i] = argumentTypes[i].replace(" ", "");
@@ -346,8 +347,10 @@ public class QtJambiInternal {
                                                + slot + "'");
         }
 
-        String signalArguments[] = signal.substring(signalIndex + 1, signal.length() - 1).split(",");
-        String slotArguments[] = slot.substring(slotIndex + 1, slot.length() - 1).split(",");
+        String substr = signal.substring(signalIndex + 1, signal.length() - 1);
+        String signalArguments[] = RetroTranslatorHelper.split(substr, ",");
+        substr = slot.substring(slotIndex + 1, slot.length() - 1);
+        String slotArguments[] = RetroTranslatorHelper.split(substr, ",");
 
         if (slotArguments.length > signalArguments.length)
             return false;
