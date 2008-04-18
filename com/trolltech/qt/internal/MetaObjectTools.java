@@ -539,7 +539,7 @@ public class MetaObjectTools {
             List<String> stringsInOrder = new ArrayList<String>();
             // Class name
             {
-                String className = clazz.getName().replaceAll("\\.", "::");
+                String className = clazz.getName().replace(".", "::");
                 stringsInOrder.add(className);
                 strings.put(clazz.getName(), offset); offset += className.length() + 1;
             }
