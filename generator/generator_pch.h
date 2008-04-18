@@ -20,6 +20,5 @@
 #include "metainfogenerator.h"
 #include "reporthandler.h"
 #include "metajavabuilder.h"
-#include "juicdatagenerator.h"
 #include "classlistgenerator.h"
 #include "qdocgenerator.h"
