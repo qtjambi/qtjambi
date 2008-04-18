@@ -650,7 +650,7 @@ public class MetaObjectTools {
                 String typeName = null;
                 if (isEnumOrFlags && t.getDeclaringClass() != null && QObject.class.isAssignableFrom(t.getDeclaringClass())) {
                     // To avoid using JObjectWrapper for enums and flags (which is required in certain cases.)
-                    typeName = t.getDeclaringClass().getName().replaceAll("\\.", "::") + "::" + t.getSimpleName();
+                    typeName = t.getDeclaringClass().getName().replace(".", "::") + "::" + t.getSimpleName();
                 } else {
                     typeName = internalTypeName(t.getName(), 0);
                 }
