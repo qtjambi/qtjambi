@@ -20,8 +20,6 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
-import java.util.concurrent.locks.*;
-
 interface QClassPathEntry {
     public String classPathEntryName();
 }
@@ -56,7 +54,7 @@ class JarCache {
 
 
     public static void reset(Set<String> jarFileList) {
-        lock.writeLock().lock();
+        lock.lockForWrite();
 
         cache = new HashMap<String, List<JarFile>>();
         classPathDirs = new ArrayList<String>();
@@ -121,13 +119,13 @@ class JarCache {
 //             }
 //         }
 
-        lock.writeLock().unlock();
+        lock.unlock();
     }
 
     public static List<JarFile> jarFiles(String entry) {
-        lock.readLock().lock();
+        lock.lockForRead();
         List<JarFile> files = cache.get(entry);
-        lock.readLock().unlock();
+        lock.unlock();
         return files;
     }
 
@@ -135,7 +133,7 @@ class JarCache {
         return classPathDirs;
     }
 
-    private static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static QReadWriteLock lock = new QReadWriteLock();
     private static HashMap<String, List<JarFile>> cache;
     private static List<String> classPathDirs;
 }
