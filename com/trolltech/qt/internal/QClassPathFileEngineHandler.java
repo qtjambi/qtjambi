@@ -102,12 +102,10 @@ class JarCache {
                 // Make sure all files are registered under the empty
                 // since all have roots
                 add("", file);
-            } catch (FileNotFoundException e) {
-
-                // Do nothing when the dir/jar file is not found
-
             } catch (Exception e) {
                 // Expected as directories will fail when doing openConnection.getJarFile()
+                // Note that ZipFile throws different types of run time exceptions on different
+                // platforms (ZipException on Linux and FileNotFoundException on Windows)
                 classPathDirs.add(jarFileName);
             }
         }
