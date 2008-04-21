@@ -1711,12 +1711,9 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
     }
 
     resolved_data->java_sender = sender_link->javaObject(jni_env);
-    if (resolved_data->java_sender == 0) {
-        QString object_name = data->sender->objectName();
-        qWarning("qtjambi_resolve_connection_data(): attempt to connect from finalized object '%s'",
-                 qPrintable(object_name));
+    if (resolved_data->java_sender == 0)
         return false;
-    }
+
 
     // Does the signal exist in C++? then we need to check if it's been renamed
     const QMetaObject *mo = qtjambi_find_first_static_metaobject(data->sender->metaObject());
