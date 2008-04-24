@@ -410,6 +410,10 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
             s << "#include <QPainter>" << endl << endl;
     }
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    s << "#include <qtjambidebugtools_p.h>" << endl << endl;
+#endif
+
     if (shellInclude)
         s << "#include \"qtjambishell_" << java_class->name() << ".h\"" << endl;
 
@@ -963,9 +967,13 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
         }
 
         s << INDENT << "    JNIEnv *__jni_env = qtjambi_current_environment();" << endl
-          << INDENT << "    if (__jni_env != 0) m_link->resetObject(__jni_env);" << endl
-          << INDENT << "}"
-          << endl;
+          << INDENT << "    if (__jni_env != 0) m_link->resetObject(__jni_env);" << endl;
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        s << INDENT << "    qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(\"" << java_class->name() << "\"));" << endl;
+#endif
+
+        s << INDENT << "}" << endl;
     }
     s << "}" << endl << endl;
 }
@@ -1717,29 +1725,32 @@ void CppImplGenerator::writeFieldAccessors(QTextStream &s, const AbstractMetaFie
 
 void CppImplGenerator::writeFinalDestructor(QTextStream &s, const AbstractMetaClass *cls)
 {
-  if (cls->hasConstructors()) {
-      s << INDENT << "static void qtjambi_destructor(void *ptr)" << endl
-    << INDENT << "{" << endl;
-
-      {
-    Indentation indent(INDENT);
-    if (!cls->isQObject() && !cls->generateShellClass()) {
-      s << INDENT << "QtJambiLink *link = QtJambiLink::findLinkForUserObject(ptr);" << endl
-            << INDENT << "if (link) link->resetObject(qtjambi_current_environment());" << endl;
-    }
-
-        // Code injectsions...
-        foreach (const CodeSnip &snip, cls->typeEntry()->codeSnips()) {
-            if (snip.language == TypeSystem::DestructorFunction) {
-                s << snip.code();
+    if (cls->hasConstructors()) {
+        s << INDENT << "static void qtjambi_destructor(void *ptr)" << endl
+          << INDENT << "{" << endl;
+        {
+            Indentation indent(INDENT);
+            if (!cls->isQObject() && !cls->generateShellClass()) {
+                s << INDENT << "QtJambiLink *link = QtJambiLink::findLinkForUserObject(ptr);" << endl
+                  << INDENT << "if (link) link->resetObject(qtjambi_current_environment());" << endl;
             }
+
+            // Code injectsions...
+            foreach (const CodeSnip &snip, cls->typeEntry()->codeSnips()) {
+                if (snip.language == TypeSystem::DestructorFunction) {
+                    s << snip.code();
+                }
+            }
+
+            s << INDENT << "delete (" << shellClassName(cls) << " *)ptr;" << endl;
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            s << INDENT << "qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(\"" << cls->name() << "\"));" << endl;
+#endif
         }
 
-    s << INDENT << "delete (" << shellClassName(cls) << " *)ptr;" << endl;
-      }
-
-      s << INDENT << "}" << endl << endl;
-  }
+        s << INDENT << "}" << endl << endl;
+    }
 }
 
 void CppImplGenerator::writeFinalConstructor(QTextStream &s,

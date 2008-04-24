@@ -463,15 +463,19 @@ void MetaInfoGenerator::writeDestructors(QTextStream &s, const AbstractMetaClass
 {
     // We can only delete classes with public destructors
     const AbstractMetaClass *clsWithPublicDestructor = lookupClassWithPublicDestructor(cls);
-    if(clsWithPublicDestructor != 0)
-    {
+    if(clsWithPublicDestructor != 0) {
         const ComplexTypeEntry *entry = cls->typeEntry();
         if ((entry->codeGeneration() & TypeEntry::GenerateCode) != 0) {
             s   << "void destructor_" << entry->javaPackage().replace(".", "_")  << "_"
                 << entry->lookupName().replace(".", "_").replace("$", "_") << "(void *ptr)" << endl
                 << "{" << endl
-                << "    delete reinterpret_cast<" << clsWithPublicDestructor->qualifiedCppName() << " *>(ptr);" << endl
-                << "}" << endl << endl;
+                << "    delete reinterpret_cast<" << clsWithPublicDestructor->qualifiedCppName() << " *>(ptr);" << endl;
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            s   << "    qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(\"" << cls->name() << "\"));" << endl;
+#endif
+
+            s   << "}" << endl << endl;
         }
     }
 }
@@ -614,6 +618,11 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const AbstractMet
     writeInclude(s, Include(Include::IncludePath, "QWriteLocker"));
     writeInclude(s, Include(Include::IncludePath, "qtjambi_cache.h"));
     writeInclude(s, Include(Include::IncludePath, "qtjambi_core.h"));
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    writeInclude(s, Include(Include::IncludePath, "qtjambidebugtools_p.h"));
+#endif
+
     s << endl;
 
     foreach (AbstractMetaClass *cls, classList) {

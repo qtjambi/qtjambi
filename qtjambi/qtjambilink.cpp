@@ -25,6 +25,11 @@
 #include <QWriteLocker>
 #include <QCoreApplication>
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+#  include "qtjambidebugtools_p.h"
+#  include <QStringList>
+#endif
+
 // #define DEBUG_REFCOUNTING
 
 typedef QHash<const void *, QtJambiLink *> LinkHash;
@@ -92,6 +97,11 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     link->m_global_ref = false;
     link->m_pointer = object;
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    link->m_className = QString::fromLatin1(object->metaObject()->className());
+    qtjambi_increase_linkConstructedCount(link->m_className);
+#endif
+
     // Fetch the user data id
     object->setUserData(user_data_id(), new QtJambiLinkUserData(link));
 
@@ -142,6 +152,11 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     link->m_global_ref = false;
     link->m_pointer = ptr;
     link->m_destructor_function = java_name.isEmpty() ? 0 : destructor(java_name);
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    link->m_className = java_name.split(".").last();
+    qtjambi_increase_linkConstructedCount(link->m_className);
+#endif
 
     // If the object is created by Java, then we have control over its destructor, which means
     // we can cache the pointer. Otherwise, we do not have any control over when the memory
@@ -234,6 +249,10 @@ QtJambiLink::~QtJambiLink()
     JNIEnv *env = qtjambi_current_environment();
     cleanUpAll(env);
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    qtjambi_increase_linkDestroyedCount(m_className);
+#endif
+
     if (deleteInMainThread())
         g_deleteLinkLock()->unlock();
 }
@@ -246,6 +265,11 @@ void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
         sc->resolveQtJambiObject();
         env->CallVoidMethod(m_java_object, sc->QtJambiObject.disposed);
         qtjambi_exception_check(env);
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        qtjambi_increase_objectInvalidatedCount(m_className);
+#endif
+
         env->SetLongField(m_java_object, sc->QtJambiObject.native_id, 0);
         if (m_in_cache)
             removeFromCache(env);
@@ -427,6 +451,11 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
     if (m_pointer) {
         setJavaOwnership(env, m_java_object);
         deleteNativeObject(env);
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        qtjambi_increase_disposeCalledCount(m_className);
+#endif
+
     }
 
     if (deleteInMainThread())
@@ -488,7 +517,7 @@ jmethodID QtJambiLink::findMethod(JNIEnv *env, jobject javaRef, const QString &m
     return id;
 }
 
-void QtJambiLink::removeFromCache(JNIEnv *env)
+void QtJambiLink::removeFromCache(JNIEnv *)
 {
     QWriteLocker locker(gUserObjectCacheLock());
     if (m_pointer != 0 && gUserObjectCache() && gUserObjectCache()->contains(m_pointer)) {
@@ -619,7 +648,11 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
         m_link->setAsQObjectDeleted();
         m_link->resetObject(env);
 
-    if (m_link->readyForDelete())
-        delete m_link;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        qtjambi_increase_userDataDestroyedCount(m_link->m_className);
+#endif
+
+        if (m_link->readyForDelete())
+            delete m_link;
     }
 }

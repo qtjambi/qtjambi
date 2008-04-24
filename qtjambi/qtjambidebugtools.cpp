@@ -6,11 +6,10 @@
 
 #include <QHash>
 
-
     // ---- TOOLS
     typedef QHash<QString, int> CountsForName;
 
-    static int sum_of(const CountsForName &countsForName) 
+    static int sum_of(const CountsForName &countsForName)
     {
         int sum = 0;
         foreach (int value, countsForName.values())
@@ -26,7 +25,7 @@
             countsForName[className] = 0;
     }
 
-    static int count(const CountsForName &countsForName, const QString &className) 
+    static int count(const CountsForName &countsForName, const QString &className)
     {
         if (className.isEmpty())
             return sum_of(countsForName);
@@ -70,13 +69,19 @@
     jstring className) \
     { \
         return qtjambi_##NAME(qtjambi_to_qstring(env, className)); \
-    } 
+    }
 
 
     // ---- IMPLEMENTATIONS
 
     COUNTER_IMPLEMENTATION(finalizedCount)
     COUNTER_IMPLEMENTATION(userDataDestroyedCount)
+    COUNTER_IMPLEMENTATION(destructorFunctionCalledCount)
+    COUNTER_IMPLEMENTATION(shellDestructorCalledCount)
+    COUNTER_IMPLEMENTATION(objectInvalidatedCount)
+    COUNTER_IMPLEMENTATION(disposeCalledCount)
+    COUNTER_IMPLEMENTATION(linkDestroyedCount)
+    COUNTER_IMPLEMENTATION(linkConstructedCount)
 
 #else // QTJAMBI_DEBUG_TOOLS
 #  error Don't include this file without QTJAMBI_DEBUG_TOOLS defined

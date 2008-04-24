@@ -31,6 +31,10 @@
 
 #include <QDebug>
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+#  include "qtjambidebugtools_p.h"
+#endif
+
 extern "C" JNIEXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_dispose)
     (JNIEnv *env, jobject java)
@@ -101,6 +105,13 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_finalize)
     (JNIEnv *env, jobject java)
 {
     Q_ASSERT(env != 0);
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    QString className = qtjambi_object_class_name(env, java).split(".").last();
+
+    // Count objects severed from their link as well
+    qtjambi_increase_finalizedCount(className);
+#endif
 
     if (QtJambiLink *link = QtJambiLink::findLink(env, java)) {
         link->javaObjectFinalized(env);

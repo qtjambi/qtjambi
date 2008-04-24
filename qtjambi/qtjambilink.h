@@ -211,6 +211,11 @@ private:
 
     uint m_ownership : 2;
     uint m_reserved2 : 30;
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+public:
+    QString m_className;
+#endif
 };
 
 inline jobject QtJambiLink::javaObject(JNIEnv *env) const
