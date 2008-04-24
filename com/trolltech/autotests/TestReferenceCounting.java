@@ -23,6 +23,7 @@ import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QSignalMapper;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt.KeyboardModifiers;
 import com.trolltech.qt.gui.*;
@@ -1594,4 +1595,61 @@ public class TestReferenceCounting extends QApplicationTest {
         w.show();
         assertEquals(0, deletedEngines);
     }
+
+    @Test
+    public void setItemDelegateForRowToNull() {
+        QAbstractItemView view = new QTableView();
+
+        boolean caughtException = false;
+        try {
+            view.setItemDelegateForRow(0, null);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+
+        assertFalse(caughtException);
+    }
+
+    @Test
+    public void setItemDelegateForColumnToNull() {
+        QAbstractItemView view = new QTableView();
+
+        boolean caughtException = false;
+        try {
+            view.setItemDelegateForColumn(0, null);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+
+        assertFalse(caughtException);
+    }
+
+    @Test
+    public void setWidgetMappingToNull() {
+        QGuiSignalMapper mapper = new QGuiSignalMapper();
+
+        boolean caughtException = false;
+        try {
+            mapper.setMapping(new QObject(), (QWidget) null);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+
+        assertFalse(caughtException);
+    }
+
+    @Test
+    public void setObjectMappingToNull() {
+        QSignalMapper mapper = new QSignalMapper();
+
+        boolean caughtException = false;
+        try {
+            mapper.setMapping(new QObject(), (QObject) null);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+
+        assertFalse(caughtException);
+    }
+
 }
