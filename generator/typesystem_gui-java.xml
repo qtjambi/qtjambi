@@ -1005,7 +1005,10 @@
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
                 <argument-map index="2" meta-name="%2"/>
-                __rcDelegatesForColumns.put(%1,%2);
+                if (%2 == null)
+                    __rcDelegatesForColumns.remove(%1);
+                else
+                    __rcDelegatesForColumns.put(%1,%2);
             </inject-code>
         </modify-function>
         <modify-function signature="setItemDelegateForRow(int,QAbstractItemDelegate*)">
@@ -1015,7 +1018,10 @@
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
                 <argument-map index="2" meta-name="%2"/>
-                __rcDelegatesForRows.put(%1,%2);
+                if (%2 == null) 
+                    __rcDelegatesForRows.remove(%1);
+                else
+                    __rcDelegatesForRows.put(%1,%2);
             </inject-code>
         </modify-function>
     </object-type>
@@ -2877,7 +2883,10 @@
                 <argument-map index="1" meta-name="%1"/>
                 <argument-map index="2" meta-name="%2"/>
                 java.util.Hashtable&lt;com.trolltech.qt.core.QObject, Object&gt; __rcWidgetForObject = (java.util.Hashtable&lt;com.trolltech.qt.core.QObject, Object&gt;) com.trolltech.qt.QtJambiInternal.fetchField(this, com.trolltech.qt.core.QSignalMapper.class, "__rcWidgetForObject");
-                __rcWidgetForObject.put(%1,%2);
+                if (%2 == null)
+                    __rcWidgetForObject.remove(%1);
+                else
+                    __rcWidgetForObject.put(%1,%2);
             </inject-code>
         </modify-function>
     </object-type>

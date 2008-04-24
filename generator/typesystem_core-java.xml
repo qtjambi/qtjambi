@@ -1358,7 +1358,10 @@
           <inject-code class="java" position="end">
               <argument-map index="1" meta-name="%1"/>
               <argument-map index="2" meta-name="%2"/>
-              __rcObjectForObject.put(%1,%2);
+              if (%2 == null)
+                __rcObjectForObject.remove(%1);
+              else
+                __rcObjectForObject.put(%1,%2);
           </inject-code>
       </modify-function>
 
