@@ -12,6 +12,7 @@ public class QMakeTask extends Task {
     private String pro = "";
 
     private boolean recursive = false;
+    private boolean debugTools = false;
 
     @Override
     public void execute() throws BuildException {
@@ -25,6 +26,9 @@ public class QMakeTask extends Task {
 
         if (recursive)
             arguments += " -r ";
+
+        if (debugTools)
+            arguments += " \"DEFINES += QTJAMBI_DEBUG_TOOLS\"";
 
         String command = "qmake" + arguments;
 
@@ -53,5 +57,9 @@ public class QMakeTask extends Task {
 
     public void setPro(String pro) {
         this.pro = pro;
+    }
+
+    public void setDebugTools(boolean debugTools) {
+        this.debugTools = debugTools;
     }
 }

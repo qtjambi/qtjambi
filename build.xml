@@ -83,13 +83,15 @@
     <qmake recursive="true"
                dir="${outputDir}"
                pro="${sourceDir}/java.pro"
-               config="${qtjambi.configuration}"/>
+               config="${qtjambi.configuration}"
+               debugTools="${qtjambi.debug-tools}"/>
 
         <!-- FIXME // Temporary put in here so we get teamtester to compile all files. -->
         <qmake recursive="true"
                dir="${outputDir}"
                pro="${sourceDir}/java.pro"
-               config="${qtjambi.configuration}"/>
+               config="${qtjambi.configuration}"
+               debugTools="${qtjambi.debug-tools}"/>
     </target>
 
     <target name="generator.qmake"
@@ -97,7 +99,8 @@
             description="Runs qmake on the generator project.">
     <qmake config="${qtjambi.configuration}"
                dir="${outputDir}/generator"
-               pro="${sourceDir}/generator/generator.pro"/>
+               pro="${sourceDir}/generator/generator.pro"
+               debugTools="${qtjambi.debug-tools}"/>
     </target>
 
     <target name="generator.compile"

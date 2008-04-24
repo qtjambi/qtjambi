@@ -438,6 +438,18 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandl
     new QClassPathFileEngineHandler;
 }
 
+extern "C" JNIEXPORT jboolean JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiDebugTools_hasDebugTools)
+(JNIEnv *,
+ jclass)
+{
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    return true;
+#else
+    return false;
+#endif
+}
+
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
 {
     JNIEnv *env = qtjambi_current_environment();

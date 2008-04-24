@@ -15,8 +15,8 @@ SOURCES += \
     qtjambitypemanager.cpp \
     qtobject.cpp \
     qvariant.cpp \
-        qtdynamicmetaobject.cpp \
-        qtjambivariant.cpp \
+    qtdynamicmetaobject.cpp \
+    qtjambivariant.cpp \
 
 
 HEADERS += \
@@ -27,9 +27,14 @@ HEADERS += \
     qtjambifunctiontable.h \
     qtjambilink.h \
     qtjambitypemanager_p.h \
-        qtjambidestructorevent_p.h \
-        qtdynamicmetaobject.h \
-        qtjambivariant_p.h \
+    qtjambidestructorevent_p.h \
+    qtdynamicmetaobject.h \
+    qtjambivariant_p.h \
+
+contains(DEFINES, QTJAMBI_DEBUG_TOOLS) {
+    SOURCES += qtjambidebugtools.cpp
+    HEADERS += qtjambidebugtools_p.h
+}
 
 DEFINES += QTJAMBI_EXPORT
 
