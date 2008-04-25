@@ -32,5 +32,6 @@
 #include "tulip.h"
 #include "variants.h"
 #include "general.h"
+#include "memorymanagement.h"
 
 #endif

@@ -19,7 +19,8 @@ HEADERS += \
     testdialog.h \
     tulip.h \
     variants.h \
-        general.h \
+    general.h \
+    memorymanagement.h \
 
 
 SOURCES += \
@@ -27,6 +28,7 @@ SOURCES += \
     global.cpp \
     injectedcode.cpp \
     testdialog.cpp \
+    memorymanagement.cpp \
 
 
 QT += sql xml network

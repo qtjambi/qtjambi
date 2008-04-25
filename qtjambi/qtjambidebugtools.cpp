@@ -56,7 +56,7 @@
     } \
     \
     extern "C" JNIEXPORT void JNICALL \
-    QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiDebugTools_reset_##NAME ) \
+    QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiDebugTools_reset_1##NAME ) \
     (JNIEnv *env, \
     jclass, \
     jstring className)\

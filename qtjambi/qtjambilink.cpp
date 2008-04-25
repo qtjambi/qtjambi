@@ -154,7 +154,7 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     link->m_destructor_function = java_name.isEmpty() ? 0 : destructor(java_name);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
-    link->m_className = java_name.split(".").last();
+    link->m_className = java_name.split("/").last();
     qtjambi_increase_linkConstructedCount(link->m_className);
 #endif
 

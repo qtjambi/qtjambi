@@ -200,5 +200,6 @@
   <object-type name="QSet_int" />
   <object-type name="QStack_int" />
   <object-type name="QVector_int" />
+  <object-type name="PolymorphicObjectType" />
 
 </typesystem>
