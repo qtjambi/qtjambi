@@ -81,7 +81,7 @@ public class RetroTranslatorHelper {
                     ++pos;
             }
 
-        } while (nextPos >= 0 && pos < string.length());
+        } while (nextPos >= 0 && pos <= string.length());
 
         // No trailing empty elements if limit==0
         if (limit == 0 && parts.peek().length() == 0)
