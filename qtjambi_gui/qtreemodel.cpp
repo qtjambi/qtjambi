@@ -183,6 +183,13 @@ int QTreeModel::columnCount(const QModelIndex &) const
 QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
 {
     Node *parentNode = node(parent);
+
+    // abstract item view may decide to ask for index(0, 0) even
+    // though it doesn't exist, as part of its sanity checking...
+    if (parentNode->nodes.size() == 0) {
+        return QModelIndex();
+    }
+
     QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
     if (!parentNode->isChildrenQueried())
         queryChildren(parentNode);
