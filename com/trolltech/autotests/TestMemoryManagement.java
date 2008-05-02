@@ -189,4 +189,206 @@ public class TestMemoryManagement {
 
         test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 1, 0);
     }
+
+    @Test
+    public void dispose_PolymorphicObject_CreatedInJava_CppOwnership() {
+        resetAll();
+
+        {
+            PolymorphicObjectType pot = new PolymorphicObjectType();
+            pot.disableGarbageCollection();
+            pot.dispose();
+
+            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 1, 0);
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 1, 0);
+    }
+
+    @Test
+    public void dispose_PolymorphicObject_NotCreatedInJava_SplitOwnership() {
+        resetAll();
+
+        {
+            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
+            pot.dispose();
+
+            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 0, 0);
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 0, 0);
+    }
+
+    @Test
+    public void dispose_PolymorphicObject_NotCreatedInJava_JavaOwnership() {
+        resetAll();
+
+        {
+            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
+            pot.setJavaOwnership();
+            pot.dispose();
+
+            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 0, 0);
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 0, 0);
+    }
+
+    @Test
+    public void dispose_PolymorphicObject_NotCreatedInJava_CppOwnership() {
+        resetAll();
+
+        {
+            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
+            pot.disableGarbageCollection();
+            pot.dispose();
+
+            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 0, 0);
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 0, 0);
+    }
+
+    @Test
+    public void nativeDelete_PolymorphicObject_CreatedInJava_CppOwnership() {
+        resetAll();
+
+        {
+            PolymorphicObjectType pot = new PolymorphicObjectType();
+            pot.disableGarbageCollection();
+
+            PolymorphicObjectType.deleteLastInstance();
+            assertEquals(0, pot.nativeId());
+            test("PolymorphicObjectType", 0, 0, 0, 1, 1, 1, 1, 0);
+
+        }
+
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test("PolymorphicObjectType", 1, 0, 0, 1, 1, 1, 1, 0);
+    }
+
+    @Test
+    public void nativeDelete_PolymorphicObject_NotCreatedInJava_CppOwnership() {
+        resetAll();
+
+        {
+            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
+
+            // If the object is not created in Java and not a QObject, we
+            // have no way of knowing when it is deleted, so we need to
+            // sever our ties immediately when disableGC is called. The
+            // reason is that disable-gc in this case means c++ may try
+            // to delete the object at any given time and will fail to alert
+            // us about it, so we can get dangling pointers in our jambilink.
+            pot.disableGarbageCollection();
+            assertEquals(0, pot.nativeId());
+            test("PolymorphicObjectType", 0, 0, 0, 1, 1, 1, 0, 0);
+
+            PolymorphicObjectType.deleteLastInstance();
+            test("PolymorphicObjectType", 0, 0, 0, 1, 1, 1, 0, 0);
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test("PolymorphicObjectType", 1, 0, 0, 1, 1, 1, 0, 0);
+    }
+
+    @Test
+    public void nativeDelete_PolymorphicObject_NotCreatedInJava_SplitOwnership() {
+        resetAll();
+
+        {
+            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
+
+            PolymorphicObjectType.deleteLastInstance();
+            assertEquals(0, pot.nativeId());
+            test("PolymorphicObjectType", 0, 0, 0, 1, 0, 0, 0, 0);
+
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test("PolymorphicObjectType", 1, 0, 0, 1, 1, 1, 0, 0);
+    }
+
 }
