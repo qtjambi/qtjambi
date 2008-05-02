@@ -28,7 +28,7 @@ public class QMakeTask extends Task {
             arguments += " -r ";
 
         if (debugTools)
-            arguments += " \"DEFINES += QTJAMBI_DEBUG_TOOLS\"";
+            arguments += " DEFINES+=QTJAMBI_DEBUG_TOOLS";
 
         String command = "qmake" + arguments;
 
