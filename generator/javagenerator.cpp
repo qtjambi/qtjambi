@@ -14,6 +14,7 @@
 #include "javagenerator.h"
 #include "reporthandler.h"
 #include "docparser.h"
+#include "jumptable.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QTextStream>
@@ -566,11 +567,38 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
         }
     }
 
-    if (attributes & SuperCall) {
-        s << "super.";
-    }
+    bool useJumpTable = java_function->jumpTableId() != -1;
+    if (useJumpTable) {
+        // The native function returns the correct type, we only have
+        // java.lang.Object so we may have to cast...
+        QString signature = JumpTablePreprocessor::signature(java_function);
 
-    s << java_function->marshalledName() << "(";
+//         printf("return: %s::%s return=%p, replaced=%s, signature: %s\n",
+//                qPrintable(java_function->implementingClass()->name()),
+//                qPrintable(java_function->signature()),
+//                return_type,
+//                qPrintable(java_function->argumentReplaced(0)),
+//                qPrintable(signature));
+
+        if (return_type && java_function->argumentReplaced(0).isEmpty() && signature.at(0) == 'L') {
+            s << "(" << translateType(return_type, java_function->implementingClass()) << ") ";
+        }
+
+        s << "JTbl." << JumpTablePreprocessor::signature(java_function) << "("
+          << java_function->jumpTableId() << ", ";
+
+        // Constructors and static functions don't have native id, but
+        // the functions expect them anyway, hence add '0'. Normal
+        // functions get their native ids added just below...
+        if (java_function->isConstructor() || java_function->isStatic())
+            s << "0, ";
+
+    } else {
+        if (attributes & SuperCall) {
+            s << "super.";
+        }
+        s << java_function->marshalledName() << "(";
+    }
 
     if (!java_function->isConstructor() && !java_function->isStatic())
         s << "nativeId()";
@@ -598,12 +626,23 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
             }
         }
     }
+
+    if (useJumpTable) {
+        if ((!java_function->isConstructor() && !java_function->isStatic()) || arguments.size() > 0)
+            s << ", ";
+
+        if (java_function->isStatic())
+            s << "null";
+        else
+            s << "this";
+    }
+
     s << ")";
 
     if ( !java_function->argumentReplaced(0).isEmpty() ) {
-    s << ";" << endl;
-    s << INDENT << "return " << java_function->argumentReplaced(0) << ";" << endl;
-    return;
+        s << ";" << endl;
+        s << INDENT << "return " << java_function->argumentReplaced(0) << ";" << endl;
+        return;
     }
 
     if (return_type && (return_type->isTargetLangEnum() || return_type->isTargetLangFlags()))
@@ -855,7 +894,9 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
         writeFunctionOverloads(s, java_function, included_attributes, excluded_attributes);
     }
 
-    if (QRegExp("^(insert|set|take|add|remove|install).*").exactMatch(java_function->name())) {
+    static QRegExp regExp("^(insert|set|take|add|remove|install).*");
+
+    if (regExp.exactMatch(java_function->name())) {
         AbstractMetaArgumentList arguments = java_function->arguments();
 
         const AbstractMetaClass *c = java_function->implementingClass();
@@ -916,7 +957,11 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
             }
             s << INDENT << "}" << endl;
         }
-        writePrivateNativeFunction(s, java_function);
+
+
+        if (java_function->jumpTableId() == -1) {
+            writePrivateNativeFunction(s, java_function);
+        }
     } else {
         s << ";" << endl;
     }
