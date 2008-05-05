@@ -4,11 +4,15 @@ url                     = .
 
 quotinginformation      = true
 
-indexes                 = qtjambi_qt.index
+indexes                 = $QTDIR/qt.index
 
 outputdir               = ../html
-sourcedirs              = ../src \
-                          ../src/snippets
+sourcedirs              = ../src
+                          
+excludedirs             = ../src/snippets \
+                          ../src/code \
+                          ../src/tainted
+
 sources.fileextensions  = "*.java *.qdoc"
 
 outputformats           = WebXML
