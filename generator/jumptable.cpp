@@ -105,8 +105,6 @@ void JumpTablePreprocessor::process(AbstractMetaClass *cls)
 
     QString package = cls->package();
 
-    printf("package=%s, class=%s\n", qPrintable(package), qPrintable(cls->name()));
-
     if (!m_table.contains(package))
         m_table[package] = SignatureTable();
 
