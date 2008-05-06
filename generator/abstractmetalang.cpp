@@ -13,6 +13,7 @@
 
 #include "abstractmetalang.h"
 #include "reporthandler.h"
+#include "jumptable.h"
 
 /*******************************************************************************
  * AbstractMetaType
@@ -135,6 +136,9 @@ bool AbstractMetaFunction::isModifiedRemoved(int types) const
 
 bool AbstractMetaFunction::needsCallThrough() const
 {
+    if (JumpTableGenerator::isJumpTableActive())
+        return true;
+
     if (ownerClass()->isInterface())
         return false;
     if (referenceCounts(implementingClass()).size() > 0)

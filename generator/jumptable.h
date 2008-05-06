@@ -33,20 +33,20 @@ class JumpTableGenerator : public Generator
 {
     Q_OBJECT
 public:
-    JumpTableGenerator(JumpTablePreprocessor *pp, PriGenerator *pri)
-        : m_preprocessor(pp),
-          m_prigenerator(pri)
-    {
-    }
+    JumpTableGenerator(JumpTablePreprocessor *pp, PriGenerator *pri);
 
     void generate();
     void generatePackage(const QString &packageName, const SignatureTable &table);
     void generateNativeTable(const QString &packageName, const SignatureTable &table);
     void generateJavaTable(const QString &packageName, const SignatureTable &table);
 
+    static bool isJumpTableActive();
+
 private:
     JumpTablePreprocessor *m_preprocessor;
     PriGenerator *m_prigenerator;
+
+    static bool active;
 };
 
 #endif

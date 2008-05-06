@@ -1960,7 +1960,8 @@ void JavaGenerator::writeConstructorContents(QTextStream &s, const AbstractMetaF
     s << INDENT << "}" << endl << endl;
 
     // Write native constructor
-    writePrivateNativeFunction(s, java_function);
+    if (java_function->jumpTableId() == -1)
+        writePrivateNativeFunction(s, java_function);
 }
 
 void JavaGenerator::writeFunctionArguments(QTextStream &s, const AbstractMetaFunction *java_function,

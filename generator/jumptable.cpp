@@ -8,6 +8,8 @@ static QHash<QString, QString> shortNames;
 static QHash<char, QString> expandNamesJNI;
 static QHash<char, QString> expandNamesJava;
 
+bool JumpTableGenerator::active = false;
+
 static QString simplifyName(const QString &name, const QString &context, const QString &funcName)
 {
     if (shortNames.size() == 0) {
@@ -159,11 +161,30 @@ void JumpTablePreprocessor::process(AbstractMetaFunction *func, SignatureTable *
     if (!func->needsCallThrough())
         return;
 
+
+    if (func->jumpTableId() >= 0) {
+//         printf("%s::%s already has an ID=%d, for declaring=%s, owner=%s\n",
+//                qPrintable(func->implementingClass()->name()),
+//                qPrintable(func->signature()),
+//                func->jumpTableId(),
+//                qPrintable(func->declaringClass()->name()),
+//                qPrintable(func->ownerClass()->name()));
+        return;
+    }
+
     QString sig = signature(func);
 
     AbstractMetaFunctionList &list = (*table)[sig];
     list.append(func);
     func->setJumpTableId(list.size());
+}
+
+
+JumpTableGenerator::JumpTableGenerator(JumpTablePreprocessor *pp, PriGenerator *pri)
+    : m_preprocessor(pp),
+      m_prigenerator(pri)
+{
+    active = true;
 }
 
 
@@ -301,4 +322,8 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
 
         s << "} // " << signature << endl;
     }
+}
+
+bool JumpTableGenerator::isJumpTableActive() {
+    return active;
 }
