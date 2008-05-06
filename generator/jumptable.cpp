@@ -95,7 +95,7 @@ void JumpTablePreprocessor::generate()
 void JumpTablePreprocessor::process(AbstractMetaClass *cls)
 {
     // Skip generate=no classes, such as QFutureIterator
-    if (cls->typeEntry()->codeGeneration() != TypeEntry::GenerateAll) {
+    if (cls->typeEntry()->codeGeneration() != TypeEntry::GenerateAll || cls->isInterface()) {
 //         printf("skipping class: %s, generation is : %x vs %x\n",
 //                qPrintable(cls->name()),
 //                cls->typeEntry()->codeGeneration(),
@@ -275,6 +275,7 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
         s << ", jobject __this)" << endl
           << "{" << endl
           << "Q_UNUSED(__this);" << endl
+          << "Q_UNUSED(nid);" << endl
           << "switch (id) { " << endl;
 
         AbstractMetaFunctionList functions = sit.value();
@@ -297,12 +298,9 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
 
             s << "(e";
 
-            if (f->isStatic()) {
-                printf("static function: %s::%s\n",
-                       qPrintable(f->implementingClass()->name()),
-                       qPrintable(f->signature()));
+            if (f->isStatic())
                 s << ", 0";
-            } else if (f->isConstructor())
+            else if (f->isConstructor())
                 s << ", __this";
             else
                 s << ", __this, nid";
