@@ -95,7 +95,7 @@ void JumpTablePreprocessor::generate()
 void JumpTablePreprocessor::process(AbstractMetaClass *cls)
 {
     // Skip generate=no classes, such as QFutureIterator
-    if (cls->typeEntry()->codeGeneration() != TypeEntry::GenerateAll || cls->isInterface()) {
+    if (cls->typeEntry()->codeGeneration() != TypeEntry::GenerateAll) {
 //         printf("skipping class: %s, generation is : %x vs %x\n",
 //                qPrintable(cls->name()),
 //                cls->typeEntry()->codeGeneration(),
@@ -104,6 +104,8 @@ void JumpTablePreprocessor::process(AbstractMetaClass *cls)
     }
 
     QString package = cls->package();
+
+    printf("package=%s, class=%s\n", qPrintable(package), qPrintable(cls->name()));
 
     if (!m_table.contains(package))
         m_table[package] = SignatureTable();
@@ -282,11 +284,12 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
         bool hasReturn = signature.at(0) != 'V';
 
         foreach (AbstractMetaFunction *f, functions) {
+            const AbstractMetaClass *cls = f->ownerClass();
             s << endl
-              << "// " << f->implementingClass()->name() << "::" << f->signature() << endl
+              << "// " << cls->name() << "::" << f->signature() << ", declaring=" << f->declaringClass()->name() << ", implementing=" << f->implementingClass()->name() << endl
               << "case " << f->jumpTableId() << ":" << endl
               << "extern ";
-            CppImplGenerator::writeFunctionName(s, f, f->implementingClass(), CppImplGenerator::ReturnType);
+            CppImplGenerator::writeFunctionName(s, f, cls, CppImplGenerator::ReturnType);
             s << endl;
             CppImplGenerator::writeFinalFunctionArguments(s, f, "object");
             s << ";" << endl;
@@ -294,7 +297,7 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
             if (hasReturn && !f->isConstructor())
                 s << "return ";
 
-            CppImplGenerator::writeFunctionName(s, f, f->implementingClass(), 0);
+            CppImplGenerator::writeFunctionName(s, f, cls, 0);
 
             s << "(e";
 

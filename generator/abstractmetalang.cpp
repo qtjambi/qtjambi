@@ -136,14 +136,13 @@ bool AbstractMetaFunction::isModifiedRemoved(int types) const
 
 bool AbstractMetaFunction::needsCallThrough() const
 {
-    if (JumpTableGenerator::isJumpTableActive())
-        return true;
-
     if (ownerClass()->isInterface())
         return false;
     if (referenceCounts(implementingClass()).size() > 0)
         return true;
     if (argumentsHaveNativeId() || !isStatic())
+        return true;
+    if (JumpTableGenerator::isJumpTableActive())
         return true;
 
     foreach (const AbstractMetaArgument *arg, arguments()) {
