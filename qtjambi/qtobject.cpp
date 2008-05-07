@@ -35,7 +35,7 @@
 #  include "qtjambidebugtools_p.h"
 #endif
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_dispose)
     (JNIEnv *env, jobject java)
 {
@@ -45,7 +45,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_dispose)
     }
 }
 
-extern "C" JNIEXPORT jobject JNICALL
+extern "C" Q_DECL_EXPORT jobject JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_nativePointer)
     (JNIEnv *env, jobject javaRef)
 {
@@ -57,7 +57,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_nativePointer)
         return 0;
 }
 
-extern "C" JNIEXPORT jobject JNICALL
+extern "C" Q_DECL_EXPORT jobject JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject__1_1qt_1reassignLink)
     (JNIEnv *env, jclass, jlong old_native_id, jclass clazz, jobject constructor)
 {
@@ -100,7 +100,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject__1_1qt_1reassignLink
     return new_object;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_finalize)
     (JNIEnv *env, jobject java)
 {
@@ -118,7 +118,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_finalize)
     }
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_disableGarbageCollection)
     (JNIEnv *env, jobject object)
 {
@@ -127,7 +127,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_disableGarbageCollec
     }
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_reenableGarbageCollection)
     (JNIEnv *env, jobject object)
 {
@@ -136,7 +136,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_reenableGarbageColle
     }
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_setJavaOwnership)
     (JNIEnv *env, jobject object)
 {

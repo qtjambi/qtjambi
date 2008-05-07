@@ -264,7 +264,7 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
         QString ret = expandNameJNI(signature.at(0));
 
         s << endl << endl
-          << "extern \"C\" JNIEXPORT " << ret << " JNICALL QTJAMBI_FUNCTION_PREFIX(Java_"
+          << "extern \"C\" Q_DECL_EXPORT " << ret << " JNICALL QTJAMBI_FUNCTION_PREFIX(Java_"
           << QString(packageName).replace("_", "_1").replace(".", "_") << "_JTbl_" << signature << ")" << endl
           << "(JNIEnv *e, jclass, jint id, jlong nid";
 

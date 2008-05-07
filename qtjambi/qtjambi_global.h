@@ -36,6 +36,18 @@
 #    undef QTJAMBI_EXPORT
 #    define QTJAMBI_EXPORT __declspec(dllexport)
 #  endif
+#elif defined (QT_VISIBILITY_AVAILABLE)
+#  if !defined(QTJAMBI_EXPORT) && !defined(QT_QTJAMBI_IMPORT)
+#    define QTJAMBI_EXPORT
+#  elif defined(QT_QTJAMBI_IMPORT)
+#    if defined(QTJAMBI_EXPORT)
+#      undef QTJAMBI_EXPORT
+#    endif
+#    define QTJAMBI_EXPORT
+#  elif defined(QTJAMBI_EXPORT)
+#    undef QTJAMBI_EXPORT
+#    define QTJAMBI_EXPORT __attribute__((visibility("default")))
+#  endif
 #else
 # if defined(QTJAMBI_EXPORT)
 #   undef QTJAMBI_EXPORT

@@ -34,7 +34,7 @@
 #include <QtCore/QBitArray>
 #include <QtCore/QByteArray>
 
-extern "C" JNIEXPORT jobject JNICALL
+extern "C" Q_DECL_EXPORT jobject JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1convert)
     (JNIEnv *env, jclass, jint type, jobject object)
 {
@@ -45,7 +45,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1convert)
         return 0;
 }
 
-extern "C" JNIEXPORT jboolean JNICALL
+extern "C" Q_DECL_EXPORT jboolean JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1canConvert)
     (JNIEnv *env, jclass, jobject obj, jint type)
 {
@@ -64,7 +64,7 @@ static inline void setOk(JNIEnv *env, jobjectArray ok, bool isOk)
     }
 }
 
-extern "C" JNIEXPORT jdouble JNICALL
+extern "C" Q_DECL_EXPORT jdouble JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toDouble)
     (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
@@ -75,7 +75,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toDouble)
     return returned;
 }
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toInt)
     (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
@@ -86,7 +86,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toInt)
     return returned;
 }
 
-extern "C" JNIEXPORT jlong JNICALL
+extern "C" Q_DECL_EXPORT jlong JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toLong)
     (JNIEnv *env, jclass, jobject object, jobjectArray ok)
 {
@@ -97,7 +97,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toLong)
     return returned;
 }
 
-extern "C" JNIEXPORT jobject JNICALL
+extern "C" Q_DECL_EXPORT jobject JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toString)
     (JNIEnv *env, jclass, jobject object)
 {
@@ -105,7 +105,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toString)
     return qtjambi_from_qstring(env, v.toString());
 }
 
-extern "C" JNIEXPORT jboolean JNICALL
+extern "C" Q_DECL_EXPORT jboolean JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toBoolean)
     (JNIEnv *env, jclass, jobject object)
 {
@@ -113,7 +113,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toBoolean)
     return v.toBool();
 }
 
-extern "C" JNIEXPORT jchar JNICALL
+extern "C" Q_DECL_EXPORT jchar JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QVariant__1_1qt_1toChar)
     (JNIEnv *env, jclass, jobject object)
 {

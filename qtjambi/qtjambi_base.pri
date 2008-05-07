@@ -24,7 +24,6 @@ macx:{
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
     QMAKE_MACOSX_DEPLOYMENT_TARGET=10.4
-    QMAKE_LFLAGS += -Wl,-x
 } else {
     INCLUDEPATH += $$(JAVADIR)/include
     win32 {
@@ -59,3 +58,10 @@ macx{
 # gcc reports some functions as unused when they are not.
 linux-g++:QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
 
+# Extra options to be set when using jump tables...
+jumptable{
+    CONFIG += hide_symbols
+
+    # Tell the linker to strip the binaries..
+    macx:QMAKE_LFLAGS += -Wl,-x
+}

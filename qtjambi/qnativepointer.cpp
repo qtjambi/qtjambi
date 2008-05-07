@@ -21,70 +21,70 @@
  * Read functions
  */
 
-extern "C" JNIEXPORT jboolean JNICALL
+extern "C" Q_DECL_EXPORT jboolean JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readBoolean)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<bool *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jbyte JNICALL
+extern "C" Q_DECL_EXPORT jbyte JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readByte)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<qint8 *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jchar JNICALL
+extern "C" Q_DECL_EXPORT jchar JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readChar)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<quint16 *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jshort JNICALL
+extern "C" Q_DECL_EXPORT jshort JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readShort)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<qint16 *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readInt)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<qint32 *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jlong JNICALL
+extern "C" Q_DECL_EXPORT jlong JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readLong)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<qint64 *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jfloat JNICALL
+extern "C" Q_DECL_EXPORT jfloat JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readFloat)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<float *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jdouble JNICALL
+extern "C" Q_DECL_EXPORT jdouble JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readDouble)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return (reinterpret_cast<double *>(ptr))[pos];
 }
 
-extern "C" JNIEXPORT jlong JNICALL
+extern "C" Q_DECL_EXPORT jlong JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readPointer)
   (JNIEnv *, jclass, jlong ptr, jint pos)
 {
     return reinterpret_cast<jlong>((reinterpret_cast<void **>(ptr))[pos]);
 }
 
-extern "C" JNIEXPORT jstring JNICALL
+extern "C" Q_DECL_EXPORT jstring JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readString)
   (JNIEnv *env, jclass, jlong ptr, jint pos)
 {
@@ -95,69 +95,69 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_readString)
  * Write functions
  */
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeBoolean)
   (JNIEnv *, jclass, jlong ptr, jint pos, jboolean value)
 {
     ((reinterpret_cast<bool *>(ptr))[pos]) = value;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeByte)
   (JNIEnv *, jclass, jlong ptr, jint pos, jbyte value)
 {
     (((reinterpret_cast<qint8 *>(ptr)))[pos]) = value;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeChar)
   (JNIEnv *, jclass, jlong ptr, jint pos, jchar value)
 {
     (((reinterpret_cast<quint16 *>(ptr)))[pos]) = value;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeShort)
   (JNIEnv *, jclass, jlong ptr, jint pos, jshort value)
 {
     (((reinterpret_cast<qint16 *>(ptr)))[pos]) = value;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeInt)
   (JNIEnv *, jclass, jlong ptr, jint pos, jint value)
 {
     (((reinterpret_cast<qint32 *>(ptr)))[pos]) = value;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeLong)
   (JNIEnv *, jclass, jlong ptr, jint pos, jlong value)
 {
     (((reinterpret_cast<qint64 *>(ptr)))[pos]) = value;
 }
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeFloat)
   (JNIEnv *, jclass, jlong ptr, jint pos, jfloat value)
 {
     (((reinterpret_cast<float *>(ptr)))[pos]) = value;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeDouble)
   (JNIEnv *, jclass, jlong ptr, jint pos, jdouble value)
 {
     (((reinterpret_cast<double *>(ptr)))[pos]) = value;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writePointer)
   (JNIEnv *, jclass, jlong ptr, jint pos, jlong value)
 {
     (reinterpret_cast<void **>(ptr))[pos] = reinterpret_cast<void *>(value);
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeString)
   (JNIEnv *env, jclass, jlong ptr, jint pos, jstring value)
 {
@@ -170,7 +170,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_writeString)
  */
 
 
-extern "C" JNIEXPORT jlong JNICALL
+extern "C" Q_DECL_EXPORT jlong JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_createPointer)
   (JNIEnv *, jobject, jint type, jint size, jint indirections)
 {
@@ -211,7 +211,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_createPointer)
     return 0;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QNativePointer_deletePointer)
   (JNIEnv *, jobject, jlong ptr, jint type, jint deleteMode)
 {

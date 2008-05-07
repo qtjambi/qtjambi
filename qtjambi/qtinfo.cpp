@@ -13,19 +13,19 @@
 
 #include "qtjambi_core.h"
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtInfo_majorVersion(JNIEnv *, jclass))
 {
     return (QT_VERSION & 0x00ff0000) >> 16;
 }
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtInfo_minorVersion(JNIEnv *, jclass))
 {
     return (QT_VERSION & 0x0000ff00) >> 8;
 }
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtInfo_patchVersion(JNIEnv *, jclass))
 {
     return (QT_VERSION & 0x000000ff);

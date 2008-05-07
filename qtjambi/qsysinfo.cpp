@@ -43,7 +43,7 @@
 #define QTJAMBI_OS_WIN32        27
 #define QTJAMBI_OS_WIN64        28
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QSysInfo_windowsVersion(JNIEnv *, jclass))
 {
     return
@@ -54,7 +54,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QSysInfo_windowsVersion(JNIEnv *, 
 #endif
 }
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QSysInfo_macVersion(JNIEnv *, jclass))
 {
     return
@@ -65,7 +65,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QSysInfo_macVersion(JNIEnv *, jcla
 #endif
 }
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QSysInfo_operatingSystem(JNIEnv *, jclass))
 {
 #if defined(Q_OS_AIX)
