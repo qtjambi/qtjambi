@@ -9,6 +9,9 @@
 
     <property name="jambiLib" value="${outputDir}/lib" />
 
+    <property name="qtjambi.config.jumptable" value=""/>
+    <property name="qtjambi.generator.jumptable" value=""/>
+
     <target name="help"
             description="Provides detailed help.">
     <echo>To build Qt Jambi, run ant without parameters.</echo>
