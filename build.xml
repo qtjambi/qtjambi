@@ -18,7 +18,7 @@
     <echo>Available build properties:</echo>
     <echo>    -Dqtjambi.config=debug|release    Decide what native libraries</echo>
     <echo>                                      should be included.</echo>
-    <echo>    -Dqtjambi.useJumpTable            Use jump tables for native functions (experimental)</echo>
+    <echo>    -Dqtjambi.useJumpTable=true       Use jump tables for native functions (experimental)</echo>
     <echo/>
     <echo>You can also see the Qt Jambi intallation document at:</echo>
     <echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
