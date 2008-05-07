@@ -6,7 +6,7 @@ public class SetObjectName {
     public static void main(String args[]) {
 
         int runningTime = 8000;
-        int timesPerRound = 1000000;
+        int timesPerRound = 100;
 
         {
             QTime t = new QTime();
