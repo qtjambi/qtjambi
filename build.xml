@@ -9,22 +9,19 @@
 
     <property name="jambiLib" value="${outputDir}/lib" />
 
-    <property name="qtjambi.config.jumptable" value=""/>
-    <property name="qtjambi.generator.jumptable" value=""/>
-
     <target name="help"
             description="Provides detailed help.">
-    <echo>To build Qt Jambi, run ant without parameters.</echo>
-    <echo></echo>
-        <echo>To get a description of all tasks run: ant -projecthelp</echo>
-    <echo/>
-    <echo>Available build properties:</echo>
-    <echo>    -Dqtjambi.config=debug|release    Decide what native libraries</echo>
-    <echo>                                      should be included.</echo>
-    <echo>    -Dqtjambi.useJumpTable=true       Use jump tables for native functions (experimental)</echo>
-    <echo/>
-    <echo>You can also see the Qt Jambi intallation document at:</echo>
-    <echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
+      <echo>To build Qt Jambi, run ant without parameters.</echo>
+      <echo></echo>
+      <echo>To get a description of all tasks run: ant -projecthelp</echo>
+      <echo/>
+      <echo>Available build properties:</echo>
+      <echo>    -Dqtjambi.config=debug|release    Decide what native libraries</echo>
+      <echo>                                      should be included.</echo>
+      <echo>    -Dqtjambi.useJumpTable=true       Use jump tables for native functions (experimental)</echo>
+      <echo/>
+      <echo>You can also see the Qt Jambi intallation document at:</echo>
+      <echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
     </target>
 
     <uptodate property="ant-qtjambi.jar.uptodate"
@@ -48,15 +45,22 @@
         <delete dir="${outputDir}/ant-qtjambi"/>
     </target>
 
-    <target name="init.jumptable"
+    <target name="init.jumptable.do"
 	    description="Initialize the jump table..." if="qtjambi.useJumpTable">
       <echo>Using Native Jump Table. Please note that this feature is experimental...</echo>
       <property name="qtjambi.config.jumptable" value="jumptable"/>
       <property name="qtjambi.generator.jumptable" value="--native-jump-table"/>
+      <echo message="dustegreier... ${qtjambi.generator.jumptable}"/>
+    </target>
+    <target name="init.jumptable.dont"
+	    description="Initialize the jump table..." unless="qtjambi.useJumpTable">
+      <property name="qtjambi.config.jumptable" value=""/>
+      <property name="qtjambi.generator.jumptable" value=""/>
+      <echo message="dustegreier... ${qtjambi.generator.jumptable}"/>
     </target>
 
     <target name="init.taskdef"
-            depends="init.ant, init.jumptable">
+            depends="init.ant, init.jumptable.do, init.jumptable.dont">
         <taskdef name="juic"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
         <taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
         <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
