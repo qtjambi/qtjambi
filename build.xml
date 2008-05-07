@@ -94,13 +94,6 @@
                pro="${sourceDir}/java.pro"
                config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
                debugTools="${qtjambi.debug-tools}"/>
-
-        <!-- FIXME // Temporary put in here so we get teamtester to compile all files. -->
-        <qmake recursive="true"
-               dir="${outputDir}"
-               pro="${sourceDir}/java.pro"
-               config="${qtjambi.configuration} ${qtjambi.jumptable}"
-               debugTools="${qtjambi.debug-tools}"/>
     </target>
 
     <target name="generator.qmake"
