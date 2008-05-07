@@ -686,12 +686,12 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>ScrollingHTMLView</class>
    <extends>QTextEdit</extends>
-   <header>scrollinghtmlview.h</header>
+   <header>com.trolltech.qt.gui</header>
   </customwidget>
   <customwidget>
    <class>CustomListView</class>
    <extends>QListView</extends>
-   <header>customlistview.h</header>
+   <header>com.trolltech.qt.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>
