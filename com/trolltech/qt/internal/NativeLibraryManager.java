@@ -444,6 +444,7 @@ public class NativeLibraryManager {
                         Runtime.getRuntime().load(f.getAbsolutePath());
                         reporter.report(" - ok, path was: " + f.getAbsolutePath());
                         loaded = true;
+                        break;
                     }
                 }
             }
