@@ -924,6 +924,20 @@ jclass qtjambi_find_generated_superclass(JNIEnv *env,  jobject obj){
     return (jclass)env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.findGeneratedSuperclass, obj);
 }
 
+
+static const char *signatureTable[] = {
+    /* 0 */ "()V",
+    /* 1 */ "(Ljava/lang/Object;)V",
+    /* 2 */ "(Ljava/lang/Object;Ljava/lang/Object;)V",
+    /* 3 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V",
+    /* 4 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V",
+    /* 5 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V",
+    /* 6 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V",
+    /* 7 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V",
+    /* 8 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V",
+    /* 9 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"
+};
+
 void qtjambi_resolve_signals(JNIEnv *env,
                              jobject java_object,
                              QtJambiSignalInfo *infos,
@@ -937,16 +951,18 @@ void qtjambi_resolve_signals(JNIEnv *env,
     QTJAMBI_EXCEPTION_CHECK(env);
     Q_ASSERT(clazz);
 
-    for (int i=0; i<count; ++i) {
-        QByteArray class_name = QByteArray("QSignalEmitter$Signal")
-                                + QByteArray::number(argument_counts[i]);
-        QByteArray signature("(");
-        for (int j=0;j<argument_counts[i]; ++j)
-            signature.append("Ljava/lang/Object;");
-        signature.append(")V");
+    char class_name[] = "com/trolltech/qt/QSignalEmitter$SignalX";
+    char field_signature[] = "Lcom/trolltech/qt/QSignalEmitter$SignalX;";
 
-        QByteArray field_signature = QByteArray("Lcom/trolltech/qt/" + class_name + QByteArray(";"));
-        jfieldID fieldId = env->GetFieldID(clazz, names[i], field_signature.constData());
+    for (int i=0; i<count; ++i) {
+        int argCount = argument_counts[i];
+        char argCountChar = '0' + argCount;
+        // Swap the X for the right number...
+        class_name[38] = argCountChar;
+        field_signature[39] = argCountChar;
+        const char *signature = signatureTable[argCount];
+
+        jfieldID fieldId = env->GetFieldID(clazz, names[i], field_signature);
         QTJAMBI_EXCEPTION_CHECK(env);
         Q_ASSERT(fieldId);
 
@@ -955,8 +971,12 @@ void qtjambi_resolve_signals(JNIEnv *env,
         Q_ASSERT(signal);
 
         infos[i].object = env->NewWeakGlobalRef(signal);
-        infos[i].methodId = resolveMethod(env, "emit", signature.constData(),
-                                          class_name.constData(), "com/trolltech/qt/");
+
+        jclass cls = env->FindClass(class_name);
+        Q_ASSERT(cls);
+
+        infos[i].methodId = env->GetMethodID(cls, "emit", signature);
+        Q_ASSERT(infos[i].methodId);
     }
 }
 
@@ -1901,6 +1921,11 @@ static bool qtjambi_connect_callback(void **raw_data)
         qWarning("qtjambi_connect_callback(): received unexpected null parameters");
         return false;
     }
+
+//     printf(" - %s::%s -> %s::%s, %d\n",
+//            data->sender->metaObject()->className(), data->signal,
+//            data->receiver->metaObject()->className(), data->method,
+//            *data->type);
 
     ResolvedConnectionData resolved_data;
     if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, true, true))
