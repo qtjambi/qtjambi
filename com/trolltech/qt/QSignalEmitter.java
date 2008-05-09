@@ -35,17 +35,14 @@ public class QSignalEmitter {
     public abstract class AbstractSignal {
 
         private boolean             inCppEmission       = false;
-        private List<Connection>    connections         = new ArrayList<Connection>();
+        private List<Connection>    connections         = null;
         private Class<?>            types[]             = null;
         private int                 arrayDimensions[]   = null;
         private String              name                = "";
         private Class<?>            declaringClass      = null;
         private boolean             connectedToCpp      = false;
         private boolean             inDisconnect        = false;
-
         private boolean             inJavaEmission      = false;
-
-        private int                 cppConnections      = 0;
 
         /**
          * Contains book holding info about a single connection
@@ -376,7 +373,7 @@ public class QSignalEmitter {
          * @exclude
          */
         protected synchronized final void emit_helper(Object ... args) {
-            if (QSignalEmitter.this.signalsBlocked())
+            if (QSignalEmitter.this.signalsBlocked() || connections == null)
                 return;
 
             List<Connection> cons = connections;
@@ -553,19 +550,29 @@ public class QSignalEmitter {
             }
 
 
-            List<Connection> newList = cloneConnections();
+            List<Connection> newList = cloneConnectionsForceInstance();
             newList.add(new Connection(receiver, slot, returnSig,(byte) connectionType));
             connections = newList;
         }
 
+
+        private List<Connection> cloneConnectionsForceInstance() {
+            List<Connection> newList = new ArrayList<Connection>();
+            if (connections != null)
+                newList.addAll(connections);
+            return newList;
+        }
+
         private List<Connection> cloneConnections() {
+            if (connections == null)
+                return null;
             List<Connection> newList = new ArrayList<Connection>();
             newList.addAll(connections);
             return newList;
         }
 
         private synchronized boolean removeConnection(Object receiver, Method slot) {
-            if (inDisconnect)
+            if (inDisconnect || connections == null)
                 return false;
             inDisconnect = true;
 
