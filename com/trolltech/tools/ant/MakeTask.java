@@ -10,7 +10,7 @@ public class MakeTask extends Task {
     private String msg = "";
     private String target = "";
     private String dir = ".";
-    private boolean silent = true;
+    private boolean silent = false;
 
     private String compilerName() {
         switch(OSInfo.os()){
