@@ -2521,6 +2521,11 @@
       <include file-name="QPainterPath" location="global"/>
       <include file-name="QVarLengthArray" location="global"/>
     </extra-includes>
+    <modify-function signature="fitInView(const QGraphicsItem *, Qt::AspectRatioMode)">
+        <modify-argument index="1">
+            <no-null-pointer />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="setupViewport(QWidget *)" access="non-final"/>
     <modify-function signature="setScene(QGraphicsScene*)">
         <modify-argument index="1">
