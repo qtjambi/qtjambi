@@ -19,7 +19,7 @@ public class InitializeTask extends Task {
         MinGW("mingw"),
         OldGCC("gcc3.3"),
         GCC("gcc"),
-    SUNCC("suncc"),
+        SUNCC("suncc"),
         Other("unknown");
 
         Compiler(String n) {
@@ -60,6 +60,7 @@ public class InitializeTask extends Task {
     public static final String PHONON_GSTREAMER = "qtjambi.phonon_gstreamer";
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
     public static final String DBUS             = "qtjambi.dbus";
+    public static final String SQLITE           = "qtjambi.sqlite";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -120,13 +121,15 @@ public class InitializeTask extends Task {
             case Linux:
                 props.setNewProperty(null, PHONON_GSTREAMER, true);
                 props.setNewProperty(null, DBUS, doesQtLibExist("QtDBus", 4));
-    break;
+                break;
             case MacOS:
                 props.setNewProperty(null, PHONON_QT7, true);
                 props.setNewProperty(null, DBUS, doesQtLibExist("QtDBus", 4));
                 break;
             }
         }
+
+        props.setNewProperty(null, SQLITE, decideSqlite());
 
         String webkit = decideWebkit();
         if ("true".equals(webkit))
@@ -303,6 +306,22 @@ public class InitializeTask extends Task {
         path.append("/");
         path.append(LibraryEntry.formatQtName(name, debug, version));
         return new File(path.toString()).exists();
+    }
+
+    private boolean doesQtPluginExist(String name, String subdir) {
+        StringBuilder path = new StringBuilder();
+        path.append(props.getProperty(null, QTDIR));
+        path.append("/plugins/");
+        path.append(subdir);
+        path.append("/");
+        path.append(LibraryEntry.formatUnversionedPluginName(name, debug));
+        return new File(path.toString()).exists();
+    }
+
+    private String decideSqlite() {
+        String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
+        if (verbose) System.out.println(SQLITE + ": " + result);
+        return result;
     }
 
     private String decidePhonon() {

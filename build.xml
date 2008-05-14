@@ -46,14 +46,14 @@
     </target>
 
     <target name="init.jumptable.do"
-	    description="Initialize the jump table..." if="qtjambi.useJumpTable">
+        description="Initialize the jump table..." if="qtjambi.useJumpTable">
       <echo>Using Native Jump Table. Please note that this feature is experimental...</echo>
       <property name="qtjambi.config.jumptable" value="jumptable"/>
       <property name="qtjambi.generator.jumptable" value="--native-jump-table"/>
       <echo message="dustegreier... ${qtjambi.generator.jumptable}"/>
     </target>
     <target name="init.jumptable.dont"
-	    description="Initialize the jump table..." unless="qtjambi.useJumpTable">
+        description="Initialize the jump table..." unless="qtjambi.useJumpTable">
       <property name="qtjambi.config.jumptable" value=""/>
       <property name="qtjambi.generator.jumptable" value=""/>
     </target>
@@ -124,7 +124,7 @@
                    outputDirectory="${outputDir}"
                    typesystem="${sourceDir}/generator/build_all.txt"
                    header="${sourceDir}/generator/qtjambi_masterinclude.h"
-		   options="${qtjambi.generator.jumptable}"/>
+           options="${qtjambi.generator.jumptable}"/>
     </target>
 
     <target name="library.native.compile"
@@ -291,9 +291,9 @@
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
-        <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
+            <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
-        <library name="QtDBus"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.dbus}"/>
+            <library name="QtDBus"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.dbus}"/>
             <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" />
             <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}" />
             <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}" />
@@ -310,7 +310,7 @@
             <library name="qkrcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
             <library name="qtwcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
             <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/accessible" load="never"/>
-	    <library name="qsqlite" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/sqldrivers" load="never" />
+            <library name="qsqlite" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/sqldrivers" load="never" if="${qtjambi.sqlite}" />
 
             <!-- Qt Jambi Libraries -->
             <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}" />
@@ -331,9 +331,9 @@
 
         <jar destfile="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
             <fileset dir="${outputDir}/platform-output" />
-        <manifest>
+            <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-        </manifest>
+            </manifest>
         </jar>
 
         <delete dir="${outputDir}/platform-output"/>
