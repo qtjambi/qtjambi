@@ -1446,13 +1446,22 @@ static QString locate_vm_linux_and_solaris()
     QStringList envVariables;
     envVariables << "JAVADIR"  << "JAVAHOME" << "JDK_HOME" << "JAVA_HOME" << "JAVA_DIR";
 
+    QString error;
+
     for (int i = 0; i < envVariables.size(); ++i) {
+
+        const char *env = qgetenv(envVariables.at(i));
+        if (!env)
+            continue;
+
+        error += QString::fromLatin1("Searched for VM in $%1\n").arg(env);
+
         QStringList jpaths;
         if (!vm_location_override.isEmpty())
             jpaths << vm_location_override.append(QLatin1String("/lib/"));
         else
-            jpaths << qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/jre/lib/"))
-                   << qgetenv(envVariables.at(i).toLatin1() ).append(QLatin1String("/lib/"));
+            jpaths << QString::fromLatin1("%1/jre/lib").arg(env)
+                   << QString::fromLatin1("%1/lib/").arg(env);
 
         QStringList jmachs;
 
@@ -1495,12 +1504,16 @@ static QString locate_vm_linux_and_solaris()
                 QFileInfo file(jpath + "libjvm.so");
                 if (file.exists())
                     return file.absoluteFilePath();
+                else {
+                    error += QString::fromLatin1(" - failed to locate $%1\n")
+                             .arg(file.absoluteFilePath());
+                }
             }
         }
     }
 
     qWarning("QtJambi: failed to locate the JVM. Make sure JAVADIR is set, "
-             "and pointing to your Java installation.");
+             "and pointing to your Java installation.\n%s", qPrintable(error));
 
     return QString();
 }
@@ -1577,6 +1590,8 @@ static QString locate_vm()
 {
     QString javaHome;
 
+    QString error;
+
     if(!vm_location_override.isEmpty())
         javaHome = vm_location_override;
 
@@ -1595,19 +1610,27 @@ static QString locate_vm()
 
             for (QStringList::const_iterator loc = locations.constBegin();
                  loc < locations.constEnd() && javaHome.isEmpty(); ++loc) {
+                QString regKey = *root + "\\Software\\JavaSoft\\" + *loc;
 
-                QSettings reg(*root + "\\Software\\JavaSoft\\" + *loc, QSettings::NativeFormat);
+                QSettings reg(regKey, QSettings::NativeFormat);
                 if (reg.contains(currentVersion)) {
                     QString version = reg.value(currentVersion).toString();
                     reg.beginGroup(version);
                     javaHome = reg.value("JavaHome").toString();
                     reg.endGroup();
                 }
+
+                if (javaHome.isEmpty()) {
+                    error += QString::fromLatin1("No VM under %1\n").arg(regKey);
+                } else {
+                    error += QString::fromLatin1("Using VM from %1: %2\n").arg(regKey).arg(javaHome);
+                }
             }
         }
 
+
         if (javaHome.isEmpty()) {
-            qWarning("Jambi: Failed to locate jvm.dll");
+            qWarning("Jambi: Failed to locate jvm.dll\n%s", qPrintable(error));
             return false;
         }
     }
@@ -1627,8 +1650,13 @@ static QString locate_vm()
             QFileInfo fi(javaHome + "/" + libs.at(i) + "/jvm.dll");
             if (fi.exists())
                 return fi.absoluteFilePath();
+            else
+                error += QString::fromLatin1(" - looked for jvm in %1, failed")
+                         .arg(fi.absoluteFilePath());
         }
     }
+
+    qWarning("Jambi: Failed to locate jvm.dll\n%s", qPrintable(error));
 
     return QString();
 }
