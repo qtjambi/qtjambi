@@ -1450,7 +1450,7 @@ static QString locate_vm_linux_and_solaris()
 
     for (int i = 0; i < envVariables.size(); ++i) {
 
-        const char *env = qgetenv(envVariables.at(i));
+        const char *env = qgetenv(envVariables.at(i).toLatin1());
         if (!env)
             continue;
 
@@ -1505,7 +1505,7 @@ static QString locate_vm_linux_and_solaris()
                 if (file.exists())
                     return file.absoluteFilePath();
                 else {
-                    error += QString::fromLatin1(" - failed to locate $%1\n")
+                    error += QString::fromLatin1(" - failed to locate %1\n")
                              .arg(file.absoluteFilePath());
                 }
             }
