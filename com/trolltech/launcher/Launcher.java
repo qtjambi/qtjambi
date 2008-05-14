@@ -15,6 +15,7 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.*;
 
 import java.util.*;
 
@@ -112,7 +113,8 @@ public class Launcher extends QWidget {
         updateStyle(this, new Style(this));
 
         setWindowTitle("Qt Jambi Examples and Demos");
-        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
+        if (Utilities.operatingSystem != Utilities.OperatingSystem.MacOSX)
+            setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
         progressChanged.emit("Loading background");
 
@@ -371,7 +373,6 @@ public class Launcher extends QWidget {
 
         l.init();
         l.show();
-        l.raise();
 
         if (splashScreen != null)
             splashScreen.finish(l);
