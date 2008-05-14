@@ -358,6 +358,9 @@ public class Launcher extends QWidget {
         splashScreen.show();
         splashScreen.setGeometry(splashScreen.splashScreenRect());
 
+        // Show in front on mac regardless of if its a bundle or not...
+        splashScreen.raise();
+
         QApplication.processEvents();
 
         systemPalette = QApplication.palette();
@@ -368,6 +371,7 @@ public class Launcher extends QWidget {
 
         l.init();
         l.show();
+        l.raise();
 
         if (splashScreen != null)
             splashScreen.finish(l);
