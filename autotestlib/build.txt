@@ -1,5 +1,13 @@
 <typesystem package="com.trolltech.autotests.generated" default-superclass="com.trolltech.qt.QtJambiObject">
 
+  <inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtSql");
+  </inject-code>
+
   <load-typesystem name="../generator/typesystem_core.xml" generate="no" />
   <load-typesystem name="../generator/typesystem_gui.xml" generate="no" />
   <load-typesystem name="../generator/typesystem_sql.xml" generate="no" />
