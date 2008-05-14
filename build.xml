@@ -56,7 +56,6 @@
 	    description="Initialize the jump table..." unless="qtjambi.useJumpTable">
       <property name="qtjambi.config.jumptable" value=""/>
       <property name="qtjambi.generator.jumptable" value=""/>
-      <echo message="dustegreier... ${qtjambi.generator.jumptable}"/>
     </target>
 
     <target name="init.taskdef"
