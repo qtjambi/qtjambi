@@ -197,6 +197,7 @@ class Package:
             self.compiler = "msvc2005"
         self.make = "nmake"
         self.removeFiles.append("set_qtjambi_env.sh")
+        self.removeDirs.append("Qt Jambi Demos.app");
 
     def setLinuxBinary(self):
         self.setBinary()
@@ -208,7 +209,8 @@ class Package:
             self.platformJarName = "qtjambi-linux64-gcc-" + options.qtJambiVersion + ".jar"
         else:
             self.platformJarName = "qtjambi-linux32-gcc-" + options.qtJambiVersion + ".jar"
-        self.removeFiles.append("set_qtjambi_env.bat")
+        self.removeFiles.append("set_qtjambi_env.bat"
+        self.removeDirs.append("Qt Jambi Demos.app");
 
     def setSource(self):
         self.binary = False
@@ -231,6 +233,7 @@ class Package:
                                ["qtjambi/qtjambilink.h", "include"],
                                ["qtjambi/qtjambifunctiontable.h", "include"]
                                ])
+        self.removeDirs.append("Qt Jambi Demos.app");
         if self.platform == pkgutil.PLATFORM_WINDOWS:
             self.removeFiles.append("set_qtjambi_env.sh")
         else:
