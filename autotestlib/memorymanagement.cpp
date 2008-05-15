@@ -22,3 +22,7 @@ PolymorphicObjectType *PolymorphicObjectType::newInstance()
 {
     return new PolymorphicObjectType;
 }
+
+void PolymorphicObjectType::invalidateObject(PolymorphicObjectType *)
+{
+}

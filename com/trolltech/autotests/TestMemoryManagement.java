@@ -3,13 +3,13 @@ package com.trolltech.autotests;
 import static org.junit.Assert.*;
 import org.junit.*;
 
-import com.trolltech.autotests.generated.PolymorphicObjectType;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
+import com.trolltech.qt.QtJambiObject;
 
 // Attempt at complete test for general memory leaks and crashes
 // Should test that all the general cases work as intended by default.
-public class TestMemoryManagement {
+public abstract class TestMemoryManagement {
 
     @BeforeClass
     public static void testInitialize() throws Exception {
@@ -89,20 +89,27 @@ public class TestMemoryManagement {
 
     }
 
-    /**
-     * Test a polymorphic object type created in and owned by Java,. being deleted by finalizer
-     */
+    protected abstract QtJambiObject createInstanceInJava();
+
+    protected abstract QtJambiObject createInstanceInNative();
+
+    protected abstract void deleteLastInstance();
+
+    protected abstract void invalidateObject(QtJambiObject obj);
+
+    protected abstract String className();
+
     @Test
-    public void finalize_PolymorphicObject_CreatedInJava_JavaOwnership() {
+    public void finalize_CreatedInJava_JavaOwnership() {
         resetAll();
 
         {
-            new PolymorphicObjectType();
+            createInstanceInJava();
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -112,21 +119,21 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 1, 0, 1, 1, 1, 1, 0);
+        test(className(), 1, 1, 0, 1, 1, 1, 1, 0);
 
     }
 
     @Test
-    public void finalize_PolymorphicObject_NotCreatedInJava_SplitOwnership() {
+    public void finalize_NotCreatedInJava_SplitOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType.newInstance();
+            createInstanceInNative();
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -136,22 +143,22 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 0, 0, 1, 1, 1, 0, 0);
+        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
 
     }
 
     @Test
-    public void finalize_PolymorphicObject_NotCreatedInJava_JavaOwnership() {
+    public void finalize_NotCreatedInJava_JavaOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
-            pot.setJavaOwnership();
+            QtJambiObject obj = createInstanceInNative();
+            obj.setJavaOwnership();
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -161,23 +168,23 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 1, 0, 1, 1, 1, 0, 0);
+        test(className(), 1, 1, 0, 1, 1, 1, 0, 0);
     }
 
     @Test
-    public void dispose_PolymorphicObject_CreatedInJava_JavaOwnership() {
+    public void dispose_CreatedInJava_JavaOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = new PolymorphicObjectType();
-            pot.dispose();
+            QtJambiObject obj = createInstanceInJava();
+            obj.dispose();
 
-            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 1, 0);
+            test(className(), 0, 1, 1, 1, 1, 1, 1, 0);
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -187,24 +194,24 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 1, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 1, 0);
     }
 
     @Test
-    public void dispose_PolymorphicObject_CreatedInJava_CppOwnership() {
+    public void dispose_CreatedInJava_CppOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = new PolymorphicObjectType();
-            pot.disableGarbageCollection();
-            pot.dispose();
+            QtJambiObject obj = createInstanceInJava();
+            obj.disableGarbageCollection();
+            obj.dispose();
 
-            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 1, 0);
+            test(className(), 0, 1, 1, 1, 1, 1, 1, 0);
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -214,23 +221,23 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 1, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 1, 0);
     }
 
     @Test
-    public void dispose_PolymorphicObject_NotCreatedInJava_SplitOwnership() {
+    public void dispose_NotCreatedInJava_SplitOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
-            pot.dispose();
+            QtJambiObject obj = createInstanceInNative();
+            obj.dispose();
 
-            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 0, 0);
+            test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -240,24 +247,24 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 0, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
     }
 
     @Test
-    public void dispose_PolymorphicObject_NotCreatedInJava_JavaOwnership() {
+    public void dispose_NotCreatedInJava_JavaOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
-            pot.setJavaOwnership();
-            pot.dispose();
+            QtJambiObject obj = createInstanceInNative();
+            obj.setJavaOwnership();
+            obj.dispose();
 
-            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 0, 0);
+            test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -267,24 +274,24 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 0, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
     }
 
     @Test
-    public void dispose_PolymorphicObject_NotCreatedInJava_CppOwnership() {
+    public void dispose_NotCreatedInJava_CppOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
-            pot.disableGarbageCollection();
-            pot.dispose();
+            QtJambiObject obj = createInstanceInNative();
+            obj.disableGarbageCollection();
+            obj.dispose();
 
-            test("PolymorphicObjectType", 0, 1, 1, 1, 1, 1, 0, 0);
+            test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -294,27 +301,27 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 1, 1, 1, 1, 1, 0, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
     }
 
     @Test
-    public void nativeDelete_PolymorphicObject_CreatedInJava_CppOwnership() {
+    public void nativeDelete_CreatedInJava_CppOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = new PolymorphicObjectType();
-            pot.disableGarbageCollection();
+            QtJambiObject obj = createInstanceInJava();
+            obj.disableGarbageCollection();
 
-            PolymorphicObjectType.deleteLastInstance();
-            assertEquals(0, pot.nativeId());
-            test("PolymorphicObjectType", 0, 0, 0, 1, 1, 1, 1, 0);
+            deleteLastInstance();
+            assertEquals(0, obj.nativeId());
+            test(className(), 0, 0, 0, 1, 1, 1, 1, 0);
 
         }
 
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -324,15 +331,15 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 0, 0, 1, 1, 1, 1, 0);
+        test(className(), 1, 0, 0, 1, 1, 1, 1, 0);
     }
 
     @Test
-    public void nativeDelete_PolymorphicObject_NotCreatedInJava_CppOwnership() {
+    public void nativeDelete_NotCreatedInJava_CppOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
+            QtJambiObject obj = createInstanceInNative();
 
             // If the object is not created in Java and not a QObject, we
             // have no way of knowing when it is deleted, so we need to
@@ -340,17 +347,17 @@ public class TestMemoryManagement {
             // reason is that disable-gc in this case means c++ may try
             // to delete the object at any given time and will fail to alert
             // us about it, so we can get dangling pointers in our jambilink.
-            pot.disableGarbageCollection();
-            assertEquals(0, pot.nativeId());
-            test("PolymorphicObjectType", 0, 0, 0, 1, 1, 1, 0, 0);
+            obj.disableGarbageCollection();
+            assertEquals(0, obj.nativeId());
+            test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
 
-            PolymorphicObjectType.deleteLastInstance();
-            test("PolymorphicObjectType", 0, 0, 0, 1, 1, 1, 0, 0);
+            deleteLastInstance();
+            test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -360,25 +367,25 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 0, 0, 1, 1, 1, 0, 0);
+        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
     }
 
     @Test
-    public void nativeDelete_PolymorphicObject_NotCreatedInJava_SplitOwnership() {
+    public void nativeDelete_NotCreatedInJava_SplitOwnership() {
         resetAll();
 
         {
-            PolymorphicObjectType pot = PolymorphicObjectType.newInstance();
+            QtJambiObject obj = createInstanceInNative();
 
-            PolymorphicObjectType.deleteLastInstance();
-            assertEquals(0, pot.nativeId());
-            test("PolymorphicObjectType", 0, 0, 0, 1, 0, 0, 0, 0);
+            deleteLastInstance();
+            assertEquals(0, obj.nativeId());
+            test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
 
         }
 
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount("PolymorphicObjectType") == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -388,7 +395,60 @@ public class TestMemoryManagement {
 
         }
 
-        test("PolymorphicObjectType", 1, 0, 0, 1, 1, 1, 0, 0);
+        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
+    }
+
+    @Test
+    public void invalidate_NotCreatedInJava_JavaOwnership() {
+        resetAll();
+
+        {
+            QtJambiObject obj = createInstanceInNative();
+            obj.setJavaOwnership();
+            invalidateObject(obj);
+
+            test(className(), 0, 1, 0, 1, 1, 1, 0, 0);
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test(className(), 1, 1, 0, 1, 1, 1, 0, 0);
+    }
+
+    @Test
+    public void invalidate_NotCreatedInJava_SplitOwnership() {
+        resetAll();
+
+        {
+            QtJambiObject obj = createInstanceInNative();
+            invalidateObject(obj);
+
+            test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
+        }
+
+        long startTime = System.currentTimeMillis();
+        long elapsed = 0;
+        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
+            System.gc();
+            Thread.sleep(10);
+
+            elapsed = System.currentTimeMillis() - startTime;
+
+        } catch (Exception e) {
+
+        }
+
+        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
     }
 
 }

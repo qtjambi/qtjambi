@@ -208,6 +208,10 @@
   <object-type name="QSet_int" />
   <object-type name="QStack_int" />
   <object-type name="QVector_int" />
-  <object-type name="PolymorphicObjectType" />
+  <object-type name="PolymorphicObjectType">
+    <modify-function signature="invalidateObject(PolymorphicObjectType *)">
+
+    </modify-function>
+  </object-type>
 
 </typesystem>

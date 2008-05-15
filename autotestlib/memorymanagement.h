@@ -10,6 +10,9 @@ public:
     static PolymorphicObjectType *newInstance();
     static void deleteLastInstance();
 
+    static void invalidateObject(PolymorphicObjectType *t);
+
+
 private:
     static PolymorphicObjectType *m_lastInstance;
 };
