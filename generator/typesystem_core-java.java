@@ -212,6 +212,24 @@ class QCoreApplication___ extends QCoreApplication {
         invokable.disposeLater();
     }
 
+
+    /**
+     * Executes the task in the application's main thread after the
+     * specified timeout. This is done by starting a timer so this
+     * method does not block.
+     * @param timeout The time to wait, in milliseconds
+     * @param task The task to perform...
+     */
+    public static void invokeLater(int timeout, final Runnable task) {
+        QTimer.singleShot(timeout, new QObject() {
+                public void todo() {
+                    task.run();
+                    disposeLater();
+                }
+            }, "todo()");
+    }
+
+
     private static com.trolltech.qt.QNativePointer argc, argv;
 
 }// class
