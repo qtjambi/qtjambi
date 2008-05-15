@@ -219,20 +219,48 @@ class Package:
                             "include"
                             ]
                            )
-        self.copyFiles.extend([[options.qtDir + "/tools/designer/src/lib/sdk/abstractintrospection_p.h",
-                               "designer-integration/language/private"],
-                               [options.qtDir + "/tools/designer/src/lib/uilib/ui4_p.h",
-                                "designer-integration/language/private/ui4_p.h"],
-                               [options.qtDir + "/tools/designer/src/lib/shared/qdesigner_utils_p.h",
-                                "qtjambi_designer/private/qdesigner_utils_p.h"],
-                               [options.qtDir + "/tools/designer/src/lib/shared/shared_global_p.h",
-                                "qtjambi_designer/private/shared_global_p.h"],
-                               ["qtjambi/qtjambi_core.h", "include"],
-                               ["qtjambi/qtjambi_cache.h", "include"],
-                               ["qtjambi/qtjambi_global.h", "include"],
-                               ["qtjambi/qtjambilink.h", "include"],
-                               ["qtjambi/qtjambifunctiontable.h", "include"]
-                               ])
+
+        uicPrefix = options.qtDir + "/src/tools/uic/"
+        designerPrefix = options.qtDir + "/tools/designer/src/lib/"
+        self.copyFiles.extend([
+            # Designer Files
+            [designerPrefix + "sdk/abstractintrospection_p.h",
+             "designer-integration/language/private/abstractintrospection_p.h"],
+            [designerPrefix + "uilib/ui4_p.h",
+             "designer-integration/language/private/ui4_p.h"],
+            [designerPrefix + "shared/qdesigner_utils_p.h",
+             "qtjambi_designer/private/qdesigner_utils_p.h"],
+            [designerPrefix + "shared/shared_global_p.h",
+             "qtjambi_designer/private/shared_global_p.h"],
+
+            # uic files
+            [uicPrefix + "customwidgetsinfo.cpp", "juic"],
+            [uicPrefix + "customwidgetsinfo.h", "juic"],
+            [uicPrefix + "databaseinfo.cpp", "juic"],
+            [uicPrefix + "databaseinfo.h", "juic"],
+            [uicPrefix + "driver.cpp", "juic"],
+            [uicPrefix + "driver.h", "juic"],
+            [uicPrefix + "globaldefs.h", "juic"],
+            [uicPrefix + "option.h", "juic"],
+            [uicPrefix + "treewalker.cpp", "juic"],
+            [uicPrefix + "treewalker.h", "juic"],
+            [uicPrefix + "ui4.cpp", "juic"],
+            [uicPrefix + "ui4.h", "juic"],
+            [uicPrefix + "uic.cpp", "juic"],
+            [uicPrefix + "uic.h", "juic"],
+            [uicPrefix + "uic.pri", "juic"],
+            [uicPrefix + "utils.h", "juic"],
+            [uicPrefix + "validator.cpp", "juic"],
+            [uicPrefix + "validator.h", "juic"],
+
+            # other files...
+            ["qtjambi/qtjambi_core.h", "include"],
+            ["qtjambi/qtjambi_cache.h", "include"],
+            ["qtjambi/qtjambi_global.h", "include"],
+            ["qtjambi/qtjambilink.h", "include"],
+            ["qtjambi/qtjambifunctiontable.h", "include"]
+            ])
+        
         self.removeDirs.append("Qt Jambi Demos.app");
         if self.platform == pkgutil.PLATFORM_WINDOWS:
             self.removeFiles.append("set_qtjambi_env.sh")
