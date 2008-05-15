@@ -16,8 +16,8 @@
     and installed, and that the directory in which they reside is
     added to the \c QT_PLUGIN_PATH environment variable. Note that
     this is automatically taken care of when using the \l {Qt Jambi
-    Eclipse Integration}{Eclipse integration} or the \c qtdesigner.bat
-    and \c qtdesigner.sh files.
+    Eclipse Integration}{Eclipse integration} or the \c designer.bat
+    and \c designer.sh files.
 
     In addition to the many standard widgets found in the Qt Designer
     widget box, you can also add your own custom widgets and use them
