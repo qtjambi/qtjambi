@@ -39,7 +39,6 @@ class QThreadData;
 extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass))
 {
-    QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
     qtjambi_register_callbacks();
 
     if (QCoreApplication::instance())
@@ -466,6 +465,14 @@ void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
 
     if (!eaten && qt_message_handler)
         qt_message_handler(type, message);
+}
+
+
+extern "C" QTJAMBI_EXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_HelperFunctions_setAsMainThread)
+    (JNIEnv *, jclass)
+{
+    QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
 }
 
 

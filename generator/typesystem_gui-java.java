@@ -923,6 +923,8 @@ class QPainter___ extends QPainter {
 class QApplication___ extends QApplication {
 
     public static void initialize(String args[]) {
+        com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
+
         if (m_instance != null)
             throw new RuntimeException("QApplication can only be initialized once");
 
