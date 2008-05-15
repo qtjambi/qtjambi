@@ -210,7 +210,7 @@
   <object-type name="QVector_int" />
   <object-type name="PolymorphicObjectType">
     <modify-function signature="invalidateObject(PolymorphicObjectType *)">
-
+        <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
   </object-type>
 
