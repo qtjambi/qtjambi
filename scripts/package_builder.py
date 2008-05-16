@@ -568,21 +568,27 @@ def packageAndSend(package):
             buildFile.write("cp $QTDIR/bin/lrelease bin\n")
             buildFile.write("cp $QTDIR/bin/lupdate bin\n")
             buildFile.write("cp $QTDIR/bin/linguist bin\n")
-            buildFile.write("mkdir tmplib\n")
+            buildFile.write("jar -xf qtjambi-linux*.jar");
+            buildFile.write("mv lib tmplib");
+            buildFile.write("rm -rf META-INF");
             buildFile.write("cp $QTDIR/lib/libQtDesigner.so.4 tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtDesignerComponents.so.4 tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtScript.so.4 tmplib\n")
-            buildFile.write("cp lib/libcom_trolltech_tools_designer.so tmplib\n")
+            buildFile.write("chmod 755 scripts/update_rpaths.sh");
+            buildFile.write("./scripts/update_rpaths.sh");
         else:
             buildFile.write("cp -R $QTDIR/bin/Designer.app bin\n")
             buildFile.write("cp $QTDIR/bin/lrelease bin\n")
             buildFile.write("cp $QTDIR/bin/lupdate bin\n")
             buildFile.write("cp -R $QTDIR/bin/Linguist.app bin\n")
-            buildFile.write("mkdir tmplib\n")
+            buildFile.write("jar -xf qtjambi-linux*.jar");
+            buildFile.write("mv lib tmplib");
+            buildFile.write("rm -rf META-INF");
             buildFile.write("cp $QTDIR/lib/libQtDesigner.4.dylib tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtDesignerComponents.4.dylib tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtScript.4.dylib tmplib\n")
-            buildFile.write("cp lib/libcom_trolltech_tools_designer.jnilib tmplib\n")
+            buildFile.write("chmod 755 scripts/update_installname.sh");
+            buildFile.write("./scripts/update_installname.sh");
 
         if package.hasEclipse():
             buildFile.write("cd scripts\n")
