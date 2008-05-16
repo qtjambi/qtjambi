@@ -52,12 +52,12 @@ public class PlatformJarTask extends Task {
         }
     }
 
-    public void setOsxinstallname(boolean iname) {
-        processInstallName = iname;
+    public void setRpathenabled(boolean iname) {
+        rpath = iname;
     }
 
-    public boolean getOsxinstallname() {
-        return processInstallName;
+    public boolean getRpathenabled() {
+        return rpath;
     }
 
     public void execute_internal() throws BuildException {
@@ -80,8 +80,13 @@ public class PlatformJarTask extends Task {
         if (systemLibs.equals(SYSLIB_AUTO))
             processSystemLibs();
 
-        if (processInstallName && OSInfo.os() == OSInfo.OS.MacOS)
-            processOSXInstallName();
+        if (rpath) {
+            if (OSInfo.os() == OSInfo.OS.MacOS) {
+                processOSXInstallName();
+            } else if (OSInfo.os() == OSInfo.OS.Linux) {
+                processRPath();
+            }
+        }
 
         writeQtJambiDeployment();
 
@@ -308,6 +313,41 @@ public class PlatformJarTask extends Task {
 
     }
 
+    private void processRPath() {
+        System.out.println("Processing RPATH...");
+        String cmd[] = new String[] {
+            "chrpath",
+            "--replace",
+            null,               // New RPATH
+            null                // Binary to update...
+        };
+
+        try {
+            for (LibraryEntry lib : libs) {
+                System.out.println(" - updating: " + lib.getName());
+
+                String subdir = lib.getSubdir();
+                int dotdotCount = subdir.split("/").length;
+                StringBuilder builder = createDotDots(subdir);
+
+                builder.insert(0, "$ORIGIN/");
+                builder.append("lib");
+
+                cmd[2] = builder.toString();
+                cmd[3] = lib.relativePath();
+
+                Util.exec(cmd, outdir, true);
+            }
+        } catch (Exception e) {
+            System.out.println(" - " + e.getMessage());
+            System.out.println("\n********** Warning **********");
+            System.out.println("Without rpaths, you run the risk of that Qt applications and plugins");
+            System.out.println("load incorrect Qt libraries (such as /usr/lib/libQtCore.so), which");
+            System.out.println("may result in binary incompatility and crashes.");
+            System.out.println("*****************************\n");
+        }
+    }
+
 
     private void processOSXInstallName() {
         System.out.println("Processing Mac OS X install_name...");
@@ -328,11 +368,7 @@ public class PlatformJarTask extends Task {
             System.out.println(" - updating: " + with.getName());
 
             for (LibraryEntry change : libs) {
-                // Calculate the new subdir...
-                int subdir = change.getSubdir().split("/").length;
-                StringBuilder builder = new StringBuilder(subdir * 3);
-                for (int i=0; i<subdir; ++i)
-                    builder.append("../");
+                StringBuilder builder = createDotDots(change.getSubdir());
                 builder.append(with.getSubdir());
                 builder.append("/");
                 builder.append(with.getName());
@@ -355,6 +391,16 @@ public class PlatformJarTask extends Task {
         }
     }
 
+    private static StringBuilder createDotDots(String path) {
+        // Calculate the new subdir...
+        int subdir = path.split("/").length;
+        StringBuilder builder = new StringBuilder(subdir * 3);
+        for (int i=0; i<subdir; ++i)
+            builder.append("../");
+        return builder;
+    }
+
+
 
     private String cacheKey = "default";
     private File outdir;
@@ -366,7 +412,7 @@ public class PlatformJarTask extends Task {
     private List<PluginPath> pluginPaths = new ArrayList<PluginPath>();
     private boolean debugConfiguration = false;
 
-    private boolean processInstallName = true;
+    private boolean rpath = true;
 
     private PropertyHelper props;
 }

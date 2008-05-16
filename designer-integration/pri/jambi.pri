@@ -56,3 +56,6 @@ macx:{
     LIBS += -L../../lib -l$${LIB_QTJAMBI}
 }
 
+linux-g++* {
+    QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+}

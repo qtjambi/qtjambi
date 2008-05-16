@@ -65,3 +65,7 @@ jumptable{
     # Tell the linker to strip the binaries..
     macx:QMAKE_LFLAGS += -Wl,-x
 }
+
+linux-g++* {
+    QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+}

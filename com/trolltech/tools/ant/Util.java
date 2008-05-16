@@ -171,6 +171,16 @@ class Util {
         }
     }
 
+    private static String join(String ar[]) {
+        String s = "";
+        for (int i = 0; i<ar.length; ++i) {
+            s += ar[i];
+            if (i < ar.length - 1)
+                s += ", ";
+        }
+        return s;
+    }
+
     public static void exec(String cmd[], File dir, boolean verbose) throws BuildException {
         if (verbose) {
             StringBuilder b = new StringBuilder();
@@ -183,10 +193,10 @@ class Util {
             Process process = Runtime.getRuntime().exec(cmd, null, dir);
             Util.redirectOutput(process, true);
             if (process.exitValue() != 0) {
-                throw new BuildException("Running: " + cmd + " failed.");
+                throw new BuildException("Running: '" + join(cmd) + "' failed.");
             }
         } catch (IOException e) {
-            throw new BuildException("Running: " + cmd + " failed.", e);
+            throw new BuildException("Running: '" + join(cmd) + "' failed.", e);
         }
     }
 
