@@ -7,7 +7,7 @@ SUBDIRS = qtjambi juic qtjambi_core qtjambi_gui qtjambi_sql \
 contains(QT_CONFIG, webkit): SUBDIRS += qtjambi_webkit
 contains(QT_CONFIG, phonon): SUBDIRS += qtjambi_phonon
 contains(QT_CONFIG, xmlpatterns): SUBDIRS += qtjambi_xmlpatterns
-contians(QT_CONFIG, opengl): SUBDIRS += qtjambi_opengl
+contains(QT_CONFIG, opengl): SUBDIRS += qtjambi_opengl
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
