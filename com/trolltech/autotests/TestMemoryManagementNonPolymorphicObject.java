@@ -1,34 +1,32 @@
 package com.trolltech.autotests;
 
-import com.trolltech.autotests.generated.PolymorphicObjectType;
 import com.trolltech.qt.QtJambiObject;
+import com.trolltech.autotests.generated.NonPolymorphicObjectType;
 import org.junit.Test;
 
-public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement {
-
-
+public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManagement {
     protected QtJambiObject createInstanceInJava() {
-        return new PolymorphicObjectType();
+        return new NonPolymorphicObjectType();
     }
 
     protected QtJambiObject createInstanceInNative() {
-        return PolymorphicObjectType.newInstance();
+        return NonPolymorphicObjectType.newInstance();
     }
 
     protected void deleteLastInstance() {
-        PolymorphicObjectType.deleteLastInstance();
+        NonPolymorphicObjectType.deleteLastInstance();
     }
 
     protected void invalidateObject(QtJambiObject obj) {
-        PolymorphicObjectType.invalidateObject((PolymorphicObjectType) obj);
+        NonPolymorphicObjectType.invalidateObject((NonPolymorphicObjectType) obj);
     }
 
     protected String className() {
-        return "PolymorphicObjectType";
+        return "NonPolymorphicObjectType";
     }
 
     protected boolean hasShellDestructor() {
-        return true;
+        return false;
     }
 
     /*
@@ -37,4 +35,5 @@ public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement 
     */
     @Test
     public void dummy() {}
+    
 }

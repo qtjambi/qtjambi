@@ -33,7 +33,7 @@ const char* colorReset = "";
 #endif
 
 FileOut::FileOut(QString n):
-    name(n),
+    m_name(n),
     stream(&tmp),
     isDone(false)
 {}
@@ -162,7 +162,7 @@ bool FileOut::done() {
     Q_ASSERT( !isDone );
     isDone = true;
     bool fileEqual = false;
-    QFile fileRead(name);
+    QFile fileRead(m_name);
     QFileInfo info(fileRead);
     stream.flush();
     QByteArray original;
@@ -187,7 +187,7 @@ bool FileOut::done() {
                 return false;
             }
 
-            QFile fileWrite(name);
+            QFile fileWrite(m_name);
             if (!fileWrite.open(QIODevice::WriteOnly)) {
                 ReportHandler::warning(QString("failed to open file '%1' for writing")
                                        .arg(fileWrite.fileName()));
@@ -197,7 +197,7 @@ bool FileOut::done() {
             stream << tmp;
         }
         if (diff) {
-            printf("%sFile: %s%s\n", colorInfo, qPrintable(name), colorReset);
+            printf("%sFile: %s%s\n", colorInfo, qPrintable(m_name), colorReset);
 
             ::diff(original.split('\n'), tmp.split('\n'));
 

@@ -213,5 +213,17 @@
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
   </object-type>
+  
+  <object-type name="NonPolymorphicObjectType">
+    <modify-function signature="invalidateObject(NonPolymorphicObjectType *)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  </object-type>  
+  
+  <value-type name="ValueType">
+    <modify-function signature="invalidateObject(ValueType *)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>  
+  </value-type>
 
 </typesystem>

@@ -24,7 +24,7 @@ class FileOut : public QObject
 
 private:
     QByteArray tmp;
-    QString name;
+    QString m_name;
 
 public:
     FileOut(QString name);
@@ -35,6 +35,8 @@ public:
         }
 
     bool done();
+
+    QString name() const { return m_name; }
 
     QTextStream stream;
 

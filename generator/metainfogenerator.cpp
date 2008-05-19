@@ -55,7 +55,7 @@ void MetaInfoGenerator::generate()
 
 bool MetaInfoGenerator::shouldGenerate(const TypeEntry *entry) const
 {
-    return entry != 0 && !entry->isNamespace() && !entry->isEnum();
+    return entry != 0 && !entry->isNamespace() && !entry->isEnum() && (entry->codeGeneration() & TypeEntry::GenerateCpp);
 }
 
 bool MetaInfoGenerator::shouldGenerate(const AbstractMetaClass *cls) const
@@ -303,6 +303,18 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
     return handlers;
 }
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+void MetaInfoGenerator::writeNameLiteral(QTextStream &s, const TypeEntry *entry, const QString &fileName)
+{
+    static QSet<QString> used;
+    
+    if (!used.contains(fileName + ":" + entry->name())) {
+        s << "char __name_" << QString(entry->name()).replace(':', '_').replace(' ', '_') << "[] = \"" << entry->name() << "\";" << endl;
+        used.insert(fileName + ":" + entry->name()); 
+    }
+}
+#endif
+
 void MetaInfoGenerator::writeCppFile()
 {
     TypeEntryHash entries = TypeDatabase::instance()->allEntries();
@@ -321,6 +333,24 @@ void MetaInfoGenerator::writeCppFile()
 
             writeIncludeStatements(f->stream, classList, cls->package());
             f->stream << endl;
+
+#if defined(QTJAMBI_DEBUG_TOOLS)                
+            // Write the generic destructors and constructors 
+            f->stream << "template <typename T, const char *NAME>" << endl
+                        << "void genericDestructor(void *t)" << endl
+                        << "{" << endl
+                        << "    delete (T *) t;" << endl
+                        << "    qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(NAME));" << endl
+                        << "}" << endl << endl
+                        << "template <typename T>" << endl
+                        << "void *genericConstructor(const void *t)" << endl
+                        << "{" << endl
+                        << "    if (!t)" << endl
+                        << "        return new T;" << endl
+                        << "    return new T(*reinterpret_cast<const T *>(t));" << endl
+                        << "}" << endl;
+#endif
+
 
             fileHash.insert(cls->package(), f);
 
@@ -341,6 +371,11 @@ void MetaInfoGenerator::writeCppFile()
             if (cls->typeEntry()->isPolymorphicBase())
                 classes_with_polymorphic_id.append(cls);
         }
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        if (cls->typeEntry()->isValue() && shouldGenerate(cls->typeEntry()))
+            writeNameLiteral(f->stream, cls->typeEntry(), f->name());
+#endif
     }
 
     QHash<QString, QStringList> handlers_to_register;
@@ -359,8 +394,10 @@ void MetaInfoGenerator::writeCppFile()
         for (it=entries.begin(); it!=entries.end(); ++it) {
             QList<TypeEntry *> entries = it.value();
             foreach (TypeEntry *entry, entries) {
-                if (shouldGenerate(entry) && entry->isPrimitive())
+                if (shouldGenerate(entry) && entry->isPrimitive()) {
                     writeCustomStructors(f->stream, entry);
+                    writeNameLiteral(f->stream, entry, f->name());
+                }
             }
         }
 
@@ -374,7 +411,7 @@ void MetaInfoGenerator::writeCppFile()
                     ( (shouldGenerate(entry) && entry->isPrimitive())
                     || entry->isString()
                     || entry->isChar())) {
-                            writeInitialization(f->stream, entry, 0);
+                        writeInitialization(f->stream, entry, 0);
                     }
             }
         }
@@ -654,6 +691,16 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     QString constructorName = entry->customConstructor().name;
     QString destructorName = entry->customDestructor().name;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    
+    if (constructorName.isEmpty())
+        constructorName = "genericConstructor<" + entry->qualifiedCppName() + ">";
+
+    if (destructorName.isEmpty())
+        destructorName = "genericDestructor<" + entry->qualifiedCppName() + ", __name_" + entry->name() + ">";
+
+#endif
+
 
     if (constructorName.isEmpty() != destructorName.isEmpty()) {
         ReportHandler::warning(QString("specify either no custom functions, or both "
@@ -696,6 +743,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
     if (metaType != QMetaType::Void)
         return ;
 
+
     if (!constructorName.isEmpty() && !destructorName.isEmpty()) {
         s << "    QMetaType::registerType(\"" << entry->name() << "\"," << endl
           << "                            reinterpret_cast<QMetaType::Destructor>("
@@ -705,8 +753,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
           << constructorName
           << "));" << endl;
     } else {
-        // Look for default constructor and copy constructor since both
-        // of these are required for registerMetaType()
+        // Look for default constructor, required for qRegisterMetaType
         if (cls != 0) {
             AbstractMetaFunctionList functions = cls->queryFunctions(AbstractMetaClass::WasPublic | AbstractMetaClass::Constructors);
 

@@ -72,6 +72,10 @@ private:
     bool shouldGenerate(const TypeEntry *entry) const;
     void buildSkipList();
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    void writeNameLiteral(QTextStream &, const TypeEntry *, const QString &fileName);
+#endif
+
     QHash<QString, int> m_skip_list;
     QString m_filenameStub;
 

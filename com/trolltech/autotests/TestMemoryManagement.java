@@ -97,7 +97,13 @@ public abstract class TestMemoryManagement {
 
     protected abstract void invalidateObject(QtJambiObject obj);
 
+    protected abstract boolean hasShellDestructor();
+
     protected abstract String className();
+
+    protected boolean supportsSplitOwnership() {
+        return true;
+    }
 
     @Test
     public void finalize_CreatedInJava_JavaOwnership() {
@@ -119,32 +125,33 @@ public abstract class TestMemoryManagement {
 
         }
 
-        test(className(), 1, 1, 0, 1, 1, 1, 1, 0);
+        test(className(), 1, 1, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
 
     }
 
     @Test
     public void finalize_NotCreatedInJava_SplitOwnership() {
-        resetAll();
+        if (supportsSplitOwnership()) { 
+            resetAll();
 
-        {
-            createInstanceInNative();
+            {
+                createInstanceInNative();
+            }
+
+            long startTime = System.currentTimeMillis();
+            long elapsed = 0;
+            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
+                System.gc();
+                Thread.sleep(10);
+
+                elapsed = System.currentTimeMillis() - startTime;
+
+            } catch (Exception e) {
+
+            }
+
+            test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
         }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
-
-        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
-
     }
 
     @Test
@@ -179,7 +186,7 @@ public abstract class TestMemoryManagement {
             QtJambiObject obj = createInstanceInJava();
             obj.dispose();
 
-            test(className(), 0, 1, 1, 1, 1, 1, 1, 0);
+            test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
         }
 
         long startTime = System.currentTimeMillis();
@@ -194,7 +201,7 @@ public abstract class TestMemoryManagement {
 
         }
 
-        test(className(), 1, 1, 1, 1, 1, 1, 1, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
     }
 
     @Test
@@ -206,7 +213,7 @@ public abstract class TestMemoryManagement {
             obj.disableGarbageCollection();
             obj.dispose();
 
-            test(className(), 0, 1, 1, 1, 1, 1, 1, 0);
+            test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
         }
 
         long startTime = System.currentTimeMillis();
@@ -221,33 +228,35 @@ public abstract class TestMemoryManagement {
 
         }
 
-        test(className(), 1, 1, 1, 1, 1, 1, 1, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
     }
 
     @Test
     public void dispose_NotCreatedInJava_SplitOwnership() {
-        resetAll();
+        if (supportsSplitOwnership()) {
+            resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
-            obj.dispose();
+            {
+                QtJambiObject obj = createInstanceInNative();
+                obj.dispose();
 
-            test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
+                test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
+            }
+
+            long startTime = System.currentTimeMillis();
+            long elapsed = 0;
+            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
+                System.gc();
+                Thread.sleep(10);
+
+                elapsed = System.currentTimeMillis() - startTime;
+
+            } catch (Exception e) {
+
+            }
+
+            test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
         }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
-
-        test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
     }
 
     @Test
@@ -314,7 +323,7 @@ public abstract class TestMemoryManagement {
 
             deleteLastInstance();
             assertEquals(0, obj.nativeId());
-            test(className(), 0, 0, 0, 1, 1, 1, 1, 0);
+            test(className(), 0, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
 
         }
 
@@ -331,7 +340,7 @@ public abstract class TestMemoryManagement {
 
         }
 
-        test(className(), 1, 0, 0, 1, 1, 1, 1, 0);
+        test(className(), 1, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
     }
 
     @Test
@@ -372,30 +381,32 @@ public abstract class TestMemoryManagement {
 
     @Test
     public void nativeDelete_NotCreatedInJava_SplitOwnership() {
-        resetAll();
+        if (supportsSplitOwnership()) {
+            resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
+            {
+                QtJambiObject obj = createInstanceInNative();
 
-            deleteLastInstance();
-            assertEquals(0, obj.nativeId());
-            test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+                deleteLastInstance();
+                assertEquals(0, obj.nativeId());
+                test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
 
+            }
+
+            long startTime = System.currentTimeMillis();
+            long elapsed = 0;
+            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
+                System.gc();
+                Thread.sleep(10);
+
+                elapsed = System.currentTimeMillis() - startTime;
+
+            } catch (Exception e) {
+
+            }
+
+            test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
         }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
-
-        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
     }
 
     @Test
@@ -427,28 +438,30 @@ public abstract class TestMemoryManagement {
 
     @Test
     public void invalidate_NotCreatedInJava_SplitOwnership() {
-        resetAll();
+        if (supportsSplitOwnership()) {
+            resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
-            invalidateObject(obj);
+            {
+                QtJambiObject obj = createInstanceInNative();
+                invalidateObject(obj);
 
-            test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
+                test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
+            }
+
+            long startTime = System.currentTimeMillis();
+            long elapsed = 0;
+            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
+                System.gc();
+                Thread.sleep(10);
+
+                elapsed = System.currentTimeMillis() - startTime;
+
+            } catch (Exception e) {
+
+            }
+
+            test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
         }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
-
-        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
     }
 
 }
