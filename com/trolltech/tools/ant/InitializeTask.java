@@ -261,6 +261,7 @@ public class InitializeTask extends Task {
         } catch (InterruptedException ex) {
         } catch (IOException ex) {
         }
+        return null;
     }
 
     private String decideOSName() {
