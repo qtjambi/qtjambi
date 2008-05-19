@@ -4,7 +4,7 @@ url                     = .
 
 quotinginformation      = true
 
-indexes                 = $QTDIR/qt.index
+indexes                 = $QTDIR/doc/html/qt.index
 
 outputdir               = ../html
 sourcedirs              = ../src
