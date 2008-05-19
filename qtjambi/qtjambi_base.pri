@@ -1,5 +1,9 @@
-!macx:!exists($(JAVADIR)) {
-  error("Please set your JAVADIR environment variable to point to the directory of your Java SDK; Current JAVADIR: $(JAVADIR)")
+!macx {
+      JAVA=$(JAVA_HOME)
+      !exists($$JAVA):JAVA=$(JAVADIR)
+      !exists($$JAVA) {
+          error("Qt Jambi needs the path to the Java SDK. Please set your JAVA_HOME environment variable to point to it...");
+      }
 }
 
 isEmpty(TARGET) {
@@ -25,14 +29,14 @@ macx:{
     QMAKE_EXTENSION_SHLIB = jnilib
     QMAKE_MACOSX_DEPLOYMENT_TARGET=10.4
 } else {
-    INCLUDEPATH += $$(JAVADIR)/include
+    INCLUDEPATH += $$JAVA/include
     win32 {
-        INCLUDEPATH += $$(JAVADIR)/include/win32
+        INCLUDEPATH += $$JAVA/include/win32
     } else {
     solaris-g++ | solaris-cc {
-        INCLUDEPATH += $$(JAVADIR)/include/solaris
+        INCLUDEPATH += $$JAVA/include/solaris
     } else {
-            INCLUDEPATH += $$(JAVADIR)/include/linux
+            INCLUDEPATH += $$JAVA/include/linux
         }
     }
 }
