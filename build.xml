@@ -289,7 +289,7 @@
             <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" load="yes" />
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}" />
-            <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.opengl}"/>
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
             <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>

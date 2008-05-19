@@ -46,21 +46,22 @@ public class InitializeTask extends Task {
         }
     }
 
-    public static final String OSNAME           = "qtjambi.osname";
-    public static final String LIBSUBDIR        = "qtjambi.libsubdir";
-    public static final String QTDIR            = "qtjambi.qtdir";
-    public static final String QMAKESPEC        = "qtjambi.qmakespec";
-    public static final String VERSION          = "qtjambi.version";
     public static final String COMPILER         = "qtjambi.compiler";
     public static final String CONFIGURATION    = "qtjambi.configuration";
+    public static final String DBUS             = "qtjambi.dbus";
+    public static final String LIBSUBDIR        = "qtjambi.libsubdir";
+    public static final String OPENGL           = "qtjambi.opengl";
+    public static final String OSNAME           = "qtjambi.osname";
     public static final String PHONON           = "qtjambi.phonon";
-    public static final String WEBKIT           = "qtjambi.webkit";
-    public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
     public static final String PHONON_DS9       = "qtjambi.phonon_ds9";
     public static final String PHONON_GSTREAMER = "qtjambi.phonon_gstreamer";
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
-    public static final String DBUS             = "qtjambi.dbus";
+    public static final String QMAKESPEC        = "qtjambi.qmakespec";
+    public static final String QTDIR            = "qtjambi.qtdir";
     public static final String SQLITE           = "qtjambi.sqlite";
+    public static final String VERSION          = "qtjambi.version";
+    public static final String WEBKIT           = "qtjambi.webkit";
+    public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -138,6 +139,10 @@ public class InitializeTask extends Task {
         String patterns = decideXMLPatterns();
         if ("true".equals(patterns))
             props.setNewProperty(null, XMLPATTERNS, patterns);
+
+        String opengl = decideOpenGL();
+        if ("true".equals(opengl))
+            props.setNewProperty(null, OPENGL, opengl);
     }
 
     private void checkCompilerDetails() {
@@ -337,6 +342,12 @@ public class InitializeTask extends Task {
     private String decideXMLPatterns() {
         String result = String.valueOf(doesQtLibExist("QtXmlPatterns", 4));
         if (verbose) System.out.println(XMLPATTERNS + ": " + result);
+        return result;
+    }
+
+    private String decideOpenGL() {
+        String result = String.valueOf(doesQtLibExist("QtOpenGL", 4));
+        if (verbose) System.out.println(OPENGL + ": " + result);
         return result;
     }
 
