@@ -14,7 +14,7 @@
 #include "generatorset.h"
 
 GeneratorSet::GeneratorSet() :
-    outDir(".."),
+    outDir("."),
     printStdout(false)
 {}
 
