@@ -259,11 +259,8 @@ public class InitializeTask extends Task {
             else
                 throw new BuildException("Failed to detect Visual Studio version\n  \"" + output + "\"");
         } catch (InterruptedException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
-        throw new BuildException("Failed to properly execute from 'cl' command");
     }
 
     private String decideOSName() {
