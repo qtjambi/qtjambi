@@ -50,7 +50,6 @@
       <echo>Using Native Jump Table. Please note that this feature is experimental...</echo>
       <property name="qtjambi.config.jumptable" value="jumptable"/>
       <property name="qtjambi.generator.jumptable" value="--native-jump-table"/>
-      <echo message="dustegreier... ${qtjambi.generator.jumptable}"/>
     </target>
     <target name="init.jumptable.dont"
         description="Initialize the jump table..." unless="qtjambi.useJumpTable">
@@ -105,10 +104,11 @@
     <target name="generator.qmake"
             depends="init, generator.xmlmerge"
             description="Runs qmake on the generator project.">
-    <qmake config="${qtjambi.configuration}"
-               dir="${outputDir}/generator"
-               pro="${sourceDir}/generator/generator.pro"
-               debugTools="${qtjambi.debug-tools}"/>
+      <mkdir dir="${outputDir}/generator"/>
+      <qmake config="${qtjambi.configuration}"
+             dir="${outputDir}/generator"
+             pro="${sourceDir}/generator/generator.pro"
+             debugTools="${qtjambi.debug-tools}"/>
     </target>
 
     <target name="generator.compile"
