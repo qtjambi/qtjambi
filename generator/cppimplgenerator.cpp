@@ -967,7 +967,7 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
         }
 
         s << INDENT << "    JNIEnv *__jni_env = qtjambi_current_environment();" << endl
-          << INDENT << "    if (__jni_env != 0) m_link->resetObject(__jni_env);" << endl;
+          << INDENT << "    if (__jni_env != 0) m_link->nativeShellObjectDestroyed(__jni_env);" << endl;
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
         s << INDENT << "    qtjambi_increase_shellDestructorCalledCount(QString::fromLatin1(\"" << java_class->name() << "\"));" << endl;

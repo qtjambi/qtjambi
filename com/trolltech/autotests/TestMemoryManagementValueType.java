@@ -32,6 +32,11 @@ public class TestMemoryManagementValueType extends TestMemoryManagement {
     }
 
     @Override
+    protected boolean hasVirtualDestructor() {
+        return false;
+    }
+
+    @Override
     protected String className() {
         return "ValueType";
     }

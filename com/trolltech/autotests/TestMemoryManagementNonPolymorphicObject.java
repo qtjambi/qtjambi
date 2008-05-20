@@ -29,6 +29,11 @@ public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManageme
         return false;
     }
 
+    @Override
+    protected boolean hasVirtualDestructor() {
+        return false;
+    }    
+
     /*
         Required for IntelliJ to realize that the method is a junit test
         since it doesn't check super classes.

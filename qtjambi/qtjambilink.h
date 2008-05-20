@@ -134,6 +134,9 @@ public:
        disposed */
     void javaObjectDisposed(JNIEnv *env);
 
+    /* Called by the shell destructor */
+    void nativeShellObjectDestroyed(JNIEnv *env);
+
     void registerSubObject(void *);
     void unregisterSubObject(void *);
 

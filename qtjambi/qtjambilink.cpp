@@ -153,8 +153,8 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     link->m_pointer = ptr;
     link->m_destructor_function = java_name.isEmpty() ? 0 : destructor(java_name);
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-    link->m_className = java_name.split("/").last();
+#if defined(QTJAMBI_DEBUG_TOOLS)    
+    link->m_className = java_name.indexOf("/") >= 0 ? java_name.split("/").last() : java_name;
     qtjambi_increase_linkConstructedCount(link->m_className);
 #endif
 
@@ -460,8 +460,20 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 
     if (deleteInMainThread())
         g_deleteLinkLock()->unlock();
+    else if (readyForDelete())
+        delete this;
 }
 
+void QtJambiLink::nativeShellObjectDestroyed(JNIEnv *env) 
+{
+    resetObject(env);
+
+    // If Java owns the object, then the call to the destructor
+    // comes from inside the link object (inside the house?), 
+    // in which case it will be deleted later.
+    if (ownership() != JavaOwnership && readyForDelete())
+        delete this;
+}
 
 void QtJambiLink::setMetaType(int metaType)
 {

@@ -101,6 +101,8 @@ public abstract class TestMemoryManagement {
 
     protected abstract String className();
 
+    protected abstract boolean hasVirtualDestructor();
+
     protected boolean supportsSplitOwnership() {
         return true;
     }
@@ -321,8 +323,14 @@ public abstract class TestMemoryManagement {
             QtJambiObject obj = createInstanceInJava();
             obj.disableGarbageCollection();
 
+            // If you disable garbage collection for any object without a virtual
+            // destructor, we need to sever, or we will risk having dangling pointers
+            if (!hasVirtualDestructor())
+                assertEquals(0L, obj.nativeId());
+
+
             deleteLastInstance();
-            assertEquals(0, obj.nativeId());
+            assertEquals(0L, obj.nativeId());
             test(className(), 0, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
 
         }

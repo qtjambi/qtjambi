@@ -692,9 +692,16 @@ QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *ob
 {
     int metaType = QMetaType::type(className);
 
-    if (metaType != QMetaType::Void)
-        return qtjambi_construct_object(env, java_object, object, metaType);
-    else {
+    if (metaType != QMetaType::Void) {
+        return qtjambi_construct_object(env, java_object, object, metaType
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            , QString::fromLatin1(className)
+#endif
+        
+        );
+
+    } else {
         jclass ex = env->FindClass("java/lang/Exception");
         env->ThrowNew(ex, QString::fromLatin1("Qt Jambi failed to construct native instance"
                                               " of type %1").arg(className).toLatin1());
