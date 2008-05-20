@@ -258,7 +258,11 @@ public abstract class TestMemoryManagement {
 
         gcAndWait();
 
-        test(className(), 1, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+        if (hasVirtualDestructor())
+            test(className(), 1, 0, 0, 1, 1, 1, 1, 0);
+        else
+            test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+
     }
 
     private void createInJavaDisableGCAndDeleteInNative() {
@@ -266,8 +270,12 @@ public abstract class TestMemoryManagement {
         obj.disableGarbageCollection();
 
         deleteLastInstance();
-        assertEquals(0L, obj.nativeId());
-        test(className(), 0, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+        if (hasVirtualDestructor()) {
+            assertEquals(0L, obj.nativeId());
+            test(className(), 0, 0, 0, 1, 1, 1, 1, 0);
+        } else {
+            test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+        }
     }
 
     // Many objects leak in this test. Cases that lead to this scenario
