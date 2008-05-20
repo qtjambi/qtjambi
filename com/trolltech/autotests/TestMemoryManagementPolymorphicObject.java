@@ -1,6 +1,7 @@
 package com.trolltech.autotests;
 
 import com.trolltech.autotests.generated.PolymorphicObjectType;
+import com.trolltech.autotests.generated.InvalidatorPolymorphicObjectType;
 import com.trolltech.qt.QtJambiObject;
 import org.junit.Test;
 
@@ -19,8 +20,22 @@ public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement 
         PolymorphicObjectType.deleteLastInstance();
     }
 
-    protected void invalidateObject(QtJambiObject obj) {
-        PolymorphicObjectType.invalidateObject((PolymorphicObjectType) obj);
+    QtJambiObject temporaryObject = null;
+    protected QtJambiObject invalidateObject(QtJambiObject obj, final boolean returnReference) {
+
+        new InvalidatorPolymorphicObjectType() {
+            @Override
+            public void overrideMe(PolymorphicObjectType t) {
+                if (returnReference) {
+                    temporaryObject = t;
+                    temporaryObject.setJavaOwnership();
+                }
+            }
+        }.invalidateObject((PolymorphicObjectType) obj);
+
+        QtJambiObject tmp = temporaryObject;
+        temporaryObject = null;
+        return tmp;
     }
 
     protected String className() {

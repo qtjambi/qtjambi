@@ -1,7 +1,9 @@
 package com.trolltech.autotests;
 
 import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.QNativePointer;
 import com.trolltech.autotests.generated.ValueType;
+import com.trolltech.autotests.generated.InvalidatorValueType;
 import org.junit.Test;
 
 public class TestMemoryManagementValueType extends TestMemoryManagement {
@@ -21,9 +23,22 @@ public class TestMemoryManagementValueType extends TestMemoryManagement {
         ValueType.deleteLastInstance();
     }
 
+    QtJambiObject temporaryObject = null;
     @Override
-    protected void invalidateObject(QtJambiObject obj) {
-        ValueType.invalidateObject(obj.nativePointer());
+    protected QtJambiObject invalidateObject(QtJambiObject obj, final boolean returnReference) {
+        new InvalidatorValueType() {
+            @Override
+            public void overrideMe(QNativePointer t) {
+                if (returnReference) {
+                    temporaryObject = ValueType.fromNativePointer(t);
+                    temporaryObject.setJavaOwnership();
+                }
+            }
+        }.invalidateObject(obj.nativePointer());
+
+        QtJambiObject tmp = temporaryObject;
+        temporaryObject = null;
+        return tmp;
     }
 
     @Override

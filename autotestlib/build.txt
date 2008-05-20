@@ -208,22 +208,26 @@
   <object-type name="QSet_int" />
   <object-type name="QStack_int" />
   <object-type name="QVector_int" />
-  <object-type name="PolymorphicObjectType">
-    <modify-function signature="invalidateObject(PolymorphicObjectType *)">
+  <object-type name="PolymorphicObjectType" />
+  <object-type name="NonPolymorphicObjectType" />
+  <value-type name="ValueType" />
+
+  <object-type name="InvalidatorPolymorphicObjectType">
+    <modify-function signature="overrideMe(PolymorphicObjectType*)">
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
   </object-type>
-  
-  <object-type name="NonPolymorphicObjectType">
-    <modify-function signature="invalidateObject(NonPolymorphicObjectType *)">
+
+  <object-type name="InvalidatorNonPolymorphicObjectType">
+    <modify-function signature="overrideMe(NonPolymorphicObjectType*)">
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
-  </object-type>  
-  
-  <value-type name="ValueType">
-    <modify-function signature="invalidateObject(ValueType *)">
+  </object-type>
+
+  <object-type name="InvalidatorValueType">
+    <modify-function signature="overrideMe(ValueType*)">
         <modify-argument index="1" invalidate-after-use="yes" />
-    </modify-function>  
-  </value-type>
+    </modify-function>
+  </object-type>
 
 </typesystem>

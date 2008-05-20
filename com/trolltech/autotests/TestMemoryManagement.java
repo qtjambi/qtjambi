@@ -6,6 +6,7 @@ import org.junit.*;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
 import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.core.QObject;
 
 // Attempt at complete test for general memory leaks and crashes
 // Should test that all the general cases work as intended by default.
@@ -95,7 +96,7 @@ public abstract class TestMemoryManagement {
 
     protected abstract void deleteLastInstance();
 
-    protected abstract void invalidateObject(QtJambiObject obj);
+    protected abstract QtJambiObject invalidateObject(QtJambiObject obj, final boolean returnReference);
 
     protected abstract boolean hasShellDestructor();
 
@@ -115,17 +116,7 @@ public abstract class TestMemoryManagement {
             createInstanceInJava();
         }
 
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
+        gcAndWait();
 
         test(className(), 1, 1, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
 
@@ -133,104 +124,72 @@ public abstract class TestMemoryManagement {
 
     @Test
     public void finalize_NotCreatedInJava_SplitOwnership() {
-        if (supportsSplitOwnership()) { 
+        if (supportsSplitOwnership()) {
             resetAll();
 
-            {
-                createInstanceInNative();
-            }
+            createInstanceInNativeWithSplitOwnership();
 
-            long startTime = System.currentTimeMillis();
-            long elapsed = 0;
-            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-                System.gc();
-                Thread.sleep(10);
-
-                elapsed = System.currentTimeMillis() - startTime;
-
-            } catch (Exception e) {
-
-            }
+            gcAndWait();
 
             test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
         }
+    }
+
+    private void createInstanceInNativeWithSplitOwnership() {
+        createInstanceInNative();
     }
 
     @Test
     public void finalize_NotCreatedInJava_JavaOwnership() {
         resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
-            obj.setJavaOwnership();
-        }
+        createInstanceInNativeWithJavaOwnership();
 
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
+        gcAndWait();
 
         test(className(), 1, 1, 0, 1, 1, 1, 0, 0);
+    }
+
+    private void createInstanceInNativeWithJavaOwnership() {
+        QtJambiObject obj = createInstanceInNative();
+        obj.setJavaOwnership();
     }
 
     @Test
     public void dispose_CreatedInJava_JavaOwnership() {
         resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInJava();
-            obj.dispose();
+        createInstanceInJavaAndDisposeIt();
 
-            test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
-        }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
+        gcAndWait();
 
         test(className(), 1, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+    }
+
+    private void createInstanceInJavaAndDisposeIt() {
+        QtJambiObject obj = createInstanceInJava();
+        obj.dispose();
+
+        test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
     }
 
     @Test
     public void dispose_CreatedInJava_CppOwnership() {
         resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInJava();
-            obj.disableGarbageCollection();
-            obj.dispose();
+        createInJavaDisableGCAndDispose();
 
-            test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
-        }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
+        gcAndWait();
 
         test(className(), 1, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+    }
+
+    private void createInJavaDisableGCAndDispose() {
+        QtJambiObject obj = createInstanceInJava();
+        obj.disableGarbageCollection();
+        obj.dispose();
+
+        test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
     }
 
     @Test
@@ -238,143 +197,110 @@ public abstract class TestMemoryManagement {
         if (supportsSplitOwnership()) {
             resetAll();
 
-            {
-                QtJambiObject obj = createInstanceInNative();
-                obj.dispose();
+            createInNativeAndDispose();
 
-                test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
-            }
-
-            long startTime = System.currentTimeMillis();
-            long elapsed = 0;
-            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-                System.gc();
-                Thread.sleep(10);
-
-                elapsed = System.currentTimeMillis() - startTime;
-
-            } catch (Exception e) {
-
-            }
+            gcAndWait();
 
             test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
         }
+    }
+
+    private void createInNativeAndDispose() {
+        QtJambiObject obj = createInstanceInNative();
+        obj.dispose();
+
+        test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
     }
 
     @Test
     public void dispose_NotCreatedInJava_JavaOwnership() {
         resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
-            obj.setJavaOwnership();
-            obj.dispose();
+        createInNativeSetJavaOwnershipAndDispose();
 
-            test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
-        }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
+        gcAndWait();
 
         test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
+    }
+
+    private void createInNativeSetJavaOwnershipAndDispose() {
+        QtJambiObject obj = createInstanceInNative();
+        obj.setJavaOwnership();
+        obj.dispose();
+
+        test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
     }
 
     @Test
     public void dispose_NotCreatedInJava_CppOwnership() {
         resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
-            obj.disableGarbageCollection();
-            obj.dispose();
+        createInNativeDisableGCAndDispose();
 
-            test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
-        }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
+        gcAndWait();
 
         test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
+    }
+
+    private void createInNativeDisableGCAndDispose() {
+        QtJambiObject obj = createInstanceInNative();
+        obj.disableGarbageCollection();
+        obj.dispose();
+
+        test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
     }
 
     @Test
     public void nativeDelete_CreatedInJava_CppOwnership() {
         resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInJava();
-            obj.disableGarbageCollection();
+        createInJavaDisableGCAndDeleteInNative();
 
-            // If you disable garbage collection for any object without a virtual
-            // destructor, we need to sever, or we will risk having dangling pointers
-            if (!hasVirtualDestructor())
-                assertEquals(0L, obj.nativeId());
-
-
-            deleteLastInstance();
-            assertEquals(0L, obj.nativeId());
-            test(className(), 0, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
-
-        }
-
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
+        gcAndWait();
 
         test(className(), 1, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
     }
 
+    private void createInJavaDisableGCAndDeleteInNative() {
+        QtJambiObject obj = createInstanceInJava();
+        obj.disableGarbageCollection();
+
+        deleteLastInstance();
+        assertEquals(0L, obj.nativeId());
+        test(className(), 0, 0, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+    }
+
+    // Many objects leak in this test. Cases that lead to this scenario
+    // must be specially handled to avoid memory leaks.
     @Test
     public void nativeDelete_NotCreatedInJava_CppOwnership() {
         resetAll();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
+        createInNativeDisableGCAndDeleteInNative();
+        gcAndWait();
 
-            // If the object is not created in Java and not a QObject, we
-            // have no way of knowing when it is deleted, so we need to
-            // sever our ties immediately when disableGC is called. The
-            // reason is that disable-gc in this case means c++ may try
-            // to delete the object at any given time and will fail to alert
-            // us about it, so we can get dangling pointers in our jambilink.
-            obj.disableGarbageCollection();
-            assertEquals(0, obj.nativeId());
-            test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
+        test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+    }
 
-            deleteLastInstance();
-            test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
-        }
+    private void createInNativeDisableGCAndDeleteInNative() {
+        QtJambiObject obj = createInstanceInNative();
 
+        obj.disableGarbageCollection();
+        test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+
+        deleteLastInstance();
+        test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+    }
+
+
+    private void gcAndWait() {
+        gcAndWait(1);
+    }
+
+    private void gcAndWait(int finalizedCount) {
         long startTime = System.currentTimeMillis();
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
+        while (QtJambiDebugTools.finalizedCount(className()) < finalizedCount && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
 
@@ -383,8 +309,6 @@ public abstract class TestMemoryManagement {
         } catch (Exception e) {
 
         }
-
-        test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
     }
 
     @Test
@@ -392,84 +316,63 @@ public abstract class TestMemoryManagement {
         if (supportsSplitOwnership()) {
             resetAll();
 
-            {
-                QtJambiObject obj = createInstanceInNative();
+            createInNativeDeleteInNative();
 
-                deleteLastInstance();
-                assertEquals(0, obj.nativeId());
-                test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
-
-            }
-
-            long startTime = System.currentTimeMillis();
-            long elapsed = 0;
-            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-                System.gc();
-                Thread.sleep(10);
-
-                elapsed = System.currentTimeMillis() - startTime;
-
-            } catch (Exception e) {
-
-            }
+            gcAndWait();
 
             test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
         }
     }
 
-    @Test
-    public void invalidate_NotCreatedInJava_JavaOwnership() {
-        resetAll();
+    private void createInNativeDeleteInNative() {
+        QtJambiObject obj = createInstanceInNative();
 
-        {
-            QtJambiObject obj = createInstanceInNative();
-            obj.setJavaOwnership();
-            invalidateObject(obj);
-
-            test(className(), 0, 1, 0, 1, 1, 1, 0, 0);
-        }
-
-        long startTime = System.currentTimeMillis();
-        long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
-
-            elapsed = System.currentTimeMillis() - startTime;
-
-        } catch (Exception e) {
-
-        }
-
-        test(className(), 1, 1, 0, 1, 1, 1, 0, 0);
+        deleteLastInstance();
+        test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
     }
 
+    @Test
+    public void invalidate_NotCreatedInJava_JavaOwnership() {
+        if (supportsSplitOwnership()) {
+            resetAll();
+
+            createInNativeSetJavaOwnershipAndInvalidate();
+
+            gcAndWait(2);
+
+            test(className(), 2, 1, 0, 2, 2, 2, 0, 0);
+        }
+    }
+
+    private void createInNativeSetJavaOwnershipAndInvalidate() {
+        QtJambiObject obj = createInstanceInNative();
+        QtJambiObject obj2 = invalidateObject(obj, true);
+        assertEquals(0L, obj2.nativeId());
+
+        test(className(), 0, 1, 0, 2, 1, 1, 0, 0);
+    }
+
+    // Note that there are two Java objects in use here,
+    // because there is an extra wrapper created in
+    // the virtual call from C++ to Java in invalidateObject().
     @Test
     public void invalidate_NotCreatedInJava_SplitOwnership() {
         if (supportsSplitOwnership()) {
             resetAll();
 
-            {
-                QtJambiObject obj = createInstanceInNative();
-                invalidateObject(obj);
+            createInNativeAndInvalidate();
 
-                test(className(), 0, 0, 0, 1, 1, 1, 0, 0);
-            }
+            gcAndWait(2);
 
-            long startTime = System.currentTimeMillis();
-            long elapsed = 0;
-            while (QtJambiDebugTools.finalizedCount(className()) == 0 && elapsed < TIME_LIMIT) try {
-                System.gc();
-                Thread.sleep(10);
-
-                elapsed = System.currentTimeMillis() - startTime;
-
-            } catch (Exception e) {
-
-            }
-
-            test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
+            test(className(), 2, 0, 0, 2, 2, 2, 0, 0);
         }
+    }
+
+    private void createInNativeAndInvalidate() {
+        QtJambiObject obj = createInstanceInNative();
+        invalidateObject(obj, false);
+
+        test(className(), 0, 0, 0, 2, 1, 1, 0, 0);
     }
 
 }

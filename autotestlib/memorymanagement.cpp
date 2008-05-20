@@ -23,10 +23,6 @@ PolymorphicObjectType *PolymorphicObjectType::newInstance()
     return new PolymorphicObjectType;
 }
 
-void PolymorphicObjectType::invalidateObject(PolymorphicObjectType *)
-{
-}
-
 
 
 
@@ -53,9 +49,6 @@ NonPolymorphicObjectType *NonPolymorphicObjectType::newInstance()
     return new NonPolymorphicObjectType;
 }
 
-void NonPolymorphicObjectType::invalidateObject(NonPolymorphicObjectType *)
-{
-}
 
 
 
@@ -80,8 +73,4 @@ void ValueType::deleteLastInstance()
 ValueType *ValueType::newInstance()
 {
     return new ValueType;
-}
-
-void ValueType::invalidateObject(ValueType *)
-{
 }

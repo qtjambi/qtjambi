@@ -461,8 +461,7 @@ void qtjambi_invalidate_object(JNIEnv *env, jobject java_object, bool checkJavaO
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java_object);
     if (link != 0 && (!checkJavaOwnership || !link->createdByJava())) {
-        link->resetObject(env);
-        delete link;
+        link->javaObjectInvalidated(env);
     }
 }
 
@@ -698,7 +697,7 @@ QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *ob
 #if defined(QTJAMBI_DEBUG_TOOLS)
             , QString::fromLatin1(className)
 #endif
-        
+
         );
 
     } else {

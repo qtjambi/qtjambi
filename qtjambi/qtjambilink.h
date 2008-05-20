@@ -137,6 +137,9 @@ public:
     /* Called by the shell destructor */
     void nativeShellObjectDestroyed(JNIEnv *env);
 
+    /* Called when java object is invalidated */
+    void javaObjectInvalidated(JNIEnv *env);
+
     void registerSubObject(void *);
     void unregisterSubObject(void *);
 

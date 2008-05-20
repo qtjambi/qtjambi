@@ -1,6 +1,8 @@
 #ifndef MEMORYMANAGEMENT_H
 #define MEMORYMANAGEMENT_H
 
+#include <qtjambi_core.h>
+
 class PolymorphicObjectType
 {
 public:
@@ -9,8 +11,6 @@ public:
 
     static PolymorphicObjectType *newInstance();
     static void deleteLastInstance();
-
-    static void invalidateObject(PolymorphicObjectType *t);
 
 private:
     static PolymorphicObjectType *m_lastInstance;
@@ -25,13 +25,11 @@ public:
     static NonPolymorphicObjectType *newInstance();
     static void deleteLastInstance();
 
-    static void invalidateObject(NonPolymorphicObjectType *t);    
-
 private:
     static NonPolymorphicObjectType *m_lastInstance;
 };
 
-class ValueType 
+class ValueType
 {
 public:
     ValueType();
@@ -40,12 +38,23 @@ public:
     static ValueType *newInstance();
     static void deleteLastInstance();
 
-    static void invalidateObject(ValueType *t);
-
-
 private:
     static ValueType *m_lastInstance;
 
 };
+
+#define INVALIDATOR(T) class Invalidator##T \
+{ \
+public: \
+    Invalidator##T() {} \
+    void invalidateObject(T *meh) { \
+        overrideMe(meh); \
+    } \
+    virtual void overrideMe(T *) = 0; \
+} \
+
+INVALIDATOR(PolymorphicObjectType);
+INVALIDATOR(NonPolymorphicObjectType);
+INVALIDATOR(ValueType);
 
 #endif
