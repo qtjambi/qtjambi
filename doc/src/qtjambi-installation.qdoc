@@ -57,7 +57,7 @@
         java -cp qtjambi-4.4.0_01.jar:qtjambi-linux32-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
 
         // Mac OS X
-        java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-mac-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
+        java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-macosx-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
 
         // Windows
         java -cp qtjambi-4.4.0_01.jar:qtjambi-win32-msvc2005-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
@@ -126,9 +126,11 @@
     procedure of building Qt Jambi from the command line.  Finally, we
     look at some common installation problems.
 
-    Note that a source package requires a Qt installation. On Mac OS
-    X, Qt must be configured without frameworks (by running the \c
-    configure script with the --no-framework option).
+    Note that a source package requires a Qt to be built. To avoid
+    potential binary incompatibilities it is highly recommended that
+    you build both Qt from scratch before building Qt Jambi from
+    source. On Mac OS X, Qt must be configured without frameworks (by
+    running the \c configure script with the --no-framework option).
 
     \section2 Configuring the System for Qt Jambi
 
@@ -181,14 +183,17 @@
     \section2 Building Qt Jambi
 
     Qt Jambi provides a ant task which handles all the tasks of
-    building the Qt Jambi libraries. To build Qt Jambi simply make sure the above requirements are met and type
+    building the Qt Jambi libraries. To build Qt Jambi simply make
+    sure the above requirements are met and type
 
     \code
     > ant
     \endcode
 
-    in the Qt Jambi directory. This will automatically go through the
-    following steps:
+    in the Qt Jambi directory. Please note that Qt Jambi requires the
+    \c ant-trax module of \c ant which is optional in some linux
+    distributions. Running \c ant will automatically go through the following
+    steps:
 
     \list
     \i Compile the Qt Jambi Generator
