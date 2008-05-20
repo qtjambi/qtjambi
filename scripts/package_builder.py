@@ -298,7 +298,7 @@ class Package:
 
     def hasEclipse(self):
         if self.binary and (self.license == pkgutil.LICENSE_COMMERCIAL or self.license == pkgutil.LICENSE_PREVIEW):
-            if self.platform == pkgutil.PLATFORM_LINUX and self.arch == pkgutil.ARCH_32:
+            if self.platform == pkgutil.PLATFORM_LINUX:
                 return True
             if self.platform == pkgutil.PLATFORM_WINDOWS and self.arch == pkgutil.ARCH_32:
                 return True
