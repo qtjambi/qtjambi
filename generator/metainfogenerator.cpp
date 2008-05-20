@@ -307,10 +307,10 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
 void MetaInfoGenerator::writeNameLiteral(QTextStream &s, const TypeEntry *entry, const QString &fileName)
 {
     static QSet<QString> used;
-    
+
     if (!used.contains(fileName + ":" + entry->name())) {
         s << "char __name_" << QString(entry->name()).replace(':', '_').replace(' ', '_') << "[] = \"" << entry->name() << "\";" << endl;
-        used.insert(fileName + ":" + entry->name()); 
+        used.insert(fileName + ":" + entry->name());
     }
 }
 #endif
@@ -334,8 +334,8 @@ void MetaInfoGenerator::writeCppFile()
             writeIncludeStatements(f->stream, classList, cls->package());
             f->stream << endl;
 
-#if defined(QTJAMBI_DEBUG_TOOLS)                
-            // Write the generic destructors and constructors 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            // Write the generic destructors and constructors
             f->stream << "template <typename T, const char *NAME>" << endl
                         << "void genericDestructor(void *t)" << endl
                         << "{" << endl
@@ -396,7 +396,9 @@ void MetaInfoGenerator::writeCppFile()
             foreach (TypeEntry *entry, entries) {
                 if (shouldGenerate(entry) && entry->isPrimitive()) {
                     writeCustomStructors(f->stream, entry);
+#if defined(QTJAMBI_DEBUG_TOOLS)
                     writeNameLiteral(f->stream, entry, f->name());
+#endif
                 }
             }
         }
@@ -692,7 +694,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
     QString constructorName = entry->customConstructor().name;
     QString destructorName = entry->customDestructor().name;
 #if defined(QTJAMBI_DEBUG_TOOLS)
-    
+
     if (constructorName.isEmpty())
         constructorName = "genericConstructor<" + entry->qualifiedCppName() + ">";
 
