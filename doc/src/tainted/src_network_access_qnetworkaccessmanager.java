@@ -38,7 +38,7 @@ public class src_network_access_qnetworkaccessmanager {
     public static void main(String args[]) {
         QApplication.initialize(args);
 //! [0]
-        QNetworkAccessManager anager = new QNetworkAccessManager(this);
+        QNetworkAccessManager manager = new QNetworkAccessManager(this);
         connect(manager, SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(replyFinished(QNetworkReply*)));
 

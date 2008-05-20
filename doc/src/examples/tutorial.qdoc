@@ -60,14 +60,14 @@
 
     Here's the complete source code for the application:
 
-    \snippet tutorial/HelloWorld.java 1
+    \snippet tutorial/HelloWorld.java 0
 
     \section1 Line by Line Walkthrough
 
 
     \snippet tutorial/HelloWorld.java 0
 
-    To use Qt Jambi classes, you need to import at least the\c gui
+    To use Qt Jambi classes, you need to import at least the \c gui
     package, which includes the QApplication class.  QApplication
     manages various application-wide resources and is needed to run a
     Qt Jambi application. The \c gui package contain GUI related
