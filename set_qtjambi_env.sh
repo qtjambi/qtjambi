@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-function dohelp() {
+function dohelp {
     echo
     echo Failed to set environment variables.
     echo The script needs to be sourced from within the Qt Jambi root directory...
