@@ -1,0 +1,113 @@
+<project default="all" basedir=".">
+
+    <property environment="env"/>
+
+    <tstamp/>
+
+    <property name="sourceDir" value="." />
+    <property name="outputDir" value="." />
+
+    <property name="jambiLib" value="${outputDir}/lib" />
+
+    <target name="help"
+            description="Provides detailed help.">
+    <echo>Generates an executable .jar file that runs the generator example...</echo>
+    </target>
+
+
+    <target name="init">
+        <taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
+        <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
+        <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
+        <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
+        <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
+
+        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
+    </target>
+
+    <target name="compile.native"
+        depends="init">
+
+      <generator dir="${outputDir}/autotestlib"
+		 outputDirectory="${outputDir}"
+		 typesystem="${sourceDir}/autotestlib/build.txt"
+		 header="${sourceDir}/autotestlib/global.h"/>
+
+      <qmake config="${qtjambi.configuration}"
+             dir="${outputDir}/autotestlib"
+             pro="${sourceDir}/autotestlib/autotestlib.pro" />
+
+      <make dir="${outputDir}/autotestlib" />
+    </target>
+
+
+    <target name="compile.java">
+      <javac destdir="${outputDir}"
+            debug="true">
+        <src path="${outputDir}"/>
+        <src path="${sourceDir}"/>
+        <include name="com/trolltech/autotests/*.java"/>
+        <include name="com/trolltech/autotests/generated/*.java"/>
+      </javac>
+    </target>
+
+    <target name="run">
+      <delete dir="${outputDir}/junitxml" />
+      <delete dir="${outputDir}/TestResults" />
+      <mkdir dir="${outputDir}/junitxml"/>
+      <mkdir dir="${outputDir}/TestResults"/>
+      <junit fork="yes" printsummary="yes" haltonfailure="no" timeout="20000">
+	<formatter type="xml" />
+	<test name="com.trolltech.autotests.TestCloneable" todir="${outputDir}/junitxml"/>
+
+	<test name="com.trolltech.autotests.TestClassFunctionality" todir="${outputDir}/junitxml"/>
+	<test name="com.trolltech.autotests.TestCloneable" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestConnections" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestConstruction" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestContainers" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestDestruction" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestFileEngine" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestI18N" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestInjectedCode" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestInjectedCodeV2" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestJumpTable" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestMemoryManagement" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestMemoryManagementNonPolymorphicObject" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestMemoryManagementPolymorphicObject" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestMemoryManagementValueType" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestMetaObject" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestNamespace" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestNativePointer" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestNullPointers" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestPolymorphicTypes" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestProperties" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQFlags" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQMessageHandler" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQObject" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQPaintEngine" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQSettings" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQTextStream" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQTransform" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestQVariant" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestReferenceCounting" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestSignalMapper" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestThreads" todir="${outputDir}/junitxml" />
+	<test name="com.trolltech.autotests.TestXml" todir="${outputDir}/junitxml" />
+      </junit>
+      
+      <junitreport todir="${outputDir}/junitxml">
+	<fileset dir="${outputDir}/junitxml">
+	  <include name="TEST-*.xml" />
+	</fileset>
+	<report format="frames" todir="${outputDir}/TestResults" />
+      </junitreport>
+
+    </target>
+
+    <target name="compile" 
+	    depends="compile.native, compile.java"/>
+    
+    <target name="all"
+        depends="init, compile, run" />
+
+</project>
