@@ -203,7 +203,7 @@ CONFIG += uitools
         if (initialized)
             return;
 
-        QExtensionManager anager = formEditor.extensionManager();
+        QExtensionManager manager = formEditor.extensionManager();
         Q_ASSERT(manager != 0);
 
         manager.registerExtensions(new MyExtensionFactory(manager),
