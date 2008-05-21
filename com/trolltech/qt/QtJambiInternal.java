@@ -275,6 +275,8 @@ public class QtJambiInternal {
             for (int i = 0; i < a.length; ++i) {
                 String arg = a[i].getName().replace("$", ".");
 
+                System.out.println(" - arg=" + arg + ", type=" + argumentTypes[i]);
+
                 Class<?> t = a[i];
 
                 if(t.isArray()){
@@ -289,12 +291,7 @@ public class QtJambiInternal {
                     arg = t.getName() + brackets;
                 }
 
-                if (argumentTypes[i].indexOf('.') < 0) {
-                    arg = arg.substring(arg.lastIndexOf('.') + 1);
-                }
-
-                if (!arg.equals(argumentTypes[i])) {
-
+                if (arg.indexOf(argumentTypes[i]) < 0) {
                     found = false;
                     break;
                 }
