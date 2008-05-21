@@ -206,6 +206,12 @@ class QCoreApplication___ extends QCoreApplication {
      * indefinitely.
      */
     public static void invokeAndWait(Runnable runnable) {
+        // Specialcase invoke and wait for the case of running on the current thread...
+        if (Thread.currentThread() == instance().thread()) {
+            runnable.run();
+            return;
+        }
+
         QSynchronousInvokable invokable = new QSynchronousInvokable(runnable);
         QCoreApplication.postEvent(invokable, new QEvent(QSynchronousInvokable.SYNCHRONOUS_INVOKABLE_EVENT));
         invokable.waitForInvoked();

@@ -974,4 +974,11 @@ public class TestClassFunctionality extends QApplicationTest {
         assertEquals(invokable_in_otherThread.thread, QCoreApplication.instance().thread());
 
     }*/
+
+    @Test
+    public void invokeAndWaitSameThread() {
+        Invokable i = new Invokable();
+        QCoreApplication.invokeAndWait(i);
+        assertTrue(i.wasRun());
+    }
 }
