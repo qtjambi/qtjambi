@@ -210,6 +210,7 @@
   <object-type name="QVector_int" />
   <object-type name="PolymorphicObjectType" />
   <object-type name="NonPolymorphicObjectType" />
+  <object-type name="QObjectType" />
   <value-type name="ValueType" />
 
   <object-type name="InvalidatorPolymorphicObjectType">
@@ -225,6 +226,12 @@
   </object-type>
 
   <object-type name="InvalidatorValueType">
+    <modify-function signature="overrideMe(ValueType*)">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  </object-type>
+
+  <object-type name="InvalidatorQObjectType">
     <modify-function signature="overrideMe(ValueType*)">
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>

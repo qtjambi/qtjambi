@@ -74,3 +74,27 @@ ValueType *ValueType::newInstance()
 {
     return new ValueType;
 }
+
+
+// QObjectType
+QObjectType *QObjectType::m_lastInstance = 0;
+QObjectType::QObjectType()
+{
+    m_lastInstance = this;
+}
+
+QObjectType::~QObjectType()
+{
+    if (this == m_lastInstance)
+        m_lastInstance = 0;
+}
+
+void QObjectType::deleteLastInstance()
+{
+    delete m_lastInstance;
+}
+
+QObjectType *QObjectType::newInstance()
+{
+    return new QObjectType;
+}

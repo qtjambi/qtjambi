@@ -23,6 +23,11 @@ public class TestMemoryManagementValueType extends TestMemoryManagement {
         ValueType.deleteLastInstance();
     }
 
+    @Override
+    protected boolean isValueType() {
+        return true;
+    }
+
     QtJambiObject temporaryObject = null;
     @Override
     protected QtJambiObject invalidateObject(QtJambiObject obj, final boolean returnReference) {

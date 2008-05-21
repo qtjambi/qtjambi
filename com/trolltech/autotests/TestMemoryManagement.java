@@ -7,6 +7,7 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
 import com.trolltech.qt.QtJambiObject;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QEventLoop;
 
 // Attempt at complete test for general memory leaks and crashes
 // Should test that all the general cases work as intended by default.
@@ -55,7 +56,7 @@ public abstract class TestMemoryManagement {
     // For these tests you need to compile Qt Jambi with DEFINES += QTJAMBI_DEBUG_TOOLS so that you
     // get compiled-in invocation counts.
 
-    private void resetAll() {
+    protected final void resetAll() {
         QtJambiDebugTools.reset_destructorFunctionCalledCount();
         QtJambiDebugTools.reset_disposeCalledCount();
         QtJambiDebugTools.reset_finalizedCount();
@@ -69,7 +70,7 @@ public abstract class TestMemoryManagement {
 
     private static final int TIME_LIMIT = 1000;
 
-    private void test(String className,
+    protected final void test(String className,
             int finalizedCount,
             int destructorFunctionCalledCount,
             int disposeCalledCount,
@@ -80,13 +81,13 @@ public abstract class TestMemoryManagement {
             int userDataDestroyedCount) {
 
         assertEquals(finalizedCount, QtJambiDebugTools.finalizedCount(className));
-        assertEquals(destructorFunctionCalledCount, QtJambiDebugTools.destructorFunctionCalledCount(className));
+        assertEquals(!isQObject() ? destructorFunctionCalledCount : 0, QtJambiDebugTools.destructorFunctionCalledCount(className));
         assertEquals(disposeCalledCount, QtJambiDebugTools.disposeCalledCount(className));
         assertEquals(linkConstructedCount, QtJambiDebugTools.linkConstructedCount(className));
         assertEquals(linkDestroyedCount, QtJambiDebugTools.linkDestroyedCount(className));
         assertEquals(objectInvalidatedCount, QtJambiDebugTools.objectInvalidatedCount(className));
-        assertEquals(shellDestructorCalledCount, QtJambiDebugTools.shellDestructorCalledCount(className));
-        assertEquals(userDataDestroyedCount, QtJambiDebugTools.userDataDestroyedCount(className));
+        assertEquals(hasShellDestructor() ? shellDestructorCalledCount : 0, QtJambiDebugTools.shellDestructorCalledCount(className));
+        assertEquals(isQObject() ? userDataDestroyedCount : 0, QtJambiDebugTools.userDataDestroyedCount(className));
 
     }
 
@@ -104,6 +105,18 @@ public abstract class TestMemoryManagement {
 
     protected abstract boolean hasVirtualDestructor();
 
+    protected boolean isValueType() {
+        return false;
+    }
+
+    protected boolean needsEventProcessing() {
+        return false;
+    }
+
+    protected boolean isQObject() {
+        return false;
+    }
+
     protected boolean supportsSplitOwnership() {
         return true;
     }
@@ -118,7 +131,7 @@ public abstract class TestMemoryManagement {
 
         gcAndWait();
 
-        test(className(), 1, 1, 0, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+        test(className(), 1, 1, 0, 1, 1, 1, 1, 1);
 
     }
 
@@ -147,7 +160,7 @@ public abstract class TestMemoryManagement {
 
         gcAndWait();
 
-        test(className(), 1, 1, 0, 1, 1, 1, 0, 0);
+        test(className(), 1, 1, 0, 1, 1, 1, 0, 1);
     }
 
     private void createInstanceInNativeWithJavaOwnership() {
@@ -163,14 +176,14 @@ public abstract class TestMemoryManagement {
 
         gcAndWait();
 
-        test(className(), 1, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 1, 1);
     }
 
     private void createInstanceInJavaAndDisposeIt() {
         QtJambiObject obj = createInstanceInJava();
         obj.dispose();
 
-        test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+        test(className(), 0, 1, 1, 1, 1, 1, 1, 1);
     }
 
     @Test
@@ -181,7 +194,7 @@ public abstract class TestMemoryManagement {
 
         gcAndWait();
 
-        test(className(), 1, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 1, 1);
     }
 
     private void createInJavaDisableGCAndDispose() {
@@ -189,7 +202,7 @@ public abstract class TestMemoryManagement {
         obj.disableGarbageCollection();
         obj.dispose();
 
-        test(className(), 0, 1, 1, 1, 1, 1, hasShellDestructor() ? 1 : 0, 0);
+        test(className(), 0, 1, 1, 1, 1, 1, 1, 1);
     }
 
     @Test
@@ -220,7 +233,7 @@ public abstract class TestMemoryManagement {
 
         gcAndWait();
 
-        test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 0, 1);
     }
 
     private void createInNativeSetJavaOwnershipAndDispose() {
@@ -228,7 +241,7 @@ public abstract class TestMemoryManagement {
         obj.setJavaOwnership();
         obj.dispose();
 
-        test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
+        test(className(), 0, 1, 1, 1, 1, 1, 0, 1);
     }
 
     @Test
@@ -239,7 +252,7 @@ public abstract class TestMemoryManagement {
 
         gcAndWait();
 
-        test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
+        test(className(), 1, 1, 1, 1, 1, 1, 0, 1);
     }
 
     private void createInNativeDisableGCAndDispose() {
@@ -247,7 +260,7 @@ public abstract class TestMemoryManagement {
         obj.disableGarbageCollection();
         obj.dispose();
 
-        test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
+        test(className(), 0, 1, 1, 1, 1, 1, 0, 1);
     }
 
     @Test
@@ -259,7 +272,7 @@ public abstract class TestMemoryManagement {
         gcAndWait();
 
         if (hasVirtualDestructor())
-            test(className(), 1, 0, 0, 1, 1, 1, 1, 0);
+            test(className(), 1, 0, 0, 1, 1, 1, 1, 1);
         else
             test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
 
@@ -272,7 +285,7 @@ public abstract class TestMemoryManagement {
         deleteLastInstance();
         if (hasVirtualDestructor()) {
             assertEquals(0L, obj.nativeId());
-            test(className(), 0, 0, 0, 1, 1, 1, 1, 0);
+            test(className(), 0, 0, 0, 1, 1, 1, 1, 1);
         } else {
             test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
         }
@@ -287,7 +300,7 @@ public abstract class TestMemoryManagement {
         createInNativeDisableGCAndDeleteInNative();
         gcAndWait();
 
-        test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+        test(className(), isQObject() ? 1 : 0, 0, 0, 1, isQObject() ? 1 : 0, isQObject() ? 1 : 0, 0, 1);
     }
 
     private void createInNativeDisableGCAndDeleteInNative() {
@@ -297,11 +310,11 @@ public abstract class TestMemoryManagement {
         test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
 
         deleteLastInstance();
-        test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+        test(className(), 0, 0, 0, 1, isQObject() ? 1 : 0, isQObject() ? 1 : 0, 0, 1);
     }
 
 
-    private void gcAndWait() {
+    protected final void gcAndWait() {
         gcAndWait(1);
     }
 
@@ -311,6 +324,9 @@ public abstract class TestMemoryManagement {
         while (QtJambiDebugTools.finalizedCount(className()) < finalizedCount && elapsed < TIME_LIMIT) try {
             System.gc();
             Thread.sleep(10);
+
+            if (needsEventProcessing())
+                QApplication.processEvents(new QEventLoop.ProcessEventsFlags(QEventLoop.ProcessEventsFlag.DeferredDeletion));
 
             elapsed = System.currentTimeMillis() - startTime;
 
@@ -328,7 +344,7 @@ public abstract class TestMemoryManagement {
 
             gcAndWait();
 
-            test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
+            test(className(), 1, 0, 0, 1, 1, 1, 0, 1);
         }
     }
 
@@ -336,28 +352,28 @@ public abstract class TestMemoryManagement {
         QtJambiObject obj = createInstanceInNative();
 
         deleteLastInstance();
-        test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+        test(className(), 0, 0, 0, 1, 0, 0, 0, 1);
     }
 
     @Test
     public void invalidate_NotCreatedInJava_JavaOwnership() {
-        if (supportsSplitOwnership()) {
-            resetAll();
+        resetAll();
 
-            createInNativeSetJavaOwnershipAndInvalidate();
+        createInNativeSetJavaOwnershipAndInvalidate();
 
-            gcAndWait(2);
+        gcAndWait(isQObject() ? 1 : 2);
 
-            test(className(), 2, 1, 0, 2, 2, 2, 0, 0);
-        }
+        test(className(), isQObject() ? 1 : 2, isValueType() ? 2 : 1, 0, isQObject() ? 1 : 2, isQObject() ? 1 : 2, isQObject() ? 1 : 2, 0, 1);
     }
 
     private void createInNativeSetJavaOwnershipAndInvalidate() {
         QtJambiObject obj = createInstanceInNative();
         QtJambiObject obj2 = invalidateObject(obj, true);
-        assertEquals(0L, obj2.nativeId());
 
-        test(className(), 0, 1, 0, 2, 1, 1, 0, 0);
+        // Java owned objects are not invalidated
+        assertTrue(0L != obj2.nativeId());
+
+        test(className(), 0, 0, 0, isQObject() ? 1 : 2, 0, 0, 0, 0);
     }
 
     // Note that there are two Java objects in use here,

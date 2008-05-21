@@ -50,8 +50,6 @@
     \
     void qtjambi_increase_##NAME(const QString &className) \
     { \
-        Q_ASSERT(!className.isEmpty()); \
-    \
         (*g_##NAME())[className] ++; \
     } \
     \

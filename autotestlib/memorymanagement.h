@@ -16,6 +16,20 @@ private:
     static PolymorphicObjectType *m_lastInstance;
 };
 
+class QObjectType: public QObject
+{
+    Q_OBJECT
+public:
+    QObjectType();
+    ~QObjectType();
+
+    static QObjectType *newInstance();
+    static void deleteLastInstance();
+
+private:
+    static QObjectType *m_lastInstance;
+};
+
 class NonPolymorphicObjectType
 {
 public:
@@ -56,5 +70,6 @@ public: \
 INVALIDATOR(PolymorphicObjectType);
 INVALIDATOR(NonPolymorphicObjectType);
 INVALIDATOR(ValueType);
+INVALIDATOR(QObjectType);
 
 #endif
