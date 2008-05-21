@@ -275,8 +275,6 @@ public class QtJambiInternal {
             for (int i = 0; i < a.length; ++i) {
                 String arg = a[i].getName().replace("$", ".");
 
-                System.out.println(" - arg=" + arg + ", type=" + argumentTypes[i]);
-
                 Class<?> t = a[i];
 
                 if(t.isArray()){
