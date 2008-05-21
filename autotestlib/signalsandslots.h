@@ -20,7 +20,6 @@
 #include <QtCore/QStringList>
 
 #include <qtjambi_core.h>
-#include <jni.h>
 
 #ifndef SIGNAL
 #  define SIGNAL(A) #A
