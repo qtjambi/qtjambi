@@ -747,7 +747,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
 
     if (!constructorName.isEmpty() && !destructorName.isEmpty()) {
-        s << "    QMetaType::registerType(\"" << entry->name() << "\"," << endl
+        s << "    QMetaType::registerType(\"" << entry->qualifiedCppName() << "\"," << endl
           << "                            reinterpret_cast<QMetaType::Destructor>("
           << destructorName
           << ")," << endl
