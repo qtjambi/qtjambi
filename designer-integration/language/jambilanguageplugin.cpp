@@ -193,6 +193,12 @@ bool JambiLanguage::isLanguageResource(const QString &path) const
 
 bool JambiLanguage::signalMatchesSlot(const QString &signal, const QString &slot) const
 {
+    // Similar logic to the qdesigner_membersheet.cpp which allows
+    // "partial" connections to be valid in the signal/slot editor
+    // window.
+    if (signal == QLatin1String("<signal>") || slot == QLatin1String("<slot>"))
+        return true;
+
     JNIEnv *env = qtjambi_current_environment();
 
     jstring signalString = qtjambi_from_qstring(env, signal);
