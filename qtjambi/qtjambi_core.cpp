@@ -554,8 +554,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
             // object isn't deleted.
             link->setSplitOwnership(env, link->javaObject(env));
             qt_object->setUserData(QtJambiLinkUserData::id(), 0);
-            delete p;
-            delete link;
+            delete p;            
             link = 0;
         }
     }

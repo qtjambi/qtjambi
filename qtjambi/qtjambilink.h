@@ -69,6 +69,7 @@ class QTJAMBI_EXPORT QtJambiLink
           m_in_cache(false),
           m_connected_to_java(false),
           m_delete_in_main_thread(false),
+          m_java_link_removed(false),
           m_destructor_function(0),
           m_ownership(SplitOwnership) // Default to split, because it's safest
     {
@@ -78,7 +79,7 @@ public:
     enum Ownership {
         JavaOwnership, // Weak ref to java object, deleteNativeObject deletes c++ object
         CppOwnership,  // Strong ref to java object until c++ object is deleted, deleteNativeObject does *not* delete c++ obj.
-        SplitOwnership // Weak ref to java object, deleteNativeObject does *not* delete c++ object
+        SplitOwnership // Weak ref to java object, deleteNativeObject does *not* delete c++ object. Only for objects not created by Java.
     };
 
     ~QtJambiLink();
@@ -144,7 +145,6 @@ public:
     void unregisterSubObject(void *);
 
     inline bool hasBeenFinalized() const { return m_has_been_finalized; }
-    inline bool readyForDelete() const { return (!deleteInMainThread() && !isQObject()) || (isQObject() && hasBeenFinalized() && qobjectDeleted()); }
     inline bool qobjectDeleted() const { return m_qobject_deleted; }
     inline PtrDestructorFunction destructorFunction() const { return m_destructor_function; }
     inline bool connectedToJava() const { return m_connected_to_java; }
@@ -167,6 +167,8 @@ public:
     void setJavaOwnership(JNIEnv *env, jobject java);
     void setSplitOwnership(JNIEnv *env, jobject java);
     void setDefaultOwnership(JNIEnv *env, jobject java);
+
+    bool javaLinkRemoved() const { return m_java_link_removed; }
 
     Ownership ownership() const { return Ownership(m_ownership); }
 
@@ -211,7 +213,8 @@ private:
     uint m_in_cache : 1;
     uint m_connected_to_java : 1;
     uint m_delete_in_main_thread : 1;
-    uint m_reserved1 : 23;
+    uint m_java_link_removed : 1;
+    uint m_reserved1 : 22;
 
     PtrDestructorFunction m_destructor_function;
 

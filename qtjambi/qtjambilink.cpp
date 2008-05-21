@@ -247,6 +247,8 @@ QtJambiLink::~QtJambiLink()
     if (deleteInMainThread())
         g_deleteLinkLock()->lockForWrite();
 
+
+
     JNIEnv *env = qtjambi_current_environment();
     cleanUpAll(env);
 
@@ -443,9 +445,35 @@ void QtJambiLink::javaObjectFinalized(JNIEnv *env)
     cleanUpAll(env);
     setAsFinalized();
 
-    if (deleteInMainThread())
+    // This is required for the user data destructor
+    // can know it's time to delete the link object.
+    m_java_link_removed = true;
+
+    // Link deletion policy:
+    //
+    // 1. QObjects will be deleteLater'd, and they always have a link, so we must keep the link
+    // 2. GUI objects with Java ownership will be deleted by event, the event will kill the link,
+    //    so we must keep the link.
+    // 3. For all other objects:
+    //    A. If Java has ownership of the native object, it has been deleted, so we kill the link
+    //    B. The last possible scenario is either C++ owns the Java object (it wouldn't have been finalized)
+    //       or it's not created by Java. Since the Java object has been finalized, we know the ownership
+    //       is split, and the object is not created by Java, and we can safely kill the link because
+    //       the native object cannot have a link back.
+
+    // Collect info before opening the lock, as the link may be deleted at any point after the
+    // lock is released, so we can't call any functions on it.
+    bool javaOwnership = ownership() == JavaOwnership;
+    bool isQObject = this->isQObject();
+    bool deleteInMainThread = this->deleteInMainThread();
+    bool qobjectDeleted = this->qobjectDeleted();
+
+    if (deleteInMainThread)
         g_deleteLinkLock()->unlock();
-    else if (readyForDelete())
+
+    // **** Link may be deleted at this point (QObjects and GUI objects that are Java owned)
+
+    if ((!isQObject || qobjectDeleted) && (!deleteInMainThread || !javaOwnership))
         delete this;
 }
 
@@ -464,9 +492,33 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 
     }
 
-    if (deleteInMainThread())
+    // Link has been severed from Java object. We can delete
+    // it as soon as the C++ object severs its link.
+    m_java_link_removed = true;
+
+    // Link deletion policy:
+    //
+    // NOTE that dispose() forces Java ownership of the C++ object, so we
+    // only need to consider this case.
+    //
+    // 1. QObjects that are in the wrong thread will be deleteLater'd, we must keep the link
+    // 2. QObjects that are the right thread have been deleted, we can kill the link [qobjectDeleted is true in this case]
+    // 3. GUI objects that are not in the GUI thread will be deleted later, we keep the link
+    // 4. All other objects can kill the link now
+
+    // Collect data about object before opening lock, as the link
+    // can be deleted at any point once the lock is open
+    bool isQObject = this->isQObject();
+    bool qobjectDeleted = this->qobjectDeleted();
+    bool deleteInMainThread = this->deleteInMainThread();
+    bool isGUIThread = QCoreApplication::instance() == 0 || QCoreApplication::instance()->thread() == QThread::currentThread();
+
+    if (deleteInMainThread)
         g_deleteLinkLock()->unlock();
-    else if (readyForDelete())
+
+    // **** Link may be deleted at this point (QObjects and GUI objects that are Java owned)
+    
+    if ((!isQObject || qobjectDeleted) && (!deleteInMainThread || isGUIThread))
         delete this;
 }
 
@@ -474,10 +526,15 @@ void QtJambiLink::nativeShellObjectDestroyed(JNIEnv *env)
 {
     resetObject(env);
 
-    // If Java owns the object, then the call to the destructor
-    // comes from inside the link object (inside the house?),
-    // in which case it will be deleted later.
-    if (ownership() != JavaOwnership && readyForDelete())
+    // Link deletion policy:
+    //
+    // Either the object has Java ownership or C++ ownership [we can only come here if the object was created by Java]
+    // We also know that this function is *never* called for QObjects, as they are memory managed differently.
+    // 1. If it has Java ownership, it is currently being deleted, we should keep the link because we are inside one of
+    //    the other deletion entry points, and the link will be deleted a little bit later.
+    // 2. If it has C++ ownership, the link should be deleted, because the Java object will now have its link removed.
+
+    if (ownership() != JavaOwnership)
         delete this;
 }
 
@@ -506,10 +563,19 @@ void QtJambiLink::resetObject(JNIEnv *env) {
 void QtJambiLink::javaObjectInvalidated(JNIEnv *env)
 {
     releaseJavaObject(env);
-    if (readyForDelete())
+
+    // Link deletion policy
+    //
+    // We can only get to this point if the object is not Java owned, so that reduces the cases we need to look at.
+    // 1. Either the native object has a link back (it's a QObject which has not been deleted,
+    //    or a polymorphic object which has been created by Java.) We should keep the link in this case.
+    // 2. or it doesn't (not created by Java and not QObject, or not polymorphic.) We should kill the link in this case.
+    //    because there's no way of getting back to it.
+
+    m_java_link_removed = true;
+    if (qobjectDeleted() || (!isQObject() && !createdByJava()))
         delete this;
 }
-
 
 /*******************************************************************************
  * Convenience stuff...
@@ -664,15 +730,22 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
         // in which case there is no way for us to properly clean up...
         if (!env)
             return;
-        m_link->releaseJavaObject(env);
         m_link->setAsQObjectDeleted();
+
         m_link->resetObject(env);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
         qtjambi_increase_userDataDestroyedCount(m_link->m_className);
 #endif
 
-        if (m_link->readyForDelete())
+
+        // Link deletion policy
+        //
+        // 1. If there's Java ownership, java link removed: We are being deleteLater'd. Kill the link.
+        // 2. Java ownership, java link not removed: We are currently being deleted. Keep the link. (dispose() basically)
+        // 3. Cpp/Split ownership: Java object has been invalidated, so there's no link back. We can kill the link.
+
+        if (m_link->ownership() != QtJambiLink::JavaOwnership || m_link->javaLinkRemoved())
             delete m_link;
     }
 }
