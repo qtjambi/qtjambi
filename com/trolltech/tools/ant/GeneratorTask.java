@@ -14,7 +14,7 @@ public class GeneratorTask extends Task{
     private String dir = ".";
     private String includePaths = "";
     private boolean silent = true;
-    private String options;
+    private String options = null;
 
     private String searchPath() {
 
@@ -40,7 +40,11 @@ public class GeneratorTask extends Task{
     @Override
     public void execute() throws BuildException {
         System.out.println(msg);
-        String arguments = " " + options;
+        String arguments = " ";
+
+        if (options != null) {
+            arguments += options + " ";
+        }
 
         if( !includePaths.equals("") ){
             arguments += " --include-paths=" + includePaths;
