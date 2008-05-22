@@ -88,6 +88,7 @@ class Package:
             "whitepaper"
             ]
         self.removeFiles = [
+            "build_autotests.xml"
             ]
         self.removePatterns = [
             re.compile("CRT"),
