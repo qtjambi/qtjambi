@@ -1,10 +1,11 @@
 
-package com.trolltech.examples;
+package com.trolltech.examples.phonon;
 
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.phonon.*;
+import com.trolltech.examples.*;
 
 import java.util.*;
 
