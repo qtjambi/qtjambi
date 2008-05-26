@@ -239,8 +239,9 @@ public class MusicPlayer extends QMainWindow
         exitAction.setShortcut(tr("Ctrl+X"));
         aboutAction = new QAction(tr("A&bout"), this);
         aboutAction.setShortcut(tr("Ctrl+B"));
-        aboutQtAction = new QAction(tr("About &Qt"), this);
-        aboutQtAction.setShortcut(tr("Ctrl+Q"));
+        aboutQtJambiAction = new QAction(tr("About &Qt Jambi"), this);
+        aboutQtJambiAction.setShortcut(tr("Ctrl+Q"));
+        aboutQtAction = new QAction(tr("About Q&t"), this);
 
 //![5]
         playAction.triggered.connect(mediaObject, "play()");
@@ -251,6 +252,7 @@ public class MusicPlayer extends QMainWindow
         exitAction.triggered.connect(this, "close()");
         aboutAction.triggered.connect(this, "about()");
         aboutQtAction.triggered.connect(QApplication.instance(), "aboutQt()");
+        aboutQtJambiAction.triggered.connect(QApplication.instance(), "aboutQtJambi()");
     }
 
     private void setupMenus()
@@ -262,7 +264,8 @@ public class MusicPlayer extends QMainWindow
 
         QMenu aboutMenu = menuBar().addMenu(tr("&Help"));
         aboutMenu.addAction(aboutAction);
-        aboutMenu.addAction(aboutQtAction);
+        aboutMenu.addAction(aboutQtJambiAction);
+        aboutMenu.addAction(aboutQtAction);        
     }
 
 //![3]
@@ -325,6 +328,7 @@ public class MusicPlayer extends QMainWindow
 
         setCentralWidget(widget);
         setWindowTitle("Phonon Music Player");
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 
 //![variables]
@@ -344,6 +348,7 @@ public class MusicPlayer extends QMainWindow
     private QAction exitAction;
     private QAction aboutAction;
     private QAction aboutQtAction;
+    private QAction aboutQtJambiAction;
     private QLCDNumber timeLcd;
     private QTableWidget musicTable;
 

@@ -24,6 +24,7 @@ public class CodeEditor extends QPlainTextEdit
         highlightCurrentLine();
 
         setWindowTitle("Code Editor Example");
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
     }
 //![constructor]
 
