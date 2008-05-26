@@ -1,5 +1,5 @@
 
-include(../pri/jambi.pri)
+include($$PWD/../../qtjambi/qtjambi_include.pri)
 
 TEMPLATE = lib
 CONFIG += plugin designer

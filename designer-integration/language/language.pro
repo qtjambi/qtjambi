@@ -5,7 +5,7 @@ DESTDIR = ../../plugins/designer
 TARGET = JambiLanguage
 
 # Have to include after TARGET...
-include($$PWD/../pri/jambi.pri)
+include($$PWD/../../qtjambi/qtjambi_include.pri)
 
 HEADERS += \
     jambilanguageplugin.h \
