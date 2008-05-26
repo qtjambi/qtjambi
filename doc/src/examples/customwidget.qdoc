@@ -234,3 +234,4 @@
     it's an enum type or a flag type.
 
     The example has a single enum property which is called \c unit.
+*/

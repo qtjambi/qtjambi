@@ -215,13 +215,13 @@
     this case \c QT_PLUGIN_PATH and dependency on runtime libraries
     has to be handled by the user. Using this method it would
     theoretically be possible to use pre-installed versions of Qt on a
-    given system, such as a Linux distribution, but we \b {strongly
+    given system, such as a Linux distribution, but we \bold{strongly
     discourage} this, as the libraries installed on the system may be
     binary incompatible with the libraries shipped with Qt
     Jambi. Mixing binary incompatible libraries may lead to load
     errors and sporadic crashes. Using the \c {.jar} approach ensures
     that only the precise libraries you want to load, will be loaded,
-    and is \b { significantly safer }.
+    and is \bold{ significantly safer }.
 
     \section2 Deploying a Pure Qt Jambi Application
 
@@ -329,7 +329,7 @@
     When building your own libraries, it is evident that all the
     libraries in your project, both Qt, Qt Jambi and your own
     generated libraries are compiled with the same compiler based on
-    the same configuration of Qt. \b {Do not use the prebuilt binary
+    the same configuration of Qt. \bold{Do not use the prebuilt binary
     package for this kind of distribution}. Compiling every part of
     with the same configuration avoids any binary compatibility
     issues. How to build Qt and Qt Jambi is documented in the \l
@@ -401,7 +401,7 @@
 
     The \c {qtjambi-platform-jar} section above starts the
     specification of the platform archive. One important piece here is
-    the \b cacheKey, which is used to uniqly identify this set of
+    the \bold cacheKey, which is used to uniqly identify this set of
     libraries in the cache. If this key is not unique this platform
     archive may conflict with a different platform archive and the
     resulting application will most likely fail to run.
@@ -574,7 +574,7 @@
          and see how our platform archives are organized for guidance.
 
       \o If you don't deploy a pure Qt Jambi application based on our
-         binary package you must build \b every part binary your
+         binary package you must build \bold every part binary your
          package yourself. If you mix parts from our Qt Jambi binary
          packages with system Qt or Qt binary packages, you will most
          likely run into problems.
