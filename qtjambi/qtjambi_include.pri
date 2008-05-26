@@ -6,9 +6,9 @@ CONFIG(debug, debug|release) {
 }
 
 macx:{
-    LIBS += $$DESTDIR/lib$$member(QTJAMBI_LIB_NAME, 0).jnilib
+    LIBS += $$PWD/../lib/lib$$member(QTJAMBI_LIB_NAME, 0).jnilib
 } else {
-    LIBS += -L$$DESTDIR -l$$QTJAMBI_LIB_NAME
+    LIBS += -L$$PWD/../lib -l$$QTJAMBI_LIB_NAME
 }
 
 QTJAMBI_CPP = ../cpp
