@@ -14,11 +14,7 @@ HEADERS += \
 
 SOURCES += \
     jambilanguageplugin.cpp \
-        qtjambiintrospection.cpp \
-
-CONFIG(debug, debug|release) {
-    TARGET = $$member(TARGET, 0)_debuglib
-}
+    qtjambiintrospection.cpp \
 
 win32-msvc.net{
     QMAKE_CXXFLAGS += -Zm1000
@@ -28,4 +24,4 @@ win32-msvc.net{
 
 RESOURCES += resources.qrc
 
-INCLUDEPATH += $$PWD $$QTDIR/QtDesigner
+INCLUDEPATH += $$PWD $$QTDIR/QtDesigner $$PWD/../include
