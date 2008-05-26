@@ -341,7 +341,7 @@ public class PlatformJarTask extends Task {
         } catch (Exception e) {
             System.out.println(" - " + e.getMessage());
             System.out.println("\n********** Warning **********");
-            System.out.println("Without rpaths, you run the risk of that Qt applications and plugins");
+            System.out.println("Without rpaths, you run the risk that Qt applications and plugins");
             System.out.println("load incorrect Qt libraries (such as /usr/lib/libQtCore.so), which");
             System.out.println("may result in binary incompatility and crashes.");
             System.out.println("*****************************\n");
