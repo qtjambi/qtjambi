@@ -21,9 +21,11 @@ serversocket.listen(16)
 class Options:
     def __init__(self):
         self.qtLabel = None
-        self.qtVersion = None
         self.qtBranch = None
-        self.packageRoot = None
+        if pkgutil.isWindows():
+            self.packageRoot = "C:/tmp/qt-builder"
+        else:
+            self.packageRoot = "/var/tmp/qt-builder"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
         self.startDir = os.getcwd()
@@ -75,7 +77,7 @@ def setupServers():
 
     if options.buildWindows and options.build32:
         win32 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32)
-        win32.host = "tirionvm-win32.troll.no"
+        win32.host = "packy-win32-clone1.troll.no"
         win32.task = options.startDir + "/build_qt_windows.bat"
         win64.compiler = "msvc2005"
         servers.append(win32)
@@ -109,7 +111,6 @@ def prepareSourceTree():
     tmpFile.write("        -//depot/qt/%s/demos/... //qt-builder/qt/demos/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/doc/... //qt-builder/qt/doc/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/tmake/... //qt-builder/qt/tmake/...\n" % options.qtBranch)
-    tmpFile.write("        -//depot/qt/%s/dist/... //qt-builder/qt/dist/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/translations/... //qt-builder/qt/translations/...\n" % options.qtBranch)
     tmpFile.close()
     os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) );
@@ -121,7 +122,7 @@ def prepareSourceTree():
         label = "@" + options.qtLabel
     pkgutil.debug(" - syncing p4...")
     os.system("p4 -u %s -c %s sync -f //%s/... %s > .p4sync.buildlog" % (options.p4User, options.p4Client, options.p4Client, label))
-    os.system("chmod -R a+uw .")
+    os.system("chmod -R u+w .")
 
 
 
@@ -144,6 +145,9 @@ def packageAndSend(server):
 
     print " - setting up eval subdir..."
     shutil.copytree("qt", "tmptree/eval");
+    # Extra files needed by eval
+    shutil.copy("qt/dist/eval/src/corelib/eval.pri", "tmptree/eval/src/corelib");
+    shutil.copy("qt/dist/eval/src/corelib/kernel/qtcore_eval.cpp", "tmptree/eval/src/corelib/kernel");
     pkgutil.expandMacroes("tmptree/eval", eval_header)
 
     if server.platform == pkgutil.PLATFORM_WINDOWS:
@@ -191,9 +195,7 @@ def waitForResponse():
 def main():
     for i in range(0, len(sys.argv)):
         arg = sys.argv[i];
-        if arg == "--qt-version":
-            options.qtVersion = sys.argv[i+1]
-        elif arg == "--package-root":
+        if arg == "--package-root":
             options.packageRoot = sys.argv[i+1]
         elif arg == "--qt-branch":
             options.qtBranch = sys.argv[i+1]
@@ -215,7 +217,8 @@ def main():
             options.build64 = False
 
     pkgutil.debug("Options:")
-    print "  - Qt Version: %s" % options.qtVersion
+    print "  - Qt Branch: %s" % options.qtBranch
+    print "  - Qt Label: %s" % options.qtLabel
     print "  - Package Root: " + options.packageRoot
     print "  - P4 User: " + options.p4User
     print "  - P4 Client: " + options.p4Client
