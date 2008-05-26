@@ -928,13 +928,13 @@ class QApplication___ extends QApplication {
         if (m_instance != null)
             throw new RuntimeException("QApplication can only be initialized once");
 
-        m_instance = new QApplication(args);
-        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
         String path = Utilities.unpackPlugins();
         if (path != null)
             addLibraryPath(path);
         else
             QtJambiInternal.setupDefaultPluginPath();
+        m_instance = new QApplication(args);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }
 
     public static void aboutQtJambi() {

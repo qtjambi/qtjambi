@@ -155,13 +155,13 @@ class QCoreApplication___ extends QCoreApplication {
         if (m_instance != null)
             throw new RuntimeException("QApplication can only be initialized once");
 
-        m_instance = new QCoreApplication(args);
-        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
         String path = Utilities.unpackPlugins();
         if (path != null)
             addLibraryPath(path);
         else
             QtJambiInternal.setupDefaultPluginPath();
+        m_instance = new QCoreApplication(args);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }
 
     private void disposeOfMyself() {
