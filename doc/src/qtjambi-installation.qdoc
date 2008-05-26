@@ -147,13 +147,23 @@
 
     \header \o Configuration \o Comment
 
+    \row \o All \o Some featuers in Qt are turned on or off for Qt
+    Jambi by configuring with \c {-D QT_JAMBI_BUILD}. Qt Jambi also
+    has no need for the Qt 3 support library so it is recommended to
+    compile with \c {-no-qt3support}.
+
     \row \o Mac OS X \o Qt Jambi only supports Qt configured with \c
-                     {-no-framework}
+    {-no-framework} and because of compatibility it is recommended to
+    configure Qt against the 10.4 SDK, \c{-sdk
+    /Developer/SDKs/MacOSX10.4u.sdk}
 
     \row \o Linux \o Sun's Java Virtual Machine has a bug preventing
     it from using MMX and SSE instructions. For deployment against 1.5
     Java runtimes, configure Qt with the options \c{-no-mmx -no-sse
     -no-sse2 -no-3dnow} to avoid problems.
+
+    \row \o Windows (MSVC 2005 or newer) \o -D QT_JAMBI_BUILD is required
+    for plugins to properly load.
 
     \endtable
 
@@ -193,7 +203,7 @@
     in the Qt Jambi directory. Please note that Qt Jambi requires the
     \c ant-trax module of \c ant which is optional in some linux
     distributions. Running \c ant will automatically go through the following
-    steps:
+   = steps:
 
     \list
     \i Compile the Qt Jambi Generator
