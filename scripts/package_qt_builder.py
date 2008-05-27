@@ -112,6 +112,7 @@ def prepareSourceTree():
     tmpFile.write("        -//depot/qt/%s/doc/... //qt-builder/qt/doc/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/tmake/... //qt-builder/qt/tmake/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/translations/... //qt-builder/qt/translations/...\n" % options.qtBranch)
+    tmpFile.write("        -//depot/qt/%s/dist/... //qt-builder/qt/dist/...\n" % options.qtBranch)
     tmpFile.close()
     os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) );
     os.remove("p4spec.tmp")
