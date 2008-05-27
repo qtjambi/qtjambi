@@ -528,7 +528,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
 
     referenceCounts = java_function->referenceCounts(java_function->implementingClass(), 0);
     AbstractMetaType *return_type = java_function->type();
-    QString new_return_type = java_function->typeReplaced(0);
+    QString new_return_type = QString(java_function->typeReplaced(0)).replace('$', '.');
     bool has_return_type = new_return_type != "void"
         && (!new_return_type.isEmpty() || return_type != 0);
     TypeSystem::Ownership owner = java_function->ownership(java_function->implementingClass(), TypeSystem::TargetLangCode, 0);
@@ -553,7 +553,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
             if (new_return_type.isEmpty())
                 s << translateType(return_type, java_function->implementingClass());
             else
-                s << new_return_type.replace('$', '.');
+                s << new_return_type;
 
             s << " __qt_return_value = ";
         } else {
@@ -573,18 +573,25 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
         // java.lang.Object so we may have to cast...
         QString signature = JumpTablePreprocessor::signature(java_function);
 
-//         printf("return: %s::%s return=%p, replaced=%s, signature: %s\n",
-//                qPrintable(java_function->implementingClass()->name()),
+//         printf("return: %s::%s return=%p, replace-value=%s, replace-type=%s signature: %s\n",
+//                qPrintable(java_function->ownerClass()->name()),
 //                qPrintable(java_function->signature()),
 //                return_type,
 //                qPrintable(java_function->argumentReplaced(0)),
+//                qPrintable(new_return_type),
 //                qPrintable(signature));
 
-        if (return_type && java_function->argumentReplaced(0).isEmpty() && signature.at(0) == 'L') {
-            s << "(" << translateType(return_type, java_function->implementingClass()) << ") ";
+        if (has_return_type && signature.at(0) == 'L') {
+            if (new_return_type.length() > 0) {
+//                 printf(" ---> replace-type: %s\n", qPrintable(new_return_type));
+                s << "(" << new_return_type << ") ";
+            } else if (java_function->argumentReplaced(0).isEmpty()) {
+//                 printf(" ---> replace-value\n");
+                s << "(" << translateType(return_type, java_function->implementingClass()) << ") ";
+            }
         }
 
-        s << "JTbl." << JumpTablePreprocessor::signature(java_function) << "("
+            s << "JTbl." << JumpTablePreprocessor::signature(java_function) << "("
           << java_function->jumpTableId() << ", ";
 
         // Constructors and static functions don't have native id, but
