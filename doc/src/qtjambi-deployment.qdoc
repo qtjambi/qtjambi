@@ -79,7 +79,7 @@
 
     \table
     \header \o Platform \o Prefix   \o Suffix   \o Example
-    \row    \o Windows      \o \i none  \o .dll     \o qtjambi.dll
+    \row    \o Windows  \o \e none  \o .dll     \o qtjambi.dll
     \row    \o Linux    \o lib      \o .so      \o libqtjambi.so
     \row    \o Mac OS X \o lib      \o .jnilib  \o libqtjambi.jnilib
     \endtable
@@ -99,7 +99,7 @@
 
     \table
     \header \o Platform \o Prefix   \o Suffix   \o Example
-    \row    \o Windows      \o \i none  \o .dll     \o QtCore4.dll
+    \row    \o Windows  \o \e none  \o .dll     \o QtCore4.dll
     \row    \o Linux    \o lib      \o .so.4    \o libQtCore.so.4
     \row    \o Mac OS X \o lib      \o .4.dylib \o libQtCore.4.dylib
     \endtable
@@ -569,7 +569,7 @@
       \o Check the dependency graph of the libraries you are distributing
 
       \o Deploying binaries based on Microsoft Visual Studio 2005 or
-         2008 is \i hard, because of the manifests. Read the
+         2008 is \e hard, because of the manifests. Read the
          description above, the documentation on msdn.microsoft.com,
          and see how our platform archives are organized for guidance.
 
