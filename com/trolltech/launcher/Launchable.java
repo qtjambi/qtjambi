@@ -54,6 +54,13 @@ public class Launchable {
         int start = -1;
         int end = -1;
         boolean stop = false;
+        
+        QRegExp regExp = new QRegExp("//!\\s*\\[.*\\][^\\n]*\\n");
+        regExp.setMinimal(true);
+        while (regExp.indexIn(source) != -1) {
+            source = source.replace(regExp.cap(), "");
+        }
+
         do {
             start = source.indexOf("// REMOVE-START");
             end = source.indexOf("// REMOVE-END");
