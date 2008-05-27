@@ -137,6 +137,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCertificate' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCipher' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslConfiguration' has equals operators but no qHash() function"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkProxy' has equals operators but no qHash() function" />
 
   <!-- For people building without SSL support -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslSocket' for enum 'SslMode' is not declared" />

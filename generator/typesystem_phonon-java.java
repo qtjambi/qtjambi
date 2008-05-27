@@ -13,3 +13,15 @@ class ObjectDescriptionSubclass___ {
     }
 
 }// class
+
+class Phonon___ {
+
+    public String phononVersion() {
+        com.trolltech.qt.QNativePointer np = phononVersion_private();
+        if (np != null)
+            return com.trolltech.qt.QtJambiInternal.charPointerToString(np);
+        else
+            return null;
+    }
+
+}// class

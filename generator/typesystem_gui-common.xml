@@ -5013,5 +5013,6 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: object type 'QAccessible' extended by interface type 'QAbstractAccessibleFactory'. The resulting API will be less expressive than the original." />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextOption_Tab' has equals operators but no qHash() function"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Rejected enum has no alternative...: QPalette::NColorRoles" />
 
 </typesystem>

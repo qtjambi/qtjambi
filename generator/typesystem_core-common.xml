@@ -27,6 +27,7 @@
   <rejection class="" enum-name="QtValidLicenseForScriptModule"/>
   <rejection class="" enum-name="QtValidLicenseForHelpModule"/>
   <rejection class="QtConcurrent" enum-name="enum_1" />
+  <rejection class="QtConcurrent" function-name="operator|" />
 
   <rejection class="QFuture::const_iterator" />
   <rejection class="QFutureInterface" />

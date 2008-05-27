@@ -47,6 +47,10 @@
                 <replace-default-expression with="null" />
             </modify-argument>
         </modify-function>
+        <modify-function signature="phononVersion()" access="private" rename="phononVersion_private" associated-to="phononVersion()" />
+        <inject-code>
+            <import-file name="typesystem_phonon-java.java" quote-after-line="class Phonon___" quote-before-line="}// class"/>
+        </inject-code>
     </namespace-type>
 
     <interface-type name="Phonon::PlatformPlugin">
