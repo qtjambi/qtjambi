@@ -554,7 +554,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
             // object isn't deleted.
             link->setSplitOwnership(env, link->javaObject(env));
             qt_object->setUserData(QtJambiLinkUserData::id(), 0);
-            delete p;            
+            delete p;
             link = 0;
         }
     }
@@ -1465,7 +1465,7 @@ static QString locate_vm_linux_and_solaris()
         if (!vm_location_override.isEmpty())
             jpaths << vm_location_override.append(QLatin1String("/lib/"));
         else
-            jpaths << QString::fromLatin1("%1/jre/lib").arg(env)
+            jpaths << QString::fromLatin1("%1/jre/lib/").arg(env)
                    << QString::fromLatin1("%1/lib/").arg(env);
 
         QStringList jmachs;
