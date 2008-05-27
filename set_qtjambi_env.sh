@@ -13,23 +13,17 @@ dohelp() {
 
 ROOT=$PWD
 
-# Check if we're executed directly, not sourced
-if [ -e $0 ]; then
-    dohelp
-    exit
-fi
-
 # check if we're called from the wrong directory...
 CLASSES_JAR=$(ls qtjambi-4*.jar)
 if [ -z $CLASSES_JAR ]; then
+    echo "tullE"
     dohelp
-    return
+else
+    VERSION=${CLASSES_JAR:8:8}
+    PLATFORM_JAR=$(ls qtjambi-*gcc*.jar)
+    EXAMPLES_JAR=$(ls qtjambi-examples-*.jar)
+
+    export CLASSPATH=$PWD/$CLASSES_JAR:$PWD/$EXAMPLES_JAR:$PWD/$PLATFORM_JAR:$CLASSPATH
+
+    echo Setting Environment for Qt Jambi $VERSION...
 fi
-
-VERSION=${CLASSES_JAR:8:8}
-PLATFORM_JAR=$(ls qtjambi-*gcc*.jar)
-EXAMPLES_JAR=$(ls qtjambi-examples-*.jar)
-
-export CLASSPATH=$PWD/$CLASSES_JAR:$PWD/$EXAMPLES_JAR:$PWD/$PLATFORM_JAR:$CLASSPATH
-
-echo Setting Environment for Qt Jambi $VERSION...
