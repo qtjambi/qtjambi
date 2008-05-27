@@ -3,7 +3,6 @@ package com.trolltech.qt.gui;
 import java.lang.reflect.Method;
 
 import com.trolltech.qt.QNoNativeResourcesException;
-import com.trolltech.qt.QtJambiInternal;
 import com.trolltech.qt.core.QByteArray;
 
 // Not actually generated, but just to make sure not all
@@ -20,8 +19,8 @@ public class QItemEditorCreator extends QItemEditorCreatorBase {
             Method createWidgetMethod = getClass().getMethod("createWidget", QWidget.class);
             Method valuePropertyNameMethod = getClass().getMethod("valuePropertyName");
 
-            createWidgetOverride = QtJambiInternal.isImplementedInJava(createWidgetMethod);
-            valuePropertyNameOverride = QtJambiInternal.isImplementedInJava(valuePropertyNameMethod);
+            createWidgetOverride = com.trolltech.qt.internal.QtJambiInternal.isImplementedInJava(createWidgetMethod);
+            valuePropertyNameOverride = com.trolltech.qt.internal.QtJambiInternal.isImplementedInJava(valuePropertyNameMethod);
         } catch (Throwable t) {
             throw new RuntimeException("Cannot construct QItemEditorCreator", t);
         }

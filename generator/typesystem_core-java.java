@@ -16,12 +16,12 @@ class QObject___ extends QObject {
 
     @com.trolltech.qt.QtBlockedSlot
     public final java.util.List<QObject> findChildren(Class<?> cl, String name) {
-        return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
+        return com.trolltech.qt.internal.QtJambiInternal.findChildren(this, cl, name);
     }
 
     @com.trolltech.qt.QtBlockedSlot
     public final java.util.List<QObject> findChildren(Class<?> cl, QRegExp name) {
-        return com.trolltech.qt.QtJambiInternal.findChildren(this, cl, name);
+        return com.trolltech.qt.internal.QtJambiInternal.findChildren(this, cl, name);
     }
 
     @com.trolltech.qt.QtBlockedSlot
@@ -36,7 +36,7 @@ class QObject___ extends QObject {
 
     @com.trolltech.qt.QtBlockedSlot
     public final QObject findChild(Class<?> cl, String name) {
-        return com.trolltech.qt.QtJambiInternal.findChild(this, cl, name);
+        return com.trolltech.qt.internal.QtJambiInternal.findChild(this, cl, name);
     }
 
     @com.trolltech.qt.QtBlockedSlot
@@ -54,23 +54,23 @@ class QObject___ extends QObject {
     @com.trolltech.qt.QtBlockedSlot
     public final QtProperty userProperty()
     {
-        return com.trolltech.qt.QtJambiInternal.userProperty(nativeId());
+        return com.trolltech.qt.internal.QtJambiInternal.userProperty(nativeId());
     }
 
     @com.trolltech.qt.QtBlockedSlot
     public final java.util.List<com.trolltech.qt.QtProperty> properties()
     {
-        return com.trolltech.qt.QtJambiInternal.properties(nativeId());
+        return com.trolltech.qt.internal.QtJambiInternal.properties(nativeId());
     }
 
     @com.trolltech.qt.QtBlockedSlot
     public final int indexOfProperty(String name) {
-        return com.trolltech.qt.QtJambiInternal.indexOfProperty(nativeId(), name);
+        return com.trolltech.qt.internal.QtJambiInternal.indexOfProperty(nativeId(), name);
     }
 
     @com.trolltech.qt.QtBlockedSlot
     public final void connectSlotsByName() {
-        com.trolltech.qt.QtJambiInternal.connectSlotsByName(this);
+        com.trolltech.qt.internal.QtJambiInternal.connectSlotsByName(this);
     }
 }// class
 
@@ -153,13 +153,13 @@ class QCoreApplication___ extends QCoreApplication {
 
     public static void initialize(String args[]) {
         if (m_instance != null)
-            throw new RuntimeException("QApplication can only be initialized once");
+            throw new RuntimeException("QCoreApplication can only be initialized once");
 
         String path = Utilities.unpackPlugins();
         if (path != null)
             addLibraryPath(path);
         else
-            QtJambiInternal.setupDefaultPluginPath();
+            com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
         m_instance = new QCoreApplication(args);
         m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }
@@ -242,7 +242,7 @@ class QCoreApplication___ extends QCoreApplication {
 
 class QTranslator___ extends QTranslator {
     public final boolean load(byte data[]) {
-        return load(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
+        return load(com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data), data.length);
     }
 }// class
 
@@ -488,7 +488,7 @@ class QByteArray___ extends QByteArray {
     }
 
     public QByteArray(byte data[]) {
-        this(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length);
+        this(com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data), data.length);
     }
 
     public final boolean contains(String str) {
@@ -562,7 +562,7 @@ class QIODevice___ extends QIODevice {
 class QCryptographicHash___ extends QCryptographicHash {
 
     public final void addData(byte data[]) {
-        QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
+        QNativePointer np = com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data);
         addData(np, data.length);
     }
 
@@ -600,7 +600,7 @@ class QBuffer___ extends QBuffer {
     }
 
     public final void setData(byte data[]) {
-        QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
+        QNativePointer np = com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data);
         setData(np, data.length);
     }
 
@@ -623,8 +623,29 @@ class QAbstractFileEngine_MapExtensionReturn___ extends QAbstractFileEngine_MapE
 
     public final String address() {
         QNativePointer np = address_private();
-        return np != null ? com.trolltech.qt.QtJambiInternal.charPointerToString(np) : null;
+        return np != null ? com.trolltech.qt.internal.QtJambiInternal.charPointerToString(np) : null;
     }
+}// class
+
+class QAbstractFileEngine___ extends QAbstractFileEngine {
+    /**
+     * Adds <tt>path</tt> to the set of paths in which Qt Jambi should search for resources. Resources
+     * can be accessed using the "classpath:" scheme.
+     */
+    public static void addSearchPathForResourceEngine(String path)
+    {
+        com.trolltech.qt.internal.QClassPathEngine.addSearchPath(path);
+    }
+
+    /**
+     * Removes <tt>path</tt> from the set of paths in which Qt Jambi searches
+     * for resources.
+     */
+    public static void removeSearchPathForResourceEngine(String path)
+    {
+        com.trolltech.qt.internal.QClassPathEngine.removeSearchPath(path);
+    }
+
 }// class
 
 class QAbstractFileEngine_UnMapExtensionOption___ extends QAbstractFileEngine_UnMapExtensionOption {
@@ -636,7 +657,7 @@ class QAbstractFileEngine_UnMapExtensionOption___ extends QAbstractFileEngine_Un
 
     public final String address() {
         QNativePointer np = address_private();
-        return np != null ? com.trolltech.qt.QtJambiInternal.charPointerToString(np) : null;
+        return np != null ? com.trolltech.qt.internal.QtJambiInternal.charPointerToString(np) : null;
     }
 }// class
 
@@ -785,7 +806,7 @@ class QtConcurrent___ extends QtConcurrent {
         if (m.getReturnType() == null || m.getReturnType().equals(Void.TYPE))
             throw new IllegalArgumentException("Cannot call run on method returning void. Use 'runVoidMethod' instead.");
 
-        return runPrivate(_this, m.getDeclaringClass(), m, args, com.trolltech.qt.QtJambiInternal.resolveConversionSchema(m.getParameterTypes(), m.getParameterTypes()), com.trolltech.qt.QtJambiInternal.typeConversionCode(m.getReturnType()));
+        return runPrivate(_this, m.getDeclaringClass(), m, args, com.trolltech.qt.internal.QtJambiInternal.resolveConversionSchema(m.getParameterTypes(), m.getParameterTypes()), com.trolltech.qt.internal.QtJambiInternal.typeConversionCode(m.getReturnType()));
     }
     private native static <T> QFuture<T> runPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[], int conversionScheme[], byte returnType);
 
@@ -793,7 +814,7 @@ class QtConcurrent___ extends QtConcurrent {
         if (m.getReturnType() != null && !m.getReturnType().equals(Void.TYPE))
             throw new IllegalArgumentException("Cannot call runVoidMethod on method returning non-void type. Use 'run' instead.");
 
-        return runVoidMethodPrivate(_this, m.getDeclaringClass(), m, args, com.trolltech.qt.QtJambiInternal.resolveConversionSchema(m.getParameterTypes(), m.getParameterTypes()));
+        return runVoidMethodPrivate(_this, m.getDeclaringClass(), m, args, com.trolltech.qt.internal.QtJambiInternal.resolveConversionSchema(m.getParameterTypes(), m.getParameterTypes()));
     }
     private native static QFutureVoid runVoidMethodPrivate(Object _this, Class<?> declaringClass, java.lang.reflect.Method m, Object args[], int conversionScheme[]);
 

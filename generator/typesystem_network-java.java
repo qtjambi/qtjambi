@@ -17,7 +17,7 @@ class QHostInfo___ extends QHostInfo {
      */
     public static int lookupHost(String name, com.trolltech.qt.core.QObject receiver, String methodName)
     {
-        methodName = com.trolltech.qt.QtJambiInternal.SlotPrefix + methodName + "(QHostInfo)";
+        methodName = com.trolltech.qt.internal.QtJambiInternal.SlotPrefix + methodName + "(QHostInfo)";
         return lookupHost(name, receiver, com.trolltech.qt.QNativePointer.createCharPointer(methodName));
     }
 
@@ -40,7 +40,7 @@ class QHostInfo___ extends QHostInfo {
                                              + "Signal's class is '" + signal.containingObject().getClass() + "'.");
         }
 
-        String methodName = com.trolltech.qt.QtJambiInternal.SignalPrefix + signal.name() + "(QHostInfo)";
+        String methodName = com.trolltech.qt.internal.QtJambiInternal.SignalPrefix + signal.name() + "(QHostInfo)";
         return lookupHost(name, (com.trolltech.qt.core.QObject)signal.containingObject(),
                           com.trolltech.qt.QNativePointer.createCharPointer(methodName));
     }
@@ -314,7 +314,7 @@ class QUdpSocket___ extends QUdpSocket {
     }
 
     public final int writeDatagram(byte data[], QHostAddress address, int port) {
-        QNativePointer np = com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data);
+        QNativePointer np = com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data);
         return (int) writeDatagram(np, data.length, address, (char) port);
     }
 

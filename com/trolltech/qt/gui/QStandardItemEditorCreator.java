@@ -3,7 +3,7 @@ package com.trolltech.qt.gui;
 import java.lang.reflect.Method;
 
 import com.trolltech.qt.QNoNativeResourcesException;
-import com.trolltech.qt.QtJambiInternal;
+import com.trolltech.qt.internal.QtJambiInternal;
 import com.trolltech.qt.core.QByteArray;
 
 // Not actually generated, but just to make sure not all

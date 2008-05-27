@@ -107,7 +107,7 @@ class QBitmap___ extends QBitmap {
     }
 
     public static QBitmap fromData(com.trolltech.qt.core.QSize size, byte bits[], QImage.Format monoFormat) {
-        return fromData(size, QtJambiInternal.byteArrayToNativePointer(bits), monoFormat);
+        return fromData(size, com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(bits), monoFormat);
     }
 
     public static QBitmap fromData(com.trolltech.qt.core.QSize size, byte bits[]) {
@@ -252,7 +252,7 @@ class QImage___ extends QImage {
     }
 
     public QImage(byte data[], int width, int height, Format format) {
-        this(com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), width, height, format);
+        this(com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data), width, height, format);
     }
 
     public QImage(String fileName, String format) {
@@ -567,7 +567,7 @@ class QWizardPage___ extends QWizardPage {
             throw new QNoSuchSignalException("Signal '" + changedSignal
                     + "' does not exist or has argument types that cannot be converted to Qt Jambi or java.lang types.");
         registerField(name, widget, com.trolltech.qt.QNativePointer.createCharPointer(property), com.trolltech.qt.QNativePointer
-                .createCharPointer(com.trolltech.qt.QtJambiInternal.SignalPrefix + signalSignature));
+                .createCharPointer(com.trolltech.qt.internal.QtJambiInternal.SignalPrefix + signalSignature));
     }
 
 }// class
@@ -932,7 +932,7 @@ class QApplication___ extends QApplication {
         if (path != null)
             addLibraryPath(path);
         else
-            QtJambiInternal.setupDefaultPluginPath();
+            com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
         m_instance = new QApplication(args);
         m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }

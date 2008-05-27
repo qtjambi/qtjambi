@@ -15,13 +15,11 @@ import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QtBlockedEnum;
 import com.trolltech.qt.QtBlockedSlot;
 import com.trolltech.qt.QtEnumerator;
-import com.trolltech.qt.QtJambiInternal;
 import com.trolltech.qt.QtPropertyDesignable;
 import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyResetter;
 import com.trolltech.qt.QtPropertyUser;
 import com.trolltech.qt.QtPropertyWriter;
-import com.trolltech.qt.QtJambiInternal.ResolvedSignal;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.Qt;
 
@@ -352,7 +350,7 @@ public class MetaObjectTools {
             return signal.name() + "(" + params + ")";
     }
 
-    private static String signalParameters(ResolvedSignal resolvedSignal) {
+    private static String signalParameters(QtJambiInternal.ResolvedSignal resolvedSignal) {
         return MetaObjectTools.bunchOfClassNamesInARow(resolvedSignal.types, resolvedSignal.arrayDimensions);
     }
 

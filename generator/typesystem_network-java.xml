@@ -159,7 +159,7 @@ authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, 
     <object-type name="QTcpSocket">
         <inject-code class="constructors">
             proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
-            AbstractSignal sig = (AbstractSignal) QtJambiInternal.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");
+            AbstractSignal sig = (AbstractSignal) com.trolltech.qt.GeneratorUtilities.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");
             sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
         </inject-code>
     </object-type>
@@ -171,7 +171,7 @@ authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, 
         </inject-code>
         <inject-code class="constructors">
 proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
-AbstractSignal sig = (AbstractSignal) QtJambiInternal.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");
+AbstractSignal sig = (AbstractSignal) com.trolltech.qt.GeneratorUtilities.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");
 sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
         </inject-code>
 

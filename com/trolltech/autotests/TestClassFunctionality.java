@@ -486,8 +486,8 @@ public class TestClassFunctionality extends QApplicationTest {
         }
 
         public void checkSender() {
-            is_null = QtJambiInternal.sender(this) == null;
-            is_valid = QtJambiInternal.sender(this) == this;
+            is_null = com.trolltech.qt.internal.QtJambiInternal.sender(this) == null;
+            is_valid = com.trolltech.qt.internal.QtJambiInternal.sender(this) == this;
         }
 
         public void emitSignal() {

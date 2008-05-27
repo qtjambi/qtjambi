@@ -111,7 +111,6 @@ public class NativeLibraryManager {
         public boolean loaded;
     }
 
-
     private static class DeploymentSpec {
         public String key;
         public JarFile jar;

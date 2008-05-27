@@ -622,7 +622,7 @@
                 <replace from="%FUNCTION_NAME" to="loadFromData"/>
                 <replace from="%INPUT_TYPE" to="byte[]"/>
                 <replace from="%INPUT_NAME" to="data"/>
-                <replace from="%OUTPUT_NAME" to="com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length"/>
+                <replace from="%OUTPUT_NAME" to="com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data), data.length"/>
             </insert-template>
         </inject-code>
 
@@ -739,7 +739,7 @@
                 <replace from="%FUNCTION_NAME" to="loadFromData"/>
                 <replace from="%ARGUMENT_TYPE" to="byte[]"/>
                 <replace from="%ARGUMENT_NAME" to="data"/>
-                <replace from="%OUT_ARGUMENT_NAME" to="com.trolltech.qt.QtJambiInternal.byteArrayToNativePointer(data), data.length"/>
+                <replace from="%OUT_ARGUMENT_NAME" to="com.trolltech.qt.internal.QtJambiInternal.byteArrayToNativePointer(data), data.length"/>
             </insert-template>
         </inject-code>
 
@@ -989,7 +989,7 @@
             </modify-argument>
             <inject-code class="java" position="end">
                 // setModel() creates a new selection model for the object
-                com.trolltech.qt.QtJambiInternal.setField(this, com.trolltech.qt.gui.QAbstractItemView.class, "__rcItemSelectionModel", null);
+                com.trolltech.qt.GeneratorUtilities.setField(this, com.trolltech.qt.gui.QAbstractItemView.class, "__rcItemSelectionModel", null);
             </inject-code>
         </modify-function>
         <modify-function signature="setSelectionModel(QItemSelectionModel *)">
@@ -1018,7 +1018,7 @@
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
                 <argument-map index="2" meta-name="%2"/>
-                if (%2 == null) 
+                if (%2 == null)
                     __rcDelegatesForRows.remove(%1);
                 else
                     __rcDelegatesForRows.put(%1,%2);
@@ -1302,7 +1302,7 @@
             </modify-argument>
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
-                com.trolltech.qt.QtJambiInternal.setField(%1, QAction.class, "__rcActionGroup", this);
+                com.trolltech.qt.GeneratorUtilities.setField(%1, QAction.class, "__rcActionGroup", this);
             </inject-code>
         </modify-function>
         <modify-function signature="removeAction(QAction*)">
@@ -1311,7 +1311,7 @@
             </modify-argument>
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
-                com.trolltech.qt.QtJambiInternal.setField(%1, QAction.class, "__rcActionGroup", null);
+                com.trolltech.qt.GeneratorUtilities.setField(%1, QAction.class, "__rcActionGroup", null);
             </inject-code>
         </modify-function>
     </object-type>
@@ -2330,7 +2330,7 @@
             <inject-code class="java">
                 <argument-map index="1" meta-name="%1"/>
             if (this instanceof QMessageBox) {
-                com.trolltech.qt.QtJambiInternal.threadCheck(this);
+                com.trolltech.qt.GeneratorUtilities.threadCheck(this);
                 if (nativeId() == 0)
                     throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
                 __qt_QMessageBox_setWindowTitle(nativeId(), %1);
@@ -2344,7 +2344,7 @@
             <inject-code class="java">
                 <argument-map index="1" meta-name="%1"/>
             if (this instanceof QMessageBox) {
-                com.trolltech.qt.QtJambiInternal.threadCheck(this);
+                com.trolltech.qt.GeneratorUtilities.threadCheck(this);
                 if (nativeId() == 0)
                     throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
                 __qt_QMessageBox_setWindowModality(nativeId(), %1.value());
@@ -2882,7 +2882,7 @@
             <inject-code class="java" position="end">
                 <argument-map index="1" meta-name="%1"/>
                 <argument-map index="2" meta-name="%2"/>
-                java.util.Hashtable&lt;com.trolltech.qt.core.QObject, Object&gt; __rcWidgetForObject = (java.util.Hashtable&lt;com.trolltech.qt.core.QObject, Object&gt;) com.trolltech.qt.QtJambiInternal.fetchField(this, com.trolltech.qt.core.QSignalMapper.class, "__rcWidgetForObject");
+                java.util.Hashtable&lt;com.trolltech.qt.core.QObject, Object&gt; __rcWidgetForObject = (java.util.Hashtable&lt;com.trolltech.qt.core.QObject, Object&gt;) com.trolltech.qt.GeneratorUtilities.fetchField(this, com.trolltech.qt.core.QSignalMapper.class, "__rcWidgetForObject");
                 if (%2 == null)
                     __rcWidgetForObject.remove(%1);
                 else
@@ -2905,13 +2905,13 @@
                 <argument-map index="1" meta-name="%1"/>
             java.util.Collection&lt;Object&gt; __rcTmp = null;
             if (__rcActionGroup != null) {
-                __rcTmp = (java.util.Collection&lt;Object&gt;)com.trolltech.qt.QtJambiInternal.fetchField(__rcActionGroup, QActionGroup.class, "__rcActions");
+                __rcTmp = (java.util.Collection&lt;Object&gt;)com.trolltech.qt.GeneratorUtilities.fetchField(__rcActionGroup, QActionGroup.class, "__rcActions");
                 while (__rcTmp.contains(this))
                     __rcTmp.remove(this);
             }
             __rcActionGroup = %1;
             if (__rcActionGroup != null) {
-                __rcTmp = (java.util.Collection&lt;Object&gt;)com.trolltech.qt.QtJambiInternal.fetchField(__rcActionGroup, QActionGroup.class, "__rcActions");
+                __rcTmp = (java.util.Collection&lt;Object&gt;)com.trolltech.qt.GeneratorUtilities.fetchField(__rcActionGroup, QActionGroup.class, "__rcActions");
                 __rcTmp.add(this);
             }
             </inject-code>

@@ -266,7 +266,7 @@ void JavaGenerator::writeEnum(QTextStream &s, const AbstractMetaEnum *java_enum)
           << ">();" << endl
           << "            " << java_enum->name() << " e = enumCache.get(value);" << endl
           << "            if (e == null) {" << endl
-          << "                e = (" << java_enum->name() << ") com.trolltech.qt.QtJambiInternal.createExtendedEnum("
+          << "                e = (" << java_enum->name() << ") com.trolltech.qt.GeneratorUtilities.createExtendedEnum("
           << "value, CustomEnum.ordinal(), " << java_enum->name() << ".class, CustomEnum.name());"
           << endl
           << "                enumCache.put(value, e);" << endl
@@ -451,7 +451,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
         && !java_function->isConstructor()
         && java_function->name() != QLatin1String("thread")
         && java_function->name() != QLatin1String("disposeLater")) {
-        s << INDENT << "com.trolltech.qt.QtJambiInternal.threadCheck(this);" << endl;
+        s << INDENT << "com.trolltech.qt.GeneratorUtilities.threadCheck(this);" << endl;
     }
 
     AbstractMetaArgumentList arguments = java_function->arguments();
@@ -842,7 +842,7 @@ void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &re
 
     QString refCountVariableName = refCount.variableName;
     if (!refCount.declareVariable.isEmpty() && refCount.action != ReferenceCount::Set) {
-        s << INDENT << "java.util.Collection<Object> __rcTmp = (java.util.Collection<Object>)com.trolltech.qt.QtJambiInternal.fetchField(this," << endl
+        s << INDENT << "java.util.Collection<Object> __rcTmp = (java.util.Collection<Object>)com.trolltech.qt.GeneratorUtilities.fetchField(this," << endl
           << INDENT << "                                                                 " << refCount.declareVariable << ".class," << endl
           << INDENT << "                                                                 \"" << refCountVariableName << "\");" << endl;
         refCountVariableName = "__rcTmp";
@@ -878,7 +878,7 @@ void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &re
                 if (refCount.declareVariable.isEmpty())
                     s << INDENT << refCount.variableName << " = " << argumentName << ";" << endl;
                 else
-                    s << INDENT << "com.trolltech.qt.QtJambiInternal.setField(this, " << refCount.declareVariable << ".class, \"" << refCountVariableName << "\", " << argumentName << ");" << endl;
+                    s << INDENT << "com.trolltech.qt.GeneratorUtilities.setField(this, " << refCount.declareVariable << ".class, \"" << refCountVariableName << "\", " << argumentName << ");" << endl;
             }
         default:
             break;
@@ -1954,7 +1954,7 @@ void JavaGenerator::writeConstructorContents(QTextStream &s, const AbstractMetaF
         if (te->expensePolicy().isValid()) {
             s << endl;
             const ExpensePolicy &ep = te->expensePolicy();
-            s << INDENT << "QtJambiInternal.countExpense(" << java_class->fullName()
+            s << INDENT << "com.trolltech.qt.GeneratorUtilities.countExpense(" << java_class->fullName()
               << ".class, " << ep.cost << ", " << ep.limit << ");" << endl;
         }
 

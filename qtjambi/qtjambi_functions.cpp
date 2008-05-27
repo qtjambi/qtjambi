@@ -54,7 +54,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QThreadManager_releaseNativeResour
 
 
 extern "C" Q_DECL_EXPORT jlong JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_setQObjectSender)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_setQObjectSender)
 (JNIEnv *, jclass, jlong r, jlong s)
 {
     QObject *the_receiver = reinterpret_cast<QObject *>(qtjambi_from_jlong(r));
@@ -84,7 +84,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_setQObjectSender)
 
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_resetQObjectSender)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_resetQObjectSender)
 (JNIEnv *, jclass, jlong r, jlong keep)
 {
     QObject *receiver = reinterpret_cast<QObject *>(qtjambi_from_jlong(r));
@@ -104,7 +104,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_resetQObjectSender
 
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_sender(JNIEnv *env, jclass, jobject obj))
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_sender(JNIEnv *env, jclass, jobject obj))
 {
     QObject *qobject = qtjambi_to_qobject(env, obj);
 
@@ -123,7 +123,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_sender(JNIEnv *env
 
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_createExtendedEnum(JNIEnv *env, jclass, jint value, jint ordinal, jclass enumClass, jstring name))
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_createExtendedEnum(JNIEnv *env, jclass, jint value, jint ordinal, jclass enumClass, jstring name))
 {
     jmethodID methodId = env->GetMethodID(enumClass, "<init>", "(Ljava/lang/String;II)V");
     jobject object = env->NewObject(enumClass, methodId, name, ordinal, value);
@@ -131,7 +131,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_createExtendedEnum
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_setField)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_setField)
 (JNIEnv *env,
  jclass,
  jobject _this,
@@ -145,7 +145,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_setField)
 }
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_fetchSignal)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_fetchSignal)
 (JNIEnv *env,
  jclass,
  jobject java_object,
@@ -161,7 +161,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_fetchSignal)
 
 #include <QDebug>
 extern "C" Q_DECL_EXPORT jboolean JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_cppDisconnect)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_cppDisconnect)
 (JNIEnv *env,
  jclass,
  jobject java_sender,
@@ -198,7 +198,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_cppDisconnect)
 }
 
 extern "C" Q_DECL_EXPORT jlong JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_resolveSlot)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_resolveSlot)
 (JNIEnv *env,
  jclass,
  jobject method)
@@ -208,7 +208,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_resolveSlot)
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_invokeSlot)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_invokeSlot)
 (JNIEnv *env,
  jclass,
  jobject receiver,
@@ -225,7 +225,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_invokeSlot)
 }
 
 extern "C" Q_DECL_EXPORT jboolean JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_setFieldNative)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_setFieldNative)
 (JNIEnv *env,
  jclass,
  jobject owner,
@@ -242,7 +242,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_setFieldNative)
 }
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_fetchFieldNative)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_fetchFieldNative)
 (JNIEnv *env,
  jclass,
  jobject owner,
@@ -358,7 +358,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_MetaObjectTools_internalT
 }
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiInternal_properties)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_properties)
 (JNIEnv *env,
  jclass,
  jlong nativeId)

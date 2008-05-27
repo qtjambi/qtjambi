@@ -1612,6 +1612,12 @@
     </inject-code>
   </object-type>
 
+  <object-type name="QAbstractFileEngine">
+    <inject-code>
+        <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine___" quote-before-line="}// class"/>
+    </inject-code>
+  </object-type>
+
   <object-type name="QTextStream">
       <extra-includes>
           <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
