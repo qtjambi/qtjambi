@@ -35,7 +35,7 @@ class SplashScreen extends QSplashScreen {
                                                splashScreenRect.width(),
                                                splashScreenRect.height());
 
-        QImage target = new QImage(SIZE, QImage.Format.Format_ARGB32_Premultiplied);
+        QImage target = new QImage(SIZE, QImage.Format.Format_RGB32);
         logo = new QPixmap("classpath:com/trolltech/images/logo.png");
 
         final int margin = 20;
