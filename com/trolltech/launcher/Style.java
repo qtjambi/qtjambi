@@ -42,6 +42,9 @@ public class Style extends QWindowsStyle {
 
     public static final int DOT_TO_TEXT_PADDING = 4;
 
+    public static QPainterPath UP_INDICATOR;
+    public static QPainterPath DOWN_INDICATOR;
+
     static {
         GRADIENT_LIGHT = new QLinearGradient(0, 0, 0, 1);
         GRADIENT_LIGHT.setColorAt(0, TT_BG_GREEN_DARK);
@@ -58,6 +61,18 @@ public class Style extends QWindowsStyle {
 
     public Style(QObject parent) {
         setParent(parent);
+
+        UP_INDICATOR = new QPainterPath();
+        UP_INDICATOR.moveTo(0, -3);
+        UP_INDICATOR.lineTo(4.5, 2);
+        UP_INDICATOR.lineTo(-4.5, 2);
+        UP_INDICATOR.closeSubpath();
+
+        DOWN_INDICATOR = new QPainterPath();
+        DOWN_INDICATOR.moveTo(0, 3);
+        DOWN_INDICATOR.lineTo(4.5, -2);
+        DOWN_INDICATOR.lineTo(-4.5, -2);
+        DOWN_INDICATOR.closeSubpath();
     }
 
     public static boolean isOn(QStyle.State state) {
@@ -100,13 +115,14 @@ public class Style extends QWindowsStyle {
             break;
         case CE_ScrollBarAddLine :
         case CE_ScrollBarSubLine :
-            drawScrollBarLine((QStyleOptionSlider)opt, p);
+            drawScrollBarLine((QStyleOptionSlider)opt, p, ce);
             break;
         default:
             super.drawControl(ce, opt, p, widget);
             break;
         }
     }
+
 
     private QRectF groupBoxLabelRect(QRect rect, QWidget w, String label) {
         if (w == null)
@@ -280,17 +296,29 @@ public class Style extends QWindowsStyle {
         p.eraseRect(rect);
         QStyle.State state = opt.state();
         state.clear(QStyle.StateFlag.State_Sunken);
-        drawShadeButton(p, rect, state);
         drawButtonOutline(p, rect, state);
         p.restore();
     }
 
-    public void drawScrollBarLine(QStyleOptionSlider opt, QPainter p) {
+    public void drawScrollBarLine(QStyleOptionSlider opt, QPainter p, QStyle.ControlElement ce) {
         QRectF rect = new QRectF(opt.rect());
         p.save();
         p.eraseRect(rect);
-        drawShadeButton(p, rect, opt.state());
         drawButtonOutline(p, rect, opt.state());
+
+        p.translate(new QRectF(opt.rect()).center());
+        p.setRenderHint(QPainter.RenderHint.Antialiasing);
+        if (isSunken(opt.state())) {
+            p.setPen(PEN_THICK_GREEN);
+            p.setBrush(BRUSH_LIGHT_GREEN);
+        } else {
+            p.setBrush(BRUSH_GREEN);
+            p.setPen(QPen.NoPen);
+        }
+        if (ce == QStyle.ControlElement.CE_ScrollBarAddLine)
+            p.drawPath(DOWN_INDICATOR);
+        else if (ce == QStyle.ControlElement.CE_ScrollBarSubLine)
+            p.drawPath(UP_INDICATOR);
         p.restore();
     }
 
