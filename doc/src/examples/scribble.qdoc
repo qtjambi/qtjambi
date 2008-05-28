@@ -1,0 +1,10 @@
+/*!
+    \page qtjambi-scribble.html
+    \title Scribble Example
+
+    The Scribble example shows how to reimplement some of QWidget's
+    event handlers to receive the events generated for the
+    application's widgets.
+
+    \image scribble-example.png
+*/

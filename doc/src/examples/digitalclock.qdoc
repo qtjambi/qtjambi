@@ -1,0 +1,9 @@
+/*!
+    \page qtjambi-digitalclock.html
+    \title Digital Clock Example
+
+    The Digital Clock example shows how to use QLCDNumber to display a
+    number with LCD-like digits.
+
+    \image digitalclock-example.png
+*/

@@ -18,5 +18,6 @@
     \o \l {Rich Text Processing}
     \o \l {Model/View Programming}
     \o \l {How to Create Qt Plugins}{Plugin System}
+    \l \l {Qt Style Sheets}
     \endlist
 */

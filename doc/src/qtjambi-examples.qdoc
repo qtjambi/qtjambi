@@ -36,14 +36,15 @@
         \o \l{Analog Clock Example}{Analog Clock}\raisedaster
         \o \l{Calculator Example}{Calculator}\raisedaster
         \o \l{Calendar Widget Example}{Calendar Widget}\raisedaster
-        \o \l{Digital Clock Example}{Digital Clock}\raisedaster
+        \o \l{Code Editor Example}{Code Editor}\raisedaster
+        \o \l{Digital Clock Example}{Digital Clock}
         \o \l{Icons Example}{Icons}\raisedaster
         \o \l{Line Edits Example}{Line Edits}\raisedaster
-        \o \l{Scribble Example}{Scribble}\raisedaster
+        \o \l{Scribble Example}{Scribble}
         \o \l{Shaped Clock Example}{Shaped Clock}\raisedaster
         \o \l{Sliders Example}{Sliders}\raisedaster
         \o \l{Spin Boxes Example}{Spin Boxes}\raisedaster
-        \o \l{Styles Example}{Styles}\raisedaster
+        \o \l{Styles Example}{Styles}
         \o \l{Tablet Example}{Tablet}\raisedaster
         \o \l{Tetrix Example}{Tetrix}\raisedaster
         \o \l{Wiggly Example}{Wiggly}\raisedaster
@@ -67,6 +68,7 @@
     \section1 Item View Examples
 
     \list
+       \o \l{Color Editor Factory Example}{Color Editor Factory}
        \o \l{Custom Sort/Filter Model Example}{Custom Sort/Filter Model}\raisedaster
        \o \l{Item View Chart Example}{Item View Chart}\raisedaster
        \o \l{Star Delegate Example}{Star Delegate}\raisedaster
@@ -85,6 +87,7 @@
     \list
         \o \l{Colliding Mice Example}{Colliding Mice}\raisedaster
         \o \l{Elastic Nodes Example}{Elastic Nodes}
+        \o \l{Pad Navigator Example}{Pad Navigator}
     \endlist
 
     \section1 Rich Text Examples
@@ -92,6 +95,12 @@
     \list
         \o \l{Order Form Example}{Order Form}\raisedaster
         \o \l{Syntax Highlighter Example}{Syntax Highlighter}\raisedaster
+    \endlist
+
+    \section1 Phonon Examples
+
+    \list
+        \o \l{Music Player Example}{Music Player}\raisedaster
     \endlist
 
     \section1 Desktop Examples
@@ -138,6 +147,12 @@
     \list
         \o \l{Cached Table Example}{Cached Table}\raisedaster
         \o \l{DOM Bookmarks Example}{DOM Bookmarks}
+    \endlist
+
+    \section1 WebKit Examples
+
+    \list
+        \o \l{Hello WebKit Example}{Hello WebKit}
     \endlist
 
     \section1 Qt Designer Examples
