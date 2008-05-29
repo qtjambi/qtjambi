@@ -19,6 +19,14 @@ echo "qdoc3 found in: $LOCAL_QDOC"
 export JAMBI=`echo $PWD | sed s,/scripts,,g`
 echo using jambi dir $JAMBI
 
+# build the jambidoc Doclet...
+cd $JAMBI/tools/jambidoc
+javac -d . *.java
+if [ $? -ne 0 ]; then
+    echo "Failed to compile jambidoclet..."
+    exit 1
+fi
+
 # Clean the directory
 echo Cleaning up the old directory...
 if [ -d $JAMBI/doc/html ]; then
