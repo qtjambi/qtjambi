@@ -27,11 +27,14 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+
 # Clean the directory
 echo Cleaning up the old directory...
 if [ -d $JAMBI/doc/html ]; then
     rm -Rf $JAMBI/doc/html
 fi
+
+mkdir $JAMBI/doc/html
 
 # Generating the QDoc JAPI file
 cd $JAMBI/generator
@@ -61,7 +64,7 @@ HEADER="$HEADER<td><img src='$DOCHOME/com/trolltech/qt/images/qt-logo.png' width
 # Generating the Javadoc
 cd $JAMBI/doc/html
 
-javadoc -doclet jambidoc.JambiDoclet -header "$HEADER" -J-Xmx500m -sourcepath $JAMBI com.trolltech.qt com.trolltech.qt.core com.trolltech.qt.gui com.trolltech.qt.opengl com.trolltech.qt.sql com.trolltech.qt.opengl com.trolltech.qt.svg com.trolltech.qt.network com.trolltech.qt.xml com.trolltech.qt.designer com.trolltech.qt.webkit com.trolltech.qt.phonon
+CLASSPATH=$CLASSPATH:$JAMBI/tools/jambidoc javadoc -doclet jambidoc.JambiDoclet -header "$HEADER" -J-Xmx500m -sourcepath $JAMBI com.trolltech.qt com.trolltech.qt.core com.trolltech.qt.gui com.trolltech.qt.opengl com.trolltech.qt.sql com.trolltech.qt.opengl com.trolltech.qt.svg com.trolltech.qt.network com.trolltech.qt.xml com.trolltech.qt.designer com.trolltech.qt.webkit com.trolltech.qt.phonon
 
 find . -name "qt jambi.dcf" -exec rm {} \;
 find . -name "qt jambi.index" -exec rm {} \;
