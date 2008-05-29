@@ -293,8 +293,8 @@ public class Launcher extends QWidget {
         List<String> styleKeys = QStyleFactory.keys();
 
         QLayout layout = ui.group_styles.layout();
-        String checkedByDefault = styleForCurrentSystem();
 
+        String checkedByDefault = QApplication.style().objectName();
         for (String styleKey : styleKeys) {
             QRadioButton button = new QRadioButton(styleKey);
             layout.addWidget(button);
