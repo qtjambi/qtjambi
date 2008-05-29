@@ -20,10 +20,6 @@
             \o Property
             \o Description
         \row
-            \o com.trolltech.launcher.webstart
-            \o This property should be set to true when
-               the launcher is run by Webstart.
-        \row
             \o com.trolltech.qt.verbose-loading
             \o When this property is true, Qt Jambi will report on
                all attempts to load native libraries.
@@ -33,40 +29,19 @@
                will be used. This is necessary if Qt was built with
                debugging turned on.
         \row
-            \o com.trolltech.qt.systemlibraries
-            \o This property should contain paths to system libraries
-               used by the native Qt Jambi and Qt libraries.
-        \row
-            \o com.trolltech.qt.pluginjars
-            \o If plugins are deployed in \c .jar files, this property
-               must contain paths to the files.
-        \row
-            \o com.trolltech.qt.plugin-path
-            \o If plugins are located on the local file system, you can
-               set this property to the path of the plugins directory.
-        \row
-            \o com.trolltech.qt.library-path
-            \o This property can be used to set paths to where Qt Jambi will
+            \o com.trolltech.qt.library-path-override
+            \o This property can be used to set paths to where Qt Jambi will1
                search for native libraries.
         \row
-            \o com.trolltech.qt.implicit-loading
-            \o When this property is true, Qt Jambi
-               will search for native libraries in paths relative
-               to the working directory. The default value is
-               true.
-        \row
-            \o com.trolltech.qt.load-from-cache
-            \o By default, Qt Jambi copies the native libraries before they are
-               loaded to a caching directory. If this property is set to true,
-               Qt Jambi will first try to load the libraries from the cache
-               without copying.
-        \row
             \o com.trolltech.qt.exclude-libraries
-            \o If you
-               start a Qt Jambi application from an already
+            \o If you start a Qt Jambi application from an already
                running VM, you do not want to reload the native
-               libraries. In this property, you can separate
-               library names that are not to be loaded with
-               the system path separator.
+               libraries. In this property, you can separate library
+               names that are not to be loaded with the system path
+               separator.
+        \row 
+            \o com.trolltech.qt.exceptions-for-messages
+ 	    \o Installs a default QMessageHandler that produces exceptions when
+	    would normally issue a warning. This can be helpful for debuggin.
     \endtable
 */
