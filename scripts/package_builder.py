@@ -28,7 +28,10 @@ host_mac     = "alqualonde.troll.no"
 
 class Options:
     def __init__(self):
-        self.packageRoot = None
+        if pkgutil.isWindows():
+            self.packageRoot = "c:/tmp"
+        else:
+            self.packageRoot = "/tmp"
         self.eclipseVersion = "1.1.0"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
