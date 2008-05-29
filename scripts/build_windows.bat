@@ -1,1 +1,0 @@
-build --qt-gpl c:\tmp\qt-opensource --qt-commercial c:\tmp\qt-commercial --qt-eval c:\tmp\qt-eval --qt c:\tmp\qt-commercial
