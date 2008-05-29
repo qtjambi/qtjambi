@@ -92,7 +92,7 @@ body { color: black; }</style>
 <p>Since the Qt Jambi Designer needs to know how to visually edit each property, only properties of recognized types will be available in the property editor.</p>
 <p>The recognized types include most of the primitive types, as well as many of the default types in Qt Jambi.</p>
 <p>Qt Jambi will also recognize user defined types if they are defined inside a subclass of <tt>QObject</tt>, and if they are <tt>enums</tt> or <tt>flags</tt>.</p>
-<p align="center"><img src="images/customwidget-unit-property.png" alt="Editing a custom enum property" /></p><p>Enums must be declared using Java's <tt>enum</tt> mechanism. By default, the ordinal value of the enum constant will be used to represent it internally, but if the enum implements the <tt>QtEnumerator</tt> interface, the integer returned from the <tt>value()</tt> method is used instead.</p>
+<p align="center"><img src="classpath:com/trolltech/images/customwidget-unit-property.png" alt="Editing a custom enum property" /></p><p>Enums must be declared using Java's <tt>enum</tt> mechanism. By default, the ordinal value of the enum constant will be used to represent it internally, but if the enum implements the <tt>QtEnumerator</tt> interface, the integer returned from the <tt>value()</tt> method is used instead.</p>
 <p>In order to declare flags, you will need to extend the <tt>QFlags</tt> class, and the enum type used to parameterize the class needs to be declared inside the same class as the <tt>QFlags</tt> subclass.</p>
 <p>If these rules are upheld, then the property will become available in the designer, editable in a convenient way depending on whether it's an enum type or a flag type.</p>
 <p>The example has a single enum property which is called <tt>unit</tt>.</p>
