@@ -28,10 +28,7 @@ host_mac     = "alqualonde.troll.no"
 
 class Options:
     def __init__(self):
-        self.qtDir = None
-        self.qtVersion = None
         self.packageRoot = None
-        self.qtJambiVersion = "4.4.0_01"
         self.eclipseVersion = "1.1.0"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
@@ -487,18 +484,19 @@ def prepareSourceTree():
     tmpFile.write("Client: %s\n" % options.p4Client)
     tmpFile.write("View:\n")
     tmpFile.write("        //depot/qtjambi/%s/...  //qt-builder/qtjambi/...\n" % options.qtJambiVersion)
+    tmpFile.write("        //depot/qt/%s/src/tools/uic/...  //qt-builder/qt/src/tools/uic/...\n" % options.qtVersion)
+    tmpFile.write("        //depot/qt/%s/tools/designer/src/lib/...  //qt-builder/qt/tools/designer/src/lib/...\n" % options.qtVersion)
     tmpFile.write("        //depot/eclipse/qtjambi-4.4/...  //qt-builder/qtjambi/eclipse/qtjambi-4.4/...\n")
     tmpFile.write("        //depot/ide/qtjambi-4.4/shared/designerintegration/...  //qt-builder/qtjambi/ide/qtjambi-4.4/shared/designerintegration/...\n")
     tmpFile.write("        //depot/ide/qtjambi-4.4/shared/namespace_global.h  //qt-builder/qtjambi/ide/qtjambi-4.4/shared/namespace_global.h\n")
     tmpFile.close()
-    os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) );
+    os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) )
     os.remove("p4spec.tmp")
 
     # sync p4 client spec into subdirectory...
     pkgutil.debug(" - syncing p4...")
     os.system("p4 -u %s -c %s sync -f //%s/... > .p4sync.buildlog" % (options.p4User, options.p4Client, options.p4Client))
     os.system("chmod -R a+uw .")
-
 
 
 def packageSourcePackage(package):
@@ -840,8 +838,6 @@ def main():
         arg = sys.argv[i];
         if arg == "--qt-version":
             options.qtVersion = sys.argv[i+1]
-        elif arg == "--qt-dir":
-            options.qtDir = sys.argv[i+1]
         elif arg == "--package-root":
             options.packageRoot = sys.argv[i+1]
         elif arg == "--package-extra-name":
@@ -880,9 +876,10 @@ def main():
         options.buildCommercial = False
 
     options.startDir = os.getcwd()
+    options.qtDir = "%s/qt" % options.packageRoot
 
     pkgutil.debug("Options:")
-    print "  - Qt Version: %s" % options.qtVersion
+    print "  - Qt Version: " + options.qtVersion
     print "  - Qt Directory: " + options.qtDir
     print "  - Package Root: " + options.packageRoot
     print "  - Qt Jambi Version: " + options.qtJambiVersion
