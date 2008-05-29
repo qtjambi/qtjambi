@@ -23,9 +23,9 @@ class Options:
         self.qtLabel = None
         self.qtBranch = None
         if pkgutil.isWindows():
-            self.packageRoot = "C:/tmp/qt-builder"
+            self.packageRoot = "C:/tmp/qt-build"
         else:
-            self.packageRoot = "/var/tmp/qt-builder"
+            self.packageRoot = "/tmp/qt-build"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
         self.startDir = os.getcwd()
@@ -113,6 +113,7 @@ def prepareSourceTree():
     tmpFile.write("        -//depot/qt/%s/tmake/... //qt-builder/qt/tmake/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/translations/... //qt-builder/qt/translations/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/dist/... //qt-builder/qt/dist/...\n" % options.qtBranch)
+    tmpFile.write("        //depot/qt/%s/dist/eval/... //qt-builder/qt/dist/eval/...\n" % options.qtBranch)
     tmpFile.close()
     os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) );
     os.remove("p4spec.tmp")
@@ -146,6 +147,7 @@ def packageAndSend(server):
 
     print " - setting up eval subdir..."
     shutil.copytree("qt", "tmptree/eval");
+
     # Extra files needed by eval
     shutil.copy("qt/dist/eval/src/corelib/eval.pri", "tmptree/eval/src/corelib");
     shutil.copy("qt/dist/eval/src/corelib/kernel/qtcore_eval.cpp", "tmptree/eval/src/corelib/kernel");
