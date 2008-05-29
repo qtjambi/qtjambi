@@ -43,7 +43,7 @@ def compress(zipFile, zipRoot):
             if os.path.isfile(absFile):
                 zip.write(absFile);
     os.chdir(zipRoot);
-    zip = zipfile.ZipFile(zipFile, "w");
+    zip = zipfile.ZipFile(zipFile, "w", zipfile.ZIP_DEFLATED);
     os.path.walk(zipRoot, zipHelper, 'somenull')
     zip.close()
 
