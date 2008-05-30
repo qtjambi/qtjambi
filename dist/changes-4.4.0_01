@@ -1,11 +1,11 @@
-Qt Jambi 4.4.0_01 Technology Preview 1 is the first release of Qt 4.4
-for Java. It represents a milestone in the development and includes
-bug fixes compared to to previous releases.
+Qt Jambi 4.4.0_01 is the first release of Qt 4.4 for Java. It
+represents a milestone in the feature development and includes bug
+fixes compared to previous releases.
 
 For details about changes in Qt itself, see the Qt changelogs:
 http://trolltech.com/developer/notes/changes
 
-This release of Qt Jambi will break compatibility for a very few
+This release of Qt Jambi WILL break compatibility for a very few
 classes. This is primarly to enable the possibility of non-GUI based
 Qt Jambi applications and to fix some errors that were introduced in
 Qt Jambi 4.3 before the user base is too large.
@@ -55,9 +55,13 @@ Qt Jambi 4.3 before the user base is too large.
    * com.trolltech.tools.ant; Some conveneince ANT tasks for use with
      Qt Jambi build systems.
 
-   * com.trolltech.qt.core now contains Qt Concurrent;
+   * com.trolltech.qt.core; now contains Qt Concurrent;
 
-   * com.trolltech.qt.sql now contains QJdbc; A JDBC bridge.
+   * com.trolltech.qt.sql; now contains QJdbc; A JDBC bridge.
+
+   * com.trolltech.qt.internal; This package is internal, we mean
+     it...
+
 
  - New deployment system. By default a complete jar file with native
    libraries is provided both binary packages and in a built source
@@ -94,9 +98,20 @@ Qt Jambi 4.3 before the user base is too large.
  - Fixed: Potential memory leak and race condition in Qt Jambi's
    internal JNI datastructe cache.
 
+ - Fixed: The memory management system has been redone to avoid
+   potential memory leaks.
+
  - Fixed: A racecondition would some times cause VM crashes when
    deleting objects marked as "delete-in-main-thread" in the
    typesystem. This includes QFont, QPixmap etc...
+
+ - Fixed: QCoreApplication.invokeAndWait() now invokes the Runnable
+   before returning, when called from the GUI thread.
+
+ - QReadWriteLock has been moved to QtCore, in accordance with its
+   actual location in the Qt C++ libraries.
+
+ - Deprecated: com.trolltech.qt.QtJambiInternal
 
 
 
@@ -110,6 +125,33 @@ Qt Jambi 4.3 before the user base is too large.
 
  - New Command-line option: --custom-widgets
 
+ - The generator now defaults to current directory as output folder.
+
+
+
+************************************************************************
+ Build System in source package
+************************************************************************
+
+ - Qt Jambi uses now an ANT based build system. There are two ant
+   build.xml files in the root directory, one for Qt Jambi and one
+   to illustrate the generator and deployment. See installation and
+   deployment guides for more details.
+
+ - All libraries now make use of the JAMBI/qtjambi/qtjambi_base.pri
+   qmake include file which serves also as a good starting point for
+   generator based projects.
+
+ - OpenGL, Phonon and WebKit are optional in the build process. If Qt
+   was not configured for any of these, they will be excluded from
+   jambi.
+
+ - The qmake .pro files now support both JAVADIR and JAVA_HOME as
+   location for the JDK.
+
+ - The ANT script provides an "experimental" feature, called
+   jumptables, which will significantly reduce the binary size of the
+   generated code.
 
 
 ************************************************************************
@@ -121,3 +163,11 @@ Qt Jambi 4.3 before the user base is too large.
    * Media Player
    * XML Query example
    * Pad Navigator, showing Widgets in QGraphicsView
+   * Music Player
+   * Code Editor
+
+ - Generator Example: Changed to make use of the ANT tasks to create
+   deployable packages.
+
+ - Mac OS X binary package now comes with a Demos.app bundle for the
+   examples launcher.
