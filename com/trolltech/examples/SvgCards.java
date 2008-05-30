@@ -22,7 +22,8 @@ import java.util.*;
 //! [0]
 public class SvgCards extends QGraphicsView {
 //! [0]
-    private static boolean closing = false;
+    private boolean closing = false;
+
     private static String[] CARDS = {
         "black_joker",
         "red_joker",
