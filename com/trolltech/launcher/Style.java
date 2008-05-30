@@ -293,7 +293,7 @@ public class Style extends QWindowsStyle {
     public void drawScrollBarSlider(QStyleOptionSlider opt, QPainter p) {
         QRectF rect = new QRectF(opt.rect());
         p.save();
-        p.eraseRect(rect);
+        p.fillRect(rect, new QBrush(QColor.white));
         QStyle.State state = opt.state();
         state.clear(QStyle.StateFlag.State_Sunken);
         drawButtonOutline(p, rect, state);
@@ -303,7 +303,7 @@ public class Style extends QWindowsStyle {
     public void drawScrollBarLine(QStyleOptionSlider opt, QPainter p, QStyle.ControlElement ce) {
         QRectF rect = new QRectF(opt.rect());
         p.save();
-        p.eraseRect(rect);
+        p.fillRect(rect, new QBrush(QColor.white));
         drawButtonOutline(p, rect, opt.state());
 
         p.translate(new QRectF(opt.rect()).center());
