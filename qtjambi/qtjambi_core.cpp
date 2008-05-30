@@ -136,7 +136,7 @@ void jobjectwrapper_load(QDataStream &stream, void *_jObjectWrapper)
 bool qtjambi_exception_check(JNIEnv *env)
 {
     if (env->ExceptionCheck()) {
-        fprintf(stderr, "QtJambi: Exception pending in native code");
+        fprintf(stderr, "QtJambi: Exception pending in native code\n");
         env->ExceptionDescribe();
         env->ExceptionClear();
         return true;
@@ -1894,6 +1894,11 @@ static void qtjambi_disconnect_all(JNIEnv *jni_env, QObject *sender, QObject *re
     QtJambiLink *java_link = QtJambiLink::findLinkForQObject(sender);
     if (java_link != 0) {
         jobject java_sender = java_link->javaObject(jni_env);
+        if (!java_sender) {
+            // This may for instance happens when a object has
+            // disconnect() as part of its destructor
+            return;
+        }
         jobject java_receiver = receiver != 0
             ? qtjambi_from_qobject(jni_env, receiver, "QObject", "com/trolltech/qt/core/")
             : 0;
@@ -1919,6 +1924,7 @@ static bool qtjambi_disconnect_callback(void **raw_data)
     Q_ASSERT(data->sender);
     if (data->method == 0 && data->signal == 0) {
         qtjambi_disconnect_all(jni_env, data->sender, data->receiver);
+        QTJAMBI_EXCEPTION_CHECK(jni_env);
     } else {
 
         ResolvedConnectionData resolved_data;
