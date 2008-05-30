@@ -310,25 +310,5 @@ public class QSignalEmitter extends QSignalEmitterInternal {
         com.trolltech.qt.internal.QtJambiInternal.disconnect(this, other);
     }
 
-    /**
-      Searches recursively for all child objects of the given <tt>object</tt>, and connects matching signals from them to
-      slots of <tt>object</tt> that follow the following form:
-
-     <code>
-            void on_&lt;widget name&gt;_&lt;signal name&gt;(&lt;signal parameters&gt;);
-     </code>
-
-      Let's assume our object has a child object of type <tt>QPushButton</tt> with the object name <tt>button1</tt>.
-      The slot to catch the button's <tt>clicked()</tt> signal would be:
-
-     <code>
-            void on_button1_clicked();
-     </code>
-    */
-    public static void connectSlotsByName(QObject object) {
-        com.trolltech.qt.internal.QtJambiInternal.connectSlotsByName(object);
-    }
-
-
     private boolean signalsBlocked = false;
 }
