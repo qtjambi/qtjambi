@@ -23,7 +23,7 @@ serversocket.listen(16)
 host_linux64 = "tirionvm-linux64.troll.no"
 host_linux32 = "tirionvm-linux32.troll.no"
 host_win64   = "tirionvm-win64.troll.no"
-host_win32   = "tirionvm-win32.troll.no"
+host_win32   = "packy-win32-clone1.troll.no"
 host_mac     = "alqualonde.troll.no"
 
 class Options:
@@ -198,7 +198,7 @@ class Package:
             self.compiler = "msvc2005"
         self.make = "nmake"
         self.removeFiles.append("set_qtjambi_env.sh")
-        self.removeDirs.append("Qt Jambi Demos.app");
+        self.removeDirs.append("Demos.app")
 
     def setLinuxBinary(self):
         self.setBinary()
@@ -210,8 +210,8 @@ class Package:
             self.platformJarName = "qtjambi-linux64-gcc-" + options.qtJambiVersion + ".jar"
         else:
             self.platformJarName = "qtjambi-linux32-gcc-" + options.qtJambiVersion + ".jar"
-        self.removeFiles.append("set_qtjambi_env.bat"
-        self.removeDirs.append("Qt Jambi Demos.app");
+        self.removeFiles.append("set_qtjambi_env.bat")
+        self.removeDirs.append("Demos.app")
 
     def setSource(self):
         self.binary = False
