@@ -230,7 +230,7 @@ public class QtJambiInternal {
         if (strTypes.length() == 0)
             argumentTypes = new String[0];
         else
-            argumentTypes = RetroTranslatorHelper.split(strTypes, ",");
+            argumentTypes = strTypes.split(",");
 
         for (int i = 0; i < argumentTypes.length; ++i)
             argumentTypes[i] = argumentTypes[i].replace(" ", "").replace("$", ".");
@@ -269,7 +269,12 @@ public class QtJambiInternal {
                     arg = t.getName() + brackets;
                 }
 
-                if (arg.indexOf(argumentTypes[i]) < 0) {
+                if (argumentTypes[i].indexOf('.') < 0) {
+                    arg = arg.substring(arg.lastIndexOf('.') + 1);
+                }
+
+                if (!arg.equals(argumentTypes[i])) {
+
                     found = false;
                     break;
                 }
