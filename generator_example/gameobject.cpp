@@ -150,7 +150,7 @@ void GameObject::timerEvent(QTimerEvent *)
         update();
 
     int elapsed = m_time.elapsed();
-    if (elapsed > 0 && direction() != Game::NoDirection) {
+    if (m_scene != 0 && elapsed > 0 && direction() != Game::NoDirection) {
         Point3D pos = position();
 
         int anim_width = (a != 0 ? a->currentFrame().width() / 2 : 0);

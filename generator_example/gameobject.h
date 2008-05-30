@@ -18,11 +18,13 @@
 #include "point3d.h"
 #include "gameanimation.h"
 #include "abstractgameobject.h"
+#include "gamescene.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QTime>
+#include <QtCore/QPointer>
 
-class GameScene ;
+
 
 class GameObject: public QObject, public AbstractGameObject
 {
@@ -120,7 +122,7 @@ private:
     Point3D m_position;
     Game::WalkingDirection m_direction;
     qreal m_size_in_depth;
-    GameScene *m_scene;
+    QPointer<GameScene> m_scene;
     Game::AnimationType m_current_animation;
     qreal m_movement_factor;
     qreal m_old_factor;
