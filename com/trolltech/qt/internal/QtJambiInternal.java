@@ -233,7 +233,7 @@ public class QtJambiInternal {
             argumentTypes = strTypes.split(",");
 
         for (int i = 0; i < argumentTypes.length; ++i)
-            argumentTypes[i] = argumentTypes[i].replace(" ", "").replace("$", ".");
+            argumentTypes[i] = argumentTypes[i].replace(" ", "");
 
         return findFunctionRecursive(cls, name, argumentTypes);
     }
@@ -253,7 +253,7 @@ public class QtJambiInternal {
 
             found = true;
             for (int i = 0; i < a.length; ++i) {
-                String arg = a[i].getName().replace("$", ".");
+                String arg = a[i].getName();
 
                 Class<?> t = a[i];
 
