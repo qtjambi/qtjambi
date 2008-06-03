@@ -258,8 +258,7 @@ class Package:
             ["qtjambi/qtjambi_core.h", "include"],
             ["qtjambi/qtjambi_cache.h", "include"],
             ["qtjambi/qtjambi_global.h", "include"],
-            ["qtjambi/qtjambilink.h", "include"],
-            ["qtjambi/qtjambifunctiontable.h", "include"]
+            ["qtjambi/qtjambilink.h", "include"]
             ])
         
         self.removeDirs.append("Qt Jambi Demos.app");
@@ -277,6 +276,12 @@ class Package:
 
     def setEval(self):
         self.copyFiles.append("dist/LICENSE.EVAL")
+        if self.arch == pkgutil.PLATFORM_MAC:
+            self.removeDirs.append("Demos.app")
+        if self.arch == pkgutil.PLATFORM_WINDOWS:
+            self.removeFiles.append("set_qtambi_env.bat");
+        else:
+            self.removeFiles.append("set_qtjambi_env.sh");
 
     def setPreview(self):
         self.copyFiles.append("dist/LICENSE.PREVIEW")
@@ -570,27 +575,27 @@ def packageAndSend(package):
             buildFile.write("cp $QTDIR/bin/lrelease bin\n")
             buildFile.write("cp $QTDIR/bin/lupdate bin\n")
             buildFile.write("cp $QTDIR/bin/linguist bin\n")
-            buildFile.write("jar -xf qtjambi-linux*.jar");
-            buildFile.write("mv lib tmplib");
-            buildFile.write("rm -rf META-INF");
+            buildFile.write("jar -xf qtjambi-linux*.jar\n");
+            buildFile.write("mv lib tmplib\n");
+            buildFile.write("rm -rf META-INF\n");
             buildFile.write("cp $QTDIR/lib/libQtDesigner.so.4 tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtDesignerComponents.so.4 tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtScript.so.4 tmplib\n")
-            buildFile.write("chmod 755 scripts/update_rpaths.sh");
-            buildFile.write("./scripts/update_rpaths.sh");
+            buildFile.write("chmod 755 scripts/update_rpath.sh\n");
+            buildFile.write("./scripts/update_rpath.sh\n");
         else:
             buildFile.write("cp -R $QTDIR/bin/Designer.app bin\n")
             buildFile.write("cp $QTDIR/bin/lrelease bin\n")
             buildFile.write("cp $QTDIR/bin/lupdate bin\n")
             buildFile.write("cp -R $QTDIR/bin/Linguist.app bin\n")
-            buildFile.write("jar -xf qtjambi-linux*.jar");
-            buildFile.write("mv lib tmplib");
-            buildFile.write("rm -rf META-INF");
+            buildFile.write("jar -xf qtjambi-mac*.jar\n");
+            buildFile.write("mv lib tmplib\n");
+            buildFile.write("rm -rf META-INF\n");
             buildFile.write("cp $QTDIR/lib/libQtDesigner.4.dylib tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtDesignerComponents.4.dylib tmplib\n")
             buildFile.write("cp $QTDIR/lib/libQtScript.4.dylib tmplib\n")
-            buildFile.write("chmod 755 scripts/update_installname.sh");
-            buildFile.write("./scripts/update_installname.sh");
+            buildFile.write("chmod 755 scripts/update_installname.sh\n");
+            buildFile.write("./scripts/update_installname.sh\n");
 
         if package.hasEclipse():
             buildFile.write("cd scripts\n")
@@ -644,6 +649,11 @@ def postProcessPackage(package):
         os.system("jar -xf %s" % package.platformJarName)
         shutil.rmtree("%s/META-INF" % package.packageDir)
         os.remove("qtjambi-deployment.xml")
+        
+        if package.license == pkgutil.LICENSE_EVAL:
+            # Eval packages cannot use platform jar's as these cannot
+            # be patched with eval key...
+            os.remove(package.platformJarName)
 
         if not package.platform == pkgutil.PLATFORM_WINDOWS:
             os.system("chmod a+rx designer.sh qtjambi.sh")
@@ -666,6 +676,7 @@ def postProcessPackage(package):
             os.chdir("lib")
             os.system("ln -s libqtjambi.jnilib libqtjambi.1.jnilib")
             os.chdir(package.packageDir)
+            os.system("chmod a+x Demos.app/Contents/MacOS/JavaApplicationStub")
 
     pkgutil.expandMacroes(package.packageDir, package.licenseHeader)
 
@@ -750,7 +761,7 @@ def removeFiles(package):
                 dir = os.path.join(root, reldir)
                 if pattern.search(dir):
                     package.removeDirs.append(dir)
-
+                    
     rmlist = [];
     for fileToRemove in package.removeFiles:
         try:
