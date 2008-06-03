@@ -14,3 +14,5 @@ INCLUDEPATH += $$PWD/../include
 CONFIG(debug, debug|release) {
     TARGET = $$member(TARGET, 0)_debuglib
 }
+
+macx:QMAKE_EXTENSION_SHLIB = dylib

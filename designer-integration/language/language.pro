@@ -1,7 +1,6 @@
 
 TEMPLATE = lib
 CONFIG  += qt warn_on plugin designer
-DESTDIR = ../../plugins/designer
 TARGET = JambiLanguage
 
 # Have to include after TARGET...
@@ -25,3 +24,7 @@ win32-msvc.net{
 RESOURCES += resources.qrc
 
 INCLUDEPATH += $$PWD $$QTDIR/QtDesigner $$PWD/../include
+
+# patch up some bad things set in qtjambi_include...
+DESTDIR = ../../plugins/designer
+macx:QMAKE_EXTENSION_SHLIB = dylib
