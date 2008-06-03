@@ -2,18 +2,18 @@ Qt Jambi 4.4.0_01 is the first release of Qt 4.4 for Java. It
 represents a milestone in the feature development and includes bug
 fixes compared to previous releases.
 
-For details about changes in Qt itself, see the Qt changelogs:
+For details about changes in Qt itself, see the Qt change logs:
 http://trolltech.com/developer/notes/changes
 
 This release of Qt Jambi WILL break compatibility for a very few
-classes. This is primarly to enable the possibility of non-GUI based
+classes. This is primarily to enable the possibility of non-GUI-based
 Qt Jambi applications and to fix some errors that were introduced in
 Qt Jambi 4.3 before the user base is too large.
 
 
 
 ************************************************************************
- Package Structure...
+ Package Structure
 ************************************************************************
 
  - Binary package no longer contains generator or generator
@@ -22,7 +22,7 @@ Qt Jambi 4.3 before the user base is too large.
    the binary package where it could in fact not be used made this
    less clear.
 
- - The binary package or a succesfully built source package now
+ - The binary package or a successfully built source package now
    contains several .jar files in the root directory.
 
    * qtjambi-4.4.0_01.jar; The platform independent classes
@@ -43,24 +43,24 @@ Qt Jambi 4.3 before the user base is too large.
 
  - New Modules:
 
-   * com.trolltech.qt.webkit; The API for the WebKit browser
+   * com.trolltech.qt.webkit; The API for the WebKit browser.
 
-   * com.trolltech.qt.phonon; Multimedia API
+   * com.trolltech.qt.phonon; Multimedia API.
 
-   * com.trolltech.qt.xmlpatterns; XQuery and XML Patternist API
+   * com.trolltech.qt.xmlpatterns; XQuery and XML Patternist API.
 
    * com.trolltech.extensions.signalhandler; A statically typechecked way
-     of doing signal / slot connections...
+     of doing signal / slot connections.
 
-   * com.trolltech.tools.ant; Some conveneince ANT tasks for use with
+   * com.trolltech.tools.ant; Some convenience ANT tasks for use with
      Qt Jambi build systems.
 
-   * com.trolltech.qt.core; now contains Qt Concurrent;
+   * com.trolltech.qt.core; now contains Qt Concurrent.
 
    * com.trolltech.qt.sql; now contains QJdbc; A JDBC bridge.
 
    * com.trolltech.qt.internal; This package is internal, we mean
-     it...
+     it.
 
 
  - New deployment system. By default a complete jar file with native
@@ -68,10 +68,11 @@ Qt Jambi 4.3 before the user base is too large.
    package. For more information, see the deployment documentation.
 
  - Qt Jambi now fakes QMetaObjects of C++ QObjects, making it possible
-   to make use of signals / slots and properties of arbitrary C++
-   QObjects, not just the ones who have language bindings.
+   to introspect, get and set the properties of, and call methods in
+   Java objects from C++ code using the regular QMetaObject system in
+   Qt.
 
- - Allow recursive signal emissions
+ - Allow recursive signal emissions.
 
  - QPropertyManager has been removed. QObject's property functions
    should be used instead.
@@ -81,14 +82,14 @@ Qt Jambi 4.3 before the user base is too large.
    now removed.
 
  - Fixed: Many Qt classes are tied to the GUI thread and may only be
-   deleted from the GUI thread. Many more classes has now been marked
-   as such.
+   deleted from the GUI thread. Many more classes are now specially
+   handled to avoid destruction outside of the GUI thread.
 
  - Fixed: JVM 1.6 and newer from Sun(tm) have a bug in their JIT
    compiling which will eventually cause crashes in Qt Jambi. We are
    now generating code to work around this problem.
 
- - Fixed: Potential memory leak in QListWidget::addItem()
+ - Fixed: Potential memory leak in QListWidget::addItem().
 
  - Fixed: Qt libraries could potentially be loaded from the wrong
    location when plugins, SVG Icon Engine in particular, were
@@ -96,14 +97,14 @@ Qt Jambi 4.3 before the user base is too large.
    loading the plugins, this potential problem is avoided.
 
  - Fixed: Potential memory leak and race condition in Qt Jambi's
-   internal JNI datastructe cache.
+   internal JNI datastructure cache.
 
  - Fixed: The memory management system has been redone to avoid
    potential memory leaks.
 
- - Fixed: A racecondition would some times cause VM crashes when
+ - Fixed: A race condition would sometimes cause VM crashes when
    deleting objects marked as "delete-in-main-thread" in the
-   typesystem. This includes QFont, QPixmap etc...
+   typesystem. This includes QFont, QPixmap etc.
 
  - Fixed: QCoreApplication.invokeAndWait() now invokes the Runnable
    before returning, when called from the GUI thread.
@@ -111,7 +112,7 @@ Qt Jambi 4.3 before the user base is too large.
  - QReadWriteLock has been moved to QtCore, in accordance with its
    actual location in the Qt C++ libraries.
 
- - Deprecated: com.trolltech.qt.QtJambiInternal
+ - Deprecated: com.trolltech.qt.QtJambiInternal.
 
 
 
@@ -121,9 +122,9 @@ Qt Jambi 4.3 before the user base is too large.
 
  - Improved error messages on wrong use and potential problems.
 
- - Better support for namespaces
+ - Better support for namespaces.
 
- - New Command-line option: --custom-widgets
+ - New Command-line option: --custom-widgets.
 
  - The generator now defaults to current directory as output folder.
 
@@ -133,7 +134,7 @@ Qt Jambi 4.3 before the user base is too large.
  Build System in source package
 ************************************************************************
 
- - Qt Jambi uses now an ANT based build system. There are two ant
+ - Qt Jambi uses now an ANT-based build system. There are two ant
    build.xml files in the root directory, one for Qt Jambi and one
    to illustrate the generator and deployment. See installation and
    deployment guides for more details.
@@ -144,7 +145,7 @@ Qt Jambi 4.3 before the user base is too large.
 
  - OpenGL, Phonon and WebKit are optional in the build process. If Qt
    was not configured for any of these, they will be excluded from
-   jambi.
+   Qt Jambi.
 
  - The qmake .pro files now support both JAVADIR and JAVA_HOME as
    location for the JDK.
@@ -161,6 +162,7 @@ Qt Jambi 4.3 before the user base is too large.
    * Pad Navigator, showing Widgets in QGraphicsView
    * Music Player
    * Code Editor
+   * Custom Widget
 
  - Generator Example: Changed to make use of the ANT tasks to create
    deployable packages.
