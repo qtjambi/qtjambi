@@ -149,10 +149,6 @@ Qt Jambi 4.3 before the user base is too large.
  - The qmake .pro files now support both JAVADIR and JAVA_HOME as
    location for the JDK.
 
- - The ANT script provides an "experimental" feature, called
-   jumptables, which will significantly reduce the binary size of the
-   generated code.
-
 
 ************************************************************************
  Examples and Demos
