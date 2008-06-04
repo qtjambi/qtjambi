@@ -460,7 +460,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
 void qtjambi_invalidate_object(JNIEnv *env, jobject java_object, bool checkJavaOwnership)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java_object);
-    if (link != 0 && (!checkJavaOwnership || (link->ownership() != QtJambiLink::JavaOwnership))) {
+    if (link != 0 && (!checkJavaOwnership || (link->ownership() != QtJambiLink::JavaOwnership && !link->createdByJava()))) {
         link->javaObjectInvalidated(env);
     }
 }
