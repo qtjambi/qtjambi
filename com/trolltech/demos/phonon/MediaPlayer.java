@@ -144,6 +144,7 @@ public class MediaPlayer extends QWidget {
 
     protected void closeEvent(QCloseEvent e) {
         videoWindow.close();
+        mediaObject.stop();
     }
 
 
