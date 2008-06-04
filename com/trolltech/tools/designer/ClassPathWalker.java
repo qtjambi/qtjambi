@@ -170,7 +170,7 @@ public class ClassPathWalker extends QObject {
             String paths[] = ((String) path).split(java.io.File.pathSeparator);
             for (String p : paths) {
                 if (!p.equals("")) {
-                    QtJambiInternal.addSearchPathForResourceEngine(p);
+                    QAbstractFileEngine.addSearchPathForResourceEngine(p);
                     roots.add(p);
                 }
             }

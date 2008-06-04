@@ -149,13 +149,13 @@ public class ResourceBrowser extends JambiResourceBrowser {
         List<String> roots = ClassPathWalker.roots();
         if (roots != null) {
             for (String root : roots)
-                QtJambiInternal.removeSearchPathForResourceEngine(root);
+                QAbstractFileEngine.removeSearchPathForResourceEngine(root);
         }
 
         roots = new ArrayList<String>();
         Collections.addAll(roots, rootArray);
         for (String root : roots)
-            QtJambiInternal.addSearchPathForResourceEngine(root);
+            QAbstractFileEngine.addSearchPathForResourceEngine(root);
 
         ClassPathWalker.setRoots(roots);
         ClassPathWalker.addRootsFromSettings();
@@ -295,7 +295,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
             {
                 for (String root : oldRoots) {
                     if (!newPaths.contains(root))
-                        QtJambiInternal.removeSearchPathForResourceEngine(root);
+                        QAbstractFileEngine.removeSearchPathForResourceEngine(root);
                 }
             }
 
@@ -303,7 +303,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
             {
                 for (String path : newPaths) {
                     if (!oldRoots.contains(path)) {
-                        QtJambiInternal.addSearchPathForResourceEngine(path);
+                        QAbstractFileEngine.addSearchPathForResourceEngine(path);
                     }
                 }
             }

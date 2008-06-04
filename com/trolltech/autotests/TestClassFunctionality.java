@@ -14,10 +14,13 @@
 package com.trolltech.autotests;
 
 import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
+import com.trolltech.qt.internal.QtJambiInternal;
+import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QNoImplementationException;
 import static org.junit.Assert.*;
 import org.junit.*;
 

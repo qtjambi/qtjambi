@@ -110,7 +110,7 @@ public class BCC extends QWidget {
         String selected = QFileDialog.getOpenFileName(this, "Open jar file", null, new QFileDialog.Filter("*.jar"));
         if (selected.length() != 0) {
             if (w instanceof QLineEdit) {
-                QtJambiInternal.addSearchPathForResourceEngine(selected);
+                QAbstractFileEngine.addSearchPathForResourceEngine(selected);
                 ((QLineEdit) w).setText("classpath:" + selected + "#/");
             }
         }

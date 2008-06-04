@@ -13,7 +13,6 @@
 
 package com.trolltech.tools.designer;
 
-import com.trolltech.qt.QtJambiInternal;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -27,7 +26,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
     static {
         String extra = System.getProperty("com.trolltech.qtjambi.internal.extra_classpath");
         if (extra != null) {
-            QtJambiInternal.addSearchPathForResourceEngine(extra);
+            QAbstractFileEngine.addSearchPathForResourceEngine(extra);
         }
         QPixmap pm = new QPixmap("classpath:com/trolltech/tools/designer/folder.png");
         if (pm.isNull()) {
