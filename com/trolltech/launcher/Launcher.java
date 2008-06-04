@@ -354,6 +354,8 @@ public class Launcher extends QWidget {
 
     public static void main(String args[]) {
         QApplication.initialize(args == null ? start_qt() : args);
+        QApplication.setApplicationName("Qt Jambi Demo Launcher");
+
 
         SplashScreen splashScreen = null;
         splashScreen = new SplashScreen();
