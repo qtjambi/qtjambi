@@ -13,7 +13,6 @@
 
 package com.trolltech.examples;
 
-import com.trolltech.qt.QtJambiInternal;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -221,14 +220,6 @@ public class ResourceSystem extends QWidget
         }
         new ResourceItem(selection, info, true);
 
-    }
-
-    @Override
-    protected void disposed()
-    {
-        if (jarName != null)
-            QtJambiInternal.removeSearchPathForResourceEngine(jarName);
-        super.disposed();
     }
 
     @Override
