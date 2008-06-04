@@ -431,7 +431,7 @@ public class MediaPlayer extends QWidget {
         QApplication.setApplicationName("Media Player");
         QApplication.setQuitOnLastWindowClosed(true);
 
-        if (QApplication.arguments.size() != 1) {
+        if (QApplication.arguments().size() != 1) {
             System.err.println("Usage: MediaPlayer fileName");
             System.exit(1);
         }
