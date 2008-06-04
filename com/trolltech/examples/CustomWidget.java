@@ -336,7 +336,7 @@ public class CustomWidget extends QWidget {
         resetNeedlePath();
     }
 
-    private QSize sizeHint = new QSize(100, 100);
+    private QSize sizeHint = new QSize(200, 200);
     @Override
     public QSize sizeHint() {
         return sizeHint;
@@ -377,6 +377,8 @@ public class CustomWidget extends QWidget {
                 outerCircle = new QRectF(x + w/2 - h/2, y, h, h);
             else
                 outerCircle = new QRectF(x, y + h/2 - w/2, w, w);
+            // Compensate for the antialiased edges of the drawing by shrinking the rect by 1 pixel
+            outerCircle = outerCircle.adjusted(1, 1, -1, -1);
         }
         return outerCircle;
     }
@@ -431,8 +433,8 @@ public class CustomWidget extends QWidget {
         p.save();
 
         QPainterPath path = innerCirclePath();
-            p.fillPath(path, new QBrush(backgroundColor()));
-            p.setClipPath(path);
+        p.fillPath(path, new QBrush(backgroundColor()));
+        p.setClipPath(path);
 
         QRectF innerCircle = innerCircle();
         double x = (double)innerCircle.x() + (double)innerCircle.width() / 2.0f;
@@ -442,7 +444,6 @@ public class CustomWidget extends QWidget {
         int skip = skip();
         double step = ((double)skip / (double)maxSpeed()) * (endAngle() - startAngle());
         QFont font = speedFont();
-        font.setPointSize((int)(innerCircle.width() / 20.0f));
         p.setFont(font);
 
         QFontMetrics fm = new QFontMetrics(font);
