@@ -23,5 +23,4 @@
 #include "point3d.h"
 #include "useaction.h"
 
-#include <QtCore>
-#include <QtGui>
+#include "../generator/qtjambi_masterinclude.h"
