@@ -50,6 +50,10 @@ class Options:
         self.buildCommercial = True
         self.buildBinary = True
         self.buildSource = True
+        self.resetKeystore = True
+        self.buildWebstart = True
+
+        self.copiedWebstartBinaries = False;
 
 
 options = Options()
@@ -69,7 +73,6 @@ class Package:
             "com/trolltech/autotests",
             "com/trolltech/bcc",
             "com/trolltech/benchmarks",
-            "com/trolltech/extensions",
             "com/trolltech/extensions/awt",
             "com/trolltech/extensions/jfc",
             "com/trolltech/extensions/jython",
@@ -583,6 +586,9 @@ def packageAndSend(package):
             buildFile.write("cp $QTDIR/lib/libQtScript.so.4 tmplib\n")
             buildFile.write("chmod 755 scripts/update_rpath.sh\n");
             buildFile.write("./scripts/update_rpath.sh\n");
+            buildFile.write("rm -v tmplib/lib*.so.1.0.0\n");
+            buildFile.write("rm -v tmplib/lib*.so.1.0\n");
+            buildFile.write("rm -v tmplib/lib*.so.1\n");
         else:
             buildFile.write("cp -R $QTDIR/bin/Designer.app bin\n")
             buildFile.write("cp $QTDIR/bin/lrelease bin\n")
@@ -596,6 +602,9 @@ def packageAndSend(package):
             buildFile.write("cp $QTDIR/lib/libQtScript.4.dylib tmplib\n")
             buildFile.write("chmod 755 scripts/update_installname.sh\n");
             buildFile.write("./scripts/update_installname.sh\n");
+            buildFile.write("rm -v tmplib/lib*.1.0.0.jnilib\n");
+            buildFile.write("rm -v tmplib/lib*.1.0.jnilib\n");
+            buildFile.write("rm -v tmplib/lib*.1.jnilib\n");
 
         if package.hasEclipse():
             buildFile.write("cd scripts\n")
@@ -636,6 +645,14 @@ def postProcessPackage(package):
     removeFiles(package)
 
     if package.binary:
+        # move platform jar to startdir for webstart, take the examples and classes from windows
+        if package.license == pkgutil.LICENSE_GPL:
+            shutil.copy(package.platformJarName, options.startDir)
+            if package.platform == pkgutil.PLATFORM_WINDOWS:
+                shutil.copy("qtjambi-%s.jar" % (options.qtJambiVersion), options.startDir);
+                shutil.copy("qtjambi-examples-%s.jar" % (options.qtJambiVersion), options.startDir);
+                
+        
         # unjar docs into doc directory...
         pkgutil.debug(" - doing docs...")
         os.makedirs("doc/html")
@@ -809,7 +826,7 @@ def waitForResponse():
         pkgutil.debug(" - got response from %s:%d" % (host, port))
         match = False
         for pkg in packages:
-            if socket.gethostbyname(pkg.buildServer) == host and not pkg.done:
+            if pkg.binary and socket.gethostbyname(pkg.buildServer) == host and not pkg.done:
                 pkg.done = True
                 pkg.dataFile = options.packageRoot + "/" + pkg.name() + ".zip"
                 pkgutil.getDataFile(sock, pkg.dataFile)
@@ -828,20 +845,33 @@ def waitForResponse():
 
 
 
+def signWebstartJars():
+    print " - Setting up webstart jars..."
 
-def shortcutPackageBuild():
-    setupPackages()
+    if options.resetKeystore:
+        keystore = os.path.expanduser("~") + "/.keystore";
+        print "   - resetting keystore... %s" % keystore
+        try:
+            os.remove(keystore)
+        except:
+            print "     - did not delete keystore..."
+        keystoreInput = "qqqqqq\nTrolltech Developer\nDevelopment\nTrolltech ASA\nOslo\nOslo\nNO\nyes\n\n"
+        inputFile = open("keystore.tmp", "w")
+        inputFile.write(keystoreInput)
+        inputFile.close()
+        os.system("keytool -genkey -alias trolltech < keystore.tmp")
+        os.remove("keystore.tmp")
 
-    print "deleting old crap..."
+    for pkg in packages:
+        if pkg.binary and pkg.license == pkgutil.LICENSE_GPL:
+            print "   - signing %s" % (pkg.platformJarName)
+            os.system("jarsigner -storepass qqqqqq -keypass qqqqqq %s trolltech" % (pkg.platformJarName))
+            if pkg.platform == pkgutil.PLATFORM_WINDOWS:
+                print "   - doing examples and classes too..."
+                os.system("jarsigner -storepass qqqqqq -keypass qqqqqq qtjamb-%s.jar trolltech" % (options.qtJambiVersion))
+                os.system("jarsigner -storepass qqqqqq -keypass qqqqqq qtjambi-examples-%s.jar trolltech" % (options.qtJambiVersion))
 
-    if os.path.isdir("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01"):
-        shutil.rmtree("/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01")
-
-    packages[0].dataFile = "/tmp/package-builder/qtjambi-win64-commercial-4.4.0_01.zip"
-    postProcessPackage(packages[0])
-
-    return 0
-
+    print "   - all jars signed..."
 
 
 
@@ -878,6 +908,10 @@ def main():
             options.buildSource = False
         elif arg == "--no-binary":
             options.buildBinary = False
+        elif arg == "--no-webstart":
+            options.buildWebstart = False
+        elif arg == "--no-keystore-reset":
+            options.keystoreReset = False;
         elif arg == "--verbose":
             pkgutil.VERBOSE = 1
         elif arg == "--preview":
@@ -910,6 +944,8 @@ def main():
     print "  - build64: %s" % options.build64
     print "  - buildBinary: %s" % options.buildBinary
     print "  - buildSource: %s" % options.buildSource
+    print "  - package for webstart: %s" % options.buildWebstart
+    print "  - reset keystore: %s" % options.resetKeystore
     print "  - Preview Packages: %s" % options.buildPreview
 
     pkgutil.debug("preparing source tree...")
@@ -934,7 +970,8 @@ def main():
     if options.binaryPackageCount:
         waitForResponse()
 
-
+    if options.buildBinary and options.buildGpl and options.buildWebstart:
+        signWebstartJars();
 
 if __name__ == "__main__":
     main()
