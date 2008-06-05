@@ -359,6 +359,18 @@ public abstract class QSignalEmitterInternal {
          * @exclude
          */
         protected synchronized final void emit_helper(Object ... args) {
+
+            // When you dispose() a QObject, the first thing that happens is
+            // that the native ID is set to 0. Then we proceed to delete the
+            // native object. If this has a destructor which emits signals,
+            // they will be passed into Java, which will lead to a threadCheck()
+            // from signalsBlocked, and you will get an exception. We cannot
+            // support listening to signals emitted in the C++ destructor.
+            if (QSignalEmitterInternal.this instanceof QObject
+                && (((QObject) QSignalEmitterInternal.this).nativeId()) == 0) {
+                return ;
+            }
+
             if (QSignalEmitterInternal.this.signalsBlocked() || connections == null)
                 return;
 
