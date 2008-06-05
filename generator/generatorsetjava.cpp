@@ -95,7 +95,6 @@ bool GeneratorSetJava::readParameters(const QMap<QString, QString> args) {
 
 void GeneratorSetJava::buildModel(const QString pp_file) {
     // Building the code inforamation...
-    ReportHandler::setContext("MetaJavaBuilder");
     builder.setFileName(pp_file);
     builder.build();
 }

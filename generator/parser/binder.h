@@ -27,6 +27,8 @@ class LocationManager;
 class Control;
 struct NameSymbol;
 
+typedef void (*MessageHandler)(const std::string &s);
+
 class Binder: protected DefaultVisitor
 {
 public:
@@ -41,6 +43,8 @@ public:
 
 // utils
   TypeInfo qualifyType(const TypeInfo &type, const QStringList &context) const;
+
+  static void installMessageHandler(MessageHandler handler);
 
 protected:
   virtual void visitAccessSpecifier(AccessSpecifierAST *);
@@ -97,6 +101,8 @@ private:
   TemplateParameterList _M_current_template_parameters; // ### check me
   QHash<QString, QString> _M_qualified_types;
   QHash<QString, int> _M_anonymous_enums;
+
+    static MessageHandler _M_message_handler;
 
 protected:
   TypeCompiler type_cc;

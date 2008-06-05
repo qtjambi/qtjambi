@@ -26,6 +26,12 @@
 
 #include <qdebug.h>
 
+void binder_default_message_handler(const std::string &str) {
+    std::cerr << str;
+}
+
+MessageHandler Binder::_M_message_handler = binder_default_message_handler;
+
 Binder::Binder(CodeModel *__model, LocationManager &__location, Control *__control)
   : _M_model(__model),
     _M_location(__location),
@@ -148,7 +154,7 @@ CodeModel::ClassType Binder::decode_class_type(std::size_t index) const
       case Token_union:
         return CodeModel::Union;
       default:
-        std::cerr << "** WARNING unrecognized class type" << std::endl;
+        _M_message_handler("** WARNING unrecognized class type");
     }
     return CodeModel::Class;
 }
@@ -227,7 +233,7 @@ void Binder::declare_symbol(SimpleDeclarationAST *node, InitDeclaratorAST *init_
   NameAST *id = declarator->id;
   if (! declarator->id)
     {
-      std::cerr << "** WARNING expected a declarator id" << std::endl;
+      _M_message_handler("** WARNING expected a declarator id");
       return;
     }
 
@@ -236,8 +242,7 @@ void Binder::declare_symbol(SimpleDeclarationAST *node, InitDeclaratorAST *init_
   if (! symbolScope)
     {
       name_cc.run(id);
-      std::cerr << "** WARNING scope not found for symbol:"
-                << qPrintable(name_cc.name()) << std::endl;
+      _M_message_handler(std::string("** WARNING scope not found for symbol:") + qPrintable(name_cc.name()));
       return;
     }
 
@@ -333,10 +338,9 @@ void Binder::visitFunctionDefinition(FunctionDefinitionAST *node)
   if (! functionScope)
     {
       name_cc.run(declarator->id);
-      std::cerr << "** WARNING scope not found for function definition:"
-                << qPrintable(name_cc.name()) << std::endl
-                << "\tdefinition *ignored*"
-                << std::endl;
+      _M_message_handler(std::string("** WARNING scope not found for function definition:")
+                         + qPrintable(name_cc.name())
+                         + std::string(" - definition *ignored*"));
       return;
     }
 
@@ -496,12 +500,11 @@ void Binder::visitTypedef(TypedefAST *node)
 
       if (alias_name.isEmpty ())
         {
-          std::cerr << "** WARNING anonymous typedef not supported! ``";
+          _M_message_handler("** WARNING anonymous typedef not supported! ``");
           Token const &tk = _M_token_stream->token ((int) node->start_token);
           Token const &end_tk = _M_token_stream->token ((int) node->end_token);
 
-          std::cerr << std::string (&tk.text[tk.position], end_tk.position - tk.position) << "''"
-                    << std::endl << std::endl;
+          _M_message_handler(std::string(&tk.text[tk.position], end_tk.position - tk.position));
           continue;
         }
 
@@ -887,6 +890,11 @@ void Binder::updateItemPosition(CodeModelItem item, AST *node)
   assert (node != 0);
   _M_location.positionAt (_M_token_stream->position(node->start_token), &line, &column, &filename);
   item->setFileName (filename);
+}
+
+void Binder::installMessageHandler(MessageHandler handler)
+{
+    _M_message_handler = handler;
 }
 
 // kate: space-indent on; indent-width 2; replace-tabs on;

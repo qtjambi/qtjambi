@@ -17,8 +17,16 @@
 #include "typesystem.h"
 #include "generatorset.h"
 #include "fileout.h"
+#include "binder.h"
+
 
 #include <QDir>
+
+void ReportHandler_message_handler(const std::string &str)
+{
+    ReportHandler::warning(QString::fromStdString(str));
+}
+
 
 void displayHelp(GeneratorSet *generatorSet);
 
@@ -111,6 +119,7 @@ int main(int argc, char *argv[])
     if (!TypeDatabase::instance()->parseFile(typesystemFileName))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
+
     if (!Preprocess::preprocess(fileName, pp_file, args.value("include-paths"))) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
@@ -121,6 +130,7 @@ int main(int argc, char *argv[])
     return 0;
     }
 
+    Binder::installMessageHandler(ReportHandler_message_handler);
     gs->buildModel(pp_file);
     if (args.contains("dump-object-tree")) {
         gs->dumpObjectTree();

@@ -320,6 +320,7 @@ void AbstractMetaBuilder::sortLists()
 bool AbstractMetaBuilder::build()
 {
     Q_ASSERT(!m_file_name.isEmpty());
+    ReportHandler::setContext("Parser");
 
     QFile file(m_file_name);
 
@@ -340,6 +341,10 @@ bool AbstractMetaBuilder::build()
     CodeModel model;
     Binder binder(&model, p.location());
     m_dom = binder.run(ast);
+
+
+    ReportHandler::setContext("MetaJavaBuilder");
+
 
     pushScope(model_dynamic_cast<ScopeModelItem>(m_dom));
 

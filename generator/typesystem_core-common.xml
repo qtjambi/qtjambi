@@ -1263,4 +1263,9 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingFilter', unmatched parameter type 'Sequence&amp;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::createFunctor', unmatched return type 'QtConcurrent::SelectMemberFunctor0&lt;T,Class&gt;::type'" />
 
+  <suppress-warning text="WARNING(Parser) :: ** WARNING scope not found for function definition:QFuture&lt;void&gt;::operator= - definition *ignored*" />
+  <suppress-warning text="WARNING(Parser) :: ** WARNING scope not found for function definition:QFutureInterface&lt;void&gt;::future - definition *ignored*" />
+  <suppress-warning text="WARNING(Parser) :: ** WARNING scope not found for function definition:QFutureWatcher&lt;void&gt;::setFuture - definition *ignored*" />
+
+
 </typesystem>
