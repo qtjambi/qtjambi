@@ -23,6 +23,8 @@ import java.util.*;
 
 public class TestQObject extends QApplicationTest{
 
+    private static final int TIMEOUT = 10000;
+
     private static class TestObject extends QObject {
         public TestObject(QObject parent) {
             super(parent);
@@ -183,7 +185,7 @@ public class TestQObject extends QApplicationTest{
         oneObject();
 
         // we need to wait for gc to collect the parent.
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
 
         assertEquals(0, DyingObject.alive.size());
     }
@@ -194,7 +196,7 @@ public class TestQObject extends QApplicationTest{
         objectWithParent();
 
         // we need to wait for gc to collect the parent.
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
 
         QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
         assertEquals(0, DyingObject.alive.size());
@@ -207,7 +209,7 @@ public class TestQObject extends QApplicationTest{
         QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
 
         // we need to wait for gc to collect the parent.
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
 
         assertEquals(0, DyingObject.alive.size());
     }
@@ -216,11 +218,11 @@ public class TestQObject extends QApplicationTest{
     public void disposal_disposeInThread() {
         DyingObject.alive.clear();
         threadExecutor(runnable_disposeInThread, false);
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
         assertEquals(0, DyingObject.alive.size());
 
         threadExecutor(runnable_disposeInThread, true);
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -228,7 +230,7 @@ public class TestQObject extends QApplicationTest{
     public void disposal_gcInQThread_oneObject() {
         DyingObject.alive.clear();
         threadExecutor(runnable_oneObject, true);
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -238,7 +240,7 @@ public class TestQObject extends QApplicationTest{
         threadExecutor(runnable_objectWithParent, true);
 
         // we need to wait for gc to collect the parent.
-        DyingObject.waitForEmpty(10000);
+        DyingObject.waitForEmpty(TIMEOUT);
 
         assertEquals(0, DyingObject.alive.size());
     }
@@ -249,7 +251,7 @@ public class TestQObject extends QApplicationTest{
         threadExecutor(runnable_objectWithUnParent, true);
 
         // we need to wait for gc to collect the parent.
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
 
         assertEquals(0, DyingObject.alive.size());
     }
@@ -259,7 +261,7 @@ public class TestQObject extends QApplicationTest{
         // Will warn about leaking the C++ object.
         DyingObject.alive.clear();
         threadExecutor(runnable_oneObject, false);
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
         assertEquals(0, DyingObject.alive.size());
     }
 
@@ -271,7 +273,7 @@ public class TestQObject extends QApplicationTest{
 
 
         try {
-            Thread.sleep(1000); // make sure we do an effort to make this test fail.
+            Thread.sleep(TIMEOUT); // make sure we do an effort to make this test fail.
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -286,7 +288,7 @@ public class TestQObject extends QApplicationTest{
         threadExecutor(runnable_objectWithUnParent, false);
 
         // we need to wait for gc to collect the parent.
-        DyingObject.waitForEmpty(1000);
+        DyingObject.waitForEmpty(TIMEOUT);
 
         assertEquals(0, DyingObject.alive.size());
     }

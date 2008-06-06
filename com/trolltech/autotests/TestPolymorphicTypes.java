@@ -71,19 +71,19 @@ public class TestPolymorphicTypes extends QWidget
     public void testSendPaintEvent()
     {
         PolymorphicType.sendPaintEvent(this);
-        assertEquals(m_event.type(), QEvent.Type.Paint);
-        assertTrue(m_event instanceof QPaintEvent);
+        assertEquals(QEvent.Type.Paint, eventType);
+        assertEquals(QPaintEvent.class, eventClass);
+        assertEquals(0, m_event.nativeId());
     }
 
     @Test
     public void testSendCustomEvent()
     {
         PolymorphicType.sendCustomEvent(this, 20);
-        assertEquals(m_event.type(), QEvent.Type.resolve(QEvent.Type.User.value() + 1));
-        assertTrue(m_event instanceof CustomEvent);
-
-        CustomEvent customEvent = (CustomEvent) m_event;
-        assertEquals(customEvent.m_something(), 20);
+        assertEquals(QEvent.Type.resolve(QEvent.Type.User.value() + 1), eventType);
+        assertEquals(CustomEvent.class, eventClass);
+        assertEquals(0, m_event.nativeId());
+        assertEquals(20, customEventSomething);
     }
 
     @Test
@@ -148,10 +148,20 @@ public class TestPolymorphicTypes extends QWidget
         assertEquals(CustomStyle.m_option.getClass().getName(), "com.trolltech.qt.gui.QStyleOption");
     }
 
+    private int customEventSomething = 0;
+    private QEvent.Type eventType = null;
+    private Class<?> eventClass = null;
     private QEvent m_event = null;
     @Override
     public boolean event(QEvent arg__1) {
         m_event = arg__1;
+        eventClass = m_event.getClass();
+        eventType = m_event.type();
+        if (m_event instanceof CustomEvent)
+            customEventSomething = ((CustomEvent)m_event).m_something();
+        else
+            customEventSomething = -1;
+
         return super.event(arg__1);
     }
 
