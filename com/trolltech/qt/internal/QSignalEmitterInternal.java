@@ -371,7 +371,7 @@ public abstract class QSignalEmitterInternal {
                 return ;
             }
 
-            if (QSignalEmitterInternal.this.signalsBlocked() || connections == null)
+            if (QSignalEmitterInternal.this.signalsBlocked())
                 return;
 
             List<Connection> cons = connections;
@@ -385,6 +385,10 @@ public abstract class QSignalEmitterInternal {
             if (!isGenerated() && QSignalEmitterInternal.this instanceof QObject) {
                 MetaObjectTools.emitNativeSignal((QObject) QSignalEmitterInternal.this, name() + "(" + signalParameters() + ")", cppSignalSignature(), args);
             }
+
+            if (connections == null)
+                return;
+
 
             inJavaEmission = true;
             try {
@@ -570,7 +574,7 @@ public abstract class QSignalEmitterInternal {
         }
 
         private synchronized boolean removeConnection(Object receiver, Method slot) {
-            if (inDisconnect || connections == null)
+            if (inDisconnect)
                 return false;
             inDisconnect = true;
 
@@ -579,19 +583,21 @@ public abstract class QSignalEmitterInternal {
                 __qt_signalInitialization(name());
             }
 
-            List<Connection> toRemove = null;
             boolean returned = false;
-            for (Connection c : connections) {
-                if ((receiver == null || c.receiver == receiver)
-                    && (slot == null || slot.equals(c.slot))) {
-                    if (toRemove == null)
-                        toRemove = new ArrayList<Connection>();
-                    toRemove.add(c);
-                    returned = true;
+            if (connections != null) {
+                List<Connection> toRemove = null;
+                for (Connection c : connections) {
+                    if ((receiver == null || c.receiver == receiver)
+                        && (slot == null || slot.equals(c.slot))) {
+                        if (toRemove == null)
+                            toRemove = new ArrayList<Connection>();
+                        toRemove.add(c);
+                        returned = true;
+                    }
                 }
-            }
 
-            removeConnection_helper(toRemove);
+                removeConnection_helper(toRemove);
+            }
 
             if (QSignalEmitterInternal.this instanceof QObject && (receiver instanceof QObject || receiver == null)) {
                 String methodSignature = null;
