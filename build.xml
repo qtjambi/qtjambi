@@ -148,9 +148,10 @@
 
     <target name="library.java.compile" depends="init">
       <javac memoryMaximumSize="1024m"
-         fork="true"
+             fork="true"
              destdir="${outputDir}"
-         target="1.5">
+	     debug="true"
+             target="1.5">
         <src path="${outputDir}"/>
         <src path="${sourceDir}"/>
         <include name="com/trolltech/qt/*.java"/>

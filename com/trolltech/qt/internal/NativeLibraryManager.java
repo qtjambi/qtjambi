@@ -113,7 +113,7 @@ public class NativeLibraryManager {
 
     private static class DeploymentSpec {
         public String key;
-        public JarFile jar;
+        public URL url;
         public List<LibraryEntry> libraries;
         public List<String> pluginPaths;
 
@@ -175,8 +175,8 @@ public class NativeLibraryManager {
                     if (old != null) {
                         throw new DeploymentSpecException("<library> '" + e.name
                                                           + "' is duplicated. Present in both '"
-                                                          + spec.jar.getName() + "' and '"
-                                                          + old.spec.jar.getName() + "'.");
+                                                          + spec.url + "' and '"
+                                                          + old.spec.url + "'.");
                     }
                     reporter.report(" - adding '", fileName, "' to library map");
                     libraryMap.put(fileName, e);
@@ -455,17 +455,21 @@ public class NativeLibraryManager {
     }
 
 
-    private static DeploymentSpec readDeploySpec(JarFile file) throws Exception {
-        reporter.report("Checking Archive '", file.getName(), "'");
+    private static DeploymentSpec readDeploySpec(URL url) throws Exception {
+        reporter.report("Checking Archive '", url.toString(), "'");
 
-        JarEntry descriptor = file.getJarEntry(DEPLOY_DESCRIPTOR_NAME);
-        if (descriptor == null) {
+        InputStream stream = null;
+        try {
+            System.out.println("uri: " + url);
+            System.out.println("url: " + url);
+            stream = url.openStream();
+        } catch (Exception e) {
             reporter.report(" - does not contain '", DEPLOY_DESCRIPTOR_NAME, "', skipping");
             return null;
         }
 
         DeploymentSpec spec = new DeploymentSpec();
-        spec.jar = file;
+        spec.url = url;
 
         SAXParserFactory fact = SAXParserFactory.newInstance();
         SAXParser parser = fact.newSAXParser();
@@ -474,7 +478,7 @@ public class NativeLibraryManager {
         handler.spec = spec;
 
         try {
-            parser.parse(file.getInputStream(descriptor), handler);
+            parser.parse(stream, handler);
             if (spec.key == null) {
                 throw new DeploymentSpecException("Deployment Specification doesn't include required <cache key='...'/>");
             }
@@ -492,8 +496,7 @@ public class NativeLibraryManager {
     private static String md5(URI name) throws Exception {
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte data[] = new byte[1024];
-        File file = new File(name);
-        InputStream stream = new FileInputStream(file);
+        InputStream stream = name.toURL().openStream();
 
         int skip = stream.available() / 5;
         while (stream.read(data) > 0) {
@@ -502,14 +505,15 @@ public class NativeLibraryManager {
         }
         stream.close();
 
-        // Include the deployment descriptor in the md5 sum...
-        JarFile jarFile = new JarFile(file);
-        JarEntry entry = jarFile.getJarEntry(DEPLOY_DESCRIPTOR_NAME);
-        stream = jarFile.getInputStream(entry);
-        while (stream.read(data) > 0) {
-            md.update(data);
-        }
-        stream.close();
+        // ### fixme...
+//         // Include the deployment descriptor in the md5 sum...
+//         JarFile jarFile = new JarFile(file);
+//         JarEntry entry = jarFile.getJarEntry(DEPLOY_DESCRIPTOR_NAME);
+//         stream = jarFile.getInputStream(entry);
+//         while (stream.read(data) > 0) {
+//             md.update(data);
+//         }
+//         stream.close();
 
         byte digest[] = md.digest();
 
@@ -530,10 +534,18 @@ public class NativeLibraryManager {
     private static void unpackJarFile_helper(URI name) throws Exception {
         reporter.report("Unpacking .jar file: '", name.toString(), "'");
 
-        File file = new File(name);
-        JarFile jarFile = new JarFile(file);
+        URL specURL = null;
+        String jarName = name.getPath();
+        Enumeration<URL> descriptors = classLoader().getResources(DEPLOY_DESCRIPTOR_NAME);
+        while (descriptors.hasMoreElements()) {
+            URL url = descriptors.nextElement();
+            if (url.getPath().indexOf(jarName) >= 0) {
+                specURL = url;
+                break;
+            }
+        }
 
-        DeploymentSpec spec = readDeploySpec(jarFile);
+        DeploymentSpec spec = readDeploySpec(specURL);
         if (spec == null)
             return;
 
@@ -577,15 +589,25 @@ public class NativeLibraryManager {
         if (shouldCopy) {
             reporter.report(" - starting to copy content to cache directory...");
 
+            String sourceJar = name.getPath();
             for (LibraryEntry e : spec.libraries) {
                 reporter.report(" - copying over: '", e.name, "'...");
-                JarEntry entry = jarFile.getJarEntry(e.name);
-                if (entry == null) {
+
+                Enumeration<URL> urls = classLoader().getResources(e.name);
+                InputStream in = null;
+                while (in == null && urls.hasMoreElements()) {
+                    URL url = urls.nextElement();
+                    if (url.getPath().indexOf(sourceJar) >= 0) {
+                        in = url.openStream();
+                    }
+                }
+
+                if (in == null) {
                     throw new FileNotFoundException("Library '" + e.name
                                                     + "' specified in qtjambi-deployment.xml in '"
                                                     + name + "' does not exist");
                 }
-                InputStream in = jarFile.getInputStream(entry);
+
 
                 File outFile = new File(tmpDir, e.name);
                 File outFileDir = outFile.getParentFile();
