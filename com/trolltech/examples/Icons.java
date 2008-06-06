@@ -74,6 +74,8 @@ public class Icons extends QMainWindow
         setWindowTitle(tr("Icons"));
         otherRadioButton.click();
 
+        setTextOnRadioButtons();
+
         resize(minimumSizeHint());
     }
 //! [0]
@@ -104,6 +106,15 @@ public class Icons extends QMainWindow
             QApplication.setPalette(style.standardPalette());
         }
 
+        setTextOnRadioButtons();
+
+        changeSize(true);
+    }
+//! [4]
+
+    private void setTextOnRadioButtons() {
+        QStyle style = QApplication.style();
+
         int smallIconSize = style.pixelMetric(QStyle.PixelMetric.PM_SmallIconSize);
         smallRadioButton.setText("Small (" + smallIconSize + " x " + smallIconSize + ")");
 
@@ -121,10 +132,7 @@ public class Icons extends QMainWindow
 
         int tabBarIconSize = style.pixelMetric(QStyle.PixelMetric.PM_TabBarIconSize);
         tabBarRadioButton.setText("Tab bars (" + tabBarIconSize + " x " + tabBarIconSize + ")");
-
-        changeSize(true);
     }
-//! [4]
 
 //! [5]
     private void changeSize(int value)
