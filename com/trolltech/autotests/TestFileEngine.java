@@ -144,7 +144,7 @@ public class TestFileEngine extends QApplicationTest{
         assertTrue(dir.exists());
         assertTrue(dir.isReadable());
         assertTrue(!dir.isRoot());
-        assertEquals(dir.entryList().size(), 1);
+        assertEquals(dir.entryList().size(), 3);
 
         file = new QFile("classpath:TestClassFunctionality_dir/TestClassFunctionality_dir2/TestClassFunctionality_indir.txt");
         assertTrue(file.exists());
