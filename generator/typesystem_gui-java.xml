@@ -1578,7 +1578,7 @@
             return returned;
         }
 
-        public final QAction addAction(%EXTRA String text, com.trolltech.qt.core.QObject.AbstractSignal signal %END_EXTRA) {
+        public final QAction addAction(%EXTRA String text, com.trolltech.qt.QSignalEmitter.AbstractSignal signal %END_EXTRA) {
             QAction returned = addAction(%CALL_EXTRA text %END_CALL_EXTRA);
             %POST_CALL
             returned.triggered.connect(signal);
@@ -1597,7 +1597,7 @@
             return addAction(%CALL_EXTRA text, receiver, method, new QKeySequence(0));
         }
 
-        public final QAction addAction(%EXTRA String text, com.trolltech.qt.core.QObject.AbstractSignal signal) {
+        public final QAction addAction(%EXTRA String text, com.trolltech.qt.QSignalEmitter.AbstractSignal signal) {
             return addAction(%CALL_EXTRA text, signal, new QKeySequence(0));
         }
         </template>

@@ -1023,7 +1023,7 @@ void StaticCache::resolveAbstractSignal_internal()
     Q_ASSERT(!AbstractSignal.class_ref);
 
     AbstractSignal.class_ref =
-        ref_class(qtjambi_find_class(env, "com/trolltech/qt/internal/QSignalEmitterInternal$AbstractSignal"));
+        ref_class(qtjambi_find_class(env, "com/trolltech/qt/QSignalEmitter$AbstractSignal"));
     Q_ASSERT(AbstractSignal.class_ref);
 
     AbstractSignal.inCppEmission = env->GetFieldID(AbstractSignal.class_ref,
@@ -1060,9 +1060,9 @@ void StaticCache::resolveQtJambiInternal_internal()
 
     QtJambiInternal.lookupSignal = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                           "lookupSignal",
-                                                          "(Lcom/trolltech/qt/QSignalEmitter;"
+                                                          "(Lcom/trolltech/qt/internal/QSignalEmitterInternal;"
                                                            "Ljava/lang/String;"
-                                                          ")Lcom/trolltech/qt/internal/QSignalEmitterInternal$AbstractSignal;");
+                                                          ")Lcom/trolltech/qt/internal/QSignalEmitterInternal$AbstractSignalInternal;");
     Q_ASSERT(QtJambiInternal.lookupSignal);
 
     QtJambiInternal.lookupSlot = env->GetStaticMethodID(QtJambiInternal.class_ref,
@@ -1074,7 +1074,7 @@ void StaticCache::resolveQtJambiInternal_internal()
 
      QtJambiInternal.findEmitMethod = env->GetStaticMethodID(QtJambiInternal.class_ref,
                                                            "findEmitMethod",
-                                                           "(Lcom/trolltech/qt/internal/QSignalEmitterInternal$AbstractSignal;)Ljava/lang/reflect/Method;");
+                                                           "(Lcom/trolltech/qt/internal/QSignalEmitterInternal$AbstractSignalInternal;)Ljava/lang/reflect/Method;");
     Q_ASSERT(QtJambiInternal.findEmitMethod);
 
     QtJambiInternal.isImplementedInJava =
@@ -1109,7 +1109,7 @@ void StaticCache::resolveQtJambiInternal_internal()
 
 
     QtJambiInternal.signalParameters = env->GetStaticMethodID(QtJambiInternal.class_ref, "signalParameters",
-                                                              "(Lcom/trolltech/qt/internal/QSignalEmitterInternal$AbstractSignal;)Ljava/lang/String;");
+                                                              "(Lcom/trolltech/qt/internal/QSignalEmitterInternal$AbstractSignalInternal;)Ljava/lang/String;");
     Q_ASSERT(QtJambiInternal.signalParameters);
 
 

@@ -13,12 +13,10 @@
 
 package com.trolltech.qt;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.internal.MetaObjectTools;
-import com.trolltech.qt.internal.QSignalEmitterInternal;
-
 import java.lang.reflect.*;
-import java.util.*;
+
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.internal.*;
 
 /**
  * This class implements the functionality to emit signals. All
@@ -26,6 +24,129 @@ import java.util.*;
  * QtJambiObject.
  */
 public class QSignalEmitter extends QSignalEmitterInternal {
+
+
+    public abstract class AbstractSignal extends QSignalEmitter.AbstractSignalInternal {
+
+    /**
+     * Connects the signal to a method in an object. Whenever it is emitted, the method will be invoked
+     * on the given object.
+     *
+     * @param receiver  The object that owns the method
+     * @param method    The signature of the method excluding return type and argument names, such as "setText(String)".
+     * @param type      One of the connection types defined in the Qt interface.
+     * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
+     * @throws java.lang.RuntimeException Raised if the signal object could not be successfully introspected or if the
+     *                                    signatures of the signal and slot are incompatible.
+     */
+    public final void connect(Object receiver, String method,
+                                 Qt.ConnectionType type) {
+        if (receiver == null)
+            throw new NullPointerException("Receiver must be non-null");
+
+        Method slotMethod = com.trolltech.qt.internal.QtJambiInternal.lookupSlot(receiver, method);
+        if (slotMethod == null)
+            throw new QNoSuchSlotException(receiver, method);
+
+        connectSignalMethod(slotMethod, receiver, type.value());
+    }
+
+    /**
+     * Disconnects the signal from a method in an object if the two were previously connected by a call to connect.
+     *
+     * @param receiver The object to which the signal is connected
+     * @param method The method in the receiver object to which the signal is connected
+     * @return true if the connection was successfully removed, otherwise false. The method will return false if the
+     * connection has not been previously established by a call to connect.
+     * @throws QNoSuchSlotException Raised if the method passed in the slot object was not found
+     */
+    public final boolean disconnect(Object receiver, String method) {
+        if (method != null && receiver == null)
+            throw new IllegalArgumentException("Receiver cannot be null if you specify a method");
+
+        Method slotMethod = null;
+        if (method != null) {
+            slotMethod = com.trolltech.qt.internal.QtJambiInternal.lookupSlot(receiver, method);
+            if (slotMethod == null)
+                throw new QNoSuchSlotException(receiver, method);
+        }
+
+        return removeConnection(receiver, slotMethod);
+    }
+
+    /**
+     * Removes any connection from this signal to the specified receiving object
+     *
+     *  @param receiver The object to which the signal has connections
+     *  @return true if any connection was successfully removed, otherwise false. The method will return false if no
+     *  connection has previously been establish to the receiver.
+     *
+     *  @see #disconnect(Object, String)
+     **/
+    public final boolean disconnect(Object receiver) {
+        return disconnect(receiver, null);
+    }
+
+    /**
+     * Removes all connections from this signal.
+     *
+     * @return  True if the disconnection was successful.
+     * @see #disconnect(Object, String)
+     */
+    public final boolean disconnect() {
+        return disconnect(null, null);
+    }
+
+    /**
+     * Creates an auto-connection from this signal to the specified object and method.
+     *
+     * @param receiver The object that owns the method
+     * @param method The signature of the method excluding return type and argument names, such as "setText(String)".
+     *
+     * @see #connect(Object, String, com.trolltech.qt.core.Qt.ConnectionType)
+     **/
+    public final void connect(Object receiver, String method) {
+        connect(receiver, method, Qt.ConnectionType.AutoConnection);
+    }
+
+    /**
+     * Creates an auto connection from this signal to another. Whenever this signal is emitted, it will cause the second
+     * signal to be emitted as well.
+     *
+     * @param signalOut The second signal. This will be emitted whenever this signal is emitted.
+     * @throws RuntimeException Raised if either of the signal objects could not be successfully be introspected or if their
+     *                                    signatures are incompatible.
+     */
+    public final void connect(AbstractSignal signalOut) {
+        connect(signalOut, Qt.ConnectionType.AutoConnection);
+    }
+
+    /**
+     * Creates a connection from this signal to another. Whenever this signal is emitted, it will cause the second
+     * signal to be emitted as well.
+     *
+     * @param signalOut The second signal. This will be emitted whenever this signal is emitted.
+     * @param type      One of the connection types defined in the Qt interface.
+     * @throws RuntimeException Raised if either of the signal objects could not be successfully be introspected or if their
+     *                                    signatures are incompatible.
+     */
+    public final void connect(AbstractSignal signalOut, Qt.ConnectionType type) {
+        connectSignalMethod(com.trolltech.qt.internal.QtJambiInternal.findEmitMethod(signalOut), signalOut,
+                type.value());
+    }
+
+    /**
+     * Disconnects a signal from another signal if the two were previously connected by a call to connect.
+     * A call to this function will assure that the emission of the first signal will not cause the emission of the second.
+     *
+     * @param signalOut The second signal.
+     * @return true if the two signals were successfully disconnected, or false otherwise.
+     */
+    public final boolean disconnect(AbstractSignal signalOut) {
+        return removeConnection(signalOut, com.trolltech.qt.internal.QtJambiInternal.findEmitMethod(signalOut));
+    }
+
+    }
 
 
     /**

@@ -333,15 +333,15 @@ public class MetaObjectTools {
 
     public native static void emitNativeSignal(QObject object, String signalSignature, String signalCppSignature, Object args[]);
 
-    public static String cppSignalSignature(QSignalEmitter signalEmitter, String signalName) {
-        QSignalEmitter.AbstractSignal signal = QtJambiInternal.lookupSignal(signalEmitter, signalName);
+    public static String cppSignalSignature(QSignalEmitterInternal signalEmitter, String signalName) {
+        QSignalEmitter.AbstractSignal signal = (QSignalEmitter.AbstractSignal) QtJambiInternal.lookupSignal(signalEmitter, signalName);
         if (signal != null)
             return cppSignalSignature(signal);
         else
             return "";
     }
 
-    public static String cppSignalSignature(QSignalEmitter.AbstractSignal signal) {
+    public static String cppSignalSignature(QSignalEmitter.AbstractSignalInternal signal) {
         String signalParameters = QtJambiInternal.signalParameters(signal);
         String params = MetaObjectTools.internalTypeName(signalParameters, 1);
         if (signalParameters.length() > 0 && params.length() == 0)

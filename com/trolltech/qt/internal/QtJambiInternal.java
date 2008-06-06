@@ -35,7 +35,7 @@ public class QtJambiInternal {
 
         private QObject sender;
 
-        public QMetaCallEvent(QSignalEmitter.AbstractSignal.Connection connection, QObject sender,
+        public QMetaCallEvent(QSignalEmitter.AbstractSignalInternal.Connection connection, QObject sender,
                 Object... arguments) {
             super(MetaCallEventType);
             this.arguments = arguments;
@@ -51,11 +51,11 @@ public class QtJambiInternal {
             this.arguments = arguments;
         }
 
-        public final QSignalEmitter.AbstractSignal.Connection getConnection() {
+        public final QSignalEmitter.AbstractSignalInternal.Connection getConnection() {
             return connection;
         }
 
-        public final void setConnection(QSignalEmitter.AbstractSignal.Connection connection) {
+        public final void setConnection(QSignalEmitter.AbstractSignalInternal.Connection connection) {
             this.connection = connection;
         }
 
@@ -93,7 +93,7 @@ public class QtJambiInternal {
         }
 
         private Object arguments[];
-        private QSignalEmitterInternal.AbstractSignal.Connection connection;
+        private QSignalEmitterInternal.AbstractSignalInternal.Connection connection;
     }
 
     public static int[] resolveConversionSchema(Class<?> inputParameterTypes[], Class<?> outputParameterTypes[]) {
@@ -165,14 +165,14 @@ public class QtJambiInternal {
         }
     }
 
-    public static QSignalEmitterInternal.AbstractSignal lookupSignal(QSignalEmitter signalEmitter, String name)
+    public static QSignalEmitterInternal.AbstractSignalInternal lookupSignal(QSignalEmitterInternal signalEmitter, String name)
     {
         if (name == null || signalEmitter == null) {
             System.err.println("lookupSignal: Name or object is null");
             return null;
         }
 
-        QSignalEmitterInternal.AbstractSignal returned = null;
+        QSignalEmitterInternal.AbstractSignalInternal returned = null;
         for (Class<?> cls = signalEmitter.getClass();
              QSignalEmitterInternal.class.isAssignableFrom(cls) && returned == null;
              cls = cls.getSuperclass()) {
@@ -189,9 +189,9 @@ public class QtJambiInternal {
                 f.setAccessible(true);
             } catch (SecurityException e) { }
 
-            if (QSignalEmitterInternal.AbstractSignal.class.isAssignableFrom(f.getType())) {
+            if (QSignalEmitterInternal.AbstractSignalInternal.class.isAssignableFrom(f.getType())) {
                 try {
-                    returned = (QSignalEmitterInternal.AbstractSignal) f.get(signalEmitter);
+                    returned = (QSignalEmitterInternal.AbstractSignalInternal) f.get(signalEmitter);
                 } catch (Exception e) {
                     returned = fetchSignal(signalEmitter, f);
                 }
@@ -367,12 +367,12 @@ public class QtJambiInternal {
 
             for (Field f : fields) {
                 if (isSignal(f.getType())) {
-                    QObject.AbstractSignal signal;
+                    QSignalEmitter.AbstractSignal signal;
                     try {
                         f.setAccessible(true);
-                        signal = (QObject.AbstractSignal) f.get(sender);
+                        signal = (QSignalEmitter.AbstractSignal) f.get(sender);
                     } catch (Exception e) {
-                        signal = fetchSignal(sender, f);
+                        signal = (QSignalEmitter.AbstractSignal) fetchSignal(sender, f);
                     }
 
                     signal.disconnect(receiver);
@@ -385,7 +385,7 @@ public class QtJambiInternal {
 
     public static native QSignalEmitter sender(QObject receiver);
 
-    static Method findEmitMethod(QSignalEmitterInternal.AbstractSignal signal) {
+    public static Method findEmitMethod(QSignalEmitterInternal.AbstractSignalInternal signal) {
         Method methods[] = signal.getClass().getDeclaredMethods();
 
         Method slotMethod = null;
@@ -405,7 +405,7 @@ public class QtJambiInternal {
      * @param cl The class to check
      */
     public static boolean isSignal(Class<?> cl) {
-        return QSignalEmitterInternal.AbstractSignal.class.isAssignableFrom(cl);
+        return QSignalEmitterInternal.AbstractSignalInternal.class.isAssignableFrom(cl);
     }
 
     public static QtJambiInternal.ResolvedSignal resolveSignal(Field field, Class<?> declaringClass) {
@@ -452,7 +452,7 @@ public class QtJambiInternal {
         return resolvedSignal;
     }
 
-    static native QSignalEmitterInternal.AbstractSignal fetchSignal(QSignalEmitterInternal signalEmitter, Field field);
+    static native QSignalEmitterInternal.AbstractSignalInternal fetchSignal(QSignalEmitterInternal signalEmitter, Field field);
 
     static native long resolveSlot(Method method);
 
@@ -460,7 +460,7 @@ public class QtJambiInternal {
             byte returnType, Object args[], int slotTypes[]);
 
     /*private static native void setField(QSignalEmitter object, Field f,
-            QObject.AbstractSignal newValue);*/
+            QObject.AbstractSignalInternal newValue);*/
 
     static native boolean cppDisconnect(QObject sender, String signal, QObject receiver, String slot);
 
@@ -722,7 +722,7 @@ public class QtJambiInternal {
             return;
         }
 
-        ((QSignalEmitterInternal.AbstractSignal) signal_object).connect(receiver, MetaObjectTools.methodSignature(method));
+        ((QSignalEmitter.AbstractSignal) signal_object).connect(receiver, MetaObjectTools.methodSignature(method));
     }
 
     /**
@@ -787,7 +787,7 @@ public class QtJambiInternal {
         public String name = "";
     }
 
-    public static String signalParameters(QSignalEmitterInternal.AbstractSignal signal) {
+    public static String signalParameters(QSignalEmitterInternal.AbstractSignalInternal signal) {
         return MetaObjectTools.bunchOfClassNamesInARow(signal.resolveSignal(), signal.arrayDimensions());
     }
 
