@@ -1661,11 +1661,12 @@ public class TestInjectedCode extends QApplicationTest {
 
     @Test
     public void testIODevicePeek() {
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");
         QIODevice file = new QFile("classpath:com/trolltech/autotests/TestInjectedCode.java");
 
         assertTrue(file.open(QIODevice.OpenModeFlag.ReadOnly));
 
-        file.seek(file.bytesAvailable() - 7);
+        file.seek(file.bytesAvailable() - 9);
 
         byte bytes[] = new byte[7];
         assertEquals(7, file.peek(bytes));
@@ -1690,11 +1691,12 @@ public class TestInjectedCode extends QApplicationTest {
 
     @Test
     public void testIODeviceGetByteSuccess() {
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");
         QIODevice file = new QFile("classpath:com/trolltech/autotests/TestInjectedCode.java");
 
         assertTrue(file.open(QIODevice.OpenModeFlag.ReadOnly));
 
-        file.seek(file.bytesAvailable() - 2);
+        file.seek(file.bytesAvailable() - 4);
 
         byte b = (byte) file.getByte();
         assertEquals((byte) 't', b);
