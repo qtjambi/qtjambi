@@ -36,7 +36,7 @@ public class TestQVariant extends QApplicationTest {
         QBitArray expectedBitArray = new QBitArray();
         char expectedChar = 0;
         QDate expectedDate = new QDate();
-        QTime expectedTime = new QTime(0, 0);
+        QTime expectedTime = new QTime();
         QDateTime expectedDateTime = new QDateTime(expectedDate, expectedTime);
         QPoint expectedPoint = new QPoint();
         QPointF expectedPointF = new QPointF();
@@ -120,7 +120,7 @@ public class TestQVariant extends QApplicationTest {
         QBitArray expectedBitArray = new QBitArray();
         char expectedChar = 0;
         QDate expectedDate = new QDate();
-        QTime expectedTime = new QTime(12, 0, 6);
+        QTime expectedTime = new QTime();
         QDateTime expectedDateTime = new QDateTime();
         QPoint expectedPoint = new QPoint();
         QPointF expectedPointF = new QPointF();
@@ -204,7 +204,7 @@ public class TestQVariant extends QApplicationTest {
         QBitArray expectedBitArray = new QBitArray();
         char expectedChar = 0;
         QDate expectedDate = new QDate();
-        QTime expectedTime = new QTime(0, 0);
+        QTime expectedTime = new QTime();
         QDateTime expectedDateTime = new QDateTime();
         QPoint expectedPoint = new QPoint();
         QPointF expectedPointF = new QPointF();
@@ -232,7 +232,7 @@ public class TestQVariant extends QApplicationTest {
         QBitArray expectedBitArray = new QBitArray();
         char expectedChar = 0;
         QDate expectedDate = new QDate();
-        QTime expectedTime = new QTime(0, 0);
+        QTime expectedTime = new QTime();
         QDateTime expectedDateTime = new QDateTime();
         QPoint expectedPoint = new QPoint();
         QPointF expectedPointF = new QPointF();
