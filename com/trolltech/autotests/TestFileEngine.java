@@ -26,6 +26,7 @@ public class TestFileEngine extends QApplicationTest{
 
     @Test
     public void run_classPathFileEngine() {
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");
         QFileInfo info = new QFileInfo("classpath:com/trolltech/autotests/TestClassFunctionality.jar");
         assertTrue(info.exists());
 
@@ -122,13 +123,13 @@ public class TestFileEngine extends QApplicationTest{
         QDir dir = new QDir("classpath:TestClassFunctionality_dir/");
         assertTrue(dir.exists());
 
-        assertEquals(dir.entryList().size(), 1);
-        assertTrue(dir.entryList().get(0).equals("TestClassFunctionality_dir2"));
+        assertEquals(dir.entryList().size(), 3);
+        assertTrue(dir.entryList().get(2).equals("TestClassFunctionality_dir2"));
 
         List<QFileInfo> entryInfoList = dir.entryInfoList();
-        assertEquals(entryInfoList.size(), 1);
+        assertEquals(entryInfoList.size(), 3);
 
-        info = entryInfoList.get(0);
+        info = entryInfoList.get(2);
         assertTrue(info.exists());
         assertTrue(info.isDir());
         assertEquals(info.fileName(), "TestClassFunctionality_dir2");
