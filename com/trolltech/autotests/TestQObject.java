@@ -128,11 +128,12 @@ public class TestQObject extends QApplicationTest{
         static public void waitForEmpty(int timeout){
             // we need to wait for gc to collect the parent.
             while(timeout>0 && !alive.isEmpty()){
+                long time = System.currentTimeMillis();
                 System.gc();
                 try {
                     Thread.sleep(10);
                 } catch (Exception e) {}
-                timeout-=10;
+                timeout-= (System.currentTimeMillis() - time);
             }
         }
 
