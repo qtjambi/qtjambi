@@ -79,10 +79,7 @@ void QtJambiLink::registerSubObject(void *ptr) {
 
 void QtJambiLink::unregisterSubObject(void *ptr) {
     QWriteLocker locker(gUserObjectCacheLock());
-
-    int i = gUserObjectCache() ? gUserObjectCache()->remove(ptr) : 1;
-    Q_ASSERT(i == 1);
-    Q_UNUSED(i);
+    gUserObjectCache()->remove(ptr);
 }
 
 QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object)
