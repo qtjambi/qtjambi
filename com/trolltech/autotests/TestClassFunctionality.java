@@ -18,6 +18,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
 import com.trolltech.qt.internal.QtJambiInternal;
+import com.trolltech.qt.internal.QSignalEmitterInternal;
 import com.trolltech.qt.QtJambiObject;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QNoImplementationException;
@@ -318,7 +319,7 @@ public class TestClassFunctionality extends QApplicationTest {
 
         Method method = null;
         try {
-            method = QtJambiInternal.class.getDeclaredMethod("fetchSignal", QSignalEmitter.class, Field.class);
+            method = QtJambiInternal.class.getDeclaredMethod("fetchSignal", QSignalEmitterInternal.class, Field.class);
         } catch (NoSuchMethodException e) {
             assertEquals(e, null);
         }
