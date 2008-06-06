@@ -30,6 +30,7 @@ public class TestI18N extends QApplicationTest {
 
     @Test
     public void TestSimpleNotTranslatedWithTranslationsLoaded() {
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");        
         QTranslator translator = new QTranslator();
         assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
         QApplication.installTranslator(translator);
@@ -52,15 +53,21 @@ public class TestI18N extends QApplicationTest {
 
     @Test
     public void TestSimpleTranslated() {
-        QApplication.installTranslator(null);
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");
+
+        QTranslator translator = new QTranslator();
+        assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
+        QApplication.installTranslator(translator);
+
         SimpleTranslated test = new SimpleTranslated();
         test.testTranslated();
     }
 
     @Test
     public void TestSimpleTranslatedWithTranslationsLoaded() {
-        QTranslator translator = new QTranslator();
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");
 
+        QTranslator translator = new QTranslator();
         assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
         QApplication.installTranslator(translator);
 

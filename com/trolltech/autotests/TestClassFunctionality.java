@@ -616,6 +616,7 @@ public class TestClassFunctionality extends QApplicationTest {
 
     @Test
     public void run_copyConstructor() {
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");
         QFileInfo file1 = new QFileInfo("classpath:com/trolltech/autotests/TestClassFunctionality.jar");
         assertTrue(file1.exists());
 
