@@ -3,6 +3,7 @@
 #if defined(QTJAMBI_DEBUG_TOOLS)
 
 #include "qtjambi_global.h"
+#include "qtjambi_core.h"
 
 #include <QHash>
 
