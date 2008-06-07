@@ -1,11 +1,12 @@
 #!/bin/sh
 
+me=$(dirname $0)
+
 if [ -e binpatch ];
 then
     ./binpatch
+    export LD_LIBRARY_PATH=$me/lib
 fi
-
-me=$(dirname $0)
 
 if ! java -version 2>&1 | grep -q "1\.[5-9]"
 then

@@ -3,6 +3,7 @@
 if [ -e binpatch ];
 then
     ./binpatch
+    export DYLD_LIBRARY_PATH=$me/lib
 fi
 
 me=$(dirname $0)
