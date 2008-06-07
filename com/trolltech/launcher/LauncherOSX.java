@@ -24,6 +24,8 @@ public class LauncherOSX {
     //private static final String PLUGINS_JAR_MACOSX = "qtjambi-mac-gpl-" + Utilities.VERSION_STRING + ".jar";
 
     private  static void copy(URL sourceUrl, String destination) throws IOException {
+        System.out.println("using source: " + sourceUrl);
+
         URLConnection connection = sourceUrl.openConnection();
         if (connection instanceof JarURLConnection)
             sourceUrl = ((JarURLConnection) connection).getJarFileURL();
@@ -43,13 +45,6 @@ public class LauncherOSX {
         out.close();
     }
 
-/*    private static String plugins() {
-        if (System.getProperty("os.name").toLowerCase().contains("mac os x"))
-            return PLUGINS_JAR_MACOSX;
-        return null;
-    }
-*/
-
     public static void main(String args[]) throws Exception {
 
         if (!System.getProperty("os.name").toLowerCase().contains("mac os x")) {
@@ -64,7 +59,7 @@ public class LauncherOSX {
              tmp + "/classes.jar");
         copy(Thread.currentThread().getContextClassLoader().getResource("com/trolltech/launcher/Launcher.class"),
              tmp + "/examples.jar");
-        copy(Thread.currentThread().getContextClassLoader().getResource("libQtCore.4.dylib"),
+        copy(Thread.currentThread().getContextClassLoader().getResource("lib/libQtCore.4.dylib"),
              tmp + "/native.jar");
 
         StringBuffer cmd = new StringBuffer();
