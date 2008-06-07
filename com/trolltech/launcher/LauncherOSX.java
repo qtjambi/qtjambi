@@ -57,7 +57,7 @@ public class LauncherOSX {
             return;
         }
 
-        String tmp = "/tmp/QtJambi_webstart/";
+        String tmp = Utilities.jambiTempDir().getAbsolutePath();
         new File(tmp).mkdirs();
 
         copy(Thread.currentThread().getContextClassLoader().getResource("com/trolltech/qt/QtJambiObject.class"),
