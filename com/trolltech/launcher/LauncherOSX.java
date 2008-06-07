@@ -52,40 +52,20 @@ public class LauncherOSX {
 
     public static void main(String args[]) throws Exception {
 
-    if (!System.getProperty("os.name").toLowerCase().contains("mac os x")) {
-        Launcher.main(args);
-        return;
-    }
+        if (!System.getProperty("os.name").toLowerCase().contains("mac os x")) {
+            Launcher.main(args);
+            return;
+        }
 
-        Utilities.loadSystemLibraries();
-
-        Utilities.loadQtLibrary("QtCore");
-        Utilities.loadQtLibrary("QtGui");
-        Utilities.loadQtLibrary("QtXml");
-        Utilities.loadQtLibrary("QtNetwork");
-        Utilities.loadQtLibrary("QtOpenGL");
-        Utilities.loadQtLibrary("QtSql");
-        Utilities.loadQtLibrary("QtSvg");
-
-        Utilities.loadJambiLibrary("qtjambi");
-
-        Utilities.loadJambiLibrary("com_trolltech_qt_core");
-        Utilities.loadJambiLibrary("com_trolltech_qt_gui");
-        Utilities.loadJambiLibrary("com_trolltech_qt_xml");
-        Utilities.loadJambiLibrary("com_trolltech_qt_network");
-        Utilities.loadJambiLibrary("com_trolltech_qt_opengl");
-        Utilities.loadJambiLibrary("com_trolltech_qt_sql");
-        Utilities.loadJambiLibrary("com_trolltech_qt_svg");
-
-        Utilities.unpackPlugins();
-
-        String tmp = Utilities.jambiTempDir().getAbsolutePath();
-
+        String tmp = "/tmp/QtJambi_webstart/";
+        new File(tmp).mkdirs();
 
         copy(Thread.currentThread().getContextClassLoader().getResource("com/trolltech/qt/QtJambiObject.class"),
-             tmp + "/qtjambi.jar");
+             tmp + "/classes.jar");
         copy(Thread.currentThread().getContextClassLoader().getResource("com/trolltech/launcher/Launcher.class"),
-             tmp + "/qtjambi-launcher.jar");
+             tmp + "/examples.jar");
+        copy(Thread.currentThread().getContextClassLoader().getResource("libQtCore.4.dylib"),
+             tmp + "/native.jar");
 
         StringBuffer cmd = new StringBuffer();
 
@@ -93,24 +73,19 @@ public class LauncherOSX {
         cmd.append(javaLocation + "java");
 
         // classpath...
-        cmd.append(" -cp " + tmp + "/qtjambi.jar:" + tmp + "/qtjambi-launcher.jar");
+        cmd.append(" -cp " + tmp + "/classes.jar:" + tmp + "/examples.jar:" + tmp + "/native.jar");
 
-        // library path...
-        cmd.append(" -Djava.library.path=" + tmp);
-
-    cmd.append(" -XstartOnFirstThread");
+        cmd.append(" -XstartOnFirstThread");
         cmd.append(" -Dcom.trolltech.launcher.webstart=true");
 
         // the app itself...
         cmd.append(" com.trolltech.launcher.Launcher");
 
-    System.out.println(cmd.toString());
+        System.out.println(cmd.toString());
 
         ProcessBuilder procBuilder = new ProcessBuilder(cmd.toString().split(" "));
-        procBuilder.environment().put("QT_PLUGIN_PATH", tmp + "/plugins");
-    procBuilder.environment().put("DYLD_LIBRARY_PATH", tmp);
         Process proc = procBuilder.start();
 
-    proc.waitFor();
+        proc.waitFor();
     }
 }
