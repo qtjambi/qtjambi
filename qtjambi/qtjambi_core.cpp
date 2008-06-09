@@ -1455,7 +1455,8 @@ static QString locate_vm_linux_and_solaris()
 
     for (int i = 0; i < envVariables.size(); ++i) {
 
-        const char *env = qgetenv(envVariables.at(i).toLatin1());
+        QByteArray baEnv = qgetenv(envVariables.at(i).toLatin1());
+        const char *env = baEnv.constData();
         if (!env)
             continue;
 
@@ -1486,8 +1487,8 @@ static QString locate_vm_linux_and_solaris()
 #  endif
 #else
 #  ifdef _LP64
-        jmachs << QLatin1String("amd64/client");
         jmachs << QLatin1String("amd64/server");
+        jmachs << QLatin1String("amd64/client");
 #  else
         jmachs << QLatin1String("i386/client");
         jmachs << QLatin1String("i386/server");
