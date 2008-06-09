@@ -10,7 +10,7 @@ function patchBinary {
 
 function patchLibraries 
 {
-    for lib in $(find . -name "*.so")
+    for lib in $(find . -name "*.so" -o -name "*.so.4")
     do
 	if [ $(expr "$lib" : "./plugins") -gt 0 ]; then
 	    patchBinary $lib '$ORIGIN/../../lib'
