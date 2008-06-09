@@ -57,11 +57,14 @@ public class HelloWebKit extends QMainWindow {
         browser.loadStarted.connect(this, "loadStarted()");
         browser.loadProgress.connect(this, "loadProgress(int)");
         browser.loadFinished.connect(this, "loadDone()");
+        browser.urlChanged.connect(this, "urlChanged(QUrl)");
 
         forward.triggered.connect(browser, "forward()");
         backward.triggered.connect(browser, "back()");
         reload.triggered.connect(browser, "reload()");
         stop.triggered.connect(browser, "stop()");
+
+
 
         // Set an initial loading page once its up and showing...
         QApplication.invokeLater(new Runnable() {
@@ -70,6 +73,10 @@ public class HelloWebKit extends QMainWindow {
                     open();
                 }
             });
+    }
+
+    public void urlChanged(QUrl url) {
+        field.setText(url.toString());
     }
 
     public void loadStarted() {
