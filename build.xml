@@ -105,7 +105,7 @@
             depends="init, generator.xmlmerge"
             description="Runs qmake on the generator project.">
       <mkdir dir="${outputDir}/generator"/>
-      <qmake config="${qtjambi.configuration}"
+      <qmake config="release"
              dir="${outputDir}/generator"
              pro="${sourceDir}/generator/generator.pro"
              debugTools="${qtjambi.debug-tools}"/>
@@ -150,7 +150,7 @@
       <javac memoryMaximumSize="1024m"
              fork="true"
              destdir="${outputDir}"
-	     debug="true"
+         debug="true"
              target="1.5">
         <src path="${outputDir}"/>
         <src path="${sourceDir}"/>
