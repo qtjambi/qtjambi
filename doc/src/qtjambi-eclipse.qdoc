@@ -6,7 +6,7 @@
     Qt Jambi comes with a plugin for the Eclipse IDE, providing access
     to the Qt Jambi documentation and Qt Designer from within the
     Eclipse environment. The integration is currently supported on
-    Windows and Linux. Mac OS X support is under development.
+    Windows and Linux. 
 
     \tableofcontents
 
