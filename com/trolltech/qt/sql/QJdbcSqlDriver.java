@@ -36,6 +36,7 @@ class QJdbcSqlDriver extends QSqlDriver
         this.disableGarbageCollection();
     }
 
+    @Override
     public void close()
     {
         if (connection != null) {
@@ -49,16 +50,19 @@ class QJdbcSqlDriver extends QSqlDriver
         setOpen(false);
     }
 
+    @Override
     public Object handle()
     {
         return connection;
     }
 
+    @Override
     public QSqlResult createResult()
     {
         return new QJdbcSqlResult(this, connection);
     }
 
+    @Override
     public List<String> tables(QSql.TableType tableType)
     {
         Vector<String> list = new Vector<String>();
@@ -101,6 +105,7 @@ class QJdbcSqlDriver extends QSqlDriver
         return list;
     }
 
+    @Override
     public boolean hasFeature(QSqlDriver.DriverFeature f)
     {
         switch (f) {
@@ -130,6 +135,7 @@ class QJdbcSqlDriver extends QSqlDriver
         return false;
     }
 
+    @Override
     public boolean open(String db, String user, String password, String host, int port, String connOpts)
     {
         Connection con = null;
@@ -160,6 +166,7 @@ class QJdbcSqlDriver extends QSqlDriver
         return true;
     }
 
+    @Override
     public QSqlRecord record(String tableName)
     {
         if (connection == null)
@@ -197,6 +204,51 @@ class QJdbcSqlDriver extends QSqlDriver
         return res;
     }
 
+    @Override
+    public QSqlIndex primaryIndex(String tableName) {
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            if (metaData == null)
+                return new QSqlIndex(tableName);
+
+            ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
+
+            QSqlIndex idx = new QSqlIndex(tableName);
+            while (primaryKeys.next()) {
+
+                String columnName = primaryKeys.getString("COLUMN_NAME");
+                ResultSet resultSet = metaData.getColumns(null, null, tableName, columnName);
+
+                idx.setName(primaryKeys.getString("PK_NAME"));
+
+                // There should only be a single entry here, since we are asking for
+                // a specific column
+                if (resultSet.next()) {
+                    QSqlField f = new QSqlField(resultSet.getString(4),
+                        QJdbcSqlUtil.javaTypeIdToVariantType(resultSet.getInt(5)));
+                    f.setLength(resultSet.getInt(7));
+                    f.setPrecision(resultSet.getInt(8));
+                    f.setRequiredStatus(QJdbcSqlUtil.toRequiredStatus(resultSet.getInt(11)));
+                    f.setSqlType(resultSet.getInt(5));
+                    f.setDefaultValue(resultSet.getObject(13));
+
+                    idx.append(f);
+                }
+
+                resultSet.close();
+            }
+
+            primaryKeys.close();
+            return idx;
+
+        } catch (SQLException ex) {
+            setError(ex, tr("Unable to get primary index"), QSqlError.ErrorType.ConnectionError);
+            return new QSqlIndex(tableName);
+        }
+    }
+
+
+    @Override
     public boolean beginTransaction()
     {
         if (connection == null)
@@ -211,6 +263,7 @@ class QJdbcSqlDriver extends QSqlDriver
         return true;
     }
 
+    @Override
     public boolean commitTransaction()
     {
         if (connection == null)
@@ -225,6 +278,7 @@ class QJdbcSqlDriver extends QSqlDriver
         return true;
     }
 
+    @Override
     public boolean rollbackTransaction()
     {
         if (connection == null)
@@ -239,6 +293,7 @@ class QJdbcSqlDriver extends QSqlDriver
         return true;
     }
 
+    @Override
     protected void disposed()
     {
         // the C++ object is gone - probably because QSqlDatabase::removeDatabase was called.
