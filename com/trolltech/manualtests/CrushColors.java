@@ -30,6 +30,8 @@ public class CrushColors {
 
 
     public static void main(String args[]) {
+        QApplication.initialize(args);
+
         for (int i=0; i<4; ++i) {
             Thread t = new Crusher();
             t.setDaemon(false);
