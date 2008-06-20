@@ -496,19 +496,20 @@ StaticCache::~StaticCache() {
 }
 
 
+Q_GLOBAL_STATIC(QReadWriteLock, staticcache_instance_lock);
+
 StaticCache *StaticCache::instance()
 {
     static StaticCache *the_cache = 0;
-    static QReadWriteLock lock;
 
     {
-        QReadLocker read(&lock);
+        QReadLocker read(staticcache_instance_lock());
         if (the_cache)
             return the_cache;
     }
 
     {
-        QWriteLocker write(&lock);
+        QWriteLocker write(staticcache_instance_lock());
         if (the_cache)
             return the_cache;
 
