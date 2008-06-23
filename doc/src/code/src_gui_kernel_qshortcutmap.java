@@ -1,12 +1,3 @@
-/*   Ported from: src.gui.kernel.qshortcutmap.cpp
-<snip>
-//! [0]
-        key = QKeySequence();
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

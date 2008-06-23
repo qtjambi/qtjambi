@@ -1,22 +1,3 @@
-/*   Ported from: src.corelib.concurrent.qfuturesynchronizer.cpp
-<snip>
-//! [0]
-    void someFunction()
-    {
-        QFutureSynchronizer<void> synchronizer;
-
-        ...
-
-        synchronizer.addFuture(QtConcurrent::run(anotherFunction));
-        synchronizer.addFuture(QtConcurrent::map(list, mapFunction));
-
-        return; // QFutureSynchronizer waits for all futures to finish
-    }
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.core.*;
 import java.lang.reflect.*;
 import java.util.*;

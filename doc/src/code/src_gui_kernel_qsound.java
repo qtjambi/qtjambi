@@ -1,18 +1,3 @@
-/*   Ported from: src.gui.kernel.qsound.cpp
-<snip>
-//! [0]
-        QSound::play("mysounds/bells.wav");
-//! [0]
-
-
-//! [1]
-        QSound bells("mysounds/bells.wav");
-        bells.play();
-//! [1]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

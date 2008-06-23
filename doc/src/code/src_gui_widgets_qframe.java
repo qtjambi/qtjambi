@@ -1,17 +1,3 @@
-/*   Ported from: src.gui.widgets.qframe.cpp
-<snip>
-//! [0]
-    QLabel label(...);
-    label.setFrameStyle(QFrame::Panel | QFrame::Raised);
-    label.setLineWidth(2);
-
-    QProgressBar pbar(...);
-    label.setFrameStyle(QFrame::NoFrame);
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

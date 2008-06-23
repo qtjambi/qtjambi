@@ -1,19 +1,3 @@
-/*   Ported from: src.corelib.concurrent.qfuturewatcher.cpp
-<snip>
-//! [0]
-    // Instantiate the objects and connect to the finished signal.
-    MyClass myObject;
-    QFutureWatcher<int> watcher;
-    connect(&watcher, SIGNAL(finished()), &myObject, SLOT(handleFinished()));
-
-    // Start the computation.
-    QFuture<int> future = QtConcurrent::run(...);
-    watcher.setFuture(future);
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.core.*;
 import java.lang.reflect.*;
 

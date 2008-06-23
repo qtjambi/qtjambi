@@ -1,12 +1,3 @@
-/*   Ported from: src.corelib.kernel.qabstracteventdispatcher.cpp
-<snip>
-//! [0]
-        bool myEventFilter(void *message);
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

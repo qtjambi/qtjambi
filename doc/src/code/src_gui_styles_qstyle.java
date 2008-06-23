@@ -1,17 +1,3 @@
-/*   Ported from: src.gui.styles.qstyle.cpp
-<snip>
-//! [0]
-        ./myapplication -style motif
-//! [0]
-
-
-//! [1]
-        ./myapplication -style custom
-//! [1]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

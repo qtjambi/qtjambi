@@ -1,15 +1,3 @@
-/*   Ported from: src.network.ssl.qsslcertificate.cpp
-<snip>
-//! [0]
-    foreach (QSslCertificate cert, QSslCertificate::fromPath("C:/ssl/certificate.*.pem",
-                                                             QRegExp::Wildcard)) {
-        qDebug() << cert.issuerInfo(QSslCertificate::Organization);
-    }
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

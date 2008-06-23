@@ -1,17 +1,3 @@
-/*   Ported from: src.gui.widgets.qabstractspinbox.cpp
-<snip>
-//! [0]
-        QSpinBox *spinBox = new QSpinBox(this);
-        spinBox->setRange(0, 100);
-        spinBox->setWrapping(true);
-        spinBox->setValue(100);
-        spinBox->stepBy(1);
-        // value is 0
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

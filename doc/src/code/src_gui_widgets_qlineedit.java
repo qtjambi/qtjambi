@@ -1,19 +1,3 @@
-/*   Ported from: src.gui.widgets.qlineedit.cpp
-<snip>
-//! [0]
-        void LineEdit::contextMenuEvent(QContextMenuEvent *event)
-        {
-            QMenu *menu = createStandardContextMenu();
-            menu->addAction(tr("My Menu Item"));
-            //...
-            menu->exec(event->globalPos());
-            delete menu;
-        }
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

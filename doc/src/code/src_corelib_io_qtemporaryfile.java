@@ -1,19 +1,3 @@
-/*   Ported from: src.corelib.io.qtemporaryfile.cpp
-<snip>
-//! [0]
-        {
-            QTemporaryFile file;
-            if (file.open()) {
-                // file.fileName() returns the unique file name
-            }
-
-            // the QTemporaryFile destructor removes the temporary file
-        }
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

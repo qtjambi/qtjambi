@@ -1,15 +1,3 @@
-/*   Ported from: src.gui.dialogs.qabstractprintdialog.cpp
-<snip>
-//! [0]
-        QPrintDialog printDialog(printer, parent);
-        if (printDialog.exec() == QDialog::Accepted) {
-            // print ...
-        }
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

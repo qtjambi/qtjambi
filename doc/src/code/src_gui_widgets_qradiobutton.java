@@ -1,12 +1,3 @@
-/*   Ported from: src.gui.widgets.qradiobutton.cpp
-<snip>
-//! [0]
-        QRadioButton *button = new QRadioButton("Search from the &cursor", this);
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

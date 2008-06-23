@@ -1,17 +1,3 @@
-/*   Ported from: src.gui.widgets.qdockwidget.cpp
-<snip>
-//! [0]
-       QDockWidget *dockWidget = qobject_cast<QDockWidget*>(parentWidget());
-       if (dockWidget->features() & QDockWidget::DockWidgetVerticalTitleBar) {
-           // I need to be vertical
-       } else {
-           // I need to be horizontal
-       }
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

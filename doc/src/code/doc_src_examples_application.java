@@ -1,14 +1,3 @@
-/*   Ported from: doc.src.examples.application.qdoc
-<snip>
-//! [0]
-        application -style=windows
-        application -style=motif
-        application -style=cde
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.gui.*;
 
 

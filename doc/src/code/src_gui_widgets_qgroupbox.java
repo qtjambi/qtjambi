@@ -1,12 +1,3 @@
-/*   Ported from: src.gui.widgets.qgroupbox.cpp
-<snip>
-//! [0]
-        g->setTitle("&User information");
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

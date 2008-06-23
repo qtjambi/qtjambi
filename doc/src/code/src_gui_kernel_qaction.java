@@ -1,18 +1,3 @@
-/*   Ported from: src.gui.kernel.qaction.cpp
-<snip>
-//! [0]
-    QApplication app(argc, argv);
-    app.setAttribute(Qt::AA_DontShowIconsInMenus);  // Icons are *no longer shown* in menus
-    // ...
-    QAction *myAction = new QAction();
-    // ...
-    myAction->setIcon(SomeIcon);
-    myAction->setIconVisibleInMenu(true);   // Icon *will* be shown in menus for *this* action.
-//! [0]
-
-
-</snip>
-*/
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
