@@ -933,6 +933,14 @@
     \o \bold  insert-template
     \o Documented in the \l {insert-template}{Using Code Templates} section
 
+    \row
+    \o \bold delete-in-main-thread
+    \o Specifies that the object is tied to the main thread and can
+    only be deleted in the application's main thread. This is true for
+    all non-QObjects that use native windowing system resources, such
+    as fonts, pixmaps, and \l{QGraphicsItem}s. It is also true classes
+    that memory manage objects of these classes.
+
     \endtable
 
     \section2 Manipulating Namespace and Interface Types
