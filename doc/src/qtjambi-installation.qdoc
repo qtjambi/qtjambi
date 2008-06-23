@@ -20,19 +20,17 @@
     which is an application that runs the examples and demos that come
     with Qt Jambi.
 
-    To run the examples and demo launcher on Windows run the
+    To run the examples and demo launcher on Windows run:
 
     \code
         qtjambi.exe
     \endcode
 
-    executable from the Qt Jambi directory. On Linux and Mac OS X run the
+    On Linux and Mac OS X run:
 
     \code
         qtjambi.sh
     \endcode
-
-    shell script from the Qt Jambi directory.
 
     Running these files will verify the virtual machine version and
     set the correct environment for running Qt Jambi applications.
@@ -42,15 +40,24 @@
 
     \section2 Manually Launching Qt Jambi Applications
 
-    To manually run Qt Jambi, the qtjambi classes archive and qtjambi
-    platform archive must be available in the CLASSPATH. The qtjambi
-    classes archive is named \c{qtjambi-4.4.0_01.jar} and the platform
-    archive is named according to the operating system and compiler
-    used to generated the native binaries, such as \c
-    {qtjambi-win32-msvc2005-4.4.0_01.jar}
+    To manually launch applications, you need to include the
+    following \c .jar files in your classpath:
 
-    To run the examples or launcher, the classpath must also include
-    the \c{qtjambi-examples-4.4.0_01.jar}.
+    \list
+        \o \c{qtjambi-4.4.0_01.jar}, which contains the Jambi
+           classes.
+        \o The platform archive, which contains the native
+           libraries used by Qt Jambi. The archive is named after
+           the operating system and compiler used to build the
+           libraries; for instance,
+           \c{qtjambi-win32-msvc2005-4.4.0_01.jar} for Windows and
+           MSVC 2005.
+        \o To run the examples or launcher, the classpath must also include
+           the \c{qtjambi-examples-4.4.0_01.jar}.
+    \endlist
+
+    All three files live in the in the Qt Jambi installation
+    directory. We give an example for each operating system bellow:
 
     \code
         // Linux
@@ -69,21 +76,15 @@
 
     \section3 Alternate way of loading native libraries
 
-    Qt Jambi must be enabled to find the native libraries. The Qt
-    Jambi libraries is a set of class files contained in the \c
-    {qtjambi-4.4.0_01.jar} file and a set of native libraries. The
-    native libraries are located in a .jar file named according to
-    your operating system, hardware configuration and the compiler
-    that was used to build the package, for instance \c
-    {qtjambi-win64-msvc2005x64-4.4.0_01.jar}. The native libraries
-    will be automatically loaded when this jar file is part of the
-    classpath.
+    As described in the previous section, Jambi loads the native
+    libraries from the platform archive (when it is included in the
+    classpath).
 
     An alternative way of loading the native libraries is to rely on
     Java's standard method of loading native libraries. This is done
     by specifying either the JVM system property
-    \c{-Djava.library.path=[path_to_libraries]} or setting the
-    following environment variable:
+    \c{-Djava.library.path=[path_to_libraries]} or including the paths
+    in the following environment variable:
 
     \table 100%
         \header \o Platform \o Comment
@@ -105,36 +106,44 @@
 
     \endtable
 
-    Loading directly from files is \b not recommended as the wrong
-    libraries can be found, such as /usr/lib/libQtCore.4.so because
-    /usr/lib is always part of LD_LIBRARY_PATH.
+    Note that the path to the Jambi libraries should be the first path
+    in these variables. If not, Jambi might find other and likely
+    incompatible versions of the libraries. On Linux, for instance,
+    the library libQtCore.4.so in /usr/lib is by default part of
+    LD_LIBRARY_PATH.
 
-    Some of Qt's functionality is loaded via native plugins. This
-    includes for instance support for jpeg images. When using the
-    platform archive, plugins are configured and loaded correctly
-    automatically. When loading native libraries from the file system,
-    Qt will try to load plugins from the directories in the
-    QT_PLUGIN_PATH environment variable.
+    Some of Qt's functionality is loaded via native \l{How to Create
+    Qt Plugins}{plugins}. This includes for instance support for JPEG
+    images. The plugins are located in the \c plugins directory in the
+    Qt Jambi installation directory.
+
+    Qt Jambi searches for the plugins from the directories in the
+    QT_PLUGIN_PATH environment variable (when the platform archive is
+    not used). So you should set QT_PLUGIN_PATH to the \c plugins
+    directory.
 
     You are then ready to run Qt Jambi applications. An example of how
     to run the launcher manually is illustrated below:
+
+    \code
+        java -cp qtjambi-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
+    \endcode
 
     \section1 Building Qt Jambi from a Source Package
 
     This section describes how to build Qt Jambi from source. We first
     explain how to configure your system, and then we go through the
-    procedure of building Qt Jambi from the command line.  Finally, we
+    procedure of building Qt Jambi from the command line. Finally, we
     look at some common installation problems.
 
-    Note that a source package requires a Qt to be built. To avoid
-    potential binary incompatibilities it is highly recommended that
-    you build both Qt from scratch before building Qt Jambi from
-    source. On Mac OS X, Qt must be configured without frameworks (by
-    running the \c configure script with the --no-framework option).
+    Note that a Qt Jambi source package also requires a Qt source package. To avoid
+    potential binary incompatibilities, it is highly recommended that you rebuild
+    Qt before building Qt Jambi. On Mac OS X, Qt must be configured without
+    frameworks (by running the \c configure script with the --no-framework option).
 
     \section2 Configuring the System for Qt Jambi
 
-    The Jambi source package requires a Qt source package, JDK 1.5 or
+    In addition to the Qt source package, you will need JDK 1.5 or
     higher and the build utility \c ant.
 
     \section2 Building Qt for Qt Jambi
@@ -147,7 +156,7 @@
 
     \header \o Configuration \o Comment
 
-    \row \o All \o Some featuers in Qt are turned on or off for Qt
+    \row \o All \o Some features in Qt are turned on or off for Qt
     Jambi by configuring with \c {-D QT_JAMBI_BUILD}. Qt Jambi also
     has no need for the Qt 3 support library so it is recommended to
     compile with \c {-no-qt3support}.
@@ -181,20 +190,15 @@
         \o JAVA_HOME
         \o This variable must contain the path to the directory
            where Java is installed.
-    \row
-        \o QMAKESPEC
-        \o This variable is redundant in most cases, but may be
-        required to pick between ambigous compilers, such as MinGW or
-        MSVC on windows.
 
     \endtable
 
-
     \section2 Building Qt Jambi
 
-    Qt Jambi provides a ant task which handles all the tasks of
-    building the Qt Jambi libraries. To build Qt Jambi simply make
-    sure the above requirements are met and type
+    Qt Jambi provides an ant task which handles all the tasks of
+    building the Qt Jambi libraries. To build Qt Jambi from
+    scratch, run ant without arguments in the Jambi installation
+    directory.
 
     \code
     > ant
@@ -281,28 +285,35 @@
             \o Qt Jambi expects that Qt was built with debugging turned off.
                If Qt was built with debugging, the libraries will not be found.
             \o Run Qt Jambi with the \c{com.trolltech.qt.debug} system property.
+        \row
+            \o Qt Jambi tries to use the wrong compiler            
+            \o This can happen on Windows systems with both the MSVC and MinGW
+               compilers installed.You can set the QMAKESPEC variable. Please see
+               the qmake \l{qmake Manual}{documentation} for details.
+
     \endtable
 
     \section3 Load Issues
 
     If Jambi cannot find the native libraries, you will get
-    \c{java.lang.UnsatisfiedLinkError}'s or other load issues. The
-    search paths - in the order Jambi searches - for libraries are
-    listed below.
+    \c{java.lang.UnsatisfiedLinkError}'s or other load issues. We list
+    search paths below. They are listed in the order Jambi searches
+    for libraries.
 
     \list
-        \o The com.trolltech.qt.library-path system property,
-           which can be given \c java as command line argument.
+        \o The com.trolltech.qt.library-path system property.
         \o The classpath (including jar files).
         \o The subdirectory \c lib (Mac OS X and Linux) or \c bin
            (Windows) under the root of the Jambi package
-           structure (i.e., the Qt Jambi directory).
+           structure (i.e., the Qt Jambi installation directory).
         \o The java.library.path system property, which is set
            to LD_LIBRARY_PATH on Linux, PATH on Windows, and
            DYLD_LIBRARY_PATH on Mac OS X.
     \endlist
 
     \section1 Platform Notes
+
+    We will now take a quick look at platform specific issues.
 
     \table 100%
     \header \o Platform \o Comment
