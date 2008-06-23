@@ -178,7 +178,7 @@
         \o This variable must contain the path to the directory
            where Qt is installed.
     \row
-        \o JAVADIR
+        \o JAVA_HOME
         \o This variable must contain the path to the directory
            where Java is installed.
     \row
