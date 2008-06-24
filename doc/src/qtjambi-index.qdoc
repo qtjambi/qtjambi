@@ -62,7 +62,7 @@
         Reference
         </th>
         <th bgcolor="#a2c511" width="33%">
-        Tools
+        Overviews
         </th>
         <th bgcolor="#a2c511" width="33%">
         Licences & Credits
@@ -73,17 +73,17 @@
         <ul>
         <li><a href="../../../index.html target="_top">Qt Jambi API Javadoc</a></li>
         <li><a href="qtjambi-typesystem.html">Type System</a></li>
-        <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
         <li><a href="qtjambi-systemproperties.html">Qt Jambi System Properties</a></li>
+        <li><a href="qtjambi-deployment.html">Deploying Qt Jambi Applications</a></li>
         <li><a href="http://doc.trolltech.com/qt/index.html">Qt C++ Reference Documentation</a></li>
+        <li><a href="http://doc.trolltech.com/qt/gallery.html">Qt Widget Gallery</a></li>
         </ul>
         </td>
         <td valign="top">
         <ul>
-        <li><a href="qtjambi-designer.html">Qt Designer</a></li>
-        <li><a href="linguist-manual.html">Qt Linguist</a></li>
-        <li><a href="qtjambi-generator.html">Generator</a></li>
-        <li><a href="qtjambi-juic.html">JUIC</a></li>
+        <li><a href="qtjambi-layout.html">Layout Management</a></li>
+        <li><a href="qtjambi-resourcesystemoverview.html">Resource System</a></li>
+        <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
         </ul>
         </td>
         <td valign="top">
@@ -95,7 +95,7 @@
         </tr>
         <tr>
         <th bgcolor="#a2c511" width="33%">
-        Overviews
+        Tools
         </th>
         <th bgcolor="#a2c511" width="33%">
         Add-ons
@@ -107,9 +107,10 @@
         <tr>
         <td valign="top">
         <ul>
-        <li><a href="http://doc.trolltech.com/qt/gallery.html">Qt Widget Gallery</a></li>
-        <li><a href="qtjambi-overviews.html">Qt Technology Overviews</a></li>
-        <li><a href="qtjambi-deployment.html">Deploying Qt Jambi Applications</a></li>
+        <li><a href="qtjambi-designer.html">Qt Designer</a></li>
+        <li><a href="linguist-manual.html">Qt Linguist</a></li>
+        <li><a href="qtjambi-generator.html">Generator</a></li>
+        <li><a href="qtjambi-juic.html">JUIC</a></li>
         </ul>
         </td>
         <td valign="top">
