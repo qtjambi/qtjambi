@@ -132,9 +132,10 @@
     \section1 Drag and Drop Examples
 
     \list
+        \o \l{Draggable Icons Example}{Draggable Icons}\raisedaster
+        \o \l{Draggable Text Example}{DraggableText}
         \o \l{Fridge Magnets Example}{Fridge Magnets}\raisedaster
     \endlist
-
 
     \section1 OpenGL Examples
 
