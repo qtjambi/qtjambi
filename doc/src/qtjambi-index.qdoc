@@ -82,6 +82,7 @@
         <td valign="top">
         <ul>
         <li><a href="qtjambi-layout.html">Layout Management</a></li>
+        <li><a href="qtjambi-paintsystem.html>Paint System</a></li>
         <li><a href="qtjambi-resourcesystemoverview.html">Resource System</a></li>
         <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
         </ul>
