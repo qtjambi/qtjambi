@@ -1,0 +1,150 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-$THISYEAR$ $TROLLTECH$. All rights reserved.
+**
+** This file is part of the Qt GUI Toolkit.
+** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/*!
+    \page qtjambi-generatortutorial.html
+
+    The generator creates JNI mappings between Java and C++ functions,
+    classes, and enums. When mappings for a C++ library are created,
+    you describe these mappings to the generator; it needs to know
+    which classes, functions, and enums to make available in the
+    generated Java classes.
+
+    In this tutorial, we teach the use of the generator. By use, we
+    think of the procedure of running the generator and the writing of
+    type system specifications. In the course of the tutorial, we
+    will meet the most common problems and considerations to take
+    while implementing a type system.
+    
+    Please note that the Jambi Generator only comes with the Jambi
+    source package, and that you also need a Qt source package
+    installed on the system.
+
+    \title Hello Generator
+
+    We start of with the classic "Hello World" program - except we
+    call it "Hello Generator". We have one class with one function: \c
+    hello(). All the \c hello() function does is creating a showing a
+    QPushButton.
+
+    \snippet hellogenerator.h 0
+
+    What we need to do is tell the generator to map the class \c
+    HelloGenerator and the \c hello() function to Java. We do this by
+    writing a type system specification, which is a handwritten XML
+    document describing the types that will be made available in the
+    generated Java API.
+
+    We start the specification by giving the package name and
+    default super class of our Java objects.
+
+    \code
+        <typesystem package="com.trolltech.examples.hellogenerator" default-superclass="com.trolltech.qt.QtJambiObject">
+    \endcode
+    
+    Any objects without a superclass, will extend the default
+    superclass. Note that currently, all typesystems must have
+    QtJambiObject as their default superclass. A typesystem
+    specification can only describe one package. You need one
+    typesystem specification for each package you wish to create.
+
+    \omit
+    Generator does not need this here, only classes exposed in the
+    header file, either as function arguments or inheritance, etc.
+    needs to be exposed to the generator.
+
+    We continue by including two other type system specifications.
+
+    \code
+        <load-typesystem name=":/trolltech/generator/typesystem_gui.txt" generate="no" />
+        <load-typesystem name=":/trolltech/generator/typesystem_core.txt" generate="no" />
+    \endcode
+
+    We need to include these specifications because the generator
+    needs to know mappings also for 
+    \endomit
+
+    We then tell the generator that we want to map the
+    HelloGenerator class.
+
+    \code
+        <object-type name="HelloGenerator" />
+    \endcode
+
+    The generator will now find and map the \c hello() function
+    automatically. C++ classes are mapped to Java either as \c
+    {object-type}s or \c{value-types}s depending on whether they are
+    object or value types in C++. We will have a closer look at this
+    later in the tutorial.
+
+    We are now ready to run the generator. The generator takes the
+    type system specification and an header file as input. The header
+    file should include all classes we wish to map. Since we only have
+    one class, we simply use its header file.
+
+    Assuming that the generator executable is in your path, you
+    can then run the generator:
+
+    \code
+        generator hellogenerator.h typesystem_hellogenerator.txt
+    \endcode
+
+    The generator will then create both the Java and C++ files.  The
+    Java files will be located in the package specified, and the C++
+    files in the folder cpp/com_trolltech_examples_generatortutorial.
+
+    Now we need to compile the C++ sources. We need to write a
+    qmake \c .pro file for this. We print the file in its entirety
+    here.
+
+    \code
+        TARGET = com_trolltech_examples_generatortutorial
+
+        include($JAMBI_HOME/qtjambi/qtjambi_include.pri)
+        include(./cpp/com_trolltech_examples_generatortutorial/com_trolltech_examples_generatortutorial.pri)
+
+        HEADERS += hellogenerator.h
+
+        SOURCES += hellogenerator.cpp
+    \endcode
+
+    The qtjambi_include.pri needs to be included because it contains
+    functionality used for the mappings. We also need to include the
+    \c .pri file for our own library; this file is generated
+    automatically by the generator. Then, you can simply run \c
+    qmake and \c make:
+
+    \code
+        qmake hellogenerator.pro
+        make
+    \endcode
+
+    Note that you might need to run \c qmake with the \c {-config
+    release} argument if Qt was built with debug support.
+
+    After compiling the C++ sources, you also need to compile the
+    Java sources with \c javac.
+    
+    \code
+        javac com/trolltech/examples/generatortutorial/HelloGenerator.java
+    \endcode
+
+    Congratulations! Your first Java to C++ bindings using the Qt
+    Jambi Generator are ready for action. You only need to make sure
+    that the c++ library is in your library path. The finished library
+    is placed in the \c {../lib} folder from the examples directory.
+    To make it easy, you can simply put it in the \c lib folder under
+    the Jambi home directory, or add it to the Jambi platform JAR
+    archive (see the \l{Installation}{installation guide} for
+    details).
+*/
+
