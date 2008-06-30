@@ -62,6 +62,7 @@
 
     \list
         \o \l{Application Example}{Application}\raisedaster
+        \o \l{MDI Example}{MDI}
         \o \l{Menus Example}{Menus}\raisedaster
     \endlist
 
