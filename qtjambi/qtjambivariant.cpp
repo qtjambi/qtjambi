@@ -101,7 +101,7 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
     Q_ASSERT(a->type == b->type);
     const JObjectWrapper *wrapper_a = cast_to_object_wrapper(a);
     if (wrapper_a) {
-        const JObjectWrapper *wrapper_b = cast_to_object_wrapper(a);
+        const JObjectWrapper *wrapper_b = cast_to_object_wrapper(b);
         JNIEnv *env = qtjambi_current_environment();
         StaticCache *sc = StaticCache::instance();
         return env->CallBooleanMethod(wrapper_a->object, sc->Object.equals, wrapper_b->object);
