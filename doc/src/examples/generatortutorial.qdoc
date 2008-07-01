@@ -12,6 +12,7 @@
 
 /*!
     \page qtjambi-generatortutorial.html
+    \title Generator Tutorial
 
     The generator creates JNI mappings between Java and C++ functions,
     classes, and enums. When mappings for a C++ library are created,
@@ -28,13 +29,16 @@
     Please note that the Jambi Generator only comes with the Jambi
     source package, and that you also need a Qt source package
     installed on the system.
+*/
 
+/*!
+    \page qtjambi-hellogenerator.html
     \title Hello Generator
 
     We start of with the classic "Hello World" program - except we
     call it "Hello Generator". We have one class with one function: \c
-    hello(). All the \c hello() function does is creating a showing a
-    QPushButton.
+    hello(). All the \c hello() function does is creating and showing
+    a QPushButton.
 
     \snippet hellogenerator.h 0
 
@@ -51,6 +55,9 @@
         <typesystem package="com.trolltech.examples.hellogenerator" default-superclass="com.trolltech.qt.QtJambiObject">
     \endcode
     
+    The typesystem node is the root node and contains all type system
+    information.
+
     Any objects without a superclass, will extend the default
     superclass. Note that currently, all typesystems must have
     QtJambiObject as their default superclass. A typesystem
@@ -83,7 +90,7 @@
     The generator will now find and map the \c hello() function
     automatically. C++ classes are mapped to Java either as \c
     {object-type}s or \c{value-types}s depending on whether they are
-    object or value types in C++. We will have a closer look at this
+    object or value types in C++. We will take a closer look at this
     later in the tutorial.
 
     We are now ready to run the generator. The generator takes the
@@ -142,9 +149,101 @@
     Jambi Generator are ready for action. You only need to make sure
     that the c++ library is in your library path. The finished library
     is placed in the \c {../lib} folder from the examples directory.
-    To make it easy, you can simply put it in the \c lib folder under
-    the Jambi home directory, or add it to the Jambi platform JAR
-    archive (see the \l{Installation}{installation guide} for
-    details).
+    To make it easy, you can simply put the library in the \c lib
+    folder under the Jambi home directory, or add it to the Jambi
+    platform JAR archive (see the \l{Installation}{installation guide}
+    for details).
 */
 
+/*!
+    \page qtjambi-generatortypes.html
+    \title Generator Types
+
+    For our next example, we will look closer at the different types of the
+    type system.
+
+    In c++, we have a distinction between object and value types. A
+    value type is typically added to the stack and sent by const
+    reference in C++. An object type is typically allocated on the
+    heap, and are passed between functions using pointers. Note that
+    value types should implement a copy constructor and that they cannot
+    be polymorphic or have virtual functions.
+
+    In java all objects behave like C++ object types. The Java
+    primitives (such as int, char, and long) behave like C++ value
+    types. All objects are passed by reference and primitives are
+    passed by value to methods.
+
+    When a class is mapped in the type system, the generator needs to
+    know if it should be treated as an object or a value type. Object
+    types will be sent by reference and value types will be copied and
+    the copy sent (by reference) to the method.
+
+    Note that when a class has been declared as an object type, the
+    generator will not accept functions in which it is passed by const
+    reference in C++. The same goes for declared value types, which
+    cannot be sent by pointers in C++.
+
+    We also show how to deal with multiple inheritance and polymorphic
+    types in this example.
+
+    Lets move on to the example itself. We have a small library that
+    can keep track of a disk, CDs, DVD's, and BlueRay's collection. We
+    have the \c Collection class, which knows how to store and
+    retrieve disks from a disk storage. Data about a single disk is
+    stored in the \c EntryData class. We have a hierarchy of
+    polymorphic disk classes, with Disk as the base class. We have
+    three classes representing CD, DVD, and BlueRay. 
+
+    The important thing to remember when creating class hierarchies is that Java
+    supports introspection and runtime type inference, which, for instance, gives
+    life to the \c instanceof operator. For this to work, we need to equip Qt Jambi
+    with a way to identify the type of these classes at runtime.
+
+    This is how the typesystem looks for the disk classes.
+
+    \code
+        <object-type name="Disk" polymorphic-base="yes" />
+        <object-type name="CD" polymorphic-id-expression="%1->type() == Disk::CDType" />
+        <object-type name="DVD"  polymorphic-id-expression="%1->type() == Disk::DVDType" />
+        <object-type name="BlueRay" polymorphic-id-expression="%1->type() == Disk::BlueRayType" />
+    \endcode
+    
+    The \c {polymorphic-id-expression} is a C++ expression evaluating
+    to a \c bool value; the generator simply inserts this into the
+    generated C++ code when it needs to do runtime type inference.
+    Note that \c {%1} evaluates to the object of which type should be
+    determined.
+
+    The typesystem will now generate a warning, because it assumes
+    that \c Disk needs it's own \l{polymorphic-id-expression}.
+    However, since \c Disk is an abstract class, we never have to
+    check for this possibility. We can silence the generator by
+    giving it a \c {suppress-warning}.
+
+    \code
+        <suppress-warning text="*class 'Disk' inherits from polymorphic class 'Disk'*" />
+    \endcode
+
+    Note that for all QObject subclasses, type inference is handeled
+    automatically.
+
+    We also have one \c {value-type} in out type system, the \c
+    EntryData class. For a value type, you must implement a default
+    constructor, and (as mentioned previosusly) you  can not have
+    virtual functions or let it be the base of other classes.
+
+    \omit Next exmaple functions. \endomit
+*/
+
+/*!
+    object-type passed as value
+    unknown baseclass for 'CD': 'Disk'
+    class 'DVD' has polymorphic id but does not inherit a polymorphic class
+    Value type
+    'com.trolltech.examples.generator.collection.EntryData' is missing a default constructor.
+    //generator does not give error messages if parsing of h files
+    //fail.
+    Shadowing: Disk::type() and CD::type(); Java code will not compile
+    class 'Disk' inherits from polymorphic class 'Disk', but has no polymorphic id set
+*/
