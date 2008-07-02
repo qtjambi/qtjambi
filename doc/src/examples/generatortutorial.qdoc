@@ -169,9 +169,7 @@
     In C++, we have a distinction between object and value types. A
     value type is typically added to the stack and sent by const
     reference in C++. An object type is typically allocated on the
-    heap, and are passed between functions using pointers. Note that
-    value types should implement a copy constructor and that they cannot
-    be polymorphic or have virtual functions.
+    heap, and are passed between functions using pointers. 
 
     In java, all objects behave like C++ object types. The Java
     primitives (e.g., int, char, and long) behave like C++ value
@@ -181,13 +179,13 @@
     When a class is mapped in the type system, the generator needs to
     know if it should be treated as an object or a value type. Object
     types will be sent by Java reference to methods and value types
-    will be copied and the copy sent (also by Java reference) to
-    methods.
+    will be copied, and the copy will then be sent (also by Java
+    reference) to methods.
 
     Note that when a class has been declared as an object type, the
     generator will not accept functions in which it is passed by const
-    reference in C++. The same goes for declared value types, which
-    cannot be sent by pointers in C++.
+    reference in C++. \omit The same goes for declared value types, which
+    cannot be sent by pointers in C++. \endomit
 
     In this example, we look at a type system containing both object
     and value types. We also show how to deal with inheritance and
@@ -195,13 +193,16 @@
 
     \section1 Disk Collection Example
 
+    \omit This walkthrough needs snippets from the C++ code
+    \endomit
+
     We have a small library that can keep track of a disk collection,
     containing CD, DVD, and BlueRay disks. We have the \c
     DiskCollection class, which knows how to store and retrieve disks
     from a disk storage. Data about a single disk is stored in the \c
     EntryData class. We have a hierarchy of polymorphic disk classes,
     with \c Disk as the base class. We have three classes representing
-    CDs, DVDs, and BlueRays. 
+    CDs, DVDs, and BlueRays.
 
     \omit perhaps a list here instead. \endomit
 
@@ -221,23 +222,23 @@
     \endcode
     
     The \c {polymorphic-id-expression} is a C++ expression evaluating
-    to a \c bool value; the generator simply inserts this into the
-    generated C++ code when it needs to do runtime type inference.
-    Note that \c {%1} evaluates to the object of which type should be
-    determined.
+    to a \c bool value, which is true if the object is of the class;
+    the generator simply inserts this into the generated C++ code when
+    it needs to do runtime type inference. Note that \c {%1} is the
+    object of which type is to be determined.
 
     The typesystem will now generate a warning because it assumes that
     \c Disk needs it's own \l{polymorphic-id-expression}. However,
-    since \c Disk is the base class, we don't have to check for
-    this possibility. We can silence the generator by giving it a \c
-    {suppress-warning}.
+    since \c Disk is the base class, this check is not necessary
+    because the generated Java classes will extend this class. We can
+    silence the generator by giving it a \c {suppress-warning}.
 
     \code
         <suppress-warning text="*class 'Disk' inherits from polymorphic class 'Disk'*" />
     \endcode
 
     We also want to stop the generator complaints about the
-    unmapped Disk::Type enum, which we only use for the type
+    unmapped \c {Disk::Type} enum, which we only use for the type
     inference.
 
     \code
@@ -249,8 +250,8 @@
 
     We also have one \c {value-type} in our type system, the \c
     EntryData class. For a value type, you must implement a default
-    constructor, and (as mentioned previosusly) you  can not have
-    virtual functions or let it be the base of other classes.
+    constructor, and it can not have virtual functions or be the base
+    of other classes.
 
     \omit Running the example \endomit
 
@@ -264,17 +265,18 @@
     So far, we have simply let the generator map functions
     automatically. However, we can also exclude functions, add new
     functions, and modify functions with the generator, by for
-    instance change parameter types, remove parameters, and alter the
-    return type. 
+    instance changing parameter types, removing parameters, and
+    altering the return type. 
 
     The generator knows how to modify some functions by itself.
-    Noteably, it can covert between the Qt and Java collection classes
-    - such as between QList and \c {java.util.List}. In some cases the
-    generator also needs help to be able to port specific functions.
+    Notably, it can covert between the Qt and Java collection classes
+    - such as QList and \c {java.util.List}. In some cases the
+    generator needs help to be able to port specific functions.
 
-    The most usual reason for modifying functions is the get rid off
-    any \l{QNativePointer}'s in function arguments or as return types.
-    
+    The most usual reason for modifying functions is getting rid off
+    any \l{QNativePointer}'s in function arguments or return types.
+    \omit need to explain the native pointer stuff \endomit    
+
     In this example, we look at function modification and code
     injection. We also introduce the enum type in the type system.
  
@@ -289,8 +291,7 @@
     \title Putting it all Together
 
     Finally, we are ready to look at an example that brings what we
-    have learned in this tutorial together and we can create a more
-    realistic library with the generator. After this example, you
+    have learned in this tutorial together. After this example, you
     can also check out the generator \l{Generator Example}{example},
     which uses the generator on a library for creating graphic
     adventure games.
@@ -300,7 +301,7 @@
     In keeping with the generator example, we will create an adventure
     game engine in C++ and map that to Java. However, we will venture
     a little longer back in time - to the eighties to be exact - when
-    the text adventures had their days of glory.
+    the text adventure had its days of glory.
 
     Our text adventure library will contain a command parser, an
     object tree, and a collection of actions the player can make. The
@@ -315,8 +316,9 @@
         \o Action An action represents an action the player can
            make. It contains a set of sentences (commands) the player
            can write to execute the action.
-        \o World Contains the root of the object tree. The current
-           location, and the players inventory.
+        \o World Contains the root of the object tree, the current
+           location of the player, and the objects held by the
+           player.
     \endlist
 
     \omit Describe the sequence of the game.... \endomit
@@ -326,7 +328,7 @@
     \section1 Example Java Game
 
     In this section, we take a quick look at a Java game
-    implemented using our text adventure. 
+    implemented using our text adventure library. 
 
     We have 
 
