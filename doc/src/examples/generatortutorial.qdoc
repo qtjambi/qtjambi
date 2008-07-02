@@ -12,23 +12,27 @@
 
 /*!
     \page qtjambi-generatortutorial.html
-    \title Generator Tutorial
+    \title Qt Jambi Generator Tutorial
 
     The generator creates JNI mappings between Java and C++ functions,
     classes, and enums. When mappings for a C++ library are created,
-    you describe these mappings to the generator; it needs to know
+    you must describe these mappings to the generator; it needs to know
     which classes, functions, and enums to make available in the
     generated Java classes.
 
     In this tutorial, we teach the use of the generator. By use, we
     think of the procedure of running the generator and the writing of
-    type system specifications. In the course of the tutorial, we
-    will meet the most common problems and considerations to take
-    while implementing a type system.
+    type system specifications. In the course of the tutorial, we will
+    meet the most common problems and considerations to take while
+    implementing a type system.
     
     Please note that the Jambi Generator only comes with the Jambi
     source package, and that you also need a Qt source package
-    installed on the system.
+    installed on your system.
+
+    \omit Need to explain in more detail how the generator works, and
+    refer to generator docs also.\endomit
+
 */
 
 /*!
@@ -65,6 +69,9 @@
     typesystem specification for each package you wish to create.
 
     \omit
+
+    Check that the above paragraph is correct ^^.
+
     Generator does not need this here, only classes exposed in the
     header file, either as function arguments or inheritance, etc.
     needs to be exposed to the generator.
@@ -94,7 +101,7 @@
     later in the tutorial.
 
     We are now ready to run the generator. The generator takes the
-    type system specification and an header file as input. The header
+    type system specification and a header file as input. The header
     file should include all classes we wish to map. Since we only have
     one class, we simply use its header file.
 
@@ -147,7 +154,7 @@
 
     Congratulations! Your first Java to C++ bindings using the Qt
     Jambi Generator are ready for action. You only need to make sure
-    that the c++ library is in your library path. The finished library
+    that the C++ library is in your library path. The finished library
     is placed in the \c {../lib} folder from the examples directory.
     To make it easy, you can simply put the library in the \c lib
     folder under the Jambi home directory, or add it to the Jambi
@@ -157,50 +164,54 @@
 
 /*!
     \page qtjambi-generatortypes.html
-    \title Generator Types
+    \title Object and Value Types
 
-    For our next example, we will look closer at the different types of the
-    type system.
-
-    In c++, we have a distinction between object and value types. A
+    In C++, we have a distinction between object and value types. A
     value type is typically added to the stack and sent by const
     reference in C++. An object type is typically allocated on the
     heap, and are passed between functions using pointers. Note that
     value types should implement a copy constructor and that they cannot
     be polymorphic or have virtual functions.
 
-    In java all objects behave like C++ object types. The Java
-    primitives (such as int, char, and long) behave like C++ value
-    types. All objects are passed by reference and primitives are
-    passed by value to methods.
+    In java, all objects behave like C++ object types. The Java
+    primitives (e.g., int, char, and long) behave like C++ value
+    types. All objects are passed using Java references (which are
+    similar to pointers in C++) and primitives are passed by value.
 
     When a class is mapped in the type system, the generator needs to
     know if it should be treated as an object or a value type. Object
-    types will be sent by reference and value types will be copied and
-    the copy sent (by reference) to the method.
+    types will be sent by Java reference to methods and value types
+    will be copied and the copy sent (also by Java reference) to
+    methods.
 
     Note that when a class has been declared as an object type, the
     generator will not accept functions in which it is passed by const
     reference in C++. The same goes for declared value types, which
     cannot be sent by pointers in C++.
 
-    We also show how to deal with multiple inheritance and polymorphic
-    types in this example.
+    In this example, we look at a type system containing both object
+    and value types. We also show how to deal with inheritance and
+    polymorphic datatypes.
 
-    Lets move on to the example itself. We have a small library that
-    can keep track of a disk, CDs, DVD's, and BlueRay's collection. We
-    have the \c Collection class, which knows how to store and
-    retrieve disks from a disk storage. Data about a single disk is
-    stored in the \c EntryData class. We have a hierarchy of
-    polymorphic disk classes, with Disk as the base class. We have
-    three classes representing CD, DVD, and BlueRay. 
+    \section1 Disk Collection Example
 
-    The important thing to remember when creating class hierarchies is that Java
-    supports introspection and runtime type inference, which, for instance, gives
-    life to the \c instanceof operator. For this to work, we need to equip Qt Jambi
-    with a way to identify the type of these classes at runtime.
+    We have a small library that can keep track of a disk collection,
+    containing CD, DVD, and BlueRay disks. We have the \c
+    DiskCollection class, which knows how to store and retrieve disks
+    from a disk storage. Data about a single disk is stored in the \c
+    EntryData class. We have a hierarchy of polymorphic disk classes,
+    with \c Disk as the base class. We have three classes representing
+    CDs, DVDs, and BlueRays. 
 
-    This is how the typesystem looks for the disk classes.
+    \omit perhaps a list here instead. \endomit
+
+    The important thing to remember when creating class hierarchies is
+    that Java supports runtime type inference, which, for instance,
+    gives life to the \c instanceof operator. For this to work, we
+    need to equip Qt Jambi with a way to identify the type of classes
+    at runtime.
+
+    This is how the type system looks for the disk classes:
 
     \code
         <object-type name="Disk" polymorphic-base="yes" />
@@ -215,28 +226,122 @@
     Note that \c {%1} evaluates to the object of which type should be
     determined.
 
-    The typesystem will now generate a warning, because it assumes
-    that \c Disk needs it's own \l{polymorphic-id-expression}.
-    However, since \c Disk is an abstract class, we never have to
-    check for this possibility. We can silence the generator by
-    giving it a \c {suppress-warning}.
+    The typesystem will now generate a warning because it assumes that
+    \c Disk needs it's own \l{polymorphic-id-expression}. However,
+    since \c Disk is the base class, we don't have to check for
+    this possibility. We can silence the generator by giving it a \c
+    {suppress-warning}.
 
     \code
         <suppress-warning text="*class 'Disk' inherits from polymorphic class 'Disk'*" />
     \endcode
 
+    We also want to stop the generator complaints about the
+    unmapped Disk::Type enum, which we only use for the type
+    inference.
+
+    \code
+        <suppress-warning text="*enum 'Disk::Type' does not have a type entry or is not an enum*" />
+    \endcode
+
     Note that for all QObject subclasses, type inference is handeled
     automatically.
 
-    We also have one \c {value-type} in out type system, the \c
+    We also have one \c {value-type} in our type system, the \c
     EntryData class. For a value type, you must implement a default
     constructor, and (as mentioned previosusly) you  can not have
     virtual functions or let it be the base of other classes.
+
+    \omit Running the example \endomit
 
     \omit Next exmaple functions. \endomit
 */
 
 /*!
+    \page generatortutorial-functions.html
+    \title Functions and Enums
+
+    So far, we have simply let the generator map functions
+    automatically. However, we can also exclude functions, add new
+    functions, and modify functions with the generator, by for
+    instance change parameter types, remove parameters, and alter the
+    return type. 
+
+    The generator knows how to modify some functions by itself.
+    Noteably, it can covert between the Qt and Java collection classes
+    - such as between QList and \c {java.util.List}. In some cases the
+    generator also needs help to be able to port specific functions.
+
+    The most usual reason for modifying functions is the get rid off
+    any \l{QNativePointer}'s in function arguments or as return types.
+    
+    In this example, we look at function modification and code
+    injection. We also introduce the enum type in the type system.
+ 
+    
+
+    \section1 
+
+*/
+
+/*!
+    \page generatortutorial-thegrandfinale.html
+    \title Putting it all Together
+
+    Finally, we are ready to look at an example that brings what we
+    have learned in this tutorial together and we can create a more
+    realistic library with the generator. After this example, you
+    can also check out the generator \l{Generator Example}{example},
+    which uses the generator on a library for creating graphic
+    adventure games.
+
+    \section1 Text Adventure Example
+
+    In keeping with the generator example, we will create an adventure
+    game engine in C++ and map that to Java. However, we will venture
+    a little longer back in time - to the eighties to be exact - when
+    the text adventures had their days of glory.
+
+    Our text adventure library will contain a command parser, an
+    object tree, and a collection of actions the player can make. The
+    library consists of the following classes:
+
+    \list
+        \o Parser The parser knows how to parse the commands the
+           player enteres, and will execute the commands given.
+        \o AdvObject Represents an object in the game, such as the
+           player, a rooom, or a car. The objects are kept in a
+           tree, which represents the world of the game.
+        \o Action An action represents an action the player can
+           make. It contains a set of sentences (commands) the player
+           can write to execute the action.
+        \o World Contains the root of the object tree. The current
+           location, and the players inventory.
+    \endlist
+
+    \omit Describe the sequence of the game.... \endomit
+
+    \omit Type system specification. Explain each type... \endomit
+
+    \section1 Example Java Game
+
+    In this section, we take a quick look at a Java game
+    implemented using our text adventure. 
+
+    We have 
+
+*/
+
+/*!
+    \page qtjambi-generatormessages.html
+    \title Generator Complaints and Remedies
+
+    Go through the most usual error messages of the generator (erm,
+    that is the messages I got during the making of this tutorial)
+
+    Use a table, I guess.
+
+    Mention somewhere that the generator produces some warnings over the Qt libs
     object-type passed as value
     unknown baseclass for 'CD': 'Disk'
     class 'DVD' has polymorphic id but does not inherit a polymorphic class
@@ -246,4 +351,5 @@
     //fail.
     Shadowing: Disk::type() and CD::type(); Java code will not compile
     class 'Disk' inherits from polymorphic class 'Disk', but has no polymorphic id set
+    enum 'Disk::Type' does not have a type entry or is not an enum
 */
