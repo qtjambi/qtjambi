@@ -201,7 +201,7 @@
     DiskCollection class, which knows how to store and retrieve disks
     from a disk storage. Data about a single disk is stored in the \c
     EntryData class. We have a hierarchy of polymorphic disk classes,
-    with \c Disk as the base class. We have three classes representing
+    with \c Disk as the base class, and three subclasses representing
     CDs, DVDs, and BlueRays.
 
     \omit perhaps a list here instead. \endomit
@@ -209,7 +209,7 @@
     The important thing to remember when creating class hierarchies is
     that Java supports runtime type inference, which, for instance,
     gives life to the \c instanceof operator. For this to work, we
-    need to equip Qt Jambi with a way to identify the type of classes
+    need to equip Qt Jambi with a way to identify the type of objects
     at runtime.
 
     This is how the type system looks for the disk classes:
@@ -222,10 +222,11 @@
     \endcode
     
     The \c {polymorphic-id-expression} is a C++ expression evaluating
-    to a \c bool value, which is true if the object is of the class;
-    the generator simply inserts this into the generated C++ code when
-    it needs to do runtime type inference. Note that \c {%1} is the
-    object of which type is to be determined.
+    to a \c bool value, which is true if the object of wich type is
+    queried is an instance of the \l {object-type}; the generator
+    simply inserts this into the generated C++ code when it needs to
+    do runtime type inference. Note that \c {%1} is the object of
+    which type is to be determined.
 
     The typesystem will now generate a warning because it assumes that
     \c Disk needs it's own \l{polymorphic-id-expression}. However,
@@ -269,7 +270,7 @@
     altering the return type. 
 
     The generator knows how to modify some functions by itself.
-    Notably, it can covert between the Qt and Java collection classes
+    Notably, it can convert between the Qt and Java collection classes
     - such as QList and \c {java.util.List}. In some cases the
     generator needs help to be able to port specific functions.
 
@@ -304,8 +305,9 @@
     the text adventure had its days of glory.
 
     Our text adventure library will contain a command parser, an
-    object tree, and a collection of actions the player can make. The
-    library consists of the following classes:
+    object tree \omit needs explaining \endomit, and a collection of
+    actions the player can make. The library consists of the following
+    classes:
 
     \list
         \o Parser The parser knows how to parse the commands the
@@ -335,13 +337,72 @@
 */
 
 /*!
+    \page generatortutorial-advanced.html
+    \title Advanced Techniques
+
+    In this chapther, we will examine advanced use of the generator.
+    What we teach is not necessary to map a C++ library sucessfully,
+    but will help improving performance of the generated Java API.
+    Also, one can tweak the API to give it a more Java like flavour,
+    e.g., by removing the QNativePointers discussed earlier.
+
+    We have not implemented a complete example, but discuss these
+    issues on a case by case basis.
+
+    \section1 Value Types and Reference Counting
+
+    In Qt, we implement reference counting for our value types.
+    ....
+
+    \section1 Mapping C++ Operators
+
+    Java does not allow infix operators to be declared (it has a
+    few built into the language, though). So when you have a C++
+    API using operators, you need to map these
+    
+    \omit Should perhaps have this in functions example, or final.
+    \endomit
+
+    \section1 Memory management and Object Ownership
+
+    \omit May defend having this earlier in the tut \endomit
+
+    \section1 Type Conversion Rules
+
+    \omit If this is required in some cases, it must go earlier in
+    the tutorial. \endomit
+
+    \section1 The Power of Code Templates
+
+    \omit discuss some borderline cases where templates can be
+    used \endomit
+
+    \section1 Documenting Generated API's
+
+    Since the generator creates the Java classes, you cannot write
+    Javadoc documentation directly to the Jada files; that is, you
+    could, but if you change the C++ API and had to port it again, the
+    documentation would have to be moved by hand from the old to the
+    new Java files.
+
+    But there is hope! We here at Nokia have patched together a tool
+    called the MLDM (Multi Lingual Documentation Manager) - BTW, that
+    name is a totally flashy. If you are writing your C++ docs using
+    qdoc, all you have to do is run this tool, and it will create
+    Javadoc API documentation for you. The Javadoc comments will be
+    written out to the source files the generator has created.
+
+    You find the MLDM manual \l{MLDM Manual}{here}.
+*/
+
+/*!
     \page qtjambi-generatormessages.html
     \title Generator Complaints and Remedies
 
     Go through the most usual error messages of the generator (erm,
     that is the messages I got during the making of this tutorial)
 
-    Use a table, I guess.
+     
 
     Mention somewhere that the generator produces some warnings over the Qt libs
     object-type passed as value
