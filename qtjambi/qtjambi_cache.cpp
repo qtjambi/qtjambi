@@ -134,7 +134,6 @@ struct class_id
 {
     const char *className;
     const char *package;
-    JNIEnv *env;
 };
 
 typedef QHash<class_id, jclass> ClassIdHash ;
@@ -143,16 +142,15 @@ Q_GLOBAL_STATIC(ClassIdHash, gClassHash);
 inline bool operator==(const class_id &id1, const class_id &id2)
 {
     return (!strcmp(id1.className, id2.className)
-            && !strcmp(id1.package, id2.package)
-            && (id1.env == id2.env));
+            && !strcmp(id1.package, id2.package));
 }
-uint qHash(const class_id &id) { return qHash(id.className) FUNC qHash(id.package) FUNC qHash(id.env); }
+uint qHash(const class_id &id) { return qHash(id.className) FUNC qHash(id.package); }
 
 jclass resolveClass(JNIEnv *env, const char *className, const char *package)
 {
     jclass returned = 0;
 #ifndef QTJAMBI_NOCACHE
-    class_id key = { className, package, env };
+    class_id key = { className, package };
 
     {
         QReadLocker locker(gStaticLock());
