@@ -15,6 +15,8 @@ package com.trolltech.autotests;
 
 import com.trolltech.autotests.generated.*;
 import com.trolltech.qt.*;
+import com.trolltech.qt.gui.QGraphicsPixmapItem;
+import com.trolltech.qt.gui.QGraphicsItem;
 import com.trolltech.qt.core.*;
 
 import static org.junit.Assert.*;
@@ -481,5 +483,27 @@ public class TestQVariant extends QApplicationTest {
 
         v.pushThrough(Qt.ArrowType.UpArrow);
         assertEquals(v.currentToInt(), Qt.ArrowType.UpArrow.value());
+    }
+
+
+    private boolean itemChangeCalled = false;
+    @Test
+    public void run_interfaces_passed_as_QVariant() {
+        QGraphicsPixmapItem it = new QGraphicsPixmapItem() {
+
+            @QtBlockedSlot
+            public Object itemChange(QGraphicsItem.GraphicsItemChange change, Object value) {
+                itemChangeCalled = change == QGraphicsItem.GraphicsItemChange.ItemChildRemovedChange
+                                          && value instanceof QGraphicsPixmapItem;
+                return super.itemChange(change, value);
+            }
+        };
+
+        itemChangeCalled = false;
+        // Note that ChildAddedChange will send an incomplete Object to itemChange. This is documented
+        // to happen in C++ as well, since the change event is posted from the child's constructor.
+        QGraphicsPixmapItem it2 = new QGraphicsPixmapItem(it);
+        it2.setParentItem(null);
+        assertTrue(itemChangeCalled);
     }
 }
