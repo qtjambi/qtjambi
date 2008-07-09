@@ -724,7 +724,8 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
     }
 
     QString qtName = entry->qualifiedCppName();
-    if (!entry->isPrimitive() || ((PrimitiveTypeEntry *) entry)->preferredTargetLangType())
+    if ((!entry->isInterface())
+        && (!entry->isPrimitive() || ((PrimitiveTypeEntry *) entry)->preferredTargetLangType()))
         s << "    registerQtToJava(\"" << qtName << "\", \"" << javaName << "\");" << endl;
 
     if (!entry->preferredConversion())
