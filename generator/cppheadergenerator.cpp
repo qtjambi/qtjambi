@@ -39,7 +39,7 @@ void CppHeaderGenerator::writeSignalWrapper(QTextStream &s, const AbstractMetaFu
 {
     s << "    ";
     writeFunctionSignature(s, signal, 0, signalWrapperPrefix(),
-                           Option(OriginalName | OriginalTypeDescription | IncludeDefaultExpression));
+                           Option(NormalizeAndFixTypeSignature | OriginalName | OriginalTypeDescription | IncludeDefaultExpression));
     s << ";" << endl;
 }
 

@@ -30,35 +30,34 @@ class Generator : public QObject
 
 public:
     enum Option {
-        NoOption                 = 0x00000000,
-        BoxedPrimitive           = 0x00000001,
-        ExcludeConst             = 0x00000002,
-        ExcludeReference         = 0x00000004,
-        UseNativeIds             = 0x00000008,
+        NoOption                        = 0x00000000,
+        BoxedPrimitive                  = 0x00000001,
+        ExcludeConst                    = 0x00000002,
+        ExcludeReference                = 0x00000004,
+        UseNativeIds                    = 0x00000008,
 
-        EnumAsInts               = 0x00000010,
-        SkipName                 = 0x00000020,
-        NoCasts                  = 0x00000040,
-        SkipReturnType           = 0x00000080,
-        OriginalName             = 0x00000100,
-        ShowStatic               = 0x00000200,
-        UnderscoreSpaces         = 0x00000400,
-        ForceEnumCast            = 0x00000800,
-        ArrayAsPointer           = 0x00001000,
-        VirtualCall              = 0x00002000,
-        SkipTemplateParameters   = 0x00004000,
-        SkipAttributes           = 0x00008000,
-        OriginalTypeDescription  = 0x00010000,
-        SkipRemovedArguments     = 0x00020000,
-        IncludeDefaultExpression = 0x00040000,
-        NoReturnStatement        = 0x00080000,
-        NoBlockedSlot            = 0x00100000,
+        EnumAsInts                      = 0x00000010,
+        SkipName                        = 0x00000020,
+        NoCasts                         = 0x00000040,
+        SkipReturnType                  = 0x00000080,
+        OriginalName                    = 0x00000100,
+        ShowStatic                      = 0x00000200,
+        UnderscoreSpaces                = 0x00000400,
+        ForceEnumCast                   = 0x00000800,
+        ArrayAsPointer                  = 0x00001000,
+        VirtualCall                     = 0x00002000,
+        SkipTemplateParameters          = 0x00004000,
+        SkipAttributes                  = 0x00008000,
+        OriginalTypeDescription         = 0x00010000,
+        SkipRemovedArguments            = 0x00020000,
+        IncludeDefaultExpression        = 0x00040000,
+        NoReturnStatement               = 0x00080000,
+        NoBlockedSlot                   = 0x00100000,
+        NormalizeAndFixTypeSignature    = 0x00200000,
+        SuperCall                       = 0x00400000,
+        GlobalRefJObject                = 0x00800000,
 
-        SuperCall                = 0x00200000,
-
-        GlobalRefJObject         = 0x00100000,
-
-        ForceValueType           = ExcludeReference | ExcludeConst
+        ForceValueType                  = ExcludeReference | ExcludeConst
     };
 
     Generator();

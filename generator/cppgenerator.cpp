@@ -16,10 +16,34 @@
 
 #include "metajava.h"
 
+// ### There's a bug in Qt causing it to fail at normalizing signatures
+// on the form FooBar<T> const&, which is the form the C++ parser uses
+// for all types, so connections between Java and C++ with const& templates
+// will fail. This is a work around which is only needed until that bug is fixed.
+// Since Qt works correctly with const FooBar<T> &, we simply change the
+// signature to that.
+QString CppGenerator::fixNormalizedSignatureForQt(const QString &signature)
+{
+    QString ret = signature;
+    if (signature.contains("<") && signature.endsWith("const&")) {
+        ret = "const "
+            + signature.mid(0, signature.size() - 6)
+            + "&";
+    }
+    return ret;
+}
+
 void CppGenerator::writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option options)
 {
     if ((options & OriginalTypeDescription) && !type->originalTypeDescription().isEmpty()) {
-        s << type->originalTypeDescription();
+        QString originalTypeDescription = type->originalTypeDescription();
+
+        if (options & NormalizeAndFixTypeSignature) {
+            originalTypeDescription = QMetaObject::normalizedSignature(originalTypeDescription.toLatin1().constData());
+            originalTypeDescription = fixNormalizedSignatureForQt(originalTypeDescription);
+        }
+
+        s << originalTypeDescription;
         return;
     }
 

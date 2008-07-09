@@ -32,6 +32,7 @@ public:
         return subDirectoryForPackage(cls->package()) + "/";
     }
 
+    static QString fixNormalizedSignatureForQt(const QString &signature);
     static void writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option option = NoOption);
     static void writeFunctionSignature(QTextStream &s, const AbstractMetaFunction *java_function,
                                 const AbstractMetaClass *implementor = 0,

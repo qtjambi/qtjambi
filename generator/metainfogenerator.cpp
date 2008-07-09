@@ -166,7 +166,7 @@ void MetaInfoGenerator::writeSignalsAndSlots(QTextStream &s, const QString &pack
 
                             QTextStream qtNameStream(&qtName);
                             CppGenerator::writeFunctionSignature(qtNameStream, f, 0, QString(),
-                                Option(option | OriginalName | OriginalTypeDescription),
+                                Option(option | OriginalName | NormalizeAndFixTypeSignature | OriginalTypeDescription),
                                 QString(), QStringList(), arguments.size() - i);
                         }
                         qtName = f->implementingClass()->qualifiedCppName() + "::" + qtName;

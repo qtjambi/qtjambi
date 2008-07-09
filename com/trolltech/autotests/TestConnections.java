@@ -1704,4 +1704,22 @@ public class TestConnections extends QApplicationTest implements Qt
         assertEquals(RecursiveSignalEmission.COUNT, e.emitted);
     }
 
+    private boolean changeSignalReceived = false;
+    public void receiveChangedSignal(List list) {
+        changeSignalReceived = true;
+    }
+
+    @Test
+    public void genericsBasedSignals() {
+        changeSignalReceived = false;
+        QGraphicsScene scene = new QGraphicsScene();
+        scene.changed.connect(this, "receiveChangedSignal(List)");
+
+        scene.addEllipse(new QRectF(0, 0, 10, 10));
+
+        QApplication.processEvents();
+
+        assertTrue(changeSignalReceived);
+    }
+
 }
