@@ -1204,17 +1204,24 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
         jobject javaObject = 0;
 
         // If we're dealing with a QObject, then we try to find the original java instance
+        QtJambiLink *link = 0;
         if (type & QObjectSubclass) {
             QObject * const *qobject = reinterpret_cast<QObject * const *>(in);
             if (*qobject != 0) {
-                QtJambiLink *link = QtJambiLink::findLinkForQObject(*qobject);
-                if (link != 0) {
-                    javaObject = link->javaObject(mEnvironment);
-                    success = true;
-                }
+                link = QtJambiLink::findLinkForQObject(*qobject);
             } else {
                 success = true;
             }
+        } else if ((type & Object) && internalTypeName.contains(QLatin1Char('*'))) {
+            void * const *ptr = reinterpret_cast<void * const *>(in);
+            link = QtJambiLink::findLinkForUserObject(*ptr);
+        }
+
+        // If we found a link for the object, we use the java object
+        // from the link.
+        if (link != 0) {
+            javaObject = link->javaObject(mEnvironment);
+            success = true;
         }
 
         // If we're not dealing with a QObject or a link does not exist,
