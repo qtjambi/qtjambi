@@ -23,16 +23,15 @@
     In this tutorial, we teach the use of the generator. By use, we
     think of the procedure of running the generator and the writing of
     type system specifications. In the course of the tutorial, we will
-    meet the most common problems and considerations to take while
-    implementing a type system.
+    encounter the most common problems and considerations to take
+    while implementing a type system. 
     
-    Please note that the Jambi Generator only comes with the Jambi
+    Please note that the Jambi Generator only comes with the Qt Jambi
     source package, and that you also need a Qt source package
     installed on your system.
 
     \omit Need to explain in more detail how the generator works, and
     refer to generator docs also.\endomit
-
 */
 
 /*!
@@ -62,7 +61,7 @@
     The typesystem node is the root node and contains all type system
     information.
 
-    Any objects without a superclass, will extend the default
+    Any objects without a superclass will extend the default
     superclass. Note that currently, all typesystems must have
     QtJambiObject as their default superclass. A typesystem
     specification can only describe one package. You need one
@@ -96,7 +95,7 @@
 
     The generator will now find and map the \c hello() function
     automatically. C++ classes are mapped to Java either as \c
-    {object-type}s or \c{value-types}s depending on whether they are
+    {object-type}s or \c{value-types}s, depending on whether they are
     object or value types in C++. We will take a closer look at this
     later in the tutorial.
 
@@ -112,7 +111,7 @@
         generator hellogenerator.h typesystem_hellogenerator.txt
     \endcode
 
-    The generator will then create both the Java and C++ files.  The
+    The generator will then create both the Java and C++ files. The
     Java files will be located in the package specified, and the C++
     files in the folder cpp/com_trolltech_examples_generatortutorial.
 
@@ -169,7 +168,7 @@
     In C++, we have a distinction between object and value types. A
     value type is typically added to the stack and sent by const
     reference in C++. An object type is typically allocated on the
-    heap, and are passed between functions using pointers. 
+    heap, and passed between functions using pointers. 
 
     In java, all objects behave like C++ object types. The Java
     primitives (e.g., int, char, and long) behave like C++ value
@@ -200,9 +199,9 @@
     containing CD, DVD, and BlueRay disks. We have the \c
     DiskCollection class, which knows how to store and retrieve disks
     from a disk storage. Data about a single disk is stored in the \c
-    EntryData class. We have a hierarchy of polymorphic disk classes,
-    with \c Disk as the base class, and three subclasses representing
-    CDs, DVDs, and BlueRays.
+    EntryData class. We have a hierarchy of polymorphic disk classes
+    with \c Disk as the base class. \c Disk has three subclasses
+    representing CDs, DVDs, and BlueRays.
 
     \omit perhaps a list here instead. \endomit
 
@@ -223,15 +222,14 @@
     
     The \c {polymorphic-id-expression} is a C++ expression evaluating
     to a \c bool value, which is true if the object of wich type is
-    queried is an instance of the \l {object-type}; the generator
-    simply inserts this into the generated C++ code when it needs to
-    do runtime type inference. Note that \c {%1} is the object of
-    which type is to be determined.
+    determined is an instance of the given \l {object-type}; the
+    generator simply inserts this into the generated C++ code when it
+    needs to do runtime type inference. Note that \c {%1} is the
+    object of which type is to be determined.
 
-    The typesystem will now generate a warning because it assumes that
-    \c Disk needs it's own \l{polymorphic-id-expression}. However,
-    since \c Disk is the base class, this check is not necessary
-    because the generated Java classes will extend this class. We can
+    The typesystem will now issue a warning because it assumes that \c
+    Disk needs it's own \l{polymorphic-id-expression}. However, since
+    \c Disk is the base class, this check is not necessary. We can
     silence the generator by giving it a \c {suppress-warning}.
 
     \code
@@ -263,6 +261,15 @@
     \page generatortutorial-functions.html
     \title Functions and Enums
 
+    \omit
+    Argument Index      Function Class      Function
+    Implementation      Caller Location
+    1 | 2 ...   shell   Java (overriding C++)   C++
+    1 | 2 ...   native  C++     Java
+    return  shell   C++     Java
+    return  native  Java (overriding C++)   C++
+    \endomit
+
     So far, we have simply let the generator map functions
     automatically. However, we can also exclude functions, add new
     functions, and modify functions with the generator, by for
@@ -271,25 +278,107 @@
 
     The generator knows how to modify some functions by itself.
     Notably, it can convert between the Qt and Java collection classes
-    - such as QList and \c {java.util.List}. In some cases the
+    - such as QList and \c {java.util.List}. In some cases, the
     generator needs help to be able to port specific functions.
 
+    \omit This is one wierd sentence.
     The most usual reason for modifying functions is getting rid off
-    any \l{QNativePointer}'s in function arguments or return types.
+    \l{QNativePointer}'s in function arguments or return types.
     \omit need to explain the native pointer stuff \endomit    
+    \endomit
 
-    In this example, we look at function modification and code
-    injection. We also introduce the enum type in the type system.
- 
+    Instead of implementing an exmaple, we will select function
+    modifications from the Qt library type systems. This will
+    allow us to see some real life type system implementation issues.
+    We will examine the modifications on a case by case basis.
+
+    You could also check out the \c{Generator Example}, which also
+    has examples of function modifications.
+
+    \section1 Returning references to value types
+
+    In a few cases in the Qt API, we find functions that return a
+    reference to a value type. We will take \l{QPoint}'s
+    \l{QPoint::}{rx()} as an example. This function returns a
+    reference to the int holding the x-coordinate of the point.
+
+    This will result in a QNativePointer being returned from the
+    function. It is not possible for Jambi to convert this into
+    an int (or Integer for that matter); the \c int primitive
+    cannot point to a C++ value.
+
+    In this case, the function will have to be removed.
+
+    \section1 Non-virtual functions with native pointer arguments
+
+    The usual way to handle functions with native pointer arguments is
+    to change the functions access to private. You then create a
+    wrapper Java function, which calls the function you have made
+    private. This new function takes more friendly parameters, and
+    does type conversions before calling the private function.
+
+    \section1 C++ operators
     
+    Java does not support overloading operators. The generator
+    automatically crates a function for the operator called
+    "opetator_%operatorname%", where operatorname is the C++ name of
+    the operator. It might be a good idea to change the name to be
+    more Java friendly. You do that by making the operator function
+    private and creating a wrapper function to call the private one.
 
-    \section1 
+    We take the \c * operator of QPoint as an example:
+
+    \omit the multiply QPoint operator example goes here. \endomit 
+
+    \omit
+    Not sure if this is that relevant.
+
+    Note that all operators are conisdered left associative; it is not
+    possible to transfer right associative operators to java.  This is
+    because operators must be implemented using Java methods, which
+    are left associative.
+    \endomit
+
+    \section1 Virtual functions with native pointers.
+
+    If you have a virtual function that needs to be altered, you
+    get a problem in that a new java function will not override
+    the orignial C++ function in the shell class. 
+
+    To remedy this, you can insert code into the C++ shell class,
+    which does parameter conversion inside the  
+
+    
+*/
+
+/*!
+    \page generatortutorial-objectownership.html
+    \title Object Ownership
+
+    
+    In Java, we have the garbage collector watching over us, and
+    unsuring that objects are deleted when they are no longer in
+    use. In C++, you have to carefully make sure to delete the
+    objects yourself - though, in Qt, most deletion is handled
+    automatically.
+
+    When you have both C++ and Java objects living at the same time
+    and cooperating, this can often get you into trouble.  The main
+    problem is where objects should be deleted.
+
+    We have three scenarios:
+
+    \list
+
+    \endlist
 
 */
 
 /*!
     \page generatortutorial-thegrandfinale.html
     \title Putting it all Together
+
+    \omit Let's call this engine Plover \endomit
 
     Finally, we are ready to look at an example that brings what we
     have learned in this tutorial together. After this example, you
@@ -344,7 +433,7 @@
     What we teach is not necessary to map a C++ library sucessfully,
     but will help improving performance of the generated Java API.
     Also, one can tweak the API to give it a more Java like flavour,
-    e.g., by removing the QNativePointers discussed earlier.
+    e.g., by removing the \l{QNativePointer}s discussed earlier.
 
     We have not implemented a complete example, but discuss these
     issues on a case by case basis.
@@ -377,22 +466,24 @@
     \omit discuss some borderline cases where templates can be
     used \endomit
 
+    \omit Not sure if we are releasing this
     \section1 Documenting Generated API's
 
     Since the generator creates the Java classes, you cannot write
-    Javadoc documentation directly to the Jada files; that is, you
+    Javadoc documentation directly to the Java files; that is, you
     could, but if you change the C++ API and had to port it again, the
     documentation would have to be moved by hand from the old to the
     new Java files.
 
     But there is hope! We here at Nokia have patched together a tool
     called the MLDM (Multi Lingual Documentation Manager) - BTW, that
-    name is a totally flashy. If you are writing your C++ docs using
+    name is totally flashy. If you are writing your C++ docs using
     qdoc, all you have to do is run this tool, and it will create
     Javadoc API documentation for you. The Javadoc comments will be
     written out to the source files the generator has created.
 
     You find the MLDM manual \l{MLDM Manual}{here}.
+    \endomit
 */
 
 /*!
