@@ -1,4 +1,0 @@
-<typesystem package="com.trolltech.examples.generatortutorial" default-superclass="com.trolltech.qt.QtJambiObject">
-    <object-type name="HelloGenerator" />
-</typesystem>
-
