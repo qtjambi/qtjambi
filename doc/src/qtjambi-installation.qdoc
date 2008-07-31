@@ -67,7 +67,7 @@
         java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-macosx-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
 
         // Windows
-        java -cp qtjambi-4.4.0_01.jar:qtjambi-win32-msvc2005-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
+        java -cp qtjambi-4.4.0_01.jar;qtjambi-win32-msvc2005-4.4.0_01.jar;qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
     \endcode
 
     \bold{Note:} When running a Qt Jambi application on Mac, it is necessary to pass
