@@ -89,7 +89,7 @@ bool MetaInfoGenerator::generatedJavaClasses(const QString &package) const
     return (m_skip_list.value(package, 0x0) & GeneratedJavaClasses);
 }
 
-static void metainfo_write_name_list(QTextStream &s, char *var_name, const QList<QString> &strs,
+static void metainfo_write_name_list(QTextStream &s, const char *var_name, const QList<QString> &strs,
                                      int offset, int skip)
 {
     s << "static const char *" << var_name << "[] = {" << endl;
