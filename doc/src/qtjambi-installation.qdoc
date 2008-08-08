@@ -169,7 +169,10 @@
     \row \o Linux \o Sun's Java Virtual Machine has a bug preventing
     it from using MMX and SSE instructions. For deployment against 1.5
     Java runtimes, configure Qt with the options \c{-no-mmx -no-sse
-    -no-sse2 -no-3dnow} to avoid problems.
+    -no-sse2 -no-3dnow} to avoid problems. In addition, because Qt
+    Jambi requires both the Qt headers and the libraries to be located
+    relative to QTDIR, Qt should be configured with \c{-prefix $PWD},
+    hence not installed.
 
     \row \o Windows (MSVC 2005 or newer) \o -D QT_JAMBI_BUILD is required
     for plugins to properly load.
