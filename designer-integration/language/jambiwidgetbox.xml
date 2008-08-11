@@ -370,7 +370,7 @@
                 </rect>
             </property>
             <property name="frameShape" >
-                <enum>com.trolltech.qt.gui.QFrame.Style.StyledPanel</enum>
+                <enum>com.trolltech.qt.gui.QFrame.Shape.StyledPanel</enum>
             </property>
             <property name="objectName">
                 <string notr="true">frame</string>
