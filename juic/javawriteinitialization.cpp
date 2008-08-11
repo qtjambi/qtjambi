@@ -252,6 +252,8 @@ void WriteInitialization::acceptWidget(DomWidget *node)
         output << option.indent << parentWidget << ".setWidget(" << varName << ");\n";
     } else if (uic->customWidgetsInfo()->extends(parentClass, QLatin1String("QSplitter"))) {
         output << option.indent << parentWidget << ".addWidget(" << varName << ");\n";
+    } else if(uic->customWidgetsInfo()->extends(parentClass, QLatin1String("QScrollArea"))) {
+        output << option.indent << parentWidget << ".setWidget(" << varName << ");\n";
     } else if (uic->customWidgetsInfo()->extends(parentClass, QLatin1String("QToolBox"))) {
         QString icon;
         if (DomProperty *picon = attributes.value(QLatin1String("icon"))) {
