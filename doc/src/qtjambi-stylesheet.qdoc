@@ -138,7 +138,7 @@
     red as their foreground color.
 
     \b {Note:} that for classes implemented in Java, a selector needs
-    to by the fully qualified name of the class (i.e, including the
+    to be the fully qualified name of the class (i.e, including the
     package). For the class \c{org.mypackage.MyWidget}, the selector
     will look like this:
 
