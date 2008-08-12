@@ -71,10 +71,11 @@
         <tr>
         <td valign="top">
         <ul>
-        <li><a href="../../../index.html target="_top">Qt Jambi API Javadoc</a></li>
+        <li><a href="../../../index.html" target="_top">Qt Jambi API Javadoc</a></li>
         <li><a href="qtjambi-typesystem.html">Type System</a></li>
         <li><a href="qtjambi-systemproperties.html">Qt Jambi System Properties</a></li>
         <li><a href="qtjambi-deployment.html">Deploying Qt Jambi Applications</a></li>
+        <li><a href="qtjambi-overviews.html">Qt Technology Overviews</a></li>
         <li><a href="http://doc.trolltech.com/qt/index.html">Qt C++ Reference Documentation</a></li>
         <li><a href="http://doc.trolltech.com/qt/gallery.html">Qt Widget Gallery</a></li>
         </ul>
@@ -82,9 +83,11 @@
         <td valign="top">
         <ul>
         <li><a href="qtjambi-layout.html">Layout Management</a></li>
-        <li><a href="qtjambi-paintsystem.html>Paint System</a></li>
+        <li><a href="qtjambi-paintsystem.html">Paint System</a></li>
         <li><a href="qtjambi-resourcesystemoverview.html">Resource System</a></li>
         <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
+        <li><a href="qtjambi-threads.html">Thread Support in Qt Jambi</a></li>
+        <li><a href="qtjambi-stylesheet.html">Style Sheets</a></li>
         </ul>
         </td>
         <td valign="top">
