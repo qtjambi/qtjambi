@@ -29,9 +29,6 @@
     by HTML \l{http://www.w3.org/Style/CSS/}{Cascading Style Sheets
     (CSS)} but adapted to the world of widgets.
 
-    \section1 Qt Jambi Notes
-
-
     Topics:
 
     \list
@@ -114,7 +111,7 @@
     custom QStyle subclasses. We plan to address this in some future release.
 */
 
-    /*!
+/*!
     \page stylesheet-syntax.html
     \contentspage {Qt Style Sheet}{Contents}
     \previouspage Qt Style Sheet
@@ -139,6 +136,15 @@
     color: red }} is the declaration. The rule specifies that
     QPushButton and its subclasses (e.g., \c MyPushButton) should use
     red as their foreground color.
+
+    \b {Note:} that for classes implemented in Java, a selector needs
+    to by the fully qualified name of the class (i.e, including the
+    package). For the class \c{org.mypackage.MyWidget}, the selector
+    will look like this:
+
+    \code
+        org::mypackage::MyWidget
+    \endcode
 
     Qt Style Sheet is generally case insensitive (i.e., \c color, 
     \c Color, \c COLOR, and \c cOloR refer to the same property). 
