@@ -88,6 +88,7 @@
         <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
         <li><a href="qtjambi-threads.html">Thread Support in Qt Jambi</a></li>
         <li><a href="qtjambi-stylesheet.html">Style Sheets</a></li>
+        <li><a href="qtjambi-paintsystem.html">Paint System</a></li>
         </ul>
         </td>
         <td valign="top">

@@ -13,7 +13,7 @@
     \o \l {Drag and Drop}
     \omit \o \l {Internationalization with Qt}{Internationalization} \endomit
     \omit \o \l {Introduction to D-BUS}{Inter-process Communication} \endomit
-    \o \l {Thread Support in Qt}{Multithreaded Programming}
+    \omit \o \l {Thread Support in Qt}{Multithreaded Programming} \endomit
     \o \l {The Qt 4 Main Window Classes}{Main Window Architecture}
     \o \l {Rich Text Processing}
     \o \l {Model/View Programming}
