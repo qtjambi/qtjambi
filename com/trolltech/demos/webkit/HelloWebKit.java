@@ -100,6 +100,12 @@ public class HelloWebKit extends QMainWindow {
         browser.load(new QUrl(text));
     }
 
+    @Override
+    protected void closeEvent(QCloseEvent event) {
+        browser.loadProgress.disconnect(this);
+        browser.loadFinished.disconnect(this);
+    }
+
     public static void main(String args[]) {
         QApplication.initialize(args);
 
