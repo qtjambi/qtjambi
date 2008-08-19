@@ -2168,6 +2168,16 @@
 
     </template>
 
+    <object-type name="QColorDialog">
+        <inject-code>
+            public static Integer getRgba(com.trolltech.qt.gui.QWidget parent) {
+                com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
+                int result = getRgba_internal(0xFFFFFF, ok, parent);
+                return ok.booleanValue() ? result : null;
+            }
+        </inject-code>
+    </object-type>
+
     <object-type name="QInputDialog">
         <inject-code>
         <insert-template name="gui.inputDialog_get_input">
