@@ -2172,7 +2172,7 @@
         <inject-code>
             public static Integer getRgba(int initial, com.trolltech.qt.gui.QWidget parent) {
                 com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
-                int result = getRgba_internal(initial, parent);
+                int result = getRgba_internal(initial, ok, parent);
                 return ok.booleanValue() ? result : null;
             }
 
