@@ -57,7 +57,10 @@ public class I18N extends QDialog {
             fileMenu = menuBar().addMenu(tr("&File"));
             fileMenu.addAction(exitAction);
 
+//![0]
             setWindowTitle(String.format(tr("Language: %1$s"), tr("English")));
+//![0]
+
             setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
             statusBar().showMessage(tr("Internationalization Example"));
@@ -131,10 +134,11 @@ public class I18N extends QDialog {
 
         MainWindow window = mainWindowForCheckBoxMap.get(checkBox);
         if (window == null) {
+//[1]
             QTranslator translator = new QTranslator(this);
             translator.load("classpath:com/trolltech/examples/translation/" + qmFileForCheckBoxMap.get(checkBox));
             QApplication.installTranslator(translator);
-
+//![1]
             window = new MainWindow(this);
             window.visible.connect(checkBox, "setChecked(boolean)");
 

@@ -106,13 +106,14 @@ public class doc_src_i18n {
             QApplication.initialize(args);
 
             QTranslator qtTranslator = new QTranslator();
-            qtTranslator.load("qt_" + QLocale.system().name());
+            qtTranslator.load("classpath:/translations_directory/qt_" + QLocale.system().name() + ".qm");
             QApplication.instance().installTranslator(tTranslator);
 
+//![1001]
             QTranslator myappTranslator = new QTranslator();
-            myappTranslator.load("myapp_" + QLocale.system().name());
+            myappTranslator.load("classpath:/translations_directory/myapp_" + QLocale.system().name() + ".qm");
             QApplication.instance().installTranslator(myappTranslator);
-
+//![1001]
             ...
             QApplication.exec();
         }
@@ -120,7 +121,7 @@ public class doc_src_i18n {
 
 
 //! [9]
-        Stringsstring = ...; // some Unicode text
+        Strings string = ...; // some Unicode text
 
         QTextCodec odec = QTextCodec.codecForName("ISO 8859-5");
         QByteArray encodedString = codec.fromUnicode(string);
@@ -160,8 +161,8 @@ public class doc_src_i18n {
 //! [12]
 
 //![20]
-    exitAct = new QAction(tr("E&xit"), this);
-     exitAct.setShortcut(tr("Ctrl+Q"));
+     exitAct = new QAction(tr("E&xit"), this);
+     exitAct.setShortcut(tr("Ctrl+Q", "Quit"));
 //![20]
 
     }

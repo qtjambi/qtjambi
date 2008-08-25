@@ -44,7 +44,6 @@ class doc_src_linguist_manual extends QWidget {
 /*
 //! [4]
     Usage:
-        lupdate [options] [project-file]
         lupdate [options] [source-file|path]... -ts ts-files
     Options:
         -help  Display this information and exit.
@@ -63,7 +62,6 @@ class doc_src_linguist_manual extends QWidget {
 
 //! [5]
         Usage:
-            lrelease [options] project-file
             lrelease [options] ts-files [-qm qm-file]
         Options:
             -help  Display this information and exit
