@@ -59,13 +59,13 @@
         </tr>
         <tr>
         <th bgcolor="#a2c511" width="33%">
-        Reference
+        API Reference
         </th>
         <th bgcolor="#a2c511" width="33%">
-        Overviews
+        Core Features
         </th>
         <th bgcolor="#a2c511" width="33%">
-        Licences & Credits
+        Key Technologies
         </th>
         </tr>
         <tr>
@@ -87,37 +87,28 @@
         <li><a href="qtjambi-resourcesystemoverview.html">Resource System</a></li>
         <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
         <li><a href="qtjambi-threads.html">Thread Support in Qt Jambi</a></li>
-        <li><a href="qtjambi-stylesheet.html">Style Sheets</a></li>
         <li><a href="qtjambi-paintsystem.html">Paint System</a></li>
+        <li><a href="qtjambi-i18n.html">Internationalization</a></li>
         </ul>
         </td>
         <td valign="top">
         <ul>
-        <li><a href="3rdparty.html">Third-Party Licenses Used in Qt</a></li>
-        <li><a href="licenses.html">Other Licenses Used in Qt</a></li>
+        <li><a href="qtjambi-stylesheet.html">Style Sheets</a></li>
         </ul>
         </td>
         </tr>
         <tr>
+        <th bgcolor="#a2c511" width="33%">
+        Add-ons & Services
+        </th>
         <th bgcolor="#a2c511" width="33%">
         Tools
         </th>
         <th bgcolor="#a2c511" width="33%">
-        Add-ons
-        </th>
-        <th bgcolor="#a2c511" width="33%">
-        Services
+        Licenses &#38; Credits 
         </th>
         </tr>
         <tr>
-        <td valign="top">
-        <ul>
-        <li><a href="qtjambi-designer.html">Qt Designer</a></li>
-        <li><a href="linguist-manual.html">Qt Linguist</a></li>
-        <li><a href="qtjambi-generator.html">Generator</a></li>
-        <li><a href="qtjambi-juic.html">JUIC</a></li>
-        </ul>
-        </td>
         <td valign="top">
         <ul>
         <li><a href="http://www.trolltech.com/products/qt/addon/solutions/">Qt Solutions</a></li>
@@ -127,6 +118,16 @@
         </td>
         <td valign="top">
         <ul>
+        <li><a href="qtjambi-designer.html">Qt Designer</a></li>
+        <li><a href="qtjambi-linguist-manual.html">Qt Linguist</a></li>
+        <li><a href="qtjambi-generator.html">Generator</a></li>
+        <li><a href="qtjambi-juic.html">JUIC</a></li>
+        </ul>
+        </td>
+        <td valign="top">
+        <ul>
+        <li><a href="3rdparty.html">Third-Party Licenses Used in Qt</a></li>
+        <li><a href="licenses.html">Other Licenses Used in Qt</a></li>
         <li><a href="http://www.trolltech.com/support/">Support</a></li>
         <li><a href="http://www.trolltech.com/support/training/">Training</a></li>
         </ul>
