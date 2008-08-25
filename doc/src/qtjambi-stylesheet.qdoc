@@ -12,7 +12,7 @@
 ****************************************************************************/
 
 /*!
-    \page stylesheet.html
+    \page qtjambi-stylesheet.html
     \startpage index.html QtReference Documentation
     \nextpage The Style Sheet Syntax
     \title Qt Style Sheets
@@ -112,7 +112,7 @@
 */
 
 /*!
-    \page stylesheet-syntax.html
+    \page qtjambi-stylesheet-syntax.html
     \contentspage {Qt Style Sheet}{Contents}
     \previouspage Qt Style Sheet
     \nextpage Qt Designer Integration
@@ -514,7 +514,7 @@
     */
 
     /*!
-    \page stylesheet-designer.html
+    \page qtjambi-stylesheet-designer.html
     \contentspage {Qt Style Sheet}{Contents}
     \previouspage The Style Sheet Syntax
     \nextpage Customizing Qt Widgets Using Style Sheets
@@ -540,7 +540,7 @@
     */
 
     /*!
-    \page stylesheet-customizing.html
+    \page qtjambi-stylesheet-customizing.html
     \contentspage {Qt Style Sheet}{Contents}
     \previouspage Qt Designer Integration
     \nextpage Qt Style Sheets Reference
@@ -637,7 +637,7 @@
     */
 
     /*!
-    \page stylesheet-reference.html
+    \page qtjambi-stylesheet-reference.html
     \contentspage {Qt Style Sheet}{Contents}
     \previouspage Customizing Qt Widgets Using Style Sheets
     \nextpage Qt Style Sheets Examples
@@ -3311,7 +3311,7 @@
     */
 
     /*!
-    \page stylesheet-examples.html
+    \page qtjambi-stylesheet-examples.html
     \contentspage {Qt Style Sheet}{Contents}
     \previouspage Qt Style Sheets Reference
     \title Qt Style Sheets Examples
