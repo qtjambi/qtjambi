@@ -142,7 +142,7 @@
     QCoreApplication::translate() function. Essentially all that is necessary
     to achieve this is to use QtJambiObject::tr(). For example:
 
-    \snippet doc/src/snippets/code/doc_src_i18n.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_i18n.java 0
 
     This accounts for 99% of the user-visible strings you're likely to
     write.
@@ -151,7 +151,7 @@
     subclass, use either the QCoreApplication::translate() function
     directly:
 
-    \snippet doc/src/snippets/code/doc_src_i18n.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_i18n.java 1
 
     \section2 Use QKeySequence() for Accelerator Values
 
@@ -160,7 +160,7 @@
     application, translators won't be able to override it. The
     correct idiom is
 
-    \snippet examples/mainwindows/application/doc_src_i18n.qdoc 20
+    \snippet doc/src/snippets/code/doc_src_i18n.java 20
 
     \section2 Produce Translations
 
@@ -218,7 +218,7 @@
     Typically, your application's \c main() function will look like
     this:
 
-    \snippet doc/src/snippets/code/doc_src_i18n.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_i18n.java 8
 
     \keyword localization
 
@@ -229,7 +229,7 @@
     formats. Such localizations can be accomplished using appropriate tr()
     strings.
 
-    \snippet doc/src/snippets/code/doc_src_i18n.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_i18n.java 11
 
     In the example, for the US we would leave the translation of
     "AMPM" as it is and thereby use the 12-hour clock branch; but in
@@ -254,7 +254,7 @@
     the text displayed by widgets using the \l{QObject::tr()}{tr()} function
     in the usual way. For example:
 
-    \snippet doc/src/snippets/code/doc_src_i18n.qdoc 12
+    \snippet doc/src/snippets/code/doc_src_i18n.java 12
 
     All other change events should be passed on by calling the default
     implementation of the function.
@@ -318,9 +318,9 @@
     need JIS encoded fonts (or Unicode fonts), and the \c
     /usr/share/locale/ja_JP.EUC directory needs to be complete. For best
     results, use complete locales from your system vendor.
-    \endomit
 
     \section1 Relevant Qt Classes
 
     These classes are relevant to internationalizing Qt applications.
+    \endomit
 */

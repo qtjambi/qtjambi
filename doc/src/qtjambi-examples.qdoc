@@ -14,6 +14,10 @@
     documented. It is our goal to fully document all examples in a
     future release.
 
+    You find the code for the examples under
+    \c{com/trolltech/examples}. The code for the demos are in
+    \c{com/trolltech/demos}.
+
     Categories:
 
     \tableofcontents

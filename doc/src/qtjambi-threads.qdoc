@@ -13,7 +13,7 @@
 
 /*!
     \page qtjambi-threads.html
-    \title Thread Support in Qt Jambi
+    \title Thread Support in Qt
     \brief A detailed discussion of thread handling in Qt Jambi.
 
     Qt Jambi provides a thread-safe way of posting events. This makes

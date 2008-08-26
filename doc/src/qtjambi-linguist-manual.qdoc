@@ -21,29 +21,29 @@
 
     \keyword Qt Linguist
 
-	Qt Jambi provides excellent support for translating applications into local
-	languages. This Guide explains how to use Qt Jambi's translation tools for each
-	of the roles involved in translating an application. The Guide begins with a
-	brief overview of the issues that must be considered, followed by chapters
-	devoted to each role and the supporting tools provided.
+    Qt Jambi provides excellent support for translating applications into local
+    languages. This Guide explains how to use Qt Jambi's translation tools for each
+    of the roles involved in translating an application. The Guide begins with a
+    brief overview of the issues that must be considered, followed by chapters
+    devoted to each role and the supporting tools provided.
 
-	The \l{qtjambi-linguist-manager.html}{Release Manager} chapter is aimed at the
-	person with overall responsibility for the release of the application. They
-	will typically coordinate the work of the software engineers and the
-	translator. The chapter describes the use of two tools. The \l lupdate tool is
-	used to synchronize source code and translations. The \l lrelease tool is used
-	to create runtime translation files for use by the released application.
+    The \l{qtjambi-linguist-manager.html}{Release Manager} chapter is aimed at the
+    person with overall responsibility for the release of the application. They
+    will typically coordinate the work of the software engineers and the
+    translator. The chapter describes the use of two tools. The \l lupdate tool is
+    used to synchronize source code and translations. The \l lrelease tool is used
+    to create runtime translation files for use by the released application.
 
-	The \l{qtjambi-linguist-translators.html}{Translators} chapter is for
-	translators. It describes the use of the \QL tool.  No computer knowledge
-	beyond the ability to start a program and use a text editor or word processor
-	is required.
+    The \l{qtjambi-linguist-translators.html}{Translators} chapter is for
+    translators. It describes the use of the Qt Linguist tool.  No computer knowledge
+    beyond the ability to start a program and use a text editor or word processor
+    is required.
 
-	The \l{qtjambi-linguist-programmers.html}{Programmers} chapter is for Qt Jambi
-	programmers. It explains how to create Qt Jambi applications that are able to
-	use translated text. It also provides guidance on how to help the translator
-	identify the context in which phrases appear. This chapter's three short
-	tutorials cover everything the programmer needs to do.
+    The \l{qtjambi-linguist-programmers.html}{Programmers} chapter is for Qt Jambi
+    programmers. It explains how to create Qt Jambi applications that are able to
+    use translated text. It also provides guidance on how to help the translator
+    identify the context in which phrases appear. This chapter's three short
+    tutorials cover everything the programmer needs to do.
 
     \section1 Overview of the Translation Process
 
@@ -52,21 +52,21 @@
     appear as window titles, menu items, pop-up help text (balloon help),
     and labels to buttons, check boxes and radio buttons.
 
-	The phrases are entered into the source code by the programmer in their native
-	language using a simple but special syntax to identify that the phrases require
-	translation. The Qt Jambi tools provide context information for each of the
-	phrases to help the translator, and the programmer is able to add additional
-	context information to phrases when necessary. The release manager generates a
-	set of translation files that are produced from the source files and passes
-	these to the translator. The translator opens the translation files using \QL,
-	enters their translations and saves the results back into the translation
-	files, which they pass back to the release manager.  The release manager then
-	generates fast compact versions of these translation files ready for use by the
-	application. The tools are designed to be used in repeated cycles as
-	applications change and evolve, preserving existing translations and making it
-	easy to identify which new translations are required. \QL also provides a
-	phrase book facility to help ensure consistent translations across multiple
-	applications and projects.
+    The phrases are entered into the source code by the programmer in their native
+    language using a simple but special syntax to identify that the phrases require
+    translation. The Qt Jambi tools provide context information for each of the
+    phrases to help the translator, and the programmer is able to add additional
+    context information to phrases when necessary. The release manager generates a
+    set of translation files that are produced from the source files and passes
+    these to the translator. The translator opens the translation files using Qt Linguist,
+    enters their translations and saves the results back into the translation
+    files, which they pass back to the release manager.  The release manager then
+    generates fast compact versions of these translation files ready for use by the
+    application. The tools are designed to be used in repeated cycles as
+    applications change and evolve, preserving existing translations and making it
+    easy to identify which new translations are required. Qt Linguist also provides a
+    phrase book facility to help ensure consistent translations across multiple
+    applications and projects.
 
     Translators and programmers must address a number of issues because
     of the subtleties and complexities of human language:
@@ -87,8 +87,8 @@
     variables may have to change.
     \endlist
 
-	The Qt Jambi translation tools provide clear and simple solutions to these
-	issues.
+    The Qt Jambi translation tools provide clear and simple solutions to these
+    issues.
 
     Chapters:
 
@@ -99,7 +99,7 @@
     \o \l{Qt Linguist Manual: TS File Format}{TS File Format}
     \endlist
 
-    \QL and \c lupdate are able to import and export XML Localization Interchange File Format
+    Qt Linguist and \c lupdate are able to import and export XML Localization Interchange File Format
     (XLIFF) files, making it possible to take advantage of tools and translation
     services that work with this format. See the
     \l{Qt Linguist Manual: Translators}{Translators} section for more information
@@ -133,11 +133,11 @@
 
     Usage: \c {lupdate [options] [source-file|path]... -ts ts-files}
 
-	\l lupdate is a command line tool that finds the translatable strings in the
-	specified source,  header and \e {Qt Designer} interface files, and produces or
-	updates \c .ts translation files. The files to process and the files to update
-	is set at the command line. The produced translation files are given to the
-	translator who uses \QL to read the files and insert the translations.
+    \l lupdate is a command line tool that finds the translatable strings in the
+    specified source,  header and \e {Qt Designer} interface files, and produces or
+    updates \c .ts translation files. The files to process and the files to update
+    is set at the command line. The produced translation files are given to the
+    translator who uses Qt Linguist to read the files and insert the translations.
 
     Companies that have their own translators in-house may find it useful
     to run \l lupdate regularly, perhaps monthly, as the application
@@ -162,9 +162,9 @@
     Pass the \c -help option to \c lupdate to obtain the list of
     supported options:
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 4
 
-    \QL is also able to import and export XLIFF files. See the
+    Qt Linguist is also able to import and export XLIFF files. See the
     \l{Qt Linguist Manual: Translators}{Translators} section for more
     information.
 
@@ -172,10 +172,10 @@
 
     Usage: \c {lrelease [options] ts-files [-qm qm-file]}
 
-	\l lrelease is a command line tool that produces \c .qm files out of \c .ts
-	files. The \c .qm file format is a compact binary format that is used by the
-	localized application. It provides extremely fast lookups for translations. The
-	\c .ts files \l lrelease processes is specified at the command line.
+    \l lrelease is a command line tool that produces \c .qm files out of \c .ts
+    files. The \c .qm file format is a compact binary format that is used by the
+    localized application. It provides extremely fast lookups for translations. The
+    \c .ts files \l lrelease processes is specified at the command line.
 
     This tool is run whenever a release of the application is to be made,
     from initial test version through to final release version. If the \c
@@ -214,16 +214,16 @@
 
     \section1 The One Minute Guide to Using Qt Linguist
 
-    \QL is a tool for adding translations to Qt Jambi
-    applications. To start, run \QL, either from the taskbar menu, 
+    Qt Linguist is a tool for adding translations to Qt Jambi
+    applications. To start, run Qt Linguist, either from the taskbar menu, 
     or by double clicking the desktop icon, or type \c {linguist} (followed by
-    \key{Enter}) at the command line. Once \QL has started
+    \key{Enter}) at the command line. Once Qt Linguist has started
     choose \menu{File|Open} from the menu bar and select a \c .ts
     translation source file to work on. If you do not have a \c .ts file
     to work on, see \l {Qt Linguist Manual: Release Manager} {the release
     manager manual} on how to generate one.
 
-    By default, \QL's main window is divided into four main 
+    By default, Qt Linguist's main window is divided into four main 
     areas. The left hand side contains the Context List, the top right shows 
     the String List, the middle right is the Translation Area and the 
     bottom right shows either the Phrases and Guesses Window, the Source Code 
@@ -241,16 +241,16 @@
     \key{Ctrl+Enter} can be repeated until all the translations are done or 
     until you finish the session.
 
-	Additional help for the translation is provided in the area at the bottom
-	right: If you activate the Phrases and Guesses Window (e.g.  by clicking on its
-	tab), \QL will show possible translations from open phrase books and previous
-	translations. Each has a keyboard shortcut, e.g. \key{Ctrl+1}, \key{Ctrl+2},
-	etc., which you can use to copy the guess into the Translation Area. (Mouse
-	users can double click a phrase or guess to move it into the Translation Area.)
-	\QL can also check for you if the source and the translation obey certain
-	consistency rules: The results are shown in the Warnings Window. Finally, if
-	you have the source code of the program to translate available, the Source Code
-	Window can help you to get to know the context where a translation is used.
+    Additional help for the translation is provided in the area at the bottom
+    right: If you activate the Phrases and Guesses Window (e.g.  by clicking on its
+    tab), Qt Linguist will show possible translations from open phrase books and previous
+    translations. Each has a keyboard shortcut, e.g. \key{Ctrl+1}, \key{Ctrl+2},
+    etc., which you can use to copy the guess into the Translation Area. (Mouse
+    users can double click a phrase or guess to move it into the Translation Area.)
+    Qt Linguist can also check for you if the source and the translation obey certain
+    consistency rules: The results are shown in the Warnings Window. Finally, if
+    you have the source code of the program to translate available, the Source Code
+    Window can help you to get to know the context where a translation is used.
 
     At the end of the session choose \menu{File|Save} from the menu bar and then
     \menu{File|Exit} to quit.
@@ -259,7 +259,7 @@
 
     \image linguist-linguist.png
 
-    The main window of \QL is divided into different sub windows:
+    The main window of Qt Linguist is divided into different sub windows:
     The \l{Context List}, \l{String List}, \l{Translation Area}, 
     \l {Phrases and Guesses Window}, \l{Source Code Window} and \l{Warnings Window}.
     On first startup the sub windows are arranged as shown in 
@@ -276,17 +276,17 @@
     translated in a previous version of the application but which does not 
     occur in the new version. See also \l {Context States}.
 
-	The second column, 'Context' is the name of the context in which the
-	translation phrases appear. The third column, 'Items' shows two numbers, the
-	first is the number of translations that have been done, and the second is the
-	number of phrases that are in the context; if the numbers are equal then all
-	the translations have been done. Click on the appropriate header to sort the
-	Context List either by the status, the name or the number of items in  a
-	context.
+    The second column, 'Context' is the name of the context in which the
+    translation phrases appear. The third column, 'Items' shows two numbers, the
+    first is the number of translations that have been done, and the second is the
+    number of phrases that are in the context; if the numbers are equal then all
+    the translations have been done. Click on the appropriate header to sort the
+    Context List either by the status, the name or the number of items in  a
+    context.
 
     The Context List is a dockable window so it can be dragged to another
     position in the main window, or dragged out of the main window to be a
-    window in its own right. If you move the Context List, \QL
+    window in its own right. If you move the Context List, Qt Linguist
     will remember its position and restore it whenever you
     start the program. If the dock has been closed or is hidden it can be
     made visible by pressing \key{F6}.
@@ -379,21 +379,21 @@
     \section2 Phrases That Require Multiple Translations Depending on Context
 
     The same phrase may occur in two or more contexts without conflict. Once
-    a phrase has been translated in one context, \QL notes
+    a phrase has been translated in one context, Qt Linguist notes
     that the translation has been made and when the translator reaches a
-    later occurrence of the same phrase \QL will provide
+    later occurrence of the same phrase Qt Linguist will provide
     the previous translation as a possible translation candidate in the
     \l{Phrases and Guesses Window}.
 
-	If a phrase occurs more than once in a particular context it will
-	only be shown once in \QL's \l{Context List} and the translation
-	will be applied to every occurrence within the context.  If the
-	same phrase needs to be translated differently within the same
-	context the programmer must provide a distinguishing comment for
-	each of the phrases concerned. If such comments are used the
-	duplicate phrases will appear in the \l{Context List}. The
-	programmers comments will appear in the \l{Translation Area} on a
-	light blue background.
+    If a phrase occurs more than once in a particular context it will
+    only be shown once in Qt Linguist's \l{Context List} and the translation
+    will be applied to every occurrence within the context.  If the
+    same phrase needs to be translated differently within the same
+    context the programmer must provide a distinguishing comment for
+    each of the phrases concerned. If such comments are used the
+    duplicate phrases will appear in the \l{Context List}. The
+    programmers comments will appear in the \l{Translation Area} on a
+    light blue background.
 
     \section2 Changing Keyboard Accelerators
 
@@ -445,10 +445,10 @@
     translator changes the key it must not conflict with any other
     Ctrl key accelerator.
 
-	\warning Do not translate the "Alt", "Ctrl" or "Shift" parts of
-	the accelerators, since \e {Qt Jambi} internally relies on these
-	identifiers. For the supported languages, \e {Qt Jambi} will
-	automatically translate these strings.
+    \warning Do not translate the "Alt", "Ctrl" or "Shift" parts of
+    the accelerators, since \e {Qt Jambi} internally relies on these
+    identifiers. For the supported languages, \e {Qt Jambi} will
+    automatically translate these strings.
 
     \section2 Dealing with Phrases That Contain Variables
 
@@ -466,10 +466,10 @@
     at runtime no matter where it appears in the source text or translation
     and similarly \c 2%$, etc.
 
-	In the source file, use \c {String.format()} to select the
-	variable required.
+    In the source file, use \c {String.format()} to select the
+    variable required.
 
-	\snippet I18N.java 0
+    \snippet I18N.java 0
 
     \section2 Reusing Translations
 
@@ -478,7 +478,7 @@
     \key{Ctrl+B}) which will copy the source text into the 
     \l{Translation Area}.
 
-    \QL automatically lists phrases from the open phrase
+    Qt Linguist automatically lists phrases from the open phrase
     books and similar or identical phrases that have already been translated
     in the \l{Phrases and Guesses Window}.
 
@@ -486,7 +486,7 @@
 
     \image linguist-auxlanguages.png
 
-    \QL currently only allows one translation file to be worked on at any
+    Qt Linguist currently only allows one translation file to be worked on at any
     given time. However, if the program has already been translated to
     other languages, you can display these auxiliary translations in addition
     to the source text.
@@ -512,9 +512,9 @@
 
     \image linguist-translationfilesettings.png
 
-    \QL displays the language to translate to in the 
+    Qt Linguist displays the language to translate to in the 
     \l{Translation Area}, and adapts the number of input fields for plural 
-    forms accordingly. If not explicitly set, \QL guesses
+    forms accordingly. If not explicitly set, Qt Linguist guesses
     the target language and country by evaluating the translation source file
     name:  E.g. \c app_de.ts sets the target language to German,
     and \c app_de_ch.ts sets the target language to German and the target country
@@ -526,14 +526,14 @@
 
     \section1 Phrase Books
 
-    A \QL phrase book is a set of source phrases, target
+    A Qt Linguist phrase book is a set of source phrases, target
     (translated) phrases, and optional definitions. Typically one phrase book
     will be created per language and family of applications. Phrase books 
     are used to provide a common set of translations to help ensure consistency. 
     They can also be used to avoid duplication of effort since the translations 
     for a family of applications can be produced once in the phrase book.
     If the translator reaches an untranslated phrase that is the same as a
-    source phrase in a phrase book, \QL will show the
+    source phrase in a phrase book, Qt Linguist will show the
     phrase book entry in the \l {Phrases and Guesses Window}.
 
     \section2 Creating and Editing Phrase Books
@@ -575,7 +575,7 @@
 
     \image linguist-batchtranslation.png
 
-    Use the batch translation feature of \QL to automatically
+    Use the batch translation feature of Qt Linguist to automatically
     translate source texts that are also in a phrase book. Selecting
     \menu{Tools|Batch Translation} will show you the batch translation dialog,
     which let you configure which phrase books to use in what order during the
@@ -585,7 +585,7 @@
 
     \section1 Validation
 
-    \QL provides four kinds of validation on translated
+    Qt Linguist provides four kinds of validation on translated
     phrases.
 
     \list 1
@@ -608,34 +608,34 @@
     or using the toolbar buttons. Unfinished phrases that fail validation 
     are marked with an exclamation mark in the source text pane. Finished phrases
     will get a yellow tick instead. If you switch validation off and then switch 
-    it on later, \QL will recheck all phrases and mark any that 
+    it on later, Qt Linguist will recheck all phrases and mark any that 
     fail validation. See also \l{Message States}.
 
-	\omit This is not supported in QJ
+    \omit This is not supported in QJ
     \section1 Form Preview
 
     \image linguist-previewtool.png
 
     Forms created by \e{Qt Designer} are stored in special \c .ui files. 
-    \QL can make use of these \c .ui files to show the translations
+    Qt Linguist can make use of these \c .ui files to show the translations
     done so far on the form itself. This of course requires access to the \c .ui
     files during the translation process. Activate 
     \menu{Tools|Open/Refresh Form Preview} to open the window shown above.
-    The list of \c .ui files \QL has detected are displayed in the Forms
+    The list of \c .ui files Qt Linguist has detected are displayed in the Forms
     List on the left hand. If the path to the files has changed, you can load
     the files manually via \menu{File|Open Form...}. Double-click on an entry
     in the Forms List to display the Form File. Select \e{<No Translation>} from
     the toolbar to display the untranslated form.
-	\endomit
+    \endomit
 
     \section1 Qt Linguist Reference
 
     \section2 Message States
 
-    A message in \QL can be in a variety of states, depending on
+    A message in Qt Linguist can be in a variety of states, depending on
     whether the translation has been marked as finished, the source text
     is obsolete, a translation has been provided or the translation fails a
-    validity check. \QL summarizes these properties in six overall states 
+    validity check. Qt Linguist summarizes these properties in six overall states 
     that are shown as individual icons in the first row of the \l{String List}:
 
     \list
@@ -699,7 +699,7 @@
 
     \section2 File Types
 
-    \QL makes use of four kinds of files:
+    Qt Linguist makes use of four kinds of files:
 
     \list
     \o \c .ts \e {translation source files} \BR are human-readable XML
@@ -707,15 +707,15 @@
     usually created and updated by \l lupdate and are specific to an
     application.
     \o \c .xlf \e {XLIFF files} \BR are human-readable XML files that adhere
-    to the international XML Localization Interchange File Format. \QL
+    to the international XML Localization Interchange File Format. Qt Linguist
     can be used to edit XLIFF files generated by other programs. For standard
     Qt projects, however, only the \c .ts file format is used.
     \o \c .qm \e {Qt message files} \BR are binary files that contain
     translations used by an application at runtime. These files are
-    generated by \l lrelease, but can also be generated by \QL.
+    generated by \l lrelease, but can also be generated by Qt Linguist.
     \o \c .qph \e {Qt phrase book files} \BR are human-readable XML
     files containing standard phrases and their translations. These files
-    are created and updated by \QL and may be used by any
+    are created and updated by Qt Linguist and may be used by any
     number of projects and applications.
     \endlist
 
@@ -745,7 +745,7 @@
         \e all of an application's translation source files.
         \o \gui {Print... Ctrl+P} \BR pops up a print dialog. If you click
         OK the translation source and the translations will be printed.
-        \o \gui {Exit Ctrl+Q} \BR closes \QL.
+        \o \gui {Exit Ctrl+Q} \BR closes Qt Linguist.
         \endlist
 
     \o \gui {Edit}
@@ -817,7 +817,7 @@
         \o \gui {Close Phrase Book} \BR displays the list of phrase books 
         currently opened. Clicking on one of the items will close the phrase 
         book. If the phrase book has been modified, a dialog box asks whether 
-        \QL should save the changes.
+        Qt Linguist should save the changes.
         \o \gui {Edit Phrase Book...} \BR displays the list of phrase books 
         currently opened. Clicking on one of the items will open the
         \l{Creating and Editing Phrase Books}{Phrase Book Dialog} where you 
@@ -861,7 +861,7 @@
   \o \gui {Help}
         \list
         \o \gui {Manual F1} \BR opens this manual.
-        \o \gui {About Qt Linguist} \BR Shows information about \QL.
+        \o \gui {About Qt Linguist} \BR Shows information about Qt Linguist.
         \o \gui {About Qt} \BR Shows information about \e{Qt}.
         \o \gui {What's This? Shift+F1} \BR Click on one item in the main window 
         to get additional information about it.
@@ -1007,7 +1007,7 @@
     translation source files with all the user-visible text but no
     translations.
     \o The \c .ts files are given to the translator who adds translations
-    using \QL. \QL takes care of any changed
+    using Qt Linguist. Qt Linguist takes care of any changed
     or deleted source text.
     \o Run \l lupdate to incorporate any new text added to the
     application. \l lupdate synchronizes the user-visible text from the
@@ -1018,20 +1018,20 @@
     application at runtime.
     \endlist
 
-	For \l lupdate to work successfully, it must know which
-	translation files to produce. These are listed on the
-	command-line.  See the \l lupdate and \l lrelease sections.
+    For \l lupdate to work successfully, it must know which
+    translation files to produce. These are listed on the
+    command-line.  See the \l lupdate and \l lrelease sections.
 
     \section2 Loading Translations
 
-    \snippet I18N.java 1
+    \snippet I18N.java 0
 
-	Loading a new \c .pm file is stright-forward. For a
-	translation-aware application a translator object is created, a
-	translation is loaded and the translator object installed into the
-	application.
+    Loading a new \c .pm file is stright-forward. For a
+    translation-aware application a translator object is created, a
+    translation is loaded and the translator object installed into the
+    application.
 
-    \snippet I18N.java 1
+    \snippet I18N.java 0
 
     In production applications a more flexible approach, for example,
     loading translations according to locale, might be more appropriate. If
@@ -1049,14 +1049,14 @@
 
     User-visible strings are marked as translation targets by wrapping them
     in a \c tr() call, for example:
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 6
 
     would become
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 7
 
     QtJambiObject implements the \c tr() function, so all
-	QtJambiSubclasses can contain translated strings.
+    QtJambiSubclasses can contain translated strings.
 
     \section2 Distinguishing Identical Strings That Require Different Translations
 
@@ -1070,11 +1070,11 @@
     differ between the two. This is easily achieved using the
     two argument form of the \c tr() call, e.g.
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 10
 
     and
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 11
 
     Ctrl key accelerators are also translatable:
 
@@ -1091,24 +1091,24 @@
     solved by adding a comment using the keyword \e TRANSLATOR which
     describes the navigation steps to reach the text in question; e.g.
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 12
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 12
 
     These comments are particularly useful for widget classes.
 
-	\omit NEXT SECTIONS ARE C++ SPECIFIC
+    \omit NEXT SECTIONS ARE C++ SPECIFIC
     \section2 Handling Plural Forms
 
-	Qt Jambi includes a \c tr() overload that will make it very easy
-	to write "plural-aware" internationalized applications. This
-	overload has the following signature:
+    Qt Jambi includes a \c tr() overload that will make it very easy
+    to write "plural-aware" internationalized applications. This
+    overload has the following signature:
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 17
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 17
 
     Depending on the value of \c n, the \c tr() function will return a different 
     translation, with the correct grammatical number for the target language. 
     Also, any occurrence of \c %n is replaced with \c{n}'s value. For example:
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 18
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 18
 
     If a French translation is loaded, this will expand to "0 item 
     remplac\unicode{233}", "1 item remplac\unicode{233}", "2 items 
@@ -1137,7 +1137,7 @@
     comment at the beginning of the source files that use \c
     MyClass::tr():
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 13
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 13
 
     After the comment, all references to \c MyClass::tr() will be
     understood as meaning \c MyNamespace::MyClass::tr().
@@ -1150,7 +1150,7 @@
     use either the tr() function of an appropriate class, or the
     QCoreApplication::translate() function directly:
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 14
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 14
 
     \section3 Using QT_TR_NOOP() and QT_TRANSLATE_NOOP()
 
@@ -1160,15 +1160,15 @@
     The macros expand to just the text (without the context).
 
     Example of QT_TR_NOOP():
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 15
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 15
 
     Example of QT_TRANSLATE_NOOP():
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 16
-	\endomit END OF C++ SPECIFIC STUFF
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 16
+     END OF C++ SPECIFIC STUFF \endomit
 
-	
+    
 
-	\omit We only have the I18N example in QJ
+    \omit We only have the I18N example in QJ
     \section1 Tutorials
 
     Three tutorials are presented:
@@ -1193,9 +1193,9 @@
 
     These tutorials cover all that you need to know to prepare your Qt
     applications for translation.
-	\endomit
+    \endomit
 
-	\section1 Summary
+    \section1 Summary
 
     At the beginning of a project add the translation source files to be
     used to the project file and add calls to \l lupdate and \l lrelease to
@@ -1217,7 +1217,7 @@
     \contentspage {Qt Linguist Manual}{Contents}
     \previouspage Qt Linguist Manual: Programmers
 
-    The \c .ts file format used by \QL is described by the
+    The \c .ts file format used by Qt Linguist is described by the
     \l{http://www.w3.org/TR/1998/REC-xml-19980210}{DTD} presented below,
     which we include for your convenience. Be aware that the format
     may change in future Qt releases.

@@ -66,5 +66,5 @@
     so, for instance, you cannot access resources using the \c java.io
     package.
 
-    \sa Resource System Example, QAbstractFileEngine
+    \sa {Resource System Example}, QAbstractFileEngine
 */
