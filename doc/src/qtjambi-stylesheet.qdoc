@@ -444,7 +444,7 @@
     sheet. Consider the following example. First, we set a style
     sheet on the QApplication:
 
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 21
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 21
 
     Then we set a style sheet on a QPushButton object:
 
@@ -3489,10 +3489,10 @@
     The background of any QAbstractScrollArea (Item views, QTextEdit 
     and QTextBrowser) can be set using the background properties. For example,
     to set a background-image that scrolls with the scroll bar:
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 106
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 106
 
     If the background-image is to be fixed with the viewport:
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 107
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 107
 
     \section2 Customizing QCheckBox
 
@@ -3538,7 +3538,7 @@
     Let us look at an example that moves the QGroupBox's title to
     the center.
 
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 114
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 114
 
     For a checkable QGroupBox, use the \{#indicator-sub}{::indicator} subcontrol
     and style it exactly like a QCheckBox (i.e)
@@ -3549,13 +3549,13 @@
 
     QHeaderView is customized as follows:
 
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 116
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 116
 
     \section2 Customizing QLineEdit
 
     The frame of a QLineEdit is styled using the \l{The Box Model}. To
     create a line edit with rounded corners, we can set:
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 117
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 117
 
     The password character of line edits that have QLineEdit::Password
     echo mode can be set using:
@@ -3580,7 +3580,7 @@
 
     The separator of a QMainWindow can be styled as follows:
 
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 122
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 122
 
     \section2 Customizing QMenu
     
@@ -3648,7 +3648,7 @@
     \section2 Customizing QRadioButton
 
     The indicator of a QRadioButton can be changed using:
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 131
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 131
 
     \section2 Customizing QScrollBar
 
@@ -3728,7 +3728,7 @@
 
     Note that widgets that have been added to the QStatusBar can be styled
     using the descendant declaration (i.e)
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 144
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 144
 
     \section2 Customizing QTabWidget and QTabBar
 
@@ -3750,7 +3750,7 @@
     To move the tab bar to the center (as below), we require the following stylesheet:
     \image tabWidget-stylesheet3.png
 
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 147
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 147
 
     The tear indicator and the scroll buttons can be further customized as follows:
     \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 148
@@ -3775,7 +3775,7 @@
     \section2 Customizing QToolBar
     
     The background and the handle of a QToolBar is customized as below:
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 151
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 151
 
     \section2 Customizing QToolBox
 
@@ -3822,7 +3822,7 @@
 
     To provide a special background when you hover over items, we can use the
     \l{item-sub}{::item} subcontrol. For example,
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 156
+    \snippet doc/src/snippets/code/doc_src_stylesheet.qdoc 156
 
     The branches of a QTreeView are styled using the 
     \l{Qt Style Sheets Reference#branch-sub}{::branch} subcontrol. The

@@ -91,7 +91,7 @@
     \codeline
     \snippet doc/src/snippets/layouts/layouts.java 3
     \snippet doc/src/snippets/layouts/layouts.java 4
-    \snippet doc/src/snippets/layouts/layouts.jave 5
+    \snippet doc/src/snippets/layouts/layouts.java 5
 
     The code for QVBoxLayout is identical, except the line where the
     layout is created. The code for QGridLayout is a bit different,
@@ -272,8 +272,6 @@
     We take a short look at the memebers of the \c CardLayout class;
     we will examine their implementation shortly.
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 1
-
     First we have two functions that iterate over the layout: 
     itemAt() and takeAt(). These functions are used internally by the
     layout system to handle deletion of widgets. They are also available
@@ -285,7 +283,7 @@
     data structure, we may have to spend more effort defining a linear
     order for the items.
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_layout.java 2
 
     addItem() implements the default placement strategy for layout items.
     It must be implemented. It is used by QLayout::add(), by the QLayout
@@ -294,26 +292,26 @@
     provide extra access functions such as the row and column spanning
     overloads of \l QGridLayout::addItem(), addWidget(), and addLayout().
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_layout.java 3
 
     The layout takes over responsibility of the items added. Since
     QLayoutItem does not inherit QObject, we must delete the items
     manually. The function QLayout::deleteAllItems() uses takeAt()
     defined above to delete all the items in the layout.
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_layout.java 4
 
     The setGeometry() function actually performs the layout. The rectangle
     supplied as an argument does not include margin(). If relevant, use
     spacing() as the distance between items.
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_layout.java 5
 
     sizeHint() and minimumSize() are normally very similar in
     implementation. The sizes returned by both functions should include
     spacing(), but not margin().
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_layout.java 6
 
     \section2 Further Notes
 

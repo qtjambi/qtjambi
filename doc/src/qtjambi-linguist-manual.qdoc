@@ -191,7 +191,7 @@
     Pass the \c -help option to \c lrelease to obtain the list of
     supported options:
 
-    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.java 5
 
     \section1 Missing Translations
 
@@ -1056,7 +1056,7 @@
     \snippet doc/src/snippets/code/doc_src_linguist-manual.java 7
 
     QtJambiObject implements the \c tr() function, so all
-    QtJambiSubclasses can contain translated strings.
+    QtJambiObject subclasses can contain translated strings.
 
     \section2 Distinguishing Identical Strings That Require Different Translations
 
@@ -1222,6 +1222,6 @@
     which we include for your convenience. Be aware that the format
     may change in future Qt releases.
 
-    \quotefile tools/linguist/shared/ts.dtd
+    \quotefile doc/src/snippets/ts.dtd
     
 */
