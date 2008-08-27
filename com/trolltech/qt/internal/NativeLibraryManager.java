@@ -516,44 +516,6 @@ public class NativeLibraryManager {
     }
 
 
-    private static String md5(URI name) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        byte data[] = new byte[1024];
-        File file = fileForURI(name);
-        InputStream stream = new FileInputStream(file);
-
-        int skip = stream.available() / 5;
-        while (stream.read(data) > 0) {
-            md.update(data);
-            stream.skip(skip - data.length);
-        }
-        stream.close();
-
-        // Include the deployment descriptor in the md5 sum...
-        JarFile jarFile = new JarFile(file);
-        JarEntry entry = jarFile.getJarEntry(DEPLOY_DESCRIPTOR_NAME);
-        stream = jarFile.getInputStream(entry);
-        while (stream.read(data) > 0) {
-            md.update(data);
-        }
-        stream.close();
-
-        byte digest[] = md.digest();
-
-        // Construct the md5 string...
-        StringBuffer buffer = new StringBuffer();
-        for (byte val : digest) {
-            val += 127;
-
-            if (val == 0) buffer.append('0');
-            if (val <= 0x0f) buffer.append('0');
-
-            buffer.append(Integer.toString(val + 127, 16));
-        }
-
-        return buffer.toString();
-    }
-
     private static void unpackJarFile_helper(URI name) throws Exception {
         reporter.report("Unpacking .jar file: '", name.toString(), "'");
 
@@ -568,34 +530,11 @@ public class NativeLibraryManager {
 
         reporter.report(" - using cache directory: '", tmpDir.getAbsolutePath(), "'");
 
-        String md5 = md5(name);
-
         boolean shouldCopy = false;
 
         // If the dir exists, sanity check the contents...
         if (tmpDir.exists()) {
             reporter.report(" - cache directory exists");
-
-            File files[] = tmpDir.listFiles(new ChecksumFileFilter());
-
-            if (files == null || files.length == 0) {
-                reporter.report(" - cache directory doesn't have .chk file");
-                shouldCopy = true;
-
-            } else if (files.length != 1) {
-                throw new RuntimeException(" - cache directory '" + tmpDir
-                                           + "'has multiple .chk's files. Loading aborted!");
-
-            } else if (new File(tmpDir, md5 + ".chk").equals(files[0])) {
-                reporter.report(" - checksum ok!");
-
-            } else {
-                throw new RuntimeException("Failed to unpack contents of .jar file '"
-                                           + name.toString() + "'. The cacke key '"
-                                           + spec.key + "' is already in use with a different "
-                                           + "set of native libraries. Please use a unique cache key!");
-            }
-
         } else {
             shouldCopy = true;
         }
@@ -636,10 +575,6 @@ public class NativeLibraryManager {
                 reporter.report(" - ok!");
             }
         }
-
-        // plugin paths need to be handled somehow...
-        File chk = new File(tmpDir, md5 + ".chk");
-        chk.createNewFile();
     }
 
 
