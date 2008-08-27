@@ -330,7 +330,7 @@ public class InitializeTask extends Task {
         path.append("/plugins/");
         path.append(subdir);
         path.append("/");
-        path.append(LibraryEntry.formatUnversionedPluginName(name, debug));
+        path.append(LibraryEntry.formatPluginName(name, debug));
         return new File(path.toString()).exists();
     }
 
