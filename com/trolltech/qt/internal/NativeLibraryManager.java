@@ -111,7 +111,9 @@ public class NativeLibraryManager {
 
     private static final String DEBUG_SUFFIX = "_debuglib";
 
-    private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
+//     private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
+
+    private static final boolean VERBOSE_LOADING = true;
 
     private static final int LOAD_TRUE = 1;
     private static final int LOAD_FALSE = 2;
@@ -126,7 +128,7 @@ public class NativeLibraryManager {
 
     private static class DeploymentSpec {
         public String key;
-        public JarFile jar;
+        public String jarName;
         public List<LibraryEntry> libraries;
         public List<String> pluginPaths;
 
@@ -188,8 +190,8 @@ public class NativeLibraryManager {
                     if (old != null) {
                         throw new DeploymentSpecException("<library> '" + e.name
                                                           + "' is duplicated. Present in both '"
-                                                          + spec.jar.getName() + "' and '"
-                                                          + old.spec.jar.getName() + "'.");
+                                                          + spec.jarName + "' and '"
+                                                          + old.spec.jarName + "'.");
                     }
                     reporter.report(" - adding '", fileName, "' to library map");
                     libraryMap.put(fileName, e);
@@ -219,23 +221,6 @@ public class NativeLibraryManager {
         public boolean accept(File dir, String name) {
             return name.endsWith(".chk");
         }
-    }
-
-
-    /**
-     * Unpacks the .jar file specified in <code>name</code> to a temp
-     * directory based on the <code>tempDirBase</code> with the
-     * cache-key specified in the deployment descriptor of the input
-     * .jar file.
-     *
-     * Users only need to call this method to explicitly unpack .jar
-     * files that are not included in the CLASSPATH.
-     *
-     * @param name The name of the .jar file...
-     * @throw Throws an Exception if something goes wrong...
-     */
-    public static void unpackJarFile(URI name) throws Exception {
-        unpackJarFile_helper(name);
     }
 
 
@@ -365,11 +350,19 @@ public class NativeLibraryManager {
 
             if (url.getProtocol().equals("jar")) {
                 String eform = url.toExternalForm();
-                URI uri =
-                    new URI(url.toExternalForm().substring(4, eform.length()
-                                                           - DEPLOY_DESCRIPTOR_NAME.length() - 2));
-                unpackJarFile(uri);
-                ++count;
+
+                // Try to decide the name of the .jar file to have a
+                // reference point for later..
+                int end = eform.length() - DEPLOY_DESCRIPTOR_NAME.length() - 2;
+                int start = eform.lastIndexOf('/', end - 1) + 1;
+
+                if (start > 0 && start < end) {
+                    String jarName = eform.substring(start, end);
+                    if (VERBOSE_LOADING)
+                        reporter.report("Loading ", jarName, " from ", eform);
+                    unpackDeploymentSpec(url, jarName);
+                    ++count;
+                }
             }
         }
 
@@ -468,17 +461,11 @@ public class NativeLibraryManager {
     }
 
 
-    private static DeploymentSpec readDeploySpec(JarFile file) throws Exception {
-        reporter.report("Checking Archive '", file.getName(), "'");
-
-        JarEntry descriptor = file.getJarEntry(DEPLOY_DESCRIPTOR_NAME);
-        if (descriptor == null) {
-            reporter.report(" - does not contain '", DEPLOY_DESCRIPTOR_NAME, "', skipping");
-            return null;
-        }
+    private static DeploymentSpec readDeploySpec(URL url, String jarName) throws Exception {
+        reporter.report("Checking Archive '", jarName, "'");
 
         DeploymentSpec spec = new DeploymentSpec();
-        spec.jar = file;
+        spec.jarName = jarName;
 
         SAXParserFactory fact = SAXParserFactory.newInstance();
         SAXParser parser = fact.newSAXParser();
@@ -487,7 +474,7 @@ public class NativeLibraryManager {
         handler.spec = spec;
 
         try {
-            parser.parse(file.getInputStream(descriptor), handler);
+            parser.parse(url.openStream(), handler);
             if (spec.key == null) {
                 throw new DeploymentSpecException("Deployment Specification doesn't include required <cache key='...'/>");
             }
@@ -502,27 +489,10 @@ public class NativeLibraryManager {
     }
 
 
-    private static File fileForURI(URI uri) {
-        try {
-            URL url = uri.toURL();
-            URLConnection connection = url.openConnection();
-            if (connection instanceof JarURLConnection) {
-                url = ((JarURLConnection) connection).getJarFileURL();
-            }
-            return new File(url.toURI());
-        } catch (Exception e) {
-            return new File(uri);
-        }
-    }
+    private static void unpackDeploymentSpec(URL deploymentSpec, String jarName) throws Exception {
+        reporter.report("Unpacking .jar file: '", jarName, "'");
 
-
-    private static void unpackJarFile_helper(URI name) throws Exception {
-        reporter.report("Unpacking .jar file: '", name.toString(), "'");
-
-        File file = fileForURI(name);
-        JarFile jarFile = new JarFile(file);
-
-        DeploymentSpec spec = readDeploySpec(jarFile);
+        DeploymentSpec spec = readDeploySpec(deploymentSpec, jarName);
         if (spec == null)
             return;
 
@@ -545,13 +515,25 @@ public class NativeLibraryManager {
 
             for (LibraryEntry e : spec.libraries) {
                 reporter.report(" - copying over: '", e.name, "'...");
-                JarEntry entry = jarFile.getJarEntry(e.name);
-                if (entry == null) {
+                InputStream in = null;
+
+                Enumeration<URL> resources = classLoader().getResources(e.name);
+                while (resources.hasMoreElements()) {
+                    URL url = resources.nextElement();
+                    String eform = url.toExternalForm();
+                    if (eform.contains(jarName)) {
+                        in = url.openStream();
+                        reporter.report("    - matched url: ", url.toExternalForm());
+                    } else if (VERBOSE_LOADING) {
+                        reporter.report("    - unmatched .jar file: ", eform);
+                    }
+                }
+
+                if (in == null) {
                     throw new FileNotFoundException("Library '" + e.name
                                                     + "' specified in qtjambi-deployment.xml in '"
-                                                    + name + "' does not exist");
+                                                    + jarName + "' does not exist");
                 }
-                InputStream in = jarFile.getInputStream(entry);
 
                 File outFile = new File(tmpDir, e.name);
                 File outFileDir = outFile.getParentFile();
@@ -660,8 +642,6 @@ public class NativeLibraryManager {
     private static boolean unpacked = false;
 
     public static void main(String args[]) throws Exception {
-
-//         unpackJarFile(new URI(fileName));
 
         unpack();
 
