@@ -1,5 +1,15 @@
 #!/usr/bin/python
 
+# TODO:
+#  - eclipse / tmplib etc... We should use a number of regexps to clean out the
+#    lib folder rather than move it to tmplib and back again afterwards...
+#  - Add qtjambi.jnlp generation to signWebstarJars
+#  - RPATH of built qt libraries needs to be "long" to avoid crossing over max-length...
+#  - Pick a long unique name for qt-comercial etc. This should prevent other package scripts
+#    from messing us up and also solve the stupid RPATH limiation...
+# - Whoever thought libqtdesigner.so was a good name for a plugin to be loaded by designer
+#   is a fucking retard...
+
 import datetime
 import os
 import re
@@ -183,6 +193,10 @@ class Package:
         self.make = "make"
         self.platformJarName = "qtjambi-macosx-gcc-" + options.qtJambiVersion + ".jar"
         self.removeFiles.append("set_qtjambi_env.bat")
+        self.removePatterns.append(re.compile(".*\\.1\\.(\\d\\.)*(jnilib|dylib)$"))
+        if self.license == pkgutil.LICENSE_EVAL:
+            self.copyFiles.append("dist/mac/binpatch")
+            self.removeDirs.append("Demos.app")
 
     def setWinBinary(self):
         self.setBinary()
@@ -215,6 +229,9 @@ class Package:
             self.platformJarName = "qtjambi-linux32-gcc-" + options.qtJambiVersion + ".jar"
         self.removeFiles.append("set_qtjambi_env.bat")
         self.removeDirs.append("Demos.app")
+        self.removePatterns.append(re.compile(".*\\.so\\.1(\\.\\d)*$"));
+        if self.license == pkgutil.LICENSE_EVAL:
+            self.copyFiles.append("dist/linux/binpatch")
 
     def setSource(self):
         self.binary = False
@@ -306,7 +323,7 @@ class Package:
         log.close()
 
     def hasEclipse(self):
-        if self.binary and (self.license == pkgutil.LICENSE_COMMERCIAL or self.license == pkgutil.LICENSE_PREVIEW):
+        if self.binary and not self.license == pkgutil.LICENSE_EVAL:
             if self.platform == pkgutil.PLATFORM_LINUX:
                 return True
             if self.platform == pkgutil.PLATFORM_WINDOWS and self.arch == pkgutil.ARCH_32:
@@ -498,8 +515,8 @@ def prepareSourceTree():
     tmpFile.write("        //depot/qt/%s/src/tools/uic/...  //qt-builder/qt/src/tools/uic/...\n" % options.qtVersion)
     tmpFile.write("        //depot/qt/%s/tools/designer/src/lib/...  //qt-builder/qt/tools/designer/src/lib/...\n" % options.qtVersion)
     tmpFile.write("        //depot/eclipse/qtjambi-4.4/...  //qt-builder/qtjambi/eclipse/qtjambi-4.4/...\n")
-    tmpFile.write("        //depot/ide/qtjambi-4.4/shared/designerintegration/...  //qt-builder/qtjambi/ide/qtjambi-4.4/shared/designerintegration/...\n")
-    tmpFile.write("        //depot/ide/qtjambi-4.4/shared/namespace_global.h  //qt-builder/qtjambi/ide/qtjambi-4.4/shared/namespace_global.h\n")
+    tmpFile.write("        //depot/ide/main/shared/designerintegrationv2/...  //qt-builder/qtjambi/ide/main/shared/designerintegrationv2/...\n")
+    tmpFile.write("        //depot/ide/main/shared/namespace_global.h  //qt-builder/qtjambi/ide/main/shared/namespace_global.h\n")
     tmpFile.close()
     os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) )
     os.remove("p4spec.tmp")
@@ -552,11 +569,9 @@ def packageAndSend(package):
             buildFile.write("cd scripts\n")
             buildFile.write("call build_eclipse.bat %%cd%%\\..\\eclipse\\qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
-
+            
         buildFile.write("call ant\n")
         buildFile.write('if "%ERRORLEVEL%" == "0" ' + package.make + ' clean\n')
-        buildFile.write("copying remaining files...\n")
-        buildFile.write("dir\n")
         buildFile.write("copy %QTDIR%\\bin\\designer.exe bin\n")
         buildFile.write("copy %QTDIR%\\bin\\lrelease.exe bin\n")
         buildFile.write("copy %QTDIR%\\bin\\lupdate.exe bin\n")
@@ -565,20 +580,25 @@ def packageAndSend(package):
         buildFile.write("copy %QTDIR%\\bin\\QtDesignerComponents4.dll bin\n")
         buildFile.write("copy %QTDIR%\\bin\\QtScript4.dll bin\n")
 
-        buildFile.write("after copy...\n")
-        buildFile.write("dir\n")
-
     else:
         buildFile = open("tmptree/task.sh", "w")
         buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/" + qtEdition))
         buildFile.write("ant\n")
         buildFile.write(package.make + " clean \n")
+        
+        if package.hasEclipse():
+            buildFile.write("cd scripts\n")
+            buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
+            buildFile.write("cd ..\n")
+
         if package.platform == pkgutil.PLATFORM_LINUX:
             buildFile.write("cp $QTDIR/bin/designer bin\n")
             buildFile.write("cp $QTDIR/bin/lrelease bin\n")
             buildFile.write("cp $QTDIR/bin/lupdate bin\n")
             buildFile.write("cp $QTDIR/bin/linguist bin\n")
-            buildFile.write("jar -xf qtjambi-linux*.jar\n");
+            buildFile.write("jar -xf qtjambi-linux*.jar\n")
+            buildFile.write("cp lib/libqtdesigner.so . \n")
+            buildFile.write("rm lib/libqtdesigner.so.4*\n")
             buildFile.write("mv lib tmplib\n");
             buildFile.write("rm -rf META-INF\n");
             buildFile.write("cp $QTDIR/lib/libQtDesigner.so.4 tmplib\n")
@@ -586,9 +606,6 @@ def packageAndSend(package):
             buildFile.write("cp $QTDIR/lib/libQtScript.so.4 tmplib\n")
             buildFile.write("chmod 755 scripts/update_rpath.sh\n");
             buildFile.write("./scripts/update_rpath.sh\n");
-            buildFile.write("rm -v tmplib/lib*.so.1.0.0\n");
-            buildFile.write("rm -v tmplib/lib*.so.1.0\n");
-            buildFile.write("rm -v tmplib/lib*.so.1\n");
         else:
             buildFile.write("cp -R $QTDIR/bin/Designer.app bin\n")
             buildFile.write("cp $QTDIR/bin/lrelease bin\n")
@@ -602,14 +619,11 @@ def packageAndSend(package):
             buildFile.write("cp $QTDIR/lib/libQtScript.4.dylib tmplib\n")
             buildFile.write("chmod 755 scripts/update_installname.sh\n");
             buildFile.write("./scripts/update_installname.sh\n");
-            buildFile.write("rm -v tmplib/lib*.1.0.0.jnilib\n");
-            buildFile.write("rm -v tmplib/lib*.1.0.jnilib\n");
-            buildFile.write("rm -v tmplib/lib*.1.jnilib\n");
 
-        if package.hasEclipse():
-            buildFile.write("cd scripts\n")
-            buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
     buildFile.close()
+
+    pkgutil.debug(" - expanding macroes prior to sending...");
+    pkgutil.expandMacroes(options.packageRoot, package.licenseHeader)
 
     zipFile = os.path.join(options.packageRoot, "tmp.zip")
     pkgutil.debug(" - compressing...")
@@ -675,14 +689,16 @@ def postProcessPackage(package):
         if not package.platform == pkgutil.PLATFORM_WINDOWS:
             os.system("chmod a+rx designer.sh qtjambi.sh")
             os.system("chmod -R a+rw .")
+            if package.license == pkgutil.LICENSE_EVAL:
+                os.system("chmod a+rx binpatch")
 
         # Recover from the nasty libqtdesigner.so trick in doEclipse...
         if package.platform == pkgutil.PLATFORM_LINUX and package.hasEclipse():
             shutil.move("libqtdesigner.so", "lib/libqtdesigner.so")
+            
 
         if package.platform == pkgutil.PLATFORM_LINUX or package.platform == pkgutil.PLATFORM_MAC:
-            os.system("cp tmplib/* lib")
-            shutil.rmtree("tmplib")
+            shutil.move("tmplib", "lib")
 
         if package.platform == pkgutil.PLATFORM_LINUX:
             os.chdir("lib")
@@ -693,10 +709,14 @@ def postProcessPackage(package):
             os.chdir("lib")
             os.system("ln -s libqtjambi.jnilib libqtjambi.1.jnilib")
             os.chdir(package.packageDir)
-            os.system("chmod a+x Demos.app/Contents/MacOS/JavaApplicationStub")
+            if not package.license == pkgutil.LICENSE_EVAL:
+                os.system("chmod a+x Demos.app/Contents/MacOS/JavaApplicationStub")
+
+        if package.platform == pkgutil.PLATFORM_WINDOWS:
+            shutil.copytree("plugins/imageformats/Microsoft.VC80.CRT", "plugins/designer/Microsoft.VC80.CRT");
 
     pkgutil.expandMacroes(package.packageDir, package.licenseHeader)
-
+ 
     bundle(package)
 
     package.success = True
@@ -716,15 +736,10 @@ def doEclipse(package):
             shutil.rmtree(fullName)
     shutil.move("qtjambi-4.4", "plugins")
 
-
     if package.platform == pkgutil.PLATFORM_WINDOWS:
         os.system("zip -rq %s/qtjambi-eclipse-integration-%s%s-%s.zip ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
     else:
         os.system("tar -czf %s/qtjambi-eclipse-integration-%s%s-%s.tar.gz --owner=0 --group=0 ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
-
-        # A little nasty detail... The designer lib is in the lib
-        # folder which will be deleted by removeFiles to come later...
-        shutil.move("../lib/libqtdesigner.so", "../libqtdesigner.so")
 
     os.chdir(package.packageDir)
 
@@ -863,13 +878,13 @@ def signWebstartJars():
         os.remove("keystore.tmp")
 
     for pkg in packages:
-        if pkg.binary and pkg.license == pkgutil.LICENSE_GPL:
+        if pkg.binary and pkg.license == pkgutil.LICENSE_GPL and not pkg.arch == pkgutil.ARCH_64:
             print "   - signing %s" % (pkg.platformJarName)
-            os.system("jarsigner -storepass qqqqqq -keypass qqqqqq %s trolltech" % (pkg.platformJarName))
+            os.system("jarsigner -storepass qqqqqq -keypass qqqqqq %s/%s trolltech" % (options.startDir, pkg.platformJarName))
             if pkg.platform == pkgutil.PLATFORM_WINDOWS:
                 print "   - doing examples and classes too..."
-                os.system("jarsigner -storepass qqqqqq -keypass qqqqqq qtjamb-%s.jar trolltech" % (options.qtJambiVersion))
-                os.system("jarsigner -storepass qqqqqq -keypass qqqqqq qtjambi-examples-%s.jar trolltech" % (options.qtJambiVersion))
+                os.system("jarsigner -storepass qqqqqq -keypass qqqqqq %s/qtjambi-%s.jar trolltech" % (options.startDir, options.qtJambiVersion))
+                os.system("jarsigner -storepass qqqqqq -keypass qqqqqq %s/qtjambi-examples-%s.jar trolltech" % (options.startDir, options.qtJambiVersion))
 
     print "   - all jars signed..."
 
@@ -911,12 +926,11 @@ def main():
         elif arg == "--no-webstart":
             options.buildWebstart = False
         elif arg == "--no-keystore-reset":
-            options.keystoreReset = False;
+            options.resetKeystore = False;
         elif arg == "--verbose":
             pkgutil.VERBOSE = 1
         elif arg == "--preview":
             options.buildPreview = True
-
 
     if options.buildPreview:
         options.buildGpl = False
