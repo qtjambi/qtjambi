@@ -2,11 +2,8 @@
 
 # TODO:
 #  - Add qtjambi.jnlp generation to signWebstarJars
-#  - RPATH of built qt libraries needs to be "long" to avoid crossing over max-length...
-#  - Pick a long unique name for qt-comercial etc. This should prevent other package scripts
-#    from messing us up and also solve the stupid RPATH limiation...
-# - Whoever thought libqtdesigner.so was a good name for a plugin to be loaded by designer
-#   is a fucking retard...
+#  - Whoever thought libqtdesigner.so was a good name for a plugin to be loaded by designer
+#    is a fucking retard...
 
 import datetime
 import os
@@ -145,7 +142,6 @@ class Package:
             self.setPreview()
         else:
             raise "bad license type:" + self.license
-
 
     def setBinary(self):
         self.binary = True
@@ -322,7 +318,7 @@ class Package:
         log.close()
 
     def hasEclipse(self):
-        if self.binary and not self.license == pkgutil.LICENSE_EVAL:
+        if self.binary:
             if self.platform == pkgutil.PLATFORM_LINUX:
                 return True
             if self.platform == pkgutil.PLATFORM_WINDOWS and self.arch == pkgutil.ARCH_32:
@@ -565,9 +561,13 @@ def packageAndSend(package):
 
         # build eclipse on 32-bit windows...
         if package.hasEclipse():
+            if package.license == pkgutil.LICENSE_EVAL:
+                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qt-commercial"))
             buildFile.write("cd scripts\n")
             buildFile.write("call build_eclipse.bat %%cd%%\\..\\eclipse\\qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
+            if package.license == pkgutil.LICENSE_EVAL:
+                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\" + qtEdition))
             
         buildFile.write("call ant\n")
         buildFile.write('if "%ERRORLEVEL%" == "0" ' + package.make + ' clean\n')
@@ -581,16 +581,28 @@ def packageAndSend(package):
 
     else:
         buildFile = open("tmptree/task.sh", "w")
-        buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/" + qtEdition))
+
+        qtLocation = "/tmp/" + qtEdition
+        if package.platform == pkgutil.PLATFORM_LINUX:
+            qtLocation = "/tmp/qtjambi-package-builder/" + qtEdition
+        
+        buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, qtLocation))
         buildFile.write("ant\n")
         buildFile.write(package.make + " clean \n")
         
         if package.hasEclipse():
+            # a little trick needed to bypass that eclipse tools use
+            # gui which will pop up eval dialogs on the build
+            # servers...
+            if package.license == pkgutil.LICENSE_EVAL: 
+                buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/qtjambi-package-builder/qt-commercial"))            
             buildFile.write("cd scripts\n")
             buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
             buildFile.write("cp -v lib/libqtdesigner.so lib/libqtdesignerplugin.so\n")
             buildFile.write("rm -v lib/libqtdesigner.*\n")
+            if package.license == pkgutil.LICENSE_EVAL: 
+                buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, qtLocation))
 
         if package.platform == pkgutil.PLATFORM_LINUX:
             buildFile.write("cp -v $QTDIR/bin/designer bin\n")
@@ -620,7 +632,7 @@ def packageAndSend(package):
     buildFile.close()
 
     pkgutil.debug(" - expanding macroes prior to sending...");
-    pkgutil.expandMacroes(options.packageRoot, package.licenseHeader)
+    pkgutil.expandMacroes("tmptree", package.licenseHeader)
 
     zipFile = os.path.join(options.packageRoot, "tmp.zip")
     pkgutil.debug(" - compressing...")
@@ -667,7 +679,7 @@ def postProcessPackage(package):
         pkgutil.debug(" - doing docs...")
         os.makedirs("doc/html")
         os.chdir("doc/html")
-        os.system("jar -xf %s/qtjambi-javadoc-%s.jar" % (options.startDir, options.qtJambiVersion) )
+        os.system("jar -xf %s/javadoc-%s.jar" % (options.startDir, options.qtJambiVersion) )
         os.chdir(package.packageDir)
 
         # unpack the platform .jar to get the correct binary content into

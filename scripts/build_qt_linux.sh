@@ -2,16 +2,18 @@
 
 chmod -R u+rx .
 
+# temp path must be long enough to reserve space for RPATH later on...
+rm -rf /tmp/qtjambi-package-builder/qt-gpl
+rm -rf /tmp/qtjambi-package-builder/qt-commercial
+rm -rf /tmp/qtjambi-package-builder/qt-eval
 
-rm -rf /tmp/qt-gpl
-rm -rf /tmp/qt-commercial
-rm -rf /tmp/qt-eval
+mkdir /tmp/qtjambi-package-builder
 
-mv gpl /tmp/qt-gpl
-mv commercial /tmp/qt-commercial
-mv eval /tmp/qt-eval
+mv gpl /tmp/qtjambi-package-builder/qt-gpl
+mv commercial /tmp/qtjambi-package-builder/qt-commercial
+mv eval /tmp/qtjambi-package-builder/qt-eval
 
-cd /tmp
+cd /tmp/qtjambi-package-builder
 
 cd qt-gpl
 rm -f src/gui/kernel/qapplication_mac.cpp
@@ -46,9 +48,9 @@ cd tools && make && make clean && cd ..
 cd ..
 
 
-if [ ! -e /tmp/qt-gpl ]; then exit 1; fi
-if [ ! -e /tmp/qt-commercial ]; then exit 1; fi
-if [ ! -e /tmp/qt-eval ]; then exit 1; fi
+if [ ! -e /tmp/qtjambi-package-builder/qt-gpl ]; then exit 1; fi
+if [ ! -e /tmp/qtjambi-package-builder/qt-commercial ]; then exit 1; fi
+if [ ! -e /tmp/qtjambi-package-builder/qt-eval ]; then exit 1; fi
 
 
 

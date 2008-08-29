@@ -189,6 +189,7 @@ def expandMacroes(dir, header):
         [ re.compile("\\$CPP_LICENSE\\$"), header ],
         [ re.compile("\\$JAVA_LICENSE\\$"), header ]
         ]
+    
     extensions = [
         re.compile("\\.cpp$"),
         re.compile("\\.h$"),
