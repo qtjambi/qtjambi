@@ -8,7 +8,7 @@ set QTJAMBI_VERSION=%QTJAMBI_JAR:~8,8%
 dir /b %~dp0qtjambi-win*.jar > .tmp
 set /p QTJAMBI_PLATFORM_JAR=< .tmp
 
-set CLASSPATH=%QTJAMBI_JAR%;%QTJAMBI_PLATFORM_JAR%;%~dp0qtjambi-examples-%QTJAMBI_VERSION%.jar;%classpath%
+set CLASSPATH=%~dp0%QTJAMBI_JAR%;%~dp0%QTJAMBI_PLATFORM_JAR%;%~dp0qtjambi-examples-%QTJAMBI_VERSION%.jar;%classpath%
 
 echo Setting up environment for Qt Jambi %QTJAMBI_VERSION%...
 goto cleanup
