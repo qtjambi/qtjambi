@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 # TODO:
-#  - eclipse / tmplib etc... We should use a number of regexps to clean out the
-#    lib folder rather than move it to tmplib and back again afterwards...
 #  - Add qtjambi.jnlp generation to signWebstarJars
 #  - RPATH of built qt libraries needs to be "long" to avoid crossing over max-length...
 #  - Pick a long unique name for qt-comercial etc. This should prevent other package scripts
@@ -166,7 +164,6 @@ class Package:
             "juic",
             "generator",
             "generator_example",
-            "lib",
             "qtjambi",
             "qtjambi_core",
             "qtjambi_designer",
@@ -230,6 +227,7 @@ class Package:
         self.removeFiles.append("set_qtjambi_env.bat")
         self.removeDirs.append("Demos.app")
         self.removePatterns.append(re.compile(".*\\.so\\.1(\\.\\d)*$"));
+        # self.removePatterns.append(re.compile("libqtdesigner\\.so\\.4(\\.\\d)*$"));
         if self.license == pkgutil.LICENSE_EVAL:
             self.copyFiles.append("dist/linux/binpatch")
 
@@ -296,6 +294,7 @@ class Package:
 
     def setEval(self):
         self.copyFiles.append("dist/LICENSE.EVAL")
+        self.copyFiles.append("dist/readme_eval.html");
         if self.arch == pkgutil.PLATFORM_MAC:
             self.removeDirs.append("Demos.app")
         if self.arch == pkgutil.PLATFORM_WINDOWS:
@@ -590,33 +589,31 @@ def packageAndSend(package):
             buildFile.write("cd scripts\n")
             buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
+            buildFile.write("cp -v lib/libqtdesigner.so lib/libqtdesignerplugin.so\n")
+            buildFile.write("rm -v lib/libqtdesigner.*\n")
 
         if package.platform == pkgutil.PLATFORM_LINUX:
-            buildFile.write("cp $QTDIR/bin/designer bin\n")
-            buildFile.write("cp $QTDIR/bin/lrelease bin\n")
-            buildFile.write("cp $QTDIR/bin/lupdate bin\n")
-            buildFile.write("cp $QTDIR/bin/linguist bin\n")
+            buildFile.write("cp -v $QTDIR/bin/designer bin\n")
+            buildFile.write("cp -v $QTDIR/bin/lrelease bin\n")
+            buildFile.write("cp -v $QTDIR/bin/lupdate bin\n")
+            buildFile.write("cp -v $QTDIR/bin/linguist bin\n")
             buildFile.write("jar -xf qtjambi-linux*.jar\n")
-            buildFile.write("cp lib/libqtdesigner.so . \n")
-            buildFile.write("rm lib/libqtdesigner.so.4*\n")
-            buildFile.write("mv lib tmplib\n");
             buildFile.write("rm -rf META-INF\n");
-            buildFile.write("cp $QTDIR/lib/libQtDesigner.so.4 tmplib\n")
-            buildFile.write("cp $QTDIR/lib/libQtDesignerComponents.so.4 tmplib\n")
-            buildFile.write("cp $QTDIR/lib/libQtScript.so.4 tmplib\n")
+            buildFile.write("cp -v $QTDIR/lib/libQtDesigner.so.4 lib\n")
+            buildFile.write("cp -v $QTDIR/lib/libQtDesignerComponents.so.4 lib\n")
+            buildFile.write("cp -v $QTDIR/lib/libQtScript.so.4 lib\n")
             buildFile.write("chmod 755 scripts/update_rpath.sh\n");
             buildFile.write("./scripts/update_rpath.sh\n");
         else:
-            buildFile.write("cp -R $QTDIR/bin/Designer.app bin\n")
-            buildFile.write("cp $QTDIR/bin/lrelease bin\n")
-            buildFile.write("cp $QTDIR/bin/lupdate bin\n")
-            buildFile.write("cp -R $QTDIR/bin/Linguist.app bin\n")
+            buildFile.write("cp -vR $QTDIR/bin/Designer.app bin\n")
+            buildFile.write("cp -v $QTDIR/bin/lrelease bin\n")
+            buildFile.write("cp -v $QTDIR/bin/lupdate bin\n")
+            buildFile.write("cp -vR $QTDIR/bin/Linguist.app bin\n")
             buildFile.write("jar -xf qtjambi-mac*.jar\n");
-            buildFile.write("mv lib tmplib\n");
             buildFile.write("rm -rf META-INF\n");
-            buildFile.write("cp $QTDIR/lib/libQtDesigner.4.dylib tmplib\n")
-            buildFile.write("cp $QTDIR/lib/libQtDesignerComponents.4.dylib tmplib\n")
-            buildFile.write("cp $QTDIR/lib/libQtScript.4.dylib tmplib\n")
+            buildFile.write("cp -v $QTDIR/lib/libQtDesigner.4.dylib lib\n")
+            buildFile.write("cp -v $QTDIR/lib/libQtDesignerComponents.4.dylib lib\n")
+            buildFile.write("cp -v $QTDIR/lib/libQtScript.4.dylib lib\n")
             buildFile.write("chmod 755 scripts/update_installname.sh\n");
             buildFile.write("./scripts/update_installname.sh\n");
 
@@ -665,7 +662,6 @@ def postProcessPackage(package):
             if package.platform == pkgutil.PLATFORM_WINDOWS:
                 shutil.copy("qtjambi-%s.jar" % (options.qtJambiVersion), options.startDir);
                 shutil.copy("qtjambi-examples-%s.jar" % (options.qtJambiVersion), options.startDir);
-                
         
         # unjar docs into doc directory...
         pkgutil.debug(" - doing docs...")
@@ -691,14 +687,6 @@ def postProcessPackage(package):
             os.system("chmod -R a+rw .")
             if package.license == pkgutil.LICENSE_EVAL:
                 os.system("chmod a+rx binpatch")
-
-        # Recover from the nasty libqtdesigner.so trick in doEclipse...
-        if package.platform == pkgutil.PLATFORM_LINUX and package.hasEclipse():
-            shutil.move("libqtdesigner.so", "lib/libqtdesigner.so")
-            
-
-        if package.platform == pkgutil.PLATFORM_LINUX or package.platform == pkgutil.PLATFORM_MAC:
-            shutil.move("tmplib", "lib")
 
         if package.platform == pkgutil.PLATFORM_LINUX:
             os.chdir("lib")
@@ -740,8 +728,11 @@ def doEclipse(package):
         os.system("zip -rq %s/qtjambi-eclipse-integration-%s%s-%s.zip ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
     else:
         os.system("tar -czf %s/qtjambi-eclipse-integration-%s%s-%s.tar.gz --owner=0 --group=0 ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
+        
 
     os.chdir(package.packageDir)
+    if package.platform == pkgutil.PLATFORM_LINUX:
+        shutil.move("lib/libqtdesignerplugin.so", "lib/libqtdesigner.so");
 
 
 # Zips or tars the final content of the package into a bundle in the

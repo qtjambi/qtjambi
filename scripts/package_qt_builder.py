@@ -232,6 +232,10 @@ def main():
     print "  - build32: %s" % options.build32
     print "  - build64: %s" % options.build64
 
+    if not options.qtBranch:
+        pkgutil.debug("At the very least, you must specify --qt-branch")
+        return
+
     if options.p4Resync:
         pkgutil.debug("preparing source tree...")
         prepareSourceTree()

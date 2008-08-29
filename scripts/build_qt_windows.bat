@@ -23,7 +23,7 @@ set PATH=%ORIGINAL_PATH%;%QTDIR%\bin
 echo blah > LICENSE.GPL2
 perl bin/syncqt
 copy configure.exe configure_hack.exe
-echo yes | configure_hack -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD
+echo yes | configure_hack -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD -plugin-manifests
 echo #ifndef AWESOME_CRAXX >> src\corelib\global\qglobal.h
 echo #define AWESOME_CRAXX >> src\corelib\global\qglobal.h
 echo #if defined(__cplusplus) >> src\corelib\global\qglobal.h
@@ -45,7 +45,7 @@ set PATH=%ORIGINAL_PATH%;%QTDIR%\bin
 echo blah > LICENSE.EVAL
 perl bin/syncqt
 copy configure.exe configure_hack.exe
-echo yes | configure_hack -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL -D QT_JAMBI_BUILD
+echo yes | configure_hack -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_EVAL -D QT_JAMBI_BUILD -plugin-manifests
 echo CONFIG+=force_embed_manifest >> .qmake.cache
 nmake sub-src sub-tools
 del *.obj *.ilk *.pdb moc_* *.pch /s
@@ -59,7 +59,7 @@ set PATH=%ORIGINAL_PATH%;%QTDIR%\bin
 echo blah > LICENSE
 perl bin/syncqt
 copy configure.exe configure_hack.exe
-echo yes | configure_hack -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_JAMBI_BUILD
+echo yes | configure_hack -no-qt3support -release -shared -no-dsp -no-vcproj -D QT_JAMBI_BUILD -plugin-manifests
 echo CONFIG+=force_embed_manifest >> .qmake.cache
 nmake sub-src sub-tools
 del *.obj *.ilk *.pdb moc_* *.pch /s
