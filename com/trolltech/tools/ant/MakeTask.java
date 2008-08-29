@@ -28,6 +28,11 @@ public class MakeTask extends Task {
     private String compilerName() {
         switch(OSInfo.os()){
         case Windows:
+            PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+            String compiler = (String) props.getProperty(null, InitializeTask.COMPILER);
+            if (compiler.equals(InitializeTask.Compiler.MinGW.toString())) {
+                return "ming32-make";
+            }
             return "nmake";
         }
         return "make";
