@@ -4,15 +4,15 @@ call qt_pkg_setup %THE_COMPILER%
 
 set ORIGINAL_PATH=%PATH%
 
-echo y | rd /s c:\tmp\qt-eval
-echo y | rd /s c:\tmp\qt-gpl
-echo y | rd /s c:\tmp\qt-commercial
+echo y | rd /s c:\tmp\qtjambi-package-builder\qt-eval
+echo y | rd /s c:\tmp\qtjambi-package-builder\qt-gpl
+echo y | rd /s c:\tmp\qtjambi-package-builder\qt-commercial
 
-move gpl c:\tmp\qt-gpl
-move eval c:\tmp\qt-eval
-move commercial c:\tmp\qt-commercial
+move gpl c:\tmp\qtjambi-package-builder\qt-gpl
+move eval c:\tmp\qtjambi-package-builder\qt-eval
+move commercial c:\tmp\qtjambi-package-builder\qt-commercial
 
-cd c:\tmp
+cd c:\tmp\qtjambi-package-builder
 
 
 
