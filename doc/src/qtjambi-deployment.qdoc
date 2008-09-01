@@ -315,6 +315,18 @@
     Bundler}. Using the tool, one can specify the three classes in the
     classpath and specify class with the main method used for launching.
 
+    When creating bundles, the \c {-XstartOnFirstThread} parameter is
+    specified by putting the \c {StartOnMainThread} boolean property
+    into the applications \c {Info.plist} under the \c {Java} section.
+
+    \code
+        <key>Java</key>
+        <dict>
+          <key>StartOnMainThread</key> <true/>
+          ... other java properties...
+        </dict>
+    \endcode
+
 
     \section2 Deploying a Qt Jambi Application making use of generated code
 
