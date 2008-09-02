@@ -165,6 +165,8 @@ class QCoreApplication___ extends QCoreApplication {
     }
 
     public static void initialize(String args[]) {
+        com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
+
         if (m_instance != null)
             throw new RuntimeException("QCoreApplication can only be initialized once");
 
@@ -720,9 +722,9 @@ class QFutureSynchronizerVoid___ extends QFutureSynchronizerVoid {
 }// class
 
 /**
-The QtConcurrent class contains static methods for running computations in parallel (using separate threads) 
+The QtConcurrent class contains static methods for running computations in parallel (using separate threads)
 on the items in a java.util.Collection, such as a Vector or LinkedList. We will now describe these methods.
- 
+
 The QtConcurrent::map(), QtConcurrent::mapped() and QtConcurrent::mappedReduced() functions run computations in parallel on the items in a sequence such as a QList or a QVector. QtConcurrent::map() modifies a sequence in-place, QtConcurrent::mapped() returns a new sequence containing the modified content, and QtConcurrent::mappedReduced() returns a single result.
 Concurrent Map
 <p>
@@ -942,7 +944,7 @@ class QtConcurrent___ extends QtConcurrent {
     public static native <U, T> QFuture<U> mapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);
 
     /**
-     * Calls function once for each item in sequence and returns a future with each mapped item as a result. You can QFutureIterator to iterate through the results. 
+     * Calls function once for each item in sequence and returns a future with each mapped item as a result. You can QFutureIterator to iterate through the results.
      */
     public static native <U, T> java.util.List<U> blockingMapped(java.util.Collection<T> sequence, MappedFunctor<U, T> functor);
 
@@ -1121,7 +1123,7 @@ class QtConcurrent___ extends QtConcurrent {
 
     /**
      * Executes the method <tt>m</tt> with the given arguments using the QtConcurrent framework. Notice that runVoidMethod() does not
-     * accept methods that has a return value. Use the run() method for this purpose. 
+     * accept methods that has a return value. Use the run() method for this purpose.
      */
     public static QFutureVoid runVoidMethod(Object _this, java.lang.reflect.Method m, Object ... args) {
         if (m.getReturnType() != null && !m.getReturnType().equals(Void.TYPE))
