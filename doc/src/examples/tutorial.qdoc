@@ -51,6 +51,11 @@
 
     \title Qt Jambi Tutorial 1 - Hello World!
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Hello World!}{HelloWorld.java}
+    \endlist
+
     This first program is a simple "Hello world" example. It
     contains only the bare minimum you need to get a Qt Jambi
     application up and running.  The picture below is a screenshot of
@@ -177,6 +182,11 @@
 
     \title Qt Jambi Tutorial 2 - Calling it Quits
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Calling it Quits}{Quit.java}
+    \endlist
+
     \image tutorial2-example.png Screenshot of Chapter 2
 
     Having created a window in \l{qtjambi-tutorial1}{Chapter 1,} we will
@@ -257,6 +267,11 @@
 
     \title Qt Jambi Tutorial 3 - Family Values
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Family Values}{FamilyValues.java}
+    \endlist
+
     \image tutorial3-example.png Screenshot of Chapter 3
 
     This example shows how to create parent and child widgets.
@@ -331,6 +346,11 @@
     \nextpage {qtjambi-tutorial5.html}{Chapter 5}
 
     \title Qt Jambi Tutorial 4 - Let There Be Widgets
+
+    \bold {Code}:
+    \list
+        \o \l{Code for Let There Be Widgets}{Widgets.java}
+    \endlist
 
     \image tutorial4-example.png Screenshot of Chapter 4
 
@@ -408,6 +428,11 @@
     \nextpage {qtjambi-tutorial6.html}{Chapter 6}
 
     \title Qt Jambi Tutorial 5 - Building Blocks
+
+    \bold {Code}:
+    \list
+        \o \l{Code for Building Blocks}{Blocks.java}
+    \endlist
 
     \image tutorial5-example.png Screenshot of Chapter 5
 
@@ -499,6 +524,11 @@
 
     \title Qt Jambi Tutorial 6 - Building Blocks Galore!
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Building Blocks Galore!}{BlocksGalore.java}
+    \endlist
+
     \image tutorial6-example.png Screenshot of Chapter 6
 
     This example shows how to encapsulate two widgets into a new component and
@@ -582,6 +612,11 @@
     \previouspage {qtjambi-tutorial6.html}{Chapter 6}
 
     \title Qt Jambi Tutorial 7 - One Thing Leads to Another
+
+    \bold {Code}:
+    \list
+        \o \l{Code for One Thing Leads to Another}{ConnectedSliders.java}
+    \endlist
 
     \image tutorial7-example.png Screenshot of Chapter 7
 
@@ -694,4 +729,3 @@
     happens? Why is this the correct behavior?
 */
 
-*/

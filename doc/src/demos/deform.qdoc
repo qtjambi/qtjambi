@@ -2,6 +2,11 @@
   \page qtjambi-deform.html
   \title Vector Deformation
 
+  \bold {Code}:
+  \list
+    \o \l{Code for Vector Deformation}{Deform.java}
+  \endlist
+
   This demo shows how to use advanced vector techniques to draw text
   using a \c QPainterPath.
 

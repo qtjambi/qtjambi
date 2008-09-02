@@ -2,6 +2,11 @@
     \page qtjambi-pathstroke.html
     \title Path Stroking
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Path Stroking}{PathStrokeWidget.java}
+    \endlist
+
     In this demo we show some of the various types of pens that can be
     used in Qt.
 
