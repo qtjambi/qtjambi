@@ -2,6 +2,11 @@
     \page qtjambi-wiggly.html
     \title Wiggly Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Wiggly Example}{Wiggly.java}
+    \endlist
+
     The Wiggly example shows how to animate a widget using
     QBasicTimer and \l{QObject::timerEvent()}{timerEvent()}. In
     addition, the example demonstrates how to use QFontMetrics to

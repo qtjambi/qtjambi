@@ -2,6 +2,11 @@
     \page qtjambi-mandelbrot.html
     \title Mandelbrot Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Mandelbrot Example}{Mandelbrot.java}
+    \endlist
+
     The Mandelbrot example shows how to use a worker thread to
     perform heavy computations without blocking the main thread's
     event loop.

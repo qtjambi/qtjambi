@@ -2,6 +2,11 @@
     \page qtjambi-analogclock.html
     \title Analog Clock Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Analog Clock Example}{AnalogClock.java}
+    \endlist
+
     The Analog Clock example shows how to draw the contents of a custom
     widget.
 

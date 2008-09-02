@@ -2,6 +2,11 @@
     \page qtjambi-tablet.html
     \title Tablet Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Tablet Example}{Tablet.java}
+    \endlist
+
     This example shows how to use a Wacom tablet in Qt applications.
 
     \image tabletexample.png

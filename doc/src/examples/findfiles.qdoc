@@ -2,6 +2,11 @@
     \page qtjambi-findfiles.html
     \title Find Files Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Find Files Example}{FindFiles.java}
+    \endlist
+
     The Find Files example shows how to use QProgressDialog to provide
     feedback on the progress of a slow operation. The example also
     shows how to use QFileDialog to facilitate browsing, how to use

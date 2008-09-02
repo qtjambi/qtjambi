@@ -2,6 +2,11 @@
     \page qtjambi-svgcards.html
     \title SVG Cards Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for SVG Cards Example}{SvgCards.java}
+    \endlist
+
     The SVG Cards example shows how to render SVG files using
     QSvgRenderer and the Graphics View framework.
 

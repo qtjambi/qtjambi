@@ -2,6 +2,11 @@
     \page qtjambi-orderform.html
     \title Order Form Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Order Form Example}{OrderForm.java}
+    \endlist
+
     The Order Form example shows how to generate rich text documents
     by combining a simple template with data input by the user in a
     dialog. Data is extracted from a \c DetailsDialog object and

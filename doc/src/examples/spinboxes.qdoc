@@ -2,6 +2,11 @@
     \page qtjambi-spinboxes.html
     \title Spin Boxes Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Spin Boxes Example}{SpinBoxes.java}
+    \endlist
+
     The Spin Boxes example shows how to use the many different types of spin boxes
     available in Qt, from a simple QSpinBox widget to more complex editors like
     the QDateTimeEdit widget.

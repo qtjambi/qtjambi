@@ -2,6 +2,11 @@
     \page qtjambi-syntaxhighlighter.html
     \title Syntax Highlighter Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Syntax Highlighter Example}{SyntaxHighlighter.java}
+    \endlist
+
     The Syntax Highlighter example shows how to perform simple syntax
     highlighting by subclassing the QSyntaxHighlighter class.
 

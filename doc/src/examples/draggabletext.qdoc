@@ -15,6 +15,11 @@
     \page qtjambi-draggabletext.html
     \title Draggable Text Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Draggable Text Example}{DraggableText.java}
+    \endlist
+
     The Draggable Text example shows how to drag and drop textual data between widgets
     in the same application, and between different applications.
 

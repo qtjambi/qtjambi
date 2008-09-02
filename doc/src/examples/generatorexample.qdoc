@@ -2,6 +2,11 @@
     \page qtjambi-generatorexample.html
     \title Qt Jambi Generator Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Qt Jambi Generator Example}{GeneratorExample.java}
+    \endlist
+
     The Qt Jambi Generator example shows how to use the \l {The Qt
     Jambi Generator}{generator} to map an existing C++ project to
     Java. Please note that this example is only available in the

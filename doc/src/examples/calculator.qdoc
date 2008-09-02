@@ -2,6 +2,11 @@
     \page qtjambi-calculator.html
     \title Calculator UI Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Calculator UI Example}{AdvancedCalculator.java}
+    \endlist
+
     The Calculator UI Example shows how to use forms created with \QD
     in an application.
 

@@ -15,6 +15,11 @@
     \page qtjambi-padnavigator.html
     \title Pad Navigator Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Pad Navigator Example}{PadNavigator.java}
+    \endlist
+
     The Pad Navigator Example shows how you can use Graphics View
     together with embedded widgets to create a simple but useful
     dynamic user interface for embedded devices.

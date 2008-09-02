@@ -2,6 +2,11 @@
 \page qtjambi-resourcesystem.html
 \title Resource System Example
 
+\bold {Code}:
+\list
+    \o \l{Code for Resource System Example}{ResourceSystem.java}
+\endlist
+
 \section1 Introduction
 
 The resource system example illustrates how you can easily bundle resources with

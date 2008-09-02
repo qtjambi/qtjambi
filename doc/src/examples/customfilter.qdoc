@@ -2,6 +2,11 @@
     \page qtjambi-customfilter.html
     \title Custom Sort/Filter Model Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Custom Sort/Filter Model Example}{CustomFilter.java}
+    \endlist
+
     The Custom Sort/Filter Model example illustrates how to subclass
     QSortFilterProxyModel to perform advanced sorting and filtering.
 

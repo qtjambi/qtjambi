@@ -2,6 +2,11 @@
     \page qtjambi-menus.html
     \title Menus Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Menus Example}{Menus.java}
+    \endlist
+
     The Menus example demonstrates how menus can be used in a main
     window application.
 

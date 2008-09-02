@@ -2,6 +2,11 @@
     \page qtjambi-fridgemagnets.html
     \title Fridge Magnets Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Fridge Magnets Example}{FridgeMagnets.java}
+    \endlist
+
     The Fridge Magnets example shows how to supply more than one type
     of MIME-encoded data with a drag and drop operation.
 

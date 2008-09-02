@@ -15,6 +15,11 @@
     \page qtjambi-mdi.html
     \title MDI Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for MDI Example}{MdiArea.java}
+    \endlist
+
     The MDI example shows how to implement a Multiple Document Interface using Qt's
     QMdiArea class.
 

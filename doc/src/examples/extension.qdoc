@@ -2,6 +2,11 @@
     \page qtjambi-extension.html
     \title Extension Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Extension Example}{ExtensionDialog.java}
+    \endlist
+
     The Extension example shows how to add an extension to a QDialog
     using the QAbstractButton::toggled() signal and the
     QWidget::setVisible() slot.

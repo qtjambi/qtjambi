@@ -2,6 +2,11 @@
     \page qtjambi-shapedclock.html
     \title Shaped Clock Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Shaped Clock Example}{ShapedClock.java}
+    \endlist
+
     The Shaped Clock example shows how to apply a widget mask to a
     top-level widget to produce a shaped window.
 

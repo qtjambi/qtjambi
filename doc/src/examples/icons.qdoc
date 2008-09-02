@@ -2,6 +2,11 @@
     \page qtjambi-icons.html
     \title Icons Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Icons Example}{Icons.java}
+    \endlist
+
     The Icons example shows how QIcon can generate pixmaps reflecting
     an icon's state, mode and size. These pixmaps are generated from
     the set of pixmaps made available to the icon, and are used by Qt

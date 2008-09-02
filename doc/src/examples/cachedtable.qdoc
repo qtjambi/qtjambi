@@ -2,6 +2,11 @@
     \page qtjambi-cachedtable.html
     \title Cached Table Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Cached Table Example}{Cached Table Example}
+    \endlist
+
     The Cached Table example shows how a table view can be used to access a database,
     caching any changes to the data until the user explicitly submits them using a
     push button.

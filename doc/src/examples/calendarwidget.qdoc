@@ -2,6 +2,11 @@
     \page qtjambi-calendarwidget.html
     \title Calendar Widget Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Calendar Widget Example}{CalendarWidget.java}
+    \endlist
+
     The Calendar Widget example shows use of \c QCalendarWidget.
 
     \image qtjambi-calendarwidgetexample.png

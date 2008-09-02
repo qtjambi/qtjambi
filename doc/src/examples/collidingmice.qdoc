@@ -2,6 +2,11 @@
     \page qtjambi-collidingmice.html
     \title Colliding Mice Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Colliding Mice Example}{CollidingMice.java}
+    \endlist
+
     The Colliding Mice example shows how to use the Graphics View
     framework to implement animated items and detect collision between
     items.

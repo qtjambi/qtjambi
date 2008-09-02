@@ -15,6 +15,11 @@
     \page qtjambi-codeeditor.html
     \title Code Editor Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Code Editor Example}{CodeEditor.java}
+    \endlist
+
     The Code Editor example shows how to create a simple editor that
     has line numbers and that highlights the current line.
 

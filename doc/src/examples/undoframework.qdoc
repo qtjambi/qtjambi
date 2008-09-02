@@ -2,6 +2,11 @@
     \page qtjambi-undoframework.html
     \title Undo Framework Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Undo Framework Example}{UndoFramework.java}
+    \endlist
+
     This example shows how to implement undo/redo functionality
     with the Qt undo framework.
 

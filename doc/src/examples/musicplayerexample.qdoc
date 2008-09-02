@@ -15,6 +15,11 @@
     \page qtjambi-musicplayer
     \title Music Player Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Music Player Example}{MusicPlayer.java}
+    \endlist
+
     The Music Player Example shows how to use Phonon - the multimedia
     framework that comes with Qt - to create a simple music player.
     The player can play music files, and provides simple playback

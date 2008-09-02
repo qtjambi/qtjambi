@@ -2,6 +2,11 @@
     \page qtjambi-itemviewchart.html
     \title Item View Chart Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Item View Chart Example}{ItemviewChart.java}
+    \endlist
+
     The Item View Chart example shows how to create a custom view for the
     model/view framework.
 

@@ -2,6 +2,11 @@
     \page qtjambi-application.html
     \title Application Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Application Example}{Application.java}
+    \endlist
+
     The Application example shows how to implement a standard GUI
     application with menus, toolbars, and a status bar. The example
     itself is a simple text editor program built around QTextEdit.

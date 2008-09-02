@@ -2,6 +2,11 @@
     \page qtjambi-tetrix.html
     \title Tetrix Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Tetrix Example}{Tetrix.java}
+    \endlist
+
     The Tetrix example is a Qt version of the classic Tetrix game.
 
     \image tetrix-example.png

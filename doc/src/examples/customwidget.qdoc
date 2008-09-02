@@ -2,6 +2,11 @@
     \page qtjambi-customwidget.html
     \title Custom Widget Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Custom Widget Example}{CustomWidgets.java}
+    \endlist
+
     The Custom Widget example shows how to make your custom widgets ready for
     use in Qt Jambi Designer or the Qt Jambi Eclipse Integration.
 

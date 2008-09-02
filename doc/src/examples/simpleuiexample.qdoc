@@ -2,6 +2,10 @@
   \page qtjambi-simpleuiexample.html
   \title Simple UI Example
 
+  \bold {Code}:
+    \o \l {Code for Simple UI Example}{SimpleUIExample.java}
+  \endlist
+
   The Simple UI Example shows how user interface (\c{.jui}) files created with
   \QD can be used to implement user interfaces for applications.
 

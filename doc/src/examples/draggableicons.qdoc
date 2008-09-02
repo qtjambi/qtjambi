@@ -15,6 +15,11 @@
     \page qtjambi-draggableicons.html
     \title Draggable Icons Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Draggable Icons Example}{DraggableIcons.java}
+    \endlist
+
     The Draggable Icons example shows how to drag and drop image data between widgets
     in the same application, and between different applications.
 

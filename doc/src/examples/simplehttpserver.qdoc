@@ -2,6 +2,11 @@
     \page qtjambi-simplehttpserver.html
     \title Simple HTTP Server
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Simple HTTP Server}{SimpleHttpServer.java}
+    \endlist
+
     This demo shows how to create a http server by inheriting
     QTcpServer.
 

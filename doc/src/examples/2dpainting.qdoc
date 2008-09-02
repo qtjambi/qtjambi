@@ -2,6 +2,11 @@
     \page qtjambi-2dpainting.html
     \title 2D Painting Example
 
+    \bold {Code}:
+    \list
+        \o \l {Code for 2D Painting Example}{Painting2D.java}
+    \endlist
+
     The 2D Painting example shows how QPainter and QGLWidget can be used
     together to display accelerated 2D graphics on supported hardware.
 

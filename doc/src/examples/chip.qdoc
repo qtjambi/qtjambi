@@ -2,6 +2,11 @@
     \page qtjambi-chips.html
     \title 40000 Chips
 
+    \bold {Code}:
+    \list
+        \o \l{Code for 40000 Chips}{Chips.java}
+    \list
+
     This demo shows how to visualize a huge scene with 40000 chip items
     using Graphics View. It also shows Graphics View's powerful navigation
     and interaction features, allowing you to zoom and rotate each of four

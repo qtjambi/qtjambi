@@ -2,6 +2,11 @@
     \page qtjambi-screenshot.html
     \title Screenshot Example
 
+    \bold {Code}:
+    \list
+        \o \l{Code for Screenshot Example}{Screenshot.java}
+    \endlist
+
     The Screenshot example shows how to take a screenshot of the
     desktop using QApplication and QDesktopWidget. It also shows how
     to use QTimer to provide a single-shot timer, and how to
