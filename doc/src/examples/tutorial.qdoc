@@ -53,7 +53,7 @@
 
     \bold {Code}:
     \list
-        \o \l{Code for Hello World!}{HelloWorld.java}
+        \o \l{Code for Hello World}{HelloWorld.java}
     \endlist
 
     This first program is a simple "Hello world" example. It

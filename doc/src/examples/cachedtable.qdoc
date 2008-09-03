@@ -4,7 +4,7 @@
 
     \bold {Code}:
     \list
-        \o \l{Code for Cached Table Example}{Cached Table Example}
+        \o \l{Code for Cached Table Example}{CachedTable.java}
     \endlist
 
     The Cached Table example shows how a table view can be used to access a database,

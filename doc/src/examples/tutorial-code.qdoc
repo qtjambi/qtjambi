@@ -11,7 +11,7 @@
 ****************************************************************************/
 
 /*! \page qtjambi-tutorial1-code.html
-    \title Code for HelloWorld
+    \title Code for Hello World
 
     \quotefile tutorial/HelloWorld.java
 */
@@ -28,25 +28,25 @@
     \quotefile tutorial/FamilyValues.java
 */
 
-/*! \page qtjambi-tutorial4.html
+/*! \page qtjambi-tutorial4-code.html
     \title Code for Let There Be Widgets
 
     \quotefile tutorial/Widgets.java
 */
 
-/*! \page qtjambi-tutorial5.html
+/*! \page qtjambi-tutorial5-code.html
     \title Code for Building Blocks
 
-    \quotefile tutorial/Blocks.jav
+    \quotefile tutorial/Blocks.java
 */
 
-/*! \page qtjambi-tutorial6.html
+/*! \page qtjambi-tutorial6-code.html
     \title Code for Building Blocks Galore
 
     \quotefile tutorial/BlocksGalore.java
 */
 
-/*! \page qtjambi-tutorial7.html
+/*! \page qtjambi-tutorial7-code.html
     \title Code for One Thing Leads to Another
 
     \quotefile tutorial/ConnectedSliders.java

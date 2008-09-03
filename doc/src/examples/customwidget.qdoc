@@ -4,7 +4,7 @@
 
     \bold {Code}:
     \list
-        \o \l{Code for Custom Widget Example}{CustomWidgets.java}
+        \o \l{Code for Custom Widget Example}{CustomWidget.java}
     \endlist
 
     The Custom Widget example shows how to make your custom widgets ready for
