@@ -63,7 +63,7 @@
     start and manage threads than using the Java thread handling, with its
     \c synchronized and \c volatile keywords.
 
-    \note Qt's threading classes are implemented with native threading APIs;
+    Note that Qt Jambis's threading classes are implemented with native threading APIs;
     e.g., Win32 and pthreads. Therefore, they can be used with threads of the
     same native API.
 
