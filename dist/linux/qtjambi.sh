@@ -6,6 +6,7 @@ if [ -e binpatch ];
 then
     ./binpatch
     export LD_LIBRARY_PATH=$me/lib
+    export QT_PLUGIN_PATH=$me/plugins
 fi
 
 if ! java -version 2>&1 | grep -q "1\.[5-9]"
