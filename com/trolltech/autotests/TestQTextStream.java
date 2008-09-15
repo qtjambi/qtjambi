@@ -51,6 +51,67 @@ public class TestQTextStream {
         }
     }
 
+    @Test public void testStringStream()
+    {
+        {
+            QTextStream stream = new QTextStream();
+            stream.setString("TestString\n55",
+                new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
+            stream.writeString(" ");
+            stream.writeString("Hei");
+            stream.seek(0);
+
+            Assert.assertEquals(stream.readString(), "TestString");
+            Assert.assertEquals(stream.readInt(), 55);
+            Assert.assertEquals(stream.readString(), "Hei");
+            Assert.assertEquals(stream.string(), "TestString\n55 Hei");
+        }
+
+        {
+            QTextStream stream = new QTextStream();
+            stream.setString("",
+                new QIODevice.OpenMode(QIODevice.OpenModeFlag.WriteOnly));
+
+            stream.writeBoolean(true);
+            stream.writeString(" ");
+            stream.writeByte((byte) 'u');
+            stream.writeString(" ");
+            stream.writeShort((short) 24);
+            stream.writeString(" ");
+            stream.writeInt(25);
+            stream.writeString(" ");
+            stream.writeLong(26);
+            stream.writeString(" ");
+            stream.writeFloat(24.5f);
+            stream.writeString(" ");
+            stream.writeDouble(26.4);
+        
+            stream.setString(stream.string(),
+                new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
+
+            assertTrue(stream.readInt() == 1);
+            stream.skipWhiteSpace();
+
+            assertEquals((byte) 'u', stream.readByte());
+            stream.skipWhiteSpace();
+
+            assertEquals((short) 24, stream.readShort());
+            stream.skipWhiteSpace();
+
+            assertEquals(25, stream.readInt());
+            stream.skipWhiteSpace();
+
+            assertEquals(26l, stream.readLong());
+            stream.skipWhiteSpace();
+
+            assertTrue((float) 24.5 == stream.readFloat());
+            stream.skipWhiteSpace();
+
+            assertTrue(26.4 == stream.readDouble());
+        }
+
+    }
+
     @Test public void testString() {
         QFile f = new QTemporaryFile();
         {
@@ -128,3 +189,4 @@ public class TestQTextStream {
         }
     }
 }
+

@@ -436,9 +436,34 @@ class QTextStream___ extends QTextStream {
         writeString_native(nativeId(), string);
     }
 
-    private final native String readString_native(long id);
+    public void setString(String string, com.trolltech.qt.core.QIODevice.OpenMode openMode)
+    {
+        if (stringPtr != 0)
+            deleteString(stringPtr);
 
+        stringPtr = createString(nativeId(), string, openMode.value());
+    }
+
+    public String string()
+    {
+        if (stringPtr != 0)
+            return string_native(nativeId());
+        return null;
+    }
+
+    public void disposed()
+    {
+        if (stringPtr != 0)
+            deleteString(stringPtr);
+    }
+
+    private final native String readString_native(long id);
     private final native void writeString_native(long id, String string);
+    
+    private native long createString(long id, String str, int openMode);
+    private native void deleteString(long strPtr);
+    private native String string_native(long id);
+    private long stringPtr = 0;
 
 }// class
 

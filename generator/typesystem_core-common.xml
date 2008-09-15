@@ -1104,8 +1104,10 @@
     <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(uint&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(ulong&amp;)"> <remove/> </modify-function>
-    <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> <remove/> </modify-function>
-    <modify-function signature="string()const"> <remove/> </modify-function>
+    <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> 
+        <remove />
+    </modify-function>
+    <modify-function signature="string()const"> <remove /> </modify-function>
     <modify-function signature="operator&gt;&gt;(signed long&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(char*)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(QByteArray&amp;)"> <remove/> </modify-function>

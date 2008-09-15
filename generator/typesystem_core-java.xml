@@ -1696,6 +1696,13 @@
           <rename to="operator_shift_right_double"/>
       </modify-function>
 
+      <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)">
+        <remove />
+      </modify-function>
+      <modify-function signature="string()const">
+        <remove />  
+      </modify-function>
+
       <modify-function signature="setCodec(const char*)">
           <access modifier="private"/>
       </modify-function>
@@ -1704,6 +1711,42 @@
       </inject-code>
 
       <inject-code class="native">
+        extern "C" JNIEXPORT jlong JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_createString)
+        (JNIEnv *env, jobject, jlong id, jstring jstr, jint openMode)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) -&gt; entering: QTextStream::createString()");
+            QString *str = new QString(qtjambi_to_qstring(env, jstr));
+            QFlags&lt;QIODevice::OpenModeFlag&gt; openModeFlags =
+                (QFlags&lt;QIODevice::OpenModeFlag&gt;) openMode;
+
+            QTextStream *stream = (QTextStream *) qtjambi_from_jlong(id);
+            stream->setString(str, openModeFlags);
+
+            QTJAMBI_DEBUG_TRACE("(native) -&gt; leaving: QTextStream::createString()");
+            return (jlong) str;
+        }
+
+        extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_deleteString)
+        (JNIEnv *env, jobject, jlong str)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) -&gt; entering: QTextStream::deleteString()");
+            delete (QString *) str;
+            QTJAMBI_DEBUG_TRACE("(native) -&gt; leaving: QTextStream::deleteString()");
+        }
+
+        extern "C" JNIEXPORT jstring JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_string_1native)
+        (JNIEnv *env, jobject, jlong id)
+        {
+            QTJAMBI_DEBUG_TRACE("(native) -&gt; entering: QTextStream::string()");
+            QTextStream *stream = (QTextStream *) qtjambi_from_jlong(id);
+            QString str = *stream->string();
+
+            jstring jstr = qtjambi_from_qstring(env, str);
+
+            QTJAMBI_DEBUG_TRACE("(native) -&gt; leaving: QTextStream::string()");
+            return jstr;
+        }
+
         extern "C" JNIEXPORT jstring JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_readString_1native)
         (JNIEnv *env, jobject, jlong id)
         {
