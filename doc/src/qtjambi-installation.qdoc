@@ -174,8 +174,8 @@
     relative to QTDIR, Qt should be configured with \c{-prefix $PWD},
     hence not installed.
 
-    \row \o Windows (MSVC 2005 or newer) \o -D QT_JAMBI_BUILD is required
-    for plugins to properly load.
+    \row \o Windows (MSVC 2005 or newer) \o \c{-plugin-manifests} is
+    required for plugins to load properly.
 
     \endtable
 
