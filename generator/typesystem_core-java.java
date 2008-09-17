@@ -436,35 +436,78 @@ class QTextStream___ extends QTextStream {
         writeString_native(nativeId(), string);
     }
 
-    public void setString(String string, com.trolltech.qt.core.QIODevice.OpenMode openMode)
+    /**
+        This function makes the text tream operate on a string instead
+        of a QIODevice.
+        <p>
+        The <tt>string</tt> parameter is the initial contents of the string that the text stream
+        will work on. If <tt>string</tt> is <tt>null</tt>, an empty string will be created.
+        The stream can both be written to and read from, depending on <tt>openMode</tt>.
+        The contents of the string can at any time be retrieved by <tt>string()</tt>.
+        For example:
+        <pre class="snippet">
+            QTextStream stream = QTextStream.createStringStream("TestString\n55",
+                new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
+            stream.writeString(" ");
+            stream.writeString("Hei");
+            stream.seek(0);
+            System.err.println(stream.readString()); // == "TestString"
+            System.err.println(stream.string()); // == "TestString\n55 Hei"
+        </pre>
+        <p>
+        If the text stream already has a QIODevice set, it will flush this.
+        @param string The initial content of the string.
+        @param openMode Specifies access priveledges to the stream.
+        @return A QTextStream operating on a String instead of a QIODevice.
+    */
+    public static QTextStream createStringStream(String string, com.trolltech.qt.core.QIODevice.OpenMode openMode)
     {
-        if (stringPtr != 0)
-            deleteString(stringPtr);
-
-        stringPtr = createString(nativeId(), string, openMode.value());
+        QTextStream instance = new StringStream(string, openMode);
+        return instance;
     }
 
+    /**
+        Returns the contents of the string that this text stream is working on.
+        <p>
+        After creating a string stream with the createStringStream() method,
+        you can fetch the contents of the string the text stream is working on with this
+        method. 
+        <p>
+        If this QTextStream was not created using createStringStream(), this function returns <tt>null</tt>.
+        @return Returns the contents of QTextStreams created with createStringStream()
+    */
     public String string()
     {
-        if (stringPtr != 0)
-            return string_native(nativeId());
         return null;
     }
 
-    public void disposed()
+    private static final class StringStream extends QTextStream
     {
-        if (stringPtr != 0)
+        protected StringStream(String string, com.trolltech.qt.core.QIODevice.OpenMode openMode)
+        {
+            stringPtr = createString(nativeId(), string, openMode.value());
+        }
+
+        public String string()
+        {
+            return string_native(nativeId());
+        }
+
+        @Override
+        public void disposed()
+        {
             deleteString(stringPtr);
+        }
+
+        private native long createString(long id, String str, int openMode);
+        private native void deleteString(long strPtr);
+        private native String string_native(long id);
+
+        private long stringPtr = 0;
     }
 
     private final native String readString_native(long id);
     private final native void writeString_native(long id, String string);
-    
-    private native long createString(long id, String str, int openMode);
-    private native void deleteString(long strPtr);
-    private native String string_native(long id);
-    private long stringPtr = 0;
-
 }// class
 
 class QBitArray___ extends QBitArray {
