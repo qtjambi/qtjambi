@@ -54,9 +54,7 @@ public class TestQTextStream {
     @Test public void testStringStream()
     {
         {
-            QTextStream stream = new QTextStream();
-            stream.setString("TestString\n55",
-                new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
+            QTextStream stream = QTextStream.createStringStream("TestString\n55", new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
             stream.writeString(" ");
             stream.writeString("Hei");
             stream.seek(0);
@@ -67,10 +65,9 @@ public class TestQTextStream {
             Assert.assertEquals(stream.string(), "TestString\n55 Hei");
         }
 
+        String daString = "";
         {
-            QTextStream stream = new QTextStream();
-            stream.setString("",
-                new QIODevice.OpenMode(QIODevice.OpenModeFlag.WriteOnly));
+            QTextStream stream = QTextStream.createStringStream(null, new QIODevice.OpenMode(QIODevice.OpenModeFlag.WriteOnly));
 
             stream.writeBoolean(true);
             stream.writeString(" ");
@@ -85,9 +82,11 @@ public class TestQTextStream {
             stream.writeFloat(24.5f);
             stream.writeString(" ");
             stream.writeDouble(26.4);
-        
-            stream.setString(stream.string(),
-                new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
+            daString = stream.string();
+        }
+ 
+        {
+            QTextStream stream = QTextStream.createStringStream(daString, new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadOnly));
 
             assertTrue(stream.readInt() == 1);
             stream.skipWhiteSpace();
@@ -109,7 +108,6 @@ public class TestQTextStream {
 
             assertTrue(26.4 == stream.readDouble());
         }
-
     }
 
     @Test public void testString() {
