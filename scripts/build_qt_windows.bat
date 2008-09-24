@@ -8,6 +8,7 @@ echo y | rd /s c:\tmp\qtjambi-package-builder\qt-eval
 echo y | rd /s c:\tmp\qtjambi-package-builder\qt-gpl
 echo y | rd /s c:\tmp\qtjambi-package-builder\qt-commercial
 
+md c:\tmp\qtjambi-package-builder
 move gpl c:\tmp\qtjambi-package-builder\qt-gpl
 move eval c:\tmp\qtjambi-package-builder\qt-eval
 move commercial c:\tmp\qtjambi-package-builder\qt-commercial

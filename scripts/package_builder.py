@@ -37,7 +37,7 @@ class Options:
             self.packageRoot = "c:/tmp/qtjambi-builder"
         else:
             self.packageRoot = "/tmp/qtjambi-builder"
-        self.eclipseVersion = "1.1.0"
+        self.eclipseVersion = "1.1.2"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
         self.binaryPackageCount = 0
@@ -318,7 +318,7 @@ class Package:
         log.close()
 
     def hasEclipse(self):
-        if self.binary:
+        if self.binary and not self.license == pkgutil.LICENSE_EVAL:
             if self.platform == pkgutil.PLATFORM_LINUX:
                 return True
             if self.platform == pkgutil.PLATFORM_WINDOWS and self.arch == pkgutil.ARCH_32:
@@ -557,17 +557,17 @@ def packageAndSend(package):
         arch = "x86_64"
     if package.platform == pkgutil.PLATFORM_WINDOWS:
         buildFile = open("tmptree/task.bat", "w")
-        buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\" + qtEdition))
+        buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qtjambi-package-builder\\" + qtEdition))
 
         # build eclipse on 32-bit windows...
         if package.hasEclipse():
-            if package.license == pkgutil.LICENSE_EVAL:
-                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qt-commercial"))
+#            if package.license == pkgutil.LICENSE_EVAL:
+#                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qtjambi-package-builder\\qt-commercial"))
             buildFile.write("cd scripts\n")
             buildFile.write("call build_eclipse.bat %%cd%%\\..\\eclipse\\qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
-            if package.license == pkgutil.LICENSE_EVAL:
-                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\" + qtEdition))
+#            if package.license == pkgutil.LICENSE_EVAL:
+#                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qtjambi-package-builder\\" + qtEdition))
             
         buildFile.write("call ant\n")
         buildFile.write('if "%ERRORLEVEL%" == "0" ' + package.make + ' clean\n')
@@ -582,9 +582,7 @@ def packageAndSend(package):
     else:
         buildFile = open("tmptree/task.sh", "w")
 
-        qtLocation = "/tmp/" + qtEdition
-        if package.platform == pkgutil.PLATFORM_LINUX:
-            qtLocation = "/tmp/qtjambi-package-builder/" + qtEdition
+        qtLocation = "/tmp/qtjambi-package-builder/" + qtEdition
         
         buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, qtLocation))
         buildFile.write("ant\n")
@@ -594,15 +592,15 @@ def packageAndSend(package):
             # a little trick needed to bypass that eclipse tools use
             # gui which will pop up eval dialogs on the build
             # servers...
-            if package.license == pkgutil.LICENSE_EVAL: 
-                buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/qtjambi-package-builder/qt-commercial"))            
+#            if package.license == pkgutil.LICENSE_EVAL: 
+#                buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/qtjambi-package-builder/qt-commercial"))            
             buildFile.write("cd scripts\n")
             buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
             buildFile.write("cp -v lib/libqtdesigner.so lib/libqtdesignerplugin.so\n")
             buildFile.write("rm -v lib/libqtdesigner.*\n")
-            if package.license == pkgutil.LICENSE_EVAL: 
-                buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, qtLocation))
+#            if package.license == pkgutil.LICENSE_EVAL: 
+#                buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, qtLocation))
 
         if package.platform == pkgutil.PLATFORM_LINUX:
             buildFile.write("cp -v $QTDIR/bin/designer bin\n")

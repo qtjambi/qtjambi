@@ -6,6 +6,8 @@ rm -rf /tmp/qtjambi-package-builder/qt-gpl
 rm -rf /tmp/qtjambi-package-builder/qt-commercial
 rm -rf /tmp/qtjambi-package-builder/qt-eval
 
+mkdir /tmp/qtjambi-package-builder
+
 mv gpl /tmp/qtjambi-package-builder/qt-gpl
 mv commercial /tmp/qtjambi-package-builder/qt-commercial
 mv eval /tmp/qtjambi-package-builder/qt-eval
