@@ -32,6 +32,8 @@ echo #endif // __cplusplus >> src\corelib\global\qglobal.h
 echo #endif // AWESOME_CRAXX >> src\corelib\global\qglobal.h
 echo CONFIG+=force_embed_manifest >> .qmake.cache
 REM Not running "cd src && nmake" simply because there is no master makefile in src, only sub makefiles
+REM Force re-qmake ActiveQt without QT_EDITION=OpenSource
+cd src\activeqt && qmake -r QT_EDITION=Internal && cd ..\..
 nmake sub-src sub-tools
 REM deleting explicitly because "nmake clean" would fail when it got to examples...
 del *.obj *.ilk *.pdb moc_* *.pch /s
