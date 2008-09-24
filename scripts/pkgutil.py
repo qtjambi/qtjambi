@@ -182,7 +182,7 @@ def expandMacroes(dir, header):
     thisYear = "%d" % datetime.date.today().year
     patterns = [
         [ re.compile("\\$THISYEAR\\$"), thisYear ],
-        [ re.compile("\\$TROLLTECH\\$"), "Trolltech ASA" ],
+        [ re.compile("\\$TROLLTECH\\$"), "Nokia" ],
         [ re.compile("\\$PRODUCT\\$"), "Qt Jambi" ],
         [ re.compile("\\$LICENSE\\$"), header ],
         [ re.compile("\\$TROLLTECH_DUAL_LICENSE\\$"), header ],
