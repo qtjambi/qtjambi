@@ -3,7 +3,7 @@
 
     \title Qt Designer
 
-    Qt Designer is Trolltech's tool for designing and building
+    Qt Designer is a visual tool for designing and building
     graphical user interfaces (GUIs) from Qt components. It allows you
     to design and build widgets and dialogs using on-screen
     forms. Components created with Qt Designer can also take advantage

@@ -112,11 +112,11 @@ public class ConfigDialog extends QDialog {
 
             QLabel serverLabel = new QLabel(tr("Server:"));
             QComboBox serverCombo = new QComboBox();
-            serverCombo.addItem(tr("Trolltech (Australia)"));
-            serverCombo.addItem(tr("Trolltech (Germany)"));
-            serverCombo.addItem(tr("Trolltech (Norway)"));
-            serverCombo.addItem(tr("Trolltech (People's Republic of China)"));
-            serverCombo.addItem(tr("Trolltech (USA)"));
+            serverCombo.addItem(tr("Qt Software (Australia)"));
+            serverCombo.addItem(tr("Qt Software (Germany)"));
+            serverCombo.addItem(tr("Qt Software (Norway)"));
+            serverCombo.addItem(tr("Qt Software (People's Republic of China)"));
+            serverCombo.addItem(tr("Qt Software (USA)"));
 
             QHBoxLayout serverLayout = new QHBoxLayout();
             serverLayout.addWidget(serverLabel);

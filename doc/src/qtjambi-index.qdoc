@@ -42,8 +42,8 @@
         </td>
         <td valign="top">
         <ul>
-        <li><a href="aboutqt.html">About Qt</a></li>
-        <li><a href="trolltech.html">About Trolltech</a></li>
+        <li><a href="http://trolltech.com/products">About Qt</a></li>
+        <li><a href="http://trolltech.com/about">About Us</a></li>
         <li><a href="http://trolltech.com/developer/faqs/Qt%20Jambi">Frequently Asked Questions</a></li>
         </ul>
         </td>
@@ -87,7 +87,6 @@
         <li><a href="qtjambi-resourcesystemoverview.html">Resource System</a></li>
         <li><a href="qtjambi-signalsandslots.html">Signals and Slots</a></li>
         <li><a href="qtjambi-threads.html">Thread Support in Qt Jambi</a></li>
-        <li><a href="qtjambi-paintsystem.html">Paint System</a></li>
         <li><a href="qtjambi-i18n.html">Internationalization</a></li>
         </ul>
         </td>

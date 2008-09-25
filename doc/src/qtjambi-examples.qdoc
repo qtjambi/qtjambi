@@ -2,8 +2,7 @@
     \page qtjambi-examples.html
     \title Qt Jambi Examples
 
-    This is the list of examples in Qt Jambi's \c examples
-    directory. The examples demonstrate Qt Jambi features in small,
+    The examples demonstrate Qt Jambi features in small,
     self-contained programs.
 
     In addition to the examples, Qt Jambi includes a small selection
@@ -38,7 +37,7 @@
 
     \list
         \o \l{Analog Clock Example}{Analog Clock}\raisedaster
-        \o \l{Calculator Example}{Calculator}\raisedaster
+        \omit \o \l{Calculator Example}{Calculator}\raisedaster \endomit
         \o \l{Calendar Widget Example}{Calendar Widget}\raisedaster
         \o \l{Code Editor Example}{Code Editor}\raisedaster
         \o \l{Digital Clock Example}{Digital Clock}

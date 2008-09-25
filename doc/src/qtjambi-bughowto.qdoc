@@ -7,7 +7,7 @@
     about it so that we can fix it.
 
     Before reporting a bug, please check the \l{FAQs}, \l{Platform
-    Notes}, and the \l{Task Tracker} on the Trolltech website to see
+    Notes}, and the \l{Task Tracker} on the Qt website to see
     if the issue is already known.
 
     Always include the following information in your bug report:
@@ -36,6 +36,6 @@
     such a program can be created with some minor changes to one
     of the many example programs in Qt Jambi's \c examples directory.
 
-    Please submit the bug report using the \l{Task Tracker} on the Trolltech
+    Please submit the bug report using the \l{Task Tracker} on the Qt 
     website.
 */

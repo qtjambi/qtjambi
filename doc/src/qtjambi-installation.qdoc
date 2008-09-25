@@ -337,7 +337,7 @@
 
     \section1 Running the Qt Designer
 
-    The Qt Designer is Trolltech's tool for designing and building
+    The Qt Designer is a visual tool for designing and building
     user interfaces. If you have a prebuilt package, you can run it
     from the command line with the \c designer.bat or \c
     designer.sh scripts.  The \l{Qt Jambi Eclipse

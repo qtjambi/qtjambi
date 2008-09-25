@@ -275,7 +275,7 @@ public class Application extends QMainWindow {
 
     private void readSettings()
     {
-        QSettings settings = new QSettings("Trolltech", "Application Example");
+        QSettings settings = new QSettings("Nokia", "Application Example");
         QPoint pos = QVariant.toPoint(settings.value("pos", new QPoint(200, 200)));
         QSize size = QVariant.toSize(settings.value("size", new QSize(400, 400)));
         resize(size);
@@ -284,7 +284,7 @@ public class Application extends QMainWindow {
 
     private void writeSettings()
     {
-        QSettings settings = new QSettings("Trolltech", "Application Example");
+        QSettings settings = new QSettings("Nokia", "Application Example");
         settings.setValue("pos", pos());
         settings.setValue("size", size());
     }
