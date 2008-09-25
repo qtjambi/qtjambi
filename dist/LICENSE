@@ -1,22 +1,11 @@
-For individuals and/or legal entities resident in the American
-Continent (including those resident in Canada, South America, and the
-United States of America), the applicable licensing terms are
-specified under the heading "Qt Commercial License Agreement: American
-Continent".
+For individuals and/or legal entities resident in the Americas (North America, Central America and South America), the applicable licensing terms are
+specified under the heading "Qt Commercial License Agreement: The Americas".
 
-For individuals and/or legal entities not resident in the American
-Continent, the applicable licensing terms are specified under the
-heading "Qt Commercial License Agreement: Norway".
+For individuals and/or legal entities not resident in The Americas, the applicable licensing terms are specified under the heading "Qt Commercial License Agreement: Norway".
 
 
-
-
-
-
-
-Qt COMMERCIAL LICENSE AGREEMENT: AMERICAN CONTINENT
+Qt COMMERCIAL LICENSE AGREEMENT: THE AMERICAS
 Agreement version 3.6
-
 
 This Qt Commercial License Agreement ("Agreement") is a legal
 agreement between Nokia, Inc. ("Nokia"), with its registered office at
@@ -63,7 +52,7 @@ delivered by Nokia to Licensee in conjunction with this Agreement.
 "Modified Software" shall mean modifications made to the Licensed
 Software by Licensee.
 
-"Party or Parties" shall mean Licensee and/or Nokia.
+"Party? or ?Parties" shall mean Licensee and/or Nokia.
 
 "Platforms" shall mean the operating systems listed in the License
 Certificate.
@@ -192,18 +181,18 @@ subject to Licensee's compliance with Section 8 of this Agreement.
 
 Nokia or a certified auditor on Nokia's behalf, may, upon its
 reasonable request and at its expense, audit Licensee with respect to
-the use of the Licensed Software.Â  Such audit may be conducted by
+the use of the Licensed Software.?  Such audit may be conducted by
 mail, electronic means or through an in-person visit to Licensee's
 place of business.  Any such in-person audit shall be conducted during
 regular business hours at Licensee's facilities and shall not
-unreasonably interfere with Licensee's business activities.Â Nokia
+unreasonably interfere with Licensee's business activities.? Nokia
 shall not remove, copy, or redistribute any electronic material during
 the course of an audit. If an audit reveals that Licensee is using the
 Licensed Software in a way that is in material violation of the terms
 of the Agreement, then Licensee shall pay Nokia's reasonable costs of
-conducting the audit.Â  In the case of a material violation, Licensee
+conducting the audit.?  In the case of a material violation, Licensee
 agrees to pay Nokia any amounts owing that are attributable to the
-unauthorized use.Â  In the alternative, Nokia reserves the right, at
+unauthorized use.?  In the alternative, Nokia reserves the right, at
 Nokia's sole option, to terminate the licenses for the Licensed
 Software.
 
@@ -540,10 +529,6 @@ Agreement.
 
 
 
-
-THE REMAINDER OF THIS PAGE INTENTIONALLY LEFT BLANK.
-
-
 Appendix 1
 
 
@@ -566,18 +551,10 @@ The Licensed Software's Resource Compiler ("rcc")
 The Licensed Software's generator (only in the case of Qt Jambi)
 
 
+___________________________________________________________________________________________________________________________
 
 
-
-
-
-
-
-
-
-For legal entities and/or individuals residing in any country
-other than Canada, the United States of America or
-South America:
+For legal entities and/or individuals residing in any country not located in North America, Central America or South America, the following license agreement applies:
 
 
 Qt COMMERCIAL LICENSE AGREEMENT: NORWAY
@@ -629,7 +606,7 @@ delivered by Nokia to Licensee in conjunction with this Agreement.
 "Modified Software" shall mean modifications made to the Licensed
 Software by Licensee.
 
-"Party or Parties" shall mean Licensee and/or Nokia.
+"Party? or ?Parties" shall mean Licensee and/or Nokia.
 
 "Platforms" shall mean the operating systems listed in the License
 Certificate.
@@ -758,18 +735,18 @@ subject to Licensee's compliance with Section 8 of this Agreement.
 
 Nokia or a certified auditor on Nokia's behalf, may, upon its
 reasonable request and at its expense, audit Licensee with respect to
-the use of the Licensed Software.Â  Such audit may be conducted by
+the use of the Licensed Software.?  Such audit may be conducted by
 mail, electronic means or through an in-person visit to Licensee's
 place of business.  Any such in-person audit shall be conducted during
 regular business hours at Licensee's facilities and shall not
-unreasonably interfere with Licensee's business activities.Â Nokia
+unreasonably interfere with Licensee's business activities.? Nokia
 shall not remove, copy, or redistribute any electronic material during
 the course of an audit. If an audit reveals that Licensee is using the
 Licensed Software in a way that is in material violation of the terms
 of the Agreement, then Licensee shall pay Nokia's reasonable costs of
-conducting the audit.Â  In the case of a material violation, Licensee
+conducting the audit.?  In the case of a material violation, Licensee
 agrees to pay Nokia any amounts owing that are attributable to the
-unauthorized use.Â  In the alternative, Nokia reserves the right, at
+unauthorized use.?  In the alternative, Nokia reserves the right, at
 Nokia's sole option, to terminate the licenses for the Licensed
 Software.
 
@@ -1074,18 +1051,6 @@ Software and/ Modified Software, as applicable, with any other
 software or hardware not delivered by Nokia under this Agreement.
 
 
-
-
-THE REMAINDER OF THIS PAGE INTENTIONALLY LEFT BLANK.
-
-
-
-
-
-
-
-
-
 Appendix 1
 
 
@@ -1107,4 +1072,4 @@ The Licensed Software's User Interface Compiler ("uic" or in the case of Qt Jamb
 The Licensed Software's Resource Compiler ("rcc")
 The Licensed Software's generator (only in the case of Qt Jambi)
 
-
+___________________________________________________________________________________________________________________________
