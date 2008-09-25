@@ -37,7 +37,7 @@ class Options:
             self.packageRoot = "c:/tmp/qtjambi-builder"
         else:
             self.packageRoot = "/tmp/qtjambi-builder"
-        self.eclipseVersion = "1.1.2"
+        self.eclipseVersion = "1.1.3"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
         self.binaryPackageCount = 0
