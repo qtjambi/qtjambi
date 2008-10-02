@@ -99,7 +99,7 @@ private:
     void initializeTreeWidgetItems(const QString &className, const QString &varName, const QList<DomItem *> &items);
     void initializeTableWidget(DomWidget *w);
 
-    DomWidget *findWidget(const QString &widgetClass);
+    DomWidget *findWidget(const QLatin1String &widgetClass);
     DomImage *findImage(const QString &name) const;
 
     bool isValidObject(const QString &name) const;

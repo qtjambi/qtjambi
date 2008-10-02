@@ -1520,7 +1520,7 @@ DomImage *WriteInitialization::findImage(const QString &name) const
     return m_registeredImages.value(name);
 }
 
-DomWidget *WriteInitialization::findWidget(const QString &widgetClass)
+DomWidget *WriteInitialization::findWidget(const QLatin1String &widgetClass)
 {
     for (int i = m_widgetChain.count() - 1; i >= 0; --i) {
         DomWidget *widget = m_widgetChain.at(i);
