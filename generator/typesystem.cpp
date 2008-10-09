@@ -1455,7 +1455,6 @@ bool TypeDatabase::parseFile(const QString &filename, bool generate)
     reader.setErrorHandler(&handler);
 
     bool ok = reader.parse(&source, false);
-
     int newCount = m_entries.size();
 
     ReportHandler::debugSparse(QString::fromLatin1("Parsed: '%1', %2 new entries")

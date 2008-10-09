@@ -709,6 +709,10 @@
         <include file-name="QStringList" location="global"/>
     </extra-includes>
     <modify-function signature="operator=(QRegExp)" remove="all"/>
+    <modify-function signature="pos(int)const"> <remove /> </modify-function>
+    <modify-function signature="cap(int)const"> <remove /> </modify-function>
+    <modify-function signature="capturedTexts()const"> <remove /> </modify-function>
+    <modify-function signature="errorString()const"> <remove /> </modify-function>
   </value-type>
 
   <value-type name="QFileInfo">

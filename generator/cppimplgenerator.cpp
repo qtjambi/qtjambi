@@ -865,18 +865,20 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
 
                 // Function call
                 s << "          ";
-                if (virtualFunction->type() != 0) {
+                AbstractMetaType *function_type = virtualFunction->type();
+                if (function_type) {
                     writeTypeInfo(s, virtualFunction->type());
                     s << " _r = ";
                 }
 
                 writeFunctionCall(s, "this", virtualFunction);
-                s << "          if (_a[0] != 0) "
-                  << "*reinterpret_cast<";
-                writeTypeInfo(s, virtualFunction->type());
-                s << " *>(_a[0]) = _r;" << endl
-                  << "          return -1;" << endl;
-
+                if (function_type) {
+                    s << "          if (_a[0] != 0) "
+                      << "*reinterpret_cast<";
+                    writeTypeInfo(s, virtualFunction->type());
+                    s << " *>(_a[0]) = _r;" << endl
+                      << "          return -1;" << endl;
+                }
                 s << "      }";
             }
         }

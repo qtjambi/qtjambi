@@ -132,6 +132,9 @@
         <modify-function signature="value(const QLatin1String &amp;)const">
             <remove />
         </modify-function>
+        <modify-function signature="hasAttribute(const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
     </value-type>
 
     <value-type name="QXmlStreamNamespaceDeclaration">
@@ -152,6 +155,9 @@
       </modify-function>
       <modify-function signature="value(const QLatin1String&amp;) const">
         <remove/>
+      </modify-function>
+      <modify-function signature="hasAttribute(const QLatin1String &amp;) const">
+        <remove />
       </modify-function>
     </value-type>
 

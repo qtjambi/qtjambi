@@ -1425,6 +1425,7 @@
     <modify-function signature="exec()" access="non-final"/>
     <modify-function signature="extension()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="orientation()const" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="open()" virtual-slot="yes" />
     <modify-function signature="setOrientation(Qt::Orientation)" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="showExtension(bool)" remove="all"/> <!--### Obsolete in 4.3-->
   </object-type>
@@ -1501,7 +1502,12 @@
     </inject-code>
   </object-type>
   <object-type name="QFontComboBox"/>
-  <object-type name="QFontDialog"/>
+  <object-type name="QFontDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+  </object-type>
   <object-type name="QGraphicsEllipseItem" delete-in-main-thread="yes"/>
   <object-type name="QGraphicsItemAnimation" >
     <modify-function signature="setItem(QGraphicsItem*)">
@@ -1912,7 +1918,12 @@
     <modify-function signature="standardIconImplementation(QStyle::StandardPixmap, const QStyleOption *, const QWidget *)const" virtual-slot="yes"/>
     <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType, QSizePolicy::ControlType, Qt::Orientation, const QStyleOption *, const QWidget *) const" virtual-slot="yes" />
   </object-type>
-  <object-type name="QPrintDialog" />
+  <object-type name="QPrintDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+  </object-type>
   <object-type name="QPrintEngine"/>
   <object-type name="QProgressBar">
     <modify-function signature="initStyleOption(QStyleOptionProgressBar*)const">
@@ -2324,6 +2335,10 @@
   </object-type>
 
   <object-type name="QColorDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
     <modify-function signature="getColor(const QColor &amp;, QWidget *)">
       <modify-argument index="1">
         <replace-default-expression with="QColor.white"/>
@@ -3471,6 +3486,12 @@
   </object-type>
 
   <object-type name="QMessageBox">
+
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+
     <modify-function signature="setWindowTitle(const QString &amp;)" remove="all"/>
     <modify-function signature="setWindowModality(Qt::WindowModality)" remove="all"/>
     <extra-includes>
@@ -3618,6 +3639,10 @@
   </object-type>
 
   <object-type name="QPageSetupDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
   </object-type>
 
   <object-type name="QTabWidget">
@@ -3731,6 +3756,10 @@
   </object-type>
 
   <object-type name="QProgressDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
     <modify-function signature="setBar(QProgressBar*)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++"/>
@@ -3777,6 +3806,12 @@
     <extra-includes>
         <include file-name="QUrl" location="global"/>
     </extra-includes>
+
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+
     <modify-function signature="getOpenFileName(QWidget*,QString,QString,QString,QString*,QFlags&lt;QFileDialog::Option&gt;)">
         <access modifier="private"/>
         <modify-argument index="1">
@@ -4922,7 +4957,12 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QPrintPreviewDialog" />
+  <object-type name="QPrintPreviewDialog" >
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+  </object-type>
   <object-type name="QPrintPreviewWidget" />
   <object-type name="QStyledItemDelegate">
     <modify-function signature="setItemEditorFactory(QItemEditorFactory*)">
