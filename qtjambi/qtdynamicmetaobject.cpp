@@ -152,11 +152,13 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     int extra_data_count = extra_data != 0 ? env->GetArrayLength(extra_data) : 0;
     if (extra_data_count > 0) {
-        q->d.extradata = new const QMetaObject *[extra_data_count];
+        const QMetaObject **ptr = new const QMetaObject *[extra_data_count];
+        q->d.extradata = ptr;
         Q_ASSERT(q->d.extradata != 0);
 
-        for (int i=0; i<extra_data_count; ++i)
-            q->d.extradata[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(env->GetObjectArrayElement(extra_data, i)), 0);
+        for (int i=0; i<extra_data_count; ++i) {
+            ptr[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(env->GetObjectArrayElement(extra_data, i)), 0);
+        }
     }
 
 
