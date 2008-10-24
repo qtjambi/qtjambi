@@ -232,9 +232,12 @@
     should then consist of the following three pieces:
 
     \list
-      \o The application classes, for instance called application.jar
+      \o The application classes, for instance called
+         application.jar. This .jar file should only contain classes,
+         making it cross platform.
       \o The Qt Jambi classes, called qtjambi-$VERSION.jar, available
-         in the binary package
+         in the binary package. This .jar file contains only java
+         classes and is cross platform.
       \o The Qt Jambi platform bundle, called
          qtjambi-$PLATFORM-$VERSION.jar available in the binary
          package.
@@ -243,9 +246,10 @@
     The only thing needed to deploy this application is to make sure
     the three \c {.jar} files are available in the applications \c
     CLASSPATH and start it. To make an application that can launch on
-    multiple platforms, use the binaries from the binary packages of
-    Qt Jambi for the target platforms that you would like to support
-    and make sure the right platform \c {.jar} file is available in the
+    multiple platforms, use the qtjambi classes .jar file from along
+    with the platform .jar-file from the binary packages of Qt Jambi
+    for the target platforms that you would like to support and make
+    sure the right platform \c {.jar} file is available in the
     classpath when you launch the application.
 
     \section3 Creating a Webstart Application
