@@ -29,9 +29,9 @@
 		<string>1.5*</string>
 		<key>ClassPath</key>
 			<array>
-			<string>qtjambi-4.4.3_01.jar</string>
-			<string>qtjambi-examples-4.4.3_01.jar</string>
-			<string>qtjambi-macosx-gcc-4.4.3_01.jar</string>
+			<string>qtjambi-4.5.0_01.jar</string>
+			<string>qtjambi-examples-4.5.0_01.jar</string>
+			<string>qtjambi-macosx-gcc-4.5.0_01.jar</string>
 			</array>
 	</dict>
 </dict>
