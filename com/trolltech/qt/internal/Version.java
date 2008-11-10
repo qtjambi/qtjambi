@@ -32,13 +32,13 @@ public class Version
      * The Minor version of Qt Jambi. This version number follows the
      * version of the Qt/C++ library used.
      */
-    public static final int MINOR = 4;
+    public static final int MINOR = 5;
 
     /**
      * The Patch version of Qt Jambi. This version number follows the
      * version of the Qt/C++ library used.
      */
-    public static final int PATCH = 3;
+    public static final int PATCH = 0;
 
     /**
      * The Build id for this version of Qt Jambi.
