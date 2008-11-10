@@ -2904,11 +2904,6 @@
             <define-ownership class="java" owner="default"/>
         </modify-argument>
     </modify-function>
-    <modify-function signature="removeItemWidget(QTreeWidgetItem*,int)">
-        <modify-argument index="1">
-            <define-ownership class="java" owner="default"/>
-        </modify-argument>
-    </modify-function>
     <modify-function signature="setCurrentItem(QTreeWidgetItem*,int,QFlags&lt;QItemSelectionModel::SelectionFlag&gt;)">
         <modify-argument index="1">
             <reference-count action="ignore" />
@@ -3214,11 +3209,6 @@
     <modify-function signature="insertItem(int, QListWidgetItem *)">
         <modify-argument index="2">
             <define-ownership class="java" owner="c++"/>
-        </modify-argument>
-    </modify-function>
-    <modify-function signature="removeItemWidget(QListWidgetItem*)">
-        <modify-argument index="1">
-            <define-ownership class="java" owner="default"/>
         </modify-argument>
     </modify-function>
     <modify-function signature="setCurrentItem(QListWidgetItem*)">
