@@ -1342,6 +1342,24 @@
 
 
     <object-type name="QFontDialog">
+
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+    <modify-function signature="open(QObject*,const char*)" >
+        <access modifier="private"/>
+        <rename to="open_private"/>
+    </modify-function>
+    <inject-code>
+        public final void open(QObject receiver, String member)
+        {
+            QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+            open_private(receiver, strPtr);
+        }
+    </inject-code>
+
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QFontDialog___" quote-before-line="}// class"/>
         </inject-code>
@@ -2169,6 +2187,23 @@
     </template>
 
     <object-type name="QColorDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+    <modify-function signature="open(QObject*,const char*)">
+      <access modifier="private" />
+      <rename to="open_private" />
+    </modify-function>
+    <inject-code>
+      public final void open(QObject receiver, String member)
+      {
+        QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+        open_private(receiver, strPtr);
+      }
+    </inject-code>
+
         <inject-code>
             public static Integer getRgba(int initial, com.trolltech.qt.gui.QWidget parent) {
                 com.trolltech.qt.QNativePointer ok = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Boolean);
@@ -2183,7 +2218,25 @@
     </object-type>
 
     <object-type name="QInputDialog">
-        <inject-code>
+     <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+
+    <modify-function signature="open(QObject*,const char*)">
+        <access modifier="private" />
+        <rename to="open_private" />
+    </modify-function>
+
+    <inject-code>
+        public final void open(QObject receiver, String member)
+        {
+            QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+            open_private(receiver, strPtr);
+        }
+    </inject-code>
+       <inject-code>
         <insert-template name="gui.inputDialog_get_input">
             <replace from="%RETURN_TYPE" to="Double"/>
             <replace from="%EXTRA" to="double value, double minValue, double maxValue, int decimals"/>
@@ -2335,6 +2388,90 @@
         </modify-function>
     </object-type>
 
+    <object-type name="QPrintPreviewDialog">
+      <inject-code class="shell-declaration">
+          using QDialog::open;
+          void open(QObject *, const char *);
+      </inject-code>
+      <modify-function signature="open(QObject*,const char*)">
+        <access modifier="private" />
+        <rename to="open_private" />
+      </modify-function>
+
+      <inject-code>
+      public final void open(QObject receiver, String member)
+      {
+        QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+        open_private(receiver, strPtr);
+      }
+      </inject-code>
+    </object-type>
+
+    <object-type name="QProgressDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+
+    <modify-function signature="open(QObject*,const char*)">
+      <access modifier="private" />
+      <rename to="open_private" />
+    </modify-function>
+
+    <inject-code>
+      public final void open(QObject receiver, String member)
+      {
+        QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+        open_private(receiver, strPtr);
+      }
+    </inject-code>
+
+    </object-type>
+
+    <object-type name="QPageSetupDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+  <modify-function signature="open(QObject*,const char*)">
+    <access modifier="private" />
+    <rename to="open_private" />
+  </modify-function>
+
+  <inject-code>
+    public final void open(QObject receiver, String member)
+    {
+      QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+      open_private(receiver, strPtr);
+    }
+  </inject-code>
+
+    </object-type>
+
+    <object-type name="QMessageBox">
+      <inject-code class="shell-declaration">
+          using QDialog::open;
+          void open(QObject *, const char *);
+      </inject-code>
+
+      <modify-function signature="open(QObject*,const char*)">
+          <access modifier="private" />
+          <rename to="open_private" />
+      </modify-function>
+
+      <inject-code>
+        public final void open(QObject receiver, String member)
+        {
+            QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+            open_private(receiver, strPtr);
+        }
+      </inject-code>
+
+    </object-type>
 
     <object-type name="QWidget">
         <inject-code>
@@ -2368,6 +2505,29 @@
         </modify-function>
 
 
+
+
+    </object-type>
+
+    <object-type name="QPrintDialog">
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+
+  <modify-function signature="open(QObject*,const char*)">
+    <access modifier="private" />
+    <rename to="open_private" />
+  </modify-function>
+
+  <inject-code>
+    public final void open(QObject receiver, String member)
+    {
+      QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+      open_private(receiver, strPtr);
+    }
+  </inject-code>
 
 
     </object-type>
@@ -2497,6 +2657,25 @@
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
         </extra-includes>
+
+    <inject-code class="shell-declaration">
+        using QDialog::open;
+        void open(QObject *, const char *);
+    </inject-code>
+
+    <modify-function signature="open(QObject*,const char*)">
+        <access modifier="private" />
+        <rename to="open_private" />
+    </modify-function>
+
+    <inject-code>
+        public final void open(com.trolltech.qt.QObject receiver, String member)
+        {
+            QNativePointer strPtr = QNativePointer.createCharPointer(member);
+
+            open_private(receiver, strPtr);
+        }
+    </inject-code>
 
         <template name="gui.filedialog_get_xxx_filename">
         public static %TYPE %FUNCTION_NAME(QWidget parent, String caption, String dir, Filter filter, Options options) {
