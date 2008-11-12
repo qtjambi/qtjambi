@@ -11,6 +11,7 @@
 
   <rejection class="" enum-name="QtValidLicenseForTestModule"/>
 
+
   <rejection class="" enum-name="QtValidLicenseForDBusModule"/>
   <rejection class="" enum-name="QtValidLicenseForSqlModule"/>
   <rejection class="" enum-name="QtValidLicenseForOpenGLModule"/>
@@ -29,6 +30,8 @@
   <rejection class="QtConcurrent" enum-name="enum_1" />
   <rejection class="QtConcurrent" function-name="operator|" />
 
+  <rejection class="QSharedPointer" />
+  <rejection class="QWeakPointer" />
   <rejection class="QFuture::const_iterator" />
   <rejection class="QFutureInterface" />
   <rejection class="QFutureInterfaceBase" />
@@ -189,6 +192,7 @@
   <rejection class="QCache"/>
   <rejection class="QCharRef"/>
   <rejection class="QDebug"/>
+  <rejection class="QNoDebug" />
   <rejection class="QExplicitlySharedDataPointer"/>
   <rejection class="QFlag"/>
   <rejection class="QFlags"/>
@@ -218,6 +222,8 @@
   <rejection class="QListData"/>
   <rejection class="QListIterator"/>
   <rejection class="QMap"/>
+  <rejection class="QMapNode" />
+  <rejection class="QMapPayloadNode" />
   <rejection class="QMapData"/>
   <rejection class="QMapIterator"/>
   <rejection class="QMetaType"/>
@@ -739,7 +745,7 @@
     <extra-includes>
         <include file-name="QNoImplicitBoolCast" location="global"/>
     </extra-includes>
-
+    
     <!-- removed functions -->
     <modify-function signature="begin()" remove="all"/>
     <modify-function signature="begin()const" remove="all"/>
@@ -892,6 +898,8 @@
     <modify-function signature="buffer()">
         <remove/>
     </modify-function>
+    <modify-function signature="connectNotify(const char *)" remove="all" />
+    <modify-function signature="disconnectNotify(const char *)" remove="all" />
   </object-type>
 
   <object-type name="QTimer"/>

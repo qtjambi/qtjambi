@@ -6,6 +6,9 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
 
+  <rejection class="QPixmapFilterPrivate" />
+  <rejection class="QPenPrivate" />
+  <rejection class="QGtkStyle" />
   <rejection class="QWindowsCEStyle" />
   <rejection class="QWindowsMobileStyle" />
   <rejection class="QAbstractUndoItem"/>
@@ -83,6 +86,7 @@
   <rejection class="QWidgetItem" field-name="wid" />
   <rejection class="QFont" enum-name="ResolveProperties" />
 
+  <enum-type name="QPixmapFilter::FilterType" />
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
   <enum-type name="QAbstractItemView::DragDropMode"/>
@@ -531,7 +535,13 @@
   <value-type name="QStyleOptionTabV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabV2::Type &amp;&amp; %1-&gt;version == QStyleOptionTabV2::Version">
     <modify-function signature="operator=(const QStyleOptionTab &amp;)" remove="all"/>
   </value-type>
+  <value-type name="QStyleOptionTabV3" delete-in-main-thread="yes"  polymorphic-id-expression="%1-&gt;type == QStyleOptionTabV3::Type &amp;&amp; %1-&gt;version == QStyleOptionTabV3::Version">
+    <modify-function signature="operator=(QStyleOptionTab)" remove="all" />
+  </value-type>
   <value-type name="QStyleOptionTabBarBase" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabBarBase::Type &amp;&amp; %1-&gt;version == QStyleOptionTabBarBase::Version"/>
+  <value-type name="QStyleOptionTabBarBaseV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabBarBaseV2::Type &amp;&amp; %1-&gt;version == QStyleOptionTabBarBaseV2::Version">
+    <modify-function signature="operator=(QStyleOptionTabBarBase)" remove="all" />
+  </value-type>
   <value-type name="QStyleOptionTabWidgetFrame" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabWidgetFrame::Type &amp;&amp; %1-&gt;version == QStyleOptionTabWidgetFrame::Version"/>
   <value-type name="QStyleOptionTitleBar" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTitleBar::Type &amp;&amp; %1-&gt;version == QStyleOptionTitleBar::Version"/>
   <value-type name="QStyleOptionToolBar" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBar::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBar::Version"/>
@@ -741,6 +751,14 @@
     <modify-function signature="QPixmap(const char **)" access="private"/>
     <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
+
+  <object-type name="QPixmapFilter" polymorphic-base="yes" />
+  <object-type name="QPixmapColorizeFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ColorizeFilter" />
+  <object-type name="QPixmapConvolutionFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ConvolutionFilter">
+    <modify-function signature="convolutionKernel()const" remove="all" />
+    <modify-function signature="setConvolutionKernel(const double*,int,int)" remove="all" />
+  </object-type>
+  <object-type name="QPixmapDropShadowFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::DropShadowFilter" />
 
   <value-type name="QTextCursor" delete-in-main-thread="yes">
     <extra-includes>
@@ -1186,6 +1204,7 @@
   <interface-type name="QGraphicsItem" delete-in-main-thread="yes">
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
 
+
     <modify-function signature="paint(QPainter*,const QStyleOptionGraphicsItem*,QWidget*)">
         <modify-argument index="1" invalidate-after-use="yes" />
     </modify-function>
@@ -1502,12 +1521,8 @@
     </inject-code>
   </object-type>
   <object-type name="QFontComboBox"/>
-  <object-type name="QFontDialog">
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
-  </object-type>
+  <object-type name="QFontDialog" />
+
   <object-type name="QGraphicsEllipseItem" delete-in-main-thread="yes"/>
   <object-type name="QGraphicsItemAnimation" >
     <modify-function signature="setItem(QGraphicsItem*)">
@@ -1919,10 +1934,6 @@
     <modify-function signature="layoutSpacingImplementation(QSizePolicy::ControlType, QSizePolicy::ControlType, Qt::Orientation, const QStyleOption *, const QWidget *) const" virtual-slot="yes" />
   </object-type>
   <object-type name="QPrintDialog">
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
   </object-type>
   <object-type name="QPrintEngine"/>
   <object-type name="QProgressBar">
@@ -2335,10 +2346,7 @@
   </object-type>
 
   <object-type name="QColorDialog">
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
+
     <modify-function signature="getColor(const QColor &amp;, QWidget *)">
       <modify-argument index="1">
         <replace-default-expression with="QColor.white"/>
@@ -2624,6 +2632,7 @@
   </object-type>
 
   <object-type name="QInputDialog">
+
     <modify-function signature="getDouble(QWidget *, const QString &amp;, const QString &amp;, double, double, double, int, bool *, QFlags&lt;Qt::WindowType&gt;)">
         <rename to="getDouble_internal"/>
         <access modifier="private"/>
@@ -3077,7 +3086,7 @@
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
-  </object-type>
+ </object-type>
 
   <object-type name="QCompleter">
     <modify-function signature="activated(const QModelIndex &amp;)">
@@ -3477,10 +3486,6 @@
 
   <object-type name="QMessageBox">
 
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
 
     <modify-function signature="setWindowTitle(const QString &amp;)" remove="all"/>
     <modify-function signature="setWindowModality(Qt::WindowModality)" remove="all"/>
@@ -3628,12 +3633,7 @@
     </modify-function>
   </object-type>
 
-  <object-type name="QPageSetupDialog">
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
-  </object-type>
+  <object-type name="QPageSetupDialog" />
 
   <object-type name="QTabWidget">
     <modify-function signature="initStyleOption(QStyleOptionTabWidgetFrame*)const">
@@ -3746,10 +3746,7 @@
   </object-type>
 
   <object-type name="QProgressDialog">
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
+
     <modify-function signature="setBar(QProgressBar*)">
         <modify-argument index="1">
             <define-ownership class="java" owner="c++"/>
@@ -3796,11 +3793,6 @@
     <extra-includes>
         <include file-name="QUrl" location="global"/>
     </extra-includes>
-
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
 
     <modify-function signature="getOpenFileName(QWidget*,QString,QString,QString,QString*,QFlags&lt;QFileDialog::Option&gt;)">
         <access modifier="private"/>
@@ -4175,6 +4167,8 @@
         <access modifier="private"/>
     </modify-function>
   </object-type>
+
+  <object-type name="QTextDocumentWriter" />
 
   <object-type name="QSplitter">
 
@@ -4948,10 +4942,6 @@
     </modify-function>
   </object-type>
   <object-type name="QPrintPreviewDialog" >
-    <inject-code class="shell-declaration">
-        using QDialog::open;
-        void open(QObject *, const char *);
-    </inject-code>
   </object-type>
   <object-type name="QPrintPreviewWidget" />
   <object-type name="QStyledItemDelegate">

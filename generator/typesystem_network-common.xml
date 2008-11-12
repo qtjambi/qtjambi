@@ -35,6 +35,13 @@
   <enum-type name="QNetworkRequest::CacheLoadControl" />
   <enum-type name="QNetworkRequest::KnownHeaders" />
 
+  <object-type name="QAbstractNetworkCache" />
+  <object-type name="QNetworkDiskCache" />
+  <value-type name="QNetworkCacheMetaData" />
+
+  <object-type name="QNetworkProxyFactory" />
+  <value-type name="QNetworkProxyQuery" />
+
   <object-type name="QAbstractSocket" />
   <object-type name="QFtp" />
 

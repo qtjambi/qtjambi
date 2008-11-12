@@ -171,9 +171,8 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-
+        <modify-function signature="getDate(int*,int*,int*)" remove="all" />
     </value-type>
-
 
     <value-type name="QDir">
         <inject-code>
@@ -189,6 +188,27 @@
     public final %TYPE add(%TYPE p) { operator_add_assign(p); return this; }
     public final %TYPE subtract(%TYPE p) { operator_subtract_assign(p); return this; }
     </template>
+
+    <object-type name="QSettings">
+        <modify-function signature="setIniCodec(const char*)">
+            <access modifier="private" />
+            <rename to="setIniCodec_private" />
+        </modify-function>
+
+        <inject-code>
+            public final void setIniCodec(String codecName)
+            {
+                QNativePointer strPtr = QNativePointer.createCharPointer(codecName);
+    
+                setIniCodec_private(strPtr);
+            }
+        </inject-code>
+    </object-type>
+
+    <value-type name="QByteArrayMatcher">
+        <modify-function signature="QByteArrayMatcher(const char*,int)" remove="all" />
+        <modify-function signature="indexIn(const char*,int,int)const" remove="all" />
+    </value-type>
 
     <value-type name="QPoint">
         <modify-function signature="operator*=(double)"
@@ -542,6 +562,8 @@
         <remove/>
     </modify-function>
 
+    <modify-function signature="append(const char*,int)" remove="all" />
+
     <modify-function signature="append(QByteArray)">
         <access modifier="private"/>
         <rename to="append_private"/>
@@ -725,6 +747,8 @@
     <modify-function signature="replace(const char*,const char*)">
         <remove/>
     </modify-function>
+
+    <modify-function signature="replace(const char*,int,const char*,int)" remove="all" />
 
     <modify-function signature="replace(const char*,QByteArray)">
         <remove/>
