@@ -82,6 +82,7 @@
 
     \list
         \o \l{Path Stroking}{Path Stroke}
+        \o \l{Pixmap Filters Example}{Pixmap Filters}
         \o \l{SVG Cards Example}{SVG Cards}\raisedaster
     \endlist
 
