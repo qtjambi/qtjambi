@@ -455,7 +455,7 @@ class QPixmapFilter___ extends QPixmapFilter {
             int length = rows * columns;
 
             QNativePointer kernelPtr = new QNativePointer(QNativePointer.Type.Double, length);
-            for (int i = 0; i < kernel.length; ++i)
+            for (int i = 0; i < length; ++i)
                 kernelPtr.setDoubleAt(i, kernel[i]);
  
             setConvolutionKernel_private(kernelPtr, rows, columns);
