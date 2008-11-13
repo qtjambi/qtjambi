@@ -130,6 +130,8 @@
         </insert-template>
     </template>
 
+    <object-type name="QGraphicsTextItem">
+    </object-type>
 
     <value-type name="QTransform">
         <inject-code>
@@ -248,6 +250,7 @@
             <replace from="%ARGUMENT_NAMES" to="x, y"/>
         </insert-template>
     </inject-code>
+
 
     <modify-function signature="translate(double,double)">
         <access modifier="private"/>
@@ -476,6 +479,19 @@
 
     </value-type>
 
+    <object-type name="QPixmapConvolutionFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ConvolutionFilter">
+    <modify-function signature="convolutionKernel()const">
+        <access modifier="private" />
+        <rename to="convolutionKernel_private" />
+    </modify-function>
+    <modify-function signature="setConvolutionKernel(const double*,int,int)">
+        <access modifier="private" />
+        <rename to="setConvolutionKernel_private" />
+    </modify-function>
+    <inject-code>
+        <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmapFilter___" quote-before-line="}// class"/>
+    </inject-code>
+    </object-type>
 
     <value-type name="QPixmap">
         <inject-code>
@@ -924,6 +940,11 @@
             </modify-argument>
         </modify-function>
 
+        <modify-function signature="itemTransform(const QGraphicsItem*,bool*)const">
+            <access modifier="private" />
+            <rename to="itemTransform_private" />
+        </modify-function>
+
         <modify-function signature="setGroup(QGraphicsItemGroup*)">
             <modify-argument index="1">
                 <reference-count action="ignore"/>
@@ -955,6 +976,7 @@
     </interface-type>
 
     <object-type name="QAbstractGraphicsShapeItem">
+
         <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
@@ -1429,6 +1451,7 @@
     </object-type>
 
     <object-type name="QGraphicsItemGroup">
+
         <modify-function signature="QGraphicsItemGroup(QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
@@ -1489,6 +1512,7 @@
     </object-type>
 
     <object-type name="QGraphicsPixmapItem">
+
         <modify-function signature="QGraphicsPixmapItem(QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
@@ -3095,6 +3119,7 @@
     </modify-function>
     </object-type>
     <object-type name="QGraphicsWidget">
+
         <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
         <modify-function signature="getWindowFrameMargins(double*,double*,double*,double*)const" access="private"/>
 
