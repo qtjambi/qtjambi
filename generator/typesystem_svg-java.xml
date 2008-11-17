@@ -7,6 +7,17 @@
 
 
     <object-type name="QGraphicsSvgItem" delete-in-main-thread="yes">
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
+
         <modify-function signature="setGroup(QGraphicsItemGroup*)">
             <modify-argument index="1">
                 <!-- Handled by injected code in QGraphicsItem -->

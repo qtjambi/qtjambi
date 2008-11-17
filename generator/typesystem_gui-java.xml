@@ -131,6 +131,16 @@
     </template>
 
     <object-type name="QGraphicsTextItem">
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
     </object-type>
 
     <value-type name="QTransform">
@@ -944,6 +954,10 @@
             <access modifier="private" />
             <rename to="itemTransform_private" />
         </modify-function>
+        
+        <inject-code class="interface">
+            public QTransform itemTransform(QGraphicsItemInterface other);
+        </inject-code>
 
         <modify-function signature="setGroup(QGraphicsItemGroup*)">
             <modify-argument index="1">
@@ -976,6 +990,16 @@
     </interface-type>
 
     <object-type name="QAbstractGraphicsShapeItem">
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
 
         <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
@@ -990,7 +1014,6 @@
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractItemView___" quote-before-line="}// class"/>
         </inject-code>
-
 
         <modify-function signature="setIndexWidget(const QModelIndex &amp;,QWidget *)">
             <modify-argument index="2">
@@ -1452,6 +1475,18 @@
 
     <object-type name="QGraphicsItemGroup">
 
+
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
+
         <modify-function signature="QGraphicsItemGroup(QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
@@ -1476,6 +1511,16 @@
     </object-type>
 
     <object-type name="QGraphicsLineItem">
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
         <modify-function signature="QGraphicsLineItem(QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="1" meta-name="%1"/>
@@ -1512,6 +1557,16 @@
     </object-type>
 
     <object-type name="QGraphicsPixmapItem">
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
 
         <modify-function signature="QGraphicsPixmapItem(QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
@@ -3119,6 +3174,16 @@
     </modify-function>
     </object-type>
     <object-type name="QGraphicsWidget">
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
 
         <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
         <modify-function signature="getWindowFrameMargins(double*,double*,double*,double*)const" access="private"/>
