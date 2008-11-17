@@ -2760,6 +2760,16 @@
                 <replace from="%TYPE" to="QStyleOptionFrame"/>
             </insert-template>
         </inject-code>
+
+        <modify-function signature="getTextMargins(int*,int*,int*,int*)const">
+            <access modifier="private" />
+            <rename to="getTextMargins_private" />
+        </modify-function>
+
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QLineEdit___" quote-before-line="}// class"/>
+        </inject-code>
+
     </object-type>
 
     <object-type name="QToolBar">

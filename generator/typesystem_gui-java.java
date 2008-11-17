@@ -337,6 +337,48 @@ class QLineF___ extends QLineF {
 
 }// class
 
+class QLineEdit___ extends QLineEdit {
+
+    /**
+        The TextMargins class represents the margins of
+        the text in a QLineEdit.<p>It consists of four
+        public integers, giving the top, bottom,
+        left, and right margins.
+   */
+    public static final class TextMargins
+    {
+        /** The top margin of the QLineEdit. */
+        public final int top;
+        /** The bottom margin of the QLineEdit */
+        public final int bottom;
+        /** The left margin of the QLineEdit. */
+        public final int left;
+        /** The right margin of the QLineEdit. */
+        public final int right;
+
+        private TextMargins(int left, int top, int right, int bottom)
+        {
+            this.left = left;
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+        }
+    }
+
+    public final TextMargins getTextMargins()
+    {
+        QNativePointer left = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer top = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer right = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
+
+        getTextMargins_private(left, top, right, bottom);
+        
+        return new TextMargins(left.intValue(), top.intValue(), right.intValue(),
+                               bottom.intValue());
+    }
+}// class
+
 class QKeySequence___ extends QKeySequence {
 
     @QtBlockedSlot
