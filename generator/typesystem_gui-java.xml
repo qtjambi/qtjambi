@@ -143,6 +143,13 @@
         </inject-code>
     </object-type>
 
+    <value-type name="QPainterPath">
+        <modify-function signature="operator&amp;=(QPainterPath)" remove="all" />
+        <modify-function signature="operator+=(QPainterPath)" remove="all" />
+        <modify-function signature="operator-=(QPainterPath)" remove="all" />
+        <modify-function signature="operator|=(QPainterPath)" remove="all" />
+    </value-type>
+
     <value-type name="QTransform">
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QTransform___" quote-before-line="}// class"/>
@@ -2267,6 +2274,47 @@
     <object-type name="QInputDialog">
 
     <modify-function signature="open(QObject*,const char*)" remove="all" />
+        <inject-code>
+        public static final Integer getInt(QWidget parent, String title, String label, int value, int min, int max, int step, com.trolltech.qt.core.Qt.WindowFlags flags)
+        {
+            QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+            int result = getInt_private(parent, title, label, value, min, max, step, ok, flags);
+
+            return ok.booleanValue() ? result : null;
+
+        }
+
+        public static final Integer getInt(QWidget parent, String title, String label, int value, int min, int max, int step, com.trolltech.qt.core.Qt.WindowType[] f)
+        {
+            QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+            int result = getInt_private(parent, title, label, value, min, max, step, ok, f);
+
+            return ok.booleanValue() ? result : null;
+        }
+
+        public static final Integer getInt(QWidget parent, String title, String label, int value, int min, int max, int step)
+        {
+            return getInt(parent, title, label, value, min, max, step, new com.trolltech.qt.core.Qt.WindowFlags(0));
+        }
+
+        public static final Integer getInt(QWidget parent, String title, String label, int value, int min, int max)
+        {
+            return getInt(parent, title, label, value, min, max, 1);
+        }
+
+        public static final Integer getInt(QWidget parent, String title, String label, int value)
+        {
+            return getInt(parent, title, label, value, (int) -2147483647, (int) 2147483647);
+        }
+
+        public static final Integer getInt(QWidget parent, String title, String label)
+        {
+            return getInt(parent, title, label, 0);
+        }
+
+        </inject-code>
 
        <inject-code>
         <insert-template name="gui.inputDialog_get_input">

@@ -2632,6 +2632,29 @@
 
   <object-type name="QInputDialog">
 
+    <modify-function signature="getInt(QWidget*,QString,QString,int,int,int,int,bool*,QFlags&lt;Qt::WindowType&gt;)">
+        <rename to="getInt_private" />
+        <access modifier="private" />
+        <modify-argument index="4">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="5">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="6">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="7">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="8">
+            <remove-default-expression />
+        </modify-argument>
+        <modify-argument index="9">
+            <remove-default-expression />
+        </modify-argument>
+    </modify-function>
+
     <modify-function signature="getDouble(QWidget *, const QString &amp;, const QString &amp;, double, double, double, int, bool *, QFlags&lt;Qt::WindowType&gt;)">
         <rename to="getDouble_internal"/>
         <access modifier="private"/>
