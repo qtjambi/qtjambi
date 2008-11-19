@@ -70,6 +70,19 @@ class QXmlName___ extends QXmlName {
 
 }// class
 
+class QXmlQuery___ extends QXmlQuery {
+    public final String evaluateTo()
+    {
+        QNativePointer result = new QNativePointer(QNativePointer.Type.String);
+
+        boolean ok = evaluateTo_private(result);
+
+        return ok ? result.stringValue() : null;
+    }
+
+
+}// class
+
 class QSimpleXmlNodeModel___ extends QSimpleXmlNodeModel {
 
     /**

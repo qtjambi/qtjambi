@@ -17,6 +17,17 @@
       </inject-code>
     </value-type>
 
+    <object-type name="QXmlQuery">
+        <modify-function signature="evaluateTo(QString*)const">
+            <rename to="evaluateTo_private" />
+            <access modifier="private" />
+        </modify-function>
+
+        <inject-code>
+    <import-file name="typesystem_xmlpatterns-java.java" quote-after-line="class QXmlQuery___" quote-before-line="}// class" />
+        </inject-code>
+    </object-type>
+
     <value-type name="QSimpleXmlNodeModel">
       <modify-function signature="namePool()const" access="private" rename="namePool_private" />
       <inject-code>

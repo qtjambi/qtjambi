@@ -9,6 +9,7 @@
   <enum-type name="QXmlNodeModelIndex::DocumentOrder"/>
   <enum-type name="QAbstractXmlNodeModel::NodeCopySetting"/>
   <enum-type name="QAbstractXmlNodeModel::SimpleAxis"/>
+  <enum-type name="QXmlQuery::QueryLanguage" />
 
   <object-type name="QAbstractMessageHandler">
     <modify-function signature="QAbstractMessageHandler(QObject*)" remove="all" />
