@@ -33,6 +33,17 @@ class QDomDocument___ extends QDomDocument {
 
     }
 
+    public final Result setContent(QXmlInputSource source, boolean namespaceProcessing)
+    {
+        QNativePointer errorStr = new QNativePointer(QNativePointer.Type.String);
+        QNativePointer errorLine = new QNativePointer(QNativePointer.Type.Int);
+        QNativePointer errorColumn = new QNativePointer(QNativePointer.Type.Int);
+
+        boolean success = setContent(source, namespaceProcessing, errorStr, errorLine, errorColumn);
+
+        return new Result(success, errorStr, errorLine, errorColumn);
+    }
+
 }// class
 
 class QXmlNamespaceSupport___ extends QXmlNamespaceSupport {
@@ -106,3 +117,5 @@ interface QXmlEntityResolver___ extends QXmlEntityResolver {
     }
 
 }// class
+
+

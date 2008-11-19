@@ -28,6 +28,20 @@
             }
         </template>
 
+
+        <modify-function signature="setContent(QXmlInputSource*,bool,QString*,int*,int*)">
+            <access modifier="private" />
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+
         <!--bool setContent(QIODevice* dev, bool namespaceProcessing, QString *errorMsg=0, int *errorLine=0, int *errorColumn=0 ); -->
         <modify-function signature="setContent(QIODevice*, bool, QString*, int*, int*)">
             <access modifier="private"/>
