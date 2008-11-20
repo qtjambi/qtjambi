@@ -15,10 +15,13 @@
 
     <namespace-type name="Phonon" />
     <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities" />
+    <interface-type name="Phonon::AudioOutputInterface40" java-name="AudioOutputInterface" />
 
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
     </enum-type>
+    <enum-type name="Phonon::AddonInterface::SubtitleCommand" />
+    <enum-type name="Phonon::AddonInterface::AudioChannelCommand" />
     <enum-type name="Phonon::DiscType" />
     <enum-type name="Phonon::ErrorType" />
     <enum-type name="Phonon::MetaData" />

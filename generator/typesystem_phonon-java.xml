@@ -93,7 +93,6 @@
         </inject-code>
     </value-type>
     
-
     <namespace-type name="Phonon">
         <modify-function signature="createPlayer(Phonon::Category, Phonon::MediaSource)">
             <modify-argument index="2">
