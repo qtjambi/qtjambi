@@ -2017,14 +2017,17 @@ static bool qtjambi_event_notify(void **data)
             QtJambiLink *link = QtJambiLink::findLinkForQObject(e->child());
             if (link) {
                 if (link->qobject()) {
-          if (e->added())
-            link->setCppOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
-          else
-            link->setDefaultOwnership(qtjambi_current_environment(), link->javaObject(qtjambi_current_environment()));
+                    JNIEnv *env = qtjambi_current_environment();
+            if (!env) // VM has shut down...
+                return false;
+                    if (e->added())
+                       link->setCppOwnership(env, link->javaObject(env));
+            else
+               link->setDefaultOwnership(env, link->javaObject(env));
                 } else if (event->type() == QEvent::ChildAdded) {
-                    qWarning("%s [%s] was garbage collected before it was reparented to %s [%s]",
-                             qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
-                             qPrintable(parent->objectName()), parent->metaObject()->className());
+            qWarning("%s [%s] was garbage collected before it was reparented to %s [%s]",
+                 qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
+                 qPrintable(parent->objectName()), parent->metaObject()->className());
                 }
             }
         }
