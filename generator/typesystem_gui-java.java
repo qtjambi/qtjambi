@@ -476,22 +476,6 @@ class QPixmap___ extends QPixmap {
 }// class
 
 class QPixmapFilter___ extends QPixmapFilter {
-        public final double[] convolutionKernel()
-        {
-            int rows = rows();
-            int columns = columns();
-
-            int length = rows * columns;            
-
-            double[] kernel = new double[length];
-            QNativePointer ptr = convolutionKernel_private();
-            for (int i = 0; i < length; ++i) {
-                kernel[i] = ptr.doubleAt(i);
-            }
-
-            return kernel;
-        }
-
         public final void setConvolutionKernel(double[] kernel, int rows, int columns)
         {
             int length = rows * columns;

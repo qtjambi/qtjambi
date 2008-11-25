@@ -86,6 +86,13 @@
   <rejection class="QWidgetItem" field-name="wid" />
   <rejection class="QFont" enum-name="ResolveProperties" />
 
+  <enum-type name="QStyleOptionTabBarBaseV2::StyleOptionVersion" />
+  <enum-type name="QTabBar::SelectionBehavior" />
+  <enum-type name="QTabBar::ButtonPosition" />
+  <enum-type name="QInputDialog::InputMode" />
+  <enum-type name="QInputDialog::InputDialogOption" flags="QInputDialog::InputDialogOptions" />
+  <enum-type name="QFontDialog::FontDialogOption" flags="QFontDialog::FontDialogOptions" />
+  <enum-type name="QColorDialog::ColorDialogOption" flags="QColorDialog::ColorDialogOptions" />
   <enum-type name="QPixmapFilter::FilterType" />
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
@@ -128,6 +135,7 @@
   <enum-type name="QPlainTextEdit::LineWrapMode" />
   <enum-type name="QPrintPreviewWidget::ViewMode" />
   <enum-type name="QPrintPreviewWidget::ZoomMode" />
+  <enum-type name="QStyleOptionTabV3::StyleOptionVersion" />
   <enum-type name="QStyleOptionViewItemV4::StyleOptionVersion" />
   <enum-type name="QStyleOptionViewItemV4::ViewItemPosition" />
 
@@ -5000,6 +5008,7 @@
   <object-type name="QStylePlugin" />
   <object-type name="QTextCodecPlugin" />
 
+  <suppress-warning text="WARNING(MetaInfoGenerator) :: class 'QPixmapFilter' inherits from polymorphic class 'QPixmapFilter', but has no polymorphic id set"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPixmap::QPixmap', unmatched parameter type 'QPixmapData*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
@@ -5030,6 +5039,12 @@
   <suppress-warning text="WARNING(MetaInfoGenerator) :: class 'QInputEvent' inherits from polymorphic class 'QEvent', but has no polymorphic id set"/>
   <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcMenus' in 'com.trolltech.qt.gui.QMenu' but not both"/>
   <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcMenus' in 'com.trolltech.qt.gui.QMenuBar' but not both"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkCacheMetaData' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkProxyQuery' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkAddressEntry' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'SubtitleDescription' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioCaptureDevice' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioChannelDescription' has equals operators but no qHash() function" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QBrush' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFrame_iterator' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRegion' has equals operators but no qHash() function"/>

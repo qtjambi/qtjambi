@@ -3,7 +3,9 @@
     <include file-name="qssl.h" location="global" />
   </namespace-type>
 
+  <enum-type name="QNetworkProxy::Capability" flags="QNetworkProxy::Capabilities" />
   <enum-type name="QAbstractSocket::NetworkLayerProtocol" />
+  <enum-type name="QNetworkProxyQuery::QueryType" />
   <enum-type name="QAbstractSocket::SocketError" />
   <enum-type name="QAbstractSocket::SocketState" />
   <enum-type name="QAbstractSocket::SocketType" />
@@ -37,10 +39,14 @@
 
   <object-type name="QAbstractNetworkCache" />
   <object-type name="QNetworkDiskCache" />
-  <value-type name="QNetworkCacheMetaData" />
+  <value-type name="QNetworkCacheMetaData">
+    <modify-function signature="operator=(QNetworkCacheMetaData)" remove="all" />
+  </value-type>
 
   <object-type name="QNetworkProxyFactory" />
-  <value-type name="QNetworkProxyQuery" />
+  <value-type name="QNetworkProxyQuery" >
+    <modify-function signature="operator=(QNetworkProxyQuery)" remove="all" />
+  </value-type>
 
   <object-type name="QAbstractSocket" />
   <object-type name="QFtp" />

@@ -497,10 +497,6 @@
     </value-type>
 
     <object-type name="QPixmapConvolutionFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ConvolutionFilter">
-    <modify-function signature="convolutionKernel()const">
-        <access modifier="private" />
-        <rename to="convolutionKernel_private" />
-    </modify-function>
     <modify-function signature="setConvolutionKernel(const double*,int,int)">
         <access modifier="private" />
         <rename to="setConvolutionKernel_private" />
@@ -944,6 +940,17 @@
                 disableGarbageCollection();
             </inject-code>
         </modify-function>
+
+        <inject-code>
+            public final com.trolltech.qt.gui.QTransform itemTransform(com.trolltech.qt.gui.QGraphicsItemInterface other)
+            {
+                QNativePointer ok = new QNativePointer(QNativePointer.Type.Boolean);
+
+                com.trolltech.qt.gui.QTransform transform = itemTransform_private(other, ok);
+
+                return ok.booleanValue() ? transform : null;
+            }
+        </inject-code>
 
         <modify-function signature="paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)">
             <modify-argument index="2">
@@ -3345,5 +3352,6 @@
     </interface-type>
 
     <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcItems' in 'com.trolltech.qt.gui.QGraphicsGridLayout' but not both" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Shadowing: QDialog::accepted() and QPrintDialog::accepted(); Java code will not compile" />
 
 </typesystem>
