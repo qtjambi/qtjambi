@@ -22,13 +22,13 @@
 
         <table cellpadding="2" cellspacing="1" border="0" width="100%" bgcolor="#e5e5e5">
         <tr>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         Getting Started
         </th>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         General
         </th>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         Developer Resources
         </th>
         </tr>
@@ -58,13 +58,13 @@
         </td>
         </tr>
         <tr>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         API Reference
         </th>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         Core Features
         </th>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         Key Technologies
         </th>
         </tr>
@@ -97,13 +97,13 @@
         </td>
         </tr>
         <tr>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         Add-ons & Services
         </th>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         Tools
         </th>
-        <th bgcolor="#a2c511" width="33%">
+        <th bgcolor="#66b036" width="33%">
         Licenses &#38; Credits 
         </th>
         </tr>

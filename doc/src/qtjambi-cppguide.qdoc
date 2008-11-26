@@ -2,32 +2,13 @@
     \page qtjambi-cppguide.html
     \title Qt Jambi for C++ Developers
 
-    This overview is intended for C++ programmers already familiar
-    with Qt and would like to migrate to Qt Jambi. We will give a
-    quick guide to issues that might confuse or misslead unexpecting
-    C++ programmers venturing into the Java World with Qt Jambi.
+    This overview is intended for C++ programmers that are already
+    familiar with Qt and that would like to migrate to Qt Jambi. We will
+    give a quick guide to issues that might confuse or misslead
+    unexpecting C++ programmers venturing into the Java World with Qt
+    Jambi.
 
     We present these issues in a list in the next section.
-
-    \omit Probably shouldn't include this
-    \section1 Why Switch to Qt Jambi
-
-    After diving into your C++ code for hours, searching for one of
-    those hated and feared dangling pointers, have you ever felt the
-    need to curse at the broken C++ language? Do you envy your Java
-    programming collegues, who gets the garbage taken out without
-    lifting a finger? What a wonderful world the Java World must be.
-    But, you are using the best GUI Toolkit out there - Qt - and that
-    binds you to suffer the pain of the complex, outlived language of
-    a dying generation of programmers, hopelessly stuck in their
-    decadent time.
-
-    Fear no more! You can now get the best from both worlds, while
-    leaving the toils of C++ behind. Qt Jambi is born: the Qt Toolkit
-    ported to Java. Take advantage of the easiness and pleasantness of
-    Java programming, and enjoy the power of Qt all the same. What are
-    you waiting for? Pick up that mouse and get moving.
-    \endomit
   
     \section1 The List
 
@@ -36,7 +17,7 @@
     
     \list
         \o \bold{Collecting garbage}: Garbage Collection of Jambi
-           classes are handled automatically, so you do not have
+           objects are handled automatically, so you do not have
            to worry about object ownership. They will all be
            deleted automatically.
         \o \bold{Where did QVariant go?}: QVariant is Qt's way to
@@ -93,7 +74,7 @@
     field, or use any copy constructor explicitly.
 
     Note also that Java has run-time type inference. We can therefore
-    leave the Qt \c rcc tool and all the QObject macros.  Also the
+    leave the Qt \c rcc tool and all the QObject macros. Also the
     \l{Qt Meta Object System}, with its properties and is unessasary
     in Java, because of the introspection provided for all classes
     provided by Java (see the \c{java.lang.reflect} package for
