@@ -495,6 +495,7 @@ public:
     TypeSystem::Ownership ownership(const AbstractMetaClass *cls, TypeSystem::Language language, int idx) const;
 
     bool isVirtualSlot() const;
+    bool isAllowedAsSlot() const;
 
     QString typeReplaced(int argument_index) const;
     bool isRemovedFromAllLanguages(const AbstractMetaClass *) const;

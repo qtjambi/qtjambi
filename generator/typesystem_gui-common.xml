@@ -1454,6 +1454,7 @@
     <modify-function signature="open()" virtual-slot="yes" />
     <modify-function signature="setOrientation(Qt::Orientation)" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="showExtension(bool)" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setVisible(bool)" allow-as-slot="yes"/>
   </object-type>
   <object-type name="QDialogButtonBox">
     <modify-function signature="addButton(QAbstractButton*,QDialogButtonBox::ButtonRole)">

@@ -1907,12 +1907,13 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
         }
 
         if (!(attr & NoBlockedSlot)
+            && !java_function->isAllowedAsSlot()
             && !java_function->isConstructor()
             && !java_function->isSlot()
             && !java_function->isSignal()
             && !java_function->isStatic()
             && !(included_attributes & AbstractMetaAttributes::Static))
-            s << INDENT << "@QtBlockedSlot" << endl;
+                s << INDENT << "@QtBlockedSlot" << endl;
 
         s << INDENT;
         if (attr & AbstractMetaAttributes::Public) s << "public ";

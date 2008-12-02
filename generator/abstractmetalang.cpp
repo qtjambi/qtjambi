@@ -533,6 +533,19 @@ bool AbstractMetaFunction::isVirtualSlot() const
     return false;
 }
 
+bool AbstractMetaFunction::isAllowedAsSlot() const
+{
+    FunctionModificationList modifications = this->modifications(ownerClass());
+    foreach (FunctionModification modification, modifications) {
+        if(modification.isAllowedAsSlot()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 bool AbstractMetaFunction::disabledGarbageCollection(const AbstractMetaClass *cls, int key) const
 {
     FunctionModificationList modifications = this->modifications(cls);

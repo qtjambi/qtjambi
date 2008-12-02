@@ -300,7 +300,8 @@ struct Modification {
         Rename =                0x2000,
         Deprecated =            0x4000,
         ReplaceExpression =     0x8000,
-        VirtualSlot =          0x10000 | NonFinal
+        VirtualSlot =          0x10000 | NonFinal,
+        AllowAsSlot =          0x20000
     };
 
     Modification() : modifiers(0) { }
@@ -314,6 +315,7 @@ struct Modification {
     bool isFinal() const { return modifiers & Final; }
     bool isNonFinal() const { return modifiers & NonFinal; }
     bool isVirtualSlot() const { return (modifiers & VirtualSlot) == VirtualSlot; }
+    bool isAllowedAsSlot() const { return (modifiers & AllowAsSlot) == AllowAsSlot; }
     QString accessModifierString() const;
 
     bool isDeprecated() const { return modifiers & Deprecated; }
