@@ -2581,17 +2581,19 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
 
 
         writeTypeInfo(s, java_type, ForceValueType);
-        s << "::const_iterator " << qt_name << "_end_it = " << qt_name << ".constEnd();" << endl
+        QString iteratorEndName = "__qt_" + qt_name + "_end_it";
+        QString iteratorName = "__qt_" + qt_name + "_it";
+        s << "::const_iterator " << iteratorEndName << " = " << qt_name << ".constEnd();" << endl
           << INDENT;
         s << "for (";
         writeTypeInfo(s, java_type, ForceValueType);
-        s << "::const_iterator " << qt_name << "_it = " << qt_name << ".constBegin(); "
-          << qt_name << "_it != " << qt_name << "_end_it; ++" << qt_name << "_it) {" << endl;
+        s << "::const_iterator " << iteratorName << " = " << qt_name << ".constBegin(); "
+          << iteratorName << " != " << iteratorEndName << "; ++" << iteratorName << ") {" << endl;
         {
             Indentation indent(INDENT);
             s << INDENT;
             writeTypeInfo(s, targ);
-            s << " __qt_tmp = *" << qt_name << "_it;" << endl;
+            s << " __qt_tmp = *" << iteratorName << ";" << endl;
             writeQtToJava(s, targ, "__qt_tmp", "__java_tmp", 0, -1, BoxedPrimitive);
             s << INDENT << "qtjambi_collection_add(__jni_env, " << java_name << ", __java_tmp);"
               << endl;
@@ -2668,17 +2670,19 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
           << INDENT << "jobject " << java_name << " = " << constructor << "(__jni_env, " << qt_name
           << ".size());" << endl
           << INDENT;
+        QString iteratorName = "__qt_" + qt_name + "_it";
         writeTypeInfo(s, java_type, Option(ExcludeReference | ExcludeConst));
-        s << "::const_iterator it;" << endl
-          << INDENT << "for (it=" << qt_name << ".constBegin(); it!=" << qt_name << ".constEnd(); ++it) {" << endl;
+        s << "::const_iterator " << iteratorName << ";" << endl
+          << INDENT << "for (" << iteratorName << "=" << qt_name << ".constBegin(); "  
+                    << iteratorName << "!=" << qt_name << ".constEnd(); ++" << iteratorName << ") {" << endl;
         {
             Indentation indent(INDENT);
             s << INDENT;
             writeTypeInfo(s, targ_key);
-            s << " __qt_tmp_key = it.key();" << endl
+            s << " __qt_tmp_key = " << iteratorName << ".key();" << endl
               << INDENT;
             writeTypeInfo(s, targ_val);
-            s << " __qt_tmp_val = it.value();" << endl;
+            s << " __qt_tmp_val = " << iteratorName << ".value();" << endl;
             writeQtToJava(s, targ_key, "__qt_tmp_key", "__java_tmp_key", 0, -1, BoxedPrimitive);
             writeQtToJava(s, targ_val, "__qt_tmp_val", "__java_tmp_val", 0, -1, BoxedPrimitive);
             s << INDENT << "qtjambi_map_put(__jni_env, " << java_name
