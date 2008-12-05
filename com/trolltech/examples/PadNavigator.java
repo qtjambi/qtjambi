@@ -64,7 +64,7 @@ public class PadNavigator extends QGraphicsView {
             if (proxyWidget != null && !proxyWidget.pos().isNull())
                 proxyWidget.setGeometry(boundingRect().adjusted(25, 25, -25, -25));
 
-            painter.setOpacity(opacity());
+            painter.setOpacity(roundRectOpacity());
             painter.setPen(QPen.NoPen);
             painter.setBrush(new QColor(0, 0, 0, 64));
             painter.drawRoundRect(rect().translated(2, 2));
@@ -99,14 +99,14 @@ public class PadNavigator extends QGraphicsView {
                 update(null);
         }
 
-        public double opacity() {
+        public final double roundRectOpacity() {
             double opacity = opa;
             if (parentItem() != null)
-                opacity += ((RoundRectItem) parentItem()).opacity();
+                opacity += ((RoundRectItem) parentItem()).roundRectOpacity();
             return opacity;
         }
 
-        void setOpacity(double opacity) {
+        public final void setRoundRectOpacity(double opacity) {
             opa = opacity;
             update(null);
         }
@@ -171,7 +171,7 @@ public class PadNavigator extends QGraphicsView {
         setScene(scene);
 
         baseItem = new RoundRectItem(bounds, new QColor(226, 255, 92, 64), null);
-        baseItem.setOpacity(1);
+        baseItem.setRoundRectOpacity(1);
         scene.addItem(baseItem);
 
         QWidget embed = new QWidget();
