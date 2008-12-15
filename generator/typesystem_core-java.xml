@@ -961,6 +961,7 @@
             <rename to="getByte"/>
         </modify-function>
 
+        <modify-function signature="write(const char*)" remove="all" />
 
         <modify-function signature="peek(char*,long long)">
             <access modifier="private"/>
@@ -997,7 +998,6 @@
                 <replace from="%FUNCTION_NAME" to="write"/>
             </insert-template>
         </inject-code>
-
         <template name="core.iodevice_convert_char*_to_byte[]">
             <insert-template name="core.convert_primitive_array_to_java">
                 <replace from="%JNITYPE" to="jbyte"/>

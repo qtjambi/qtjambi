@@ -652,6 +652,38 @@ class QFontDialog___ extends QFontDialog {
         public boolean ok;
     }
 
+    public static Result getFont(QFont initial, QWidget parent, String title, FontDialogOptions options) {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+        QFont returned = getFont(np, initial, parent, title, options);
+        return new Result(returned, np.booleanValue());
+    }
+
+    public static Result getFont(QFont initial, QWidget parent, String caption) {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+        QFont returned = getFont(np, initial, parent, caption);
+        return new Result(returned, np.booleanValue());
+    }
+
+    public static Result getFont(QWidget parent) {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+        QFont returned = getFont(np, parent);
+        return new Result(returned, np.booleanValue());
+    }
+
+    public static Result getFont() {
+        return getFont((QWidget) null);
+    }
+
+    public static Result getFont(QFont initial, QWidget parent) {
+        QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
+        QFont returned = getFont(np, initial, parent);
+        return new Result(returned, np.booleanValue());
+    }
+
+    public static Result getFont(QFont initial) {
+        return getFont(initial , (QWidget) null);
+    }
+
 }// class
 
 class QMenu___ extends QMenu {

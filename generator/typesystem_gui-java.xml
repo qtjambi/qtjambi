@@ -1389,65 +1389,27 @@
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QFontDialog___" quote-before-line="}// class"/>
         </inject-code>
-
-        <template name="gui.fontdialog_get_font_general">
-            public static Result getFont(%FONT_ARGUMENT %COMMA QWidget parent %STRING_ARGUMENT) {
-                QNativePointer np = new QNativePointer(QNativePointer.Type.Boolean);
-                QFont returned = getFont(np, %FONT_CALL_ARGUMENT %COMMA parent %STRING_CALL_ARGUMENT);
-                return new Result(returned, np.booleanValue());
-            }
-        </template>
-
-        <template name="gui.fontdialog_get_font_nocaption">
-            <insert-template name="gui.fontdialog_get_font_general">
-                <replace from="%STRING_ARGUMENT" to=""/>
-                <replace from="%STRING_CALL_ARGUMENT" to=""/>
-            </insert-template>
-
-            public static Result getFont(%FONT_ARGUMENT) {
-                return getFont(%FONT_CALL_ARGUMENT %COMMA (QWidget) null);
-            }
-        </template>
+        
+        
+        <modify-function signature="getFont(bool*,QFont,QWidget*,QString,QFlags&lt;QFontDialog::FontDialogOption&gt;)">
+            <access modifier="private" />
+        </modify-function>
 
         <modify-function signature="getFont(bool*,QFont,QWidget*,QString)">
             <access modifier="private"/>
         </modify-function>
-        <inject-code>
-            <insert-template name="gui.fontdialog_get_font_general">
-                <replace from="%FONT_ARGUMENT %COMMA" to="QFont initial,"/>
-                <replace from="%STRING_ARGUMENT" to=", String caption"/>
-                <replace from="%FONT_CALL_ARGUMENT %COMMA" to="initial,"/>
-                <replace from="%STRING_CALL_ARGUMENT" to=", caption"/>
-            </insert-template>
-        </inject-code>
-
         <modify-function signature="getFont(bool*,QWidget*)">
             <access modifier="private"/>
             <modify-argument index="2">
                 <remove-default-expression/>
-            </modify-argument>
-        </modify-function>
-        <inject-code>
-            <insert-template name="gui.fontdialog_get_font_nocaption">
-                <replace from="%FONT_ARGUMENT" to=""/>
-                <replace from="%COMMA" to=""/>
-                <replace from="%FONT_CALL_ARGUMENT" to=""/>
-            </insert-template>
-        </inject-code>
-
+            </modify-argument>        
+        </modify-function>        
         <modify-function signature="getFont(bool*,QFont,QWidget*)">
             <access modifier="private"/>
             <modify-argument index="3">
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
-        <inject-code>
-            <insert-template name="gui.fontdialog_get_font_nocaption">
-                <replace from="%FONT_ARGUMENT" to="QFont initial"/>
-                <replace from="%COMMA" to=", "/>
-                <replace from="%FONT_CALL_ARGUMENT" to="initial"/>
-            </insert-template>
-        </inject-code>
     </object-type>
 
     <object-type name="QGraphicsEllipseItem">
