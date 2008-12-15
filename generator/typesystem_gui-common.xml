@@ -760,7 +760,11 @@
     <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
 
-  <object-type name="QPixmapFilter" polymorphic-base="yes" />
+  <object-type name="QPixmapFilter" polymorphic-base="yes">
+    <modify-function signature="draw(QPainter*,QPointF,QPixmap,QRectF)const">
+        <modify-argument index="1" invalidate-after-use="yes" />
+    </modify-function>
+  </object-type>
   <object-type name="QPixmapColorizeFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ColorizeFilter" />
   <object-type name="QPixmapConvolutionFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ConvolutionFilter">
   </object-type>
