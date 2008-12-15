@@ -41,12 +41,17 @@
             </modify-argument>
         </modify-function>
 
-
         <modify-function signature="setContent(QXmlInputSource*,QXmlReader*,QString*,int*,int*)">
             <modify-argument index="1">
                 <reference-count action="set" variable-name="__rcContent" />
             </modify-argument>
         </modify-function>
+                
+        <modify-function signature="setContent(QXmlInputSource*,bool,QString*,int*,int*)">
+            <modify-argument index="1">
+                <reference-count action="set" variable-name="__rcContent" />
+            </modify-argument>
+        </modify-function>        
 
         <modify-function signature="setContent(QIODevice*,QString*,int*,int*)">
             <modify-argument index="1">

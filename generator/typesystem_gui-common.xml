@@ -3290,6 +3290,11 @@
             <reference-count action="ignore"/>
         </modify-argument>
     </modify-function>
+    <modify-function signature="removeItemWidget(QListWidgetItem*)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="setModel(QAbstractItemModel*)">
         <modify-argument index="1">
             <reference-count action="ignore"/>
@@ -4867,6 +4872,11 @@
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
         </modify-argument>
     </modify-function>
+    <modify-function signature="setGraphicsItem(QGraphicsItem*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcItem" />
+        </modify-argument>
+    </modify-function>    
   </object-type>
   <interface-type name="QGraphicsLayoutItem" delete-in-main-thread="yes">
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
@@ -4874,6 +4884,11 @@
             <reference-count action="set" variable-name="__rcParentLayoutItem" />
         </modify-argument>
     </modify-function>
+    <modify-function signature="setGraphicsItem(QGraphicsItem*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcItem" />
+        </modify-argument>
+    </modify-function>    
   </interface-type>
   <object-type name="QGraphicsLinearLayout" delete-in-main-thread="yes">
     <modify-function signature="addItem(QGraphicsLayoutItem*)">
@@ -4911,6 +4926,28 @@
             <reference-count action="set" variable-name="__rcLayout" />
         </modify-argument>
     </modify-function>
+    
+    <modify-function signature="addAction(QAction*)">
+        <modify-argument index="1">
+            <reference-count action="add" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertAction(QAction*,QAction*)">
+        <modify-argument index="2">
+            <reference-count action="add" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="insertActions(QAction*,QList&lt;QAction*&gt;)">
+        <modify-argument index="2">
+            <reference-count action="add" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="removeAction(QAction*)">
+        <modify-argument index="1">
+            <reference-count action="remove" variable-name="__rcActions" />
+        </modify-argument>
+    </modify-function>
+        
 
     <modify-function signature="changeEvent(QEvent*)">
         <modify-argument index="1" invalidate-after-use="yes" />
