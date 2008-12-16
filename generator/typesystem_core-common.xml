@@ -1054,6 +1054,12 @@
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
+    
+    <modify-function signature="setIniCodec(QTextCodec*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcIniCodec" />
+        </modify-argument>
+    </modify-function>
 
     <modify-function signature="setSystemIniPath(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="setUserIniPath(const QString&amp;)" remove="all"/> <!--### Obsolete in 4.3-->

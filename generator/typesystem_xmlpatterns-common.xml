@@ -111,6 +111,16 @@
   <value-type name="QXmlSerializerPointer"/>
 
   <object-type name="QXmlQuery">
+    <modify-function signature="setFocus(QIODevice*)">
+        <modify-argument index="1"> 
+            <reference-count action="set" variable-name="__rcFocusDevice" />
+        </modify-argument>
+    </modify-function>
+    <modify-function signature="setNetworkAccessManager(QNetworkAccessManager*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcNetworkAccessManager" />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="evaluateTo(QAbstractXmlReceiver *)const" remove="all" />
     <modify-function signature="evaluateTo(QStringList&lt;QString&gt;*)const" remove="all" />
     <modify-function signature="setMessageHandler(QAbstractMessageHandler*)">

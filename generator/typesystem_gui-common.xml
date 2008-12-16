@@ -2902,6 +2902,17 @@
   </object-type>
 
   <object-type name="QTreeWidget">
+    <modify-function signature="setSelectionModel(QItemSelectionModel*)">
+        <modify-argument index="1">
+            <no-null-pointer/>
+            <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemSelectionModel"/>
+        </modify-argument>
+    </modify-function>  
+    <modify-function signature="removeItemWidget(QTreeWidgetItem*,int)">
+        <modify-argument index="1">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
     <modify-function signature="mimeData(const QList&lt;QTreeWidgetItem*&gt;)const">
         <modify-argument index="1" invalidate-after-use="yes"/>
     </modify-function>
@@ -3930,6 +3941,11 @@
     <modify-function signature="initStyleOption(QStyleOptionTab*,int)const">
         <access modifier="private"/>
     </modify-function>
+    <modify-function signature="setTabButton(int,QTabBar::ButtonPosition,QWidget*)">
+        <modify-argument index="3">
+            <reference-count action="ignore" />
+        </modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QStandardItemModel">
@@ -4208,7 +4224,18 @@
     </modify-function>
   </object-type>
 
-  <object-type name="QTextDocumentWriter" />
+  <object-type name="QTextDocumentWriter">
+    <modify-function signature="setCodec(QTextCodec*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcCodec" />
+        </modify-argument>        
+    </modify-function>
+    <modify-function signature="setDevice(QIODevice*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcDevice" />
+        </modify-argument>
+    </modify-function>
+  </object-type>
 
   <object-type name="QSplitter">
 
