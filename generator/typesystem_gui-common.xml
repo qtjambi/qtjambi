@@ -85,6 +85,8 @@
   <rejection class="QTabletEvent" field-name="mExtra"/>
   <rejection class="QWidgetItem" field-name="wid" />
   <rejection class="QFont" enum-name="ResolveProperties" />
+  <rejection class="QIconEngineV2::AvailableSizesArgument" />
+  <rejection class="QIconEngineV2" enum-name="IconEngineHook" />
 
   <enum-type name="QStyleOptionTabBarBaseV2::StyleOptionVersion" />
   <enum-type name="QTabBar::SelectionBehavior" />
@@ -136,6 +138,7 @@
   <enum-type name="QPrintPreviewWidget::ViewMode" />
   <enum-type name="QPrintPreviewWidget::ZoomMode" />
   <enum-type name="QStyleOptionTabV3::StyleOptionVersion" />
+  <enum-type name="QStyleOptionFrameV3::StyleOptionVersion" />
   <enum-type name="QStyleOptionViewItemV4::StyleOptionVersion" />
   <enum-type name="QStyleOptionViewItemV4::ViewItemPosition" />
 
@@ -524,6 +527,9 @@
   <value-type name="QStyleOptionFrame" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionFrame::Type &amp;&amp; %1-&gt;version == QStyleOptionFrame::Version"/>
 
   <value-type name="QStyleOptionFrameV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionFrameV2::Type &amp;&amp; %1-&gt;version == QStyleOptionFrameV2::Version">
+    <modify-function signature="operator=(QStyleOptionFrame)" remove="all"/>
+  </value-type>
+  <value-type name="QStyleOptionFrameV3" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionFrameV3::Type &amp;&amp; %1-&gt;version == QStyleOptionFrameV3::Version">
     <modify-function signature="operator=(QStyleOptionFrame)" remove="all"/>
   </value-type>
 
@@ -2907,7 +2913,7 @@
             <no-null-pointer/>
             <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemSelectionModel"/>
         </modify-argument>
-    </modify-function>  
+    </modify-function>
     <modify-function signature="removeItemWidget(QTreeWidgetItem*,int)">
         <modify-argument index="1">
             <reference-count action="ignore" />
@@ -4228,7 +4234,7 @@
     <modify-function signature="setCodec(QTextCodec*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcCodec" />
-        </modify-argument>        
+        </modify-argument>
     </modify-function>
     <modify-function signature="setDevice(QIODevice*)">
         <modify-argument index="1">
@@ -4903,7 +4909,7 @@
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcItem" />
         </modify-argument>
-    </modify-function>    
+    </modify-function>
   </object-type>
   <interface-type name="QGraphicsLayoutItem" delete-in-main-thread="yes">
     <modify-function signature="setParentLayoutItem(QGraphicsLayoutItem*)">
@@ -4915,7 +4921,7 @@
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcItem" />
         </modify-argument>
-    </modify-function>    
+    </modify-function>
   </interface-type>
   <object-type name="QGraphicsLinearLayout" delete-in-main-thread="yes">
     <modify-function signature="addItem(QGraphicsLayoutItem*)">
@@ -4953,7 +4959,7 @@
             <reference-count action="set" variable-name="__rcLayout" />
         </modify-argument>
     </modify-function>
-    
+
     <modify-function signature="addAction(QAction*)">
         <modify-argument index="1">
             <reference-count action="add" variable-name="__rcActions" />
@@ -4974,7 +4980,7 @@
             <reference-count action="remove" variable-name="__rcActions" />
         </modify-argument>
     </modify-function>
-        
+
 
     <modify-function signature="changeEvent(QEvent*)">
         <modify-argument index="1" invalidate-after-use="yes" />

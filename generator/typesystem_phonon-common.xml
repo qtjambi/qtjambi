@@ -12,10 +12,11 @@
     <rejection class="Phonon::BackendCapabilities::Notifier" />
     <rejection class="AudioOutputAdaptor" />
     <rejection class="*" field-name="k_ptr" />
+    <rejection class="Phonon::AudioOutputInterface40" />
+    <rejection class="Phonon::AudioOutputInterface42" />
 
     <namespace-type name="Phonon" />
     <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities" />
-    <interface-type name="Phonon::AudioOutputInterface40" java-name="AudioOutputInterface" />
 
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />

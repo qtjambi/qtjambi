@@ -27,6 +27,7 @@
   <rejection class="" enum-name="QtValidLicenseForGuiModule"/>
   <rejection class="" enum-name="QtValidLicenseForScriptModule"/>
   <rejection class="" enum-name="QtValidLicenseForHelpModule"/>
+  <rejection class="" enum-name="QtValidLicenseForScriptToolsModule" />
   <rejection class="QtConcurrent" enum-name="enum_1" />
   <rejection class="QtConcurrent" function-name="operator|" />
 
@@ -52,6 +53,7 @@
   <rejection class="QtConcurrent::Median"/>
   <rejection class="QtConcurrent::MemberFunctionWrapper"/>
   <rejection class="QtConcurrent::MemberFunctionWrapper1"/>
+  <rejection class="QtConcurrent::qValueType" />
   <rejection class="QtConcurrent::ReduceKernel"/>
   <rejection class="QtConcurrent::ResultItem"/>
   <rejection class="QtConcurrent::ResultIterator"/>
@@ -214,6 +216,7 @@
   <rejection class="QHashNode"/>
   <rejection class="QHashNode"/>
   <rejection class="QInternal"/>
+  <rejection class="QIncompatibleFlag" />
   <rejection class="QLibrary"/>
   <rejection class="QLinkedList"/>
   <rejection class="QLinkedListData"/>
@@ -747,7 +750,7 @@
     <extra-includes>
         <include file-name="QNoImplicitBoolCast" location="global"/>
     </extra-includes>
-    
+
     <!-- removed functions -->
     <modify-function signature="begin()" remove="all"/>
     <modify-function signature="begin()const" remove="all"/>
@@ -1054,7 +1057,7 @@
     <extra-includes>
         <include file-name="QStringList" location="global"/>
     </extra-includes>
-    
+
     <modify-function signature="setIniCodec(QTextCodec*)">
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcIniCodec" />
@@ -1124,7 +1127,7 @@
     <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(uint&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(ulong&amp;)"> <remove/> </modify-function>
-    <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> 
+    <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)">
         <remove />
     </modify-function>
     <modify-function signature="string()const"> <remove /> </modify-function>
