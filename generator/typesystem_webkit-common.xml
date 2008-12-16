@@ -83,6 +83,13 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebSettings::QWebSettings', unmatched parameter type 'WebCore::Settings*'" />
 
     <!-- Needed to avoid warnings on compilers that don't support webkit -->
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::Plugin' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />                            
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::ExtensionReturn' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::MimeType' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'Extension' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::ExtensionOption' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPluginFactory' for enum 'Extension' is not declared" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'NavigationRequestResponse' is not declared" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'WebAttribute' is not declared" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebSettings' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
@@ -97,7 +104,6 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebHistory' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebView' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPage' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
-
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebHitTestResult' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'FindFlag' is not declared" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'LinkDelegationPolicy' is not declared" />

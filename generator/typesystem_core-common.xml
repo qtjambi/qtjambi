@@ -532,7 +532,6 @@
 
   <enum-type name="QDataStream::Version">
     <reject-enum-value name="Qt_4_1"/>
-    <reject-enum-value name="Qt_4_5"/>
   </enum-type>
 
   <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">
@@ -1243,6 +1242,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::constEnd', unmatched return type 'const_iterator'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::QFuture', unmatched parameter type 'QFutureInterface&lt;T&gt;*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QFuture::begin', unmatched return type 'const_iterator'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::advance', unmatched parameter type 'It&amp;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingMapped', unmatched return type 'Sequence'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingMapped', unmatched return type 'QList&lt;U&gt;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingMapped', unmatched return type 'QList&lt;MapFunctor::result_type&gt;'" />
@@ -1250,6 +1250,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::filtered', unmatched parameter type 'Iterator'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::filtered', unmatched parameter type 'Sequence const&amp;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::filter', unmatched parameter type 'Sequence&amp;'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::startFiltered', unmatched return type 'ThreadEngineStarter&lt;qValueType&lt;Iterator&gt;::value_type&gt;" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::startFiltered', unmatched return type 'ThreadEngineStarter&lt;Sequence::value_type&gt;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::startFiltered', unmatched return type 'ThreadEngineStarter&lt;Iterator::value_type&gt;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::blockingMappedReduced', unmatched return type 'V'" />
