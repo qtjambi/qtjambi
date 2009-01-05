@@ -452,7 +452,7 @@ public class NativeLibraryManager {
                 }
             }
             if (!loaded) {
-                throw new RuntimeException("Library '" + lib +"' could was not found in 'java.library.path'="
+                throw new RuntimeException("Library '" + lib +"' was not found in 'java.library.path'="
                                            + libPaths);
             }
         }
