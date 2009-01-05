@@ -182,7 +182,7 @@ class QCoreApplication___ extends QCoreApplication {
     private void disposeOfMyself() {
         m_instance = null;
         System.gc();
-        this.dispose();
+        this.disposeLater();
     }
 
     protected final static com.trolltech.qt.QNativePointer argv(String args[]) {
@@ -471,7 +471,7 @@ class QTextStream___ extends QTextStream {
         <p>
         After creating a string stream with the createStringStream() method,
         you can fetch the contents of the string the text stream is working on with this
-        method. 
+        method.
         <p>
         If this QTextStream was not created using createStringStream(), this function returns <tt>null</tt>.
         @return Returns the contents of QTextStreams created with createStringStream()
