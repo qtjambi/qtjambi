@@ -521,7 +521,7 @@ static void qtjambi_setup_connections(JNIEnv *, QtJambiLink *link)
             // The trick of getting the correct connection from Java to C++ emits is
             // to call qtjambi_connect_callback() which is used to establish connections
             // across the language barriers, and pass in the signal as both signal and 
-            // slot. The slot with the signal's signature will not exist of course, and
+            // slot. The slot with the signal's signature will not exist in C++ of course, and
             // the resolve-function will continue to resolve the equivalent Java method
             // and connect the whole thing in Java, which is what we want.
             Qt::ConnectionType type = Qt::AutoConnection;
