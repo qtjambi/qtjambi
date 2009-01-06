@@ -286,8 +286,8 @@ public class QtJambiInternal {
                     arg = arg.substring(arg.lastIndexOf('.') + 1);
                 }
 
-                if (!arg.equals(argumentTypes[i])) {
-
+                String argLenient = a[i].isMemberClass() ? arg.replace('$', '.') : null;
+                if (!arg.equals(argumentTypes[i]) && (a == null || !argLenient.equals(argumentTypes[i]))) {
                     found = false;
                     break;
                 }
