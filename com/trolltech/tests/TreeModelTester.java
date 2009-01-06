@@ -23,9 +23,10 @@ import java.util.*;
  */
 class Node {
 
-    public Node(String s, Model model) {
+    public Node(String s, Model model, Node parent) {
         this.text = s;
         this.model = model;
+        this.parent = parent;
     }
 
     @Override
@@ -35,6 +36,7 @@ class Node {
     String text;
     int counter;
     Model model;
+    Node parent;
 }
 
 /**
@@ -75,12 +77,13 @@ class Model extends QTreeModel {
 
     public Node root() { return root; }
 
-    private Node root = new Node("Root", this);
+    private Node root = new Node("Root", this, null);
 }
 
 /**
- * A simple test application. It adds 3 actions, "add", "remove" and "increment" to test
- * that we can add, remove and change the value of nodes in the tree.
+ * A simple test application. It adds four actions, "add", "remove" and
+ * "increment" and "swap" to test that we can add, remove and change the
+ * value of nodes in the tree.
  */
 public class TreeModelTester extends QTreeView {
 
@@ -105,9 +108,14 @@ public class TreeModelTester extends QTreeView {
         increment.setShortcut("Ctrl+I");
         increment.triggered.connect(this, "increment()");
 
+        QAction swap = new QAction(this);
+        swap.setShortcut("Ctrl+S");
+        swap.triggered.connect(this, "swap()");
+
         addAction(add);
         addAction(remove);
         addAction(increment);
+        addAction(swap);
     }
 
     public void setModel(Model model) {
@@ -115,7 +123,39 @@ public class TreeModelTester extends QTreeView {
         super.setModel(model);
     }
 
-    @SuppressWarnings("unused")
+
+    private void swap() {
+        System.out.println("Swapping?");
+        List<QModelIndex> pos = selectedIndexes();
+        for (QModelIndex i : pos) {
+            Node me = (Node) model.indexToValue(i);
+
+            Node parent = me.parent;
+
+            if (me.parent != null) {
+                int mepos = parent.children.indexOf(me);
+                if (mepos < parent.children.size() - 1) {
+                    Node other = parent.children.get(mepos);
+
+                    QModelIndex parentIndex = model.valueToIndex(parent);
+
+                    parent.children.remove(me);
+                    model.childrenRemoved(parentIndex, mepos, mepos);
+
+                    parent.children.add(mepos + 1, me);
+                    model.childrenInserted(parentIndex, mepos + 1, mepos + 1);
+
+                } else {
+                    System.out.println("cannot swap last element...");
+                }
+
+            } else {
+                System.out.println("cannot swap the root node..");
+            }
+        }
+    }
+
+
     private void add() {
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
@@ -124,7 +164,7 @@ public class TreeModelTester extends QTreeView {
 
             int size = n.children.size();
 
-            Node child = new Node(names[(int) (Math.random() * names.length)], model);
+            Node child = new Node(names[(int) (Math.random() * names.length)], model, n);
             n.children.add(child);
 
             model.childrenInserted(i, size, size);
