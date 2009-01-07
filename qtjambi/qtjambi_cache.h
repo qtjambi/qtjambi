@@ -433,6 +433,7 @@ struct QTJAMBI_EXPORT StaticCache
     struct {
         jclass class_ref;
         jmethodID ordinal;
+        jmethodID name;
     } Enum;
 
     DECLARE_RESOLVE_FUNCTIONS(Enum);

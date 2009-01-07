@@ -1492,6 +1492,9 @@ void StaticCache::resolveEnum_internal()
 
     Enum.ordinal = env->GetMethodID(Enum.class_ref, "ordinal", "()I");
     Q_ASSERT(Enum.ordinal);
+
+    Enum.name = env->GetMethodID(Enum.class_ref, "name", "()Ljava/lang/String;");
+    Q_ASSERT(Enum.name);
 }
 #endif
 

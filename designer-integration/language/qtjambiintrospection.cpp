@@ -48,7 +48,12 @@ public:
     virtual QString valueToKeys(int value) const ;
 
 private:
+    QString scopeInJvmSyntax() const;
+    void initialize();
+
+    QHash<QString, int> m_values_for_keys;
     QMetaEnum m_regular_enum;
+
     const QtJambiMetaObject *m_jambi_meta_object;
 };
 
@@ -162,6 +167,51 @@ private:
 QtJambiMetaEnumerator::QtJambiMetaEnumerator(const QMetaEnum &regularEnum, const QtJambiMetaObject *jambiMetaObject)
     : m_regular_enum(regularEnum), m_jambi_meta_object(jambiMetaObject)
 {
+    initialize();
+}
+
+void QtJambiMetaEnumerator::initialize()
+{
+    JNIEnv *env = qtjambi_current_environment();
+    Q_ASSERT(env != 0);
+
+    QString className = scopeInJvmSyntax();
+    jclass clazz = qtjambi_find_class(env, className.toLatin1().constData());
+    if (clazz == 0) {
+        qWarning("Couldn't find enum class '%s'", qPrintable(className));
+        return ;
+    }
+
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveClass();
+    sc->resolveEnum();
+
+    jobjectArray enumConstants = static_cast<jobjectArray>(env->CallObjectMethod(clazz, sc->Class.getEnumConstants));
+    if (enumConstants == 0) {
+        qWarning("No enum constants in class '%s'", qPrintable(className));
+        return ;
+    }
+
+    int numEnumConstants = env->GetArrayLength(enumConstants);
+    for (int i=0; i<numEnumConstants; ++i) {
+        jobject enumConstant = env->GetObjectArrayElement(enumConstants, i);
+        if (enumConstant != 0) {
+            jstring javaName = static_cast<jstring>(env->CallObjectMethod(enumConstant, sc->Enum.name));
+            if (javaName != 0) {
+                QString name = qtjambi_to_qstring(env, javaName);
+
+                // Get the value of the enum if it has a value() method
+                // otherwise get the ordinal.
+                int value = qtjambi_to_enum(env, enumConstant);
+
+                m_values_for_keys[name] = value;
+            } else {
+                qWarning("Name of enum constant #%d in class '%s' is null", i, qPrintable(className));
+            }
+        } else {
+            qWarning("Enum constant #%d in '%s' is null", i, qPrintable(className));
+        }
+    }
 }
 
 bool QtJambiMetaEnumerator::isFlag() const
@@ -171,22 +221,35 @@ bool QtJambiMetaEnumerator::isFlag() const
 
 QString QtJambiMetaEnumerator::key(int index) const
 {
-    return m_regular_enum.key(index);
+    if (index < 0 || index >= keyCount())
+        return 0;
+    else
+        return m_values_for_keys.keys().at(index);
 }
 
 int QtJambiMetaEnumerator::keyCount() const
 {
-    return m_regular_enum.keyCount();
+    return m_values_for_keys.size();
 }
 
 int QtJambiMetaEnumerator::keyToValue(const QString &key) const
 {
-    return m_regular_enum.keyToValue(key.toLatin1());
+    return m_values_for_keys.value(key, -1);
 }
 
 int QtJambiMetaEnumerator::keysToValue(const QString &keys) const
 {
-    return m_regular_enum.keysToValue(keys.toLatin1());
+    QStringList keyList = keys.split('|');
+
+    int val = -1;
+    foreach (QString key, keyList) {
+        if (val < 0)
+            val = keyToValue(key);
+        else
+            val |= keyToValue(key);
+    }
+
+    return val;
 }
 
 QString QtJambiMetaEnumerator::name() const
@@ -199,7 +262,7 @@ QString QtJambiMetaEnumerator::name() const
         return full_name;
 }
 
-QString QtJambiMetaEnumerator::scope() const
+QString QtJambiMetaEnumerator::scopeInJvmSyntax() const
 {
     JNIEnv *env = qtjambi_current_environment();
     Q_ASSERT(env != 0);
@@ -213,13 +276,18 @@ QString QtJambiMetaEnumerator::scope() const
         if (isFlag())
             scope = qtjambi_enum_name_for_flags_name(env, scope.replace(QLatin1String("."), QLatin1String("/")));
 
-        return scope.replace(QLatin1String("$"), QLatin1String("."));
+        return scope.replace(QLatin1String("."), QLatin1String("/"));
     } else {
         QString full_name = QLatin1String(m_regular_enum.scope()) + QLatin1String("::") + QLatin1String(m_regular_enum.name());
         full_name = getJavaName(full_name.toLatin1());
 
-        return full_name.replace(QLatin1String("/"), QLatin1String(".")).replace(QLatin1String("$"), QLatin1String("."));
+        return full_name;
     }
+}
+
+QString QtJambiMetaEnumerator::scope() const
+{
+    return scopeInJvmSyntax().replace(QLatin1String("/"), QLatin1String(".")).replace(QLatin1String("$"), QLatin1String("."));
 }
 
 QString QtJambiMetaEnumerator::separator() const
@@ -229,17 +297,27 @@ QString QtJambiMetaEnumerator::separator() const
 
 int QtJambiMetaEnumerator::value(int index) const
 {
-    return m_regular_enum.value(index);
+    return m_values_for_keys.values().at(index);
 }
 
 QString QtJambiMetaEnumerator::valueToKey(int value) const
 {
-    return m_regular_enum.valueToKey(value);
+    return m_values_for_keys.key(value);
 }
 
 QString QtJambiMetaEnumerator::valueToKeys(int value) const
 {
-    return m_regular_enum.valueToKeys(value);
+    QList<QString> keys = m_values_for_keys.keys(value);
+
+    QString ret;
+    for (int i=0; i<keys.size(); ++i) {
+        if (i > 0)
+            ret += '|';
+
+        ret += keys.at(i);
+    }
+
+    return ret;
 }
 
 static const QtJambiMetaObject *qtjambi_meta_object_stash(const QMetaObject *metaObject)
