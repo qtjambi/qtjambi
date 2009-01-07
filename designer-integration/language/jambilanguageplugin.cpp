@@ -143,6 +143,9 @@ QDialog *JambiLanguage::createFormWindowSettingsDialog(QDesignerFormWindowInterf
 
 QString JambiLanguage::classNameOf(QObject *object) const
 {
+    if (object == 0)
+        return QString();
+
     QtJambiLink *link = QtJambiLink::findLinkForQObject(object);
     if (link && link->createdByJava()) {
         JNIEnv *env = qtjambi_current_environment();
