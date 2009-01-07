@@ -1443,10 +1443,25 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
     }
 }
 
-QString WriteInitialization::trCall(const QString &str, const QString &/*commentHint*/) const
+QString WriteInitialization::trCall(const QString &str, const QString &commentHint) const
 {
-    return QLatin1String("com.trolltech.qt.core.QCoreApplication.translate(\"")
-        + m_generatedClass + QLatin1String("\", ") + javaFixString(str) + QLatin1String(")");
+    if (str.isEmpty())
+        return QLatin1String("\"\"");
+
+    QString result;
+    const QString comment = commentHint.isEmpty() ? QString::fromLatin1("null") : javaFixString(commentHint);
+
+    result = QLatin1String("com.trolltech.qt.core.QCoreApplication.translate(\"");
+    result += m_generatedClass;
+    result += QLatin1Char('"');
+    result += QLatin1String(", ");
+
+    result += javaFixString(str);
+    result += QLatin1String(", ");
+    result += comment;
+
+    result += QLatin1Char(')');
+    return result;
 }
 
 void WriteInitialization::initializeMenu(DomWidget *w, const QString &/*parentWidget*/)
