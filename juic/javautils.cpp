@@ -24,7 +24,7 @@ QString javaFixString(const QString &str)
         if (c >= 0x0080) {
             QString num = QString::number(c, 16);
             int padding = 4 - num.length();
-            if (padding <= 0) {
+            if (padding < 0) {
                 qWarning("juic: bad unicode character %x became %s\n", c, qPrintable(num));
                 return "";
             }
