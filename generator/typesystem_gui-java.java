@@ -373,7 +373,7 @@ class QLineEdit___ extends QLineEdit {
         QNativePointer bottom = new QNativePointer(QNativePointer.Type.Int);
 
         getTextMargins_private(left, top, right, bottom);
-        
+
         return new TextMargins(left.intValue(), top.intValue(), right.intValue(),
                                bottom.intValue());
     }
@@ -483,7 +483,7 @@ class QPixmapFilter___ extends QPixmapFilter {
             QNativePointer kernelPtr = new QNativePointer(QNativePointer.Type.Double, length);
             for (int i = 0; i < length; ++i)
                 kernelPtr.setDoubleAt(i, kernel[i]);
- 
+
             setConvolutionKernel_private(kernelPtr, rows, columns);
         }
 }// class
@@ -1647,14 +1647,14 @@ class QAbstractTextDocumentLayout___ extends QAbstractTextDocumentLayout {
         com.trolltech.qt.GeneratorUtilities.threadCheck(this);
         if (nativeId() == 0)
             throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
-        return __qt_handlerforObject(nativeId(), objectType);        
+        return __qt_handlerForObject(nativeId(), objectType);
     }
-    native QTextObjectInterface __qt_handlerforObject(long __this__nativeId, int objectType);
+    native QTextObjectInterface __qt_handlerForObject(long __this__nativeId, int objectType);
 
     /**
      * Registers the given component as a handler for items of the given objectType.
-     * Note: registerHandler() has to be called once for each object type. This means that there is only one handler for multiple replacement characters of the same object type.     
-     * 
+     * Note: registerHandler() has to be called once for each object type. This means that there is only one handler for multiple replacement characters of the same object type.
+     *
      * @param objectType The type for which to register a handler.
      * @param component The handler for the given type.
      **/

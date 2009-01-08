@@ -320,9 +320,8 @@ public class TestInjectedCodeV2 extends QApplicationTest {
             }
         };
 
-        layout.registerHandler(QTextFormat.ObjectTypes.ImageObject.value(), myTextObjectInterface);
-
-        assertEquals(myTextObjectInterface, layout.handlerForObject(QTextFormat.ObjectTypes.ImageObject.value()));
+        layout.registerHandler(QTextFormat.ObjectTypes.UserObject.value()+1, myTextObjectInterface);
+        assertTrue(myTextObjectInterface == layout.handlerForObject(QTextFormat.ObjectTypes.UserObject.value()+1));
     }
 
     @Test

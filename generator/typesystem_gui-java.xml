@@ -495,28 +495,29 @@
         <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmapFilter___" quote-before-line="}// class"/>
     </inject-code>
     </object-type>
-    
+
     <object-type name="QAbstractTextDocumentLayout">
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractTextDocumentLayout___" quote-before-line="}// class" />
         </inject-code>
-        
+
         <inject-code class="native">
+            #include &lt;qtjambitextobjectinterface.h&gt;
             extern "C" Q_DECL_EXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QAbstractTextDocumentLayout__1_1qt_1handlerForObject)
             (JNIEnv *__jni_env,
-             jobject,
+             jobject ,
              jlong __this_nativeId,
              jint objectType)
-            {            
+            {
                 QtJambiShell_QAbstractTextDocumentLayout *__qt_this = (QtJambiShell_QAbstractTextDocumentLayout *) qtjambi_from_jlong(__this_nativeId);
                 QTJAMBI_EXCEPTION_CHECK(__jni_env);
-                QTextObjectInterface *__qt_tmp = __qt_this->handlerForObject(objectType);
-                jobject __java_return_type = qtjambi_from_object(__jni_env, __qt_tmp, 
+                QtJambiTextObjectInterface *__qt_tmp = static_cast&lt;QtJambiTextObjectInterface *&gt;(__qt_this->handlerForObject(objectType));
+                jobject __java_return_type = qtjambi_from_object(__jni_env, __qt_tmp,
                                                                  "QTextObjectInterface$ConcreteWrapper", "com/trolltech/qt/gui/", true);
-                QTJAMBI_EXCEPTION_CHECK(__jni_env);                                                 
-                
+                QTJAMBI_EXCEPTION_CHECK(__jni_env);
+
                 return __java_return_type;
-            }            
+            }
         </inject-code>
 
         <!-- Deprecate because we are injecting registerHandler(int, QTextObjectInterface) to ensure the correct class type -->
@@ -528,9 +529,9 @@
                 }
             </inject-code>
         </modify-function>
-        
-    </object-type>    
-    
+
+    </object-type>
+
 
     <value-type name="QPixmap">
         <inject-code>
@@ -994,10 +995,10 @@
             </modify-argument>
             <modify-argument index="return">
                 <conversion-rule class="shell">
-                    if (%2 != 0) *%2 = %in != 0;                         
+                    if (%2 != 0) *%2 = %in != 0;
                 </conversion-rule>
-                <conversion-rule class="native">                    
-                    jobject %out = !okHolder 
+                <conversion-rule class="native">
+                    jobject %out = !okHolder
                                    ? qtjambi_from_object(__jni_env, &amp;%in, "QTransform", "com/trolltech/qt/gui/", true)
                                    : 0;
                 </conversion-rule>
@@ -1425,8 +1426,8 @@
         <inject-code>
             <import-file name="typesystem_gui-java.java" quote-after-line="class QFontDialog___" quote-before-line="}// class"/>
         </inject-code>
-        
-        
+
+
         <modify-function signature="getFont(bool*,QFont,QWidget*,QString,QFlags&lt;QFontDialog::FontDialogOption&gt;)">
             <access modifier="private" />
         </modify-function>
@@ -1438,8 +1439,8 @@
             <access modifier="private"/>
             <modify-argument index="2">
                 <remove-default-expression/>
-            </modify-argument>        
-        </modify-function>        
+            </modify-argument>
+        </modify-function>
         <modify-function signature="getFont(bool*,QFont,QWidget*)">
             <access modifier="private"/>
             <modify-argument index="3">
@@ -2474,7 +2475,7 @@
 
     <object-type name="QPrintDialog">
         <modify-function signature="open(QObject*,const char*)" remove="all" />
-                        
+
         <inject-code class="shell-declaration">
 #if !defined(Q_NO_USING_KEYWORD)
         using QDialog::accepted;
