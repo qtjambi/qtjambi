@@ -495,6 +495,42 @@
         <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmapFilter___" quote-before-line="}// class"/>
     </inject-code>
     </object-type>
+    
+    <object-type name="QAbstractTextDocumentLayout">
+        <inject-code>
+            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractTextDocumentLayout___" quote-before-line="}// class" />
+        </inject-code>
+        
+        <inject-code class="native">
+            extern "C" Q_DECL_EXPORT jobject JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QAbstractTextDocumentLayout__1_1qt_1handlerForObject)
+            (JNIEnv *__jni_env,
+             jobject,
+             jlong __this_nativeId,
+             jint objectType)
+            {            
+                QtJambiShell_QAbstractTextDocumentLayout *__qt_this = (QtJambiShell_QAbstractTextDocumentLayout *) qtjambi_from_jlong(__this_nativeId);
+                QTJAMBI_EXCEPTION_CHECK(__jni_env);
+                QTextObjectInterface *__qt_tmp = __qt_this->handlerForObject(objectType);
+                jobject __java_return_type = qtjambi_from_object(__jni_env, __qt_tmp, 
+                                                                 "QTextObjectInterface$ConcreteWrapper", "com/trolltech/qt/gui/", true);
+                QTJAMBI_EXCEPTION_CHECK(__jni_env);                                                 
+                
+                return __java_return_type;
+            }            
+        </inject-code>
+
+        <!-- Deprecate because we are injecting registerHandler(int, QTextObjectInterface) to ensure the correct class type -->
+        <modify-function signature="registerHandler(int,QObject*)" deprecated="yes">
+            <inject-code>
+            <argument-map index="2" meta-name="%2" />
+                if (!(%2 instanceof QTextObjectInterface)) {
+                    throw new IllegalArgumentException("Handler object must be of class QTextObjectInterface");
+                }
+            </inject-code>
+        </modify-function>
+        
+    </object-type>    
+    
 
     <value-type name="QPixmap">
         <inject-code>

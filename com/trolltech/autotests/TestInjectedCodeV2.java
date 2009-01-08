@@ -15,13 +15,12 @@ package com.trolltech.autotests;
 
 import org.junit.Test;
 import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.core.QModelIndex;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
 import com.trolltech.qt.xml.QXmlInputSource;
 import com.trolltech.qt.xml.QXmlEntityResolver.ResolvedEntity;
+import com.trolltech.qt.QtBlockedSlot;
 
 import static org.junit.Assert.*;
 
@@ -303,4 +302,42 @@ public class TestInjectedCodeV2 extends QApplicationTest {
         assertEquals("Made in C++ with error", src.data());
     }
 
+    @Test
+    public void QAbstractTextDocumentLayoutHandlerForObject() {
+        QTextDocument document = new QTextDocument();
+        QAbstractTextDocumentLayout layout = new QPlainTextDocumentLayout(document);
+
+        QTextObjectInterface myTextObjectInterface = new QTextObjectInterface() {
+
+            @QtBlockedSlot
+            public void drawObject(QPainter painter, QRectF rect, QTextDocument doc, int posInDocument,
+                                   QTextFormat format) {
+            }
+
+            @QtBlockedSlot
+            public QSizeF intrinsicSize(QTextDocument doc, int posInDocument, QTextFormat format) {
+                return null;
+            }
+        };
+
+        layout.registerHandler(QTextFormat.ObjectTypes.ImageObject.value(), myTextObjectInterface);
+
+        assertEquals(myTextObjectInterface, layout.handlerForObject(QTextFormat.ObjectTypes.ImageObject.value()));
+    }
+
+    @Test
+    public void QAbstractTextDocumentLayoutRegisterHandlerWrongClass() {
+        QTextDocument document = new QTextDocument();
+        QAbstractTextDocumentLayout layout = new QPlainTextDocumentLayout(document);
+        QObject objectWithWrongType = new QObject();
+
+        boolean caughtException = false;
+        try {
+            layout.registerHandler(QTextFormat.ObjectTypes.ImageObject.value(), objectWithWrongType);
+        } catch (IllegalArgumentException e) {
+            caughtException = true;
+        }
+
+        assertTrue(caughtException);
+    }
 }

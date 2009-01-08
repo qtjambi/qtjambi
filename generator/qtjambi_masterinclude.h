@@ -35,6 +35,7 @@
 
 #include <../qtjambi_gui/qtreemodel.h>
 #include <../qtjambi_gui/qguisignalmapper.h>
+#include <../qtjambi_gui/qtjambitextobjectinterface.h>
 
 #include <../qtjambi_core/qtjambiconcurrent.h>
 

@@ -1639,3 +1639,28 @@ class QGraphicsScene___ extends QGraphicsScene {
     }
 
 }// class
+
+class QAbstractTextDocumentLayout___ extends QAbstractTextDocumentLayout {
+
+    // Injected methods
+    public final QTextObjectInterface handlerForObject(int objectType) {
+        com.trolltech.qt.GeneratorUtilities.threadCheck(this);
+        if (nativeId() == 0)
+            throw new QNoNativeResourcesException("Function call on incomplete object of type: " +getClass().getName());
+        return __qt_handlerforObject(nativeId(), objectType);        
+    }
+    native QTextObjectInterface __qt_handlerforObject(long __this__nativeId, int objectType);
+
+    /**
+     * Registers the given component as a handler for items of the given objectType.
+     * Note: registerHandler() has to be called once for each object type. This means that there is only one handler for multiple replacement characters of the same object type.     
+     * 
+     * @param objectType The type for which to register a handler.
+     * @param component The handler for the given type.
+     **/
+    @SuppressWarnings("deprecated")
+    public final void registerHandler(int objectType, QTextObjectInterface component) {
+        registerHandler(objectType, (com.trolltech.qt.core.QObject) component);
+    }
+
+}// class
