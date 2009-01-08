@@ -360,6 +360,8 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFun
         s << INDENT << "JNIEnv *__jni_env = qtjambi_current_environment();" << endl
           << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
 
+        writeCodeInjections(s, signal, cls, CodeSnip::Beginning, TypeSystem::Signal);
+
         for (int i=0; i<arguments.size(); ++i) {
             const AbstractMetaArgument *argument = arguments.at(i);
             writeQtToJava(s,
@@ -374,6 +376,7 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFun
         s << INDENT << "qtjambi_call_java_signal(__jni_env, m_signals[" << pos << "], arguments);"
                     << endl;
 
+	writeCodeInjections(s, signal, cls, CodeSnip::End, TypeSystem::Signal);
         s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
 
         if (signal->type() != 0)

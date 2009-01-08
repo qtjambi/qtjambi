@@ -1250,6 +1250,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     languageNames["destructor-function"] = TypeSystem::DestructorFunction;
                     languageNames["constructors"] = TypeSystem::Constructors;
                     languageNames["interface"] = TypeSystem::Interface;
+		    languageNames["signal"] = TypeSystem::Signal;
                 }
 
                 QString className = attributes["class"].toLower();
