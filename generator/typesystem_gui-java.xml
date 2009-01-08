@@ -512,8 +512,8 @@
                 QtJambiShell_QAbstractTextDocumentLayout *__qt_this = (QtJambiShell_QAbstractTextDocumentLayout *) qtjambi_from_jlong(__this_nativeId);
                 QTJAMBI_EXCEPTION_CHECK(__jni_env);
                 QtJambiTextObjectInterface *__qt_tmp = static_cast&lt;QtJambiTextObjectInterface *&gt;(__qt_this->handlerForObject(objectType));
-                jobject __java_return_type = qtjambi_from_object(__jni_env, __qt_tmp,
-                                                                 "QTextObjectInterface$ConcreteWrapper", "com/trolltech/qt/gui/", true);
+                jobject __java_return_type = qtjambi_from_qobject(__jni_env, __qt_tmp,
+                                                                 "QTextObjectInterface$ConcreteWrapper", "com/trolltech/qt/gui/");
                 QTJAMBI_EXCEPTION_CHECK(__jni_env);
 
                 return __java_return_type;
