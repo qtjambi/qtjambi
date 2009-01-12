@@ -199,7 +199,7 @@
             public final void setIniCodec(String codecName)
             {
                 QNativePointer strPtr = QNativePointer.createCharPointer(codecName);
-    
+
                 setIniCodec_private(strPtr);
             }
         </inject-code>
@@ -1724,7 +1724,7 @@
         <remove />
       </modify-function>
       <modify-function signature="string()const">
-        <remove />  
+        <remove />
       </modify-function>
 
       <modify-function signature="setCodec(const char*)">
@@ -1739,8 +1739,8 @@
         (JNIEnv *env, jobject, jlong id, jstring jstr, jint openMode)
         {
             QTJAMBI_DEBUG_TRACE("(native) -&gt; entering: QTextStream::createString()");
-            
-            QString *str; 
+
+            QString *str;
             if (jstr != 0)
                 str = new QString(qtjambi_to_qstring(env, jstr));
             else
@@ -1757,7 +1757,7 @@
         }
 
         extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QTextStream_00024StringStream_deleteString)
-        (JNIEnv *env, jobject, jlong str)
+        (JNIEnv *, jobject, jlong str)
         {
             QTJAMBI_DEBUG_TRACE("(native) -&gt; entering: QTextStream::deleteString()");
             delete (QString *) str;
