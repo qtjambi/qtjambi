@@ -34,7 +34,7 @@
             unless="ant-qtjambi.jar.uptodate"
             description="Creates a .jar file containing all the Qt Jambi ant tasks.">
         <mkdir dir="${outputDir}/ant-qtjambi"/>
-        <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi" target="1.5">
+        <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi" target="1.5" debug="true">
             <include name="com/trolltech/tools/ant/*.java"/>
             <include name="com/trolltech/qt/internal/Version.java"/>
             <include name="com/trolltech/qt/internal/OSInfo.java"/>
@@ -150,7 +150,7 @@
       <javac memoryMaximumSize="1024m"
              fork="true"
              destdir="${outputDir}"
-         debug="true"
+             debug="true"
              target="1.5">
         <src path="${outputDir}"/>
         <src path="${sourceDir}"/>
@@ -175,7 +175,7 @@
     <target name="examples.phonon"
         depends="init"
         if="qtjambi.phonon">
-        <javac destdir="${outputDir}" target="1.5">
+        <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/phonon/*.java"/>
@@ -186,7 +186,7 @@
     <target name="examples.webkit"
         depends="init"
         if="qtjambi.webkit">
-        <javac destdir="${outputDir}" target="1.5">
+        <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/webkit/*.java"/>
@@ -197,7 +197,7 @@
     <target name="examples.xmlpatterns"
         depends="init"
         if="qtjambi.xmlpatterns">
-        <javac destdir="${outputDir}" target="1.5">
+        <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/xmlpatterns/*.java"/>
@@ -257,7 +257,7 @@
     </target>
 
     <target name="library.designer.compile" depends="init">
-        <javac destdir="${outputDir}" target="1.5">
+        <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/tools/designer/*.java"/>
