@@ -746,6 +746,12 @@ void WriteInitialization::writeProperties(const QString &varName,
             }
 
             propertyValue = QString::fromLatin1("%1.createQFlags(%2)").arg(flagsName).arg(vals.join(","));
+
+            // Specialcase with a "toInt" conversion
+            if (className == QLatin1String("QGroupBox")
+                && propertyName == QLatin1String("alignment"))
+                propertyValue = propertyValue + ".value()";
+
             }
             break;
         case DomProperty::Font: {
