@@ -350,6 +350,10 @@ public class TestDestruction extends QApplicationTest {
 
         assertEquals(1, MyOrdinaryDestroyed.disposedCount);
         assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
+
+        if (MyOrdinaryDestroyed.disposedCount > 1) // PS. Expression never true here.
+            System.err.println("Avoid reordering of code which may cause dontBeDeleted to be deleted: "
+                                + dontBeDeleted);                    
     }
 
     static public void main(String args[]) {
