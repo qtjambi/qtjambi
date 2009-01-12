@@ -113,9 +113,16 @@ public class CustomWidgetManager {
 
             try {
                 Class type = null;
+                boolean failure = false;
                 try {
                     type = Class.forName(e.attribute("class"));
                 } catch (ClassNotFoundException f) {
+                    failure = true;
+                } catch (ExceptionInInitializerError error) {
+                    failure = true;
+                }
+
+                if (failure) {
                     try {
                         String classPathsProperty = System.getProperty("com.trolltech.qtjambi.internal.current.classpath");
                         if (classPathsProperty != null) {
@@ -128,6 +135,7 @@ public class CustomWidgetManager {
                             URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
                             type = loader.loadClass(e.attribute("class"));
                         }
+                    } catch (ExceptionInInitializerError error) {
                     } catch (ClassNotFoundException g) {
                         // Never mind. Some classes, like QWebView are not present in
                         // all configurations, so we have to silently ignore these exceptions
