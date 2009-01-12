@@ -733,6 +733,11 @@ void WriteInitialization::writeProperties(const QString &varName,
 
             QStringList vals = propertyValue.split(QLatin1Char('|'), QString::SkipEmptyParts);
 
+            // These values are printed duplicate into the .jui file
+            // by designer, but are not supported by Jambi...
+            vals.removeAll(QLatin1String("com.trolltech.qt.core.Qt.AlignmentFlag.AlignTrailing"));
+            vals.removeAll(QLatin1String("com.trolltech.qt.core.Qt.AlignmentFlag.AlignLeading"));
+
             QString flagsName;
             if (vals.size()) {
                 int dotPos = vals.at(0).lastIndexOf(QLatin1Char('.'));
