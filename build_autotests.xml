@@ -46,7 +46,7 @@
             debug="true">
         <src path="${outputDir}"/>
         <src path="${sourceDir}"/>
-        <include name="com/trolltech/autotests/*.java"/>
+	<include name="com/trolltech/autotests/*.java"/>
         <include name="com/trolltech/autotests/generated/*.java"/>
       </javac>
     </target>
@@ -56,7 +56,7 @@
       <delete dir="${outputDir}/TestResults" />
       <mkdir dir="${outputDir}/junitxml"/>
       <mkdir dir="${outputDir}/TestResults"/>
-      <junit fork="yes" printsummary="yes" haltonfailure="no" timeout="20000">
+      <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
 	<formatter type="xml" />
 	<test name="com.trolltech.autotests.TestCloneable" todir="${outputDir}/junitxml"/>
 
