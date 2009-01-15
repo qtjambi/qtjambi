@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * A pretty basic node implementation...
  */
-class Node {
+class Node implements Cloneable {
 
     public Node(String s, Model model, Node parent) {
         this.text = s;
@@ -32,6 +32,27 @@ class Node {
     @Override
     public String toString() { return text + ":" + counter; }
 
+    public Object clone() {
+        Node newNode = new Node(text, model, parent);
+        newNode.counter = counter;
+
+        for (Node n : children)
+            newNode.children.add((Node) n.clone());
+
+        return newNode;
+    }
+
+    public boolean isChildOf(Node parent) {
+        Node node = this;
+        while (node != null) {
+            if (node == parent)
+                return true;
+            else
+                node = node.parent;
+        }
+        return false;
+    }
+
     List<Node> children = new ArrayList<Node>();
     String text;
     int counter;
@@ -39,11 +60,44 @@ class Node {
     Node parent;
 }
 
+class NodeRefMimeData extends QMimeData
+{
+    public NodeRefMimeData(QObject parent) { }
+    public Node node;
+
+    public String toString() {
+        return "NodeRefMimeData(" + node.toString() + ")";
+    }
+}
+
 /**
  * An example model implementation. It reimplements child(), childCount() and text() to
  * represent the data in a tree of Node's
  */
 class Model extends QTreeModel {
+
+    public Model() {
+        Node child1 = new Node("Child 1", this, root);
+        Node grandChild11 = new Node("Grandchild 1.1", this, child1);
+        Node grandChild12 = new Node("Grandchild 1.2", this, child1);
+        Node grandChild13 = new Node("Grandchild 1.3", this, child1);
+        Node child2 = new Node("Child 2", this, root);
+        Node grandChild21 = new Node("Grandchild 2.1", this, child2);
+        Node grandChild22 = new Node("Grandchild 2.2", this, child2);
+        Node grandChild23 = new Node("Grandchild 2.3", this, child2);
+        Node grandChild24 = new Node("Grandchild 2.4", this, child2);
+
+        root.children.add(child1);
+          child1.children.add(grandChild11);
+          child1.children.add(grandChild12);
+          child1.children.add(grandChild13);
+        root.children.add(child2);
+          child2.children.add(grandChild21);
+          child2.children.add(grandChild22);
+          child2.children.add(grandChild23);
+          child2.children.add(grandChild24);
+
+    }
 
     /**
      * Called to query the child of parent at index. If parent is null we have only one child,
@@ -75,9 +129,77 @@ class Model extends QTreeModel {
         return "" + value;
     }
 
+    public Qt.ItemFlags flags(QModelIndex index) {
+        return defaultFlags;
+    }
+
+    /**
+     * We implement this to indicate which mimetypes we support...
+     */
+    public List<String> mimeTypes() {
+        List<String> types = new ArrayList<String>();
+        types.add("text/plain");
+        return types;
+    }
+
+    public QMimeData mimeData(List<QModelIndex> list) {
+        if (list.size() > 0) {
+            Node node = (Node) indexToValue(list.get(0));
+            NodeRefMimeData data = new NodeRefMimeData(this);
+            data.node = node;
+            data.setText(node.toString());
+            return data;
+        }
+        return null;
+    }
+
+    public boolean dropMimeData(QMimeData data, Qt.DropAction action,
+                                int row, int col, QModelIndex parentIndex) {
+        if (data instanceof NodeRefMimeData) {
+
+            NodeRefMimeData nodeData = (NodeRefMimeData) data;
+            Node parent = (Node) indexToValue(parentIndex);
+            Node child = nodeData.node;
+
+            // Copy...
+//             Node cloned = (Node) child.clone();
+//             cloned.parent = parent;
+//             int pos = parent.children.size();
+//             parent.children.add(cloned);
+//             childrenInserted(valueToIndex(parent), pos, pos);
+//             return true;
+
+
+            // Move
+
+            if (parent.isChildOf(child)) {
+                System.out.println("Cannot move parent into child...\n");
+                return false;
+            }
+
+            Node oldParent = child.parent;
+            int oldPos = oldParent.children.indexOf(child);
+            oldParent.children.remove(child);
+            childrenRemoved(valueToIndex(oldParent), oldPos, oldPos);
+            int newPos = parent.children.size();
+            parent.children.add(child);
+            childrenInserted(valueToIndex(parent), newPos, newPos);
+            return true;
+
+        }
+
+        return false;
+    }
+
     public Node root() { return root; }
 
     private Node root = new Node("Root", this, null);
+
+    private static final Qt.ItemFlags defaultFlags
+        = new Qt.ItemFlags(Qt.ItemFlag.ItemIsDragEnabled,
+                           Qt.ItemFlag.ItemIsDropEnabled,
+                           Qt.ItemFlag.ItemIsSelectable,
+                           Qt.ItemFlag.ItemIsEnabled);
 }
 
 /**
@@ -116,6 +238,10 @@ public class TreeModelTester extends QTreeView {
         addAction(remove);
         addAction(increment);
         addAction(swap);
+
+        setDragEnabled(true);
+        setAcceptDrops(true);
+        setDragDropMode(QAbstractItemView.DragDropMode.DragDrop);
     }
 
     public void setModel(Model model) {
@@ -125,7 +251,6 @@ public class TreeModelTester extends QTreeView {
 
 
     private void swap() {
-        System.out.println("Swapping?");
         List<QModelIndex> pos = selectedIndexes();
         for (QModelIndex i : pos) {
             Node me = (Node) model.indexToValue(i);
