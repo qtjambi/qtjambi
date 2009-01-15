@@ -175,7 +175,18 @@ public class TestInjectedCodeV2 extends QApplicationTest {
         public String fromFirstSlot = "";
         public String fromSecondSlot = "";
 
-        public Signal1<QHostInfo> mySignal = new Signal1<QHostInfo>(); {
+        // You gotta love that fruity company... Their latest version
+        // of Java for 32-bit, Java 1.5.0_16 introduces a bug where
+        // generics innerclasses from other packages tends to lead to
+        // internal compiler errors. They have of course moved on to
+        // 64-bit and Java 1.6 as their new platform so this bug will
+        // live forever.
+        //
+        // The error manifests itself in the helloObject.mySignal
+        // access in the testLookupHostWithSignal function below.
+        //
+        // Bug ID: 6356636 on Bugparade
+        public Signal1 mySignal = new Signal1<QHostInfo>(); {
             mySignal.connect(this, "secondSlot(QHostInfo)");
         }
 
