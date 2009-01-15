@@ -194,12 +194,11 @@ QModelIndex QTreeModel::index(int row, int, const QModelIndex &parent) const
     if (!parentNode->isChildrenQueried())
         queryChildren(parentNode);
     QTJAMBI_EXCEPTION_CHECK(qtjambi_current_environment());
-    Q_ASSERT_X(row < parentNode->nodes.size(),
-               "QTreeModel::index()",
-               qPrintable(QString::fromLatin1("index %1 of %2, node=%3")
-                          .arg(row)
-                          .arg(parentNode->nodes.size())
-                          .arg(text(parentNode->value))));
+
+    // So someone asked for a bad row... so what...
+    if (row >= parentNode->nodes.size())
+        return QModelIndex();
+
     Q_ASSERT_X(parentNode->nodes.at(row),
                "QTreeModel::indeX()",
                "all child nodes must be queried ahead of time...");
