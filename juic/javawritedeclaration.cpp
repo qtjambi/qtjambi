@@ -72,7 +72,9 @@ void WriteDeclaration::acceptUI(DomUI *node)
         output << "\n";
     }
 
-    output << "public class " << option.prefix << className << "\n"
+    QString widgetClassName = node->elementWidget()->attributeClass();
+    output << "public class " << option.prefix << className
+           << " implements com.trolltech.qt.QUiForm<" << widgetClassName << ">" << "\n"
            << "{\n";
 
     TreeWalker::acceptWidget(node->elementWidget());
