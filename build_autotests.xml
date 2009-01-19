@@ -9,6 +9,10 @@
 
     <property name="jambiLib" value="${outputDir}/lib" />
 
+    <condition property="qtjambi.osx">
+      <os family="mac"/>
+    </condition>
+
     <target name="help"
             description="Provides detailed help.">
     <echo>Generates an executable .jar file that runs the generator example...</echo>
