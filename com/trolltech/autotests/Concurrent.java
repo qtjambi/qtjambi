@@ -101,7 +101,7 @@ public class Concurrent extends QApplicationTest {
         assertEquals(COUNT, results.size());
 
         for (int i=0; i<results.size(); ++i)
-            assertEquals(i*i, results.get(i));
+            assertEquals(i*i, (int) results.get(i));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class Concurrent extends QApplicationTest {
 
         assertEquals(COUNT, results.size());
         for (int i=0; i<results.size(); ++i)
-            assertEquals(i*i, results.get(i));
+            assertEquals(i*i, (int) results.get(i));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class Concurrent extends QApplicationTest {
 
         List<Integer> lst = future.results();
         for (int i=0; i<future.resultCount(); ++i)
-            assertEquals(i+COUNT, lst.get(i));
+            assertEquals(i+COUNT, (int) lst.get(i));
     }
 
     @Test
@@ -225,7 +225,7 @@ public class Concurrent extends QApplicationTest {
 
         assertEquals(COUNT, lst.size());
         for (int i=0; i<lst.size(); ++i)
-            assertEquals(i+COUNT, lst.get(i));
+            assertEquals(i+COUNT, (int) lst.get(i));
     }
 
 
@@ -336,7 +336,7 @@ public class Concurrent extends QApplicationTest {
         QFuture<Integer> future = QtConcurrent.run(this, m, 4321);
 
         future.waitForFinished();
-        assertEquals(5555, future.result());
+        assertEquals(5555, (int) future.result());
     }
 
     public int method3(int a, byte b, short c, float d) {
@@ -355,7 +355,7 @@ public class Concurrent extends QApplicationTest {
         QFuture<Integer> future = QtConcurrent.run(this, m, 1, 2, 3, 4);
 
         future.waitForFinished();
-        assertEquals(10, future.result());
+        assertEquals(10, (int) future.result());
     }
 
     public void method4(MutableInteger a, int b, int c) {
@@ -396,7 +396,7 @@ public class Concurrent extends QApplicationTest {
             result.waitForFinished();
             assertEquals(COUNT*2, result.resultCount());
             for (int i=0; i<result.resultCount(); ++i)
-                assertEquals(i+1, result.resultAt(i));
+                assertEquals(i+1, (int) result.resultAt(i));
         }
 
         {
@@ -411,7 +411,7 @@ public class Concurrent extends QApplicationTest {
             future.waitForFinished();
             assertEquals(COUNT, future.resultCount());
             for (int i=0; i<future.resultCount(); ++i)
-                assertEquals(i+COUNT, future.resultAt(i));
+                assertEquals(i+COUNT, (int) future.resultAt(i));
         }
 
     }
