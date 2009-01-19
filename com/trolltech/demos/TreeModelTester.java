@@ -11,7 +11,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.tests;
+package com.trolltech.demos;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -77,25 +77,23 @@ class NodeRefMimeData extends QMimeData
 class Model extends QTreeModel {
 
     public Model() {
-        Node child1 = new Node("Child 1", this, root);
-        Node grandChild11 = new Node("Grandchild 1.1", this, child1);
-        Node grandChild12 = new Node("Grandchild 1.2", this, child1);
-        Node grandChild13 = new Node("Grandchild 1.3", this, child1);
-        Node child2 = new Node("Child 2", this, root);
-        Node grandChild21 = new Node("Grandchild 2.1", this, child2);
-        Node grandChild22 = new Node("Grandchild 2.2", this, child2);
-        Node grandChild23 = new Node("Grandchild 2.3", this, child2);
-        Node grandChild24 = new Node("Grandchild 2.4", this, child2);
+        Node child1 = new Node("Shortcuts", this, root);
+        Node grandChild11 = new Node("Ctrl+A - Add a subnode", this, child1);
+        Node grandChild12 = new Node("Ctrl+R - Remove the node", this, child1);
+        Node grandChild13 = new Node("Ctrl+I - Increment the numerical value of the node", this, child1);
+        Node grandChild14 = new Node("Ctrl+S - Swap the node with its next sibling", this, child1);
+        Node child2 = new Node("Other Features", this, root);
+        Node grandChild21 = new Node("Internal Drag & Drop enabled", this, child2);
+        Node grandChild22 = new Node("Ctrl on Mac OS X is really Command...", this, child2);
 
         root.children.add(child1);
           child1.children.add(grandChild11);
           child1.children.add(grandChild12);
           child1.children.add(grandChild13);
+          child1.children.add(grandChild14);
         root.children.add(child2);
           child2.children.add(grandChild21);
           child2.children.add(grandChild22);
-          child2.children.add(grandChild23);
-          child2.children.add(grandChild24);
 
     }
 
