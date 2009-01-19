@@ -102,6 +102,8 @@ public class InitializeTask extends Task {
         props.setNewProperty(null, LIBSUBDIR, decideLibSubDir());
         props.setNewProperty(null, QTDIR, decideQtDir());
 
+        props.setNewProperty(null, "qtjambi.osx", OSInfo.os() == OSInfo.OS.MacOS ? "true" : "false");
+
         // TODO: Find a better way to get a hold of version...
         props.setNewProperty(null, VERSION, Version.STRING);
 
