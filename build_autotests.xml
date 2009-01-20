@@ -63,49 +63,11 @@
       <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
 	<jvmarg value="-XstartOnFirstThread"/>
 	<formatter type="xml" />
-	<test name="com.trolltech.autotests.TestCloneable" todir="${outputDir}/junitxml"/>
-	<test name="com.trolltech.autotests.TestClassFunctionality" todir="${outputDir}/junitxml"/>
-	<test name="com.trolltech.autotests.TestCloneable" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestConnections" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestConstruction" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestContainers" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestDestruction" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestFileEngine" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestI18N" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestInjectedCode" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestInjectedCodeV2" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestJumpTable" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagement" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagementNonPolymorphicObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagementPolymorphicObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagementValueType" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMetaObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestNamespace" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestNativePointer" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestNullPointers" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestPolymorphicTypes" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestProperties" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQFlags" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQMessageHandler" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQPaintEngine" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQSettings" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQTextStream" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQTransform" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQVariant" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestReferenceCounting" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestSignalMapper" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestThreads" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestXml" todir="${outputDir}/junitxml" />
+	<batchtest fork="yes" todir="${xml}">
+          <fileset includes="com/trolltech/autotests/Test*.java"/>
+        </batchtest>
       </junit>
-      <junitreport todir="${outputDir}/junitxml">
-	<fileset dir="${outputDir}/junitxml">
-	  <include name="TEST-*.xml" />
-	</fileset>
-	<report format="frames" todir="${outputDir}/TestResults" />
-      </junitreport>
     </target>
-
 
     <target name="run.other" unless="qtjambi.osx">
       <delete dir="${outputDir}/junitxml" />
@@ -114,41 +76,13 @@
       <mkdir dir="${outputDir}/TestResults"/>
       <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
 	<formatter type="xml" />
-	<test name="com.trolltech.autotests.TestCloneable" todir="${outputDir}/junitxml"/>
-	<test name="com.trolltech.autotests.TestClassFunctionality" todir="${outputDir}/junitxml"/>
-	<test name="com.trolltech.autotests.TestCloneable" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestConnections" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestConstruction" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestContainers" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestDestruction" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestFileEngine" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestI18N" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestInjectedCode" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestInjectedCodeV2" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestJumpTable" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagement" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagementNonPolymorphicObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagementPolymorphicObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMemoryManagementValueType" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestMetaObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestNamespace" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestNativePointer" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestNullPointers" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestPolymorphicTypes" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestProperties" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQFlags" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQMessageHandler" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQObject" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQPaintEngine" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQSettings" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQTextStream" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQTransform" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestQVariant" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestReferenceCounting" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestSignalMapper" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestThreads" todir="${outputDir}/junitxml" />
-	<test name="com.trolltech.autotests.TestXml" todir="${outputDir}/junitxml" />
+	<batchtest fork="yes" todir="${outputDir}/junitxml">
+          <fileset dir="${sourceDir}" includes="com/trolltech/autotests/Test*.java"/>
+        </batchtest>
       </junit>
+    </target>
+
+    <target name="run" depends="init, run.other, run.osx" description="Runs tests and generates report in TestReport subdir">
       <junitreport todir="${outputDir}/junitxml">
 	<fileset dir="${outputDir}/junitxml">
 	  <include name="TEST-*.xml" />
@@ -156,9 +90,6 @@
 	<report format="frames" todir="${outputDir}/TestResults" />
       </junitreport>
     </target>
-
-    <target name="run"
-	    depends="init, run.other, run.osx"/>
 
     <target name="compile" 
 	    depends="compile.native, compile.java"/>
