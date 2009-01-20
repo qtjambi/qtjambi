@@ -9,6 +9,10 @@
 
     <property name="jambiLib" value="${outputDir}/lib" />
 
+    <mkdir dir="${outputDir}/cpp" />
+	   
+
+
     <target name="help"
             description="Provides detailed help.">
       <echo>To build Qt Jambi, run ant without parameters.</echo>
@@ -70,67 +74,28 @@
 
     <target name="clean"
             description="Cleans everything.">
-        <delete file="${outputDir}/ant-qtjambi.jar"/>
-    <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
-    <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
-    <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
-        <delete dir="${outputDir}/bin"/>
-    <delete dir="${outputDir}/lib"/>
-        <delete dir="${outputDir}/cpp"/>
-        <delete includeEmptyDirs="true">
-          <fileset dir="${outputDir}" includes="**/*.class"/>
-          <fileset dir="${outputDir}" includes="**/*.o"/>
-          <fileset dir="${outputDir}" includes="**/moc_*.cpp"/>
-          <fileset dir="${outputDir}" includes="**/*.obj"/>
-          <fileset dir="${outputDir}" includes="**/*.pdb"/>
-          <fileset dir="${outputDir}" includes="**/*.ilk"/>
-          <fileset dir="${outputDir}" includes="**/release"/>
-          <fileset dir="${outputDir}" includes="**/debug"/>
-          <fileset dir="${outputDir}" includes="**/Makefile*"/>
-        </delete>
-    </target>
-
-    <target name="library.native.qmake"
-            depends="init"
-            description="Runs qmake on the Qt Jambi project.">
-        <delete dir="${jambiLib}" />
-    <qmake recursive="true"
-               dir="${outputDir}"
-               pro="${sourceDir}/java.pro"
-               config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
-               debugTools="${qtjambi.debug-tools}"/>
-    </target>
-
-    <target name="generator.qmake"
-            depends="init, generator.xmlmerge"
-            description="Runs qmake on the generator project.">
-      <mkdir dir="${outputDir}/generator"/>
-      <qmake config="release"
-             dir="${outputDir}/generator"
-             pro="${sourceDir}/generator/generator.pro"
-             debugTools="${qtjambi.debug-tools}"/>
-    </target>
-
-    <target name="generator.compile"
-        depends="init, generator.qmake"
-            description="Compiles the Qt Jambi generator.">
-        <make dir="${outputDir}/generator" />
-    </target>
-
-    <target name="generator.run"
-            depends="init, generator.compile"
-            description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
-        <generator dir="${outputDir}/generator"
-                   outputDirectory="${outputDir}"
-                   typesystem="${sourceDir}/generator/build_all.txt"
-                   header="${sourceDir}/generator/qtjambi_masterinclude.h"
-           options="${qtjambi.generator.jumptable}"/>
-    </target>
-
-    <target name="library.native.compile"
-            depends="init"
-            description="Compiles the C++ Qt Jambi bindings.">
-    <make dir="${outputDir}"/>
+      <delete file="${outputDir}/ant-qtjambi.jar"/>
+      <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
+      <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
+      <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
+      <delete file="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar"/>
+      <delete file="${outputDir}/.compile.timestamp"/>
+      <delete file="${outputDir}/generator/.compile.timestamp"/>
+      <delete file="${outputDir}/generator/.run.timestamp"/>
+      <delete dir="${outputDir}/bin"/>
+      <delete dir="${outputDir}/lib"/>
+      <delete dir="${outputDir}/cpp"/>
+      <delete includeEmptyDirs="true">
+        <fileset dir="${outputDir}" includes="**/*.class"/>
+        <fileset dir="${outputDir}" includes="**/*.o"/>
+        <fileset dir="${outputDir}" includes="**/moc_*.cpp"/>
+        <fileset dir="${outputDir}" includes="**/*.obj"/>
+        <fileset dir="${outputDir}" includes="**/*.pdb"/>
+        <fileset dir="${outputDir}" includes="**/*.ilk"/>
+        <fileset dir="${outputDir}" includes="**/release"/>
+        <fileset dir="${outputDir}" includes="**/debug"/>
+        <fileset dir="${outputDir}" includes="**/Makefile*"/>
+      </delete>
     </target>
 
     <target name="examples.juic"
@@ -256,7 +221,61 @@
         </jar>
     </target>
 
-    <target name="library.designer.compile" depends="init">
+    <!-- 
+	 ************************************************************
+	 Library Compilation etc ...
+	 ************************************************************
+      -->
+
+    <uptodate property="qtjambi.library.makefiles.uptodate"
+	      targetfile="${outputDir}/Makefile">
+      <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
+      <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
+      <srcfiles dir="${outputDir}/juic" includes="juic.pro"/>
+      <srcfiles dir="${outputDir}/qtjambi" includes="*.pr*"/>
+      <srcfiles dir="${outputDir}/designer-integration" includes="**/*.pr*"/>
+    </uptodate>
+
+    <uptodate property="qtjambi.library.cppfiles.uptodate"
+	      targetfile="${outputDir}/.compile.timestamp">
+      <srcfiles dir="${outputDir}/cpp" includes="**/*.cpp"/>
+      <srcfiles dir="${outputDir}/cpp" includes="**/*.h"/>
+      <srcfiles dir="${outputDir}/qtjambi" includes="*.cpp"/>
+      <srcfiles dir="${outputDir}/qtjambi" includes="*.h"/>
+      <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.cpp"/>
+      <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.h"/>
+      <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.cpp"/>
+      <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.h"/>
+      <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.cpp"/>
+      <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.h"/>
+      <srcfiles dir="${outputDir}/juic" includes="*.cpp"/>
+      <srcfiles dir="${outputDir}/juic" includes="*.h"/>
+      <srcfiles dir="${outputDir}/designer-integration" includes="**/*.cpp"/>
+      <srcfiles dir="${outputDir}/designer-integration" includes="**/*.h"/>
+    </uptodate>
+
+    <target name="library.native.qmake"
+            depends="init"
+            description="Runs qmake on the Qt Jambi project."
+	    unless="qtjambi.library.makefiles.uptodate">
+        <delete dir="${jambiLib}" />
+	<qmake recursive="true"
+               dir="${outputDir}"
+               pro="${sourceDir}/java.pro"
+               config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
+               debugTools="${qtjambi.debug-tools}"/>
+    </target>
+
+    <target name="library.native.compile"
+            depends="init"
+            description="Compiles the C++ Qt Jambi bindings."
+	    unless="qtjambi.library.cppfiles.uptodate">
+      <make dir="${outputDir}"/>
+      <touch file="${outputDir}/.compile.timestamp"/>
+    </target>
+
+    <target name="library.designer.compile" 
+	    depends="init">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
@@ -264,7 +283,9 @@
         </javac>
     </target>
 
-    <target name="library.designer.bundle" depends="library.designer.compile">
+    <target name="library.designer.bundle" 
+	    depends="library.designer.compile" 
+	    unless="qtjambi.library.cppfiles.uptodate">
         <jar destfile="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"
              basedir="${outputDir}">
             <include name="com/trolltech/tools/designer/*"/>
@@ -273,12 +294,12 @@
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
-
     </target>
 
     <target name="library.native.bundle"
-        depends="init"
-        description="Creates a .jar file file containing native libraries.">
+            depends="init"
+            description="Creates a .jar file file containing native libraries."
+	    unless="qtjambi.library.cppfiles.uptodate">
 
         <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
                               outdir="${outputDir}/platform-output">
@@ -338,7 +359,59 @@
         </jar>
 
         <delete dir="${outputDir}/platform-output"/>
+    </target>
 
+
+
+    <!-- 
+	 ************************************************************
+	 Building and running the Generator...
+	 ************************************************************
+      -->
+    <uptodate property="qtjambi.generator_pro.uptodate"
+	      targetfile="${outputDir}/generator/Makefile">
+      <srcfiles dir="${sourceDir}/generator" includes="generator.pr*"/>
+      <srcfiles dir="${sourceDir}/generator/parser" includes="rxx.pr*"/>
+      <srcfiles dir="${sourceDir}/generator/parser/rpp" includes="rpp.pri"/>
+    </uptodate>
+    <target name="generator.qmake"
+            depends="init, generator.xmlmerge"
+            description="Runs qmake on the generator project." 
+	    unless="qtjambi.generator_pro.uptodate">
+      <mkdir dir="${outputDir}/generator"/>
+      <qmake config="release"
+             dir="${outputDir}/generator"
+             pro="${sourceDir}/generator/generator.pro"
+             debugTools="${qtjambi.debug-tools}"/>
+    </target>
+
+    <uptodate property="qtjambi.generator_compile.uptodate"
+	      targetfile="${outputDir}/generator/.compile.timestamp">
+      <srcfiles dir="${sourceDir}/generator" includes="**/*.cpp"/>
+      <srcfiles dir="${sourceDir}/generator" includes="**/*.h"/>
+      <srcfiles dir="${sourceDir}/generator" includes="Makefile"/>
+      <srcfiles dir="${sourceDir}/generator" includes="*.qrc"/>
+      <srcfiles dir="${sourceDir}/generator" includes="*.txt"/>
+      <srcfiles dir="${sourceDir}/generator" includes="*.xml"/>
+    </uptodate>
+    <target name="generator.compile"
+            depends="init, generator.qmake"
+            description="Compiles the Qt Jambi generator."
+	    unless="qtjambi.generator_compile.uptodate">
+      <make dir="${outputDir}/generator" />
+      <touch file="${outputDir}/generator/.compile.timestamp"/>
+    </target>
+
+    <target name="generator.run"
+            depends="init, generator.compile"
+            description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable."
+	    unless="qtjambi.generator_compile.uptodate">
+      <generator dir="${outputDir}/generator"
+                   outputDirectory="${outputDir}"
+                   typesystem="${sourceDir}/generator/build_all.txt"
+                   header="${sourceDir}/generator/qtjambi_masterinclude.h"
+           options="${qtjambi.generator.jumptable}"/>
+      <touch file="${outputDir}/generator/.run.timestamp"/>
     </target>
 
 
