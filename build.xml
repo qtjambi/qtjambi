@@ -98,9 +98,17 @@
       </delete>
     </target>
 
+    <uptodate property="examples.juicfiles.uptodate"
+	      targetfile=".juic.run">
+      <srcfiles dir="${outputDir}/com/trolltech/examples" includes="**/*.jui"/>
+      <srcfiles dir="${outputDir}/com/trolltech/launcher" includes="*.jui"/>
+      <srcfiles dir="${outputDir}/com/trolltech/demos" includes="**/*.jui"/>
+    </uptodate>
+
     <target name="examples.juic"
             depends="init"
-            description="Generates Java source files from JUI files created by designer.">
+            description="Generates Java source files from JUI files created by designer."
+	    unless="examples.juicfiles.uptodate">
         <juic message="Running Juic for all it is worth"
           outputDir="${outputDir}"
               trFunction=""
@@ -109,6 +117,7 @@
           classpath="${sourceDir}">
          <include name="com/**/**.jui"/>
         </juic>
+	<touch file="${outputDir}/.juic.run"/>
     </target>
 
     <target name="library.java.compile" depends="init">
