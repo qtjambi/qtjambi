@@ -157,6 +157,8 @@ class Model extends QTreeModel {
 
             NodeRefMimeData nodeData = (NodeRefMimeData) data;
             Node parent = (Node) indexToValue(parentIndex);
+            if (parent == null)
+                return false;
             Node child = nodeData.node;
 
             // Copy...
