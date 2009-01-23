@@ -13,42 +13,55 @@ public class TestJDBC {
 
     private enum Driver {
         PostgreSQL,
-        Derby
+        Derby,
+        MySQL
     }
 
     static private String driverNames[] = {
         "org.postgresql.Driver",
-        "org.apache.derby.jdbc.EmbeddedDriver"
+        "org.apache.derby.jdbc.EmbeddedDriver",
+        "com.mysql.jdbc.Driver"
     };
 
     static private String dbNames[] = {
         "jdbc:postgresql://qfwfq.europe.nokia.com/main",
-        "jdbc:derby:firstdb" // only usable locally, since no server is set up. Install derby and make the
-                             // database on your local machine to run this test.
-    };
-
-    static private Boolean requiresLogin[] = {
-            true,
-            false
+        "jdbc:derby:firstdb", // only usable locally, since no server is set up. Install derby and make the
+                              // database on your local machine to run this test.
+        "jdbc:mysql://qfwfq.europe.nokia.com/main"
     };
 
     static private String personTable[] = {
             "person",
-            "PERSON"
+            "PERSON",
+            "person"
     };
 
     static private String countryTable[] = {
         "country",
-        "COUNTRY"
+        "COUNTRY",
+        "country"
+    };
+
+    static private String userNames[] = {
+            "qt",
+            "", // login not required
+            "qt"
+    };
+
+    static private String passwords[] = {
+            "qqqqqq",
+            "",
+            "qqqqqq"
     };
 
 
     static {
         checkSize(driverNames, "driverNames");
         checkSize(dbNames, "dbNames");
-        checkSize(requiresLogin, "requiresLogin");
         checkSize(personTable, "personTable");
         checkSize(countryTable, "countryTable");
+        checkSize(userNames, "userNames");
+        checkSize(passwords, "passwords");
     }
 
     private static void checkSize(Object array[], String name) {
@@ -150,9 +163,9 @@ public class TestJDBC {
         QSqlDatabase db = QSqlDatabase.addDatabase("QJDBC");
         System.err.println("Selecting database '" + dbNames[ordinal] + "'");
         db.setDatabaseName(dbNames[ordinal]);
-        if (requiresLogin[ordinal]) {
-            db.setUserName("qt");
-            db.setPassword("qqqqqq");
+        if (userNames[ordinal].length() > 0) {
+            db.setUserName(userNames[ordinal]);
+            db.setPassword(passwords[ordinal]);
         }
         if (db.open()) {
             System.err.println("Connected!");
