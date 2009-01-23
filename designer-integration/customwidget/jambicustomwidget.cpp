@@ -163,11 +163,9 @@ QWidget *JambiCustomWidget::createWidget(QWidget *parent)
     QWidget *qwidget = qobject_cast<QWidget*>(qtjambi_to_qobject (env, widget));
     QTJAMBI_EXCEPTION_CHECK(env);
 
-    // Designer assumes the widget allways has a parent....
-    if (!qwidget->parent()) {
+    // Designer assumes the widget always has a parent (if a parent is actually passed in.)
+    if (qwidget->parent() == 0 && parent != 0)
         qwidget->setParent(parent, qwidget->windowFlags() & ~Qt::Window);
-
-    }
 
     return qwidget;
 }
