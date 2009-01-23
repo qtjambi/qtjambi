@@ -21,7 +21,7 @@ import org.junit.*;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class Concurrent extends QApplicationTest {
+public class TestConcurrent extends QApplicationTest {
 
     private static final int COUNT = 100;
 
@@ -312,7 +312,7 @@ public class Concurrent extends QApplicationTest {
     public void testRunVoid() {
         Method m = null;
         try {
-            m = Concurrent.class.getMethod("method", MutableInteger.class);
+            m = Test.Concurrent.class.getMethod("method", MutableInteger.class);
         } catch (Exception e) { }
 
         assertTrue(m != null);
@@ -328,7 +328,7 @@ public class Concurrent extends QApplicationTest {
     public void testRun() {
         Method m = null;
         try {
-            m = Concurrent.class.getMethod("method2", Integer.class);
+            m = TestConcurrent.class.getMethod("method2", Integer.class);
         } catch (Exception e) { }
 
         assertTrue(m != null);
@@ -347,7 +347,7 @@ public class Concurrent extends QApplicationTest {
     public void testRunWithPrimitiveTypes() {
         Method m = null;
         try {
-            m = Concurrent.class.getMethod("method3", Integer.TYPE, Byte.TYPE, Short.TYPE, Float.TYPE);
+            m = TestConcurrent.class.getMethod("method3", Integer.TYPE, Byte.TYPE, Short.TYPE, Float.TYPE);
         } catch (Exception e) {}
 
         assertTrue(m != null);
@@ -366,7 +366,7 @@ public class Concurrent extends QApplicationTest {
     public void testRunVoidWithPrimitiveTypes() {
         Method m = null;
         try {
-            m = Concurrent.class.getMethod("method4", MutableInteger.class, Integer.TYPE, Integer.TYPE);
+            m = TestConcurrent.class.getMethod("method4", MutableInteger.class, Integer.TYPE, Integer.TYPE);
         } catch (Exception e) {}
 
         assertTrue(m != null);
