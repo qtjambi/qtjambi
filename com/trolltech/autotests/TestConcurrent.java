@@ -312,7 +312,7 @@ public class TestConcurrent extends QApplicationTest {
     public void testRunVoid() {
         Method m = null;
         try {
-            m = Test.Concurrent.class.getMethod("method", MutableInteger.class);
+            m = TestConcurrent.class.getMethod("method", MutableInteger.class);
         } catch (Exception e) { }
 
         assertTrue(m != null);
