@@ -3,6 +3,7 @@ package com.trolltech.manualtests;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.sql.*;
+import com.trolltech.qt.QVariant;
 
 import java.util.List;
 import java.util.Arrays;
@@ -26,37 +27,102 @@ public class TestJDBC {
                              // database on your local machine to run this test.
     };
 
+    static private Boolean requiresLogin[] = {
+            true,
+            false
+    };
+
+    static private String personTable[] = {
+            "person",
+            "PERSON"
+    };
+
+    static private String countryTable[] = {
+        "country",
+        "COUNTRY"
+    };
+
+
+    static {
+        checkSize(driverNames, "driverNames");
+        checkSize(dbNames, "dbNames");
+        checkSize(requiresLogin, "requiresLogin");
+        checkSize(personTable, "personTable");
+        checkSize(countryTable, "countryTable");
+    }
+
+    private static void checkSize(Object array[], String name) {
+        if (array.length < Driver.values().length) {
+            String missingNames = "";
+            for (int i=array.length; i<Driver.values().length; ++i) {
+                if (missingNames.length() > 0)
+                    missingNames += ", ";
+                missingNames += Driver.values()[i].name();
+            }
+
+            throw new RuntimeException("Array '" + name + "' does not contain any entry for the following drivers: "
+                    + missingNames);
+        }
+    }
+
     private static void makeRelationalTable(QTabWidget topLevel, QSqlDatabase db)  {
         QSqlRelationalTableModel model = new QSqlRelationalTableModel(null, db);
-        model.setTable("person");
-        model.setEditStrategy(QSqlTableModel.EditStrategy.OnFieldChange);
-        model.setRelation(2, new QSqlRelation("country", "id", "name"));
+        model.setTable(personTable[ordinal]);
         if (!model.select()) {
             System.err.println(model.lastError().text());
+            return;
         }
+        model.setEditStrategy(QSqlTableModel.EditStrategy.OnFieldChange);
+
+        int columnCount = model.columnCount();
+        int columnIdx = -1;
+        for (int i=0; i<columnCount; ++i) {
+           String columnName = QVariant.toString(model.headerData(i, Qt.Orientation.Horizontal));
+           if (columnName.toLowerCase().equals("countryid")) {
+               columnIdx = i;
+               break;
+           }
+        }
+
+        if (columnIdx < 0)
+            return;
+
+        model.setRelation(columnIdx, new QSqlRelation(countryTable[ordinal], "id", "name"));
+
         QTableView view = new QTableView();
         view.setWindowTitle("QSqlRelationalTableModel");
-        view.setModel(model);
         view.setItemDelegate(new QSqlRelationalDelegate(view));
+        view.setModel(model);
+
         topLevel.addTab(view, "QSqlRelationalTableModel");
     }
 
-    private static void makeRegularTable(QTabWidget topLevel, QSqlDatabase db)  {
+    private static void makeRegularPersonTable(QTabWidget topLevel, QSqlDatabase db)  {
         QSqlTableModel model = new QSqlTableModel(null, db);
-        model.setTable("person");
-        model.select();
+        model.setTable(personTable[ordinal]);
+        if (!model.select()) {
+            System.err.println(model.lastError().text());
+            return ;
+        }
+
         QTableView view = new QTableView(topLevel);
         view.setModel(model);
         topLevel.addTab(view, "person");
+    }
 
-        model = new QSqlTableModel(null, db);
-        model.setTable("country");
-        model.select();
-        view = new QTableView(topLevel);
+    private static void makeRegularCountryTable(QTabWidget topLevel, QSqlDatabase db) {
+        QSqlTableModel model = new QSqlTableModel(null, db);
+        model.setTable(countryTable[ordinal]);
+        if (!model.select()) {
+            System.err.println(model.lastError().text());
+            return;
+        }
+        QTableView view = new QTableView(topLevel);
         view.setModel(model);
         topLevel.addTab(view, "country");
     }
 
+    private static int ordinal = -1;
     public static void main(String args[])  {
         QApplication.initialize(args);
 
@@ -67,7 +133,6 @@ public class TestJDBC {
             items.add(driver.name());
 
         String selectedDriver = QInputDialog.getItem(null, "Select a driver", "Select a driver", items);
-        int ordinal = -1;
 
         for (Driver driver : Driver.values()) {
             if (driver.name().equals(selectedDriver))
@@ -85,8 +150,10 @@ public class TestJDBC {
         QSqlDatabase db = QSqlDatabase.addDatabase("QJDBC");
         System.err.println("Selecting database '" + dbNames[ordinal] + "'");
         db.setDatabaseName(dbNames[ordinal]);
-        db.setUserName("qt");
-        db.setPassword("qqqqqq");
+        if (requiresLogin[ordinal]) {
+            db.setUserName("qt");
+            db.setPassword("qqqqqq");
+        }
         if (db.open()) {
             System.err.println("Connected!");
         } else {
@@ -98,8 +165,9 @@ public class TestJDBC {
         QTabWidget topLevel = new QTabWidget();
         topLevel.setWindowTitle("Tables");
 
+        makeRegularPersonTable(topLevel, db);
+        makeRegularCountryTable(topLevel, db);
         makeRelationalTable(topLevel, db);
-        makeRegularTable(topLevel, db);
 
         topLevel.show();
 
