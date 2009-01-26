@@ -68,7 +68,7 @@ class MyLayout extends QVBoxLayout {
     }
 }
 
-public class VirtualFunctions extends QApplicationTest {
+public class TestVirtualFunctions extends QApplicationTest {
 
     class WidgetClass1 extends QWidget {
         public void setJavaSizeHint(QSize size) {
