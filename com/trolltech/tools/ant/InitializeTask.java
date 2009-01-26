@@ -130,15 +130,18 @@ public class InitializeTask extends Task {
             props.setNewProperty(null, PHONON, phonon);
             switch (OSInfo.os()) {
             case Windows:
-                props.setNewProperty(null, PHONON_DS9, true);
+                props.setNewProperty(null, PHONON_DS9, "true");
                 break;
             case Linux:
-                props.setNewProperty(null, PHONON_GSTREAMER, true);
-                props.setNewProperty(null, DBUS, doesQtLibExist("QtDBus", 4));
+                props.setNewProperty(null, PHONON_GSTREAMER, "true");
+		if (doesQtLibExist("QtDBus", 4))
+		    props.setNewProperty(null, DBUS, "true");
                 break;
             case MacOS:
-                props.setNewProperty(null, PHONON_QT7, true);
-                props.setNewProperty(null, DBUS, doesQtLibExist("QtDBus", 4));
+                props.setNewProperty(null, PHONON_QT7, "true");
+		if (doesQtLibExist("QtDBus", 4))
+		    props.setNewProperty(null, DBUS, "true");
+
                 break;
             }
         }
