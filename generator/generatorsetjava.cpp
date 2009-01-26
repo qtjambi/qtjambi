@@ -266,7 +266,12 @@ void dumpMetaJavaFunction(const AbstractMetaFunction *func)
     printf("    %s() - ", qPrintable(func->name()));
     dumpMetaJavaType(func->type());
     dumpMetaJavaAttributes(func);
+
+    // Extra attributes...
+    if (func->isSignal()) printf(" signal");
+    if (func->isSlot()) printf(" slot");
     if (func->isConstant()) printf(" const");
+
     printf("\n      arguments:\n");
     foreach (AbstractMetaArgument *arg, func->arguments())
         dumpMetaJavaArgument(arg);
