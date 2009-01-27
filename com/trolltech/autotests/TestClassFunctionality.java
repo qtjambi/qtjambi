@@ -124,6 +124,7 @@ public class TestClassFunctionality extends QApplicationTest {
         QApplication.initialize(args);
 
         TestClassFunctionality test = new TestClassFunctionality();
+	test.run_cppAndJavaObjects();
 	test.testGraphicsSceneDrawItemsInjections();
 	/*
         test.testVirtualCallToFixup();
@@ -181,7 +182,7 @@ public class TestClassFunctionality extends QApplicationTest {
         view.show();
 
 	long t = System.currentTimeMillis();
-	while (t < System.currentTimeMillis() + 1000 && GraphicsSceneSubclassSubclass.items == null) 
+	while (t + 1000 > System.currentTimeMillis() && GraphicsSceneSubclassSubclass.items == null) 
 	    QApplication.processEvents();
 
         assertTrue(GraphicsSceneSubclassSubclass.items != null);
@@ -543,7 +544,9 @@ public class TestClassFunctionality extends QApplicationTest {
         QApplication.postEvent(someQObject, event2);
         parentWidget.show();
 
-        QApplication.processEvents();
+	long t = System.currentTimeMillis();
+	while (t + 1000 > System.currentTimeMillis() && !receiver.paintEventCastWorked)
+	    QApplication.processEvents();
 
         assertEquals(receiver.customEventString, "this is my stuff");
         assertEquals(receiver.customEventType, QEvent.Type.resolve(QEvent.Type.User.value() + 16));
