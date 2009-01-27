@@ -102,11 +102,17 @@ class Util {
         ByteArrayOutputStream errdata = new ByteArrayOutputStream();
         PrintStream err = new PrintStream(errdata);
 
-        new StreamConsumer(p.getInputStream(), out).start();
-        new StreamConsumer(p.getErrorStream(), err).start();
+        StreamConsumer stdoutReader = new StreamConsumer(p.getInputStream(), out);
+        StreamConsumer stderrReader = new StreamConsumer(p.getErrorStream(), err);
+        stdoutReader.start();
+        stderrReader.start();
         p.waitFor();
+
+        stdoutReader.join();
+        stderrReader.join();
         out.close();
         err.close();
+
         return new String[] { outdata.toString(), errdata.toString() };
     }
 
