@@ -398,7 +398,7 @@ public class ElasticNodes extends QGraphicsView {
             double paddingX = dx/length*10;
             double paddingY = dy/length*10;
 
-            removeFromIndex();
+            prepareGeometryChange();
             sourcePoint.setX(source.pos().x() - paddingX);
             sourcePoint.setY(source.pos().y() - paddingY);
 
@@ -411,8 +411,6 @@ public class ElasticNodes extends QGraphicsView {
             boundingRect = boundingRect.normalized();
 
             boundingRect.adjust(-extra, -extra, extra, extra);
-            addToIndex();
-
         }
 
         @Override
