@@ -34,4 +34,6 @@
 #include "general.h"
 #include "memorymanagement.h"
 
+#include <qtjambi_core.h>
+
 #endif

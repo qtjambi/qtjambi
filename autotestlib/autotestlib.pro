@@ -30,5 +30,9 @@ SOURCES += \
     testdialog.cpp \
     memorymanagement.cpp \
 
+win32 {
+   PRECOMPILED_HEADER = global.h
+   CONFIG += precompile_header
+}
 
 QT += sql xml network
