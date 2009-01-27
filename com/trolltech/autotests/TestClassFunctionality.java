@@ -192,30 +192,30 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(GraphicsSceneSubclassSubclass.items[1] == item1);
 
         QRectF brect = GraphicsSceneSubclassSubclass.items[0].boundingRect();
-        assertEquals(2.0, brect.left());
-        assertEquals(3.0, brect.top());
-        assertEquals(4.0, brect.width());
-        assertEquals(5.0, brect.height());
+        assertEquals(2.0, brect.left(), 0.0001);
+        assertEquals(3.0, brect.top(), 0.0001);
+        assertEquals(4.0, brect.width(), 0.0001);
+        assertEquals(5.0, brect.height(), 0.0001);
 
         brect = GraphicsSceneSubclassSubclass.items[1].boundingRect();
-        assertEquals(1.0, brect.left());
-        assertEquals(2.0, brect.top());
-        assertEquals(3.0, brect.width());
-        assertEquals(4.0, brect.height());
+        assertEquals(1.0, brect.left(), 0.0001);
+        assertEquals(2.0, brect.top(), 0.0001);
+        assertEquals(3.0, brect.width(), 0.0001);
+        assertEquals(4.0, brect.height(), 0.0001);
 
         assertEquals(2, gsss.numItems());
 
         brect = gsss.firstBoundingRect();
-        assertEquals(2.0, brect.left());
-        assertEquals(3.0, brect.top());
-        assertEquals(4.0, brect.width());
-        assertEquals(5.0, brect.height());
+        assertEquals(2.0, brect.left(), 0.0001);
+        assertEquals(3.0, brect.top(), 0.0001);
+        assertEquals(4.0, brect.width(), 0.0001);
+        assertEquals(5.0, brect.height(), 0.0001);
 
         brect = gsss.secondBoundingRect();
-        assertEquals(1.0, brect.left());
-        assertEquals(2.0, brect.top());
-        assertEquals(3.0, brect.width());
-        assertEquals(4.0, brect.height());
+        assertEquals(1.0, brect.left(), 0.0001);
+        assertEquals(2.0, brect.top(), 0.0001);
+        assertEquals(3.0, brect.width(), 0.0001);
+        assertEquals(4.0, brect.height(), 0.0001);
 
         assertTrue(gsss.firstItem() == item2);
         assertTrue(gsss.secondItem() == item1);
@@ -227,11 +227,11 @@ public class TestClassFunctionality extends QApplicationTest {
 
         QStyleOption option = gsss.firstStyleOption();
         assertTrue(option instanceof QStyleOptionGraphicsItem);
-        assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 1.0);
+        assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 1.0, 0.0001);
 
         option = gsss.secondStyleOption();
         assertTrue(option instanceof QStyleOptionGraphicsItem);
-        assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 3.0);
+        assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 3.0, 0.0001);
 
     }
 
