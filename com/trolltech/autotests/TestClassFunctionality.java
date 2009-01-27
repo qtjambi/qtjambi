@@ -124,6 +124,8 @@ public class TestClassFunctionality extends QApplicationTest {
         QApplication.initialize(args);
 
         TestClassFunctionality test = new TestClassFunctionality();
+	test.testGraphicsSceneDrawItemsInjections();
+	/*
         test.testVirtualCallToFixup();
         test.testFinalCallToFixup();
         test.testFinalCallToValidate();
@@ -138,7 +140,7 @@ public class TestClassFunctionality extends QApplicationTest {
         test.run_testCallQtJambiInternalNativeFunctions();
         test.run_testDestruction();
         test.run_testOwnershipTranfer();
-        test.run_XPMConstructors();
+        test.run_XPMConstructors();*/
     }
 
     @BeforeClass
@@ -178,7 +180,9 @@ public class TestClassFunctionality extends QApplicationTest {
         view.setScene(gsss);
         view.show();
 
-        QApplication.processEvents();
+	long t = System.currentTimeMillis();
+	while (t < System.currentTimeMillis() + 1000 && GraphicsSceneSubclassSubclass.items == null) 
+	    QApplication.processEvents();
 
         assertTrue(GraphicsSceneSubclassSubclass.items != null);
         assertTrue(GraphicsSceneSubclassSubclass.options != null);
