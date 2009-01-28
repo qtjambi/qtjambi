@@ -135,6 +135,40 @@ public class TestJDBC {
         topLevel.addTab(view, "country");
     }
 
+    // Test some things known to cause difficulties with different drivers
+    private static void testScrollCompliance(QTabWidget topLevel, QSqlDatabase db) {
+        QSqlQuery query = new QSqlQuery("SELECT name FROM " + personTable[ordinal], db);
+
+        QListWidget listWidget = new QListWidget();
+
+        listWidget.addItem(new QListWidgetItem("query.isSelect(): " + query.isSelect()));
+        listWidget.addItem(new QListWidgetItem("query.isActive(): " + query.isActive()));
+
+        query.first();
+        listWidget.addItem(new QListWidgetItem("query.first(): " + query.at() + ", name: " + query.value(0)));
+
+        query.last();
+        listWidget.addItem(new QListWidgetItem("query.last(): " + query.at() + ", name:" + query.value(0)));
+
+        query.first();
+        listWidget.addItem(new QListWidgetItem("query.first() again: " + query.at() + ", name:" + query.value(0)));
+
+        query.seek(1);
+        listWidget.addItem(new QListWidgetItem("query.seek(1): " + query.at() + ", name:" + query.value(0)));
+
+        query.seek(0);
+        listWidget.addItem(new QListWidgetItem("query.seek(0): " + query.at() + ", name:" + query.value(0)));
+
+        query.next();
+        listWidget.addItem(new QListWidgetItem("query.next(): " + query.at() + ", name:" + query.value(0)));
+
+        query.previous();
+        listWidget.addItem(new QListWidgetItem("query.previous(): " + query.at() + ", name:" + query.value(0)));
+
+
+        topLevel.addTab(listWidget, "Scroll compliance");
+    }
+
     private static int ordinal = -1;
     public static void main(String args[])  {
         QApplication.initialize(args);
@@ -181,6 +215,7 @@ public class TestJDBC {
         makeRegularPersonTable(topLevel, db);
         makeRegularCountryTable(topLevel, db);
         makeRelationalTable(topLevel, db);
+        testScrollCompliance(topLevel, db);
 
         topLevel.show();
 
