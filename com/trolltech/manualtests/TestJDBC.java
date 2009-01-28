@@ -81,10 +81,6 @@ public class TestJDBC {
     private static void makeRelationalTable(QTabWidget topLevel, QSqlDatabase db)  {
         QSqlRelationalTableModel model = new QSqlRelationalTableModel(null, db);
         model.setTable(personTable[ordinal]);
-        if (!model.select()) {
-            System.err.println(model.lastError().text());
-            return;
-        }
         model.setEditStrategy(QSqlTableModel.EditStrategy.OnFieldChange);
 
         int columnCount = model.columnCount();
@@ -101,6 +97,10 @@ public class TestJDBC {
             return;
 
         model.setRelation(columnIdx, new QSqlRelation(countryTable[ordinal], "id", "name"));
+        if (!model.select()) {
+            System.err.println(model.lastError().text());
+            return;
+        }
 
         QTableView view = new QTableView();
         view.setWindowTitle("QSqlRelationalTableModel");
