@@ -14,44 +14,58 @@ public class TestJDBC {
     private enum Driver {
         PostgreSQL,
         Derby,
-        MySQL
+        MySQL,
+        H2
     }
 
     static private String driverNames[] = {
         "org.postgresql.Driver",
         "org.apache.derby.jdbc.EmbeddedDriver",
-        "com.mysql.jdbc.Driver"
+        "com.mysql.jdbc.Driver",
+        "org.h2.Driver"
     };
 
     static private String dbNames[] = {
         "jdbc:postgresql://qfwfq.europe.nokia.com/main",
         "jdbc:derby:firstdb", // only usable locally, since no server is set up. Install derby and make the
                               // database on your local machine to run this test.
-        "jdbc:mysql://qfwfq.europe.nokia.com/main"
+        "jdbc:mysql://qfwfq.europe.nokia.com/main",
+        "jdbc:h2:~/test" // Ask Eskil nicely to start this up.
     };
 
     static private String personTable[] = {
             "person",
             "PERSON",
-            "person"
+            "person",
+            "PERSON"
     };
 
     static private String countryTable[] = {
         "country",
         "COUNTRY",
-        "country"
+        "country",
+        "COUNTRY"
     };
 
     static private String userNames[] = {
             "qt",
             "", // login not required
-            "qt"
+            "qt",
+            "SA"
     };
 
     static private String passwords[] = {
             "qqqqqq",
             "",
-            "qqqqqq"
+            "qqqqqq",
+            "",
+    };
+
+    static private String hostNames[] = {
+            "",
+            "",
+            "",
+            "qfwfq.europe.nokia.com"
     };
 
 
@@ -62,6 +76,7 @@ public class TestJDBC {
         checkSize(countryTable, "countryTable");
         checkSize(userNames, "userNames");
         checkSize(passwords, "passwords");
+        checkSize(hostNames, "hostNames");
     }
 
     private static void checkSize(Object array[], String name) {
@@ -197,6 +212,10 @@ public class TestJDBC {
         QSqlDatabase db = QSqlDatabase.addDatabase("QJDBC");
         System.err.println("Selecting database '" + dbNames[ordinal] + "'");
         db.setDatabaseName(dbNames[ordinal]);
+        if (hostNames[ordinal].length() > 0) {
+            System.err.println("Using hostname '" + hostNames[ordinal] + "'");
+            db.setHostName(hostNames[ordinal]);
+        }
         if (userNames[ordinal].length() > 0) {
             db.setUserName(userNames[ordinal]);
             db.setPassword(passwords[ordinal]);
