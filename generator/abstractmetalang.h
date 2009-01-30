@@ -908,7 +908,6 @@ inline AbstractMetaFunctionList AbstractMetaClass::cppInconsistentFunctions() co
 inline AbstractMetaFunctionList AbstractMetaClass::cppSignalFunctions() const
 {
     return queryFunctions(Signals
-                          | Visible
                           | NotRemovedFromTargetLang);
 }
 

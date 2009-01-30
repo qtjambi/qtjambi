@@ -225,7 +225,9 @@ public abstract class QSignalEmitterInternal {
                 }
             }
 
-            if (types.length == 0 && !(this instanceof QSignalEmitter.Signal0))
+            if (types.length == 0
+                && !(this instanceof QSignalEmitter.Signal0)
+                && !(this instanceof QSignalEmitter.PrivateSignal0))
                 throw new RuntimeException("Signal initialization failed");
 
             return types;

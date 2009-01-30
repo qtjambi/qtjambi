@@ -595,27 +595,7 @@ bool qtjambi_connect_cpp_to_java(JNIEnv *,
 
 // ### QtJambiSignalInfo has to be passed as a copy, or we will crash whenever the
 // slot deletes its sender.
-inline void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue *args)
-{
-    StaticCache *sc = StaticCache::instance();
-    sc->resolveAbstractSignal();
-
-    // Check if signal has since been collected
-    jobject object = env->NewLocalRef(signal_info.object);
-    if (object == 0)
-        return ;
-
-    // Don't recurse
-    if (env->GetBooleanField(object, sc->AbstractSignal.inJavaEmission))
-        return;
-
-    env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, true);
-    if (args == 0)
-        env->CallVoidMethod(object, signal_info.methodId);
-    else
-        env->CallVoidMethodA(object, signal_info.methodId, args);
-    env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, false);
-}
+QTJAMBI_EXPORT void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue *args);
 
 
 QTJAMBI_EXPORT const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object);

@@ -115,6 +115,11 @@ AbstractMetaBuilder::AbstractMetaBuilder()
 {
 }
 
+
+/**
+ * This function is here, simply to print out warnings about
+ * modifications not having the proper signature...
+ */
 void AbstractMetaBuilder::checkFunctionModifications()
 {
     TypeDatabase *types = TypeDatabase::instance();
@@ -1212,6 +1217,14 @@ void AbstractMetaBuilder::traverseFunctions(ScopeModelItem scope_item, AbstractM
         AbstractMetaFunction *meta_function = traverseFunction(function);
 
         if (meta_function) {
+
+            QList<FunctionModification> mods = meta_function->modifications(meta_class);
+            for (int i=0; i<mods.size(); ++i) {
+                if (mods.at(i).isPrivateSignal()) {
+                    meta_function->setFunctionType(AbstractMetaFunction::SignalFunction);
+                }
+            }
+
             meta_function->setOriginalAttributes(meta_function->attributes());
             if (meta_class->isNamespace())
                 *meta_function += AbstractMetaAttributes::Static;

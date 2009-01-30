@@ -76,6 +76,7 @@ class StackElement
         Removal                  = 0x020000,
         Rename                   = 0x040000,
         ModifyArgument           = 0x080000,
+        PrivateSignal            = 0x100000,
         FunctionModifiers        = 0xff0000,
 
         // Argument modifier tags (0x01000000 ... 0xf0000000)
@@ -698,6 +699,7 @@ bool Handler::startElement(const QString &, const QString &n,
             attributes["associated-to"] = QString();
             attributes["virtual-slot"] = QString("no");
             attributes["allow-as-slot"] = QString("no");
+            attributes["private-signal"] = QString("no");
             break;
         case StackElement::ModifyArgument:
             attributes["index"] = QString();
@@ -1152,6 +1154,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 mod.modifiers |= (convertBoolean(attributes["virtual-slot"], "virtual-slot", false) ? Modification::VirtualSlot : 0);
                 mod.modifiers |= (convertBoolean(attributes["allow-as-slot"], "allow-as-slot", false) ? Modification::AllowAsSlot : 0);
+                mod.modifiers |= (convertBoolean(attributes["private-signal"], "private-signal", false) ? Modification::PrivateSignal : 0);
 
                 m_function_mods << mod;
             }

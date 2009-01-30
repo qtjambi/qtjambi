@@ -520,7 +520,7 @@ static void qtjambi_setup_connections(JNIEnv *, QtJambiLink *link)
 
             // The trick of getting the correct connection from Java to C++ emits is
             // to call qtjambi_connect_callback() which is used to establish connections
-            // across the language barriers, and pass in the signal as both signal and 
+            // across the language barriers, and pass in the signal as both signal and
             // slot. The slot with the signal's signature will not exist in C++ of course, and
             // the resolve-function will continue to resolve the equivalent Java method
             // and connect the whole thing in Java, which is what we want.
@@ -949,6 +949,32 @@ static const char *signatureTable[] = {
     /* 9 */ "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"
 };
 
+void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue *args)
+{
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveAbstractSignal();
+
+    // Check if signal has since been collected
+    jobject object = env->NewLocalRef(signal_info.object);
+    if (object == 0)
+        return ;
+
+    // Don't recurse
+    if (env->GetBooleanField(object, sc->AbstractSignal.inJavaEmission))
+        return;
+
+    env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, true);
+    if (args == 0) {
+        Q_ASSERT(object);
+        Q_ASSERT(signal_info.methodId);
+        env->CallVoidMethod(object, signal_info.methodId);
+    } else {
+        env->CallVoidMethodA(object, signal_info.methodId, args);
+    }
+    env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, false);
+}
+
+
 void qtjambi_resolve_signals(JNIEnv *env,
                              jobject java_object,
                              QtJambiSignalInfo *infos,
@@ -962,33 +988,64 @@ void qtjambi_resolve_signals(JNIEnv *env,
     QTJAMBI_EXCEPTION_CHECK(env);
     Q_ASSERT(clazz);
 
-    char class_name[] = "com/trolltech/qt/QSignalEmitter$SignalX";
-    char field_signature[] = "Lcom/trolltech/qt/QSignalEmitter$SignalX;";
+    char signal_class_name[]      = "com/trolltech/qt/QSignalEmitter$SignalX";
+    char signal_field_signature[] = "Lcom/trolltech/qt/QSignalEmitter$SignalX;";
+    const int signal_pos = 38;
 
-    for (int i=0; i<count; ++i) {
-        int argCount = argument_counts[i];
-        char argCountChar = '0' + argCount;
-        // Swap the X for the right number...
-        class_name[38] = argCountChar;
-        field_signature[39] = argCountChar;
-        const char *signature = signatureTable[argCount];
+    char privatesignal_class_name[] = "com/trolltech/qt/QSignalEmitter$PrivateSignalX";
+    char privatesignal_field_signature[] = "Lcom/trolltech/qt/QSignalEmitter$PrivateSignalX;";
+    const int privatesignal_pos = 45;
 
-        jfieldID fieldId = env->GetFieldID(clazz, names[i], field_signature);
-        QTJAMBI_EXCEPTION_CHECK(env);
-        Q_ASSERT(fieldId);
+    memset(infos, 0, sizeof(QtJambiSignalInfo) * count);
 
-        jobject signal = env->GetObjectField(java_object, fieldId);
-        QTJAMBI_EXCEPTION_CHECK(env);
-        Q_ASSERT(signal);
+    for (int j=0; j<2; ++j) {
+        char *class_name, *field_signature;
+        int pos;
+        if (j == 0) {
+            class_name = signal_class_name;
+            field_signature = signal_field_signature;
+            pos = signal_pos;
+        } else {
+            class_name = privatesignal_class_name;
+            field_signature = privatesignal_field_signature;
+            pos = privatesignal_pos;
+        }
 
-        infos[i].object = env->NewWeakGlobalRef(signal);
+        for (int i=0; i<count; ++i) {
+            if (infos[i].methodId) // Found amongst the normal signals...
+                continue;
+            int argCount = argument_counts[i];
+            char argCountChar = '0' + argCount;
+            // Swap the X for the right number...
+            class_name[pos] = argCountChar;
+            field_signature[pos+1] = argCountChar;
+            const char *signature = signatureTable[argCount];
 
-        jclass cls = env->FindClass(class_name);
-        Q_ASSERT(cls);
+            jfieldID fieldId = env->GetFieldID(clazz, names[i], field_signature);
+            if (env->ExceptionCheck()) {
+                env->ExceptionClear();
+                continue;
+            }
 
-        infos[i].methodId = env->GetMethodID(cls, "emit", signature);
-        Q_ASSERT(infos[i].methodId);
+            jobject signal = env->GetObjectField(java_object, fieldId);
+            QTJAMBI_EXCEPTION_CHECK(env);
+            Q_ASSERT(signal);
+
+            infos[i].object = env->NewWeakGlobalRef(signal);
+
+            jclass cls = env->FindClass(class_name);
+            Q_ASSERT(cls);
+
+            infos[i].methodId = env->GetMethodID(cls, "emit", signature);
+            Q_ASSERT(infos[i].methodId);
+        }
     }
+#ifndef QT_NO_DEBUG
+    for (int i=0; i<count; ++i) {
+        Q_ASSERT_X(infos[i].object, "qtjambi_resolve_signals", names[i]);
+        Q_ASSERT_X(infos[i].methodId, "qtjambi_resolve_signals", names[i]);
+    }
+#endif
 }
 
 // Connects the emission of a C++ signal to the emit function in the corresponding
@@ -1816,6 +1873,8 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
                                             sc->QtJambiInternal.lookupSignal,
                                             resolved_data->java_sender,
                                             qtjambi_from_qstring(jni_env, signal_name));
+
+        QTJAMBI_EXCEPTION_CHECK(jni_env);
     }
     if (resolved_data->java_signal == 0)  // unmapped signal, cannot be resolved by us
         return false;
@@ -1870,6 +1929,7 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
                                                     sc->QtJambiInternal.lookupSignal,
                                                     resolved_data->java_receiver,
                                                     qtjambi_from_qstring(jni_env, slot_name));
+                QTJAMBI_EXCEPTION_CHECK(jni_env);
                 if (resolved_data->java_receiver == 0)
                     return false;
 
@@ -1877,12 +1937,14 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
                     jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
                                                     sc->QtJambiInternal.findEmitMethod,
                                                     resolved_data->java_receiver);
+                QTJAMBI_EXCEPTION_CHECK(jni_env);
             } else {
                 resolved_data->java_method =
                     jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
                                                     sc->QtJambiInternal.lookupSlot,
                                                     resolved_data->java_receiver,
                                                     qtjambi_from_qstring(jni_env, slot_name));
+                QTJAMBI_EXCEPTION_CHECK(jni_env);
             }
         }
 
@@ -1967,8 +2029,7 @@ static bool qtjambi_connect_callback(void **raw_data)
         qWarning("qtjambi_connect_callback(): received unexpected null parameters");
         return false;
     }
-
-//     printf(" - %s::%s -> %s::%s, %d\n",
+//     printf("   --- (connect callback) %s::%s -> %s::%s, %d\n",
 //            data->sender->metaObject()->className(), data->signal,
 //            data->receiver->metaObject()->className(), data->method,
 //            *data->type);

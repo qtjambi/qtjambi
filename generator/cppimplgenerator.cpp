@@ -1478,6 +1478,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunc
     if (java_function->isModifiedRemoved(TypeSystem::NativeCode))
         return;
 
+    if (java_function->isSignal() && java_function->isPrivate())
+        return;
+
     const AbstractMetaClass *cls = java_class ? java_class : java_function->ownerClass();
 
     QString java_function_signature = cls->name() + "::" + java_function->signature();
@@ -1878,7 +1881,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
 void CppImplGenerator::writeSignalInitialization(QTextStream &s, const AbstractMetaClass *java_class)
 {
     if (!java_class->isQObject()
-        || java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromTargetLang).size() == 0) {
+        || java_class->cppSignalFunctions().size() == 0) {
         return ;
     }
 
@@ -2676,7 +2679,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         QString iteratorName = "__qt_" + qt_name + "_it";
         writeTypeInfo(s, java_type, Option(ExcludeReference | ExcludeConst));
         s << "::const_iterator " << iteratorName << ";" << endl
-          << INDENT << "for (" << iteratorName << "=" << qt_name << ".constBegin(); "  
+          << INDENT << "for (" << iteratorName << "=" << qt_name << ".constBegin(); "
                     << iteratorName << "!=" << qt_name << ".constEnd(); ++" << iteratorName << ") {" << endl;
         {
             Indentation indent(INDENT);

@@ -285,25 +285,26 @@ struct ArgumentModification
 
 struct Modification {
     enum Modifiers {
-        Private =               0x0001,
-        Protected =             0x0002,
-        Public =                0x0003,
-        Friendly =              0x0004,
-        AccessModifierMask =    0x000f,
+        Private =               0x00000001,
+        Protected =             0x00000002,
+        Public =                0x00000003,
+        Friendly =              0x00000004,
+        AccessModifierMask =    0x0000000f,
 
-        Final =                 0x0010,
-        NonFinal =              0x0020,
+        Final =                 0x00000010,
+        NonFinal =              0x00000020,
         FinalMask =             Final | NonFinal,
 
-        Readable =              0x0100,
-        Writable =              0x0200,
+        Readable =              0x00000100,
+        Writable =              0x00000200,
 
-        CodeInjection =         0x1000,
-        Rename =                0x2000,
-        Deprecated =            0x4000,
-        ReplaceExpression =     0x8000,
-        VirtualSlot =          0x10000 | NonFinal,
-        AllowAsSlot =          0x20000
+        CodeInjection =         0x00001000,
+        Rename =                0x00002000,
+        Deprecated =            0x00004000,
+        ReplaceExpression =     0x00008000,
+        VirtualSlot =           0x00010000 | NonFinal,
+        AllowAsSlot =           0x00020000,
+        PrivateSignal =         0x00040000
     };
 
     Modification() : modifiers(0) { }
@@ -318,6 +319,7 @@ struct Modification {
     bool isNonFinal() const { return modifiers & NonFinal; }
     bool isVirtualSlot() const { return (modifiers & VirtualSlot) == VirtualSlot; }
     bool isAllowedAsSlot() const { return (modifiers & AllowAsSlot) == AllowAsSlot; }
+    bool isPrivateSignal() const { return (modifiers & PrivateSignal) == PrivateSignal; }
     QString accessModifierString() const;
 
     bool isDeprecated() const { return modifiers & Deprecated; }

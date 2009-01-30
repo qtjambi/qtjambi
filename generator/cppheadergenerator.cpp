@@ -56,8 +56,7 @@ void CppHeaderGenerator::writeSignalWrappers(QTextStream &s, const AbstractMetaC
 
 void CppHeaderGenerator::writeWrapperClass(QTextStream &s, const AbstractMetaClass *java_class)
 {
-    AbstractMetaFunctionList signal_functions =
-        java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromTargetLang);
+    AbstractMetaFunctionList signal_functions = signalFunctions(java_class);
     if (signal_functions.size() == 0)
         return ;
 

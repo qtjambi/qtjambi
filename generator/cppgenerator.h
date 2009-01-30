@@ -68,9 +68,7 @@ public:
 };
 
 inline AbstractMetaFunctionList CppGenerator::signalFunctions(const AbstractMetaClass *cls) {
-    return cls->queryFunctions(AbstractMetaClass::Signals
-                               | AbstractMetaClass::Visible
-                               | AbstractMetaClass::NotRemovedFromTargetLang);
+    return cls->cppSignalFunctions();
 }
 
 

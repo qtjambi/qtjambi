@@ -694,7 +694,22 @@
   <object-type name="QReadWriteLock"/>
   <object-type name="QDirIterator"/>
   <object-type name="QAbstractFileEngineIterator"/>
-  <object-type name="QAbstractItemModel"/>
+  <object-type name="QAbstractItemModel">
+    <modify-function signature="rowsAboutToBeInserted(QModelIndex,int,int)" private-signal="yes"/>
+    <modify-function signature="rowsInserted(QModelIndex,int,int)" private-signal="yes"/>
+
+    <modify-function signature="rowsAboutToBeRemoved(QModelIndex,int,int)" private-signal="yes"/>
+    <modify-function signature="rowsRemoved(QModelIndex,int,int)" private-signal="yes"/>
+
+    <modify-function signature="columnsAboutToBeInserted(QModelIndex,int,int)" private-signal="yes"/>
+    <modify-function signature="columnsInserted(QModelIndex,int,int)" private-signal="yes"/>
+
+    <modify-function signature="columnsAboutToBeRemoved(QModelIndex,int,int)" private-signal="yes"/>
+    <modify-function signature="columnsRemoved(QModelIndex,int,int)" private-signal="yes"/>
+
+    <modify-function signature="modelAboutToBeReset()" private-signal="yes"/>
+    <modify-function signature="modelReset()" private-signal="yes"/>
+  </object-type>
 
   <object-type name="QAbstractListModel">
     <extra-includes>

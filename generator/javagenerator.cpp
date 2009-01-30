@@ -692,6 +692,10 @@ void JavaGenerator::writeSignal(QTextStream &s, const AbstractMetaFunction *java
     int sz = arguments.count();
 
     QString signalTypeName("Signal");
+    if (java_function->isPrivate()) {
+        signalTypeName = "PrivateSignal";
+    }
+
     signalTypeName += QString::number(sz);
     if (sz > 0) {
         signalTypeName += "<";
@@ -755,9 +759,12 @@ void JavaGenerator::writeSignal(QTextStream &s, const AbstractMetaFunction *java
     s << signalTypeName;
     s << " " << signalName << " = new " << signalTypeName << "();" << endl;
 
-    writeFunction(s, java_function,
-                  AbstractMetaAttributes::Private,
-                  AbstractMetaAttributes::Visibility & ~AbstractMetaAttributes::Private);
+    // We don't write out the functions for private signals, because they cannot
+    // be emitted, hence they will never be used...
+    if (!java_function->isPrivate())
+        writeFunction(s, java_function,
+                      AbstractMetaAttributes::Private,
+                      AbstractMetaAttributes::Visibility & ~AbstractMetaAttributes::Private);
 }
 
 void JavaGenerator::retrieveModifications(const AbstractMetaFunction *java_function,
@@ -1597,7 +1604,6 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     // Signals
     AbstractMetaFunctionList signal_funcs = java_class->queryFunctions(AbstractMetaClass::Signals
                                                                    | AbstractMetaClass::ClassImplements
-                                                                   | AbstractMetaClass::Visible
                                                                    | AbstractMetaClass::NotRemovedFromTargetLang);
     for (int i=0; i<signal_funcs.size(); ++i)
         writeSignal(s, signal_funcs.at(i));

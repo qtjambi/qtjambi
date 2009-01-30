@@ -150,14 +150,11 @@ public class QSignalEmitter extends QSignalEmitterInternal {
 
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * no parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes no
+     * parameters.
      */
     public final class Signal0 extends AbstractSignal {
-        public Signal0() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -167,16 +164,13 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * one parameter.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes one
+     * parameter.
      *
      * @param <A> The type of the single parameter of the signal.
      */
     public final class Signal1<A> extends AbstractSignal {
-        public Signal1() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -187,17 +181,14 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * two parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes two
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      */
     public final class Signal2<A, B> extends AbstractSignal {
-        public Signal2() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -207,18 +198,15 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * three parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes three
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
      * @param <C> The type of the third parameter of the signal.
      */
     public final class Signal3<A, B, C> extends AbstractSignal {
-        public Signal3() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -228,8 +216,9 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * four parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes four
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
@@ -238,10 +227,6 @@ public class QSignalEmitter extends QSignalEmitterInternal {
      */
 
     public final class Signal4<A, B, C, D> extends AbstractSignal {
-        public Signal4() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -251,8 +236,9 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * five parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes five
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
@@ -261,10 +247,6 @@ public class QSignalEmitter extends QSignalEmitterInternal {
      * @param <E> The type of the fifth parameter of the signal.
      */
     public final class Signal5<A, B, C, D, E> extends AbstractSignal {
-        public Signal5() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -274,8 +256,9 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * six parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes six
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
@@ -285,10 +268,6 @@ public class QSignalEmitter extends QSignalEmitterInternal {
      * @param <F> The type of the sixth parameter of the signal.
      */
     public final class Signal6<A, B, C, D, E, F> extends AbstractSignal {
-        public Signal6() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -298,8 +277,9 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * seven parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes seven
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
@@ -310,10 +290,6 @@ public class QSignalEmitter extends QSignalEmitterInternal {
      * @param <G> The type of the seventh parameter of the signal.
      */
     public final class Signal7<A, B, C, D, E, F, G> extends AbstractSignal {
-        public Signal7() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -323,8 +299,9 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * eight parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes eight
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
@@ -337,10 +314,6 @@ public class QSignalEmitter extends QSignalEmitterInternal {
      */
     public final class Signal8<A, B, C, D, E, F, G, H> extends
             AbstractSignal {
-        public Signal8() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
@@ -351,8 +324,9 @@ public class QSignalEmitter extends QSignalEmitterInternal {
     }
 
     /**
-     * Declare and instantiate a field of this class in your QSignalEmitter subclass to declare a signal that takes
-     * nine parameters.
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes nine
+     * parameters.
      *
      * @param <A> The type of the first parameter of the signal.
      * @param <B> The type of the second parameter of the signal.
@@ -366,14 +340,240 @@ public class QSignalEmitter extends QSignalEmitterInternal {
      */
     public final class Signal9<A, B, C, D, E, F, G, H, I> extends
             AbstractSignal {
-        public Signal9() {
-            super();
-        }
-
         /**
          * Emits the signal.
          */
         public void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6,
+                G arg7, H arg8, I arg9) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes no
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     */
+    public final class PrivateSignal0 extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit() {
+            emit_helper();
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes one
+     * parameter.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the single parameter of the signal.
+     */
+    public final class PrivateSignal1<A> extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1) {
+            emit_helper(arg1);
+        }
+
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes two
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     */
+    public final class PrivateSignal2<A, B> extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2) {
+            emit_helper(arg1, arg2);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes three
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     * @param <C> The type of the third parameter of the signal.
+     */
+    public final class PrivateSignal3<A, B, C> extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2, C arg3) {
+            emit_helper(arg1, arg2, arg3);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes four
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     * @param <C> The type of the third parameter of the signal.
+     * @param <D> The type of the fourth parameter of the signal.
+     */
+
+    public final class PrivateSignal4<A, B, C, D> extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2, C arg3, D arg4) {
+            emit_helper(arg1, arg2, arg3, arg4);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes five
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     * @param <C> The type of the third parameter of the signal.
+     * @param <D> The type of the fourth parameter of the signal.
+     * @param <E> The type of the fifth parameter of the signal.
+     */
+    public final class PrivateSignal5<A, B, C, D, E> extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2, C arg3, D arg4, E arg5) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes six
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     * @param <C> The type of the third parameter of the signal.
+     * @param <D> The type of the fourth parameter of the signal.
+     * @param <E> The type of the fifth parameter of the signal.
+     * @param <F> The type of the sixth parameter of the signal.
+     */
+    public final class PrivateSignal6<A, B, C, D, E, F> extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes seven
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     * @param <C> The type of the third parameter of the signal.
+     * @param <D> The type of the fourth parameter of the signal.
+     * @param <E> The type of the fifth parameter of the signal.
+     * @param <F> The type of the sixth parameter of the signal.
+     * @param <G> The type of the seventh parameter of the signal.
+     */
+    public final class PrivateSignal7<A, B, C, D, E, F, G> extends AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6, G arg7) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes eight
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     * @param <C> The type of the third parameter of the signal.
+     * @param <D> The type of the fourth parameter of the signal.
+     * @param <E> The type of the fifth parameter of the signal.
+     * @param <F> The type of the sixth parameter of the signal.
+     * @param <G> The type of the seventh parameter of the signal.
+     * @param <H> The type of the eighth parameter of the signal.
+     */
+    public final class PrivateSignal8<A, B, C, D, E, F, G, H> extends
+            AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6,
+                G arg7, H arg8) {
+            emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+        }
+    }
+
+    /**
+     * Declare and instantiate a field of this class in your
+     * QSignalEmitter subclass to declare a signal that takes nine
+     * parameters.
+     *
+     * Private signals do not have an emit method, as they can only be
+     * emitted from inside Qt.
+     *
+     * @param <A> The type of the first parameter of the signal.
+     * @param <B> The type of the second parameter of the signal.
+     * @param <C> The type of the third parameter of the signal.
+     * @param <D> The type of the fourth parameter of the signal.
+     * @param <E> The type of the fifth parameter of the signal.
+     * @param <F> The type of the sixth parameter of the signal.
+     * @param <G> The type of the seventh parameter of the signal.
+     * @param <H> The type of the eighth parameter of the signal.
+     * @param <I> The type of the ninth parameter of the signal.
+     */
+    public final class PrivateSignal9<A, B, C, D, E, F, G, H, I> extends
+            AbstractSignal {
+        /**
+         * Emits the signal.
+         */
+        private void emit(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6,
                 G arg7, H arg8, I arg9) {
             emit_helper(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
