@@ -69,7 +69,7 @@ public class TestPrivateSignals extends QApplicationTest {
         assertFalse(triggered_modelAboutToBeReset);
 
         model.modelReset.connect(this, "handle_modelReset()");
-        model.modelReset.connect(this, "handle_modelAboutToBeReset()");
+        model.modelAboutToBeReset.connect(this, "handle_modelAboutToBeReset()");
 
         model.doReset();
 
