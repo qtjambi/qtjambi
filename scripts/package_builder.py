@@ -25,11 +25,11 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((socket.gethostname(), pkgutil.PORT_CREATOR))
 serversocket.listen(16)
 
-host_linux64 = "tirionvm-linux64.troll.no"
-host_linux32 = "tirionvm-linux32.troll.no"
-host_win64   = "tirionvm-win64.troll.no"
-host_win32   = "packy-win32-clone1.troll.no"
-host_mac     = "alqualonde.troll.no"
+host_linux64 = "tirionvm-linux64.nokia.troll.no"
+host_linux32 = "tirionvm-linux32.nokia.troll.no"
+host_win64   = "tirionvm-win64.nokia.troll.no"
+host_win32   = "packy-win32-clone1.nokia.troll.no"
+host_mac     = "alqualonde.nokia.troll.no"
 
 class Options:
     def __init__(self):
@@ -287,6 +287,8 @@ class Package:
 
     def setGpl(self):
         self.copyFiles.append("dist/LICENSE.GPL")
+        self.copyFiles.append("dist/GPL_EXCEPTION.TXT");
+        self.copyFiles.append("dist/GPL_EXCEPTION_ADDENDUM.TXT");
 
     def setEval(self):
         self.copyFiles.append("dist/LICENSE.EVAL")
@@ -519,7 +521,7 @@ def prepareSourceTree():
     # sync p4 client spec into subdirectory...
     pkgutil.debug(" - syncing p4...")
     os.system("p4 -u %s -c %s sync -f //%s/... > .p4sync.buildlog" % (options.p4User, options.p4Client, options.p4Client))
-    os.system("chmod -R a+uw .")
+    os.system("chmod -R a+wX .")
 
 
 def packageSourcePackage(package):
