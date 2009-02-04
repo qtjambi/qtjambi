@@ -1,9 +1,9 @@
-** Licensees holding valid Trolltech Technology Preview licenses may
-** use this file in accordance with the Trolltech Technology Preview
-** License Agreement provided with the Software.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
-** See http://www.trolltech.com/pricing.html or email
-** sales@trolltech.com for information about the Qt Commercial License
-** Agreements.
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
+
