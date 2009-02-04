@@ -18,16 +18,19 @@ DEFINES += QT_UIC_JAVA_GENERATOR QT_UIC
 HEADERS += javawritedeclaration.h \
     javawriteincludes.h \
     javawriteinitialization.h \
-    javautils.h \
-    $$QT_SOURCE_TREE/src/tools/uic/uic.h  
-
+    javautils.h 
+    
 SOURCES += javawritedeclaration.cpp \
     javawriteincludes.cpp \
     javawriteinitialization.cpp \
     javautils.cpp \
-    main.cpp \
-    $$QT_SOURCE_TREE/src/tools/uic/uic.cpp
+    main.cpp 
 
+!exists(uic.pri) {
+    HEADERS += $$QT_SOURCE_TREE/src/tools/uic/uic.h  
+    SOURCES += $$QT_SOURCE_TREE/src/tools/uic/uic.cpp
+}
+        
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
     CONFIG += debug_and_release build_all
