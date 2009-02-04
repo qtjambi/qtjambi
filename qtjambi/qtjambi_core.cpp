@@ -128,20 +128,29 @@ void jobjectwrapper_load(QDataStream &stream, void *_jObjectWrapper)
 }
 
 
+#undef qtjambi_exception_check
 /*!  Checks for an exception in the virtual machine and returns true
   if there was one; otherwise returns false. The function will print
   the stack trace of any exception before clearing the exception state
   in the virtual machine.
 */
-bool qtjambi_exception_check(JNIEnv *env)
+bool qtjambi_exception_check(JNIEnv *env, char *fileName, int lineNumber)
 {
     if (env->ExceptionCheck()) {
-        fprintf(stderr, "QtJambi: Exception pending in native code\n");
-        env->ExceptionDescribe();
+        if (fileName != 0)
+            fprintf(stderr, "QtJambi: Exception pending in native code in file '%s':%d\n", fileName, lineNumber);
+        else
+            fprintf(stderr, "QtJambi: Exception pending in native code\n");
+        //env->ExceptionDescribe();
         env->ExceptionClear();
         return true;
     }
     return false;
+}
+
+bool qtjambi_exception_check(JNIEnv *env)
+{
+    return qtjambi_exception_check(env, 0, 0);
 }
 
 
