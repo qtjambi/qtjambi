@@ -22,6 +22,10 @@ import static com.trolltech.qt.gui.QKeySequence.StandardKey;
 @QtJambiExample(name = "Text Edit")
 public class TextEdit extends QMainWindow {
 
+    public TextEdit() {
+        init();                    
+    }
+
     private void init() {
         setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));
 
@@ -76,16 +80,7 @@ public class TextEdit extends QMainWindow {
         if (!load(initialFile))
             fileNew();
 
-        initialized = true;
-
         resize(640, 800);
-    }
-
-    @Override
-    protected void showEvent(QShowEvent e) {
-        if (!initialized)
-            init();
-        super.showEvent(e);
     }
 
     @Override
@@ -505,14 +500,12 @@ public class TextEdit extends QMainWindow {
     private QComboBox comboFont;
     private QComboBox comboSize;
     private String rsrcPath = "classpath:com/trolltech/images/textedit/win";
-    private boolean initialized = false;
 
     static public void main(String args[]) {
         QApplication.initialize(args);
 
         TextEdit mw = new TextEdit();
         if (args.length > 0) {
-            mw.init();
             mw.load(args[0]);
         }
         mw.show();
