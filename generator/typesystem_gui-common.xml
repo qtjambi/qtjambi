@@ -96,7 +96,6 @@
   <enum-type name="QInputDialog::InputDialogOption" flags="QInputDialog::InputDialogOptions" />
   <enum-type name="QFontDialog::FontDialogOption" flags="QFontDialog::FontDialogOptions" />
   <enum-type name="QColorDialog::ColorDialogOption" flags="QColorDialog::ColorDialogOptions" />
-  <enum-type name="QPixmapFilter::FilterType" />
   <enum-type name="QAbstractItemDelegate::EndEditHint"/>
   <enum-type name="QAbstractItemView::CursorAction"/>
   <enum-type name="QAbstractItemView::DragDropMode"/>
@@ -766,17 +765,6 @@
     <modify-function signature="QPixmap(const char **)" access="private"/>
     <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
   </value-type>
-
-  <object-type name="QPixmapFilter" polymorphic-base="yes">
-    <modify-function signature="draw(QPainter*,QPointF,QPixmap,QRectF)const">
-        <modify-argument index="1" invalidate-after-use="yes" />
-    </modify-function>
-  </object-type>
-  <object-type name="QPixmapColorizeFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ColorizeFilter" />
-  <object-type name="QPixmapConvolutionFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ConvolutionFilter">
-  </object-type>
-
-  <object-type name="QPixmapDropShadowFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::DropShadowFilter" />
 
   <value-type name="QTextCursor" delete-in-main-thread="yes">
     <extra-includes>
