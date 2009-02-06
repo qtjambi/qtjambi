@@ -4,14 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <!-- C:/depot/qtjambi/scripts/../doc/src/qtjambi-installation.qdoc -->
 <head>
-  <title>Qt 4.4: Installing Qt Jambi</title>
+  <title>Qt 4.5: Installing Qt Jambi</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="qtjambi-index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="qtjambi-overviews.html"><font color="#004faf">Overviews</font></a>&nbsp;&middot; <a href="qtjambi-examples.html"><font color="#004faf">Examples</font></a>&nbsp;</td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-overviews.html"><font color="#004faf">Overviews</font></a>&nbsp;&middot; <a href="http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-examples.html"><font color="#004faf">Examples</font></a>&nbsp;</td>
 </tr></table><h1 align="center">Installing Qt Jambi<br /><small></small></h1>
 <p>Qt Jambi is available both in prebuilt and source packages for Linux, Mac OS X, and Windows. Java 1.5 or later is required to install Qt Jambi.</p>
 <p>The procedure of installing is different depending on whether you have downloaded a source or prebuilt package. This installation guide has separate sections for each approach.</p>
@@ -47,20 +47,20 @@
 <p>When you are ready to distribute your own applications, see the <a href="http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-deployment.html">deployment</tt></a> document.</p>
 <a name="manually-launching-qt-jambi-applications"></a>
 <h3>Manually Launching Qt Jambi Applications</h3>
-<p>To manually run Qt Jambi, the qtjambi classes archive and qtjambi platform archive must be available in the CLASSPATH. The qtjambi classes archive is named <tt>qtjambi-4.4.0_01.jar</tt> and the platform archive is named according to the operating system and compiler used to generated the native binaries, such as <tt>qtjambi-win32-msvc2005-4.4.0_01.jar</tt></p>
-<p>To run the examples or launcher, the classpath must also include the <tt>qtjambi-examples-4.4.0_01.jar</tt>.</p>
+<p>To manually run Qt Jambi, the qtjambi classes archive and qtjambi platform archive must be available in the CLASSPATH. The qtjambi classes archive is named <tt>qtjambi-4.5.0_01.jar</tt> and the platform archive is named according to the operating system and compiler used to generated the native binaries, such as <tt>qtjambi-win32-msvc2005-4.5.0_01.jar</tt></p>
+<p>To run the examples or launcher, the classpath must also include the <tt>qtjambi-examples-4.5.0_01.jar</tt>.</p>
 <pre><span class="comment">    //</span> Linux
-    java -cp qtjambi-4.4.0_01.jar:qtjambi-linux32-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
+    java -cp qtjambi-4.5.0_01.jar:qtjambi-linux32-gcc-4.5.0_01.jar:qtjambi-examples-4.5.0_01.jar com.trolltech.launcher.Launcher
 
 <span class="comment">    //</span> Mac OS X
-    java -XstartOnFirstThread -cp qtjambi-4.4.0_01.jar:qtjambi-mac-gcc-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher
+    java -XstartOnFirstThread -cp qtjambi-4.5.0_01.jar:qtjambi-mac-gcc-4.5.0_01.jar:qtjambi-examples-4.5.0_01.jar com.trolltech.launcher.Launcher
 
 <span class="comment">    //</span> Windows
-    java -cp qtjambi-4.4.0_01.jar:qtjambi-win32-msvc2005-4.4.0_01.jar:qtjambi-examples-4.4.0_01.jar com.trolltech.launcher.Launcher</pre>
+    java -cp qtjambi-4.5.0_01.jar:qtjambi-win32-msvc2005-4.5.0_01.jar:qtjambi-examples-4.5.0_01.jar com.trolltech.launcher.Launcher</pre>
 <p><b>Note:</b> When running a Qt Jambi application on Mac, it is necessary to pass the <tt>-XstartOnFirstThread</tt> argument to the Java executable.</p>
 <a name="alternate-way-of-loading-native-libraries"></a>
 <h4>Alternate way of loading native libraries</h4>
-<p>Qt Jambi must be enabled to find the native libraries. The Qt Jambi libraries is a set of class files contained in the <tt>qtjambi-4.4.0_01.jar</tt> file and a set of native libraries. The native libraries are located in a .jar file named according to your operating system, hardware configuration and the compiler that was used to build the package, for instance <tt>qtjambi-win64-msvc2005x64-4.4.0_01.jar</tt>. The native libraries will be automatically loaded when this jar file is part of the classpath.</p>
+<p>Qt Jambi must be enabled to find the native libraries. The Qt Jambi libraries is a set of class files contained in the <tt>qtjambi-4.5.0_01.jar</tt> file and a set of native libraries. The native libraries are located in a .jar file named according to your operating system, hardware configuration and the compiler that was used to build the package, for instance <tt>qtjambi-win64-msvc2005x64-4.5.0_01.jar</tt>. The native libraries will be automatically loaded when this jar file is part of the classpath.</p>
 <p>An alternative way of loading the native libraries is to rely on Java's standard method of loading native libraries. This is done by specifying either the JVM system property <tt>-Djava.library.path=[path_to_libraries]</tt> or setting the following environment variable:</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Platform</th><th>Comment</th></tr></thead>
@@ -114,7 +114,7 @@
 <pre>    &gt; ant help</pre>
 <a name="trouble-shooting"></a>
 <h3>Trouble Shooting</h3>
-<p>If you have trouble compiling and running Qt Jambi, we present problems that are commonly encountered in a table. This should be sufficient to solve most problems; failing that, try asking someone. The <a href="http://trolltech.com/developer/faqs/Qt%20Jambi">Jambi FAQ</tt></a> is a good place to start. In the <a href="http://lists.trolltech.com/qt-jambi-interest/">Jambi Mailing List</tt></a>, active Jambi users and the Jambi development team can be helpful with installation problems; please run Qt Jambi with the <tt>com.trolltech.qt.verbose-loading</tt> <a href="qtjambi-systemproperties.html">system property</tt></a> and give stack traces if Qt Jambi fails to load native libraries.</p>
+<p>If you have trouble compiling and running Qt Jambi, we present problems that are commonly encountered in a table. This should be sufficient to solve most problems; failing that, try asking someone. The <a href="http://qtsoftware.com/developer/faqs/Qt%20Jambi">Jambi FAQ</tt></a> is a good place to start. In the <a href="http://lists.trolltech.com/qt-jambi-interest/">Jambi Mailing List</tt></a>, active Jambi users and the Jambi development team can be helpful with installation problems; please run Qt Jambi with the <tt>com.trolltech.qt.verbose-loading</tt> <a href="qtjambi-systemproperties.html">system property</tt></a> and give stack traces if Qt Jambi fails to load native libraries.</p>
 <a name="common-problems"></a>
 <h4>Common Problems</h4>
 <p>In this section, we have tried to gather common problems encountered while building Qt Jambi. They are listed in a table with columns for the problem description and solution.</p>
@@ -144,8 +144,8 @@
 </table></p>
 <a name="running-the-qt-designer"></a>
 <h2>Running the Qt Designer</h2>
-<p>The Qt Designer is Trolltech's tool for designing and building user interfaces. If you have a prebuilt package, you can run it from the command line with the <tt>designer.bat</tt> or <tt>designer.sh</tt> scripts. The <a href="qtjambi-eclipse.html">Eclipse integration</tt></a> handles the designer automatically.</p>
-<p>You will find more information in the <a href="qtjambi-designer.html">Qt Designer document</tt></a>.</p>
+<p>The Qt Designer is Qt Software's tool for designing and building user interfaces. If you have a prebuilt package, you can run it from the command line with the <tt>designer.bat</tt> or <tt>designer.sh</tt> scripts. The <a href="http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-eclipse.html">Eclipse integration</tt></a> handles the designer automatically.</p>
+<p>You will find more information in the <a href="http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-designer.html">Qt Designer document</tt></a>.</p>
 <a name="running-the-qt-jambi-generator"></a>
 <h2>Running the Qt Jambi Generator</h2>
 <p>The generator is a Qt application which can be used to map C++ based Qt APIs onto equivalent Java APIs. The Qt Jambi package provides an example on how to use the Qt Jambi Generator, located in the <tt>path/to/Qt Jambi/generator_example</tt> directory.</p>
@@ -154,8 +154,8 @@
 <p><b>Warning:</b> The Qt Jambi generator is written to handle Qt based source code, and is not intended for mapping C++ libraries in general.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; $THISYEAR$ <a href="trolltech.html">Trolltech</a></td>
-<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt Jambi 4.4.0_01</div></td>
+<td width="30%">Copyright &copy; $THISYEAR$ <a href="http://www.qtsoftware.com">Qt Software</a></td>
+<td width="40%" align="center"><a href="http://doc.trolltech.com/qtjambi/com/trolltech/qt/trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt Jambi 4.5.0_01</div></td>
 </tr></table></div></address></body>
 </html>
