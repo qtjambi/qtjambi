@@ -380,7 +380,6 @@ public class Launcher extends QWidget {
             splashScreen.finish(l);
 
         QApplication.exec();
-        l.dispose();
 
         System.gc();
     }
