@@ -92,9 +92,6 @@
     <value-type name="Phonon::ObjectDescription" generate="no" />
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
     <value-type name="Phonon::AudioOutputDevice" java-name="AudioOutputDevice" />
-    <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
-    <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
-    <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
 
     <object-type name="Phonon::AbstractAudioOutput" java-name="AbstractAudioOutput" />
     <object-type name="Phonon::AbstractMediaStream" java-name="AbstractMediaStream" />
@@ -195,6 +192,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'Phonon::AbstractVideoOutput' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'Phonon::EffectWidget' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'Phonon::VolumeFaderInterface' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
-
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.phonon.AbstractAddon' for enum 'AudioChannelCommand' is not declared"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.phonon.AbstractAddon' for enum 'SubtitleCommand' is not declared"/>
 
 </typesystem>

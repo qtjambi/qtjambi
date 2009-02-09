@@ -188,5 +188,5 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.xmlpatterns.QXmlNodeModelIndex' for enum 'NodeKind' is not declared"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.xmlpatterns.QAbstractXmlNodeModel' for enum 'SimpleAxis' is not declared"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QXmlNamePool' is specified in typesystem, but not defined. This could potentially lead to compilation errors."/>
-
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.xmlpatterns.QXmlQuery' for enum 'QueryLanguage' is not declared" />
 </typesystem>

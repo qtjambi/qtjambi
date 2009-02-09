@@ -86,8 +86,14 @@
   <rejection class="QTabletEvent" field-name="mExtra"/>
   <rejection class="QWidgetItem" field-name="wid" />
   <rejection class="QFont" enum-name="ResolveProperties" />
+  <rejection class="QGradient" enum-name="InterpolationMode" />
   <rejection class="QIconEngineV2::AvailableSizesArgument" />
   <rejection class="QIconEngineV2" enum-name="IconEngineHook" />
+  <rejection class="QGradient" enum-name="InterpolationMode" />
+  <rejection class="QGradient" function-name="setInterpolationMode" />
+  <rejection class="QGradient" function-name="interpolationMode" />
+  <rejection class="QAbstractTextDocumentLayout" function-name="handlerForObject" />
+  
 
   <enum-type name="QStyleOptionTabBarBaseV2::StyleOptionVersion" />
   <enum-type name="QTabBar::SelectionBehavior" />
@@ -5156,5 +5162,7 @@
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextOption_Tab' has equals operators but no qHash() function"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Rejected enum has no alternative...: QPalette::NColorRoles" />
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QtSharedPointer' does not have a type entry" />
 
 </typesystem>
