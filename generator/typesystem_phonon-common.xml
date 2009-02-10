@@ -120,6 +120,10 @@
             </modify-argument>
         </modify-function>
     </object-type>
+    
+     <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
+     <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
+     <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
 
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Final class 'AbstractAudioOutput' set to non-final, as it is extended by other classes" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QDBus' does not have a type entry" />
