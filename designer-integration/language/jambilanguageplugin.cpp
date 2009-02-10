@@ -308,7 +308,7 @@ bool JambiExtraInfoExtension::loadUiExtraInfo(DomUI *ui)
         return false;
     }
 
-    if (ui->elementWidget())
+    if (ui->hasElementWidget() && ui->elementWidget() != 0)
         fiddleWith(ui->elementWidget());
 
     return true;
