@@ -25,11 +25,11 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((socket.gethostname(), pkgutil.PORT_CREATOR))
 serversocket.listen(16)
 
-host_linux64 = "tirionvm-linux64.nokia.troll.no"
-host_linux32 = "tirionvm-linux32.nokia.troll.no"
-host_win64   = "tirionvm-win64.nokia.troll.no"
-host_win32   = "packy-win32-clone1.nokia.troll.no"
-host_mac     = "alqualonde.nokia.troll.no"
+host_linux64 = "tirionvm-linux64.troll.no"
+host_linux32 = "tirionvm-linux32.troll.no"
+host_win64   = "tirionvm-win64.troll.no"
+host_win32   = "packy-win32.jambiclone.troll.no"
+host_mac     = "alqualonde.troll.no"
 
 class Options:
     def __init__(self):

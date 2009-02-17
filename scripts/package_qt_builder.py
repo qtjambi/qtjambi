@@ -41,7 +41,6 @@ options = Options()
 
 gpl_header = pkgutil.readLicenseHeader(pkgutil.LICENSE_GPL, options.startDir)
 commercial_header = pkgutil.readLicenseHeader(pkgutil.LICENSE_COMMERCIAL, options.startDir)
-eval_header = pkgutil.readLicenseHeader(pkgutil.LICENSE_EVAL, options.startDir)
 
 
 class BuildServer:
@@ -58,33 +57,33 @@ def setupServers():
 
     if options.buildLinux and options.build32:
         linux32 = BuildServer(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL)
-        linux32.host = "tirionvm-linux32.nokia.troll.no"
+        linux32.host = "tirionvm-linux32.troll.no"
         linux32.task = options.startDir + "/build_qt_linux.sh"
         servers.append(linux32)
 
     if options.buildLinux and options.build64:
         linux64 = BuildServer(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL)
-        linux64.host = "tirionvm-linux64.nokia.troll.no"
+        linux64.host = "tirionvm-linux64.troll.no"
         linux64.task = options.startDir + "/build_qt_linux.sh"
         servers.append(linux64)
 
     if options.buildWindows and options.build64:
         win64 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64)
-        win64.host = "tirionvm-win64.nokia.troll.no"
+        win64.host = "tirionvm-win64.troll.no"
         win64.task = options.startDir + "/build_qt_windows.bat"
         win64.compiler = "msvc2005_x64"
         servers.append(win64)
 
     if options.buildWindows and options.build32:
         win32 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32)
-        win32.host = "packy-win32-clone1.nokia.troll.no"
+        win32.host = "packy-win32.jambiclone.troll.no"
         win32.task = options.startDir + "/build_qt_windows.bat"
         win64.compiler = "msvc2005"
         servers.append(win32)
 
     if options.buildMac:
         mac = BuildServer(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL)
-        mac.host = "alqualonde.nokia.troll.no"
+        mac.host = "alqualonde.troll.no"
         mac.task = options.startDir + "/build_qt_mac.sh"
         servers.append(mac)
 
@@ -113,7 +112,6 @@ def prepareSourceTree():
     tmpFile.write("        -//depot/qt/%s/tmake/... //qt-builder/qt/tmake/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/translations/... //qt-builder/qt/translations/...\n" % options.qtBranch)
     tmpFile.write("        -//depot/qt/%s/dist/... //qt-builder/qt/dist/...\n" % options.qtBranch)
-    tmpFile.write("        //depot/qt/%s/dist/eval/... //qt-builder/qt/dist/eval/...\n" % options.qtBranch)
     tmpFile.close()
     os.system("p4 -u %s -c %s client -i < p4spec.tmp" % (options.p4User, options.p4Client) );
     os.remove("p4spec.tmp")
@@ -145,13 +143,6 @@ def packageAndSend(server):
     shutil.copytree("qt", "tmptree/commercial");
     pkgutil.expandMacroes("tmptree/commercial", commercial_header)
 
-    print " - setting up eval subdir..."
-    shutil.copytree("qt", "tmptree/eval");
-
-    # Extra files needed by eval
-    shutil.copy("qt/dist/eval/src/corelib/eval.pri", "tmptree/eval/src/corelib");
-    shutil.copy("qt/dist/eval/src/corelib/kernel/qtcore_eval.cpp", "tmptree/eval/src/corelib/kernel");
-    pkgutil.expandMacroes("tmptree/eval", eval_header)
 
     if server.platform == pkgutil.PLATFORM_WINDOWS:
         shutil.copy(server.task, "tmptree/task.bat")
