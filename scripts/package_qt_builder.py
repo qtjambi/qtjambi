@@ -58,33 +58,33 @@ def setupServers():
 
     if options.buildLinux and options.build32:
         linux32 = BuildServer(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL)
-        linux32.host = "tirionvm-linux32.troll.no"
+        linux32.host = "tirionvm-linux32.nokia.troll.no"
         linux32.task = options.startDir + "/build_qt_linux.sh"
         servers.append(linux32)
 
     if options.buildLinux and options.build64:
         linux64 = BuildServer(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_UNIVERSAL)
-        linux64.host = "tirionvm-linux64.troll.no"
+        linux64.host = "tirionvm-linux64.nokia.troll.no"
         linux64.task = options.startDir + "/build_qt_linux.sh"
         servers.append(linux64)
 
     if options.buildWindows and options.build64:
         win64 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64)
-        win64.host = "tirionvm-win64.troll.no"
+        win64.host = "tirionvm-win64.nokia.troll.no"
         win64.task = options.startDir + "/build_qt_windows.bat"
         win64.compiler = "msvc2005_x64"
         servers.append(win64)
 
     if options.buildWindows and options.build32:
         win32 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32)
-        win32.host = "packy-win32-clone1.troll.no"
+        win32.host = "packy-win32-clone1.nokia.troll.no"
         win32.task = options.startDir + "/build_qt_windows.bat"
         win64.compiler = "msvc2005"
         servers.append(win32)
 
     if options.buildMac:
         mac = BuildServer(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL)
-        mac.host = "alqualonde.troll.no"
+        mac.host = "alqualonde.nokia.troll.no"
         mac.task = options.startDir + "/build_qt_mac.sh"
         servers.append(mac)
 
