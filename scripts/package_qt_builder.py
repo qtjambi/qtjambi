@@ -76,7 +76,7 @@ def setupServers():
 
     if options.buildWindows and options.build32:
         win32 = BuildServer(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32)
-        win32.host = "packy-win32.jambiclone.troll.no"
+        win32.host = "packy-win32-jambiclone.troll.no"
         win32.task = options.startDir + "/build_qt_windows.bat"
         win64.compiler = "msvc2005"
         servers.append(win32)

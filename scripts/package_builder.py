@@ -28,7 +28,7 @@ serversocket.listen(16)
 host_linux64 = "tirionvm-linux64.troll.no"
 host_linux32 = "tirionvm-linux32.troll.no"
 host_win64   = "tirionvm-win64.troll.no"
-host_win32   = "packy-win32.jambiclone.troll.no"
+host_win32   = "packy-win32-jambiclone.troll.no"
 host_mac     = "alqualonde.troll.no"
 
 class Options:
