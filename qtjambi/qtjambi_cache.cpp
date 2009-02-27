@@ -420,14 +420,12 @@ jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char
 
         // Check if key is a Qt class
         if (clazz != 0) {
-            jmethodID methodId = resolveMethod(env, "getName", "()Ljava/lang/String;",
-                "Class", "java/lang/", false);
 
-            if (methodId != 0) {
-                jstring className = (jstring) env->CallObjectMethod(clazz, methodId);
-                if (qtjambi_to_qstring(env, className).startsWith("com.trolltech."))
-                    returned = clazz;
-            }
+            StaticCache *sc = StaticCache::instance();
+            sc->resolveQtJambiInternal();
+
+            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, clazz))
+                returned = clazz;
         }
 
         // If not, try the superclass recursively

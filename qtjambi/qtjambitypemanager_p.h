@@ -60,6 +60,7 @@ public:
         Enum            = 0x08000,
         Flags           = 0x10000,
         Array           = 0x20000,
+        QtSubClass      = 0x40000,
 
         TypeMask = Integer + Long + Boolean + Float + Double + Short + Byte + Char
     };
@@ -69,10 +70,22 @@ public:
         ArgumentType
     };
 
+    // A little hack to ensure safe conversions for QtDynamicMetaObject.
+    //
+    // When it uses the conversion methods, Java-subclasses of Qt classes 
+    // (e.g. QWidget) should not become QWidget* in the signatures of the
+    // invokable methods in the metaobject, since a generic QWidget* cannot
+    // be converted to the correct Java object of course. In the case of 
+    // QVariants, however, a subclass of e.g. QGraphicsScene should become
+    // QGraphicsScene* in the variant, since Qt relies on this. To avoid 
+    // rewriting a lot of stuff, the Mode enum is used to switch between the
+    // two behaviors in the locations where it makes sense.
+    enum ConversionMode {
+        QVariantMode,
+        DynamicMetaObjectMode,
+    };
 
-
-    QtJambiTypeManager(JNIEnv *env);
-    QtJambiTypeManager(JNIEnv *env, bool convertEnums);
+    QtJambiTypeManager(JNIEnv *env, bool convertEnums = false, ConversionMode conversionMode = QVariantMode);
     virtual ~QtJambiTypeManager();
 
     // Some convenience functions
@@ -95,6 +108,7 @@ public:
                                        const QString &package);
     static bool isQObjectSubclass(JNIEnv *env, const QString &className, const QString &package);
     static bool isQtClass(JNIEnv *env, const QString &className, const QString &package);
+    static bool isQtSubClass(JNIEnv *env, const QString &className, const QString &package);
     static QString complexTypeOf(Type type);
     static QString primitiveTypeOf(Type type);
     static Type valueTypePattern(const QString &javaName);
@@ -142,11 +156,13 @@ public:
     QVector<void *> initInternalToExternal(const QVector<void *> &internalVariables,
         const QVector<QString> &externalTypeNames);
 
+    
     bool convertEnums() const { return mConvertEnums; }
     void setConvertEnums(bool on) { mConvertEnums = on; }
 
 private:
     static QString processInternalTypeName(const QString &typeName, int *indirections = 0);
+    bool conditionsMetForQtClass(uint type) const;
 
 private:
     QHash<void *, QString> mOwnedVariables_internal;
@@ -154,6 +170,8 @@ private:
 
     JNIEnv *mEnvironment;
     uint mConvertEnums : 1;
+
+    ConversionMode mConversionMode;
 };
 
 // *********** Implementations ***********

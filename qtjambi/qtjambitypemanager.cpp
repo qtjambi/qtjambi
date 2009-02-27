@@ -20,11 +20,8 @@
 
 Q_GLOBAL_STATIC(QReadWriteLock, gStaticDataLock)
 
-QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env) : mEnvironment(env), mConvertEnums(false)
-{
-}
-
-QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env, bool convertEnums) : mEnvironment(env), mConvertEnums(convertEnums)
+QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env, bool convertEnums, QtJambiTypeManager::ConversionMode conversionMode) 
+    : mEnvironment(env), mConvertEnums(convertEnums), mConversionMode(conversionMode)
 {
 }
 
@@ -452,6 +449,14 @@ QString QtJambiTypeManager::demangle(const QString &_typeName)
     return QString();
 }
 
+bool QtJambiTypeManager::isQtSubClass(JNIEnv *env, const QString &className, const QString &package)
+{
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveQtJambiObject();
+    jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
+    return (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QtJambiObject.class_ref)));
+}
+
 bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const QString &package)
 {
     StaticCache *sc = StaticCache::instance();
@@ -774,15 +779,18 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_in
     QString strPackage = package(javaName);
     int type = 0;
     int value_type_pattern = valueTypePattern(javaName);
-    if (((value_type_pattern & Primitive) == 0) && isQtClass(mEnvironment, strClassName, strPackage))
-        type |= QtClass;
+    if ((value_type_pattern & Primitive) == 0) {
+        if (isQtClass(mEnvironment, strClassName, strPackage))
+            type |= QtClass | QtSubClass;
+        else if (isQtSubClass(mEnvironment, strClassName, strPackage))
+            type |= QtSubClass;
+    }
 
     int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
     if (metaType != QMetaType::Void) {
         type |= value_type_pattern;
     } else {
         type |= Object;
-
 
         if (isQObjectSubclass(mEnvironment, strClassName, strPackage))
             type |= QObjectSubclass;
@@ -855,6 +863,14 @@ bool QtJambiTypeManager::isFlagsType(const QString &className, const QString &pa
         return false;
 }
 
+// Returns true if conversion mode is QVariantMode and the type is a subclass of a Qt type
+// or if the type is exactly a Qt type.
+bool QtJambiTypeManager::conditionsMetForQtClass(uint type) const
+{
+    return ( ((mConversionMode == QVariantMode) && (type & QtSubClass))
+           || (type & QtClass));
+}
+
 QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &className, const QString &_package) const
 {
     QString package = _package;
@@ -880,12 +896,16 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &cla
     // Other types become variants.
     int type = 0;
     int value_type_pattern = valueTypePattern(package + className);
-    if (((value_type_pattern & Primitive) == 0) && isQtClass(mEnvironment, className, package))
-        type |= QtClass;
+    if ((value_type_pattern & Primitive) == 0) {
+        if (isQtClass(mEnvironment, className, package))
+            type |= QtClass | QtSubClass;
+        else if (isQtSubClass(mEnvironment, className, package))
+            type |= QtSubClass;
+    }
 
     if (metaType != QMetaType::Void || package.startsWith("java/lang/")) {
         type |= value_type_pattern;
-    } else if (type & QtClass) {
+    } else if (type & QtSubClass) {
         type |= Object;
 
         if (isQObjectSubclass(mEnvironment, className, package))
@@ -1200,7 +1220,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
     } else if (type & Flags) {
         p->l = flagsForInt(*reinterpret_cast<const int *>(in), strClassName, strPackage);
         success = p->l != 0;
-    } else if ((type & QtClass) && (((type & Object) || (type & Value)))) {
+    } else if (conditionsMetForQtClass(type) && ((type & Object) || (type & Value))) {
         jobject javaObject = 0;
 
         // If we're dealing with a QObject, then we try to find the original java instance
@@ -1382,7 +1402,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
     } else if ((type & NativePointer) == NativePointer) {
         placeHolder.ptr = qtjambi_to_cpointer(mEnvironment, pval->l, 1);
         copy = &placeHolder.ptr;
-    } else if ((type & QtClass) && ((type & Value) || (type & Object))) {
+    } else if (conditionsMetForQtClass(type) && ((type & Value) || (type & Object))) {
         QtJambiLink *link = QtJambiLink::findLink(mEnvironment, pval->l);
 
         if (link == 0 || link->pointer() == 0) {
