@@ -83,7 +83,8 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     jobject meta_data_struct = env->CallStaticObjectMethod(sc->MetaObjectTools.class_ref, sc->MetaObjectTools.buildMetaData, java_class);
     qtjambi_exception_check(env);
-    Q_ASSERT(meta_data_struct);
+    if (meta_data_struct == 0)
+        return;
 
     sc->resolveMetaData();
     jintArray meta_data = (jintArray) env->GetObjectField(meta_data_struct, sc->MetaData.metaData);
