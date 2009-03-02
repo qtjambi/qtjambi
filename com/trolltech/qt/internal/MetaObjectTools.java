@@ -552,7 +552,7 @@ public class MetaObjectTools {
             {
                 String className = clazz.getName().replace(".", "::");
                 stringsInOrder.add(className);
-                strings.put(clazz.getName(), offset); offset += className.length() + 1;
+                strings.put(className, offset); offset += className.length() + 1;
             }
 
             // Class info
