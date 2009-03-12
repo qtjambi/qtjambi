@@ -388,7 +388,7 @@
             description="Runs qmake on the generator project." 
 	    unless="qtjambi.generator_pro.uptodate">
       <mkdir dir="${outputDir}/generator"/>
-      <qmake config="release"
+      <qmake config="${qtjambi.configuration}"
              dir="${outputDir}/generator"
              pro="${sourceDir}/generator/generator.pro"
              debugTools="${qtjambi.debug-tools}"/>
