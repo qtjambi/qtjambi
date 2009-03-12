@@ -122,7 +122,7 @@
 
     <primitive-type name="float" jni-name="jfloat"/>
 
-    <primitive-type name="__int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
+    <primitive-type name="__int64" java-name="long" jni-name="jlong"/>
     <primitive-type name="unsigned __int64" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="unsigned long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
     <primitive-type name="long long" java-name="long" preferred-conversion="no" jni-name="jlong"/>
