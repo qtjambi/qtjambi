@@ -138,7 +138,8 @@ class pp
     PP_IFNDEF,
     PP_UNDEF,
     PP_PRAGMA,
-    PP_ERROR
+    PP_ERROR,
+    PP_WARNING
   };
 
 public:
