@@ -270,7 +270,10 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_MetaObjectTools_emitNativ
         const QMetaObject *mo = o->metaObject();
 
         QString signal_cpp_signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(signalCppSignature));
+
         int mox = mo->indexOfSignal(signal_cpp_signature.toLatin1().constData());
+        if (mox < 0)
+            return;
 
         QtJambiTypeManager manager(env);
         QString signal_signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(signalSignature));
