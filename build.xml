@@ -432,7 +432,7 @@
       -->
     <uptodate property="qtjambi.typesystem_core.uptodate" 
 	      targetfile="${outputDir}/generator/typesystem_core.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_core-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_core-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.core" unless="qtjambi.typesystem_core.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_core-common.xml"
@@ -446,7 +446,7 @@
 
     <uptodate property="qtjambi.typesystem_gui.uptodate" 
 	      targetfile="${outputDir}/generator/typesystem_gui.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_gui-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_gui-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.gui" unless="qtjambi.typesystem_gui.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_gui-common.xml"
@@ -460,7 +460,7 @@
 
     <uptodate property="qtjambi.typesystem_xml.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_xml.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_xml-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_xml-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.xml" unless="qtjambi.typesystem_xml.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_xml-common.xml"
@@ -474,7 +474,7 @@
 
     <uptodate property="qtjambi.typesystem_network.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_network.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_network-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_network-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.network" unless="qtjambi.typesystem_network.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_network-common.xml"
@@ -488,7 +488,7 @@
 
     <uptodate property="qtjambi.typesystem_opengl.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_opengl.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_opengl-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_opengl-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.opengl" unless="qtjambi.typesystem_opengl.uptodate">
         <xslt in="generator/typesystem_opengl-common.xml"
@@ -502,7 +502,7 @@
 
     <uptodate property="qtjambi.typesystem_sql.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_sql.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_sql-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_sql-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.sql" unless="qtjambi.typesystem_sql.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_sql-common.xml"
@@ -516,7 +516,7 @@
 
     <uptodate property="qtjambi.typesystem_svg.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_svg.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_svg-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_svg-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.svg" unless="qtjambi.typesystem_svg.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_svg-common.xml"
@@ -530,7 +530,7 @@
 
     <uptodate property="qtjambi.typesystem_webkit.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_webkit.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_webkit-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_webkit-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.webkit" unless="qtjambi.typesystem_webkit.uptodate">
          <xslt in="${sourceDir}/generator/typesystem_webkit-common.xml"
@@ -544,7 +544,7 @@
 
     <uptodate property="qtjambi.typesystem_phonon.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_phonon.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_phonon-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_phonon-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.phonon" unless="qtjambi.typesystem_phonon.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_phonon-common.xml"
@@ -558,7 +558,7 @@
 
     <uptodate property="qtjambi.typesystem_xmlpatterns.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_xmlpatterns.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_xmlpatterns-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_xmlpatterns-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.xmlpatterns" unless="qtjambi.typesystem_xmlpatterns.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_xmlpatterns-common.xml"
@@ -572,7 +572,7 @@
 
     <uptodate property="qtjambi.typesystem_designer.uptodate"
 	      targetfile="${outputDir}/generator/typesystem_designer.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_designer-*.xml"/>
+      <srcfiles dir="${sourceDir}/generator" includes="typesystem_designer-*.*"/>
     </uptodate>
     <target name="generator.xmlmerge.designer" unless="qtjambi.typesystem_designer.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_designer-common.xml"
