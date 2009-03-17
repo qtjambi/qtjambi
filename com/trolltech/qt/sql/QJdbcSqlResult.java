@@ -195,7 +195,8 @@ class QJdbcSqlResult extends QSqlResult
                 statement = connection.prepareStatement(query, ResultSet.TYPE_FORWARD_ONLY,
                                     ResultSet.CONCUR_UPDATABLE);
             } else {
-                statement = connection.prepareStatement(query);
+                statement = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                        ResultSet.CONCUR_UPDATABLE);
             }
         } catch (SQLException ex) {
             setError(ex, tr("Unable to prepare statement"), QSqlError.ErrorType.StatementError);
