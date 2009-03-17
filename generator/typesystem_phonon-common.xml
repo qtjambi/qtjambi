@@ -198,5 +198,6 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'Phonon::VolumeFaderInterface' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.phonon.AbstractAddon' for enum 'AudioChannelCommand' is not declared"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.phonon.AbstractAddon' for enum 'SubtitleCommand' is not declared"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::qHash', unmatched return type ''" />
 
 </typesystem>

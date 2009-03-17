@@ -30,6 +30,10 @@
             </modify-argument>
         </modify-function>
     </object-type>
+    <object-type name="QWebPage::ExtensionOption" />
+    <object-type name="QWebPage::ChooseMultipleFilesExtensionOption" />
+    <object-type name="QWebPage::ExtensionReturn" />
+    <object-type name="QWebPage::ChooseMultipleFilesExtensionReturn" />
     <object-type name="QWebHistory"/>
     <object-type name="QWebSettings"/>
     <object-type name="QWebPage">
@@ -76,6 +80,22 @@
     <object-type name="QWebPluginFactory" />
     <value-type name="QWebPluginFactory::Plugin" />
     <value-type name="QWebPluginFactory::MimeType" />
+    <value-type name="QWebSecurityOrigin">
+      <custom-constructor>  
+	return new QWebSecurityOrigin(*copy);
+      </custom-constructor>
+      <custom-destructor>
+	delete copy;
+      </custom-destructor>
+    </value-type>
+    <value-type name="QWebDatabase">
+      <custom-constructor>  
+	return new QWebDatabase(*copy);
+      </custom-constructor>
+      <custom-destructor>
+	delete copy;
+      </custom-destructor>
+    </value-type>
     <object-type name="QWebPluginFactory::ExtensionOption" />
     <object-type name="QWebPluginFactory::ExtensionReturn" />
 
@@ -109,5 +129,5 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'LinkDelegationPolicy' is not declared" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'FontFamily' is not declared" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'WebWindowType' is not declared" />
-
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebFrame::addToJavaScriptWindowObject', unmatched parameter type 'QScriptEngine::ValueOwnership'" />
 </typesystem>
