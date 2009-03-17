@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class TestJDBC {
 
+    // create table person (id integer primary key, name varchar(100), lastname varchar(100), countryid integer);
+    // create table country (id integer primary key, name varchar(100));
+
     private enum Driver {
         PostgreSQL,
         Derby,
@@ -26,7 +29,7 @@ public class TestJDBC {
     };
 
     static private String dbNames[] = {
-        "jdbc:postgresql://qfwfq.europe.nokia.com/main",
+        "jdbc:postgresql://127.0.0.1/main",
         "jdbc:derby:firstdb", // only usable locally, since no server is set up. Install derby and make the
                               // database on your local machine to run this test.
         "jdbc:mysql://qfwfq.europe.nokia.com/main",
