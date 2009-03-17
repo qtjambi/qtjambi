@@ -31,5 +31,31 @@
 	</inject-code>
       </modify-function>
     </object-type>
+
+    <object-type name="QWebPage">
+      <modify-function signature="saveFrameStateRequested(QWebFrame*,QWebHistoryItem*)">
+	<modify-argument index="2">
+	  <replace-type modified-type="com.trolltech.qt.webkit.QWebHistoryItem" />
+
+	  <!-- Convert from C++ to Java when the C++ emissions emits the Java signal -->
+	  <conversion-rule class="shell">
+	    jobject %out = qtjambi_from_object(__jni_env, %in, "QWebHistoryItem", "com/trolltech/qt/webkit/", false);
+	    jobject __qt_savedHistoryItem = %out;
+	  </conversion-rule>
+	  
+	  <conversion-rule class="native">
+	    QWebHistoryItem *%out = %in != 0 
+	       ? (QWebHistoryItem*)qtjambi_to_object(__jni_env,%in) 
+               : (QWebHistoryItem*)0;
+	  </conversion-rule>
+	</modify-argument>
+	<!-- Make sure history item object gets invalidated after use in case
+             someone retains a reference to it. -->
+	<inject-code position="end" class="signal">
+	    qtjambi_invalidate_object(__jni_env, __qt_savedHistoryItem);
+	</inject-code>
+      </modify-function>
+      
+    </object-type>
     
 </typesystem>
