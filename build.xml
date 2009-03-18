@@ -23,16 +23,23 @@
       <echo>    -Dqtjambi.config=debug|release    Decide what native libraries</echo>
       <echo>                                      should be included.</echo>
       <echo>    -Dqtjambi.useJumpTable=true       Use jump tables for native functions (experimental)</echo>
+      <echo>    -Dqtjambi.force=true              Skip up-to-date check and force all targets to build</echo>
       <echo/>
       <echo>You can also see the Qt Jambi intallation document at:</echo>
       <echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
     </target>
 
-    <uptodate property="ant-qtjambi.jar.uptodate"
-              targetfile="${outputDir}/ant-qtjambi.jar" >
-        <srcfiles dir= "${sourceDir}"
-                  includes="com/trolltech/tools/ant/*.java,com/trolltech/qt/internal/Version.java,com/trolltech/qt/internal/OSInfo.java"/>
-    </uptodate>
+    <condition property="ant-qtjambi.jar.uptodate">
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>
+            <uptodate targetfile="${outputDir}/ant-qtjambi.jar" >
+                <srcfiles dir= "${sourceDir}"
+                          includes="com/trolltech/tools/ant/*.java,com/trolltech/qt/internal/Version.java,com/trolltech/qt/internal/OSInfo.java"/>
+            </uptodate>
+        </and>
+    </condition>
 
     <target name="init.ant"
             unless="ant-qtjambi.jar.uptodate"
@@ -98,12 +105,18 @@
       </delete>
     </target>
 
-    <uptodate property="examples.juicfiles.uptodate"
-	      targetfile=".juic.run">
-      <srcfiles dir="${outputDir}/com/trolltech/examples" includes="**/*.jui"/>
-      <srcfiles dir="${outputDir}/com/trolltech/launcher" includes="*.jui"/>
-      <srcfiles dir="${outputDir}/com/trolltech/demos" includes="**/*.jui"/>
-    </uptodate>
+    <condition property="examples.juicfiles.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>
+            <uptodate targetfile=".juic.run">
+              <srcfiles dir="${outputDir}/com/trolltech/examples" includes="**/*.jui"/>
+              <srcfiles dir="${outputDir}/com/trolltech/launcher" includes="*.jui"/>
+              <srcfiles dir="${outputDir}/com/trolltech/demos" includes="**/*.jui"/>
+            </uptodate>
+        </and>
+    </condition>
 
     <target name="examples.juic"
             depends="init"
@@ -236,32 +249,44 @@
 	 ************************************************************
       -->
 
-    <uptodate property="qtjambi.library.makefiles.uptodate"
-	      targetfile="${outputDir}/Makefile">
-      <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
-      <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
-      <srcfiles dir="${outputDir}/juic" includes="juic.pro"/>
-      <srcfiles dir="${outputDir}/qtjambi" includes="*.pr*"/>
-      <srcfiles dir="${outputDir}/designer-integration" includes="**/*.pr*"/>
-    </uptodate>
+    <condition property="qtjambi.library.makefiles.uptodate">
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>
+            <uptodate targetfile="${outputDir}/Makefile">
+              <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
+              <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
+              <srcfiles dir="${outputDir}/juic" includes="juic.pro"/>
+              <srcfiles dir="${outputDir}/qtjambi" includes="*.pr*"/>
+              <srcfiles dir="${outputDir}/designer-integration" includes="**/*.pr*"/>
+            </uptodate>
+        </and>
+    </condition>
 
-    <uptodate property="qtjambi.library.cppfiles.uptodate"
-	      targetfile="${outputDir}/.compile.timestamp">
-      <srcfiles dir="${outputDir}/cpp" includes="**/*.cpp"/>
-      <srcfiles dir="${outputDir}/cpp" includes="**/*.h"/>
-      <srcfiles dir="${outputDir}/qtjambi" includes="*.cpp"/>
-      <srcfiles dir="${outputDir}/qtjambi" includes="*.h"/>
-      <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.cpp"/>
-      <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.h"/>
-      <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.cpp"/>
-      <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.h"/>
-      <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.cpp"/>
-      <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.h"/>
-      <srcfiles dir="${outputDir}/juic" includes="*.cpp"/>
-      <srcfiles dir="${outputDir}/juic" includes="*.h"/>
-      <srcfiles dir="${outputDir}/designer-integration" includes="**/*.cpp"/>
-      <srcfiles dir="${outputDir}/designer-integration" includes="**/*.h"/>
-    </uptodate>
+    <condition property="qtjambi.library.cppfiles.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>
+            <uptodate targetfile="${outputDir}/.compile.timestamp">
+              <srcfiles dir="${outputDir}/cpp" includes="**/*.cpp"/>
+              <srcfiles dir="${outputDir}/cpp" includes="**/*.h"/>
+              <srcfiles dir="${outputDir}/qtjambi" includes="*.cpp"/>
+              <srcfiles dir="${outputDir}/qtjambi" includes="*.h"/>
+              <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.cpp"/>
+              <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.h"/>
+              <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.cpp"/>
+              <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.h"/>
+              <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.cpp"/>
+              <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.h"/>
+              <srcfiles dir="${outputDir}/juic" includes="*.cpp"/>
+              <srcfiles dir="${outputDir}/juic" includes="*.h"/>
+              <srcfiles dir="${outputDir}/designer-integration" includes="**/*.cpp"/>
+              <srcfiles dir="${outputDir}/designer-integration" includes="**/*.h"/>
+            </uptodate>
+        </and>
+    </condition>
 
     <target name="library.native.qmake"
             depends="init"
@@ -377,12 +402,19 @@
 	 Building and running the Generator...
 	 ************************************************************
       -->
-    <uptodate property="qtjambi.generator_pro.uptodate"
-	      targetfile="${outputDir}/generator/Makefile">
-      <srcfiles dir="${sourceDir}/generator" includes="generator.pr*"/>
-      <srcfiles dir="${sourceDir}/generator/parser" includes="rxx.pr*"/>
-      <srcfiles dir="${sourceDir}/generator/parser/rpp" includes="rpp.pri"/>
-    </uptodate>
+    <condition property="qtjambi.generator_pro.uptodate">
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>    
+            <uptodate targetfile="${outputDir}/generator/Makefile">
+              <srcfiles dir="${sourceDir}/generator" includes="generator.pr*"/>
+              <srcfiles dir="${sourceDir}/generator/parser" includes="rxx.pr*"/>
+              <srcfiles dir="${sourceDir}/generator/parser/rpp" includes="rpp.pri"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.qmake"
             depends="init, generator.xmlmerge"
             description="Runs qmake on the generator project." 
@@ -394,15 +426,22 @@
              debugTools="${qtjambi.debug-tools}"/>
     </target>
 
-    <uptodate property="qtjambi.generator_compile.uptodate"
-	      targetfile="${outputDir}/generator/.compile.timestamp">
-      <srcfiles dir="${sourceDir}/generator" includes="**/*.cpp"/>
-      <srcfiles dir="${sourceDir}/generator" includes="**/*.h"/>
-      <srcfiles dir="${sourceDir}/generator" includes="Makefile"/>
-      <srcfiles dir="${sourceDir}/generator" includes="*.qrc"/>
-      <srcfiles dir="${sourceDir}/generator" includes="*.txt"/>
-      <srcfiles dir="${sourceDir}/generator" includes="*.xml"/>
-    </uptodate>
+    <condition property="qtjambi.generator_compile.uptodate">
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>
+            <uptodate targetfile="${outputDir}/generator/.compile.timestamp">
+              <srcfiles dir="${sourceDir}/generator" includes="**/*.cpp"/>
+              <srcfiles dir="${sourceDir}/generator" includes="**/*.h"/>
+              <srcfiles dir="${sourceDir}/generator" includes="Makefile"/>
+              <srcfiles dir="${sourceDir}/generator" includes="*.qrc"/>
+              <srcfiles dir="${sourceDir}/generator" includes="*.txt"/>
+              <srcfiles dir="${sourceDir}/generator" includes="*.xml"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.compile"
             depends="init, generator.qmake"
             description="Compiles the Qt Jambi generator."
@@ -430,10 +469,17 @@
 	 XML Merging for the generator... 
 	 ************************************************************
       -->
-    <uptodate property="qtjambi.typesystem_core.uptodate" 
-	      targetfile="${outputDir}/generator/typesystem_core.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_core-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_core.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_core.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_core-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.core" unless="qtjambi.typesystem_core.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_core-common.xml"
               out="${outputDir}/generator/typesystem_core.xml"
@@ -444,10 +490,18 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_gui.uptodate" 
-	      targetfile="${outputDir}/generator/typesystem_gui.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_gui-*.*"/>
-    </uptodate>
+    
+    <condition property="qtjambi.typesystem_gui.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_gui.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_gui-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+
     <target name="generator.xmlmerge.gui" unless="qtjambi.typesystem_gui.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_gui-common.xml"
               out="${outputDir}/generator/typesystem_gui.xml"
@@ -458,10 +512,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_xml.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_xml.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_xml-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_xml.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_xml.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_xml-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.xml" unless="qtjambi.typesystem_xml.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_xml-common.xml"
               out="${outputDir}/generator/typesystem_xml.xml"
@@ -472,10 +533,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_network.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_network.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_network-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_network.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_network.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_network-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.network" unless="qtjambi.typesystem_network.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_network-common.xml"
               out="${outputDir}/generator/typesystem_network.xml"
@@ -486,10 +554,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_opengl.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_opengl.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_opengl-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_opengl.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_opengl.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_opengl-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.opengl" unless="qtjambi.typesystem_opengl.uptodate">
         <xslt in="generator/typesystem_opengl-common.xml"
               out="${outputDir}/generator/typesystem_opengl.xml"
@@ -500,10 +575,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_sql.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_sql.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_sql-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_sql.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_sql.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_sql-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.sql" unless="qtjambi.typesystem_sql.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_sql-common.xml"
               out="${outputDir}/generator/typesystem_sql.xml"
@@ -514,10 +596,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_svg.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_svg.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_svg-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_svg.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_svg.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_svg-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.svg" unless="qtjambi.typesystem_svg.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_svg-common.xml"
               out="${outputDir}/generator/typesystem_svg.xml"
@@ -528,10 +617,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_webkit.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_webkit.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_webkit-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_webkit.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_webkit.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_webkit-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.webkit" unless="qtjambi.typesystem_webkit.uptodate">
          <xslt in="${sourceDir}/generator/typesystem_webkit-common.xml"
               out="${outputDir}/generator/typesystem_webkit.xml"
@@ -542,10 +638,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_phonon.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_phonon.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_phonon-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_phonon.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_phonon.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_phonon-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.phonon" unless="qtjambi.typesystem_phonon.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_phonon-common.xml"
               out="${outputDir}/generator/typesystem_phonon.xml"
@@ -556,10 +659,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_xmlpatterns.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_xmlpatterns.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_xmlpatterns-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_xmlpatterns.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_xmlpatterns.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_xmlpatterns-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.xmlpatterns" unless="qtjambi.typesystem_xmlpatterns.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_xmlpatterns-common.xml"
               out="${outputDir}/generator/typesystem_xmlpatterns.xml"
@@ -570,10 +680,17 @@
         </xslt>
     </target>
 
-    <uptodate property="qtjambi.typesystem_designer.uptodate"
-	      targetfile="${outputDir}/generator/typesystem_designer.xml">
-      <srcfiles dir="${sourceDir}/generator" includes="typesystem_designer-*.*"/>
-    </uptodate>
+    <condition property="qtjambi.typesystem_designer.uptodate"> 
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>        
+            <uptodate targetfile="${outputDir}/generator/typesystem_designer.xml">
+              <srcfiles dir="${sourceDir}/generator" includes="typesystem_designer-*.*"/>
+            </uptodate>
+        </and>
+    </condition>
+    
     <target name="generator.xmlmerge.designer" unless="qtjambi.typesystem_designer.uptodate">
         <xslt in="${sourceDir}/generator/typesystem_designer-common.xml"
               out="${outputDir}/generator/typesystem_designer.xml"
