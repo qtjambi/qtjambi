@@ -51,6 +51,9 @@ public class HelloWebKit extends QMainWindow {
         setCentralWidget(browser);
         statusBar().show();
 
+	setWindowTitle("Hello WebKit");
+        setWindowIcon(new QIcon("classpath:com/trolltech/images/qt-logo.png"));	
+
         // Connections
         field.returnPressed.connect(this, "open()");
 
