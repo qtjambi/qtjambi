@@ -69,7 +69,7 @@ public class HelloWebKit extends QMainWindow {
         // Set an initial loading page once its up and showing...
         QApplication.invokeLater(new Runnable() {
                 public void run() {
-                    field.setText("http://www.trolltech.com");
+                    field.setText("http://www.qtsoftware.com");
                     open();
                 }
             });
