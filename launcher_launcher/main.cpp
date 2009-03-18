@@ -401,27 +401,6 @@ static void message_handler(QtMsgType, const char *str)
     }
 }
 
-static void hook_to_qt()
-{
-    // make file empty
-    FILE *f = fopen("QT_MESSAGE_OUTPUT.TXT", "w");
-    if (f != 0)
-        fclose(f);
-
-    const char *core_dll_name = ".\\bin\\QtJambi.dll";
-
-    HMODULE core_dll = LoadLibraryA(core_dll_name);
-
-    Proc_qInstallMsgHandler addr_qInstallMsgHandler = 0;
-    if (core_dll != 0) {
-         addr_qInstallMsgHandler =
-             (Proc_qInstallMsgHandler)GetProcAddress(core_dll, "wrap_qInstallMsgHandler");
-    }
-
-    if (addr_qInstallMsgHandler != 0)
-        addr_qInstallMsgHandler(message_handler);
-}
-
 static bool check_java_version(JNIEnv *env)
 {
     jstring key = env->NewStringUTF("java.version");
@@ -672,8 +651,6 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             dw_sz = 0;
         }
     });
-
-    hook_to_qt();
 
     char version[] = "4.X.Y_0Z";
     if (!decide_library_version(version)) {
