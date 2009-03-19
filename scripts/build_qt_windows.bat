@@ -4,11 +4,11 @@ call qt_pkg_setup %THE_COMPILER%
 
 set ORIGINAL_PATH=%PATH%
 
-echo y | rd /s c:\tmp\qtjambi-package-builder\qt-gpl
+echo y | rd /s c:\tmp\qtjambi-package-builder\qt-lgpl
 echo y | rd /s c:\tmp\qtjambi-package-builder\qt-commercial
 
 md c:\tmp\qtjambi-package-builder
-move gpl c:\tmp\qtjambi-package-builder\qt-gpl
+move lgpl c:\tmp\qtjambi-package-builder\qt-lgpl
 move commercial c:\tmp\qtjambi-package-builder\qt-commercial
 
 cd c:\tmp\qtjambi-package-builder
@@ -16,10 +16,10 @@ cd c:\tmp\qtjambi-package-builder
 
 
 
-cd qt-gpl
+cd qt-lgpl
 set QTDIR=%cd%
 set PATH=%ORIGINAL_PATH%;%QTDIR%\bin
-echo blah > LICENSE.GPL2
+echo blah > LICENSE.LGPL
 perl bin/syncqt
 copy configure.exe configure_hack.exe
 echo yes | configure_hack -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD -plugin-manifests

@@ -39,6 +39,7 @@ class Options:
 
 options = Options()
 
+lgpl_header = pkgutil.readLicenseHeader(pkgutil.LICENSE_LGPL, options.startDir)
 gpl_header = pkgutil.readLicenseHeader(pkgutil.LICENSE_GPL, options.startDir)
 commercial_header = pkgutil.readLicenseHeader(pkgutil.LICENSE_COMMERCIAL, options.startDir)
 
@@ -135,9 +136,10 @@ def packageAndSend(server):
         shutil.rmtree("tmptree")
     os.makedirs("tmptree")
 
-    print " - setting up gpl subdir..."
-    shutil.copytree("qt", "tmptree/gpl");
-    pkgutil.expandMacroes("tmptree/gpl", gpl_header)
+    print " - setting up lgpl subdir..."
+    shutil.copytree("qt", "tmptree/lgpl");
+    pkgutil.expandMacroes("tmptree/lgpl", lgpl_header)
+    
 
     print " - setting up commercial subdir..."
     shutil.copytree("qt", "tmptree/commercial");
