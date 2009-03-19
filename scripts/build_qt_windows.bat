@@ -23,6 +23,12 @@ echo blah > LICENSE.LGPL
 perl bin/syncqt
 copy configure.exe configure_hack.exe
 echo yes | configure_hack -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD -plugin-manifests
+echo #ifndef AWESOME_CRAXX >> src\corelib\global\qglobal.h
+echo #define AWESOME_CRAXX >> src\corelib\global\qglobalÃ.h
+echo #if defined(__cplusplus) >> src\corelib\global\qglobal.h
+echo QT_LICENSED_MODULE(ActiveQt) >> src\corelib\global\qglobal.h
+echo #endif >> src\corelib\global\qglobal.h
+echo #endif >> src\corelib\global\qglobal.h
 echo CONFIG+=force_embed_manifest >> .qmake.cache
 REM Not running "cd src && nmake" simply because there is no master makefile in src, only sub makefiles
 nmake sub-src sub-tools
