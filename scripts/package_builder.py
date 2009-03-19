@@ -553,7 +553,7 @@ def prepareSourceTree():
     tmpFile.write("        //depot/qtjambi/%s/...  //qt-builder/qtjambi/...\n" % options.qtJambiVersion)
     tmpFile.write("        //depot/qt/%s/src/tools/uic/...  //qt-builder/qt/src/tools/uic/...\n" % options.qtVersion)
     tmpFile.write("        //depot/qt/%s/tools/designer/src/lib/...  //qt-builder/qt/tools/designer/src/lib/...\n" % options.qtVersion)
-    tmpFile.write("        //depot/eclipse/qtjambi-4.4/...  //qt-builder/qtjambi/eclipse/qtjambi-4.4/...\n")
+    tmpFile.write("        //depot/eclipse/qtjambi-4.5/...  //qt-builder/qtjambi/eclipse/qtjambi-4.5/...\n")
     tmpFile.write("        //depot/ide/main/shared/designerintegrationv2/...  //qt-builder/qtjambi/ide/main/shared/designerintegrationv2/...\n")
     tmpFile.write("        //depot/ide/main/shared/namespace_global.h  //qt-builder/qtjambi/ide/main/shared/namespace_global.h\n")
     tmpFile.close()
@@ -608,7 +608,7 @@ def packageAndSend(package):
 #            if package.license == pkgutil.LICENSE_EVAL:
 #                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qtjambi-package-builder\\qt-commercial"))
             buildFile.write("cd scripts\n")
-            buildFile.write("call build_eclipse.bat %%cd%%\\..\\eclipse\\qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
+            buildFile.write("call build_eclipse.bat %%cd%%\\..\\eclipse\\qtjambi-4.5 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
 #            if package.license == pkgutil.LICENSE_EVAL:
 #                buildFile.write("call qt_pkg_setup %s %s\n" % (package.compiler, "c:\\tmp\\qtjambi-package-builder\\" + qtEdition))
@@ -639,7 +639,7 @@ def packageAndSend(package):
 #            if package.license == pkgutil.LICENSE_EVAL: 
 #                buildFile.write(". qt_pkg_setup %s %s\n" % (package.compiler, "/tmp/qtjambi-package-builder/qt-commercial"))            
             buildFile.write("cd scripts\n")
-            buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.4 %s %s\n" % (options.eclipseVersion, arch))
+            buildFile.write("bash ./build_eclipse.sh $PWD/../eclipse/qtjambi-4.5 %s %s\n" % (options.eclipseVersion, arch))
             buildFile.write("cd ..\n")
             buildFile.write("cp -v lib/libqtdesigner.so lib/libqtdesignerplugin.so\n")
             buildFile.write("rm -v lib/libqtdesigner.*\n")
@@ -780,11 +780,11 @@ def doEclipse(package):
 
     shutil.copy("../dist/eclipse/LICENSE.QT_JAMBI_ECLIPSE_INTEGRATION", "LICENSE")
 
-    for name in os.listdir("qtjambi-4.4"):
-        fullName = os.path.join("qtjambi-4.4", name)
+    for name in os.listdir("qtjambi-4.5"):
+        fullName = os.path.join("qtjambi-4.5", name)
         if os.path.isdir(fullName):
             shutil.rmtree(fullName)
-    shutil.move("qtjambi-4.4", "plugins")
+    shutil.move("qtjambi-4.5", "plugins")
 
     if package.platform == pkgutil.PLATFORM_WINDOWS:
         os.system("zip -rq %s/qtjambi-eclipse-integration-%s%s-%s.zip ." % (options.startDir, package.platform, package.arch, options.qtJambiVersion))
