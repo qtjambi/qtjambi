@@ -17,6 +17,7 @@ PLATFORM_WINDOWS = "win"
 PLATFORM_LINUX = "linux"
 PLATFORM_MAC = "mac"
 
+LICENSE_LGPL = "lgpl"
 LICENSE_GPL = "gpl"
 LICENSE_EVAL = "eval"
 LICENSE_COMMERCIAL = "commercial"
@@ -166,6 +167,8 @@ def readLicenseHeader(license, startDir):
         name = "commercial_header.txt"
     elif license == LICENSE_PREVIEW:
         name = "preview_header.txt"
+    elif license == LICENSE_LGPL:
+        name = "lgpl_header.txt"
     name = "%s/../dist/%s" % (startDir, name)
     file = open(name, "r")
     content = file.read()

@@ -51,7 +51,8 @@ class Options:
         self.build32 = True
         self.build64 = True
         self.buildEval = True
-        self.buildGpl = True
+        self.buildGpl = False
+        self.buildLgpl = True
         self.buildCommercial = True
         self.buildBinary = True
         self.buildSource = True
@@ -140,6 +141,8 @@ class Package:
             self.setGpl()
         elif self.license == pkgutil.LICENSE_PREVIEW:
             self.setPreview()
+        elif self.license == pkgutil.LICENSE_LGPL:
+            self.setLgpl()
         else:
             raise "bad license type:" + self.license
 
@@ -285,6 +288,11 @@ class Package:
     def setCommercial(self):
         self.copyFiles.append("dist/LICENSE")
 
+    def setLgpl(self):
+        self.copyFiles.append("dist/LICENSE.LGPL")
+        self.copyFiles.append("dist/LGPL_EXCEPTION.TXT")
+        self.copyFiles.append("dist/LICENSE.GPL3");
+
     def setGpl(self):
         self.copyFiles.append("dist/LICENSE.GPL")
         self.copyFiles.append("dist/GPL_EXCEPTION.TXT");
@@ -348,6 +356,11 @@ def setupPackages():
                     winFree64.setWinBinary()
                     winFree64.buildServer = host_win64
                     packages.append(winFree64)
+                if options.buildLgpl:
+                    winSuperFree64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_LGPL)
+                    winSuperFree64.setWinBinary()
+                    winSuperFree64.buildServer = host_win64
+                    packages.append(winSuperFree64)
                 if options.buildEval:
                     winEval64 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_64, pkgutil.LICENSE_EVAL)
                     winEval64.setWinBinary()
@@ -369,6 +382,11 @@ def setupPackages():
                     winFree32.setWinBinary()
                     winFree32.buildServer = host_win32
                     packages.append(winFree32)
+                if options.buildLgpl:
+                    winSuperFree32 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32, pkgutil.LICENSE_LGPL)
+                    winSuperFree32.setWinBinary()
+                    winSuperFree32.buildServer = host_win32
+                    packages.append(winSuperFree32)
                 if options.buildEval:
                     winEval32 = Package(pkgutil.PLATFORM_WINDOWS, pkgutil.ARCH_32, pkgutil.LICENSE_EVAL)
                     winEval32.setWinBinary()
@@ -391,6 +409,11 @@ def setupPackages():
                 macFree.setMacBinary()
                 macFree.buildServer = host_mac
                 packages.append(macFree)
+            if options.buildLgpl:
+                macSuperFree = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_LGPL)
+                macSuperFree.setMacBinary()
+                macSuperFree.buildServer = host_mac
+                packages.append(macSuperFree)
             if options.buildEval:
                 macEval = Package(pkgutil.PLATFORM_MAC, pkgutil.ARCH_UNIVERSAL, pkgutil.LICENSE_EVAL)
                 macEval.setMacBinary()
@@ -414,6 +437,11 @@ def setupPackages():
                     linuxFree64.setLinuxBinary()
                     linuxFree64.buildServer = host_linux64
                     packages.append(linuxFree64)
+                if options.buildLgpl:
+                    linuxSuperFree64 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_64, pkgutil.LICENSE_LGPL)
+                    linuxSuperFree64.setLinuxBinary()
+                    linuxSuperFree64.buildServer = host_linux64
+                    packages.append(linuxSuperFree64)
                 if options.buildEval:
                     linuxEval64 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_64, pkgutil.LICENSE_EVAL)
                     linuxEval64.setLinuxBinary()
@@ -435,6 +463,11 @@ def setupPackages():
                     linuxFree32.setLinuxBinary()
                     linuxFree32.buildServer = host_linux32
                     packages.append(linuxFree32)
+                if options.buildLgpl:
+                    linuxSuperFree32 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_32, pkgutil.LICENSE_LGPL)
+                    linuxSuperFree32.setLinuxBinary()
+                    linuxSuperFree32.buildServer = host_linux32
+                    packages.append(linuxSuperFree32)                    
                 if options.buildEval:
                     linuxEval32 = Package(pkgutil.PLATFORM_LINUX, pkgutil.ARCH_32, pkgutil.LICENSE_EVAL)
                     linuxEval32.setLinuxBinary()
@@ -458,6 +491,15 @@ def setupPackages():
         i = i + 1
 
     if options.buildSource:
+        if options.buildLgpl:
+            if options.buildWindows:
+                winSrcLgpl = Package(pkgutil.PLATFORM_WINDOWS, None, pkgutil.LICENSE_LGPL)
+                winSrcLgpl.setSource()
+                packages.append(winSrcLgpl)
+            if options.buildLinux:
+                linuxSrcLgpl = Package(pkgutil.PLATFORM_LINUX, None, pkgutil.LICENSE_LGPL)
+                linuxSrcLgpl.setSource()
+                packages.append(linuxSrcLgpl)            
         if options.buildGpl:
             if options.buildWindows:
                 winSrcGpl = Package(pkgutil.PLATFORM_WINDOWS, None, pkgutil.LICENSE_GPL)
@@ -677,7 +719,7 @@ def postProcessPackage(package):
     
     if package.binary:
         # move platform jar to startdir for webstart, take the examples and classes from windows
-        if package.license == pkgutil.LICENSE_GPL:
+        if package.license == pkgutil.LICENSE.LGPL:
             shutil.copy(package.platformJarName, options.startDir)
             if package.platform == pkgutil.PLATFORM_WINDOWS:
                 shutil.copy("qtjambi-%s.jar" % (options.qtJambiVersion), options.startDir);
@@ -922,8 +964,10 @@ def main():
             options.buildLinux = False
         elif arg == "--no-eval":
             options.buildEval = False
-        elif arg == "--no-gpl":
-            options.buildGpl = False
+        elif arg == "--gpl":
+            options.buildGpl = True
+        elif arg == "--no-lgpl":
+            options.buildLgpl = False
         elif arg == "--no-commercial":
             options.buildCommercial = False
         elif arg == "--no-32bit":
@@ -945,6 +989,7 @@ def main():
 
     if options.buildPreview:
         options.buildGpl = False
+        options.buildLgpl = False
         options.buildEval = False
         options.buildCommercial = False
 
@@ -964,6 +1009,7 @@ def main():
     print "  - buildLinux: %s" % options.buildLinux
     print "  - buildEval: %s" % options.buildEval
     print "  - buildGpl: %s" % options.buildGpl
+    print "  - buildLgpl: %s" % options.buildLgpl
     print "  - buildCommercial: %s" % options.buildCommercial
     print "  - build32: %s" % options.build32
     print "  - build64: %s" % options.build64
