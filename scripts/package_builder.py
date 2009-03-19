@@ -667,6 +667,14 @@ def postProcessPackage(package):
     pkgutil.debug(" - deleting files and directories...")
     removeFiles(package)
 
+    # Patch uic.pri since this does not include all necessary files
+    if not package.binary:
+        pkgutil.debug(" - patching uic.pri")
+        tmpFile = open("juic/uic.pri", "a")
+        tmpFile.write("\nSOURCES += uic.cpp\n")
+        tmpFile.write("HEADERS += uic.h\n")
+        tmpFile.close()
+    
     if package.binary:
         # move platform jar to startdir for webstart, take the examples and classes from windows
         if package.license == pkgutil.LICENSE_GPL:
@@ -688,7 +696,7 @@ def postProcessPackage(package):
         os.system("jar -xf %s" % package.platformJarName)
         shutil.rmtree("%s/META-INF" % package.packageDir)
         os.remove("qtjambi-deployment.xml")
-        
+
         if package.license == pkgutil.LICENSE_EVAL:
             # Eval packages cannot use platform jar's as these cannot
             # be patched with eval key...
