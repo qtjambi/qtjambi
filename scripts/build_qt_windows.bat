@@ -23,10 +23,12 @@ echo blah > LICENSE.LGPL
 perl bin/syncqt
 copy configure.exe configure_hack.exe
 echo yes | configure_hack -no-qt3support -release -shared -no-vcproj -no-dsp -D QT_JAMBI_BUILD -plugin-manifests
+echo #ifdef APPLY_AWESOME_CRAXX >> src\corelib\global\qglobal.h
 echo #ifndef AWESOME_CRAXX >> src\corelib\global\qglobal.h
-echo #define AWESOME_CRAXX >> src\corelib\global\qglobalÃ.h
+echo #define AWESOME_CRAXX >> src\corelib\global\qglobal.h
 echo #if defined(__cplusplus) >> src\corelib\global\qglobal.h
 echo QT_LICENSED_MODULE(ActiveQt) >> src\corelib\global\qglobal.h
+echo #endif >> src\corelib\global\qglobal.h
 echo #endif >> src\corelib\global\qglobal.h
 echo #endif >> src\corelib\global\qglobal.h
 echo CONFIG+=force_embed_manifest >> .qmake.cache
@@ -34,7 +36,7 @@ REM Not running "cd src && nmake" simply because there is no master makefile in 
 nmake sub-src sub-tools
 
 REM Force re-qmake and make ActiveQt without QT_EDITION=OpenSource
-cd src\activeqt && qmake -r QT_EDITION=Internal && nmake && cd ..\..
+cd src\activeqt && qmake -r QT_EDITION=Internal DEFINES+=APPLY_AWESOME_CRAXX && nmake && cd ..\..
 
 REM deleting explicitly because "nmake clean" would fail when it got to examples...
 del *.obj *.ilk *.pdb moc_* *.pch /s
