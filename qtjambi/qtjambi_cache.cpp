@@ -1066,6 +1066,7 @@ void StaticCache::resolveQtJambiInternal_internal()
                                                         "lookupSlot",
                                                         "(Ljava/lang/Object;"
                                                          "Ljava/lang/String;"
+                                                         "Z"
                                                         ")Ljava/lang/reflect/Method;");
     Q_ASSERT(QtJambiInternal.lookupSlot);
 

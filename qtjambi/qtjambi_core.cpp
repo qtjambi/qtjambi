@@ -491,7 +491,7 @@ void qtjambi_invalidate_array(JNIEnv *env, jobjectArray java_array, bool checkJa
     }
 }
 
-static bool qtjambi_connect_callback(void **raw_data);
+static bool qtjambi_connect_callback(void **raw_data, bool slotMustBeGenerated);
 
 // Find the first in meta_object's line of ancestors (including meta_object itself) which
 // is a static meta object (hence, not one of Qt Jambi's fake meta objects)
@@ -532,10 +532,13 @@ static void qtjambi_setup_connections(JNIEnv *, QtJambiLink *link)
             // across the language barriers, and pass in the signal as both signal and
             // slot. The slot with the signal's signature will not exist in C++ of course, and
             // the resolve-function will continue to resolve the equivalent Java method
-            // and connect the whole thing in Java, which is what we want.
+            // and connect the whole thing in Java, which is what we want. We need to make sure
+            // that when people implement a Java method which is named the same as the signal,
+            // though, that we still find the correct generated method, which is why we pass in true 
+            // for the argument slotMustBeGenerated.
             Qt::ConnectionType type = Qt::AutoConnection;
             const void *cbdata[] = { qobject, ba.constData(), qobject, ba.constData(), &type };
-            qtjambi_connect_callback((void **)cbdata);
+            qtjambi_connect_callback((void **)cbdata, true);
         }
     }
 }
@@ -1760,7 +1763,8 @@ struct BasicConnectionData
 static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnectionData *data,
                                             ResolvedConnectionData *resolved_data,
                                             bool fail_on_cpp_resolve,
-                                            bool create_java_objects)
+                                            bool create_java_objects,
+                                            bool slot_must_be_generated)
 {
     Q_ASSERT(jni_env);
     Q_ASSERT(data);
@@ -1952,7 +1956,8 @@ static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnecti
                     jni_env->CallStaticObjectMethod(sc->QtJambiInternal.class_ref,
                                                     sc->QtJambiInternal.lookupSlot,
                                                     resolved_data->java_receiver,
-                                                    qtjambi_from_qstring(jni_env, slot_name));
+                                                    qtjambi_from_qstring(jni_env, slot_name),
+                                                    slot_must_be_generated);
                 QTJAMBI_EXCEPTION_CHECK(jni_env);
             }
         }
@@ -2006,7 +2011,7 @@ static bool qtjambi_disconnect_callback(void **raw_data)
     } else {
 
         ResolvedConnectionData resolved_data;
-        if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, false, false))
+        if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, false, false, false))
             return false;
 
         StaticCache *sc = StaticCache::instance();
@@ -2025,7 +2030,8 @@ struct ConnectData: public BasicConnectionData
 {
     Qt::ConnectionType *type;
 };
-static bool qtjambi_connect_callback(void **raw_data)
+
+static bool qtjambi_connect_callback(void **raw_data, bool slotMustBeGenerated)
 {
     Q_ASSERT(raw_data != 0);
 
@@ -2044,7 +2050,7 @@ static bool qtjambi_connect_callback(void **raw_data)
 //            *data->type);
 
     ResolvedConnectionData resolved_data;
-    if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, true, true))
+    if (!qtjambi_resolve_connection_data(jni_env, data, &resolved_data, true, true, slotMustBeGenerated))
         return false;
 
     StaticCache *sc = StaticCache::instance();
@@ -2058,6 +2064,11 @@ static bool qtjambi_connect_callback(void **raw_data)
 
     // If we succeeded in connecting in Java, we skip the C++ connection
     return result;
+}
+
+static bool qtjambi_connect_callback(void **raw_data)
+{
+    return qtjambi_connect_callback(raw_data, false);
 }
 
 static bool qtjambi_event_notify(void **data)

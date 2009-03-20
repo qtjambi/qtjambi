@@ -215,7 +215,11 @@ public class QtJambiInternal {
     }
 
     public static Method lookupSlot(Object object, String signature) {
-        Class<?> cls = object.getClass();
+        return lookupSlot(object, signature, false);
+    }
+
+    public static Method lookupSlot(Object object, String signature, boolean slotMustBeGenerated) {
+        Class<?> cls = slotMustBeGenerated ? findGeneratedSuperclass(object) : object.getClass();
 
         int pos = signature.indexOf('(');
         if (pos < 0) {
