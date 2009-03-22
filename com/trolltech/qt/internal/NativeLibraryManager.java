@@ -500,8 +500,9 @@ public class NativeLibraryManager {
 
         boolean shouldCopy = false;
 
-        // If the dir exists, sanity check the contents...
-        if (tmpDir.exists()) {
+        // If the dir exists and contains .dummy, sanity check the contents...
+        File dummyFile = new File(tmpDir, ".dummy");
+        if (dummyFile.exists()) {
             reporter.report(" - cache directory exists");
         } else {
             shouldCopy = true;
@@ -542,6 +543,10 @@ public class NativeLibraryManager {
 
                 OutputStream out = new FileOutputStream(new File(tmpDir, e.name));
                 copy(in, out);
+            }
+
+            if (!dummyFile.createNewFile()) {
+                throw new DeploymentSpecException("Can't create dummy file in cache directory");
             }
         }
 
