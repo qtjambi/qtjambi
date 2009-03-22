@@ -130,4 +130,11 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebSettings' for enum 'FontFamily' is not declared" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'WebWindowType' is not declared" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebFrame::addToJavaScriptWindowObject', unmatched parameter type 'QScriptEngine::ValueOwnership'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebDatabase' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPage::ExtensionReturn' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPage::ExtensionOption' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPage::ChooseMultipleFilesExtensionOption' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />                            
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebSecurityOrigin' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPage::ChooseMultipleFilesExtensionReturn' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+    
 </typesystem>
