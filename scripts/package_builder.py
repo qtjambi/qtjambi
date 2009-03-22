@@ -37,7 +37,7 @@ class Options:
             self.packageRoot = "c:/tmp/qtjambi-builder"
         else:
             self.packageRoot = "/tmp/qtjambi-builder"
-        self.eclipseVersion = "1.1.3"
+        self.eclipseVersion = "1.2.0"
         self.p4User = "qt"
         self.p4Client = "qt-builder"
         self.binaryPackageCount = 0
@@ -719,7 +719,7 @@ def postProcessPackage(package):
     
     if package.binary:
         # move platform jar to startdir for webstart, take the examples and classes from windows
-        if package.license == pkgutil.LICENSE.LGPL:
+        if package.license == pkgutil.LICENSE_LGPL:
             shutil.copy(package.platformJarName, options.startDir)
             if package.platform == pkgutil.PLATFORM_WINDOWS:
                 shutil.copy("qtjambi-%s.jar" % (options.qtJambiVersion), options.startDir);
