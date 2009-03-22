@@ -3,59 +3,60 @@
     <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
     com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
+    com.trolltech.qt.Utilities.loadQtLibrary("phonon");
     com.trolltech.qt.Utilities.loadQtLibrary("QtWebKit");
     </inject-code>
 
     <object-type name="QWebFrame">
       <modify-function signature="aboutToUpdateHistory(QWebHistoryItem*)">
-	<modify-argument index="1">
-	  <replace-type modified-type="com.trolltech.qt.webkit.QWebHistoryItem" />
+    <modify-argument index="1">
+      <replace-type modified-type="com.trolltech.qt.webkit.QWebHistoryItem" />
 
-	  <!-- Convert from C++ to Java when the C++ emissions emits the Java signal -->
-	  <conversion-rule class="shell">
-	    jobject %out = qtjambi_from_object(__jni_env, %in, "QWebHistoryItem", "com/trolltech/qt/webkit/", false);
-	    jobject __qt_savedHistoryItem = %out;
-	  </conversion-rule>
-	  
-	  <conversion-rule class="native">
-	    Since the signal is protected in a final class
-	    we cannot generate the native function. If this
-	    code stops compiling, it means the class is no
-	    longer final.
-	  </conversion-rule>
-	</modify-argument>
-	<!-- Make sure history item object gets invalidated after use in case
+      <!-- Convert from C++ to Java when the C++ emissions emits the Java signal -->
+      <conversion-rule class="shell">
+        jobject %out = qtjambi_from_object(__jni_env, %in, "QWebHistoryItem", "com/trolltech/qt/webkit/", false);
+        jobject __qt_savedHistoryItem = %out;
+      </conversion-rule>
+
+      <conversion-rule class="native">
+        Since the signal is protected in a final class
+        we cannot generate the native function. If this
+        code stops compiling, it means the class is no
+        longer final.
+      </conversion-rule>
+    </modify-argument>
+    <!-- Make sure history item object gets invalidated after use in case
              someone retains a reference to it. -->
-	<inject-code position="end" class="signal">
-	    qtjambi_invalidate_object(__jni_env, __qt_savedHistoryItem);
-	</inject-code>
+    <inject-code position="end" class="signal">
+        qtjambi_invalidate_object(__jni_env, __qt_savedHistoryItem);
+    </inject-code>
       </modify-function>
     </object-type>
 
     <object-type name="QWebPage">
       <modify-function signature="saveFrameStateRequested(QWebFrame*,QWebHistoryItem*)">
-	<modify-argument index="2">
-	  <replace-type modified-type="com.trolltech.qt.webkit.QWebHistoryItem" />
+    <modify-argument index="2">
+      <replace-type modified-type="com.trolltech.qt.webkit.QWebHistoryItem" />
 
-	  <!-- Convert from C++ to Java when the C++ emissions emits the Java signal -->
-	  <conversion-rule class="shell">
-	    jobject %out = qtjambi_from_object(__jni_env, %in, "QWebHistoryItem", "com/trolltech/qt/webkit/", false);
-	    jobject __qt_savedHistoryItem = %out;
-	  </conversion-rule>
-	  
-	  <conversion-rule class="native">
-	    QWebHistoryItem *%out = %in != 0 
-	       ? (QWebHistoryItem*)qtjambi_to_object(__jni_env,%in) 
+      <!-- Convert from C++ to Java when the C++ emissions emits the Java signal -->
+      <conversion-rule class="shell">
+        jobject %out = qtjambi_from_object(__jni_env, %in, "QWebHistoryItem", "com/trolltech/qt/webkit/", false);
+        jobject __qt_savedHistoryItem = %out;
+      </conversion-rule>
+
+      <conversion-rule class="native">
+        QWebHistoryItem *%out = %in != 0
+           ? (QWebHistoryItem*)qtjambi_to_object(__jni_env,%in)
                : (QWebHistoryItem*)0;
-	  </conversion-rule>
-	</modify-argument>
-	<!-- Make sure history item object gets invalidated after use in case
+      </conversion-rule>
+    </modify-argument>
+    <!-- Make sure history item object gets invalidated after use in case
              someone retains a reference to it. -->
-	<inject-code position="end" class="signal">
-	    qtjambi_invalidate_object(__jni_env, __qt_savedHistoryItem);
-	</inject-code>
+    <inject-code position="end" class="signal">
+        qtjambi_invalidate_object(__jni_env, __qt_savedHistoryItem);
+    </inject-code>
       </modify-function>
-      
+
     </object-type>
-    
+
 </typesystem>
