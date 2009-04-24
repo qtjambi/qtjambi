@@ -4,7 +4,7 @@
         THE Q PUBLIC LICENSE
         version 1.0
 
-        Copyright (C) 1999-$THISYEAR$ $TROLLTECH$, Norway.
+        Copyright (C) 1999-2009 Nokia, Norway.
         Everyone is permitted to copy and distribute this license document.
 
         The intent of this license is to establish freedom to share and change the
@@ -127,7 +127,7 @@ public class doc_src_qpl {
         THE Q PUBLIC LICENSE
         version 1.0
 
-        Copyright (C) 1999-$THISYEAR$ $TROLLTECH$, Norway.
+        Copyright (C) 1999-2009 Nokia, Norway.
         Everyone is permitted to copy and distribute this license document.
 
         The intent of this license is to establish freedom to share and change the

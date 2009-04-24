@@ -118,7 +118,7 @@ public class src_corelib_tools_qregexp {
 
 
 //! [10]
-        str = "$TROLLTECH$\twww.trolltech.com\tNorway";
+        str = "Nokia\twww.trolltech.com\tNorway";
         String company, web, country;
         rx.setPattern("^([^\t]+)\t([^\t]+)\t([^\t]+)$");
         if (rx.indexIn(str) != -1) {
