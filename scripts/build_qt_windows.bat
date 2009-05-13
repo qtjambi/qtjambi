@@ -37,6 +37,7 @@ nmake sub-src sub-tools
 
 REM Force re-qmake and make ActiveQt without QT_EDITION=OpenSource
 cd src\activeqt && qmake -r QT_EDITION=Internal DEFINES+=APPLY_AWESOME_CRAXX && nmake && cd ..\..
+cd src\tools\idc && qmake DEFINES+=APPLY_AWESOME_CRAXX && nmake && cd ..\..
 
 REM deleting explicitly because "nmake clean" would fail when it got to examples...
 del *.obj *.ilk *.pdb moc_* *.pch /s
