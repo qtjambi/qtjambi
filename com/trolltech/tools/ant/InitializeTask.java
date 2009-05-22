@@ -165,14 +165,13 @@ public class InitializeTask extends Task {
                 break;
             case Linux:
                 props.setNewProperty(null, PHONON_GSTREAMER, "true");
-		if (doesQtLibExist("QtDBus", 4))
-		    props.setNewProperty(null, DBUS, "true");
+                if (doesQtLibExist("QtDBus", 4))
+                    props.setNewProperty(null, DBUS, "true");
                 break;
             case MacOS:
                 props.setNewProperty(null, PHONON_QT7, "true");
-		if (doesQtLibExist("QtDBus", 4))
-		    props.setNewProperty(null, DBUS, "true");
-
+                if (doesQtLibExist("QtDBus", 4))
+                    props.setNewProperty(null, DBUS, "true");
                 break;
             }
         }
@@ -180,7 +179,7 @@ public class InitializeTask extends Task {
         props.setNewProperty(null, SQLITE, decideSqlite());
 
         String webkit = decideWebkit();
-        if ("true".equals(webkit))
+        if ("true".equals(webkit) && "true".equals(phonon))
             props.setNewProperty(null, WEBKIT, webkit);
 
         String patterns = decideXMLPatterns();
