@@ -355,14 +355,4 @@
 
     </interface-type>
 
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNodeList' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamNamespaceDeclaration' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNamedNodeMap' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamNotationDeclaration' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNode' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomImplementation' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamAttribute' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamAttributes' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamEntityDeclaration' has equals operators but no qHash() function"/>
-
 </typesystem>

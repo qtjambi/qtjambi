@@ -164,15 +164,6 @@
   <object-type name="QSslSocket" />
 
   <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrlInfo' has equals operators but no qHash() function" />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QAuthenticator' has equals operators but no qHash() function" />
-
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslKey' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslError' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCertificate' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCipher' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslConfiguration' has equals operators but no qHash() function"/>
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkProxy' has equals operators but no qHash() function" />
 
   <!-- For people building without SSL support -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslSocket' for enum 'SslMode' is not declared" />

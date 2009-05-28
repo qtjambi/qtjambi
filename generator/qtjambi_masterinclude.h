@@ -62,13 +62,16 @@
 #  include <phonon/phonon>
 #endif
 
+#include <../qtjambi_core/qtjambiconcurrent.h>
+#include <../qtjambi_core/qtjambi_core_qhashes.h>
+
 #include <../qtjambi_designer/designer.h>
 
 #include <../qtjambi_gui/qtreemodel.h>
 #include <../qtjambi_gui/qguisignalmapper.h>
 #include <../qtjambi_gui/qtjambitextobjectinterface.h>
+#include <../qtjambi_gui/qtjambi_gui_qhashes.h>
 
-#include <../qtjambi_core/qtjambiconcurrent.h>
 
 #ifndef QT_NO_OPENGL
 #define GL_ACCUM                          0x0100
