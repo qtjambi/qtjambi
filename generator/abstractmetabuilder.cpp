@@ -2366,7 +2366,7 @@ void AbstractMetaBuilder::setupEquals(AbstractMetaClass *cls)
 
     if (equals.size() || nequals.size()) {
         if (!cls->hasHashFunction()) {
-            ReportHandler::warning(QString::fromLatin1("Class '%1' has equals operators but no qHash() function")
+            ReportHandler::warning(QString::fromLatin1("Class '%1' has equals operators but no qHash() function. Hashcode of objects will consistently be 0.")
                                    .arg(cls->name()));
         }
 

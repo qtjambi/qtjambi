@@ -1124,7 +1124,7 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
     }
 
 
-    if (cls->hasHashFunction()) {
+    if (cls->hasHashFunction() || eq_functions.size() > 0 || neq_functions.size() > 0) {
         AbstractMetaFunctionList hashcode_functions = cls->queryFunctionsByName("hashCode");
         bool found = false;
         foreach (const AbstractMetaFunction *function, hashcode_functions) {
@@ -1135,14 +1135,21 @@ void JavaGenerator::writeJavaLangObjectOverrideFunctions(QTextStream &s,
         }
 
         if (!found) {
-            s << endl
-              << INDENT << "@Override" << endl
-              << INDENT << "public int hashCode() {" << endl
-              << INDENT << "    if (nativeId() == 0)" << endl
-              << INDENT << "        throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
-              << INDENT << "    return __qt_hashCode(nativeId());" << endl
-              << INDENT << "}" << endl
-              << INDENT << "native int __qt_hashCode(long __this_nativeId);" << endl;
+            if (cls->hasHashFunction()) {
+                s << endl
+                << INDENT << "@Override" << endl
+                << INDENT << "public int hashCode() {" << endl
+                << INDENT << "    if (nativeId() == 0)" << endl
+                << INDENT << "        throw new QNoNativeResourcesException(\"Function call on incomplete object of type: \" +getClass().getName());" << endl
+                << INDENT << "    return __qt_hashCode(nativeId());" << endl
+                << INDENT << "}" << endl
+                << INDENT << "native int __qt_hashCode(long __this_nativeId);" << endl;
+            } else { // We have equals() but no qHash(), we return 0 from hashCode() to respect 
+                     // contract of java.lang.Object
+                s << endl
+                  << INDENT << "@Override" << endl
+                  << INDENT << "public int hashCode() { return 0; }" << endl;
+            }
         }
     }
 
