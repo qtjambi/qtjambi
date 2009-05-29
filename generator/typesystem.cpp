@@ -484,6 +484,7 @@ bool Handler::startElement(const QString &, const QString &n,
         case StackElement::ValueTypeEntry:
             attributes["force-abstract"] = QString("no");
             attributes["deprecated"] = QString("no");
+            attributes["implements"] = QString();
             // fall throooough
         case StackElement::InterfaceTypeEntry:
             attributes["default-superclass"] = m_defaultSuperclass;
@@ -626,6 +627,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 ctype->setTargetLangPackage(attributes["package"]);
                 ctype->setDefaultSuperclass(attributes["default-superclass"]);
                 ctype->setGenericClass(convertBoolean(attributes["generic-class"], "generic-class", false));
+                ctype->setImplements(attributes["implements"]);
 
                 if (!convertBoolean(attributes["generate"], "generate", true))
                     element->entry->setCodeGeneration(TypeEntry::GenerateForSubclass);

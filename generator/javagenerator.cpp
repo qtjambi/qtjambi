@@ -1477,6 +1477,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     // implementing interfaces...
     bool implements = false;
     AbstractMetaClassList interfaces = java_class->interfaces();
+
     if (!interfaces.isEmpty()) {
         if (java_class->isInterface())
             s << ", ";
@@ -1496,9 +1497,9 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
         if (!implements) {
             implements = true;
             s << endl << "    implements ";
-        }
-        else
+        } else {
             s << "," << endl << "            ";
+        }
         s << "java.lang.Comparable<Object>";
     }
 
@@ -1506,10 +1507,20 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
         if (!implements) {
             implements = true;
             s << endl << "    implements ";
-        }
-        else
+        } else {
             s << "," << endl << "            ";
+        }
         s << "java.lang.Cloneable";
+    }
+
+    if (!java_class->typeEntry()->implements().isEmpty()) {
+        if (!implements) {
+            implements = true;
+            s << endl << "    implements ";
+        } else {
+            s << "," << endl << "            ";
+        }
+        s << java_class->typeEntry()->implements();
     }
 
     s << endl << "{" << endl;

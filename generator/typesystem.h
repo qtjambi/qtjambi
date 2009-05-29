@@ -841,6 +841,8 @@ public:
 
     virtual QString qualifiedCppName() const { return m_qualified_cpp_name; }
 
+    void setImplements(const QString &implements) { m_implements = implements; }
+    QString implements() const { return m_implements; }
 
     void setIsPolymorphicBase(bool on)
     {
@@ -880,6 +882,7 @@ private:
     QString m_default_superclass;
     QString m_qualified_cpp_name;
     QString m_java_name;
+    QString m_implements;
 
     uint m_qobject : 1;
     uint m_polymorphic_base : 1;
