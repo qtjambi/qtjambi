@@ -48,13 +48,6 @@ import com.trolltech.qt.QtBlockedSlot;
 import com.trolltech.qt.xmlpatterns.QAbstractXmlNodeModel;
 import com.trolltech.qt.xmlpatterns.QXmlNodeModelIndex;
 
-class QXmlNodeModelIndex___ extends QXmlNodeModelIndex {
-    @QtBlockedSlot
-    public final QAbstractXmlNodeModel model() {
-        return QAbstractXmlNodeModel.fromNativePointer(model_private());
-    }
-}// class
-
 class QXmlName___ extends QXmlName {
 
       /**
@@ -123,4 +116,28 @@ class QSimpleXmlNodeModel___ extends QSimpleXmlNodeModel {
     public final QXmlNamePool namePool() {
         return QXmlNamePool.fromNativePointer(namePool_private());
     }
+
+    @Deprecated
+    public static com.trolltech.qt.QNativePointer nativePointerArray(QSimpleXmlNodeModel array[]) {
+        throw new RuntimeException("This object cannot be made into a native pointer. The method is present for purposes of backwards compatibility.");
+    }
+
+    @Deprecated
+    public QSimpleXmlNodeModel clone() {
+        throw new RuntimeException("This object cannot be cloned. The method is present for purposes of backwards compatibility.");
+    }
+
+}// class
+
+class QAbstractXmlNodeModel___ extends QAbstractXmlNodeModel {
+    @Deprecated
+    public static com.trolltech.qt.QNativePointer nativePointerArray(QAbstractXmlNodeModel array[]) {
+        throw new RuntimeException("This object cannot be made into a native pointer. The method is present for purposes of backwards compatibility.");
+    }
+
+    @Deprecated
+    public QAbstractXmlNodeModel clone() {
+        throw new RuntimeException("This object cannot be cloned. The method is present for purposes of backwards compatibility.");
+    }
+
 }// class

@@ -25,13 +25,13 @@
   <rejection class="QAbstractXmlNodeModel" function-name="iterate" />
   <rejection class="QAbstractXmlNodeModel" function-name="copyNodeTo" />
   <rejection class="QAbstractXmlNodeModel" function-name="type" />
-  <value-type name="QAbstractXmlNodeModel">
+  <object-type name="QAbstractXmlNodeModel">
     <modify-function signature="QAbstractXmlNodeModel()" remove="all" />
     <modify-function signature="namespaceForPrefix(QXmlNodeModelIndex,short) const"
              remove="all" />
     <modify-function signature="isDeepEqual(QXmlNodeModelIndex,QXmlNodeModelIndex) const"
              remove="all" />
-  </value-type>
+  </object-type>
 
   <rejection class="QAbstractXmlReceiver" function-name="item" />
   <rejection class="QAbstractXmlReceiver" function-name="sendAsNode" />
@@ -101,11 +101,6 @@
     <modify-function signature="is(QXmlNodeModelIndex) const" remove="all" />
     <modify-function signature="reset()" remove="all" />
     <modify-function signature="internalPointer()const" remove="all" />
-
-    <modify-function signature="model()const">
-      <access modifier="private"/>
-      <rename to="model_private" />
-    </modify-function>
   </value-type>
 
   <value-type name="QXmlSerializerPointer"/>
