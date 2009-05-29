@@ -38,7 +38,7 @@
   <value-type name="QAbstractXmlReceiver">
   </value-type>
 
-  <value-type name="QSimpleXmlNodeModel" />
+  <object-type name="QSimpleXmlNodeModel" />
 
   <value-type name="QSourceLocation">
     <modify-function signature="operator=(QSourceLocation)" remove="all" />
