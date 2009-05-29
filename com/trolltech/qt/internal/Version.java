@@ -69,7 +69,7 @@ public class Version
      * The Patch version of Qt Jambi. This version number follows the
      * version of the Qt/C++ library used.
      */
-    public static final int PATCH = 0;
+    public static final int PATCH = 2;
 
     /**
      * The Build id for this version of Qt Jambi.
