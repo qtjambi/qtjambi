@@ -7,6 +7,10 @@
 #include <QtGui/QColor>
 #include <QtGui/QBrush>
 #include <QtGui/QRegion>
+#include <QtGui/QPolygon>
+#include <QtGui/QPalette>
+#include <QtGui/QFont>
+#include <QtGui/QMatrix>
 
 #include <qtjambi_core_qhashes.h>
 
