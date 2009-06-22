@@ -13,6 +13,8 @@ CONFIG += console no_batch
 mac:CONFIG -= app_bundle
 DESTDIR = ../bin
 
+INCLUDEPATH += .
+
 DEFINES += QT_UIC_JAVA_GENERATOR QT_UIC
 
 HEADERS += javawritedeclaration.h \
