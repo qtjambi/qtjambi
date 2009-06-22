@@ -5085,6 +5085,25 @@
   <object-type name="QStylePlugin" />
   <object-type name="QTextCodecPlugin" />
   
+  <!-- Inefficient hash codes -->
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFrame_iterator' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextTableCell' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextOption_Tab' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextLength' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextBlock_iterator' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextBlock' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextCursor' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPainterPath_Element' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPainterPath' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QItemSelection' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QKeySequence' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSizePolicy' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFragment' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFontMetrics' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QGradient' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFontMetricsF' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFormat' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />  
+  
   <!-- Intentional omissions. See explanation for QtJambiTextObjectInterface class in typesystem and headers. -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: class 'QTextObjectInterface' inherits from unknown base class 'QTextObjectInterface'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: unknown interface for 'QTextObjectInterface': 'QTextObjectInterfaceInterface'" />

@@ -125,6 +125,16 @@
      <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
      <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
 
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'MediaSource' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Path' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Phonon_ObjectDescription' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'EffectParameter' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'EffectDescription' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'SubtitleDescription' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioCaptureDevice' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioOutputDevice' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioChannelDescription' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Final class 'AbstractAudioOutput' set to non-final, as it is extended by other classes" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QDBus' does not have a type entry" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'create(const QString &amp; name)' in 'QTextCodecPlugin'" />

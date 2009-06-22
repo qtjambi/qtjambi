@@ -11,6 +11,10 @@
 #include <QtGui/QPalette>
 #include <QtGui/QFont>
 #include <QtGui/QMatrix>
+#include <QtGui/QImage>
+#include <QtGui/QPen>
+#include <QtGui/QTransform>
+#include <QtGui/QPolygonF>
 
 #include <qtjambi_core_qhashes.h>
 
@@ -80,6 +84,47 @@ inline int qHash(const QMatrix &matrix)
     hashCode = hashCode * 31 + matrix.m22();
     hashCode = hashCode * 31 + matrix.dx();
     hashCode = hashCode * 31 + matrix.dy();
+    return hashCode;
+}
+
+inline int qHash(const QImage &image)
+{
+    return qHash(image.cacheKey());
+}
+
+inline int qHash(const QPen &pen)
+{
+    int hashCode = int(pen.style()); 
+    hashCode = hashCode * 31 + int(pen.capStyle());
+    hashCode = hashCode * 31 + int(pen.joinStyle());
+    hashCode = hashCode * 31 + pen.width();
+    hashCode = hashCode * 31 + qHash(pen.brush());
+    hashCode = hashCode * 31 + int(pen.isCosmetic());
+    return hashCode;
+}
+
+inline int qHash(const QTransform &transform)
+{
+    int hashCode = transform.m11();
+    hashCode = hashCode * 31 + transform.m12();
+    hashCode = hashCode * 31 + transform.m13();
+
+    hashCode = hashCode * 31 + transform.m21();
+    hashCode = hashCode * 31 + transform.m22();
+    hashCode = hashCode * 31 + transform.m23();
+
+    hashCode = hashCode * 31 + transform.m31();
+    hashCode = hashCode * 31 + transform.m32();
+    hashCode = hashCode * 31 + transform.m33();
+
+    return hashCode;
+}
+
+inline int qHash(const QPolygonF &polygon)
+{
+    int hashCode = 1;
+    for (int i=0; i<polygon.size(); ++i)
+        hashCode = hashCode * 31 + qHash(polygon.at(i));
     return hashCode;
 }
 

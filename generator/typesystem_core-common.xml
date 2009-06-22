@@ -1206,6 +1206,14 @@
   </object-type>
   <object-type name="QtJambiFutureIterator" generic-class="yes" java-name="QFutureIterator" />
   <object-type name="QRunnable" />
+  
+  <!-- Inefficient hash codes -->
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUuid' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QLocale' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFuture' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRegExp' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFutureVoid' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrl' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
