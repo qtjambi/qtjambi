@@ -172,7 +172,7 @@ bool qtjambi_exception_check(JNIEnv *env, char *fileName, int lineNumber)
             fprintf(stderr, "QtJambi: Exception pending in native code in file '%s':%d\n", fileName, lineNumber);
         else
             fprintf(stderr, "QtJambi: Exception pending in native code\n");
-        //env->ExceptionDescribe();
+        env->ExceptionDescribe();
         env->ExceptionClear();
         return true;
     }
