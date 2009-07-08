@@ -1,6 +1,7 @@
 #ifndef QTJAMBI_CORE_QHASHES_H
 #define QTJAMBI_CORE_QHASHES_H
 
+#include <QtCore/QHash>
 #include <QtCore/QRect>
 #include <QtCore/QDate>
 #include <QtCore/QTime>
@@ -14,8 +15,8 @@
 
 inline int qHash(const QSizeF &size)
 {
-    int hashCode = qHash(size.width());
-    hashCode = hashCode * 31 + qHash(size.height());
+    int hashCode = qHash(quint64(size.width()));
+    hashCode = hashCode * 31 + qHash(quint64(size.height()));
     return hashCode;
 }
 
@@ -28,8 +29,8 @@ inline int qHash(const QSize &size)
 
 inline int qHash(const QPointF &point)
 {
-    int hashCode = qHash(point.x());
-    hashCode = hashCode * 31 + qHash(point.y());
+    int hashCode = qHash(quint64(point.x()));
+    hashCode = hashCode * 31 + qHash(quint64(point.y()));
     return hashCode;
 }
 
@@ -54,10 +55,10 @@ inline int qHash(const QRect &rect)
 
 inline int qHash(const QRectF &rect)
 {
-    int hashCode = qHash(rect.left());
-    hashCode = hashCode * 31 + qHash(rect.top());
-    hashCode = hashCode * 31 + qHash(rect.right());
-    hashCode = hashCode * 31 + qHash(rect.bottom());
+    int hashCode = qHash(quint64(rect.left()));
+    hashCode = hashCode * 31 + qHash(quint64(rect.top()));
+    hashCode = hashCode * 31 + qHash(quint64(rect.right()));
+    hashCode = hashCode * 31 + qHash(quint64(rect.bottom()));
     return hashCode;
 }
 
@@ -93,12 +94,14 @@ inline int qHash(const QLineF &line)
 {
     int hashCode = qHash(line.p1());
     hashCode = hashCode * 31 + qHash(line.p2());
+    return hashCode;
 }
 
 inline int qHash(const QLine &line)
 {
     int hashCode = qHash(line.p1());
     hashCode = hashCode * 31 + qHash(line.p2());
+    return hashCode;
 }
 
 #endif // QTJAMBI_CORE_QHASHES_H 
