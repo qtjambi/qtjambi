@@ -18,7 +18,7 @@ rm -f src/gui/kernel/qapplication_mac.cpp
 rm -f src/gui/kernel/qapplication_qws.cpp
 touch LICENSE.LGPL
 QTDIR=$PWD perl bin/syncqt -check-includes
-./configure --confirm-license=yes -no-qt3support -release -shared -prefix $PWD -no-sql-sqlite2 -no-mmx -no-3dnow -no-sse -no-sse2 -D QT_JAMBI_BUILD
+./configure -opensource --confirm-license=yes -no-qt3support -release -shared -prefix $PWD -no-sql-sqlite2 -no-mmx -no-3dnow -no-sse -no-sse2 -D QT_JAMBI_BUILD
 cd src && make && make clean && cd ..
 cd tools && make && make clean && cd ..
 cd ..
@@ -29,7 +29,7 @@ rm -f src/gui/kernel/qapplication_mac.cpp
 rm -f src/gui/kernel/qapplication_qws.cpp
 touch LICENSE
 QTDIR=$PWD perl bin/syncqt -check-includes
-./configure --confirm-license=yes -fast -no-qt3support -release -shared -prefix $PWD -no-sql-sqlite2 -no-mmx -no-3dnow -no-sse -no-sse2 -D QT_JAMBI_BUILD
+./configure -commercial --confirm-license=yes -fast -no-qt3support -release -shared -prefix $PWD -no-sql-sqlite2 -no-mmx -no-3dnow -no-sse -no-sse2 -D QT_JAMBI_BUILD
 cd src && make && make clean && cd ..
 cd tools && make && make clean && cd ..
 cd ..

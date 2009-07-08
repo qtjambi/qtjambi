@@ -15,7 +15,7 @@ cd /tmp/qtjambi-package-builder
 cd qt-lgpl
 touch LICENSE.LGPL
 QTDIR=$PWD perl bin/syncqt -check-includes
-./configure --confirm-license=yes -fast -universal -no-framework -no-qt3support -release -no-rpath -shared -no-dbus -prefix $PWD -sdk /Developer/SDKs/MacOSX10.4u.sdk -D QT_JAMBI_BUILD
+./configure -opensource --confirm-license=yes -fast -universal -no-framework -no-qt3support -release -no-rpath -shared -no-dbus -prefix $PWD -sdk /Developer/SDKs/MacOSX10.4u.sdk -D QT_JAMBI_BUILD
 cd src && make && make clean && cd ..
 cd tools && make && make clean && cd ..
 cd ..
@@ -23,7 +23,7 @@ cd ..
 cd qt-commercial
 touch LICENSE
 QTDIR=$PWD perl bin/syncqt -check-includes
-./configure --confirm-license=yes -fast -universal -no-framework -no-qt3support -release -no-rpath -shared -no-dbus -prefix $PWD -sdk /Developer/SDKs/MacOSX10.4u.sdk -D QT_JAMBI_BUILD
+./configure -commercial --confirm-license=yes -fast -universal -no-framework -no-qt3support -release -no-rpath -shared -no-dbus -prefix $PWD -sdk /Developer/SDKs/MacOSX10.4u.sdk -D QT_JAMBI_BUILD
 cd src && make && make clean && cd ..
 cd tools && make && make clean && cd ..
 cd ..
