@@ -93,6 +93,7 @@ public slots:
 private slots:
     void wasReset();
     void wasChanged();
+    void dataWasChanged(const QModelIndex &, const QModelIndex &);
 
 private:
     void initializeNode(Node *n, const QModelIndex &index) const;

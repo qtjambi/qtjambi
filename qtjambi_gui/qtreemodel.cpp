@@ -160,6 +160,8 @@ QTreeModel::QTreeModel(QObject *parent)
 {
     connect(this, SIGNAL(modelReset()), this, SLOT(wasReset()));
     connect(this, SIGNAL(layoutChanged()), this, SLOT(wasChanged()));
+    connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), 
+            this, SLOT(dataWasChanged(QModelIndex,QModelIndex)));
     m_invalidation = false;
 }
 
@@ -303,6 +305,56 @@ void QTreeModel::wasReset()
     m_root = new Node();
 }
 
+/*!
+    \internal
+*/
+void QTreeModel::dataWasChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+    Node *n1 = node(topLeft);
+    Node *n2 = node(bottomRight);
+    if (n1 == 0 || n2 == 0 || n1->parent != n2->parent || n1->parent == 0)
+        return;
+
+    Node *parentNode = n1->parent;
+    if (!parentNode->isChildrenQueried()) // Nodes not cached yet, no need to update
+        return;
+
+    int start = parentNode->nodes.indexOf(n1);
+    int end = parentNode->nodes.indexOf(n2);
+    if (start > end) 
+        qSwap(start, end);
+
+    if (start < 0 || end < 0)
+        return;
+
+    JNIEnv *env = qtjambi_current_environment();
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveObject();
+
+    for (int i=start;i<=end;++i) {
+        Node *childNode = parentNode->nodes.at(i);
+        {
+            JObject_key key = {
+                childNode->value,
+                env->CallIntMethod(childNode->value, sc->Object.hashCode)
+            };
+            m_nodes.remove(key);
+        }
+
+
+        childNode->value = child(parentNode->value, i);
+        QTJAMBI_EXCEPTION_CHECK(env);
+
+        {
+            JObject_key key = {
+                childNode->value,
+                env->CallIntMethod(childNode->value, sc->Object.hashCode)
+            };
+            m_nodes.insert(key, childNode);
+        }
+    }
+
+}
 
 /*!
     \internal
