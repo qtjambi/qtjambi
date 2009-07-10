@@ -900,8 +900,9 @@
 
     Once we have completed a suitable type system specification, rerun
     the generator and compiled the generated code, the Java API is
-    ready for use. In addition, you can now run the Qt Jambi Demo
-    Launcher and see the Generator example in its list.
+    ready for use. In addition, you can now run the ant script and then
+    try out the Qt Jambi Generator Example by executing the produced 
+    .jar file.
 
     See also: \l {The Qt Jambi Generator} and \l {The Qt Jambi Type System}.
 */
