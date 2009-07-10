@@ -88,6 +88,9 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * will never be called more than once per object, and the object is
      * guaranteed to be unusable after this function has returned. The default
      * implementation does nothing.
+     *
+     * Calling functions on the object itself from within this method could yield unpredictable
+     * results, as there is no guarantee that the object is valid when disposed() is called. 
      */
     protected void disposed()
     {
