@@ -84,7 +84,6 @@ class GLWidget extends QGLWidget
     @Override
     protected void disposed()
     {
-        makeCurrent();
         func.glDeleteLists(object, 1);
     }
 
