@@ -1,5 +1,7 @@
 TARGET = com_trolltech_examples_generator
 
+INCLUDEPATH += $$PWD
+
 include(../qtjambi/qtjambi_include.pri)
 include(../cpp/com_trolltech_examples_generator/com_trolltech_examples_generator.pri)
 
