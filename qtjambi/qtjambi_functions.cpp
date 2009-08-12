@@ -74,17 +74,6 @@ class QThreadData;
 extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass))
 {
-#ifdef Q_OS_DARWIN
-    if (!pthread_main_np()) {
-        qWarning("\n\n\nWARNING!!\n\n\n"
-                 "Qt Jambi does not appear to be running on the main thread and will "
-                 "most likely be unstable and crash. "
-                 "Please make sure to launch your 'java' command with the "
-                 "'-XstartOnFirstThread' command line option. For instance:\n\n"
-                 "> java -XstartOnFirstThread com.trolltech.examples.AnalogClock\n\n");
-    }
-#endif
-
     qtjambi_register_callbacks();
 
     if (QCoreApplication::instance())
@@ -521,6 +510,17 @@ extern "C" QTJAMBI_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_HelperFunctions_setAsMainThread)
     (JNIEnv *, jclass)
 {
+#ifdef Q_OS_DARWIN
+    if (!pthread_main_np()) {
+        qWarning("\n\n\nWARNING!!\n\n\n"
+                 "Qt Jambi does not appear to be running on the main thread and will "
+                 "most likely be unstable and crash. "
+                 "Please make sure to launch your 'java' command with the "
+                 "'-XstartOnFirstThread' command line option. For instance:\n\n"
+                 "> java -XstartOnFirstThread com.trolltech.examples.AnalogClock\n\n");
+    }
+#endif
+
     QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, 0);
 }
 
