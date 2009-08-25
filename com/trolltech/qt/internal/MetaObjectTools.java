@@ -406,6 +406,14 @@ public class MetaObjectTools {
 
     public native static String internalTypeName(String s, int varContext);
 
+    public static String internalTypeNameWithoutExceptions(String s, int varContext) {
+        try {
+            return internalTypeName(s, varContext);
+        } catch (Throwable t) {
+            return "";
+        }
+    }
+
     private static MetaData buildMetaData(Class<? extends QObject> clazz) {
         MetaData metaData = new MetaData();
 
@@ -431,8 +439,8 @@ public class MetaObjectTools {
                 // If we can't convert the type, we don't list it
                 String methodParameters = methodParameters(declaredMethod);
                 String returnType = declaredMethod.getReturnType().getName();
-                if ((methodParameters.equals("") || !internalTypeName(methodParameters, 1).equals(""))
-                    &&(returnType.equals("") || returnType.equals("void") || !internalTypeName(returnType, 0).equals(""))) {
+                if ((methodParameters.equals("") || !internalTypeNameWithoutExceptions(methodParameters, 1).equals(""))
+                    &&(returnType.equals("") || returnType.equals("void") || !internalTypeNameWithoutExceptions(returnType, 0).equals(""))) {
                     slots.add(declaredMethod);
                 }
             }
@@ -447,7 +455,7 @@ public class MetaObjectTools {
                 if (reader != null
                     && reader.enabled()
                     && isValidGetter(declaredMethod)
-                    && !internalTypeName(declaredMethod.getReturnType().getName(), 0).equals("")) {
+                    && !internalTypeNameWithoutExceptions(declaredMethod.getReturnType().getName(), 0).equals("")) {
 
                     // If the return type of the property reader is not registered, then
                     // we need to register the owner class in the meta object (in which case
@@ -542,7 +550,7 @@ public class MetaObjectTools {
                 // If we can't convert all the types we don't list the signal
                 QtJambiInternal.ResolvedSignal resolvedSignal = QtJambiInternal.resolveSignal(declaredField, declaredField.getDeclaringClass());
                 String signalParameters = signalParameters(resolvedSignal);
-                if (signalParameters.length() == 0 || internalTypeName(signalParameters, 1).length() != 0) {
+                if (signalParameters.length() == 0 || internalTypeNameWithoutExceptions(signalParameters, 1).length() != 0) {
                     signalFields.add(declaredField);
                     resolvedSignals.add(resolvedSignal);
                 }
@@ -603,7 +611,7 @@ public class MetaObjectTools {
                 metaData.originalSignatures[i] = resolvedSignal.name
                     + (javaSignalParameters.length() > 0 ? '<' + javaSignalParameters + '>' : "");
 
-                String signalParameters = internalTypeName(javaSignalParameters, 1);
+                String signalParameters = internalTypeNameWithoutExceptions(javaSignalParameters, 1);
 
                 // Signal name
                 offset += addString(metaData.metaData, strings, stringsInOrder, resolvedSignal.name + "(" + signalParameters + ")", offset, metaDataOffset++);
@@ -637,15 +645,15 @@ public class MetaObjectTools {
                 metaData.originalSignatures[signalFields.size() + i] = javaMethodSignature;
 
                 // Slot signature
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(javaMethodSignature, 1), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeNameWithoutExceptions(javaMethodSignature, 1), offset, metaDataOffset++);
 
                 // Slot parameters
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(methodParameters(slot), 1), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeNameWithoutExceptions(methodParameters(slot), 1), offset, metaDataOffset++);
 
                 // Slot type
                 String returnType = slot.getReturnType().getName();
                 if (returnType.equals("void")) returnType = "";
-                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeName(returnType, 0), offset, metaDataOffset++);
+                offset += addString(metaData.metaData, strings, stringsInOrder, internalTypeNameWithoutExceptions(returnType, 0), offset, metaDataOffset++);
 
                 // Slot tag (Currently not supported by the moc either)
                 offset += addString(metaData.metaData, strings, stringsInOrder, "", offset, metaDataOffset++);
@@ -694,7 +702,7 @@ public class MetaObjectTools {
                     // To avoid using JObjectWrapper for enums and flags (which is required in certain cases.)
                     typeName = t.getDeclaringClass().getName().replace(".", "::") + "::" + t.getSimpleName();
                 } else {
-                    typeName = internalTypeName(t.getName(), 0);
+                    typeName = internalTypeNameWithoutExceptions(t.getName(), 0);
                 }
                 offset += addString(metaData.metaData, strings, stringsInOrder, typeName, offset, metaDataOffset++);
 
