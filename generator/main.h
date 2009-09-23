@@ -100,6 +100,7 @@ struct Preprocess
             includes << (qtdir + "/QtCore");
             includes << (qtdir + "/QtGui");
             includes << (qtdir + "/QtOpenGL");
+            includes << (qtdir + "/phonon");
             includes << qtdir;
         }
 
