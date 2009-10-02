@@ -9,6 +9,7 @@
   <enum-type name="QAbstractSocket::SocketError" />
   <enum-type name="QAbstractSocket::SocketState" />
   <enum-type name="QAbstractSocket::SocketType" />
+  <enum-type name="QAbstractSocket::SocketOption" />
   <enum-type name="QFtp::Command" />
   <enum-type name="QFtp::Error" />
   <enum-type name="QFtp::State" />

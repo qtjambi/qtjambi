@@ -503,6 +503,16 @@
     <reject-enum-value name="LastFontProperty"/>
   </enum-type>
 
+ <enum-type name="QAction::Priority" />
+ <enum-type name="QAction::SoftKeyRole" />
+  <enum-type name="QGraphicsEffect::ChangeFlag" flags="QGraphicsEffect::ChangeFlags" />
+  <enum-type name="QGraphicsItem::PanelModality" />
+  <enum-type name="QPinchGesture::WhatChange" flags="QPinchGesture::WhatChanged" />
+  <enum-type name="QStyle::RequestSoftwareInputPanel" />
+  <enum-type name="QSwipeGesture::SwipeDirection" />
+  <enum-type name="QTouchEvent::DeviceType" />
+  
+
   <value-type name="QPixmapCache::Key" />
   <value-type name="QTileRules" />
   <value-type name="QVector2D" />

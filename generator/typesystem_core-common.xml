@@ -28,6 +28,9 @@
   <rejection class="" enum-name="QtValidLicenseForScriptModule"/>
   <rejection class="" enum-name="QtValidLicenseForHelpModule"/>
   <rejection class="" enum-name="QtValidLicenseForScriptToolsModule" />
+  <rejection class="" enum-name="QtValidLicenseForMultimediaModule" />
+  <rejection class="" enum-name="QtValidLicenseForOpenVGModule" />
+
   <rejection class="QtConcurrent" enum-name="enum_1" />
   <rejection class="QtConcurrent" function-name="operator|" />
 
@@ -344,6 +347,8 @@
   <rejection class="stat" />
   <rejection class="tm" />
 
+  <rejection class="Qt" enum-name="Initialization" />
+
   <rejection class="QAbstractEventDispatcher" function-name="filterEvent"/>
   <rejection class="QAbstractEventDispatcher" function-name="setEventFilter"/>
   <rejection class="QAbstractFileEngine" function-name="beginEntryList"/>
@@ -414,10 +419,30 @@
   </namespace-type>
 
   <enum-type name="QDate::MonthNameType" />
+  <enum-type name="QAbstractAnimation::DeletionPolicy" />
+  <enum-type name="QAbstractAnimation::Direction" />
+  <enum-type name="QAbstractAnimation::State" />
+  <enum-type name="QDataStream::FloatingPointPrecision" />
+  <enum-type name="QEasingCurve::Type" />
+  <enum-type name="QHistoryState::HistoryType" />
+  <enum-type name="QState::ChildMode" />
+  <enum-type name="QStateMachine::Error" />
+  <enum-type name="QStateMachine::EventPriority" />
+  <enum-type name="QStateMachine::RestorePolicy" />
+  <enum-type name="Qt::AnchorPoint" />
+  <enum-type name="Qt::CoordinateSystem" />
+  <enum-type name="Qt::GestureState" />
+  <enum-type name="Qt::InputMethodHint" flags="Qt::InputMethodHints" />
+  <enum-type name="Qt::NavigationMode" />
+  <enum-type name="Qt::RenderHint" />
+  <enum-type name="Qt::TileRule" />
+  <enum-type name="Qt::TouchPointState" flags="Qt::TouchPointStates" />
 
   <enum-type name="QtMsgType">
     <reject-enum-value name="QtSystemMsg" />
   </enum-type>
+
+  <enum-type name="QXmlStreamReader::ReadElementTextBehaviour" />
 
   <enum-type name="QReadWriteLock::RecursionMode" />
   <enum-type name="QSystemSemaphore::AccessMode" />

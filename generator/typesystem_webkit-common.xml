@@ -13,6 +13,9 @@
     <enum-type name="QWebPage::FindFlag" flags="QWebPage::FindFlags" />
     <enum-type name="QWebPage::LinkDelegationPolicy" />
     <enum-type name="QWebPluginFactory::Extension" />
+    <enum-type name="QWebElement::StyleResolveStrategy" />
+    <enum-type name="QWebHistory::HistoryStateVersion" />
+    <enum-type name="QWebPage::ErrorDomain" />
     
     
     <object-type name="QGraphicsWebView" />    
