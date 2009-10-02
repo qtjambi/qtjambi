@@ -623,7 +623,6 @@
     <reject-enum-value name="WA_MacMetalStyle"/>
   </enum-type>
 
-  <value-type name="QQuaternion" />
   <value-type name="QProcessEnvironment" />
   <value-type name="QBasicTimer"/>
   <value-type name="QByteArrayMatcher">
@@ -943,8 +942,6 @@
   <object-type name="QAbstractTransition" />
   <object-type name="QState" />
   <object-type name="QStateMachine" />
-  <object-type name="QMouseEventTransition" />
-  <object-type name="QKeyEventTransition" />
   <object-type name="QHistoryState" />
   <object-type name="QSignalTransition" />
   <object-type name="QEventTransition" />

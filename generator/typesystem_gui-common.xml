@@ -4799,6 +4799,10 @@
     </modify-function>
   </object-type>
 
+  <object-type name="QMouseEventTransition" />
+  <object-type name="QKeyEventTransition" />
+  <value-type name="QQuaternion" />
+
   <object-type name="QCommandLinkButton" />
   <object-type name="QFileSystemModel">
     <modify-function signature="setIconProvider(QFileIconProvider*)">
