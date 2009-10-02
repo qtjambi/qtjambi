@@ -1674,6 +1674,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     }
 
     // Functions
+	bool alreadyHasCloneMethod = false;
     AbstractMetaFunctionList java_funcs = java_class->functionsInTargetLang();
     for (int i=0; i<java_funcs.size(); ++i) {
         AbstractMetaFunction *function = java_funcs.at(i);
@@ -1687,6 +1688,9 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
             if (includedAttributes & AbstractMetaAttributes::Private)
                 continue;
         }
+
+		if (function->name() == "clone" && function->arguments().isEmpty())
+			alreadyHasCloneMethod = true;
 
         writeFunction(s, function);
     }
@@ -1772,7 +1776,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class)
     writeExtraFunctions(s, java_class);
     writeToStringFunction(s, java_class);
 
-    if (java_class->hasCloneOperator()) {
+    if (java_class->hasCloneOperator() && !alreadyHasCloneMethod) {
         writeCloneFunction(s, java_class);
     }
 
