@@ -825,7 +825,10 @@
     <modify-function signature="operator&lt;&lt;(QItemSelectionRange)" remove="all"/>
   </value-type>
 
-  <value-type name="QMatrix4x4" />
+  <value-type name="QMatrix4x4">
+    <modify-function signature="data()const" remove="all" />
+    <modify-function signature="operator()(int, int)const" remove="all" />
+  </value-type>
   <value-type name="QMatrix">
       <extra-includes>
         <include file-name="QPainterPath" location="global"/>
@@ -1237,7 +1240,7 @@
 
   <interface-type name="QGraphicsItem" delete-in-main-thread="yes">
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>
-
+    <modify-function signature="toGraphicsObject() const" remove="all" />
 
     <modify-function signature="paint(QPainter*,const QStyleOptionGraphicsItem*,QWidget*)">
         <modify-argument index="1" invalidate-after-use="yes" />
@@ -1958,6 +1961,7 @@
     <modify-function signature="find(QString)">
         <remove/>
     </modify-function>
+    <modify-function signature="find(QString,QPixmap*)" remove="all" />
 
     <modify-function signature="find(QString,QPixmap&amp;)">
         <access modifier="private"/>
