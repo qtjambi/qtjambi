@@ -928,7 +928,10 @@
     <modify-function signature="operator=(QTextBoundaryFinder)" remove="all" />
   </value-type>
 
-  <value-type name="QEasingCurve" />
+  <value-type name="QEasingCurve">
+    <modify-function signature="customType()const" remove="all" />
+    <modify-function signature="setCustomType(double)" remove="all" />
+  </value-type>
 
   <object-type name="QAbstractAnimation" />
   <object-type name="QVariantAnimation" />
