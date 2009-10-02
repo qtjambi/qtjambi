@@ -813,6 +813,25 @@
     <modify-function signature="operator=(QTextBoundaryFinder)" remove="all" />
   </value-type>
 
+  <object-type name="QAbstractAnimation" />
+  <object-type name="QVariantAnimation" />
+  <object-type name="QAnimationGroup" />
+  <object-type name="QPauseAnimation" />
+  <object-type name="QParallelAnimationGroup" />
+  <object-type name="QSequentialAnimationGroup" />
+  <object-type name="QPropertyAnimation" />
+
+  <object-type name="QAbstractState" />
+  <object-type name="QAbstractTransition" />
+  <object-type name="QState" />
+  <object-type name="QStateMachine" />
+  <object-type name="QMouseEventTransition" />
+  <object-type name="QKeyEventTransition" />
+  <object-type name="QHistoryState" />
+  <object-type name="QSignalTransition" />
+  <object-type name="QEventTransition" />
+  <object-type name="QFinalState" />
+
   <object-type name="QXmlStreamEntityResolver" />
   <object-type name="QAbstractEventDispatcher"/>
   <object-type name="QEventLoop"/>
