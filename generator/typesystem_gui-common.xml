@@ -5,7 +5,8 @@
 
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
-  
+
+  <rejection class="QGenericMatrix" />  
   <rejection class="QPixmapFilterPrivate" />
   <rejection class="QPenPrivate" />
   <rejection class="QGtkStyle" />
@@ -825,7 +826,6 @@
   </value-type>
 
   <value-type name="QMatrix4x4" />
-  <value-type name="QGenericMatrix" />
   <value-type name="QMatrix">
       <extra-includes>
         <include file-name="QPainterPath" location="global"/>
