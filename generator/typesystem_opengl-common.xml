@@ -67,6 +67,7 @@
   </object-type>
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QGLFormat' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QGLFramebufferObjectFormat' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'QGLColormap::QGLColormapData\*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />

@@ -115,6 +115,14 @@
 
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebFrame::QWebFrame', unmatched parameter type 'QWebFrameData*'" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebSettings::QWebSettings', unmatched parameter type 'WebCore::Settings*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebPluginInfo::QWebPluginInfo', unmatched parameter type 'WebCore::PluginPackage*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebElement::enclosingElement', unmatched parameter type 'WebCore::Node*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebElement::QWebElement', unmatched parameter type 'WebCore::Node*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebElement::QWebElement', unmatched parameter type 'WebCore::Element*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping field 'QWebPluginFactory_Plugin::mimeTypes' with unmatched type 'QList&lt;MimeType&gt;'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QWebPluginInfo' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QWebPluginFactory_MimeType' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QWebElement' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
     <!-- Needed to avoid warnings on compilers that don't support webkit -->
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::Plugin' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />                            

@@ -162,6 +162,7 @@
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlItem::QXmlItem', unmatched parameter type 'QPatternist::Item const&amp;'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::sequencedTypedValue', unmatched return type 'QExplicitlySharedDataPointer&lt;QAbstractXmlForwardIterator&lt;QPatternist::Item&gt;&gt;"/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNamePool::QXmlNamePool', unmatched parameter type 'QPatternist::NamePool*'" />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QXmlNodeModelIndex::QXmlNodeModelIndex', unmatched parameter type 'QPatternist::NodeIndexStorage const&amp;'" />
 

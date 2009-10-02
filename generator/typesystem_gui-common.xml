@@ -5149,6 +5149,21 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QGradient' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFontMetricsF' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFormat' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />  
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QEasingCurve' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QGenericMatrix' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QMatrix4x4' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QMargins' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QPixmapCache_Key' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QVector4D' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QQuaternion' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QVector2D' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QVector3D' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'eventFilter(QObject * receiver, QEvent * event)' in 'QPanGesture'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'event(QEvent * event)' in 'QPanGesture'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'eventFilter(QObject * receiver, QEvent * event)' in 'QSwipeGesture'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'eventFilter(QObject * receiver, QEvent * event)' in 'QPinchGesture'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'event(QEvent * event)' in 'QPinchGesture'" />
   
   <!-- Intentional omissions. See explanation for QtJambiTextObjectInterface class in typesystem and headers. -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: class 'QTextObjectInterface' inherits from unknown base class 'QTextObjectInterface'" />

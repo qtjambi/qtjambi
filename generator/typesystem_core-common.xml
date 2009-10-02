@@ -1433,6 +1433,10 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QRegExp' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFutureVoid' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrl' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QProcessEnvironment' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::selectIteration', unmatched parameter type 'T'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QVariantAnimation::registerInterpolator', unmatched parameter type 'QVariantAnimation::Interpolator'" />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'Qt::Initialization'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
