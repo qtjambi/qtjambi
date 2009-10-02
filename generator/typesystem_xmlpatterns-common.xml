@@ -43,6 +43,8 @@
   <value-type name="QSourceLocation">
     <modify-function signature="operator=(QSourceLocation)" remove="all" />
   </value-type>
+ <value-type name="QXmlSchema" />
+ <value-type name="QXmlSchemaValidator" />
 
   <rejection class="QXmlFormatter" function-name="item" />
   <object-type name="QXmlFormatter">

@@ -503,6 +503,14 @@
     <reject-enum-value name="LastFontProperty"/>
   </enum-type>
 
+  <value-type name="QPixmapCache::Key" />
+  <value-type name="QTileRules" />
+  <value-type name="QVector2D" />
+  <value-type name="QVector3D" />
+  <value-type name="QVector4D" />
+  <value-type name="QTouchEvent::TouchPoint" />
+
+
   <value-type name="QTransform">
     <modify-function signature="operator=(QTransform)" remove="all"/>
     <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
@@ -806,6 +814,8 @@
     <modify-function signature="operator&lt;&lt;(QItemSelectionRange)" remove="all"/>
   </value-type>
 
+  <value-type name="QMatrix4x4" />
+  <value-type name="QGenericMatrix" />
   <value-type name="QMatrix">
       <extra-includes>
         <include file-name="QPainterPath" location="global"/>
@@ -1209,6 +1219,8 @@
   <value-type name="QPrinterInfo">
     <modify-function signature="operator=(const QPrinterInfo &amp;)" remove="all" />
   </value-type>
+
+  <value-type name="QMargins" />
 
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>
@@ -5084,7 +5096,29 @@
   <object-type name="QPictureFormatPlugin" />
   <object-type name="QStylePlugin" />
   <object-type name="QTextCodecPlugin" />
+  <object-type name="QGesture" />
+  <object-type name="QGraphicsAnchorLayout" />
+  <object-type name="QGraphicsAnchor" />
+  <object-type name="QGraphicsBloomEffect" />
+  <object-type name="QGraphicsBlurEffect" />
+  <object-type name="QGraphicsColorizeEffect" />
+  <object-type name="QGraphicsDropShadowEffect" />
+  <object-type name="QGraphicsEffect" />
+  <object-type name="QGraphicsEffectSource" />
+  <object-type name="QGraphicsGrayscaleEffect" />
+  <object-type name="QGraphicsObject" />
+  <object-type name="QGraphicsOpacityEffect" />
+  <object-type name="QGraphicsPixelizeEffect" />
+  <object-type name="QGraphicsRotation" />
+  <object-type name="QGraphicsScale" />
+  <object-type name="QGraphicsTransform" />
+  <object-type name="QPanGesture" />
+  <object-type name="QPinchGesture" />
+  <object-type name="QProxyStyle" />
+  <object-type name="QSwipeGesture" />
+  <object-type name="QTouchEvent" />
   
+
   <!-- Inefficient hash codes -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFrame_iterator' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextTableCell' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />

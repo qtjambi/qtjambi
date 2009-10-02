@@ -15,7 +15,7 @@
     <enum-type name="QWebPluginFactory::Extension" />
     
     
-    
+    <object-type name="QGraphicsWebView" />    
     <object-type name="QWebView">
         <modify-function signature="setPage(QWebPage*)">
             <modify-argument index="1">
@@ -78,6 +78,11 @@
     </object-type>
 
     <object-type name="QWebPluginFactory" />
+    <object-type name="QWebPluginDatabase" />
+    <object-type name="QWebInspector" />
+
+    <value-type name="QWebPluginInfo" />
+    <value-type name="QWebElement" />
     <value-type name="QWebPluginFactory::Plugin" />
     <value-type name="QWebPluginFactory::MimeType" />
     <value-type name="QWebSecurityOrigin">
@@ -98,6 +103,8 @@
     </value-type>
     <object-type name="QWebPluginFactory::ExtensionOption" />
     <object-type name="QWebPluginFactory::ExtensionReturn" />
+    <object-type name="QWebPage::ErrorPageExtensionOption" />
+    <object-type name="QWebPage::ErrorPageExtensionReturn" />
 
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebFrame::QWebFrame', unmatched parameter type 'QWebFrameData*'" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QWebSettings::QWebSettings', unmatched parameter type 'WebCore::Settings*'" />

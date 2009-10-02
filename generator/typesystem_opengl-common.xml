@@ -23,6 +23,10 @@
     <modify-function signature="operator=(QGLFormat)" remove="all"/>
   </value-type>
 
+  <value-type name="QGLFramebufferObjectFormat" />
+  <object-type name="QGLShader" />
+  <object-type name="QGLShaderProgram" />
+
   <object-type name="QGLContext">
 
     <modify-function signature="chooseContext(const QGLContext*)">
