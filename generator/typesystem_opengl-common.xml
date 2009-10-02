@@ -49,6 +49,8 @@
     <modify-function signature="setUniformValueArray(const char*, const QVector4D *, int)" rename="setUniformValueArray_QVector4D" />
     <modify-function signature="setUniformValue(int, GLuint)" remove="all" />
     <modify-function signature="setUniformValue(const char*, GLuint)" remove="all" />
+    <modify-function signature="setUniformValue(int, Array)" remove="all" />
+    <modify-function signature="setUniformValue(const char*, Array)" remove="all" />
   </object-type>
   <object-type name="QGLContext">
 
