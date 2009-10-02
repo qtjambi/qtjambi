@@ -286,6 +286,9 @@
   <rejection class="QUintForType"/>
   <rejection class="QtConcurrent::internal" />
   <rejection class="QByteArrayMatcher::Data" />
+  <rejection class="StringBuilder" />
+  <rejection class="QConcatenable" />
+  <rejection class="QLatin1Literal" />
 
   <rejection class="QLocale::Data" />
   <rejection class="QGlobalStaticDeleter" />
