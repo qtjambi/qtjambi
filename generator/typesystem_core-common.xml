@@ -34,6 +34,8 @@
   <rejection class="QtConcurrent" enum-name="enum_1" />
   <rejection class="QtConcurrent" function-name="operator|" />
 
+  <rejection class="Qt" enum-name="Modifier" />
+
   <rejection class="QSharedPointer" />
   <rejection class="QWeakPointer" />
   <rejection class="QFuture::const_iterator" />
@@ -442,7 +444,6 @@
     <reject-enum-value name="QtSystemMsg" />
   </enum-type>
 
-  <enum-type name="QXmlStreamReader::ReadElementTextBehaviour" />
 
   <enum-type name="QReadWriteLock::RecursionMode" />
   <enum-type name="QSystemSemaphore::AccessMode" />
@@ -524,7 +525,6 @@
   <enum-type name="Qt::KeyboardModifier" flags="Qt::KeyboardModifiers"/>
   <enum-type name="Qt::LayoutDirection"/>
   <enum-type name="Qt::MatchFlag" flags="Qt::MatchFlags"/>
-  <enum-type name="Qt::Modifier"/>
   <enum-type name="Qt::MouseButton" flags="Qt::MouseButtons"/>
   <enum-type name="Qt::Orientation" flags="Qt::Orientations"/>
   <enum-type name="Qt::PenCapStyle"/>
@@ -965,9 +965,8 @@
   </object-type>
 
   <object-type name="QIODevice"/>
-  <object-type name="QStateMachine::SignalEvent" />
-  <object-type name="QStateMachine::WrappedEvent" />
-
+  <object-type name="QStateMachine::SignalEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::Signal" />
+  <object-type name="QStateMachine::WrappedEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::Wrapped" />
 
   <object-type name="QCryptographicHash"/>
   <object-type name="QLibraryInfo"/>
@@ -1435,6 +1434,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFutureVoid' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrl' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'Qt::Initialization'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>

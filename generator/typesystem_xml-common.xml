@@ -8,6 +8,7 @@
     <enum-type name="QDomImplementation::InvalidDataPolicy" />
     <enum-type name="QXmlStreamReader::Error" />
     <enum-type name="QXmlStreamReader::TokenType" />
+    <enum-type name="QXmlStreamReader::ReadElementTextBehaviour" />
 
 
     <value-type name="QDomAttr">
