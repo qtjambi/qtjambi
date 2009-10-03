@@ -29,21 +29,7 @@
       <echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
     </target>
 
-    <condition property="ant-qtjambi.jar.uptodate">
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>
-            <uptodate targetfile="${outputDir}/ant-qtjambi.jar" >
-                <srcfiles dir= "${sourceDir}"
-                          includes="com/trolltech/tools/ant/*.java,com/trolltech/qt/internal/Version.java,com/trolltech/qt/internal/OSInfo.java"/>
-            </uptodate>
-        </and>
-    </condition>
-
-    <target name="init.ant"
-            unless="ant-qtjambi.jar.uptodate"
-            description="Creates a .jar file containing all the Qt Jambi ant tasks.">
+    <target name="init.ant" description="Creates a .jar file containing all the Qt Jambi ant tasks.">
         <mkdir dir="${outputDir}/ant-qtjambi"/>
         <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi" target="1.5" debug="true">
             <include name="com/trolltech/tools/ant/*.java"/>
