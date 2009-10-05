@@ -44,6 +44,7 @@
 
 #include "javautils.h"
 #include <QtCore/QHash>
+#include <cstdio>
 
 QString javaFixString(const QString &str)
 {

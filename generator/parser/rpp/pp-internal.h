@@ -46,6 +46,7 @@
 #ifndef PP_INTERNAL_H
 #define PP_INTERNAL_H
 
+#include <cstdio>
 #include <algorithm>
 
 namespace rpp {
