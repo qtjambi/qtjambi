@@ -78,6 +78,16 @@ public class MakeTask extends Task {
         if (silent && OSInfo.os() != OSInfo.OS.Windows)
             arguments += " -s";
 
+        try {
+            final String makeOptions = System.getenv("MAKEOPTS");
+            if (makeOptions != null)
+                arguments += " " + makeOptions;
+        } catch (SecurityException e) {
+            System.err.println("Cannot read system properties! Hope it's OK...");
+        } catch (NullPointerException e) {
+            // Cannot happen
+        }
+
         String command = compilerName() + arguments + " " + target;
         Util.exec(command, new File(dir));
     }
