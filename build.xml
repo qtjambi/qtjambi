@@ -634,6 +634,37 @@
         <xmlmerge victim="designer"/>
     </target>
 
+    <target name="generator.xmlmerge.check">
+        <uptodate property="common.xml.uptodate">
+            <srcfiles dir="${sourceDir}/generator">
+                <include name="typesystem_*-common.xml"/>
+            </srcfiles>
+            <mapper type="regexp" from="^typesystem_([^_-]+)-common\.xml$"
+                to="typesystem_\1.xml"/>
+        </uptodate>
+        <uptodate property="java.java.uptodate">
+            <srcfiles dir="${sourceDir}/generator">
+                <include name="typesystem_*-java.java"/>
+            </srcfiles>
+            <mapper type="regexp" from="^typesystem_([^_-]+)-java\.java$"
+                to="typesystem_\1.xml"/>
+        </uptodate>
+        <uptodate property="java.xml.uptodate">
+            <srcfiles dir="${sourceDir}/generator">
+                <include name="typesystem_*-java.xml"/>
+            </srcfiles>
+            <mapper type="regexp" from="^typesystem_([^_-]+)-java\.xml$"
+                to="typesystem_\1.xml"/>
+        </uptodate>
+        <condition property="generator.xmlmerge.done">
+            <and>
+                <isset property="common.xml.uptodate"/>
+                <isset property="java.java.uptodate"/>
+                <isset property="java.xml.uptodate"/>
+            </and>
+        </condition>
+    </target>
+
     <target name="generator.xmlmerge"
 	    depends="generator.xmlmerge.core, generator.xmlmerge.gui, generator.xmlmerge.network, generator.xmlmerge.svg, generator.xmlmerge.xml, generator.xmlmerge.xmlpatterns, generator.xmlmerge.opengl, generator.xmlmerge.sql, generator.xmlmerge.designer, generator.xmlmerge.webkit, generator.xmlmerge.phonon"
 	    description="Merges the XML files used by the Qt Jambi generator.">
