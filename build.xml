@@ -468,172 +468,6 @@
         </sequential>
     </macrodef>
 
-    <condition property="qtjambi.typesystem_core.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_core.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_core-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.core" unless="qtjambi.typesystem_core.uptodate">
-        <xmlmerge victim="core"/>
-    </target>
-
-    
-    <condition property="qtjambi.typesystem_gui.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_gui.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_gui-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-
-    <target name="generator.xmlmerge.gui" unless="qtjambi.typesystem_gui.uptodate">
-        <xmlmerge victim="gui"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_xml.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_xml.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_xml-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.xml" unless="qtjambi.typesystem_xml.uptodate">
-        <xmlmerge victim="xml"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_network.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_network.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_network-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.network" unless="qtjambi.typesystem_network.uptodate">
-        <xmlmerge victim="network"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_opengl.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_opengl.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_opengl-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.opengl" unless="qtjambi.typesystem_opengl.uptodate">
-        <xmlmerge victim="opengl"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_sql.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_sql.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_sql-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.sql" unless="qtjambi.typesystem_sql.uptodate">
-        <xmlmerge victim="sql"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_svg.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_svg.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_svg-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.svg" unless="qtjambi.typesystem_svg.uptodate">
-        <xmlmerge victim="svg"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_webkit.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_webkit.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_webkit-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.webkit" unless="qtjambi.typesystem_webkit.uptodate">
-        <xmlmerge victim="webkit"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_phonon.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_phonon.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_phonon-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.phonon" unless="qtjambi.typesystem_phonon.uptodate">
-        <xmlmerge victim="phonon"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_xmlpatterns.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_xmlpatterns.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_xmlpatterns-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.xmlpatterns" unless="qtjambi.typesystem_xmlpatterns.uptodate">
-        <xmlmerge victim="xmlpatterns"/>
-    </target>
-
-    <condition property="qtjambi.typesystem_designer.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>        
-            <uptodate targetfile="${outputDir}/generator/typesystem_designer.xml">
-              <srcfiles dir="${sourceDir}/generator" includes="typesystem_designer-*.*"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.xmlmerge.designer" unless="qtjambi.typesystem_designer.uptodate">
-        <xmlmerge victim="designer"/>
-    </target>
-
     <target name="generator.xmlmerge.check">
         <uptodate property="common.xml.uptodate">
             <srcfiles dir="${sourceDir}/generator">
@@ -665,9 +499,20 @@
         </condition>
     </target>
 
-    <target name="generator.xmlmerge"
-	    depends="generator.xmlmerge.core, generator.xmlmerge.gui, generator.xmlmerge.network, generator.xmlmerge.svg, generator.xmlmerge.xml, generator.xmlmerge.xmlpatterns, generator.xmlmerge.opengl, generator.xmlmerge.sql, generator.xmlmerge.designer, generator.xmlmerge.webkit, generator.xmlmerge.phonon"
-	    description="Merges the XML files used by the Qt Jambi generator.">
+    <target name="generator.xmlmerge" depends="generator.xmlmerge.check"
+        unless="generator.xmlmerge.done"
+        description="Merges the XML files used by the Qt Jambi generator.">
+        <xmlmerge victim="core"/>
+        <xmlmerge victim="gui"/>
+        <xmlmerge victim="xml"/>
+        <xmlmerge victim="network"/>
+        <xmlmerge victim="opengl"/>
+        <xmlmerge victim="sql"/>
+        <xmlmerge victim="svg"/>
+        <xmlmerge victim="webkit"/>
+        <xmlmerge victim="phonon"/>
+        <xmlmerge victim="xmlpatterns"/>
+        <xmlmerge victim="designer"/>
     </target>
 
     <target name="init"
