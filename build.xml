@@ -451,10 +451,23 @@
 
 
     <!-- 
-	 ************************************************************
-	 XML Merging for the generator... 
-	 ************************************************************
-      -->
+        ************************************************************
+        XML Merging for the generator...
+        ************************************************************
+    -->
+
+    <macrodef name="xmlmerge">
+        <attribute name="victim"/>
+        <sequential>
+            <xslt force="true" style="${sourceDir}/generator/merge.xsl"
+                in="${sourceDir}/generator/typesystem_@{victim}-common.xml"
+                out="${outputDir}/generator/typesystem_@{victim}.xml">
+                <param name="source"
+                    expression="typesystem_@{victim}-java.xml"/>
+            </xslt>
+        </sequential>
+    </macrodef>
+
     <condition property="qtjambi.typesystem_core.uptodate"> 
         <and>
             <not>
@@ -467,13 +480,7 @@
     </condition>
     
     <target name="generator.xmlmerge.core" unless="qtjambi.typesystem_core.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_core-common.xml"
-              out="${outputDir}/generator/typesystem_core.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_core-java.xml"/>
-        </xslt>
+        <xmlmerge victim="core"/>
     </target>
 
     
@@ -489,13 +496,7 @@
     </condition>
 
     <target name="generator.xmlmerge.gui" unless="qtjambi.typesystem_gui.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_gui-common.xml"
-              out="${outputDir}/generator/typesystem_gui.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_gui-java.xml"/>
-        </xslt>
+        <xmlmerge victim="gui"/>
     </target>
 
     <condition property="qtjambi.typesystem_xml.uptodate"> 
@@ -510,13 +511,7 @@
     </condition>
     
     <target name="generator.xmlmerge.xml" unless="qtjambi.typesystem_xml.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_xml-common.xml"
-              out="${outputDir}/generator/typesystem_xml.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_xml-java.xml"/>
-        </xslt>
+        <xmlmerge victim="xml"/>
     </target>
 
     <condition property="qtjambi.typesystem_network.uptodate"> 
@@ -531,13 +526,7 @@
     </condition>
     
     <target name="generator.xmlmerge.network" unless="qtjambi.typesystem_network.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_network-common.xml"
-              out="${outputDir}/generator/typesystem_network.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_network-java.xml"/>
-        </xslt>
+        <xmlmerge victim="network"/>
     </target>
 
     <condition property="qtjambi.typesystem_opengl.uptodate"> 
@@ -552,13 +541,7 @@
     </condition>
     
     <target name="generator.xmlmerge.opengl" unless="qtjambi.typesystem_opengl.uptodate">
-        <xslt in="generator/typesystem_opengl-common.xml"
-              out="${outputDir}/generator/typesystem_opengl.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_opengl-java.xml"/>
-        </xslt>
+        <xmlmerge victim="opengl"/>
     </target>
 
     <condition property="qtjambi.typesystem_sql.uptodate"> 
@@ -573,13 +556,7 @@
     </condition>
     
     <target name="generator.xmlmerge.sql" unless="qtjambi.typesystem_sql.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_sql-common.xml"
-              out="${outputDir}/generator/typesystem_sql.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_sql-java.xml"/>
-        </xslt>
+        <xmlmerge victim="sql"/>
     </target>
 
     <condition property="qtjambi.typesystem_svg.uptodate"> 
@@ -594,13 +571,7 @@
     </condition>
     
     <target name="generator.xmlmerge.svg" unless="qtjambi.typesystem_svg.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_svg-common.xml"
-              out="${outputDir}/generator/typesystem_svg.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_svg-java.xml"/>
-        </xslt>
+        <xmlmerge victim="svg"/>
     </target>
 
     <condition property="qtjambi.typesystem_webkit.uptodate"> 
@@ -615,13 +586,7 @@
     </condition>
     
     <target name="generator.xmlmerge.webkit" unless="qtjambi.typesystem_webkit.uptodate">
-         <xslt in="${sourceDir}/generator/typesystem_webkit-common.xml"
-              out="${outputDir}/generator/typesystem_webkit.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_webkit-java.xml"/>
-        </xslt>
+        <xmlmerge victim="webkit"/>
     </target>
 
     <condition property="qtjambi.typesystem_phonon.uptodate"> 
@@ -636,13 +601,7 @@
     </condition>
     
     <target name="generator.xmlmerge.phonon" unless="qtjambi.typesystem_phonon.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_phonon-common.xml"
-              out="${outputDir}/generator/typesystem_phonon.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_phonon-java.xml"/>
-        </xslt>
+        <xmlmerge victim="phonon"/>
     </target>
 
     <condition property="qtjambi.typesystem_xmlpatterns.uptodate"> 
@@ -657,13 +616,7 @@
     </condition>
     
     <target name="generator.xmlmerge.xmlpatterns" unless="qtjambi.typesystem_xmlpatterns.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_xmlpatterns-common.xml"
-              out="${outputDir}/generator/typesystem_xmlpatterns.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_xmlpatterns-java.xml"/>
-        </xslt>
+        <xmlmerge victim="xmlpatterns"/>
     </target>
 
     <condition property="qtjambi.typesystem_designer.uptodate"> 
@@ -678,15 +631,8 @@
     </condition>
     
     <target name="generator.xmlmerge.designer" unless="qtjambi.typesystem_designer.uptodate">
-        <xslt in="${sourceDir}/generator/typesystem_designer-common.xml"
-              out="${outputDir}/generator/typesystem_designer.xml"
-              style="${sourceDir}/generator/merge.xsl"
-              force="yes">
-            <param name="source"
-                   expression="typesystem_designer-java.xml"/>
-        </xslt>
+        <xmlmerge victim="designer"/>
     </target>
-
 
     <target name="generator.xmlmerge"
 	    depends="generator.xmlmerge.core, generator.xmlmerge.gui, generator.xmlmerge.network, generator.xmlmerge.svg, generator.xmlmerge.xml, generator.xmlmerge.xmlpatterns, generator.xmlmerge.opengl, generator.xmlmerge.sql, generator.xmlmerge.designer, generator.xmlmerge.webkit, generator.xmlmerge.phonon"
