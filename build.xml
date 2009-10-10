@@ -13,20 +13,21 @@
 	   
 
 
-    <target name="help"
-            description="Provides detailed help.">
-      <echo>To build Qt Jambi, run ant without parameters.</echo>
-      <echo></echo>
-      <echo>To get a description of all tasks run: ant -projecthelp</echo>
-      <echo/>
-      <echo>Available build properties:</echo>
-      <echo>    -Dqtjambi.config=debug|release    Decide what native libraries</echo>
-      <echo>                                      should be included.</echo>
-      <echo>    -Dqtjambi.useJumpTable=true       Use jump tables for native functions (experimental)</echo>
-      <echo>    -Dqtjambi.force=true              Skip up-to-date check and force all targets to build</echo>
-      <echo/>
-      <echo>You can also see the Qt Jambi intallation document at:</echo>
-      <echo>http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html</echo>
+    <target name="help" description="Provides detailed help.">
+        <echo>
+To build Qt Jambi, run ant without parameters.
+
+To get a description of all tasks run: ant -projecthelp
+
+Available build properties:
+    -Dqtjambi.config=debug|release    Decide what native libraries
+                                      should be included.
+    -Dqtjambi.useJumpTable=true       Use jump tables for native functions (experimental)
+    -Dqtjambi.force=true              Skip up-to-date check and force all targets to build
+
+You can also see the Qt Jambi intallation document at:
+http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
+        </echo>
     </target>
 
     <target name="init.ant" description="Creates a .jar file containing all the Qt Jambi ant tasks.">
