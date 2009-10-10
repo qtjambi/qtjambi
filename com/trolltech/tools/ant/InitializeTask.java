@@ -300,15 +300,23 @@ public class InitializeTask extends Task {
     private Compiler testForVisualStudio() {
         try {
             String output = Util.execute("cl.exe")[1];
-            if (output.contains("12.0")) return Compiler.MSVC1998;
-            else if (output.contains("13.00")) return Compiler.MSVC2002;
-            else if (output.contains("13.10")) return Compiler.MSVC2003;
-            else if (output.contains("14.00") && output.contains("x64")) return Compiler.MSVC2005_64;
-            else if (output.contains("14.00")) return Compiler.MSVC2005;
-            else if (output.contains("15.00") && output.contains("x64")) return Compiler.MSVC2008_64;
-            else if (output.contains("15.00")) return Compiler.MSVC2008;
-            else
-                throw new BuildException("Failed to detect Visual Studio version\n  \"" + output + "\"");
+            if (output.contains("12.0"))
+                return Compiler.MSVC1998;
+            if (output.contains("13.00"))
+                return Compiler.MSVC2002;
+            if (output.contains("13.10"))
+                return Compiler.MSVC2003;
+            if (output.contains("14.00")) {
+                if (output.contains("x64"))
+                    return Compiler.MSVC2005_64;
+                return Compiler.MSVC2005;
+            }
+            if (output.contains("15.00")) {
+                if (output.contains("x64"))
+                    return Compiler.MSVC2008_64;
+                return Compiler.MSVC2008;
+            }
+            throw new BuildException("Failed to detect Visual Studio version\n  \"" + output + "\"");
         } catch (InterruptedException ex) {
         } catch (IOException ex) {
         }
