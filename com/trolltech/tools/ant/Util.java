@@ -102,7 +102,7 @@ class Util {
         private InputStream in;
     }
 
-    public static void redirectOutput(Process proc, boolean silent) {
+    public static void redirectOutput(Process proc) {
         try {
             StreamConsumer std = new StreamConsumer(proc.getInputStream(), System.out);
             StreamConsumer err = new StreamConsumer(proc.getErrorStream(), System.err);
@@ -212,7 +212,7 @@ class Util {
         System.out.println("Running : " + ((dir!=null)? "(" + makeCanonical(dir) + ")" : "") + " " + command);
         try {
             Process process = Runtime.getRuntime().exec(command, null, dir);
-            Util.redirectOutput(process, true);
+            Util.redirectOutput(process);
             if (process.exitValue() != 0) {
                 throw new BuildException("Running: " + command + " failed with exit code: " + process.exitValue());
             }
@@ -241,7 +241,7 @@ class Util {
 
         try {
             Process process = Runtime.getRuntime().exec(cmd, null, dir);
-            Util.redirectOutput(process, true);
+            Util.redirectOutput(process);
             if (process.exitValue() != 0) {
                 throw new BuildException("Running: '" + join(cmd) + "' failed.");
             }
