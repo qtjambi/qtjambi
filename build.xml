@@ -436,16 +436,17 @@
       <touch file="${outputDir}/generator/.compile.timestamp"/>
     </target>
 
-    <target name="generator.run"
-            depends="init, generator.compile"
-            description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable."
-	    unless="qtjambi.generator_compile.uptodate">
-      <generator dir="${outputDir}/generator"
-                   outputDirectory="${outputDir}"
-                   typesystem="${sourceDir}/generator/build_all.txt"
-                   header="${sourceDir}/generator/qtjambi_masterinclude.h"
-           options="${qtjambi.generator.jumptable}"/>
-      <touch file="${outputDir}/generator/.run.timestamp"/>
+    <available file="${outputDir}/generator/.run.timestamp" type="file"
+        property="qtjambi.generator_run.uptodate"/>
+
+    <target name="generator.run" depends="init, generator.compile"
+        unless="qtjambi.generator_run.uptodate"
+        description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
+        <generator dir="${outputDir}/generator" outputDirectory="${outputDir}"
+            typesystem="${sourceDir}/generator/build_all.txt"
+            header="${sourceDir}/generator/qtjambi_masterinclude.h"
+            options="${qtjambi.generator.jumptable}"/>
+	<touch file="${outputDir}/generator/.run.timestamp"/>
     </target>
 
 
