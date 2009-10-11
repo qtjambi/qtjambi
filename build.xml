@@ -32,6 +32,22 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </echo>
     </target>
 
+    <target name="qtjambi.util.jar">
+        <mkdir dir="${java.outdir}/qtjambi-util"/>
+        <javac source="1.5" target="1.5" debug="true" deprecation="true"
+            srcdir="${java.srcdir}/qtjambi-util"
+            destdir="${java.outdir}/qtjambi-util"/>
+        <copy todir="${java.outdir}/qtjambi-util" includeemptydirs="false">
+            <fileset dir="${java.srcdir}/qtjambi-util">
+                <include name="**/*"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${jardir}"/>
+        <jar basedir="${java.outdir}/qtjambi-util"
+            destfile="${jardir}/qtjambi-util.jar"/>
+    </target>
+
     <target name="init.ant"
         description="Creates a .jar file containing all the Qt Jambi ant tasks.">
         <mkdir dir="${java.outdir}/ant-qtjambi"/>
