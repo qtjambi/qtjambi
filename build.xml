@@ -297,16 +297,15 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </and>
     </condition>
 
-    <target name="library.native.qmake"
-            depends="init"
-            description="Runs qmake on the Qt Jambi project."
+    <target name="library.native.qmake" depends="init, generator.run"
+        description="Runs qmake on the Qt Jambi project."
 	    unless="qtjambi.library.makefiles.uptodate">
-        <delete dir="${jambiLib}" />
-	<qmake recursive="true"
-               dir="${outputDir}"
-               pro="${sourceDir}/java.pro"
-               config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
-               debugTools="${qtjambi.debug-tools}"/>
+        <delete dir="${jambiLib}"/>
+        <qmake recursive="true"
+            dir="${outputDir}"
+            pro="${sourceDir}/java.pro"
+            config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
+            debugTools="${qtjambi.debug-tools}"/>
     </target>
 
     <target name="library.native.compile" depends="init, library.native.qmake"
