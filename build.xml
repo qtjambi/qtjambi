@@ -316,27 +316,14 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <touch file="${outputDir}/.compile.timestamp"/>
     </target>
 
-    <target name="library.designer.compile" 
-	    depends="init">
-        <javac destdir="${outputDir}" target="1.5" debug="true">
-            <src path="${outputDir}"/>
-            <src path="${sourceDir}"/>
-            <include name="com/trolltech/tools/designer/*.java"/>
-            <classpath refid="java.compile.classpath"/>
-        </javac>
+    <target name="library.designer.compile"
+        depends="init, library.java.compile">
+        <dojar component="qtjambi-designer"/>
     </target>
 
-    <target name="library.designer.bundle" 
-	    depends="library.designer.compile" 
-	    unless="qtjambi.library.cppfiles.uptodate">
-        <jar destfile="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"
-             basedir="${outputDir}">
-            <include name="com/trolltech/tools/designer/*"/>
-            <exclude name="com/trolltech/tools/designer/*.java"/>
-           <manifest>
-                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-            </manifest>
-        </jar>
+    <target name="library.designer.bundle" depends="library.designer.compile">
+        <copy file="${jardir}/qtjambi-designer.jar"
+            tofile="qtjambi-designer-${qtjambi.version}.jar"/>
     </target>
 
     <target name="library.native.bundle" depends="init"
