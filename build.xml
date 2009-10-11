@@ -28,11 +28,14 @@
     <macrodef name="dojar">
         <attribute name="component"/>
         <sequential>
+            <mkdir dir="${java.generated.srcdir}/@{component}"/>
             <mkdir dir="${java.outdir}/@{component}"/>
             <mkdir dir="${jardir}"/>
             <javac source="1.5" target="1.5" debug="true" deprecation="true"
-                srcdir="${java.srcdir}/@{component}"
+	            memorymaximumsize="1024m" fork="true"
                 destdir="${java.outdir}/@{component}">
+                <src path="${java.srcdir}/@{component}"/>
+                <src path="${java.generated.srcdir}/@{component}"/>
                 <classpath refid="java.compile.classpath"/>
             </javac>
             <copy todir="${java.outdir}/@{component}" includeemptydirs="false">
@@ -95,6 +98,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
     <target name="clean" description="Cleans everything.">
         <delete dir="${java.outdir}"/>
         <delete dir="${jardir}"/>
+        <delete dir="${java.generated.srcdir}"/>
       <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
