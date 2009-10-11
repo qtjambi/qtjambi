@@ -45,7 +45,11 @@
                 </fileset>
             </copy>
             <jar basedir="${java.outdir}/@{component}"
-                destfile="${jardir}/@{component}.jar"/>
+                destfile="${jardir}/@{component}.jar">
+                <manifest>
+                    <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+                </manifest>
+            </jar>
         </sequential>
     </macrodef>
 
