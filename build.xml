@@ -140,19 +140,18 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </and>
     </condition>
 
-    <target name="examples.juic"
-            depends="init"
-            description="Generates Java source files from JUI files created by designer."
-	    unless="examples.juicfiles.uptodate">
+    <target name="examples.juic" depends="init, library.native.compile"
+        description="Generates Java source files from JUI files created by designer."
+        unless="examples.juicfiles.uptodate">
         <juic message="Running Juic for all it is worth"
-          outputDir="${outputDir}"
-              trFunction=""
-              classNamePrefix=""
-              alwaysUpdate="true"
-          classpath="${sourceDir}">
-         <include name="com/**/**.jui"/>
+            outputDir="${outputDir}"
+            trFunction=""
+            classNamePrefix=""
+            alwaysUpdate="true"
+            classpath="${sourceDir}">
+            <include name="com/**/**.jui"/>
         </juic>
-	<touch file="${outputDir}/.juic.run"/>
+        <touch file="${outputDir}/.juic.run"/>
     </target>
 
     <target name="library.java.compile" depends="init, generator">
@@ -164,8 +163,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
             tofile="qtjambi-${qtjambi.version}.jar"/>
     </target>
 
-    <target name="examples.phonon"
-        depends="init"
+    <target name="examples.phonon" depends="init, library.java.compile"
         if="qtjambi.phonon">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -176,8 +174,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </javac>
     </target>
 
-    <target name="examples.webkit"
-        depends="init"
+    <target name="examples.webkit" depends="init, library.java.compile"
         if="qtjambi.webkit">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -188,8 +185,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </javac>
     </target>
 
-    <target name="examples.xmlpatterns"
-        depends="init"
+    <target name="examples.xmlpatterns" depends="init, library.java.compile"
         if="qtjambi.xmlpatterns">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
