@@ -52,28 +52,6 @@
         </sequential>
     </macrodef>
 
-    <target name="help" description="Provides detailed help.">
-        <echo>
-To build Qt Jambi, run ant without parameters. Run:
-
-Edit the build.properties file if you want to change the behaviour of the build system:
-
-* whether you want to build a release bundle or a debug bundle,
-* whether you want to use a native jump table (EXPERIMENTAL).
-
-You can use:
-
-ant -Dqtjambi.force=true
-
-to force the regeneration of all targets.
-
-To get a description of all tasks run: ant -projecthelp
-
-You can also see the Qt Jambi intallation document at:
-http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
-        </echo>
-    </target>
-
     <target name="qtjambi.util.jar">
         <dojar component="qtjambi-util"/>
     </target>
@@ -562,4 +540,27 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <fileset dir="${outputDir}" includes="**/Makefile*"/>
       </delete>
     </target>
+
+    <target name="help" description="Provides detailed help.">
+        <echo>
+To build Qt Jambi, run ant without parameters. Run:
+
+Edit the build.properties file if you want to change the behaviour of the build system:
+
+* whether you want to build a release bundle or a debug bundle,
+* whether you want to use a native jump table (EXPERIMENTAL).
+
+You can use:
+
+ant -Dqtjambi.force=true
+
+to force the regeneration of all targets.
+
+To get a description of all tasks run: ant -projecthelp
+
+You can also see the Qt Jambi intallation document at:
+http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
+        </echo>
+    </target>
+
 </project>
