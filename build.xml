@@ -20,6 +20,31 @@
         <fileset dir="${jardir}" includes="*.jar"/>
     </path>
 
+    <!--
+        Macro for compiling Java sources and generating jars.
+    -->
+
+    <macrodef name="dojar">
+        <attribute name="component"/>
+        <sequential>
+            <mkdir dir="${java.outdir}/@{component}"/>
+            <mkdir dir="${jardir}"/>
+            <javac source="1.5" target="1.5" debug="true" deprecation="true"
+                srcdir="${java.srcdir}/@{component}"
+                destdir="${java.outdir}/@{component}">
+                <classpath refid="java.compile.classpath"/>
+            </javac>
+            <copy todir="${java.outdir}/@{component}" includeemptydirs="false">
+                <fileset dir="${java.srcdir}/@{component}">
+                    <include name="**/*"/>
+                    <exclude name="**/*.java"/>
+                </fileset>
+            </copy>
+            <jar basedir="${java.outdir}/@{component}"
+                destfile="${jardir}/@{component}.jar"/>
+        </sequential>
+    </macrodef>
+
     <target name="help" description="Provides detailed help.">
         <echo>
 To build Qt Jambi, run ant without parameters.
@@ -38,40 +63,12 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
     </target>
 
     <target name="qtjambi.util.jar">
-        <mkdir dir="${java.outdir}/qtjambi-util"/>
-        <javac source="1.5" target="1.5" debug="true" deprecation="true"
-            srcdir="${java.srcdir}/qtjambi-util"
-            destdir="${java.outdir}/qtjambi-util">
-            <classpath refid="java.compile.classpath"/>
-        </javac>
-        <copy todir="${java.outdir}/qtjambi-util" includeemptydirs="false">
-            <fileset dir="${java.srcdir}/qtjambi-util">
-                <include name="**/*"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-        <mkdir dir="${jardir}"/>
-        <jar basedir="${java.outdir}/qtjambi-util"
-            destfile="${jardir}/qtjambi-util.jar"/>
+        <dojar component="qtjambi-util"/>
     </target>
 
     <target name="init.ant"
         description="Creates a .jar file containing all the Qt Jambi ant tasks.">
-        <mkdir dir="${java.outdir}/ant-qtjambi"/>
-        <javac source="1.5" target="1.5" debug="true" deprecation="true"
-            srcdir="${java.srcdir}/ant-qtjambi"
-            destdir="${java.outdir}/ant-qtjambi">
-            <classpath refid="java.compile.classpath"/>
-        </javac>
-        <copy todir="${java.outdir}/ant-qtjambi" includeemptydirs="false">
-            <fileset dir="${java.srcdir}/ant-qtjambi">
-                <include name="**/*"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-        <mkdir dir="${jardir}"/>
-        <jar basedir="${java.outdir}/ant-qtjambi"
-            destfile="${jardir}/ant-qtjambi.jar"/>
+        <dojar component="ant-qtjambi"/>
     </target>
 
     <target name="init.jumptable.do"
