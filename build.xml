@@ -104,6 +104,9 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <delete dir="${jardir}"/>
         <delete dir="${java.generated.srcdir}"/>
         <delete dir="${generator.outputdir}"/>
+        <delete>
+            <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
+        </delete>
       <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
