@@ -31,7 +31,7 @@
             <mkdir dir="${java.outdir}/@{component}"/>
             <mkdir dir="${jardir}"/>
             <javac source="1.5" target="1.5" debug="true" deprecation="true"
-	            memorymaximumsize="1024m" fork="true"
+                memorymaximumsize="1024m" fork="true"
                 destdir="${java.outdir}/@{component}">
                 <src path="${java.srcdir}/@{component}"/>
                 <src path="${java.generated.srcdir}/@{component}"/>
@@ -52,11 +52,26 @@
         </sequential>
     </macrodef>
 
-    <target name="qtjambi.util.jar">
+    <!--
+        Pure Java jar targets:
+
+        * qtjambi-util.jar contains classes necessary for both the build system
+          and the bundled libraries (TODO: remove the dependency on the bundled
+          libraries...);
+        * ant-qtjambi.jar contains the code for many ant tasks used along the
+          file (qmake, make, generator, juic...);
+        * qtjambi.jar is the core jar for Qt Jambi applications;
+        * qtjambi-designer.jar is the Java equivalent of Qt Designer.
+
+        Some of them, like jar.qtjambi, depend on other parts of this build
+        file.
+    -->
+
+    <target name="jar.qtjambi-util">
         <dojar component="qtjambi-util"/>
     </target>
 
-    <target name="init.ant" depends="qtjambi.util.jar"
+    <target name="jar.ant-qtjambi" depends="jar.qtjambi-util"
         description="Creates a .jar file containing all the Qt Jambi ant tasks.">
         <dojar component="ant-qtjambi"/>
         <!--
@@ -67,52 +82,33 @@
         <move file="${jardir}/ant-qtjambi.jar" todir="${jardir}/nobundle"/>
     </target>
 
-    <target name="init.taskdef" depends="init.ant">
-        <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
-            <classpath>
-                <pathelement path="${jardir}/qtjambi-util.jar"/>
-                <pathelement path="${jardir}/nobundle/ant-qtjambi.jar"/>
-            </classpath>
-        </taskdef>
-    </target>
-
-    <condition property="examples.juicfiles.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>
-            <uptodate targetfile=".juic.run">
-              <srcfiles dir="${outputDir}/com/trolltech/examples" includes="**/*.jui"/>
-              <srcfiles dir="${outputDir}/com/trolltech/launcher" includes="*.jui"/>
-              <srcfiles dir="${outputDir}/com/trolltech/demos" includes="**/*.jui"/>
-            </uptodate>
-        </and>
-    </condition>
-
-    <target name="examples.juic" depends="init, library.native.compile"
-        description="Generates Java source files from JUI files created by designer."
-        unless="examples.juicfiles.uptodate">
-        <juic message="Running Juic for all it is worth"
-            outputDir="${outputDir}"
-            trFunction=""
-            classNamePrefix=""
-            alwaysUpdate="true"
-            classpath="${sourceDir}">
-            <include name="com/**/**.jui"/>
-        </juic>
-        <touch file="${outputDir}/.juic.run"/>
-    </target>
-
-    <target name="library.java.compile" depends="init, generator">
+    <target name="jar.qtjambi" depends="init, generator">
         <dojar component="qtjambi"/>
     </target>
 
-    <target name="library.java.bundle" depends="library.java.compile">
+    <target name="jar.qtjambi-designer" depends="init, jar.qtjambi">
+        <dojar component="qtjambi-designer"/>
+    </target>
+
+    <!--
+        TODO: the following two targets must go away
+    -->
+
+    <target name="library.java.bundle" depends="jar.qtjambi">
         <copy file="${jardir}/qtjambi.jar"
             tofile="qtjambi-${qtjambi.version}.jar"/>
     </target>
 
-    <target name="examples.phonon" depends="init, library.java.compile"
+    <target name="library.designer.bundle" depends="jar.qtjambi-designer">
+        <copy file="${jardir}/qtjambi-designer.jar"
+            tofile="qtjambi-designer-${qtjambi.version}.jar"/>
+    </target>
+
+    <!--
+        TODO: there are also pure Java jar targets but these need a HUGE rework
+    -->
+
+    <target name="examples.phonon" depends="init, jar.qtjambi"
         if="qtjambi.phonon">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -123,7 +119,7 @@
         </javac>
     </target>
 
-    <target name="examples.webkit" depends="init, library.java.compile"
+    <target name="examples.webkit" depends="init, jar.qtjambi"
         if="qtjambi.webkit">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -134,7 +130,7 @@
         </javac>
     </target>
 
-    <target name="examples.xmlpatterns" depends="init, library.java.compile"
+    <target name="examples.xmlpatterns" depends="init, jar.qtjambi"
         if="qtjambi.xmlpatterns">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -197,6 +193,46 @@
         </jar>
     </target>
 
+    <!--
+        END of pure Java jar targets
+    -->
+
+    <target name="init.taskdef" depends="jar.ant-qtjambi">
+        <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
+            <classpath>
+                <pathelement path="${jardir}/qtjambi-util.jar"/>
+                <pathelement path="${jardir}/nobundle/ant-qtjambi.jar"/>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <condition property="examples.juicfiles.uptodate">
+        <and>
+            <not>
+                <isset property="qtjambi.force" />
+            </not>
+            <uptodate targetfile=".juic.run">
+              <srcfiles dir="${outputDir}/com/trolltech/examples" includes="**/*.jui"/>
+              <srcfiles dir="${outputDir}/com/trolltech/launcher" includes="*.jui"/>
+              <srcfiles dir="${outputDir}/com/trolltech/demos" includes="**/*.jui"/>
+            </uptodate>
+        </and>
+    </condition>
+
+    <target name="examples.juic" depends="init, library.native.compile"
+        description="Generates Java source files from JUI files created by designer."
+        unless="examples.juicfiles.uptodate">
+        <juic message="Running Juic for all it is worth"
+            outputDir="${outputDir}"
+            trFunction=""
+            classNamePrefix=""
+            alwaysUpdate="true"
+            classpath="${sourceDir}">
+            <include name="com/**/**.jui"/>
+        </juic>
+        <touch file="${outputDir}/.juic.run"/>
+    </target>
+
     <!-- 
 	 ************************************************************
 	 Library Compilation etc ...
@@ -232,16 +268,6 @@
     <target name="library.native.compile" depends="init, library.native.qmake"
         description="Compiles the C++ Qt Jambi library">
         <make dir="${outputDir}"/>
-    </target>
-
-    <target name="library.designer.compile"
-        depends="init, library.java.compile">
-        <dojar component="qtjambi-designer"/>
-    </target>
-
-    <target name="library.designer.bundle" depends="library.designer.compile">
-        <copy file="${jardir}/qtjambi-designer.jar"
-            tofile="qtjambi-designer-${qtjambi.version}.jar"/>
     </target>
 
     <target name="library.native.bundle" depends="init"
@@ -429,7 +455,7 @@
     </target>
 
     <target name="init"
-        depends="init.ant, init.taskdef"
+        depends="jar.ant-qtjambi, init.taskdef"
         description="Initializes the Qt Jambi build environment." >
       <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
     </target>
@@ -443,11 +469,11 @@
         description="Compiles and bundles the Qt Jambi native libraries."/>
 
     <target name="library.java"
-        depends="library.java.compile, library.java.bundle"
+        depends="jar.qtjambi, library.java.bundle"
         description="Compiles and bundles the Qt Jambi java libraries."/>
 
     <target name="library.designer"
-        depends="library.designer.compile, library.designer.bundle"
+        depends="jar.qtjambi-designer, library.designer.bundle"
         description="Compiles and bundles the Qt Jambi designer libraries."/>
 
     <target name="library"
