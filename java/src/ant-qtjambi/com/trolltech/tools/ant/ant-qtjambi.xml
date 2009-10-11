@@ -1,0 +1,12 @@
+<antlib>
+    <taskdef name="juic" classname="com.trolltech.tools.ant.JuicTask"/>
+    <taskdef name="qmake" classname="com.trolltech.tools.ant.QMakeTask"/>
+    <taskdef name="make" classname="com.trolltech.tools.ant.MakeTask"/>
+    <taskdef name="generator"
+        classname="com.trolltech.tools.ant.GeneratorTask"/>
+    <taskdef name="qtjambi-platform-jar"
+        classname="com.trolltech.tools.ant.PlatformJarTask"/>
+    <taskdef name="qtjambi-initialize"
+        classname="com.trolltech.tools.ant.InitializeTask"/>
+</antlib>
+
