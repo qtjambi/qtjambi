@@ -99,6 +99,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <delete dir="${java.outdir}"/>
         <delete dir="${jardir}"/>
         <delete dir="${java.generated.srcdir}"/>
+        <delete dir="${generator.outputdir}"/>
       <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
@@ -473,11 +474,48 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
     <target name="generator.run" depends="init, generator.compile"
         unless="qtjambi.generator_run.uptodate"
         description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
-        <generator dir="${outputDir}/generator" outputDirectory="${outputDir}"
+        <mkdir dir="${generator.outputdir}"/>
+        <generator dir="${outputDir}/generator"
+            outputDirectory="${generator.outputdir}"
             typesystem="${sourceDir}/generator/build_all.txt"
             header="${sourceDir}/generator/qtjambi_masterinclude.h"
             options="${qtjambi.generator.jumptable}"/>
-	<touch file="${outputDir}/generator/.run.timestamp"/>
+        <!--
+            Copy the cpp/ directory to the root.
+        -->
+        <copy todir="${outputDir}">
+            <fileset dir="${generator.outputdir}" includes="cpp/**/*"/>
+        </copy>
+        <!--
+            Copy the generated Java source files in
+            ${java.generated.srcdir}/@{component}, where component is qtjambi
+            or qtjambi-designer.
+
+            This, and probably the above, should probably be moved to their own
+            targets.
+        -->
+        <mkdir dir="${java.generated.srcdir}/qtjambi"/>
+        <copy todir="${outputDir}" includeemptydirs="false">
+            <fileset dir="${generator.outputdir}">
+                <include name="**/*"/>
+                <exclude name="cpp/**/*"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${java.generated.srcdir}/qtjambi-designer"/>
+        <copy todir="${java.generated.srcdir}/qtjambi"
+            includeemptydirs="false">
+            <fileset dir="${generator.outputdir}">
+                <include name="**/*"/>
+                <exclude name="com/trolltech/tools/designer/**"/>
+                <exclude name="cpp/**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${java.generated.srcdir}/qtjambi-designer"
+            includeemptydirs="false">
+            <fileset dir="${generator.outputdir}"
+                includes="com/trolltech/tools/designer/**"/>
+        </copy>
+        <touch file="${outputDir}/generator/.run.timestamp"/>
     </target>
 
 
