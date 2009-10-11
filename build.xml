@@ -326,7 +326,7 @@
             </uptodate>
         </and>
     </condition>
-    
+
     <target name="generator.qmake"
             depends="init, generator.xmlmerge"
             description="Runs qmake on the generator project." 
@@ -465,7 +465,30 @@
             description="Generates, builds and bundles the Qt Jambi libraries."
             depends="init, generator, library, examples" />
 
-    <target name="clean" description="Cleans everything.">
+    <available file="Makefile" type="file" property="global.makefile.present"/>
+    <available file="generator/Makefile" type="file"
+        property="generator.makefile.present"/>
+
+    <target name="make.clean.global" if="global.makefile.present"
+        depends="init.taskdef">
+        <make target="clean"/>
+        <delete file="Makefile"/>
+        <delete>
+            <fileset dir="." includes="**/Makefile*"
+                excludes="generator/Makefile*"/>
+        </delete>
+    </target>
+
+    <target name="make.clean.generator" if="generator.makefile.present"
+        depends="init.taskdef">
+        <make dir="generator" target="clean"/>
+        <delete>
+            <fileset dir="generator" includes="Makefile*"/>
+        </delete>
+    </target>
+
+    <target name="clean" description="Cleans everything"
+        depends="make.clean.global, make.clean.generator">
         <delete dir="${java.outdir}"/>
         <delete dir="${jardir}"/>
         <delete dir="${java.generated.srcdir}"/>
@@ -481,17 +504,6 @@
       <delete dir="${outputDir}/bin"/>
       <delete dir="${outputDir}/lib"/>
       <delete dir="${outputDir}/cpp"/>
-      <delete includeEmptyDirs="true">
-        <fileset dir="${outputDir}" includes="**/*.class"/>
-        <fileset dir="${outputDir}" includes="**/*.o"/>
-        <fileset dir="${outputDir}" includes="**/moc_*.cpp"/>
-        <fileset dir="${outputDir}" includes="**/*.obj"/>
-        <fileset dir="${outputDir}" includes="**/*.pdb"/>
-        <fileset dir="${outputDir}" includes="**/*.ilk"/>
-        <fileset dir="${outputDir}" includes="**/release"/>
-        <fileset dir="${outputDir}" includes="**/debug"/>
-        <fileset dir="${outputDir}" includes="**/Makefile*"/>
-      </delete>
     </target>
 
     <target name="help" description="Provides detailed help.">
