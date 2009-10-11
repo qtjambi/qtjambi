@@ -155,6 +155,10 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
 	<touch file="${outputDir}/.juic.run"/>
     </target>
 
+    <target name="library.java.compile.new" depends="init, generator">
+        <dojar component="qtjambi"/>
+    </target>
+
     <target name="library.java.compile" depends="init, generator">
       <javac memoryMaximumSize="1024m"
              fork="true"
