@@ -32,17 +32,21 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </echo>
     </target>
 
-    <target name="init.ant" description="Creates a .jar file containing all the Qt Jambi ant tasks.">
-        <mkdir dir="${outputDir}/ant-qtjambi"/>
-        <javac srcdir="${sourceDir}" destdir="${outputDir}/ant-qtjambi" target="1.5" debug="true">
-            <include name="com/trolltech/tools/ant/*.java"/>
-            <include name="com/trolltech/qt/internal/Version.java"/>
-            <include name="com/trolltech/qt/internal/OSInfo.java"/>
-        </javac>
-        <jar destfile="${outputDir}/ant-qtjambi.jar">
-            <fileset dir="${outputDir}/ant-qtjambi"/>
-        </jar>
-        <delete dir="${outputDir}/ant-qtjambi"/>
+    <target name="init.ant"
+        description="Creates a .jar file containing all the Qt Jambi ant tasks.">
+        <mkdir dir="${java.outdir}/ant-qtjambi"/>
+        <javac source="1.5" target="1.5" debug="true" deprecation="true"
+            srcdir="${java.srcdir}/ant-qtjambi"
+            destdir="${java.outdir}/ant-qtjambi"/>
+        <copy todir="${java.outdir}/ant-qtjambi" includeemptydirs="false">
+            <fileset dir="${java.srcdir}/ant-qtjambi">
+                <include name="**/*"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${jardir}"/>
+        <jar basedir="${java.outdir}/ant-qtjambi"
+            destfile="${jardir}/ant-qtjambi.jar"/>
     </target>
 
     <target name="init.jumptable.do"
@@ -58,14 +62,9 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
     </target>
 
     <target name="init.taskdef"
-            depends="init.ant, init.jumptable.do, init.jumptable.dont">
-        <taskdef name="juic"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.JuicTask"/>
-        <taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
-        <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
-        <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
-        <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
-        <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
-
+        depends="init.ant, init.jumptable.do, init.jumptable.dont">
+        <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml"
+            classpath="${jardir}/ant-qtjambi.jar"/>
     </target>
 
     <target name="clean" description="Cleans everything.">
