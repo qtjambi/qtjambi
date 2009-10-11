@@ -309,12 +309,11 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
                debugTools="${qtjambi.debug-tools}"/>
     </target>
 
-    <target name="library.native.compile"
-            depends="init"
-            description="Compiles the C++ Qt Jambi bindings."
-	    unless="qtjambi.library.cppfiles.uptodate">
-      <make dir="${outputDir}"/>
-      <touch file="${outputDir}/.compile.timestamp"/>
+    <target name="library.native.compile" depends="init, library.native.qmake"
+        description="Compiles the C++ Qt Jambi bindings."
+        unless="qtjambi.library.cppfiles.uptodate">
+        <make dir="${outputDir}"/>
+        <touch file="${outputDir}/.compile.timestamp"/>
     </target>
 
     <target name="library.designer.compile" 
@@ -340,10 +339,8 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </jar>
     </target>
 
-    <target name="library.native.bundle"
-            depends="init"
-            description="Creates a .jar file file containing native libraries."
-	    unless="qtjambi.library.cppfiles.uptodate">
+    <target name="library.native.bundle" depends="init"
+            description="Creates a .jar file file containing native libraries.">
 
         <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
                               outdir="${outputDir}/platform-output">
