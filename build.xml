@@ -172,6 +172,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/phonon/*.java"/>
             <include name="com/trolltech/examples/phonon/*.java"/>
+            <classpath refid="java.compile.classpath"/>
         </javac>
     </target>
 
@@ -183,6 +184,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/webkit/*.java"/>
             <include name="com/trolltech/examples/webkit/*.java"/>
+            <classpath refid="java.compile.classpath"/>
         </javac>
     </target>
 
@@ -194,6 +196,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
             <src path="${sourceDir}"/>
             <include name="com/trolltech/demos/xmlpatterns/*.java"/>
             <include name="com/trolltech/examples/xmlpatterns/*.java"/>
+            <classpath refid="java.compile.classpath"/>
         </javac>
     </target>
 
@@ -218,6 +221,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
             <exclude name="com/trolltech/examples/generator/*.java"/>
             <exclude name="com/trolltech/demos/HelloGL.java"/>
             <exclude name="com/trolltech/examples/GeneratorExample.java"/>
+            <classpath refid="java.compile.classpath"/>
         </javac>
 
         <copy todir="${outputDir}">
@@ -319,6 +323,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
             <src path="${outputDir}"/>
             <src path="${sourceDir}"/>
             <include name="com/trolltech/tools/designer/*.java"/>
+            <classpath refid="java.compile.classpath"/>
         </javac>
     </target>
 
