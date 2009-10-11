@@ -4,12 +4,14 @@
 
     <tstamp/>
 
-    <property name="sourceDir" value="." />
-    <property name="outputDir" value="." />
+    <property file="buildpath.properties"/>
 
-    <property name="jambiLib" value="${outputDir}/lib" />
+    <property name="sourceDir" value="."/>
+    <property name="outputDir" value="."/>
 
-    <mkdir dir="${outputDir}/cpp" />
+    <property name="jambiLib" value="${outputDir}/lib"/>
+
+    <mkdir dir="${outputDir}/cpp"/>
 	   
 
 
@@ -66,8 +68,9 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
 
     </target>
 
-    <target name="clean"
-            description="Cleans everything.">
+    <target name="clean" description="Cleans everything.">
+        <delete dir="${java.outdir}"/>
+        <delete dir="${jardir}"/>
       <delete file="${outputDir}/ant-qtjambi.jar"/>
       <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
