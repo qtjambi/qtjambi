@@ -218,30 +218,6 @@
         </and>
     </condition>
 
-    <condition property="qtjambi.library.cppfiles.uptodate"> 
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>
-            <uptodate targetfile="${outputDir}/.compile.timestamp">
-              <srcfiles dir="${outputDir}/cpp" includes="**/*.cpp"/>
-              <srcfiles dir="${outputDir}/cpp" includes="**/*.h"/>
-              <srcfiles dir="${outputDir}/qtjambi" includes="*.cpp"/>
-              <srcfiles dir="${outputDir}/qtjambi" includes="*.h"/>
-              <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.cpp"/>
-              <srcfiles dir="${outputDir}/qtjambi_core/" includes="*.h"/>
-              <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.cpp"/>
-              <srcfiles dir="${outputDir}/qtjambi_gui/" includes="*.h"/>
-              <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.cpp"/>
-              <srcfiles dir="${outputDir}/qtjambi_designer/" includes="*.h"/>
-              <srcfiles dir="${outputDir}/juic" includes="*.cpp"/>
-              <srcfiles dir="${outputDir}/juic" includes="*.h"/>
-              <srcfiles dir="${outputDir}/designer-integration" includes="**/*.cpp"/>
-              <srcfiles dir="${outputDir}/designer-integration" includes="**/*.h"/>
-            </uptodate>
-        </and>
-    </condition>
-
     <target name="library.native.qmake" depends="init, generator.run"
         description="Runs qmake on the Qt Jambi project."
 	    unless="qtjambi.library.makefiles.uptodate">
@@ -254,10 +230,8 @@
     </target>
 
     <target name="library.native.compile" depends="init, library.native.qmake"
-        description="Compiles the C++ Qt Jambi bindings."
-        unless="qtjambi.library.cppfiles.uptodate">
+        description="Compiles the C++ Qt Jambi library">
         <make dir="${outputDir}"/>
-        <touch file="${outputDir}/.compile.timestamp"/>
     </target>
 
     <target name="library.designer.compile"
@@ -364,28 +338,9 @@
              debugTools="${qtjambi.debug-tools}"/>
     </target>
 
-    <condition property="qtjambi.generator_compile.uptodate">
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>
-            <uptodate targetfile="${outputDir}/generator/.compile.timestamp">
-              <srcfiles dir="${sourceDir}/generator" includes="**/*.cpp"/>
-              <srcfiles dir="${sourceDir}/generator" includes="**/*.h"/>
-              <srcfiles dir="${sourceDir}/generator" includes="Makefile"/>
-              <srcfiles dir="${sourceDir}/generator" includes="*.qrc"/>
-              <srcfiles dir="${sourceDir}/generator" includes="*.txt"/>
-              <srcfiles dir="${sourceDir}/generator" includes="*.xml"/>
-            </uptodate>
-        </and>
-    </condition>
-    
-    <target name="generator.compile"
-            depends="init, generator.qmake"
-            description="Compiles the Qt Jambi generator."
-	    unless="qtjambi.generator_compile.uptodate">
-      <make dir="${outputDir}/generator" />
-      <touch file="${outputDir}/generator/.compile.timestamp"/>
+    <target name="generator.compile" depends="init, generator.qmake"
+        description="Compiles the Qt Jambi generator.">
+        <make dir="${outputDir}/generator"/>
     </target>
 
     <available file="${outputDir}/generator/.run.timestamp" type="file"
@@ -522,8 +477,6 @@
       <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar"/>
-      <delete file="${outputDir}/.compile.timestamp"/>
-      <delete file="${outputDir}/generator/.compile.timestamp"/>
       <delete file="${outputDir}/generator/.run.timestamp"/>
       <delete dir="${outputDir}/bin"/>
       <delete dir="${outputDir}/lib"/>
