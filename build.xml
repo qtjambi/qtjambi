@@ -511,39 +511,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </sequential>
     </macrodef>
 
-    <target name="generator.xmlmerge.check">
-        <uptodate property="common.xml.uptodate">
-            <srcfiles dir="${generator.xmlmerge.srcdir}">
-                <include name="typesystem_*-common.xml"/>
-            </srcfiles>
-            <mapper type="regexp" from="^typesystem_([^_-]+)-common\.xml$"
-                to="typesystem_\1.xml"/>
-        </uptodate>
-        <uptodate property="java.java.uptodate">
-            <srcfiles dir="${generator.xmlmerge.srcdir}">
-                <include name="typesystem_*-java.java"/>
-            </srcfiles>
-            <mapper type="regexp" from="^typesystem_([^_-]+)-java\.java$"
-                to="typesystem_\1.xml"/>
-        </uptodate>
-        <uptodate property="java.xml.uptodate">
-            <srcfiles dir="${generator.xmlmerge.srcdir}">
-                <include name="typesystem_*-java.xml"/>
-            </srcfiles>
-            <mapper type="regexp" from="^typesystem_([^_-]+)-java\.xml$"
-                to="typesystem_\1.xml"/>
-        </uptodate>
-        <condition property="generator.xmlmerge.done">
-            <and>
-                <isset property="common.xml.uptodate"/>
-                <isset property="java.java.uptodate"/>
-                <isset property="java.xml.uptodate"/>
-            </and>
-        </condition>
-    </target>
-
-    <target name="generator.xmlmerge" depends="generator.xmlmerge.check"
-        unless="generator.xmlmerge.done"
+    <target name="generator.xmlmerge"
         description="Merges the XML files used by the Qt Jambi generator.">
         <xmlmerge victim="core"/>
         <xmlmerge victim="gui"/>
