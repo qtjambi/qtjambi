@@ -66,7 +66,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <dojar component="qtjambi-util"/>
     </target>
 
-    <target name="init.ant"
+    <target name="init.ant" depends="qtjambi.util.jar"
         description="Creates a .jar file containing all the Qt Jambi ant tasks.">
         <dojar component="ant-qtjambi"/>
         <!--
@@ -102,7 +102,6 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
     <target name="clean" description="Cleans everything.">
         <delete dir="${java.outdir}"/>
         <delete dir="${jardir}"/>
-      <delete file="${outputDir}/ant-qtjambi.jar"/>
       <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
       <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
