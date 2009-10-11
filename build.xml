@@ -12,11 +12,10 @@
 
     <property name="jambiLib" value="${outputDir}/lib"/>
 
-    <mkdir dir="${outputDir}/cpp"/>
-
     <!--
         Classpath for Java compiling
     -->
+
     <path id="java.compile.classpath">
         <fileset dir="${jardir}" includes="*.jar"/>
     </path>
