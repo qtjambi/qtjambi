@@ -41,7 +41,9 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <mkdir dir="${java.outdir}/qtjambi-util"/>
         <javac source="1.5" target="1.5" debug="true" deprecation="true"
             srcdir="${java.srcdir}/qtjambi-util"
-            destdir="${java.outdir}/qtjambi-util"/>
+            destdir="${java.outdir}/qtjambi-util">
+            <classpath refid="java.compile.classpath"/>
+        </javac>
         <copy todir="${java.outdir}/qtjambi-util" includeemptydirs="false">
             <fileset dir="${java.srcdir}/qtjambi-util">
                 <include name="**/*"/>
@@ -58,7 +60,9 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <mkdir dir="${java.outdir}/ant-qtjambi"/>
         <javac source="1.5" target="1.5" debug="true" deprecation="true"
             srcdir="${java.srcdir}/ant-qtjambi"
-            destdir="${java.outdir}/ant-qtjambi"/>
+            destdir="${java.outdir}/ant-qtjambi">
+            <classpath refid="java.compile.classpath"/>
+        </javac>
         <copy todir="${java.outdir}/ant-qtjambi" includeemptydirs="false">
             <fileset dir="${java.srcdir}/ant-qtjambi">
                 <include name="**/*"/>
