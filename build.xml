@@ -601,7 +601,10 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
 
     <target name="library"
         depends="init, library.native, library.java, library.designer"
-        description="Compiles and bundles the Qt Jambi libraries."/>
+        description="Compiles and bundles the Qt Jambi libraries.">
+        <copy file="${jardir}/qtjambi-util.jar"
+            tofile="qtjambi-util-${qtjambi.version}.jar"/>
+    </target>
 
     <target name="examples"
         depends="init, examples.juic, examples.bundle"
