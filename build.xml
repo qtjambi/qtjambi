@@ -5,6 +5,7 @@
     <tstamp/>
 
     <property file="buildpath.properties"/>
+    <property file="build.properties"/>
 
     <property name="sourceDir" value="."/>
     <property name="outputDir" value="."/>
@@ -47,15 +48,20 @@
 
     <target name="help" description="Provides detailed help.">
         <echo>
-To build Qt Jambi, run ant without parameters.
+To build Qt Jambi, run ant without parameters. Run:
+
+Edit the build.properties file if you want to change the behaviour of the build system:
+
+* whether you want to build a release bundle or a debug bundle,
+* whether you want to use a native jump table (EXPERIMENTAL).
+
+You can use:
+
+ant -Dqtjambi.force=true
+
+to force the regeneration of all targets.
 
 To get a description of all tasks run: ant -projecthelp
-
-Available build properties:
-    -Dqtjambi.config=debug|release    Decide what native libraries
-                                      should be included.
-    -Dqtjambi.useJumpTable=true       Use jump tables for native functions (experimental)
-    -Dqtjambi.force=true              Skip up-to-date check and force all targets to build
 
 You can also see the Qt Jambi intallation document at:
 http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
@@ -77,20 +83,7 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         <move file="${jardir}/ant-qtjambi.jar" todir="${jardir}/nobundle"/>
     </target>
 
-    <target name="init.jumptable.do"
-        description="Initialize the jump table..." if="qtjambi.useJumpTable">
-      <echo>Using Native Jump Table. Please note that this feature is experimental...</echo>
-      <property name="qtjambi.config.jumptable" value="jumptable"/>
-      <property name="qtjambi.generator.jumptable" value="--native-jump-table"/>
-    </target>
-    <target name="init.jumptable.dont"
-        description="Initialize the jump table..." unless="qtjambi.useJumpTable">
-      <property name="qtjambi.config.jumptable" value=""/>
-      <property name="qtjambi.generator.jumptable" value=""/>
-    </target>
-
-    <target name="init.taskdef"
-        depends="init.ant, init.jumptable.do, init.jumptable.dont">
+    <target name="init.taskdef" depends="init.ant">
         <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
             <classpath>
                 <pathelement path="${jardir}/qtjambi-util.jar"/>
