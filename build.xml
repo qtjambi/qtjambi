@@ -123,8 +123,6 @@
                 unless="qtjambi.webkit"/>
             <exclude name="com/trolltech/demos/HelloGL.java"
                 unless="qtjambi.opengl"/>
-            <exclude name="com/trolltech/examples/generator/*.java"/>
-            <exclude name="com/trolltech/examples/GeneratorExample.java"/>
         </fileset>
     </path>
 
