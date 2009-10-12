@@ -145,6 +145,10 @@
             unless="qtjambi.opengl"/>
     </fileset>
 
+    <target name="jar.qtjambi-examples" depends="jar.qtjambi-designer">
+        <dojar component="qtjambi-examples"/>
+    </target>
+
     <!--
         TODO: there are also pure Java jar targets but these need a HUGE rework
     -->
