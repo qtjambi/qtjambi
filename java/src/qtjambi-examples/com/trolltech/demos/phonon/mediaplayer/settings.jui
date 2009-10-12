@@ -1,0 +1,251 @@
+<ui version="4.0" language="jambi" >
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox" >
+   <property name="geometry" >
+    <rect>
+     <x>30</x>
+     <y>240</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation" >
+    <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+   </property>
+   <property name="standardButtons" >
+    <set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel|com.trolltech.qt.gui.QDialogButtonBox.StandardButton.NoButton|com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="" >
+   <property name="geometry" >
+    <rect>
+     <x>20</x>
+     <y>21</y>
+     <width>361</width>
+     <height>136</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" >
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Audio device:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="deviceCombo" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label_2" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Cross fade:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" >
+        <item>
+         <widget class="QSlider" name="crossFadeSlider" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimum" >
+           <number>-20</number>
+          </property>
+          <property name="maximum" >
+           <number>20</number>
+          </property>
+          <property name="singleStep" >
+           <number>1</number>
+          </property>
+          <property name="pageStep" >
+           <number>2</number>
+          </property>
+          <property name="value" >
+           <number>0</number>
+          </property>
+          <property name="orientation" >
+           <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+          </property>
+          <property name="tickPosition" >
+           <enum>com.trolltech.qt.gui.QSlider.TickPosition.TicksBelow</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="label_3" >
+            <property name="font" >
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text" >
+             <string>-10 Sec</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_5" >
+            <property name="font" >
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text" >
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_4" >
+            <property name="font" >
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text" >
+             <string>10 Sec</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label_6" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Audio effect:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="audioEffectsCombo" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
