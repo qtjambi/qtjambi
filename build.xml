@@ -27,13 +27,22 @@
     <macrodef name="dojar">
         <attribute name="component"/>
         <sequential>
+            <!--
+                Unfortunately, the javac task (well, even the javac command for
+                that matter) does not support filesets, only dirsets. As we want
+                to exclude some files (see the java.src.examples fileset below)
+                from being compiled, we work around it by copying all source
+                files to ${java.generated.srcdir}.
+            -->
             <mkdir dir="${java.generated.srcdir}/@{component}"/>
+            <copy todir="${java.generated.srcdir}/@{component}">
+                <fileset refid="java.src.@{component}"/>
+            </copy>
             <mkdir dir="${java.outdir}/@{component}"/>
             <mkdir dir="${jardir}"/>
             <javac source="1.5" target="1.5" debug="true" deprecation="true"
                 memorymaximumsize="1024m" fork="true"
                 destdir="${java.outdir}/@{component}">
-                <src path="${java.srcdir}/@{component}"/>
                 <src path="${java.generated.srcdir}/@{component}"/>
                 <classpath refid="java.compile.classpath"/>
             </javac>
@@ -67,9 +76,15 @@
         file.
     -->
 
+    <fileset id="java.src.qtjambi-util" dir="${java.srcdir}/qtjambi-util"
+        includes="**/*.java"/>
+
     <target name="jar.qtjambi-util">
         <dojar component="qtjambi-util"/>
     </target>
+
+    <fileset id="java.src.ant-qtjambi" dir="${java.srcdir}/ant-qtjambi"
+        includes="**/*.java"/>
 
     <target name="jar.ant-qtjambi" depends="jar.qtjambi-util"
         description="Creates a .jar file containing all the Qt Jambi ant tasks.">
@@ -82,9 +97,16 @@
         <move file="${jardir}/ant-qtjambi.jar" todir="${jardir}/nobundle"/>
     </target>
 
+    <fileset id="java.src.qtjambi" dir="${java.srcdir}/qtjambi"
+        includes="**/*.java"/>
+
     <target name="jar.qtjambi" depends="init, generator">
         <dojar component="qtjambi"/>
     </target>
+
+    <fileset id="java.src.qtjambi-designer"
+        dir="${java.srcdir}/qtjambi-designer"
+        includes="**/*.java"/>
 
     <target name="jar.qtjambi-designer" depends="init, jar.qtjambi">
         <dojar component="qtjambi-designer"/>
