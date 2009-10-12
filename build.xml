@@ -557,7 +557,10 @@
         depends="init.taskdef">
         <make dir="generator" target="clean"/>
         <delete>
-            <fileset dir="generator" includes="Makefile*"/>
+            <fileset dir="generator">
+                <include name="Makefile*"/>
+                <include name="generator"/>
+            </fileset>
         </delete>
     </target>
 
