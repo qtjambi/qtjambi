@@ -100,7 +100,7 @@
     <fileset id="java.src.qtjambi" dir="${java.srcdir}/qtjambi"
         includes="**/*.java"/>
 
-    <target name="jar.qtjambi" depends="init, generator">
+    <target name="jar.qtjambi" depends="init, jar.qtjambi-util, generator">
         <dojar component="qtjambi"/>
     </target>
 
@@ -264,13 +264,26 @@
         description="Generates Java source files from JUI files created by designer."
         unless="examples.juicfiles.uptodate">
         <juic message="Running Juic for all it is worth"
-            outputDir="${outputDir}"
+            outputDir="${juic.outputdir}"
             trFunction=""
             classNamePrefix=""
             alwaysUpdate="true"
             classpath="${sourceDir}">
             <include name="com/**/**.jui"/>
         </juic>
+        <!--
+            The generated Java source files are necessary for the examples to
+            compile: copy them over.
+
+            Also copy them to the old location not to break existing targets.
+        -->
+        <mkdir dir="${java.generated.srcdir}/qtjambi-examples"/>
+        <copy todir="${java.generated.srcdir}/qtjambi-examples">
+            <fileset dir="${juic.outputdir}"/>
+        </copy>
+        <copy todir="${outputDir}">
+            <fileset dir="${juic.outputdir}"/>
+        </copy>
         <touch file="${outputDir}/.juic.run"/>
     </target>
 
