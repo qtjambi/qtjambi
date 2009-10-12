@@ -437,13 +437,6 @@
             targets.
         -->
         <mkdir dir="${java.generated.srcdir}/qtjambi"/>
-        <copy todir="${outputDir}" includeemptydirs="false">
-            <fileset dir="${generator.outputdir}">
-                <include name="**/*"/>
-                <exclude name="cpp/**/*"/>
-            </fileset>
-        </copy>
-        <mkdir dir="${java.generated.srcdir}/qtjambi-designer"/>
         <copy todir="${java.generated.srcdir}/qtjambi"
             includeemptydirs="false">
             <fileset dir="${generator.outputdir}">
@@ -452,6 +445,7 @@
                 <exclude name="cpp/**/*"/>
             </fileset>
         </copy>
+        <mkdir dir="${java.generated.srcdir}/qtjambi-designer"/>
         <copy todir="${java.generated.srcdir}/qtjambi-designer"
             includeemptydirs="false">
             <fileset dir="${generator.outputdir}"
