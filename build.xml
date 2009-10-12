@@ -104,27 +104,24 @@
             tofile="qtjambi-designer-${qtjambi.version}.jar"/>
     </target>
 
-    <path id="java.src.qtjambi-examples">
-        <fileset dir="${java.srcdir}/qtjambi-examples">
-            <include name="com/trolltech/demos/**/*.java"/>
-            <include name="com/trolltech/examples/**/*.java"/>
-            <include name="com/trolltech/launcher/*.java"/>
-            <exclude name="com/trolltech/demos/phonon/*.java"
-                unless="qtjambi.phonon"/>
-            <exclude name="com/trolltech/examples/phonon/*.java"
-                unless="qtjambi.phonon"/>
-            <exclude name="com/trolltech/demos/xmlpatterns/*.java"
-                unless="qtjambi.xmlpatterns"/>
-            <exclude name="com/trolltech/examples/xmlpatterns/*.java"
-                unless="qtjambi.xmlpatterns"/>
-            <exclude name="com/trolltech/demos/webkit/*.java"
-                unless="qtjambi.webkit"/>
-            <exclude name="com/trolltech/examples/webkit/*.java"
-                unless="qtjambi.webkit"/>
-            <exclude name="com/trolltech/demos/HelloGL.java"
-                unless="qtjambi.opengl"/>
-        </fileset>
-    </path>
+    <fileset id="java.src.qtjambi-examples"
+        dir="${java.srcdir}/qtjambi-examples">
+        <include name="**/*.java"/>
+        <exclude name="com/trolltech/demos/phonon/*.java"
+            unless="qtjambi.phonon"/>
+        <exclude name="com/trolltech/examples/phonon/*.java"
+            unless="qtjambi.phonon"/>
+        <exclude name="com/trolltech/demos/xmlpatterns/*.java"
+            unless="qtjambi.xmlpatterns"/>
+        <exclude name="com/trolltech/examples/xmlpatterns/*.java"
+            unless="qtjambi.xmlpatterns"/>
+        <exclude name="com/trolltech/demos/webkit/*.java"
+            unless="qtjambi.webkit"/>
+        <exclude name="com/trolltech/examples/webkit/*.java"
+            unless="qtjambi.webkit"/>
+        <exclude name="com/trolltech/demos/HelloGL.java"
+            unless="qtjambi.opengl"/>
+    </fileset>
 
     <!--
         TODO: there are also pure Java jar targets but these need a HUGE rework
