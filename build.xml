@@ -153,8 +153,14 @@
             unless="qtjambi.webkit"/>
         <exclude name="com/trolltech/examples/webkit/*.java"
             unless="qtjambi.webkit"/>
+        <exclude name="com/trolltech/demos/HelloGL.java"/>
+        <!--
+            Uncomment the following and delete the line above when OpenGL is
+            fixed...
+
         <exclude name="com/trolltech/demos/HelloGL.java"
             unless="qtjambi.opengl"/>
+        -->
     </fileset>
 
     <target name="jar.qtjambi-examples" depends="juic.run, jar.qtjambi-designer">
