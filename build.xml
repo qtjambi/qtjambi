@@ -73,6 +73,31 @@
         </sequential>
     </macrodef>
 
+    <target name="tools.juic.qmake" depends="init">
+        <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"/>
+    </target>
+
+    <target name="tools.juic.make" depends="tools.juic.qmake">
+        <make dir="juic"/>
+    </target>
+
+    <macrodef name="dojuic">
+        <attribute name="module"/>
+        <sequential>
+            <mkdir dir="${java.generated.srcdir}/@{module}"/>
+            <juic message="Running juic for @{module}..." alwaysupdate="true"
+                classnameprefix="" trfunction=""
+                classpath="${java.srcdir}/@{module}"
+                outputdir="${java.generated.srcdir}/@{module}">
+                <include name="**/*.jui"/>
+            </juic>
+        </sequential>
+    </macrodef>
+
+    <target name="jar.qtjambi-examples.juic" depends="init.taskdef">
+        <dojuic module="qtjambi-examples"/>
+    </target>
+
     <!--
         Pure Java jar targets:
 
