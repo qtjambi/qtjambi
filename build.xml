@@ -73,6 +73,15 @@
         </sequential>
     </macrodef>
 
+    <target name="tools.generator.qmake" depends="init, generator.xmlmerge">
+        <qmake dir="generator" pro="generator/generator.pro"
+		config="${qtjambi.configuration}"/>
+    </target>
+
+    <target name="tools.generator.make" depends="tools.generator.qmake">
+        <make dir="generator"/>
+    </target>
+
     <target name="tools.juic.qmake" depends="init">
         <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"/>
     </target>
