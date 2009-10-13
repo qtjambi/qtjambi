@@ -288,6 +288,7 @@
     <target name="juic.run" depends="init, library.native.compile"
         description="Generates Java source files from JUI files created by designer."
         unless="examples.juicfiles.uptodate">
+        <mkdir dir="${juic.outputdir}"/>
         <juic message="Running Juic for all it is worth"
             outputDir="${juic.outputdir}"
             trFunction=""
