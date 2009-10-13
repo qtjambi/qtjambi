@@ -21,6 +21,18 @@
     </path>
 
     <!--
+        Macro for creating a timestamp
+    -->
+
+    <macrodef name="dostamp">
+        <attribute name="stampfile"/>
+        <sequential>
+	    <mkdir dir="${timestamp.dir}"/>
+            <touch file="${timestamp.dir}/@{stampfile}"/>
+        </sequential>
+    </macrodef>
+
+    <!--
         Macro for compiling Java sources and generating jars.
     -->
 
@@ -574,6 +586,7 @@
         <delete dir="${jardir}"/>
         <delete dir="${java.generated.srcdir}"/>
         <delete dir="${generator.outputdir}"/>
+        <delete dir="${timestamp.dir}"/>
         <delete>
             <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
         </delete>
