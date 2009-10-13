@@ -268,10 +268,13 @@
             <not>
                 <isset property="qtjambi.force" />
             </not>
-            <uptodate targetfile=".juic.run">
-              <srcfiles dir="${outputDir}/com/trolltech/examples" includes="**/*.jui"/>
-              <srcfiles dir="${outputDir}/com/trolltech/launcher" includes="*.jui"/>
-              <srcfiles dir="${outputDir}/com/trolltech/demos" includes="**/*.jui"/>
+            <uptodate targetfile="${timestamp.dir}/juic.run">
+                <srcfiles dir="${outputDir}/com/trolltech/examples"
+                    includes="**/*.jui"/>
+                <srcfiles dir="${outputDir}/com/trolltech/launcher"
+                    includes="*.jui"/>
+                <srcfiles dir="${outputDir}/com/trolltech/demos"
+                    includes="**/*.jui"/>
             </uptodate>
         </and>
     </condition>
@@ -300,7 +303,7 @@
         <copy todir="${outputDir}">
             <fileset dir="${juic.outputdir}"/>
         </copy>
-        <touch file="${outputDir}/.juic.run"/>
+        <dostamp stampfile="juic.run"/>
     </target>
 
     <!-- 
@@ -439,7 +442,7 @@
         <make dir="${outputDir}/generator"/>
     </target>
 
-    <available file="${outputDir}/generator/.run.timestamp" type="file"
+    <available file="${timestamp.dir}/generator.run" type="file"
         property="qtjambi.generator_run.uptodate"/>
 
     <target name="generator.run" depends="init, generator.compile"
@@ -480,7 +483,7 @@
             <fileset dir="${generator.outputdir}"
                 includes="com/trolltech/tools/designer/**"/>
         </copy>
-        <touch file="${outputDir}/generator/.run.timestamp"/>
+        <dostamp stampfile="generator.run"/>
     </target>
 
 
