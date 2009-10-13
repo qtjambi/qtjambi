@@ -157,7 +157,7 @@
             unless="qtjambi.opengl"/>
     </fileset>
 
-    <target name="jar.qtjambi-examples" depends="jar.qtjambi-designer">
+    <target name="jar.qtjambi-examples" depends="juic.run, jar.qtjambi-designer">
         <dojar component="qtjambi-examples"/>
     </target>
 
@@ -165,7 +165,7 @@
         TODO: there are also pure Java jar targets but these need a HUGE rework
     -->
 
-    <target name="examples.phonon" depends="init, jar.qtjambi"
+    <target name="examples.phonon" depends="init, juic.run, jar.qtjambi"
         if="qtjambi.phonon">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -176,7 +176,7 @@
         </javac>
     </target>
 
-    <target name="examples.webkit" depends="init, jar.qtjambi"
+    <target name="examples.webkit" depends="init, juic.run, jar.qtjambi"
         if="qtjambi.webkit">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -187,7 +187,7 @@
         </javac>
     </target>
 
-    <target name="examples.xmlpatterns" depends="init, jar.qtjambi"
+    <target name="examples.xmlpatterns" depends="init, juic.run, jar.qtjambi"
         if="qtjambi.xmlpatterns">
         <javac destdir="${outputDir}" target="1.5" debug="true">
             <src path="${outputDir}"/>
@@ -279,7 +279,7 @@
         </and>
     </condition>
 
-    <target name="examples.juic" depends="init, library.native.compile"
+    <target name="juic.run" depends="init, library.native.compile"
         description="Generates Java source files from JUI files created by designer."
         unless="examples.juicfiles.uptodate">
         <juic message="Running Juic for all it is worth"
@@ -551,7 +551,7 @@
     </target>
 
     <target name="examples"
-        depends="init, examples.juic, examples.bundle"
+        depends="init, juic.run, examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>
 
     <target name="all"
