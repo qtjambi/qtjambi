@@ -103,7 +103,7 @@
         </sequential>
     </macrodef>
 
-    <target name="jar.qtjambi-examples.juic" depends="init.taskdef">
+    <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
         <dojuic module="qtjambi-examples"/>
     </target>
 
@@ -197,97 +197,14 @@
         -->
     </fileset>
 
-    <target name="jar.qtjambi-examples" depends="juic.run, jar.qtjambi-designer">
+    <target name="jar.qtjambi-examples"
+        depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
         <dojar component="qtjambi-examples"/>
     </target>
 
-    <!--
-        TODO: there are also pure Java jar targets but these need a HUGE rework
-    -->
-
-    <target name="examples.phonon" depends="init, juic.run, jar.qtjambi"
-        if="qtjambi.phonon">
-        <javac destdir="${outputDir}" target="1.5" debug="true">
-            <src path="${outputDir}"/>
-            <src path="${sourceDir}"/>
-            <include name="com/trolltech/demos/phonon/*.java"/>
-            <include name="com/trolltech/examples/phonon/*.java"/>
-            <classpath refid="java.compile.classpath"/>
-        </javac>
-    </target>
-
-    <target name="examples.webkit" depends="init, juic.run, jar.qtjambi"
-        if="qtjambi.webkit">
-        <javac destdir="${outputDir}" target="1.5" debug="true">
-            <src path="${outputDir}"/>
-            <src path="${sourceDir}"/>
-            <include name="com/trolltech/demos/webkit/*.java"/>
-            <include name="com/trolltech/examples/webkit/*.java"/>
-            <classpath refid="java.compile.classpath"/>
-        </javac>
-    </target>
-
-    <target name="examples.xmlpatterns" depends="init, juic.run, jar.qtjambi"
-        if="qtjambi.xmlpatterns">
-        <javac destdir="${outputDir}" target="1.5" debug="true">
-            <src path="${outputDir}"/>
-            <src path="${sourceDir}"/>
-            <include name="com/trolltech/demos/xmlpatterns/*.java"/>
-            <include name="com/trolltech/examples/xmlpatterns/*.java"/>
-            <classpath refid="java.compile.classpath"/>
-        </javac>
-    </target>
-
-    <target name="examples.compile"
-            depends="init, examples.phonon, examples.webkit, examples.xmlpatterns">
-        <javac destdir="${outputDir}"
-           debug="true"
-           fork="true"
-           memoryMaximumSize="1024m"
-           target="1.5">
-            <src path="${outputDir}"/>
-            <src path="${sourceDir}"/>
-            <include name="com/trolltech/demos/**/*.java"/>
-            <include name="com/trolltech/examples/**/*.java"/>
-            <include name="com/trolltech/launcher/*.java"/>
-            <exclude name="com/trolltech/demos/phonon/*.java"/>
-            <exclude name="com/trolltech/demos/xmlpatterns/*.java"/>
-            <exclude name="com/trolltech/demos/webkit/*.java"/>
-            <exclude name="com/trolltech/examples/phonon/*.java"/>
-            <exclude name="com/trolltech/examples/xmlpatterns/*.java"/>
-            <exclude name="com/trolltech/examples/webkit/*.java"/>
-            <exclude name="com/trolltech/examples/generator/*.java"/>
-            <exclude name="com/trolltech/demos/HelloGL.java"/>
-            <exclude name="com/trolltech/examples/GeneratorExample.java"/>
-            <classpath refid="java.compile.classpath"/>
-        </javac>
-
-        <copy todir="${outputDir}">
-            <fileset dir="${sourceDir}">
-                <include name="com/trolltech/examples/**/*"/>
-                <include name="com/trolltech/demos/**/*"/>
-                <include name="com/trolltech/launcher/*"/>
-                <include name="com/trolltech/images/**/*"/>
-                <exclude name="com/trolltech/**/*.java"/>
-                <exclude name="com/trolltech/**/*.jui"/>
-            </fileset>
-        </copy>
-    </target>
-
-
-    <target name="examples.bundle"
-        depends="examples.compile">
-      <jar destfile="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"
-             basedir="${outputDir}/">
-            <include name="com/trolltech/examples/**/*"/>
-            <include name="com/trolltech/demos/**/*"/>
-            <include name="com/trolltech/launcher/*"/>
-            <include name="com/trolltech/images/**/*"/>
-            <exclude name="com/trolltech/**/*.jui"/>
-            <manifest>
-                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-            </manifest>
-        </jar>
+    <target name="examples.bundle" depends="jar.qtjambi-examples">
+        <copy file="${jardir}/qtjambi-examples.jar"
+            tofile="qtjambi-examples-${qtjambi.version}.jar"/>
     </target>
 
     <!--
@@ -303,55 +220,11 @@
         </taskdef>
     </target>
 
-    <condition property="examples.juicfiles.uptodate">
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>
-            <uptodate targetfile="${timestamp.dir}/juic.run">
-                <srcfiles dir="${outputDir}/com/trolltech/examples"
-                    includes="**/*.jui"/>
-                <srcfiles dir="${outputDir}/com/trolltech/launcher"
-                    includes="*.jui"/>
-                <srcfiles dir="${outputDir}/com/trolltech/demos"
-                    includes="**/*.jui"/>
-            </uptodate>
-        </and>
-    </condition>
-
-    <target name="juic.run" depends="init, library.native.compile"
-        description="Generates Java source files from JUI files created by designer."
-        unless="examples.juicfiles.uptodate">
-        <mkdir dir="${juic.outputdir}"/>
-        <juic message="Running Juic for all it is worth"
-            outputDir="${juic.outputdir}"
-            trFunction=""
-            classNamePrefix=""
-            alwaysUpdate="true"
-            classpath="${sourceDir}">
-            <include name="com/**/**.jui"/>
-        </juic>
-        <!--
-            The generated Java source files are necessary for the examples to
-            compile: copy them over.
-
-            Also copy them to the old location not to break existing targets.
-        -->
-        <mkdir dir="${java.generated.srcdir}/qtjambi-examples"/>
-        <copy todir="${java.generated.srcdir}/qtjambi-examples">
-            <fileset dir="${juic.outputdir}"/>
-        </copy>
-        <copy todir="${outputDir}">
-            <fileset dir="${juic.outputdir}"/>
-        </copy>
-        <dostamp stampfile="juic.run"/>
-    </target>
-
     <!-- 
-	 ************************************************************
-	 Library Compilation etc ...
-	 ************************************************************
-      -->
+        ************************************************************
+        Library Compilation etc ...
+        ************************************************************
+    -->
 
     <condition property="qtjambi.library.makefiles.uptodate">
         <and>
@@ -592,7 +465,7 @@
     </target>
 
     <target name="examples"
-        depends="init, juic.run, examples.bundle"
+        depends="init, examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>
 
     <target name="all"
