@@ -469,6 +469,8 @@
             depends="init, generator, library, examples" />
 
     <available file="Makefile" type="file" property="global.makefile.present"/>
+    <available file="juic/Makefile" type="file"
+        property="juic.makefile.present"/>
     <available file="generator/Makefile" type="file"
         property="generator.makefile.present"/>
 
@@ -477,8 +479,22 @@
         <make target="clean"/>
         <delete file="Makefile"/>
         <delete>
-            <fileset dir="." includes="**/Makefile*"
-                excludes="generator/Makefile*"/>
+            <fileset dir=".">
+                <include name="**/Makefile*"/>
+                <exclude name="juic/Makefile*"/>
+                <exclude name="generator/Makefile*"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="make.clean.juic" if="juic.makefile.present"
+        depends="init.taskdef">
+        <make dir="juic" target="clean"/>
+        <delete>
+            <fileset dir="juic">
+                <include name="Makefile*"/>
+                <include name="juic"/>
+            </fileset>
         </delete>
     </target>
 
@@ -494,7 +510,7 @@
     </target>
 
     <target name="clean" description="Cleans everything"
-        depends="make.clean.global, make.clean.generator">
+        depends="make.clean.global, make.clean.generator, make.clean.juic">
         <delete dir="${java.outdir}"/>
         <delete dir="${jardir}"/>
         <delete dir="${java.generated.srcdir}"/>
