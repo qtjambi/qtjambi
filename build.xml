@@ -10,8 +10,6 @@
     <property name="sourceDir" value="."/>
     <property name="outputDir" value="."/>
 
-    <property name="jambiLib" value="${outputDir}/lib"/>
-
     <!--
         Classpath for Java compiling
     -->
@@ -240,7 +238,7 @@
     <target name="library.native.qmake" depends="init, generator.run"
         description="Runs qmake on the Qt Jambi project."
 	    unless="qtjambi.library.makefiles.uptodate">
-        <delete dir="${jambiLib}"/>
+        <delete dir="lib"/>
         <qmake recursive="true"
             dir="${outputDir}"
             pro="${sourceDir}/java.pro"
