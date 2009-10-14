@@ -62,7 +62,11 @@
                     <exclude name="**/*.java"/>
                 </fileset>
             </copy>
-            <jar basedir="${java.outdir}/@{component}"
+            <!--
+                We also want to exclude juic files in the jar: get rid of them
+                here.
+            -->
+            <jar basedir="${java.outdir}/@{component}" excludes="**/*.jui"
                 destfile="${jardir}/@{component}.jar">
                 <manifest>
                     <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
