@@ -25,7 +25,7 @@
     <macrodef name="dostamp">
         <attribute name="stampfile"/>
         <sequential>
-	    <mkdir dir="${timestamp.dir}"/>
+        <mkdir dir="${timestamp.dir}"/>
             <touch file="${timestamp.dir}/@{stampfile}"/>
         </sequential>
     </macrodef>
@@ -77,7 +77,7 @@
 
     <target name="tools.generator.qmake" depends="init, generator.xmlmerge">
         <qmake dir="generator" pro="generator/generator.pro"
-		config="${qtjambi.configuration}"/>
+        config="${qtjambi.configuration}"/>
     </target>
 
     <target name="tools.generator.make" depends="tools.generator.qmake">
@@ -236,7 +236,7 @@
 
     <target name="library.native.qmake" depends="init, generator.run"
         description="Runs qmake on the Qt Jambi project."
-	    unless="qtjambi.library.makefiles.uptodate">
+        unless="qtjambi.library.makefiles.uptodate">
         <delete dir="lib"/>
         <qmake recursive="true"
             dir="${outputDir}"
@@ -257,20 +257,20 @@
                               outdir="${outputDir}/platform-output">
 
             <!-- Qt Libraries... -->
-            <library name="QtCore"    type="qt" rootPath="${qtjambi.qtdir}" />
-            <library name="QtGui"     type="qt" rootPath="${qtjambi.qtdir}" />
-            <library name="QtXml"     type="qt" rootPath="${qtjambi.qtdir}" />
-            <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}" />
-            <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" load="yes" />
-            <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtCore"    type="qt" rootPath="${qtjambi.qtdir}"/>
+            <library name="QtGui"     type="qt" rootPath="${qtjambi.qtdir}"/>
+            <library name="QtXml"     type="qt" rootPath="${qtjambi.qtdir}"/>
+            <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}"/>
+            <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" load="yes"/>
+            <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.opengl}"/>
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
             <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
             <library name="QtDBus"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.dbus}"/>
-            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}" />
-            <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}" />
-            <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}" />
+            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}"/>
+            <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}"/>
+            <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}"/>
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -279,32 +279,32 @@
             <library name="qtiff" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
             <library name="qsvg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
             <library name="qsvgicon" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/iconengines" load="never"/>
-            <library name="qcncodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
-            <library name="qjpcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
-            <library name="qkrcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
-            <library name="qtwcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
+            <library name="qcncodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
+            <library name="qjpcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
+            <library name="qkrcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
+            <library name="qtwcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
             <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/accessible" load="never"/>
-            <library name="qsqlite" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/sqldrivers" load="never" if="${qtjambi.sqlite}" />
+            <library name="qsqlite" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/sqldrivers" load="never" if="${qtjambi.sqlite}"/>
 
             <!-- Qt Jambi Libraries -->
-            <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}" />
-            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${outputDir}" />
-            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${outputDir}" />
-            <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="${outputDir}" />
-            <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}" />
-            <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}" />
-            <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}" />
-            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}" />
+            <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_phonon"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.phonon}"/>
             <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.webkit}"/>
             <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.xmlpatterns}"/>
 
-        <plugin path="plugins" />
+        <plugin path="plugins"/>
 
         </qtjambi-platform-jar>
 
         <jar destfile="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
-            <fileset dir="${outputDir}/platform-output" />
+            <fileset dir="${outputDir}/platform-output"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
@@ -402,7 +402,7 @@
 
     <target name="init" depends="init.taskdef"
         description="Initializes the Qt Jambi build environment." >
-        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
+        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
     </target>
 
     <target name="generator" depends="generator.run"
