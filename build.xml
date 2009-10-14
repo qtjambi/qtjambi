@@ -250,12 +250,12 @@
             debugTools="${qtjambi.debug-tools}"/>
     </target>
 
-    <target name="library.native.compile" depends="init, library.native.qmake"
+    <target name="library.native.compile" depends="library.native.qmake"
         description="Compiles the C++ Qt Jambi library">
         <make dir="${outputDir}"/>
     </target>
 
-    <target name="library.native.bundle" depends="init"
+    <target name="library.native.bundle" depends="library.native.compile"
             description="Creates a .jar file file containing native libraries.">
 
         <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
@@ -413,32 +413,30 @@
     <target name="generator" depends="generator.run"
         description="Compiles and runs the Qt Jambi Generator."/>
 
-    <target name="library.native"
-        depends="library.native.qmake, library.native.compile, library.native.bundle"
+    <target name="library.native" depends="library.native.bundle"
         description="Compiles and bundles the Qt Jambi native libraries."/>
 
-    <target name="library.java"
-        depends="jar.qtjambi, library.java.bundle"
+    <target name="library.java" depends="library.java.bundle"
         description="Compiles and bundles the Qt Jambi java libraries."/>
 
-    <target name="library.designer"
-        depends="jar.qtjambi-designer, library.designer.bundle"
+    <target name="library.designer" depends="library.designer.bundle"
         description="Compiles and bundles the Qt Jambi designer libraries."/>
 
-    <target name="library"
-        depends="init, library.native, library.java, library.designer"
+    <target name="library" depends="library.native, library.java, library.designer"
         description="Compiles and bundles the Qt Jambi libraries.">
         <copy file="${jardir}/qtjambi-util.jar"
             tofile="qtjambi-util-${qtjambi.version}.jar"/>
     </target>
 
-    <target name="examples"
-        depends="init, examples.bundle"
+    <target name="examples" depends="examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>
 
-    <target name="all"
-            description="Generates, builds and bundles the Qt Jambi libraries."
-            depends="init, generator, library, examples" />
+    <target name="all" depends="generator, library, examples"
+        description="Generates, builds and bundles the Qt Jambi libraries."/>
+
+    <!--
+        CLEAN TARGETS
+    -->
 
     <available file="Makefile" type="file" property="global.makefile.present"/>
     <available file="juic/Makefile" type="file"
