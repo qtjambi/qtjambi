@@ -321,43 +321,15 @@
 
 
     <!-- 
-	 ************************************************************
-	 Building and running the Generator...
-	 ************************************************************
-      -->
-    <condition property="qtjambi.generator_pro.uptodate">
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>    
-            <uptodate targetfile="${outputDir}/generator/Makefile">
-              <srcfiles dir="${sourceDir}/generator" includes="generator.pr*"/>
-              <srcfiles dir="${sourceDir}/generator/parser" includes="rxx.pr*"/>
-              <srcfiles dir="${sourceDir}/generator/parser/rpp" includes="rpp.pri"/>
-            </uptodate>
-        </and>
-    </condition>
-
-    <target name="generator.qmake"
-            depends="init, generator.xmlmerge"
-            description="Runs qmake on the generator project." 
-	    unless="qtjambi.generator_pro.uptodate">
-      <mkdir dir="${outputDir}/generator"/>
-      <qmake config="${qtjambi.configuration}"
-             dir="${outputDir}/generator"
-             pro="${sourceDir}/generator/generator.pro"
-             debugTools="${qtjambi.debug-tools}"/>
-    </target>
-
-    <target name="generator.compile" depends="init, generator.qmake"
-        description="Compiles the Qt Jambi generator.">
-        <make dir="${outputDir}/generator"/>
-    </target>
+        ************************************************************
+        Building and running the Generator...
+        ************************************************************
+    -->
 
     <available file="${timestamp.dir}/generator.run" type="file"
         property="qtjambi.generator_run.uptodate"/>
 
-    <target name="generator.run" depends="init, generator.compile"
+    <target name="generator.run" depends="init, tools.generator.make"
         unless="qtjambi.generator_run.uptodate"
         description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
         <mkdir dir="${generator.outputdir}"/>
@@ -439,8 +411,7 @@
       <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
     </target>
 
-    <target name="generator"
-        depends="init, generator.xmlmerge, generator.qmake, generator.compile, generator.run"
+    <target name="generator" depends="generator.run"
         description="Compiles and runs the Qt Jambi Generator."/>
 
     <target name="library.native"
