@@ -225,18 +225,13 @@
     -->
 
     <condition property="qtjambi.library.makefiles.uptodate">
-        <and>
-            <not>
-                <isset property="qtjambi.force" />
-            </not>
-            <uptodate targetfile="${outputDir}/Makefile">
-              <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
-              <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
-              <srcfiles dir="${outputDir}/juic" includes="juic.pro"/>
-              <srcfiles dir="${outputDir}/qtjambi" includes="*.pr*"/>
-              <srcfiles dir="${outputDir}/designer-integration" includes="**/*.pr*"/>
-            </uptodate>
-        </and>
+        <uptodate targetfile="${outputDir}/Makefile">
+            <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
+            <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
+            <srcfiles dir="${outputDir}/qtjambi" includes="*.pr*"/>
+            <srcfiles dir="${outputDir}/designer-integration"
+                includes="**/*.pr*"/>
+        </uptodate>
     </condition>
 
     <target name="library.native.qmake" depends="init, generator.run"
@@ -507,12 +502,6 @@ Edit the build.properties file if you want to change the behaviour of the build 
 
 * whether you want to build a release bundle or a debug bundle,
 * whether you want to use a native jump table (EXPERIMENTAL).
-
-You can use:
-
-ant -Dqtjambi.force=true
-
-to force the regeneration of all targets.
 
 To get a description of all tasks run: ant -projecthelp
 
