@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.demos;
+package com.trolltech.demos.opengl;
 
 import java.util.List;
 import java.util.Vector;

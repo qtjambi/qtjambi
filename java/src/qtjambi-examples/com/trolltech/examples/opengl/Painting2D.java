@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.examples;
+package com.trolltech.examples.opengl;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;

@@ -187,14 +187,10 @@
             unless="qtjambi.webkit"/>
         <exclude name="com/trolltech/examples/webkit/*.java"
             unless="qtjambi.webkit"/>
-        <exclude name="com/trolltech/demos/HelloGL.java"/>
-        <!--
-            Uncomment the following and delete the line above when OpenGL is
-            fixed...
-
-        <exclude name="com/trolltech/demos/HelloGL.java"
+        <exclude name="com/trolltech/examples/opengl/*.java"
             unless="qtjambi.opengl"/>
-        -->
+        <exclude name="com/trolltech/demos/opengl/*.java"
+            unless="qtjambi.opengl"/>
     </fileset>
 
     <target name="jar.qtjambi-examples"

@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.demos;
+package com.trolltech.demos.opengl;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLContext;
