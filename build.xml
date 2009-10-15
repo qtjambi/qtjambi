@@ -475,12 +475,15 @@
             <fileset dir="generator">
                 <include name="Makefile*"/>
                 <include name="generator"/>
+                <include name="mjb_*.log"/>
+                <include name=".preprocessed.tmp"/>
             </fileset>
         </delete>
     </target>
 
     <target name="clean" description="Cleans everything"
         depends="make.clean.global, make.clean.generator, make.clean.juic">
+        <delete file="env.properties"/>
         <delete dir="${java.outdir}"/>
         <delete dir="${jardir}"/>
         <delete dir="${java.generated.srcdir}"/>
@@ -489,14 +492,12 @@
         <delete>
             <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
         </delete>
-      <delete file="${outputDir}/qtjambi-${qtjambi.version}.jar"/>
-      <delete file="${outputDir}/qtjambi-examples-${qtjambi.version}.jar"/>
-      <delete file="${outputDir}/qtjambi-designer-${qtjambi.version}.jar"/>
-      <delete file="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar"/>
-      <delete file="${outputDir}/generator/.run.timestamp"/>
-      <delete dir="${outputDir}/bin"/>
-      <delete dir="${outputDir}/lib"/>
-      <delete dir="${outputDir}/cpp"/>
+        <delete>
+            <fileset dir="." includes="*.jar"/>
+        </delete>
+        <delete dir="${outputDir}/bin"/>
+        <delete dir="${outputDir}/lib"/>
+        <delete dir="${outputDir}/cpp"/>
     </target>
 
     <target name="help" description="Provides detailed help.">
