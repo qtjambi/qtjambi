@@ -1,0 +1,32 @@
+<project name="qtjambi.setenv" default="setenv" basedir=".">
+
+    <!--
+        This file will sets various properties necessary for the build process.
+        It is called from the main build.xml file.
+    -->
+
+    <!--
+        The three following would be sooo much more comfortable with
+        ant-contrib's <if>...
+    -->
+
+    <condition property="iswindows">
+        <os family="windows"/>
+    </condition>
+
+    <target name="libsubdir.if.windows" if="iswindows">
+        <property name="libsubdir" value="bin"/>
+    </target>
+
+    <target name="libsubdir.if.not.windows" unless="iswindows">
+        <property name="libsubdir" value="lib"/>
+    </target>
+
+    <target name="setenv"
+        depends="libsubdir.if.windows, libsubdir.if.not.windows">
+        <propertyfile file="env.properties">
+            <entry key="qtjambi.libsubdir" value="${libsubdir}"/>
+        </propertyfile>
+    </target>
+</project>
+
