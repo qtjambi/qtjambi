@@ -130,7 +130,6 @@ public class InitializeTask extends Task {
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
         props.setNewProperty(null, OSNAME, decideOSName());
-        props.setNewProperty(null, LIBSUBDIR, decideLibSubDir());
         props.setNewProperty(null, QTDIR, decideQtDir());
 
         // TODO: Find a better way to get a hold of version...
@@ -327,12 +326,6 @@ public class InitializeTask extends Task {
         String osname = OSInfo.osArchName();
         if (verbose) System.out.println("qtjambi.osname: " + osname);
         return osname;
-    }
-
-    private String decideLibSubDir() {
-        libSubDir = OSInfo.os() == OSInfo.OS.Windows ? "bin" : "lib";
-        if (verbose) System.out.println("qtjambi.libsubdir: " + libSubDir);
-        return libSubDir;
     }
 
     private String decideQtDir() {

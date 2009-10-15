@@ -75,6 +75,11 @@
         </sequential>
     </macrodef>
 
+    <target name="setenv">
+        <ant antfile="setenv.xml"/>
+        <property file="env.properties"/>
+    </target>
+
     <target name="tools.generator.qmake" depends="init, generator.xmlmerge">
         <qmake dir="generator" pro="generator/generator.pro"
         config="${qtjambi.configuration}"/>
@@ -209,7 +214,7 @@
         END of pure Java jar targets
     -->
 
-    <target name="init.taskdef" depends="jar.ant-qtjambi">
+    <target name="init.taskdef" depends="setenv, jar.ant-qtjambi">
         <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
             <classpath>
                 <pathelement path="${jardir}/qtjambi-util.jar"/>
