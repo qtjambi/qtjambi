@@ -444,8 +444,7 @@
     <available file="generator/Makefile" type="file"
         property="generator.makefile.present"/>
 
-    <target name="make.clean.global" if="global.makefile.present"
-        depends="init.taskdef">
+    <target name="make.clean.global" if="global.makefile.present">
         <make target="clean"/>
         <delete file="Makefile"/>
         <delete>
@@ -457,8 +456,7 @@
         </delete>
     </target>
 
-    <target name="make.clean.juic" if="juic.makefile.present"
-        depends="init.taskdef">
+    <target name="make.clean.juic" if="juic.makefile.present">
         <make dir="juic" target="clean"/>
         <delete>
             <fileset dir="juic">
@@ -468,8 +466,7 @@
         </delete>
     </target>
 
-    <target name="make.clean.generator" if="generator.makefile.present"
-        depends="init.taskdef">
+    <target name="make.clean.generator" if="generator.makefile.present">
         <make dir="generator" target="clean"/>
         <delete>
             <fileset dir="generator">
@@ -483,21 +480,29 @@
 
     <target name="clean" description="Cleans everything"
         depends="make.clean.global, make.clean.generator, make.clean.juic">
-        <delete file="env.properties"/>
-        <delete dir="${java.outdir}"/>
-        <delete dir="${jardir}"/>
-        <delete dir="${java.generated.srcdir}"/>
-        <delete dir="${generator.outputdir}"/>
-        <delete dir="${timestamp.dir}"/>
         <delete>
             <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
         </delete>
         <delete>
-            <fileset dir="." includes="*.jar"/>
+            <dirset dir=".">
+                <include name="${java.outdir}"/>
+                <include name="${jardir}"/>
+                <include name="${java.generated.srcdir}"/>
+                <include name="${generator.outputdir}"/>
+                <include name="${timestamp.dir}"/>
+                <include name="bin"/>
+                <include name="lib"/>
+                <include name="cpp"/>
+                <include name="plugins/*"/>
+                <exclude name="plugins/qtjambi"/>
+            </dirset>
         </delete>
-        <delete dir="${outputDir}/bin"/>
-        <delete dir="${outputDir}/lib"/>
-        <delete dir="${outputDir}/cpp"/>
+        <delete>
+            <fileset dir=".">
+                <include name="*.jar"/>
+                <include name="env.properties"/>
+            </fileset>
+        </delete>
     </target>
 
     <target name="help" description="Provides detailed help.">
