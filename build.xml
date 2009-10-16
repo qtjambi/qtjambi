@@ -444,7 +444,8 @@
     <available file="generator/Makefile" type="file"
         property="generator.makefile.present"/>
 
-    <target name="make.clean.global" if="global.makefile.present">
+    <target name="make.clean.global" if="global.makefile.present"
+        depends="init.taskdef">
         <make target="clean"/>
         <delete file="Makefile"/>
         <delete>
@@ -456,7 +457,8 @@
         </delete>
     </target>
 
-    <target name="make.clean.juic" if="juic.makefile.present">
+    <target name="make.clean.juic" if="juic.makefile.present"
+        depends="init.taskdef">
         <make dir="juic" target="clean"/>
         <delete>
             <fileset dir="juic">
@@ -466,7 +468,8 @@
         </delete>
     </target>
 
-    <target name="make.clean.generator" if="generator.makefile.present">
+    <target name="make.clean.generator" if="generator.makefile.present"
+        depends="init.taskdef">
         <make dir="generator" target="clean"/>
         <delete>
             <fileset dir="generator">
