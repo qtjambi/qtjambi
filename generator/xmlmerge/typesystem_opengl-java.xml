@@ -8,6 +8,7 @@
   <primitive-type name="GLuint" java-name="int" preferred-conversion="no" jni-name="jint"/>
   <primitive-type name="GLint" java-name="int" preferred-conversion="no" jni-name="jint"/>
   <primitive-type name="GLenum" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="GLfloat" java-name="float" preferred-conversion="no" jni-name="jfloat"/>
 
 
     <value-type name="QGLColormap">
