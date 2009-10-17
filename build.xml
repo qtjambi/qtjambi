@@ -34,47 +34,6 @@
         Macro for compiling Java sources and generating jars.
     -->
 
-    <macrodef name="dojar">
-        <attribute name="component"/>
-        <sequential>
-            <!--
-                Unfortunately, the javac task (well, even the javac command for
-                that matter) does not support filesets, only dirsets. As we want
-                to exclude some files (see the java.src.examples fileset below)
-                from being compiled, we work around it by copying all source
-                files to ${java.generated.srcdir}.
-            -->
-            <mkdir dir="${java.generated.srcdir}/@{component}"/>
-            <copy todir="${java.generated.srcdir}/@{component}">
-                <fileset refid="java.src.@{component}"/>
-            </copy>
-            <mkdir dir="${java.outdir}/@{component}"/>
-            <mkdir dir="${jardir}"/>
-            <javac source="1.5" target="1.5" debug="true" deprecation="true"
-                memorymaximumsize="1024m" fork="true"
-                destdir="${java.outdir}/@{component}">
-                <src path="${java.generated.srcdir}/@{component}"/>
-                <classpath refid="java.compile.classpath"/>
-            </javac>
-            <copy todir="${java.outdir}/@{component}" includeemptydirs="false">
-                <fileset dir="${java.srcdir}/@{component}">
-                    <include name="**/*"/>
-                    <exclude name="**/*.java"/>
-                </fileset>
-            </copy>
-            <!--
-                We also want to exclude juic files in the jar: get rid of them
-                here.
-            -->
-            <jar basedir="${java.outdir}/@{component}" excludes="**/*.jui"
-                destfile="${jardir}/@{component}.jar">
-                <manifest>
-                    <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-                </manifest>
-            </jar>
-        </sequential>
-    </macrodef>
-
     <target name="setenv">
         <ant antfile="setenv.xml"/>
         <property file="env.properties"/>
@@ -133,7 +92,9 @@
         includes="**/*.java"/>
 
     <target name="jar.qtjambi-util">
-        <dojar component="qtjambi-util"/>
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi-util"/>
+        </ant>
     </target>
 
     <fileset id="java.src.ant-qtjambi" dir="${java.srcdir}/ant-qtjambi"
@@ -141,20 +102,19 @@
 
     <target name="jar.ant-qtjambi" depends="jar.qtjambi-util"
         description="Creates a .jar file containing all the Qt Jambi ant tasks.">
-        <dojar component="ant-qtjambi"/>
-        <!--
-            We don't want ant-qtjambi.jar to be in the classpath: move it out of
-            the way so that we don't have to worry about it anymore
-        -->
-        <mkdir dir="${jardir}/nobundle"/>
-        <move file="${jardir}/ant-qtjambi.jar" todir="${jardir}/nobundle"/>
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="ant-qtjambi"/>
+            <property name="destdir" value="${jardir}/nobundle"/>
+        </ant>
     </target>
 
     <fileset id="java.src.qtjambi" dir="${java.srcdir}/qtjambi"
         includes="**/*.java"/>
 
     <target name="jar.qtjambi" depends="init, jar.qtjambi-util, generator">
-        <dojar component="qtjambi"/>
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi"/>
+        </ant>
     </target>
 
     <fileset id="java.src.qtjambi-designer"
@@ -162,7 +122,9 @@
         includes="**/*.java"/>
 
     <target name="jar.qtjambi-designer" depends="init, jar.qtjambi">
-        <dojar component="qtjambi-designer"/>
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi-designer"/>
+        </ant>
     </target>
 
     <!--
@@ -202,7 +164,9 @@
 
     <target name="jar.qtjambi-examples"
         depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
-        <dojar component="qtjambi-examples"/>
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi-examples"/>
+        </ant>
     </target>
 
     <target name="examples.bundle" depends="jar.qtjambi-examples">
