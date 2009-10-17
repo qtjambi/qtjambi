@@ -965,8 +965,8 @@
   </object-type>
 
   <object-type name="QIODevice"/>
-  <object-type name="QStateMachine::SignalEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::Signal" />
-  <object-type name="QStateMachine::WrappedEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::Wrapped" />
+  <object-type name="QStateMachine::SignalEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::StateMachineSignal" />
+  <object-type name="QStateMachine::WrappedEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::StateMachineWrapped" />
 
   <object-type name="QCryptographicHash"/>
   <object-type name="QLibraryInfo"/>
