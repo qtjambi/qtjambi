@@ -44,6 +44,7 @@
 
 package com.trolltech.examples.opengl;
 
+import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.opengl.*;
