@@ -14,6 +14,32 @@
     <tstamp/>
 
     <!--
+        Do we have QTDIR set at all?
+    -->
+
+    <fail message="QTDIR is not set">
+        <condition>
+            <not>
+                <isset property="env.QTDIR"/>
+            </not>
+        </condition>
+    </fail>
+
+    <!--
+        Is qmake there?
+    -->
+
+    <property name="qmake" value="${env.QTDIR}/bin/qmake"/>
+
+    <fail message="Qt is not configured, cannot find qmake">
+        <condition>
+            <not>
+                <available file="${qmake}" type="file"/>
+            </not>
+        </condition>
+    </fail>
+
+    <!--
         The three following would be sooo much more comfortable with
         ant-contrib's <if>...
     -->
