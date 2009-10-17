@@ -450,22 +450,18 @@
         <delete>
             <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
         </delete>
+        <delete dir="${java.outdir}"/>
+        <delete dir="${java.generated.srcdir}"/>
+        <delete dir="${jardir}"/>
+        <delete dir="${generator.outputdir}"/>
+        <delete dir="${timestamp.dir}"/>
+        <delete dir="bin"/>
+        <delete dir="lib"/>
+        <delete dir="cpp"/>
         <delete>
             <fileset dir=".">
-                <include name="${java.outdir}/**/*"/>
-                <include name="${jardir}/**/*"/>
-                <include name="${java.generated.srcdir}/**/*"/>
-                <include name="${generator.outputdir}/**/*"/>
-                <include name="${timestamp.dir}/**/*"/>
-                <include name="bin/**/*"/>
-                <include name="lib/**/*"/>
-                <include name="cpp/**/*"/>
                 <include name="plugins/**/*"/>
                 <exclude name="plugins/qtjambi/**/*"/>
-            </fileset>
-        </delete>
-        <delete>
-            <fileset dir=".">
                 <include name="*.jar"/>
                 <include name="env.properties"/>
             </fileset>
