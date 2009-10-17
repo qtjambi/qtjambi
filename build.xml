@@ -1,9 +1,5 @@
 <project default="all" basedir=".">
 
-    <property environment="env"/>
-
-    <tstamp/>
-
     <property file="buildpath.properties"/>
     <property file="build.properties"/>
 

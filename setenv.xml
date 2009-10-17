@@ -6,6 +6,14 @@
     -->
 
     <!--
+        We want the environment variables and we want a timestamp for jars.
+    -->
+
+    <property environment="env"/>
+
+    <tstamp/>
+
+    <!--
         The three following would be sooo much more comfortable with
         ant-contrib's <if>...
     -->
