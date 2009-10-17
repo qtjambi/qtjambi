@@ -30,10 +30,6 @@
         </sequential>
     </macrodef>
 
-    <!--
-        Macro for compiling Java sources and generating jars.
-    -->
-
     <target name="setenv">
         <ant antfile="setenv.xml"/>
         <property file="env.properties"/>
