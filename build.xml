@@ -34,10 +34,38 @@
         </sequential>
     </macrodef>
 
+    <!--
+        Initialization tasks. Note that the init.taskdef task depends on a jar
+        task, since ant-qtjambi.jar must be set in order for the
+        <qtjambi-initialize> task to be set at all.
+    -->
+
     <target name="setenv">
         <ant antfile="setenv.xml"/>
         <property file="buildenv.properties"/>
     </target>
+
+    <target name="init.taskdef" depends="setenv, jar.ant-qtjambi">
+        <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
+            <classpath>
+                <pathelement path="${jardir}/qtjambi-util.jar"/>
+                <pathelement path="${jardir}/nobundle/ant-qtjambi.jar"/>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <target name="init" depends="init.taskdef"
+        description="Initializes the Qt Jambi build environment." >
+        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
+    </target>
+
+    <!--
+        END of initilization tasks
+    -->
+
+    <!--
+        Tools building
+    -->
 
     <target name="tools.generator.qmake" depends="init, generator.xmlmerge">
         <qmake dir="generator" pro="generator/generator.pro"
@@ -69,9 +97,9 @@
         </sequential>
     </macrodef>
 
-    <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
-        <dojuic module="qtjambi-examples"/>
-    </target>
+    <!--
+        END of tools building
+    -->
 
     <!--
         Pure Java jar targets:
@@ -82,10 +110,17 @@
         * ant-qtjambi.jar contains the code for many ant tasks used along the
           file (qmake, make, generator, juic...);
         * qtjambi.jar is the core jar for Qt Jambi applications;
-        * qtjambi-designer.jar is the Java equivalent of Qt Designer.
+        * qtjambi-designer.jar is the Java equivalent of Qt Designer;
+        * qtjambi-examples.jar is a jar containing examples of Qt Jambi in
+          action.
 
         Some of them, like jar.qtjambi, depend on other parts of this build
         file.
+
+        As you will see, each of these targets is preceeded by a fileset. The
+        rule is to create a fileset with id "java.src.<modulenamehere>" and to
+        call the ant jar.xml file with inheritrefs=true (otherwise it will NOT
+        see the defined fileset).
     -->
 
     <fileset id="java.src.qtjambi-util" dir="${java.srcdir}/qtjambi-util"
@@ -127,20 +162,6 @@
         </ant>
     </target>
 
-    <!--
-        TODO: the following two targets must go away
-    -->
-
-    <target name="library.java.bundle" depends="jar.qtjambi">
-        <copy file="${jardir}/qtjambi.jar"
-            tofile="qtjambi-${qtjambi.version}.jar"/>
-    </target>
-
-    <target name="library.designer.bundle" depends="jar.qtjambi-designer">
-        <copy file="${jardir}/qtjambi-designer.jar"
-            tofile="qtjambi-designer-${qtjambi.version}.jar"/>
-    </target>
-
     <fileset id="java.src.qtjambi-examples"
         dir="${java.srcdir}/qtjambi-examples">
         <include name="**/*.java"/>
@@ -162,6 +183,10 @@
             unless="qtjambi.opengl"/>
     </fileset>
 
+    <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
+        <dojuic module="qtjambi-examples"/>
+    </target>
+
     <target name="jar.qtjambi-examples"
         depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
@@ -169,22 +194,27 @@
         </ant>
     </target>
 
-    <target name="examples.bundle" depends="jar.qtjambi-examples">
-        <copy file="${jardir}/qtjambi-examples.jar"
-            tofile="qtjambi-examples-${qtjambi.version}.jar"/>
-    </target>
-
     <!--
         END of pure Java jar targets
     -->
 
-    <target name="init.taskdef" depends="setenv, jar.ant-qtjambi">
-        <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
-            <classpath>
-                <pathelement path="${jardir}/qtjambi-util.jar"/>
-                <pathelement path="${jardir}/nobundle/ant-qtjambi.jar"/>
-            </classpath>
-        </taskdef>
+    <!--
+        TODO: the following two targets must go away
+    -->
+
+    <target name="library.java.bundle" depends="jar.qtjambi">
+        <copy file="${jardir}/qtjambi.jar"
+            tofile="qtjambi-${qtjambi.version}.jar"/>
+    </target>
+
+    <target name="library.designer.bundle" depends="jar.qtjambi-designer">
+        <copy file="${jardir}/qtjambi-designer.jar"
+            tofile="qtjambi-designer-${qtjambi.version}.jar"/>
+    </target>
+
+    <target name="examples.bundle" depends="jar.qtjambi-examples">
+        <copy file="${jardir}/qtjambi-examples.jar"
+            tofile="qtjambi-examples-${qtjambi.version}.jar"/>
     </target>
 
     <!-- 
@@ -367,11 +397,6 @@
         <xmlmerge victim="phonon"/>
         <xmlmerge victim="xmlpatterns"/>
         <xmlmerge victim="designer"/>
-    </target>
-
-    <target name="init" depends="init.taskdef"
-        description="Initializes the Qt Jambi build environment." >
-        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
     </target>
 
     <target name="generator" depends="generator.run"
