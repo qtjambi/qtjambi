@@ -146,7 +146,8 @@
     <fileset id="java.src.qtjambi" dir="${java.srcdir}/qtjambi"
         includes="**/*.java"/>
 
-    <target name="jar.qtjambi" depends="init, jar.qtjambi-util, generator">
+    <target name="jar.qtjambi"
+        depends="init, jar.qtjambi-util, generator.javasrc.qtjambi">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi"/>
         </ant>
@@ -156,7 +157,8 @@
         dir="${java.srcdir}/qtjambi-designer"
         includes="**/*.java"/>
 
-    <target name="jar.qtjambi-designer" depends="init, jar.qtjambi">
+    <target name="jar.qtjambi-designer"
+        depends="init, jar.qtjambi, generator.javasrc.qtjambi-designer">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-designer"/>
         </ant>
@@ -233,12 +235,11 @@
         </uptodate>
     </condition>
 
-    <target name="library.native.qmake" depends="init, generator.run"
-        description="Runs qmake on the Qt Jambi project."
+    <target name="library.native.qmake" depends="init, generator.cppsrc"
+        description="Runs qmake on the Qt Jambi native library"
         unless="qtjambi.library.makefiles.uptodate">
         <delete dir="lib"/>
-        <qmake recursive="true"
-            dir="${outputDir}"
+        <qmake recursive="true" dir="${outputDir}"
             pro="${sourceDir}/java.pro"
             config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
             debugTools="${qtjambi.debug-tools}"/>
@@ -332,20 +333,16 @@
             typesystem="${sourceDir}/generator/build_all.txt"
             header="${sourceDir}/generator/qtjambi_masterinclude.h"
             options="${qtjambi.generator.jumptable}"/>
-        <!--
-            Copy the cpp/ directory to the root.
-        -->
+        <dostamp stampfile="generator.run"/>
+    </target>
+
+    <target name="generator.cppsrc" depends="generator.run">
         <copy todir="${outputDir}">
             <fileset dir="${generator.outputdir}" includes="cpp/**/*"/>
         </copy>
-        <!--
-            Copy the generated Java source files in
-            ${java.generated.srcdir}/@{component}, where component is qtjambi
-            or qtjambi-designer.
+    </target>
 
-            This, and probably the above, should probably be moved to their own
-            targets.
-        -->
+    <target name="generator.javasrc.qtjambi" depends="generator.run">
         <mkdir dir="${java.generated.srcdir}/qtjambi"/>
         <copy todir="${java.generated.srcdir}/qtjambi"
             includeemptydirs="false">
@@ -355,16 +352,16 @@
                 <exclude name="cpp/**/*"/>
             </fileset>
         </copy>
+    </target>
+
+    <target name="generator.javasrc.qtjambi-designer" depends="generator.run">
         <mkdir dir="${java.generated.srcdir}/qtjambi-designer"/>
         <copy todir="${java.generated.srcdir}/qtjambi-designer"
             includeemptydirs="false">
             <fileset dir="${generator.outputdir}"
                 includes="com/trolltech/tools/designer/**"/>
         </copy>
-        <dostamp stampfile="generator.run"/>
     </target>
-
-
 
     <!-- 
         ************************************************************
