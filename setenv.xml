@@ -33,6 +33,8 @@
         </condition>
     </fail>
 
+    <property name="qtdir" value="${env.QTDIR}"/>
+
     <!--
         Is qmake there?
     -->
@@ -70,6 +72,7 @@
     <target name="setenv" depends="lookup-libsubdir, lookup-qmake">
         <propertyfile file="buildenv.properties">
             <entry key="qtjambi.libsubdir" value="${libsubdir}"/>
+            <entry key="qtjambi.qtdir" value="${qtdir}"/>
         </propertyfile>
     </target>
 </project>

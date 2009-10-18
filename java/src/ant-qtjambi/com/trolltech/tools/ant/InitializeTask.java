@@ -130,7 +130,6 @@ public class InitializeTask extends Task {
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
         props.setNewProperty(null, OSNAME, decideOSName());
-        props.setNewProperty(null, QTDIR, decideQtDir());
 
         // TODO: Find a better way to get a hold of version...
         props.setNewProperty(null, VERSION, Version.STRING);
@@ -326,16 +325,6 @@ public class InitializeTask extends Task {
         String osname = OSInfo.osArchName();
         if (verbose) System.out.println("qtjambi.osname: " + osname);
         return osname;
-    }
-
-    private String decideQtDir() {
-        qtdir = System.getenv("QTDIR");
-        if (qtdir == null)
-            throw new BuildException("QTDIR environment variable missing");
-        if (!new File(qtdir).exists())
-            throw new BuildException("QTDIR environment variable points to non-existing directory");
-        if (verbose) System.out.println("qtjambi.qtdir: " + qtdir);
-        return qtdir;
     }
 
     private String decideConfiguration() {
