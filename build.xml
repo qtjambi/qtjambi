@@ -36,7 +36,7 @@
 
     <target name="setenv">
         <ant antfile="setenv.xml"/>
-        <property file="env.properties"/>
+        <property file="buildenv.properties"/>
     </target>
 
     <target name="tools.generator.qmake" depends="init, generator.xmlmerge">
@@ -463,7 +463,7 @@
                 <include name="plugins/**/*"/>
                 <exclude name="plugins/qtjambi/**/*"/>
                 <include name="*.jar"/>
-                <include name="env.properties"/>
+                <include name="buildenv.properties"/>
             </fileset>
         </delete>
     </target>

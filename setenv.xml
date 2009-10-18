@@ -4,6 +4,7 @@
         This file will sets various properties necessary for the build process.
         It is called from the main build.xml file.
     -->
+
     <!--
         We want the environment variables and we want a timestamp for jars.
     -->
@@ -67,7 +68,7 @@
         depends="libsubdir.if.windows, libsubdir.if.not.windows"/>
 
     <target name="setenv" depends="lookup-libsubdir, lookup-qmake">
-        <propertyfile file="env.properties">
+        <propertyfile file="buildenv.properties">
             <entry key="qtjambi.libsubdir" value="${libsubdir}"/>
         </propertyfile>
     </target>
