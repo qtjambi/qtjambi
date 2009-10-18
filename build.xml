@@ -7,6 +7,14 @@
     <property name="outputDir" value="."/>
 
     <!--
+        We want the environment variables and we want a timestamp for jars.
+    -->
+
+    <property environment="env"/>
+
+    <tstamp/>
+
+    <!--
         Classpath for Java compiling
     -->
 
@@ -21,7 +29,7 @@
     <macrodef name="dostamp">
         <attribute name="stampfile"/>
         <sequential>
-        <mkdir dir="${timestamp.dir}"/>
+            <mkdir dir="${timestamp.dir}"/>
             <touch file="${timestamp.dir}/@{stampfile}"/>
         </sequential>
     </macrodef>
