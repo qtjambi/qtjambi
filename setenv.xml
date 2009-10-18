@@ -4,7 +4,6 @@
         This file will sets various properties necessary for the build process.
         It is called from the main build.xml file.
     -->
-
     <!--
         We want the environment variables and we want a timestamp for jars.
     -->
@@ -12,6 +11,14 @@
     <property environment="env"/>
 
     <tstamp/>
+
+    <!--
+        Are we under Windows?
+    -->
+
+    <condition property="iswindows">
+        <os family="windows"/>
+    </condition>
 
     <!--
         Do we have QTDIR set at all?
@@ -29,24 +36,24 @@
         Is qmake there?
     -->
 
-    <property name="qmake" value="${env.QTDIR}/bin/qmake"/>
+    <target name="qmake.if.windows" if="iswindows">
+        <property name="qmake" value="${env.QTDIR}/bin/qmake.exe"/>
+    </target>
 
-    <fail message="Qt is not configured, cannot find qmake">
-        <condition>
-            <not>
-                <available file="${qmake}" type="file"/>
-            </not>
-        </condition>
-    </fail>
+    <target name="qmake.if.not.windows" unless="iswindows">
+        <property name="qmake" value="${env.QTDIR}/bin/qmake"/>
+    </target>
 
-    <!--
-        The three following would be sooo much more comfortable with
-        ant-contrib's <if>...
-    -->
-
-    <condition property="iswindows">
-        <os family="windows"/>
-    </condition>
+    <target name="lookup-qmake"
+        depends="qmake.if.windows, qmake.if.not.windows">
+        <fail message="Cannot find qmake! Have you configured Qt yet?">
+            <condition>
+                <not>
+                    <available file="${qmake}" type="file"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
 
     <target name="libsubdir.if.windows" if="iswindows">
         <property name="libsubdir" value="bin"/>
@@ -56,8 +63,10 @@
         <property name="libsubdir" value="lib"/>
     </target>
 
-    <target name="setenv"
-        depends="libsubdir.if.windows, libsubdir.if.not.windows">
+    <target name="lookup-libsubdir"
+        depends="libsubdir.if.windows, libsubdir.if.not.windows"/>
+
+    <target name="setenv" depends="lookup-libsubdir, lookup-qmake">
         <propertyfile file="env.properties">
             <entry key="qtjambi.libsubdir" value="${libsubdir}"/>
         </propertyfile>
