@@ -417,7 +417,7 @@
     <target name="examples" depends="examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>
 
-    <target name="all" depends="generator, library, examples"
+    <target name="all" depends="library, examples"
         description="Generates, builds and bundles the Qt Jambi libraries."/>
 
     <!--
