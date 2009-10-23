@@ -25,25 +25,27 @@
         Do we have QTDIR set at all?
     -->
 
-    <fail message="QTDIR is not set">
-        <condition>
-            <not>
-                <isset property="env.QTDIR"/>
-            </not>
-        </condition>
-    </fail>
-
-    <property name="qtdir" value="${env.QTDIR}"/>
+    <target name="check-qtdir">
+        <fail message="QTDIR is not set">
+            <condition>
+                <not>
+                    <isset property="env.QTDIR"/>
+                </not>
+            </condition>
+        </fail>
+        <property name="qtdir" value="${env.QTDIR}"/>
+    </target>
 
     <!--
         Is qmake there?
     -->
 
-    <target name="qmake.if.windows" if="iswindows">
+    <target name="qmake.if.windows" if="iswindows" depends="check-qtdir">
         <property name="qmake" value="${env.QTDIR}/bin/qmake.exe"/>
     </target>
 
-    <target name="qmake.if.not.windows" unless="iswindows">
+    <target name="qmake.if.not.windows" unless="iswindows"
+        depends="check-qtdir">
         <property name="qmake" value="${env.QTDIR}/bin/qmake"/>
     </target>
 
@@ -75,5 +77,5 @@
             <entry key="qtjambi.qtdir" value="${qtdir}"/>
         </propertyfile>
     </target>
-</project>
 
+</project>
