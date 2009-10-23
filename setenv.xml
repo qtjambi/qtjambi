@@ -3,7 +3,11 @@
     <!--
         This file will sets various properties necessary for the build process.
         It is called from the main build.xml file.
+
+        NOTE: it needs ant-contrib in your CLASSPATH environment variable.
     -->
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
     <!--
         We want the environment variables and we want a timestamp for jars.
