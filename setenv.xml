@@ -41,12 +41,12 @@
     -->
 
     <target name="qmake.if.windows" if="iswindows" depends="check-qtdir">
-        <property name="qmake" value="${env.QTDIR}/bin/qmake.exe"/>
+        <property name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake.exe"/>
     </target>
 
     <target name="qmake.if.not.windows" unless="iswindows"
         depends="check-qtdir">
-        <property name="qmake" value="${env.QTDIR}/bin/qmake"/>
+        <property name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake"/>
     </target>
 
     <target name="lookup-qmake"
@@ -54,7 +54,7 @@
         <fail message="Cannot find qmake! Have you configured Qt yet?">
             <condition>
                 <not>
-                    <available file="${qmake}" type="file"/>
+                    <available file="${qtjambi.qmake}" type="file"/>
                 </not>
             </condition>
         </fail>
@@ -75,6 +75,7 @@
         <propertyfile file="buildenv.properties">
             <entry key="qtjambi.libsubdir" value="${libsubdir}"/>
             <entry key="qtjambi.qtdir" value="${qtdir}"/>
+            <entry key="qtjambi.qmake" value="${qtjambi.qmake}"/>
         </propertyfile>
     </target>
 
