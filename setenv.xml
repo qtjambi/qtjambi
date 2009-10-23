@@ -18,14 +18,6 @@
     <tstamp/>
 
     <!--
-        Are we under Windows?
-    -->
-
-    <condition property="iswindows">
-        <os family="windows"/>
-    </condition>
-
-    <!--
         Do we have QTDIR set at all?
     -->
 
@@ -44,17 +36,14 @@
         Is qmake there?
     -->
 
-    <target name="qmake.if.windows" if="iswindows" depends="check-qtdir">
-        <property name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake.exe"/>
-    </target>
-
-    <target name="qmake.if.not.windows" unless="iswindows"
-        depends="check-qtdir">
-        <property name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake"/>
-    </target>
-
-    <target name="lookup-qmake"
-        depends="qmake.if.windows, qmake.if.not.windows">
+    <target name="lookup-qmake" depends="check-qtdir">
+        <var name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake"/>
+        <if>
+            <os family="windows"/>
+            <then>
+                <var name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake.exe"/>
+            </then>
+        </if>
         <fail message="Cannot find qmake! Have you configured Qt yet?">
             <condition>
                 <not>
@@ -64,16 +53,15 @@
         </fail>
     </target>
 
-    <target name="libsubdir.if.windows" if="iswindows">
-        <property name="libsubdir" value="bin"/>
+    <target name="lookup-libsubdir">
+        <var name="libsubdir" value="lib"/>
+        <if>
+            <os family="windows"/>
+            <then>
+                <var name="libsubdir" value="bin"/>
+            </then>
+        </if>
     </target>
-
-    <target name="libsubdir.if.not.windows" unless="iswindows">
-        <property name="libsubdir" value="lib"/>
-    </target>
-
-    <target name="lookup-libsubdir"
-        depends="libsubdir.if.windows, libsubdir.if.not.windows"/>
 
     <target name="setenv" depends="lookup-libsubdir, lookup-qmake">
         <propertyfile file="buildenv.properties">
