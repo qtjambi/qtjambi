@@ -64,11 +64,9 @@
     </target>
 
     <target name="setenv" depends="lookup-libsubdir, lookup-qmake">
-        <propertyfile file="buildenv.properties">
-            <entry key="qtjambi.libsubdir" value="${libsubdir}"/>
-            <entry key="qtjambi.qtdir" value="${qtdir}"/>
-            <entry key="qtjambi.qmake" value="${qtjambi.qmake}"/>
-        </propertyfile>
+        <property name="qtjambi.libsubdir" value="${libsubdir}"/>
+        <property name="qtjambi.qtdir" value="${qtdir}"/>
+        <property name="qtjambi.qmake" value="${qtjambi.qmake}"/>
     </target>
 
 </project>

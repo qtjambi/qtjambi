@@ -7,14 +7,6 @@
     <property name="outputDir" value="."/>
 
     <!--
-        We want the environment variables and we want a timestamp for jars.
-    -->
-
-    <property environment="env"/>
-
-    <tstamp/>
-
-    <!--
         Classpath for Java compiling
     -->
 
@@ -35,15 +27,17 @@
     </macrodef>
 
     <!--
+        Import the setenv.xml file. It defines the setenv target, which
+        init.taskdef below depends upon.
+    -->
+
+    <import file="setenv.xml"/>
+
+    <!--
         Initialization tasks. Note that the init.taskdef task depends on a jar
         task, since ant-qtjambi.jar must be set in order for the
         <qtjambi-initialize> task to be set at all.
     -->
-
-    <target name="setenv">
-        <ant antfile="setenv.xml"/>
-        <property file="buildenv.properties"/>
-    </target>
 
     <target name="init.taskdef" depends="setenv, jar.ant-qtjambi">
         <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
@@ -485,7 +479,6 @@
                 <include name="plugins/**/*"/>
                 <exclude name="plugins/qtjambi/**/*"/>
                 <include name="*.jar"/>
-                <include name="buildenv.properties"/>
             </fileset>
         </delete>
     </target>
