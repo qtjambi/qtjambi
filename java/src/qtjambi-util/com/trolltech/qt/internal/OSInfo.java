@@ -53,11 +53,24 @@ public class OSInfo
 {
     public enum OS
     {
-        Unknown,
-        Windows,
-        Linux,
-        MacOS,
-        Solaris
+        Unknown ("unkwnown"),
+        Windows ("windows"),
+        Linux ("linux"),
+        MacOS ("macosx"),
+        Solaris ("sunos");
+
+        private String name;
+
+        OS(final String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String toString()
+        {
+            return name;
+        }
     }
 
     /**
