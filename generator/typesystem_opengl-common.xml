@@ -7,7 +7,7 @@
   <enum-type name="QGLFormat::OpenGLVersionFlag" flags="QGLFormat::OpenGLVersionFlags"/>
   <enum-type name="QGLFramebufferObject::Attachment" />
   <enum-type name="QGLContext::BindOption" flags="QGLContext::BindOptions" />
-  <enum-type name="QGLShader::ShaderTypeBits" flags="QGLShader::ShaderTypeBit" />
+  <enum-type name="QGLShader::ShaderTypeBits" flags="QGLShader::ShaderType"/>
 
 
   <namespace-type name="QGL">
