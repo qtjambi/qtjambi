@@ -5117,13 +5117,8 @@
   <object-type name="QGesture" />
   <object-type name="QGraphicsAnchorLayout" />
   <object-type name="QGraphicsAnchor" />
-  <object-type name="QGraphicsBloomEffect" />
-  <object-type name="QGraphicsBlurEffect" />
-  <object-type name="QGraphicsColorizeEffect" />
-  <object-type name="QGraphicsDropShadowEffect" />
   <object-type name="QGraphicsEffect" />
   <object-type name="QGraphicsEffectSource" />
-  <object-type name="QGraphicsGrayscaleEffect" />
   <object-type name="QGraphicsObject">
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
