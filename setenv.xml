@@ -32,6 +32,57 @@
     </macrodef>
 
     <!--
+         Preliminary: we download and enable ant-contrib tasks, unless a
+         timestamp file exists that tells us this is already done.
+
+         As we don't have ant-contrib yet at this stage (obviously), we must
+         rely on a proxy task to tell whether the timestamp file exists.
+    -->
+
+    <target name="check.antcontrib">
+        <available file="${timestamp.dir}/antcontrib" type="file"
+            property="antcontrib.done"/>
+    </target>
+
+    <target name="get.antcontrib" depends="check.antcontrib"
+        unless="antcontrib.done">
+        <!--
+            Yes, pathnames are hardcoded here. Since this is the only use we
+            have for them, there's no need to make properties out of them.
+        -->
+        <mkdir dir="tmp"/>
+        <mkdir dir="extjars"/>
+        <!--
+            NOTE about the use of <get> below: there is a usetimestamp property
+            that can avoid regetting the file if it is considered up to date wrt
+            the remote side. Unfortunately, it will not do its job quite
+            correctly since it doesn't check for the size... So we don't use it
+            here (it is set to "false" by default). Later, we should add some
+            kind of timestamp to tell that yes, the file is there, and not
+            download it again.
+        -->
+        <get src="${antcontrib.download.url}" dest="tmp/ant-contrib.zip"
+            verbose="true"/>
+        <unzip src="tmp/ant-contrib.zip" dest="tmp"/>
+        <copy file="tmp/${antcontrib.jar.location}"
+            tofile="extjars/ant-contrib.jar"/>
+        <!--
+            ... And remove the temporary directory, which we don't need anymore.
+        -->
+        <delete dir="tmp"/>
+        <dostamp stampfile="antcontrib"/>
+    </target>
+
+    <target name="source.antcontrib" depends="get.antcontrib">
+        <!--
+            OK, we have extracted the zip file, copied the ant-contrib.jar where
+            we expect it to be, we can now import all tasks...
+        -->
+        <taskdef resource="net/sf/antcontrib/antlib.xml"
+            classpath="extjars/ant-contrib.jar"/>
+    </target>
+
+    <!--
         Do we have QTDIR set at all?
     -->
 
