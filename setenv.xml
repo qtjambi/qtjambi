@@ -8,6 +8,7 @@
     -->
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+    <property file="buildpath.properties"/>
     <property file="antcontrib.properties"/>
 
     <!--
@@ -17,6 +18,18 @@
     <property environment="env"/>
 
     <tstamp/>
+
+    <!--
+        Macro for creating a timestamp
+    -->
+
+    <macrodef name="dostamp">
+        <attribute name="stampfile"/>
+        <sequential>
+            <mkdir dir="${timestamp.dir}"/>
+            <touch file="${timestamp.dir}/@{stampfile}"/>
+        </sequential>
+    </macrodef>
 
     <!--
         Do we have QTDIR set at all?
