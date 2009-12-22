@@ -1,13 +1,12 @@
 <project name="qtjambi.setenv" default="setenv" basedir=".">
 
     <!--
-        This file will sets various properties necessary for the build process.
-        It is called from the main build.xml file.
+        This file has two purposes:
 
-        NOTE: it needs ant-contrib in your CLASSPATH environment variable.
+        * download ant-contrib and use it;
+        * set various properties necessary for the build process.
     -->
 
-    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
     <property file="buildpath.properties"/>
     <property file="antcontrib.properties"/>
 
@@ -101,7 +100,7 @@
         Is qmake there?
     -->
 
-    <target name="lookup-qmake" depends="check-qtdir">
+    <target name="lookup-qmake" depends="check-qtdir, source.antcontrib">
         <var name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake"/>
         <if>
             <os family="windows"/>
@@ -118,7 +117,7 @@
         </fail>
     </target>
 
-    <target name="lookup-libsubdir">
+    <target name="lookup-libsubdir" depends="source.antcontrib">
         <var name="libsubdir" value="lib"/>
         <if>
             <os family="windows"/>

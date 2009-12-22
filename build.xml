@@ -458,6 +458,7 @@
         <delete dir="${jardir}"/>
         <delete dir="${generator.outputdir}"/>
         <delete dir="${timestamp.dir}"/>
+        <delete dir="extjars"/>
         <delete dir="bin"/>
         <delete dir="lib"/>
         <delete dir="cpp"/>
