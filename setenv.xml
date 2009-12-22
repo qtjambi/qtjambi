@@ -8,6 +8,7 @@
     -->
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+    <property file="antcontrib.properties"/>
 
     <!--
         We want the environment variables and we want a timestamp for jars.
