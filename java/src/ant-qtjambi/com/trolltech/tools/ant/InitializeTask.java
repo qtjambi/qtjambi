@@ -95,6 +95,7 @@ public class InitializeTask extends Task {
      */
     public static final String QTDIR            = "qtjambi.qtdir";
     public static final String LIBSUBDIR        = "qtjambi.libsubdir";
+    public static final String VERSION          = "qtjambi.version";
 
     /*
      * These properties are set inside this task
@@ -110,7 +111,6 @@ public class InitializeTask extends Task {
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
     public static final String QMAKESPEC        = "qtjambi.qmakespec";
     public static final String SQLITE           = "qtjambi.sqlite";
-    public static final String VERSION          = "qtjambi.version";
     public static final String WEBKIT           = "qtjambi.webkit";
     public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
 
@@ -137,9 +137,6 @@ public class InitializeTask extends Task {
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
         props.setNewProperty(null, OSNAME, decideOSName());
-
-        // TODO: Find a better way to get a hold of version...
-        props.setNewProperty(null, VERSION, Version.STRING);
 
         props.setNewProperty(null, COMPILER, decideCompiler());
 
