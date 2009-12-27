@@ -51,7 +51,6 @@ import java.util.*;
 // !!NOTE!! This class can have no dependencies on Qt since
 //          it is used by the NativeLibraryManager
 import com.trolltech.qt.internal.RetroTranslatorHelper;
-import com.trolltech.qt.internal.Version;
 import com.trolltech.qt.internal.NativeLibraryManager;
 
 /**
@@ -59,20 +58,26 @@ This class contains static members that gives information and performs Qt Jambi
 related tasks.
 */
 public class Utilities {
-    /** The Qt Library's major version. */
-    public static final int MAJOR_VERSION = Version.MAJOR;
 
-    /** The Qt Library's minor version. */
-    public static final int MINOR_VERSION = Version.MINOR;
+    public static final String VERSION_STRING;
 
-    /** The Qt Library's patch version. */
-    public static final int PATCH_VERSION = Version.PATCH;
-
-    /** Qt Library build number */
-    public static final int BUILD_NUMBER = Version.BUILD;
-
-    /** A formated String with versioning*/
-    public static final String VERSION_STRING = Version.STRING;
+    static {
+        final Properties props = new Properties();
+        final ClassLoader loader = ClassLoader.getSystemClassLoader();
+        if (loader == null)
+            throw new ExceptionInInitializerError("Could not get classloader!");
+        final InputStream in = loader.getResourceAsStream("version.properties");
+        if (in == null)
+            throw new ExceptionInInitializerError("version.properties not found!");
+        try {
+            props.load(in);
+        } catch (Exception ex) {
+            throw new ExceptionInInitializerError("Cannot read properties!");
+        }
+        VERSION_STRING = props.getProperty("qtjambi.version");
+        if (VERSION_STRING == null)
+            throw new ExceptionInInitializerError("qtjambi.version is not set!");
+    }
 
     /** Enum for defining the operation system. */
     public enum OperatingSystem {
