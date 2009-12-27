@@ -38,6 +38,7 @@
     <target name="init" depends="init.taskdef"
         description="Initializes the Qt Jambi build environment." >
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
+        <copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>
     </target>
 
     <!--
@@ -469,6 +470,7 @@
                 <include name="*.jar"/>
             </fileset>
         </delete>
+        <delete file="${java.srcdir}/qtjambi/version.properties"/>
     </target>
 
     <target name="help" description="Provides detailed help.">
