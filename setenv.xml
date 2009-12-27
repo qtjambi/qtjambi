@@ -4,10 +4,11 @@
         This file has two purposes:
 
         * download ant-contrib and use it (or pick up the jar from the system
-	  itself);
+          itself)
         * set various properties necessary for the build process.
     -->
 
+    <property file="version.properties"/>
     <property file="buildpath.properties"/>
     <property file="antcontrib.properties"/>
 
