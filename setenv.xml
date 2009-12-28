@@ -110,27 +110,6 @@
         <property name="qtdir" value="${env.QTDIR}"/>
     </target>
 
-    <!--
-        Is qmake there?
-    -->
-
-    <target name="lookup-qmake" depends="check-qtdir, source.antcontrib">
-        <var name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake"/>
-        <if>
-            <os family="windows"/>
-            <then>
-                <var name="qtjambi.qmake" value="${env.QTDIR}/bin/qmake.exe"/>
-            </then>
-        </if>
-        <fail message="Cannot find qmake! Have you configured Qt yet?">
-            <condition>
-                <not>
-                    <available file="${qtjambi.qmake}" type="file"/>
-                </not>
-            </condition>
-        </fail>
-    </target>
-
     <target name="lookup-libsubdir" depends="source.antcontrib">
         <var name="libsubdir" value="lib"/>
         <if>
@@ -141,7 +120,7 @@
         </if>
     </target>
 
-    <target name="setenv" depends="lookup-libsubdir, lookup-qmake">
+    <target name="setenv" depends="check-qtdir, lookup-libsubdir">
         <exec executable="qmake" outputproperty="qt.version">
             <arg value="-query"/>
             <arg value="QT_VERSION"/>
@@ -155,7 +134,6 @@
         </fail>
         <property name="qtjambi.libsubdir" value="${libsubdir}"/>
         <property name="qtjambi.qtdir" value="${qtdir}"/>
-        <property name="qtjambi.qmake" value="${qtjambi.qmake}"/>
     </target>
 
 </project>
