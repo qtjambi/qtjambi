@@ -142,6 +142,17 @@
     </target>
 
     <target name="setenv" depends="lookup-libsubdir, lookup-qmake">
+        <exec executable="qmake" outputproperty="qt.version">
+            <arg value="-query"/>
+            <arg value="QT_VERSION"/>
+        </exec>
+        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version}">
+            <condition>
+                <not>
+                    <equals arg1="${qtjambi.version}" arg2="${qt.version}"/>
+                </not>
+            </condition>
+        </fail>
         <property name="qtjambi.libsubdir" value="${libsubdir}"/>
         <property name="qtjambi.qtdir" value="${qtdir}"/>
         <property name="qtjambi.qmake" value="${qtjambi.qmake}"/>
