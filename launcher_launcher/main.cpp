@@ -182,6 +182,7 @@ static int bug_out(const char *title, JNIEnv *jni_env)
                     exceptionStackTrace,
                     "Exception caught by Java when running com.trolltech.launcher.Launcher",
                     MB_OK);
+        printf(exceptionStackTrace);
     }
 
     delete exceptionStackTrace;
@@ -615,17 +616,17 @@ static HMODULE search_registry_for_jvm_dll_w()
 
 bool decide_library_version(char *str)
 {
-    char name[] = "qtjambi-4.X.Y_0Z.jar";
+    char name[] = "qtjambi-4.X.Y.jar";
     for (int build = 1; build < 9; ++build) {
         for (int minor = 4; minor<9; ++minor) {
             for (int patch = 0; patch < 9; ++patch) {
                 name[10] = '0' + minor;
                 name[12] = '0' + patch;
-                name[15] = '0' + build;
+             //   name[15] = '0' + build;
                 if (GetFileAttributesA(name) != 0xffffffff) {
                     str[2] = '0' + minor;
                     str[4] = '0' + patch;
-                    str[7] = '0' + build;
+              //      str[7] = '0' + build;
                     return true;
                 }
             }
@@ -683,14 +684,14 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         }
     });
 
-    char version[] = "4.X.Y_0Z";
+    char version[] = "4.X.Y";
     if (!decide_library_version(version)) {
         bug_out("Failed to detect library versions...\n", 0);
     }
 
     // Set up VM options
-    void *extra_class_path   = QT_WA_INLINE((void *)L"-Djava.class.path=qtjambi-$VERHAX$.jar;qtjambi-examples-$VERHAX$.jar;qtjambi-win64-msvc2005x64-$VERHAX$.jar;qtjambi-win32-msvc2005-$VERHAX$.jar;",
-                                            (void *)"-Djava.class.path=qtjambi-$VERHAX$.jar;qtjambi-examples-$VERHAX$.jar;qtjambi-win64-msvc2005x64-$VERHAX$.jar;qtjambi-win32-msvc2005-$VERHAX$.jar;");
+    void *extra_class_path   = QT_WA_INLINE((void *)L"-Djava.class.path=qtjambi-$VER$.jar;qtjambi-examples-$VER$.jar;qtjambi-util-$VER$.jar;qtjambi-win64-msvc2008x64-$VER$.jar;qtjambi-win32-msvc2008-$VER$.jar;",
+                                            (void *)"-Djava.class.path=qtjambi-$VER$.jar;qtjambi-examples-$VER$.jar;qtjambi-util-$VER$.jar;qtjambi-win64-msvc2008x64-$VER$.jar;qtjambi-win32-msvc2008-$VER$.jar;");
 
     JavaVMInitArgs args;
     args.version = JNI_VERSION_1_4;
@@ -714,12 +715,13 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     // search replace all $VERHAX$ with version
     char *pos = new_class_path;
 
-    while (pos = strstr(pos, "$VERHAX$")) {
+    while (pos = strstr(pos, "$VER$")) {
         strncpy(pos, version, strlen(version));
     }
 
     JavaVMOption options[NOPTIONS];
     options[0].optionString = new_class_path;
+
 
 #if defined(_DEBUG)
     options[1].optionString = "-Dcom.trolltech.qt.debug";
