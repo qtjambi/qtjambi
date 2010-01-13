@@ -61,7 +61,9 @@ public class MakeTask extends Task {
         case Windows:
             PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
             String compiler = (String) props.getProperty(null, InitializeTask.COMPILER);
-            if (compiler.equals(InitializeTask.Compiler.MinGW.toString())) {
+
+
+            if (InitializeTask.Compiler.MinGW.toString().equals(compiler)) {
                 return "mingw32-make";
             }
             return "nmake";
