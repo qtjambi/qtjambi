@@ -39,6 +39,9 @@
         description="Initializes the Qt Jambi build environment." >
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
         <copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>
+        
+    	<!-- copy jogl to the jar dir. needed for compilation examples  -->
+        <copy file="jogl/jogl.jar" todir="${jardir}"/>
     </target>
 
     <!--
