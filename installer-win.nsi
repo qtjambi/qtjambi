@@ -35,6 +35,7 @@ Section "" ;No components page, name is not important
   SetOutPath $INSTDIR
   
   ; Put file there
+  File QtJambi.exe
   File qtjambi-4.6.0.jar
   File qtjambi-designer-4.6.0.jar
   File qtjambi-examples-4.6.0.jar
