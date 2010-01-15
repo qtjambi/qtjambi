@@ -11,7 +11,7 @@ SetCompressorDictSize 64
 Name "Qt Jambi Installer"
 
 ; The file to write
-OutFile "setup-qt-jambi-4.6.0.exe"
+OutFile "setup-qt-jambi-4.6.0-win32.exe"
 
 ; The default installation directory
 InstallDir C:\qt-jambi
@@ -42,13 +42,12 @@ Section "" ;No components page, name is not important
   File qtjambi-util-4.6.0.jar
   File qtjambi-win32-msvc2008-4.6.0.jar
   File set_qtjambi_env.bat
-  File installer\changes-4.6.0_01
-  File installer\designer.bat
-  File installer\install.html
-  File installer\LGPL_EXCEPTION.TXT
-  File installer\LICENSE.GPL3
-  File installer\LICENSE.LGPL
-  File installer\readme.html
+  File dist\changes-4.6.0_01
+  File dist\win\designer.bat
+  File dist\install.html
+  File dist\LICENSE.GPL3
+  File dist\LICENSE.LGPL
+  File dist\readme.html
   
   File /r java\src\qtjambi-examples\com
   
