@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS = qtjambi juic qtjambi_core qtjambi_gui qtjambi_sql \
+SUBDIRS = qtjambi qtjambi_core qtjambi_gui qtjambi_sql \
           qtjambi_svg qtjambi_network qtjambi_xml qtjambi_designer designer-integration
 
 contains(QT_CONFIG, webkit): SUBDIRS += qtjambi_webkit

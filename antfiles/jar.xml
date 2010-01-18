@@ -1,0 +1,131 @@
+<project name="qtjambi.jar" default="makejar">
+
+    <!--
+        jar.xml: compile Java sources for a module and generate a jar out of
+        them, with the associated resources.
+
+        This file is called from the main build.xml file and inherits all its
+        properties. It needs two things to operate:
+            * you MUST define the "module" property in the corresponding
+            <ant> target;
+            * the fileset with id "java.src.${module}" MUST exist and be
+            inherited (which means, <ant> MUST be called with
+            inheritrefs="true").
+
+        Optionally, you may call this file with a "destdir" property as well
+        (see the <makejar> target), which will change the destination directory
+        of the generated jar. It is set to ${jardir} by default (see
+        buildpath.properties).
+
+        See the main build.xml files for examples.
+    -->
+
+    <!--
+        Classpath for Java compiling
+    -->
+
+    <path id="java.compile.classpath">
+        <fileset dir="${jardir}" includes="*.jar"/>
+    </path>
+
+    <!--
+        check: is "module" set at all? If not, fail immediately.
+    -->
+
+    <target name="check">
+        <fail message="'module' is not set!">
+            <condition>
+                <not>
+                    <isset property="module"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <!--
+        prepare-sources: copy the already existing sources to the generated
+        sources directory, if it exists - otherwise, the directory is created by
+        this task.
+
+        This target will always be called via the dependency chain, so we make
+        it depend on the <check> target above.
+    -->
+
+    <target name="prepare-sources" depends="check">
+        <mkdir dir="${java.generated.srcdir}/${module}"/>
+        <copy todir="${java.generated.srcdir}/${module}"
+            includeemptydirs="false">
+            <fileset refid="java.src.${module}"/>
+        </copy>
+    </target>
+
+    <!--
+        compile: create the output directory and generate the class files into
+        this directory.
+
+        Note that we need to mkdir ${jardir} here: an empty <classpath> is not
+        supported...
+    -->
+
+    <target name="compile" depends="prepare-sources">
+        <mkdir dir="${jardir}"/>
+        <mkdir dir="${java.outdir}/${module}"/>
+        <javac source="1.5" target="1.5" debug="true" deprecation="true"
+            fork="true" memorymaximumsize="1024m"
+            destdir="${java.outdir}/${module}">
+            <src path="${java.generated.srcdir}/${module}"/>
+            <classpath refid="java.compile.classpath"/>
+        </javac>
+    </target>
+
+    <!--
+        copy-resources: copy all non Java files to the output directory so that
+        the <jar> task is ready to go. Do NOT include the *.jui files, nor the
+        Java source files. We also create the output directory here: this is
+        basically a no-op since the <compile> target will have generated it
+        anyway, but who knows - someday, a pure "data jar" (with no class files)
+        may be in order.
+
+        FIXME: maybe there should be a dedicated resources directory, but what
+        about *.jui files?
+    -->
+
+    <target name="copy-resources">
+        <mkdir dir="${java.outdir}/${module}"/>
+        <copy todir="${java.outdir}/${module}" includeemptydirs="false">
+            <fileset dir="${java.srcdir}/${module}">
+                <include name="**/*"/>
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.jui"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!--
+        makejar: the final target - make the jar. PLEASE NOTE that this target
+        makes use of one of ant's "features": properties are immutable. The
+        destdir property is set here, but if this file is called with this
+        property already set, it WILL NOT be overwritten. This is what we want,
+        but this can be very counterintuitive at first (and this is the reason
+        why ant-contrib introduced "non-immutable" properties via <var>).
+
+        Note the <manifest> entry: ant defines ${user.name} by default (that
+        should probably be something more descriptive, like "git config
+        user.email" or the like), and ${TODAY} is inherited from the
+        "<timestamp/>" in build.xml. This was in the original build.xml and has
+        been backported as such. Maybe we could just get rid of it, I don't
+        know...
+    -->
+
+    <target name="makejar" depends="compile, copy-resources">
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar basedir="${java.outdir}/${module}"
+            destfile="${destdir}/${module}.jar">
+        <manifest>
+            <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+        </manifest>
+        </jar>
+    </target>
+
+</project>

@@ -158,7 +158,7 @@
       system, typically \c {bin for windows and \c lib for other
       platforms.
 
-      \o \c qtjambi.qtdir}; The location of Qt, picked up from the
+      \o \c {qtjambi.qtdir}; The location of Qt, picked up from the
       environment variable QTDIR. If QTDIR is not available when the
       task is running an error will be thrown.
 
