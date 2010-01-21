@@ -4,10 +4,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sf.qtjambi</groupId>
-    <artifactId>QtJambiMavenPlugin-linux64</artifactId>
+    <artifactId>qtjambi-maven-plugin-linux64</artifactId>
     <version>%QTJAMBI_VERSION%</version>
     <packaging>jar</packaging>
-    <name>QtJambiMavenPlugin-linux64</name>
+    <name>qtjambi-maven-plugin-linux64</name>
 
 </project>
 

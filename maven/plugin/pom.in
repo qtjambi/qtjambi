@@ -4,10 +4,10 @@
 	
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sf.qtjambi</groupId>
-    <artifactId>QtJambiMavenPlugin</artifactId>
+    <artifactId>qtjambi-maven-plugin</artifactId>
     <version>0.1</version>
     <packaging>maven-plugin</packaging>
-    <name>QtJambiMavenPlugin</name>
+    <name>qtjambi-maven-plugin</name>
     <url>http://maven.apache.org</url>
 
 

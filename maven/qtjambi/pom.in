@@ -3,10 +3,10 @@
 	
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sf.qtjambi</groupId>
-  <artifactId>QtJambi</artifactId>
+  <artifactId>qtjambi</artifactId>
   <version>%QTJAMBI_VERSION%</version>
   <packaging>jar</packaging>
-  <name>QtJambi</name>
+  <name>qtjambi</name>
   <url>http://maven.apache.org</url>
 
     <!-- OS and platform specific profiles for QtJambi binaries -->
