@@ -1,0 +1,17 @@
+
+# you need to configure following variables
+
+QTJAMBI_VERSION=4.5.2_01
+
+QTJAMBI_LINUX32_RELEASE=~/qtjambi/qtjambi-linux32-lgpl-4.5.2_01
+QTJAMBI_LINUX64_RELEASE=~/qtjambi/qtjambi-linux64-lgpl-4.5.2_01
+QTJAMBI_WIN32_RELEASE=~/qtjambi/qtjambi-win32-lgpl-4.5.2_01
+QTJAMBI_WIN64_RELEASE=~/qtjambi/qtjambi-win64-lgpl-4.5.2_01
+QTJAMBI_MAC_RELEASE=
+
+# Maven stuff
+# TODO: this should be used as deploy-deploy file together with REPO in the future, now should stay install:install-file
+MAVEN_ACTION="install"
+MAVEN_SUBACTION="install-file"
+MAVEN_REPO=""
+
