@@ -1,11 +1,7 @@
 #!/bin/bash -x
 
 source env_releases
-
-function die {
-	echo "ERROR!"
-	exit 1
-}
+source functions
 
 
 # prepare poms

@@ -12,7 +12,7 @@
     <dependency>
             <groupId>net.sf.qtjambi</groupId>
             <artifactId>qtjambi-base-%PLATFORM%</artifactId>
-            <version>%VERSION%</version>
+            <version>%QTJAMBI_VERSION%</version>
             <type>jar</type>
     </dependency>
   </dependencies>

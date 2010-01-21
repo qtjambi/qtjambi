@@ -3,11 +3,7 @@
 # TODO mac
 
 source env_releases
-
-function die {
-	echo "ERROR!"
-	exit 1
-}
+source functions
 
 for i in resources-linux32 resources-linux64 resources-win32 resources-win64; do
 	mkdir -p ${i}/src/main/resources

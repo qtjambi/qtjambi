@@ -78,7 +78,7 @@
             <dependencies>
                 <dependency>
                     <groupId>net.sf.qtjambi</groupId>
-                    <artifactId>QtJambiMavenPlugin-linux32</artifactId>
+                    <artifactId>qtjambi-maven-plugin-linux32</artifactId>
                     <version>%QTJAMBI_VERSION%</version>
                 </dependency>
             </dependencies>
@@ -95,7 +95,7 @@
             <dependencies>
                 <dependency>
                     <groupId>net.sf.qtjambi</groupId>
-                    <artifactId>QtJambiMavenPlugin-linux64</artifactId>
+                    <artifactId>qtjambi-maven-plugin-linux64</artifactId>
                     <version>%QTJAMBI_VERSION%</version>
                 </dependency>
 
@@ -114,7 +114,7 @@
             <dependencies>
                 <dependency>
                     <groupId>net.sf.qtjambi</groupId>
-                    <artifactId>QtJambiMavenPlugin-win32</artifactId>
+                    <artifactId>qtjambi-maven-plugin-win32</artifactId>
                     <version>%QTJAMBI_VERSION%</version>
                 </dependency>
             </dependencies>
@@ -132,7 +132,7 @@
             <dependencies>
                 <dependency>
                     <groupId>net.sf.qtjambi</groupId>
-                    <artifactId>QtJambiMavenPlugin-win64</artifactId>
+                    <artifactId>qtjambi-maven-plugin-win64</artifactId>
                     <version>%QTJAMBI_VERSION%</version>
                 </dependency>
             </dependencies>
