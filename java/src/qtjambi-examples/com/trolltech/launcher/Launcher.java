@@ -346,7 +346,7 @@ public class Launcher extends QWidget {
 
         for (QFileInfo info : infos) {
             if (info.isDir()) {
-                traverseDirectory(info.absoluteFilePath());
+                traverseDirectory(info.filePath());
             } else if (info.fileName().endsWith(".class")) {
                 int idx = directory.lastIndexOf("#") + 1;
                 if (idx <= 0)
