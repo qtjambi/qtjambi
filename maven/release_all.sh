@@ -18,7 +18,7 @@ rm -rf tmp
 mkdir -p tmp/maven2/net/sf/qtjambi/
 cp -a ~/.m2/repository/net/sf/qtjambi/* tmp/maven2/net/sf/qtjambi/ || die
 echo "Options +Indexes" > tmp/maven2/.htaccess
-cp usage.txt tmp
+cp usage.txt tmp/maven2
 cd tmp
 
 # upload maven repo to sf.net
