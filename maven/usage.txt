@@ -35,7 +35,7 @@ Add this into your pom.xml:
 				<noObsoleteTranslations>true</noObsoleteTranslations>
 			</configuration>
 		</plugin>
-	<plugins>
+	</plugins>
 </build>
 
 
