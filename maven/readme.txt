@@ -1,6 +1,7 @@
 This is QTJambi maven stuff.
 
-  ** For quickstart, go to "INSTALLATION" section...
+  ** For quickstart as qtjamvbi developer, go to "INSTALLATION" section...
+  ** For quickstart as user see usage.txt
 
 
 It consists of 2 main sections:

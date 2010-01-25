@@ -18,14 +18,11 @@ rm -rf tmp
 mkdir -p tmp/maven2/net/sf/qtjambi/
 cp -a ~/.m2/repository/net/sf/qtjambi/* tmp/maven2/net/sf/qtjambi/ || die
 echo "Options +Indexes" > tmp/maven2/.htaccess
+cp usage.txt tmp
 cd tmp
 
 # upload maven repo to sf.net
 read -p "sf.net username: " uname
-stty -echo
-read -p "password: " passw; echo
-stty echo
-
 scp -r maven2 ${uname},qtjambi@web.sourceforge.net://home/groups/q/qt/qtjambi/htdocs
 
 # repo is at http://qtjambi.sourceforge.net/maven2/

@@ -43,6 +43,12 @@ public class QtJambiMOJO extends AbstractMojo {
      */
     private File destinationDir;
     /**
+     * Path to translations dir. If not specified, ./src/main/resources/translations is used.
+     *
+     * @parameter expression="${qtjambi.translationsDir}"
+     */
+    private File translationsDir;
+    /**
      * Base directory.
      *
      * @parameter expression="${basedir}"
@@ -65,6 +71,7 @@ public class QtJambiMOJO extends AbstractMojo {
      * @parameter expression="${qtjambi.noObsoleteTranslations}" default-value=false
      */
     private boolean noObsoleteTranslations;
+
 
     /*
      * 
@@ -116,6 +123,7 @@ public class QtJambiMOJO extends AbstractMojo {
 
     private void setupPlatform() throws MojoExecutionException {
 
+
         // platform specific set of tools
         String platform_bits = System.getProperty("os.arch");
         String platform_name = System.getProperty("os.name").toLowerCase();
@@ -149,6 +157,9 @@ public class QtJambiMOJO extends AbstractMojo {
             }
             if (destinationDir == null) {
                 destinationDir = new File(sourcesDir.getAbsolutePath());
+            }
+            if (translationsDir == null) {
+                translationsDir = new File(baseDir, "src/main/resources/translations");
             }
 
             // create temp directory where qtjambi tools should be extracted
