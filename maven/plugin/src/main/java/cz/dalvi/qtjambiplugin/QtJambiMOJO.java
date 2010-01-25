@@ -354,7 +354,9 @@ public class QtJambiMOJO extends AbstractMojo {
         LinkedList<String> cmd = new LinkedList<String>();
         cmd.add(tool.getFile().getAbsolutePath());
         for (String arg : arguments) {
-            cmd.add(arg);
+            if (arg != null) {
+                cmd.add(arg);
+            }
         }
 
         getLog().debug("Executing: " + cmd.toString());
@@ -416,11 +418,11 @@ public class QtJambiMOJO extends AbstractMojo {
 
                     // [-noobsolete] -extensions java %sourcedir %dstdir -ts test.ts
                     String[] args = new String[]{
-                        noObsoleteTranslations ? "-noobsolete" : "",
+                        noObsoleteTranslations ? "-noobsolete" : null,
                         "-extensions",
                         dotJava.replace(".", ""),
                         sourcesDir.getAbsolutePath(),
-                        destinationDir.getAbsolutePath(),
+                        //destinationDir.getAbsolutePath(),
                         "-ts",
                         ts.getAbsolutePath()
                     };
