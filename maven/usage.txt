@@ -64,4 +64,6 @@ using standard maven project layout.
 To use translations, create zero-length .ts file in translations dir ( >src/main/resources/translations/en_UK.ts ).
 Plugin starts updating that file *1. You should use translations from project resources in your app.
 
+See example project at http://qtjambi.sourceforge.net/maven2/net/sf/qtjambi/testapp/SimpleQtApplication/
+
 *1 - .qm files aren't generated yet, TODO
