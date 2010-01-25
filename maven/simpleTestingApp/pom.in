@@ -51,7 +51,6 @@
                 </executions>
                 <configuration>
                     <sourcesDir>src/main/java</sourcesDir>
-                    <qmDirectory>src/main/resources/translations</qmDirectory>
                     <noObsoleteTranslations>true</noObsoleteTranslations>
                 </configuration>
             </plugin>
