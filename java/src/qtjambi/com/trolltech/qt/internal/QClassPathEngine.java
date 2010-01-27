@@ -58,6 +58,7 @@ import java.util.jar.JarFile;
 
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QAbstractFileEngineIterator;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QDir;
 import com.trolltech.qt.core.QFileInfo;
@@ -662,4 +663,23 @@ public class QClassPathEngine extends QAbstractFileEngine
         }
         JarCache.reset(classpaths);
     }
+    
+    @Override
+    public QAbstractFileEngineIterator beginEntryList(QDir.Filters filters, java.util.List<String> nameFilters)
+    {
+    	String path = "";
+    	if (m_baseName.startsWith("classpath"))
+    		path = m_baseName;
+    	else
+    		path = "classpath:" + m_baseName;
+    	System.out.println("Begin: " + path);
+    	return new QClassPathFileEngineIterator(path, filters, nameFilters);
+    }
+    
+    @Override
+    public QAbstractFileEngineIterator endEntryList() {
+    	return null;
+    }
+    
+
 }
