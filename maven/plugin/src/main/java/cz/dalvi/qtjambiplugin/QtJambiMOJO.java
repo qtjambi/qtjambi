@@ -125,26 +125,30 @@ public class QtJambiMOJO extends AbstractMojo {
 
 
         // platform specific set of tools
-        String platform_bits = System.getProperty("os.arch");
+        int platform_bits = System.getProperty("os.arch").contains("64") ? 64 : 32;
         String platform_name = System.getProperty("os.name").toLowerCase();
+
+        getLog().debug("platform=" + platform_bits + ", os.name=" + platform_name);
+
+        platform_name = platform_name.toLowerCase();
 
         // setup propper file names for current platform
         String[] tool_files;
-        if (platform_name.contains("windows") && platform_bits.equals("x86")) {
+        if (platform_name.contains("windows") && platform_bits == 32) {
             platform = Platforms.WIN32;
             tool_files = new String[]{"juic.exe", "lupdate.exe", "lrelease.exe", "QtCore4.dll", "QtXml4.dll"};
-        } else if (platform_name.contains("windows") && platform_bits.contains("64")) {
+        } else if (platform_name.contains("windows") && platform_bits == 64) {
             platform = Platforms.WIN64;
             tool_files = new String[]{"juic.exe", "lupdate.exe", "lrelease.exe", "QtCore4.dll", "QtXml4.dll"};
-        } else if (platform_name.contains("linux") && platform_bits.equals("x86")) {
+        } else if (platform_name.contains("linux") && platform_bits == 32) {
             platform = Platforms.LIN32;
             tool_files = new String[]{"juic", "lupdate", "lrelease", "libQtCore.so.4", "libQtXml.so.4"};
-        } else if (platform_name.contains("linux") && platform_bits.contains("64")) {
+        } else if (platform_name.contains("linux") && platform_bits == 64) {
             platform = Platforms.LIN64;
             tool_files = new String[]{"juic", "lupdate", "lrelease", "libQtCore.so.4", "libQtXml.so.4"};
-        } else if (platform_name.contains("mac") && platform_bits.equals("x86")) {
+        } else if (platform_name.contains("mac") && platform_bits == 32) {
             throw new MojoExecutionException("Platform mac32 not yet supported");
-        } else if (platform_name.contains("mac") && platform_bits.contains("64")) {
+        } else if (platform_name.contains("mac") && platform_bits == 64) {
             throw new MojoExecutionException("Platform mac64 not yet supported");
         } else {
             throw new MojoExecutionException("Uknown platform");
