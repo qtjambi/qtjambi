@@ -353,8 +353,7 @@
 
   <rejection class="QAbstractEventDispatcher" function-name="filterEvent"/>
   <rejection class="QAbstractEventDispatcher" function-name="setEventFilter"/>
-  <rejection class="QAbstractFileEngine" function-name="beginEntryList"/>
-  <rejection class="QAbstractFileEngine" function-name="endEntryList"/>
+
   <rejection class="QAbstractFileEngine" function-name="extension"/>
   <rejection class="QCoreApplication" function-name="compressEvent"/>
   <rejection class="QCoreApplication" function-name="eventFilter"/>
