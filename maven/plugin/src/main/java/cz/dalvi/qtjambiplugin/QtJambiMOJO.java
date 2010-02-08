@@ -68,7 +68,7 @@ public class QtJambiMOJO extends AbstractMojo {
      */
     private MavenProject project;
     /**
-     * @parameter expression="${qtjambi.noObsoleteTranslations}" default-value=false
+     * @parameter expression="${qtjambi.noObsoleteTranslations}" default-value=true
      */
     private boolean noObsoleteTranslations;
 
