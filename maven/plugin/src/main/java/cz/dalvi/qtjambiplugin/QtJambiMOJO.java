@@ -217,7 +217,7 @@ public class QtJambiMOJO extends AbstractMojo {
         try {
 
             // find jui files in source dir
-            getLog().info("Looking for jui files in " + sourcesDir.getAbsolutePath());
+            getLog().debug("Looking for jui files in " + sourcesDir.getAbsolutePath());
             ArrayList<File> jui_lst = new ArrayList<File>();
             findFiles(sourcesDir, jui_lst, dotJui);
 
@@ -388,11 +388,16 @@ public class QtJambiMOJO extends AbstractMojo {
         Process process = b.start();
         int retval = process.waitFor();
 
+        // log output
+        for (String s : ((List<String>) org.apache.commons.io.IOUtils.readLines(process.getInputStream()))) {
+            getLog().debug(s);
+        }
+
         // check exit code
         if (retval != 0) {
             System.err.println("\n\n");
+            org.apache.commons.io.IOUtils.copy(process.getInputStream(), System.out);
             org.apache.commons.io.IOUtils.copy(process.getErrorStream(), System.err);
-            org.apache.commons.io.IOUtils.copy(process.getInputStream(), System.err);
             System.err.println("\n\n");
             throw new MojoExecutionException(tool.name() + " execution failed!");
         }
@@ -437,7 +442,7 @@ public class QtJambiMOJO extends AbstractMojo {
                         "-extensions",
                         dotJava.replace(".", ""),
                         sourcesDir.getAbsolutePath(),
-                        //destinationDir.getAbsolutePath(),
+                        destinationDir.getAbsolutePath(),
                         "-ts",
                         ts.getAbsolutePath()
                     };
