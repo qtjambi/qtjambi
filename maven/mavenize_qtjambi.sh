@@ -28,8 +28,8 @@ mvn ${MAVEN_ACTION}:${MAVEN_SUBACTION} -Dfile=${QTJAMBI_WIN32_RELEASE}/qtjambi-w
 mvn ${MAVEN_ACTION}:${MAVEN_SUBACTION} -Dfile=${QTJAMBI_WIN64_RELEASE}/qtjambi-${QTJAMBI_VERSION}.jar -DpomFile=qtjambi-base-win64.pom $MAVEN_REPO || die
 mvn ${MAVEN_ACTION}:${MAVEN_SUBACTION} -Dfile=${QTJAMBI_WIN64_RELEASE}/qtjambi-win64-msvc2005x64-${QTJAMBI_VERSION}.jar -DpomFile=qtjambi-win64.pom $MAVEN_REPO || die
 
-mvn ${MAVEN_ACTION}:${MAVEN_SUBACTION} -Dfile=${QTJAMBI_MAC32_RELEASE}/qtjambi-${QTJAMBI_VERSION}.jar -DpomFile=qtjambi-base-mac.pom $MAVEN_REPO || die
-mvn ${MAVEN_ACTION}:${MAVEN_SUBACTION} -Dfile=${QTJAMBI_MAC32_RELEASE}/qtjambi-mac32-gcc-${QTJAMBI_VERSION}.jar -DpomFile=qtjambi-mac.pom $MAVEN_REPO || die
+mvn ${MAVEN_ACTION}:${MAVEN_SUBACTION} -Dfile=${QTJAMBI_MAC32_RELEASE}/qtjambi-${QTJAMBI_VERSION}.jar -DpomFile=qtjambi-base-mac32.pom $MAVEN_REPO || die
+mvn ${MAVEN_ACTION}:${MAVEN_SUBACTION} -Dfile=${QTJAMBI_MAC32_RELEASE}/qtjambi-macosx-gcc-${QTJAMBI_VERSION}.jar -DpomFile=qtjambi-mac32.pom $MAVEN_REPO || die
 
 cd ..
 rm -rf tmp
