@@ -138,6 +138,23 @@
             </dependencies>
         </profile>
 
+       <profile>
+            <id>mac32</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>i386</arch>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>net.sf.qtjambi</groupId>
+                    <artifactId>qtjambi-maven-plugin-mac32</artifactId>
+                    <version>%QTJAMBI_VERSION%</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
     </profiles>
 
 </project>

@@ -7,7 +7,7 @@ QTJAMBI_LINUX32_RELEASE=~/qtjambi/qtjambi-linux32-lgpl-4.5.2_01
 QTJAMBI_LINUX64_RELEASE=~/qtjambi/qtjambi-linux64-lgpl-4.5.2_01
 QTJAMBI_WIN32_RELEASE=~/qtjambi/qtjambi-win32-lgpl-4.5.2_01
 QTJAMBI_WIN64_RELEASE=~/qtjambi/qtjambi-win64-lgpl-4.5.2_01
-QTJAMBI_MAC_RELEASE=
+QTJAMBI_MAC32_RELEASE=~/qtjambi/qtjambi-mac-lgpl-4.5.2_01
 
 # Maven stuff
 # TODO: this should be used as deploy-deploy file together with REPO in the future, now should stay install:install-file
