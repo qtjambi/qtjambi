@@ -5152,6 +5152,11 @@
   <object-type name="QGraphicsObject">
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </object-type>
 <!--   <object-type name="QGraphicsOpacityEffect" /> -->
 <!--   <object-type name="QGraphicsPixelizeEffect" /> -->
