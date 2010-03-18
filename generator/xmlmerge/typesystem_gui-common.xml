@@ -1332,6 +1332,11 @@
     <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </interface-type>
 
   <object-type name="QAbstractGraphicsShapeItem" delete-in-main-thread="yes">
@@ -1346,6 +1351,11 @@
     <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QAbstractItemView">
@@ -1579,6 +1589,11 @@
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </object-type>
   <object-type name="QGraphicsLineItem" delete-in-main-thread="yes">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
@@ -3439,6 +3454,11 @@
             <remove-default-expression />
         </modify-argument>
     </modify-function>
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
 
     <inject-code class="native">
         extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QWidget__1_1qt_1QMessageBox_1setWindowTitle)
@@ -4982,7 +5002,13 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QGraphicsProxyWidget"/> <!-- a QObject so main-thread delete redundant -->
+  <object-type name="QGraphicsProxyWidget"> <!-- a QObject so main-thread delete redundant -->
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
+  </object-type>
   <object-type name="QGraphicsWidget">  <!-- a QObject so main-thread delete redundant -->
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
@@ -4990,6 +5016,11 @@
         <modify-argument index="1">
             <reference-count action="set" variable-name="__rcLayout" />
         </modify-argument>
+    </modify-function>
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
     </modify-function>
 
     <modify-function signature="addAction(QAction*)">
@@ -5122,8 +5153,8 @@
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
   </object-type>
-  <object-type name="QGraphicsOpacityEffect" />
-  <object-type name="QGraphicsPixelizeEffect" />
+<!--   <object-type name="QGraphicsOpacityEffect" /> -->
+<!--   <object-type name="QGraphicsPixelizeEffect" /> -->
   <object-type name="QGraphicsRotation" />
   <object-type name="QGraphicsScale" />
   <object-type name="QGraphicsTransform" />
@@ -5131,6 +5162,10 @@
   <object-type name="QPinchGesture" />
   <object-type name="QProxyStyle" />
   <object-type name="QSwipeGesture" />
+  <object-type name="QGraphicsOpacityEffect"/>
+  <object-type name="QGraphicsColorizeEffect"/>
+  <object-type name="QGraphicsBlurEffect"/>
+  <object-type name="QGraphicsDropShadowEffect"/>
   <object-type name="QTouchEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::TouchBegin || %1-&gt;type() == QEvent::TouchUpdate || %1-&gt;type() == QEvent::TouchEnd" />
   
   <!-- Inefficient hash codes -->
