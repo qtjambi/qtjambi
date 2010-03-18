@@ -219,7 +219,11 @@ class QCoreApplication___ extends QCoreApplication {
     protected final static com.trolltech.qt.QNativePointer argv(String args[]) {
         String newArgs[] = new String[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
-        newArgs[0] = "Qt Jambi application";
+        try {
+		newArgs[0] = System.getProperty("qt.application.path", "Qt Jambi application");
+	} catch (Exception e) {
+		newArgs[0] = "Qt Jambi application";
+	}
         argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
         return argv;
     }
