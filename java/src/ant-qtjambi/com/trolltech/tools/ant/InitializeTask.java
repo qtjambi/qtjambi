@@ -44,9 +44,12 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
-
 import java.io.*;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.PropertyHelper;
+import org.apache.tools.ant.Task;
 
 import com.trolltech.qt.internal.*;
 
@@ -136,9 +139,9 @@ public class InitializeTask extends Task {
 
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
-        props.setNewProperty(null, OSNAME, decideOSName());
+        props.setNewProperty(OSNAME, decideOSName());
 
-        props.setNewProperty(null, COMPILER, decideCompiler());
+        props.setNewProperty(COMPILER, decideCompiler());
 
         checkCompilerDetails();
 
@@ -154,43 +157,43 @@ public class InitializeTask extends Task {
             }
         }
 
-        props.setNewProperty(null, CONFIGURATION, decideConfiguration());
+        props.setNewProperty(CONFIGURATION, decideConfiguration());
 
         // These depend on both qtdir, libsubdir and configration, so
         // run rather late...
         String phonon = decidePhonon();
         if ("true".equals(phonon)) {
-            props.setNewProperty(null, PHONON, phonon);
+            props.setNewProperty(PHONON, phonon);
             switch (OSInfo.os()) {
             case Windows:
-                props.setNewProperty(null, PHONON_DS9, "true");
+                props.setNewProperty(PHONON_DS9, "true");
                 break;
             case Linux:
-                props.setNewProperty(null, PHONON_GSTREAMER, "true");
+                props.setNewProperty(PHONON_GSTREAMER, "true");
                 if (doesQtLibExist("QtDBus", 4))
-                    props.setNewProperty(null, DBUS, "true");
+                    props.setNewProperty(DBUS, "true");
                 break;
             case MacOS:
-                props.setNewProperty(null, PHONON_QT7, "true");
+                props.setNewProperty(PHONON_QT7, "true");
                 if (doesQtLibExist("QtDBus", 4))
-                    props.setNewProperty(null, DBUS, "true");
+                    props.setNewProperty(DBUS, "true");
                 break;
             }
         }
 
-        props.setNewProperty(null, SQLITE, decideSqlite());
+        props.setNewProperty(SQLITE, decideSqlite());
 
         String webkit = decideWebkit();
         if ("true".equals(webkit) && "true".equals(phonon))
-            props.setNewProperty(null, WEBKIT, webkit);
+            props.setNewProperty(WEBKIT, webkit);
 
         String patterns = decideXMLPatterns();
         if ("true".equals(patterns))
-            props.setNewProperty(null, XMLPATTERNS, patterns);
+            props.setNewProperty(XMLPATTERNS, patterns);
 
         String opengl = decideOpenGL();
         if ("true".equals(opengl))
-            props.setNewProperty(null, OPENGL, opengl);
+            props.setNewProperty(OPENGL, opengl);
     }
 
     private void checkCompilerDetails() {
@@ -202,7 +205,7 @@ public class InitializeTask extends Task {
                 String vcdir = System.getenv("VSINSTALLDIR");
                 if (vcdir == null)
                     throw new BuildException("missing required environment variable 'VSINSTALLDIR' used to locate MSVC redistributables");
-                props.setNewProperty(null, VSINSTALLDIR, vcdir);
+                props.setNewProperty(VSINSTALLDIR, vcdir);
 
                 String redistDir;
                 if (compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64)
@@ -211,7 +214,7 @@ public class InitializeTask extends Task {
                     redistDir = vcdir + "/vc/redist/x86";
                 if (!new File(redistDir).exists())
                     throw new BuildException("MSVC redistributables not found in '" + redistDir + "'");
-                props.setNewProperty(null, VSREDISTDIR, redistDir);
+                props.setNewProperty(VSREDISTDIR, redistDir);
 
                 break;
         }
@@ -343,9 +346,9 @@ public class InitializeTask extends Task {
 
     private boolean doesQtLibExist(String name, int version) {
         StringBuilder path = new StringBuilder();
-        path.append(props.getProperty(null, QTDIR));
+        path.append(props.getProperty(QTDIR));
         path.append("/");
-        path.append(props.getProperty(null, LIBSUBDIR));
+        path.append(props.getProperty(LIBSUBDIR));
         path.append("/");
         path.append(LibraryEntry.formatQtName(name, debug, version));
         return new File(path.toString()).exists();
@@ -353,7 +356,7 @@ public class InitializeTask extends Task {
 
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
-        path.append(props.getProperty(null, QTDIR));
+        path.append(props.getProperty(QTDIR));
         path.append("/plugins/");
         path.append(subdir);
         path.append("/");

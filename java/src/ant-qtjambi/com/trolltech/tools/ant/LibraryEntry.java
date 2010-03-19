@@ -129,11 +129,11 @@ public class LibraryEntry extends Task {
 
         PropertyHelper h = PropertyHelper.getPropertyHelper(getProject());
 
-        boolean debug = "debug".equals(h.getProperty(null, InitializeTask.CONFIGURATION));
+        boolean debug = "debug".equals(h.getProperty(InitializeTask.CONFIGURATION));
 
         // Change subdir...
         if (subdir.equals("auto"))
-            subdir = (String) h.getProperty(null, InitializeTask.LIBSUBDIR);
+            subdir = (String) h.getProperty(InitializeTask.LIBSUBDIR);
 
         // Fix name...
         if (type.equals(TYPE_PLUGIN))       name = formatPluginName(name, debug);

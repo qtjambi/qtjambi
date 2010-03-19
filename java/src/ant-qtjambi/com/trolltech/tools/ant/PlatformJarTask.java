@@ -44,10 +44,12 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
-
 import java.util.*;
 import java.io.*;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.PropertyHelper;
+import org.apache.tools.ant.Task;
 
 import com.trolltech.qt.internal.*;
 
@@ -107,7 +109,7 @@ public class PlatformJarTask extends Task {
     public void execute_internal() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
 
-        debugConfiguration = "debug".equals(props.getProperty(null, InitializeTask.CONFIGURATION));
+        debugConfiguration = "debug".equals(props.getProperty(InitializeTask.CONFIGURATION));
 
         if (outdir == null)
             throw new BuildException("Missing required attribute 'outdir'. This directory is used for building the .jar file...");
@@ -148,7 +150,7 @@ public class PlatformJarTask extends Task {
         }
 
         writer.println("<qtjambi-deploy"
-                       + " system=\"" + props.getProperty(null, InitializeTask.OSNAME).toString()
+                       + " system=\"" + props.getProperty(InitializeTask.OSNAME).toString()
                        + "\">");
         writer.println("\n  <cache key=\"" + cacheKey + "\" />");
 
@@ -237,7 +239,7 @@ public class PlatformJarTask extends Task {
 
 
     private void processSystemLibs() {
-        String compiler = String.valueOf(props.getProperty(null, InitializeTask.COMPILER));
+        String compiler = String.valueOf(props.getProperty(InitializeTask.COMPILER));
         InitializeTask.Compiler c = InitializeTask.Compiler.resolve(compiler);
 
         String vcnumber = "80";
@@ -256,7 +258,7 @@ public class PlatformJarTask extends Task {
                 break;
             }
 
-            File crt = new File(props.getProperty(null, InitializeTask.VSREDISTDIR).toString(),
+            File crt = new File(props.getProperty(InitializeTask.VSREDISTDIR).toString(),
                                 "Microsoft.VC" + vcnumber + ".CRT");
 
             String files[] = new String[] { "Microsoft.VC" + vcnumber + ".CRT.manifest",
@@ -330,7 +332,7 @@ public class PlatformJarTask extends Task {
             throw new BuildException("Runtime library '" + name + "' was not found in library path...");
         }
 
-        String libDir = props.getProperty(null, InitializeTask.LIBSUBDIR).toString();
+        String libDir = props.getProperty(InitializeTask.LIBSUBDIR).toString();
 
         try {
             Util.copy(rt, new File(outdir, libDir + "/" + name));
