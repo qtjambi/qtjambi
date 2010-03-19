@@ -2,12 +2,14 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = qtjambi qtjambi_core qtjambi_gui qtjambi_sql \
-          qtjambi_svg qtjambi_network qtjambi_xml qtjambi_designer designer-integration
+          qtjambi_svg qtjambi_network qtjambi_xml \
+	  qtjambi_designer designer-integration
 
 contains(QT_CONFIG, webkit): SUBDIRS += qtjambi_webkit
 contains(QT_CONFIG, phonon): SUBDIRS += qtjambi_phonon
 contains(QT_CONFIG, xmlpatterns): SUBDIRS += qtjambi_xmlpatterns
 contains(QT_CONFIG, opengl): SUBDIRS += qtjambi_opengl
+contains(QT_CONFIG, help): SUBDIRS += qtjambi_help
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs

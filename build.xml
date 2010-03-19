@@ -61,7 +61,7 @@
         <make dir="generator"/>
     </target>
 
-    <target name="tools.juic.qmake" depends="init">
+<!--    <target name="tools.juic.qmake" depends="init">
         <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"/>
     </target>
 
@@ -80,7 +80,7 @@
                 <include name="**/*.jui"/>
             </juic>
         </sequential>
-    </macrodef>
+    </macrodef>-->
 
     <!--
         END of tools building
