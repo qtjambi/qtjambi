@@ -6,7 +6,7 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
 
-  <rejection class="QGenericMatrix" />  
+<!--   <rejection class="QGenericMatrix" />   -->
   <rejection class="QPixmapFilterPrivate" />
   <rejection class="QPenPrivate" />
   <rejection class="QGtkStyle" />
@@ -78,6 +78,8 @@
   <rejection class="QAccessibleInterface" function-name="foregroundColor"/>
   <rejection class="QAccessibleInterface" function-name="textInterface"/>
   <rejection class="QAccessibleInterface" function-name="valueInterface"/>
+  <rejection class="QAccessibleInterface" function-name="actionInterface"/>
+  <rejection class="QAccessibleInterface" function-name="imageInterface"/>
   <rejection class="QAccessibleInterface" function-name="tableInterface"/>
   <rejection class="QAccessibleInterface" function-name="editableTextInterface"/>
   <rejection class="QAccessibleInterface" function-name="cast_helper"/>
@@ -414,6 +416,10 @@
   <enum-type name="QWizard::WizardStyle"/>
   <enum-type name="QImageIOPlugin::Capability" flags="QImageIOPlugin::Capabilities" />
   <enum-type name="QStackedLayout::StackingMode" />
+  <enum-type name="QGraphicsBlurEffect::BlurHint" flags="QGraphicsBlurEffect::BlurHints" />
+  <enum-type name="QGesture::GestureCancelPolicy" />
+  <enum-type name="QGraphicsEffect::PixmapPadMode" />
+  <enum-type name="QPinchGesture::ChangeFlag" flags="QPinchGesture::ChangeFlags" />
 
   <enum-type name="QWizard::WizardButton">
     <reject-enum-value name="NStandardButtons"/>
@@ -828,6 +834,24 @@
   <value-type name="QMatrix4x4">
     <modify-function signature="data()const" remove="all" />
     <modify-function signature="operator()(int, int)const" remove="all" />
+  </value-type>
+  <value-type name="QMatrix3x3">
+    <!--<modify-function signature="data()const" remove="all" />
+    <modify-function signature="operator()(int, int)const" remove="all" />-->
+  </value-type>
+  <value-type name="QMatrix4x3">
+  </value-type>
+  <value-type name="QMatrix4x2">
+  </value-type>
+  <value-type name="QMatrix3x4">
+  </value-type>
+  <value-type name="QMatrix3x2">
+  </value-type>
+  <value-type name="QMatrix2x4">
+  </value-type>
+  <value-type name="QMatrix2x3">
+  </value-type>
+  <value-type name="QMatrix2x2">
   </value-type>
   <value-type name="QMatrix">
       <extra-includes>
@@ -3177,10 +3201,10 @@
         </modify-argument>
     </modify-function>
 
-      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
-      <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
-      <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
-      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="matrix()const" remove="all"/>--> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="resetMatrix()" remove="all"/>--> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="sceneMatrix()const" remove="all"/>--> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>--> <!--### Obsolete in 4.3-->
  </object-type>
 
   <object-type name="QCompleter">
@@ -5003,11 +5027,11 @@
     </modify-function>
   </object-type>
   <object-type name="QGraphicsProxyWidget"> <!-- a QObject so main-thread delete redundant -->
-    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+    <!--<modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
 	<modify-argument index="1">
 	    <define-ownership class="java" owner="c++"/>
 	</modify-argument>
-    </modify-function>
+    </modify-function>-->
   </object-type>
   <object-type name="QGraphicsWidget">  <!-- a QObject so main-thread delete redundant -->
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
@@ -5017,11 +5041,11 @@
             <reference-count action="set" variable-name="__rcLayout" />
         </modify-argument>
     </modify-function>
-    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+    <!--<modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
 	<modify-argument index="1">
 	    <define-ownership class="java" owner="c++"/>
 	</modify-argument>
-    </modify-function>
+    </modify-function>-->
 
     <modify-function signature="addAction(QAction*)">
         <modify-argument index="1">

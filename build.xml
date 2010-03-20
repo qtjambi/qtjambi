@@ -61,7 +61,7 @@
         <make dir="generator"/>
     </target>
 
-<!--    <target name="tools.juic.qmake" depends="init">
+    <target name="tools.juic.qmake" depends="init">
         <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"/>
     </target>
 
@@ -80,7 +80,7 @@
                 <include name="**/*.jui"/>
             </juic>
         </sequential>
-    </macrodef>-->
+    </macrodef>
 
     <!--
         END of tools building
@@ -247,6 +247,7 @@
             <library name="QtXml"     type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" load="yes"/>
+            <library name="QtHelp"     type="qt" rootPath="${qtjambi.qtdir}" load="yes"/>
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.opengl}"/>
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
@@ -278,6 +279,7 @@
             <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_help"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_phonon"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.phonon}"/>
@@ -375,6 +377,8 @@
         <xmlmerge victim="opengl"/>
         <xmlmerge victim="sql"/>
         <xmlmerge victim="svg"/>
+        <xmlmerge victim="help"/>
+        <xmlmerge victim="multimedia"/>
         <xmlmerge victim="webkit"/>
         <xmlmerge victim="phonon"/>
         <xmlmerge victim="xmlpatterns"/>

@@ -16,6 +16,7 @@
     <enum-type name="QWebPage::LinkDelegationPolicy" />
     <enum-type name="QWebPluginFactory::Extension" />
     <enum-type name="QWebElement::StyleResolveStrategy" />
+    <enum-type name="QWebFrame::RenderLayer" />
     <enum-type name="QWebHistory::HistoryStateVersion">
         <reject-enum-value name="DefaultHistoryVersion" />
     </enum-type>
@@ -23,6 +24,7 @@
     
     
     <object-type name="QGraphicsWebView" />    
+<!--     <object-type name="QWebElementCollection" /> -->
     <object-type name="QWebView">
         <modify-function signature="setPage(QWebPage*)">
             <modify-argument index="1">

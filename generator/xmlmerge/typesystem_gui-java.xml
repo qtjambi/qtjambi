@@ -299,6 +299,8 @@
             <import-file name="typesystem_gui-java.java" quote-after-line="class QBitmap___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
+    
+    <value-type name="QGraphicsObject"/>
 
     <value-type name="QTextLine">
         <inject-code>
@@ -1034,6 +1036,21 @@
             </inject-code>
         </modify-function>
     </interface-type>
+    
+    <object-type name="QGraphicsObject" delete-in-main-thread="yes">
+        <modify-function signature="setGroup(QGraphicsItemGroup*)">
+            <modify-argument index="1">
+                <!-- Handled by injected code in QGraphicsItem -->
+                <reference-count action="ignore" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="setParentItem(QGraphicsItem*)">
+            <modify-argument index="1">
+                <!-- Handled by injected code in QGraphicsItem -->
+                <reference-count action="ignore" />
+            </modify-argument>
+        </modify-function>
+    </object-type>    
 
     <object-type name="QAbstractGraphicsShapeItem">
         <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">

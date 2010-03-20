@@ -543,6 +543,8 @@
   <enum-type name="Qt::UIEffect"/>
   <enum-type name="Qt::WhiteSpaceMode"/>
   <enum-type name="Qt::WindowModality"/>
+  <enum-type name="Qt::GestureType"/>
+  <enum-type name="Qt::GestureFlag" flags="Qt::GestureFlags"/>
   <enum-type name="Qt::WindowState" flags="Qt::WindowStates"/>
   <enum-type name="Qt::WindowType" flags="Qt::WindowFlags"/>
   <enum-type name="QDirIterator::IteratorFlag" flags="QDirIterator::IteratorFlags"/>
