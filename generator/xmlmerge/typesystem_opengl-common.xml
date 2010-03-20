@@ -41,12 +41,28 @@
     <modify-function signature="setUniformValueArray(int, const QVector2D *, int)" rename="setUniformValueArray_QVector2D" />
     <modify-function signature="setUniformValueArray(int, const QVector3D *, int)" rename="setUniformValueArray_QVector3D" />
     <modify-function signature="setUniformValueArray(int, const QVector4D *, int)" rename="setUniformValueArray_QVector4D" />
-    
+    <modify-function signature="setUniformValueArray(int, const QMatrix2x2 *, int)" rename="setUniformValueArray_QMatrix2x2" />
+    <modify-function signature="setUniformValueArray(int, const QMatrix3x2 *, int)" rename="setUniformValueArray_QMatrix3x2" />
+    <modify-function signature="setUniformValueArray(int, const QMatrix4x2 *, int)" rename="setUniformValueArray_QMatrix4x2" />
+    <modify-function signature="setUniformValueArray(int, const QMatrix2x3 *, int)" rename="setUniformValueArray_QMatrix2x3" />
+    <modify-function signature="setUniformValueArray(int, const QMatrix3x3 *, int)" rename="setUniformValueArray_QMatrix3x3" />
+    <modify-function signature="setUniformValueArray(int, const QMatrix4x3 *, int)" rename="setUniformValueArray_QMatrix4x3" />
+    <modify-function signature="setUniformValueArray(int, const QMatrix2x4 *, int)" rename="setUniformValueArray_QMatrix2x4" />
+    <modify-function signature="setUniformValueArray(int, const QMatrix3x4 *, int)" rename="setUniformValueArray_QMatrix3x4" />
     <modify-function signature="setUniformValueArray(const char*, const GLint *, int)" rename="setUniformValueArray_int" />
     <modify-function signature="setUniformValueArray(const char*, const GLuint *, int)" remove="all" />
     <modify-function signature="setUniformValueArray(const char*, const QVector2D *, int)" rename="setUniformValueArray_QVector2D" />
     <modify-function signature="setUniformValueArray(const char*, const QVector3D *, int)" rename="setUniformValueArray_QVector3D" />
     <modify-function signature="setUniformValueArray(const char*, const QVector4D *, int)" rename="setUniformValueArray_QVector4D" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix2x2 *, int)" rename="setUniformValueArray_QMatrix2x2" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix3x2 *, int)" rename="setUniformValueArray_QMatrix3x2" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix4x2 *, int)" rename="setUniformValueArray_QMatrix4x2" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix2x3 *, int)" rename="setUniformValueArray_QMatrix2x3" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix3x3 *, int)" rename="setUniformValueArray_QMatrix3x3" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix4x3 *, int)" rename="setUniformValueArray_QMatrix4x3" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix2x4 *, int)" rename="setUniformValueArray_QMatrix2x4" />
+    <modify-function signature="setUniformValueArray(const char*, const QMatrix3x4 *, int)" rename="setUniformValueArray_QMatrix3x4" />
+    
     <modify-function signature="setUniformValue(int, GLuint)" remove="all" />
     <modify-function signature="setUniformValue(const char*, GLuint)" remove="all" />
     <modify-function signature="setUniformValue(int, Array)" remove="all" />
