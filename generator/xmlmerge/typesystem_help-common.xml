@@ -1,0 +1,46 @@
+<typesystem>
+  <!--<enum-type name="QGraphicsSvgItem::enum_1"/>-->
+
+<!--   <object-type name="QHelpContentItem"> -->
+    <!--<extra-includes>
+        <include file-name="QRectF" location="global" />
+        <include file-name="QMatrix" location="global" />
+        <include file-name="QSize" location="global" />
+        <include file-name="QByteArray" location="global" />
+    </extra-includes>-->
+<!--   </object-type> -->
+
+<!--   <object-type name="QHelpContentModel"> -->
+    <!--<extra-includes>
+        <include file-name="QByteArray" location="global" />
+        <include file-name="QSvgRenderer" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>-->
+<!--   </object-type> -->
+
+<!--   <object-type name="QHelpContentWidget"> -->
+    <!--<modify-function signature="setOutputDevice(QIODevice*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcOutputDevice" />
+        </modify-argument>
+    </modify-function>-->
+<!--   </object-type> -->
+
+  <!--<object-type name="QHelpEngine">
+  </object-type>
+  <object-type name="QHelpEngineCore">
+  </object-type>
+  <object-type name="QHelpIndexModel">
+  </object-type>
+  <object-type name="QHelpIndexWidget">
+  </object-type>
+  <object-type name="QHelpSearchEngine">
+  </object-type>
+  <object-type name="QHelpSearchQuery">
+  </object-type>
+  <object-type name="QHelpSearchQueryWidget">
+  </object-type>
+  <object-type name="QHelpSearchResultWidget">
+  </object-type>-->
+
+</typesystem>
