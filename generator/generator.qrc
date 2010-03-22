@@ -10,6 +10,7 @@
 <file>typesystem_opengl-java.java</file>
 <file alias="typesystem_svg.txt">typesystem_svg.xml</file>
 <file alias="typesystem_help.txt">typesystem_help.xml</file>
+<file alias="typesystem_multimedia.txt">typesystem_multimedia.xml</file>
 <file alias="typesystem_network.txt">typesystem_network.xml</file>
 <file>typesystem_network-java.java</file>
 <file alias="typesystem_xml.txt">typesystem_xml.xml</file>
