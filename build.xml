@@ -247,7 +247,8 @@
             <library name="QtXml"     type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" load="yes"/>
-            <library name="QtHelp"     type="qt" rootPath="${qtjambi.qtdir}" load="yes"/>
+            <library name="QtHelp"     type="qt" rootPath="${qtjambi.qtdir}"/>
+            <library name="QtMultimedia"     type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.opengl}"/>
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
@@ -280,6 +281,7 @@
             <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_help"     type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_multimedia"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_phonon"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.phonon}"/>
