@@ -10,7 +10,8 @@
 <enum-type name="QAbstractVideoBuffer::HandleType"/>
 <enum-type name="QAbstractVideoBuffer::MapMode"/>
 <enum-type name="QAbstractVideoSurface::Error"/>
-<enum-type name="QAudioFormat::Endian"/>
+<enum-type name="QAudioFormat::Endian">
+</enum-type>
 <enum-type name="QAudioFormat::SampleType"/>
 <enum-type name="QVideoSurfaceFormat::Direction"/>
 <enum-type name="QVideoSurfaceFormat::YCbCrColorSpace"/>

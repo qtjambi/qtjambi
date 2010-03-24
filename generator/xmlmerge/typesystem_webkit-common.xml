@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
 <typesystem>
     <namespace-type name="WebCore"/>
-    <rejection name="QWebElementCollection::const_iterator" />
-    <rejection name="QWebElementCollection::iterator" />
+    <rejection class="QWebElementCollection::const_iterator" />
+    <rejection class="QWebElementCollection::iterator" />
+    <rejection class="QWebElementCollection" function-name="constBegin" />
+    <rejection class="QWebElementCollection" function-name="begin" />
+    <rejection class="QWebElementCollection" function-name="constEnd" />
+    <rejection class="QWebElementCollection" function-name="end" />
 
     <enum-type name="QWebSettings::FontFamily"/>
     <enum-type name="QWebSettings::FontSize"/>
@@ -19,18 +23,14 @@
     <enum-type name="QWebPluginFactory::Extension" />
     <enum-type name="QWebElement::StyleResolveStrategy" />
     <enum-type name="QWebFrame::RenderLayer" />
-    <enum-type name="QWebHistory::HistoryStateVersion">
+    <!--<enum-type name="QWebHistory::HistoryStateVersion">
         <reject-enum-value name="DefaultHistoryVersion" />
-    </enum-type>
+    </enum-type>-->
     <enum-type name="QWebPage::ErrorDomain" />
     
     <object-type name="QGraphicsWebView" />    
     <value-type name="QWebElementCollection" />
     <object-type name="QWebInspector" />
-    <object-type name="QGraphicsWebView" />
-    <value-type name="" />
-    <value-type name="" />
-    <value-type name="" />
     
     <object-type name="QWebView">
         <modify-function signature="setPage(QWebPage*)">
@@ -51,9 +51,9 @@
     <object-type name="QWebPage::ExtensionReturn" />
     <object-type name="QWebPage::ChooseMultipleFilesExtensionReturn" />
     <object-type name="QWebHistory">
-      <modify-function signature="saveState(QWebHistory::HistoryStateVersion)const">
+      <!--<modify-function signature="saveState(QWebHistory::HistoryStateVersion)const">
          <modify-argument index="1"><remove-default-expression /></modify-argument>
-      </modify-function>
+      </modify-function>-->
     </object-type>
     <object-type name="QWebSettings"/>
     <object-type name="QWebPage">
@@ -98,10 +98,8 @@
     </object-type>
 
     <object-type name="QWebPluginFactory" />
-    <object-type name="QWebPluginDatabase" />
-    <object-type name="QWebInspector" />
 
-    <value-type name="QWebPluginInfo" />
+<!--     <value-type name="QWebPluginInfo" /> -->
     <value-type name="QWebElement" />
     <value-type name="QWebPluginFactory::Plugin" />
     <value-type name="QWebPluginFactory::MimeType" />

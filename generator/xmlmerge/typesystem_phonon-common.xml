@@ -121,9 +121,9 @@
         </modify-function>
     </object-type>
     
-     <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
-     <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
-     <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
+     <!--<value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />-->
+<!--      <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" /> -->
+<!--      <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" /> -->
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'MediaSource' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Path' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
