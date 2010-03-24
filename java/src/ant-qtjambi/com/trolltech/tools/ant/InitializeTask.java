@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -44,12 +44,9 @@
 
 package com.trolltech.tools.ant;
 
-import java.io.*;
+import org.apache.tools.ant.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.PropertyHelper;
-import org.apache.tools.ant.Task;
+import java.io.*;
 
 import com.trolltech.qt.internal.*;
 
@@ -139,9 +136,9 @@ public class InitializeTask extends Task {
 
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
-        props.setNewProperty(OSNAME, decideOSName());
+        props.setNewProperty((String) null, OSNAME, decideOSName());
 
-        props.setNewProperty(COMPILER, decideCompiler());
+        props.setNewProperty((String) null, COMPILER, decideCompiler());
 
         checkCompilerDetails();
 
@@ -157,43 +154,43 @@ public class InitializeTask extends Task {
             }
         }
 
-        props.setNewProperty(CONFIGURATION, decideConfiguration());
+        props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
         // These depend on both qtdir, libsubdir and configration, so
         // run rather late...
         String phonon = decidePhonon();
         if ("true".equals(phonon)) {
-            props.setNewProperty(PHONON, phonon);
+            props.setNewProperty((String) null, PHONON, phonon);
             switch (OSInfo.os()) {
             case Windows:
-                props.setNewProperty(PHONON_DS9, "true");
+                props.setNewProperty((String) null, PHONON_DS9, "true");
                 break;
             case Linux:
-                props.setNewProperty(PHONON_GSTREAMER, "true");
+                props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
                 if (doesQtLibExist("QtDBus", 4))
-                    props.setNewProperty(DBUS, "true");
+                    props.setNewProperty((String) null, DBUS, "true");
                 break;
             case MacOS:
-                props.setNewProperty(PHONON_QT7, "true");
+                props.setNewProperty((String) null, PHONON_QT7, "true");
                 if (doesQtLibExist("QtDBus", 4))
-                    props.setNewProperty(DBUS, "true");
+                    props.setNewProperty((String) null, DBUS, "true");
                 break;
             }
         }
 
-        props.setNewProperty(SQLITE, decideSqlite());
+        props.setNewProperty((String) null, SQLITE, decideSqlite());
 
         String webkit = decideWebkit();
         if ("true".equals(webkit) && "true".equals(phonon))
-            props.setNewProperty(WEBKIT, webkit);
+            props.setNewProperty((String) null, WEBKIT, webkit);
 
         String patterns = decideXMLPatterns();
         if ("true".equals(patterns))
-            props.setNewProperty(XMLPATTERNS, patterns);
+            props.setNewProperty((String) null, XMLPATTERNS, patterns);
 
         String opengl = decideOpenGL();
         if ("true".equals(opengl))
-            props.setNewProperty(OPENGL, opengl);
+            props.setNewProperty((String) null, OPENGL, opengl);
     }
 
     private void checkCompilerDetails() {
@@ -205,7 +202,7 @@ public class InitializeTask extends Task {
                 String vcdir = System.getenv("VSINSTALLDIR");
                 if (vcdir == null)
                     throw new BuildException("missing required environment variable 'VSINSTALLDIR' used to locate MSVC redistributables");
-                props.setNewProperty(VSINSTALLDIR, vcdir);
+                props.setNewProperty((String) null, VSINSTALLDIR, vcdir);
 
                 String redistDir;
                 if (compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64)
@@ -214,7 +211,7 @@ public class InitializeTask extends Task {
                     redistDir = vcdir + "/vc/redist/x86";
                 if (!new File(redistDir).exists())
                     throw new BuildException("MSVC redistributables not found in '" + redistDir + "'");
-                props.setNewProperty(VSREDISTDIR, redistDir);
+                props.setNewProperty((String) null, VSREDISTDIR, redistDir);
 
                 break;
         }
@@ -346,9 +343,9 @@ public class InitializeTask extends Task {
 
     private boolean doesQtLibExist(String name, int version) {
         StringBuilder path = new StringBuilder();
-        path.append(props.getProperty(QTDIR));
+        path.append(props.getProperty((String) null, QTDIR));
         path.append("/");
-        path.append(props.getProperty(LIBSUBDIR));
+        path.append(props.getProperty((String) null, LIBSUBDIR));
         path.append("/");
         path.append(LibraryEntry.formatQtName(name, debug, version));
         return new File(path.toString()).exists();
@@ -356,7 +353,7 @@ public class InitializeTask extends Task {
 
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
-        path.append(props.getProperty(QTDIR));
+        path.append(props.getProperty((String) null, QTDIR));
         path.append("/plugins/");
         path.append(subdir);
         path.append("/");

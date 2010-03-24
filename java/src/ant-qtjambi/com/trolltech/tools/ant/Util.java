@@ -189,7 +189,21 @@ class Util {
     }
 
     public static File findInLibraryPath(String name) {
-        String libraryPath = System.getProperty("java.library.path");
+		// I'm having technical problems with this path on Gentoo. some quick'n'dirty fix for it.
+		//libraryPath = "/usr/lib64/gcc/x86_64-pc-linux-gnu/4.4.2";
+		String libraryPath;
+		try {
+			Process process = Runtime.getRuntime().exec("gcc-config -L");
+			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			libraryPath = input.readLine();
+			input.close();
+		} catch(Exception ex) {
+			//it didn’t succeed. Fallback to java.library.path
+			System.out.println("FATAL: using gcc-config -B failed:");
+			ex.printStackTrace();
+			libraryPath = System.getProperty("java.library.path");
+		}
+		//System.out.println("library path is: " + libraryPath);
 
         // Make /usr/lib an implicit part of library path
         if (OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)

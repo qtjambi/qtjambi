@@ -60,7 +60,7 @@ public class MakeTask extends Task {
         switch(OSInfo.os()){
         case Windows:
             PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
-            String compiler = (String) props.getProperty(InitializeTask.COMPILER);
+            String compiler = (String) props.getProperty((String) null, InitializeTask.COMPILER);
 
 
             if (InitializeTask.Compiler.MinGW.toString().equals(compiler)) {

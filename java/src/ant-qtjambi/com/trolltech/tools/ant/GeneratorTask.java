@@ -44,12 +44,11 @@
 
 package com.trolltech.tools.ant;
 
+import org.apache.tools.ant.*;
+
 import java.io.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-
-import com.trolltech.qt.internal.OSInfo;
+import com.trolltech.qt.internal.*;
 
 public class GeneratorTask extends Task{
     private String msg = "";
