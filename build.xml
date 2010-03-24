@@ -253,9 +253,12 @@
             <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
             <library name="QtDBus"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.dbus}"/>
-            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}"/>
-            <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}"/>
-            <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}"/>
+            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" 
+                    subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}"/>
+            <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}"
+                    subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}"/>
+            <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" 
+                    subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}"/>
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -478,7 +481,7 @@
 
     <target name="help" description="Provides detailed help.">
         <echo>
-To build Qt Jambi, run ant without parameters. Run:
+To build Qt Jambi, run ant without parameters.
 
 Edit the build.properties file if you want to change the behaviour of the build system:
 

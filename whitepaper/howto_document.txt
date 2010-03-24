@@ -92,7 +92,7 @@ In this case, we are passing the value type as a Java reference so
 both the shape and the local pen are the same object.
 
 
-[section] Ownership and Grabage collection
+[section] Ownership and Garbage collection
 
 Java has built in garbage collection for all objects. As a result of
 this any object this is no longer referenced by the virtual machine
