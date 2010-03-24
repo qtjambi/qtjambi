@@ -1081,6 +1081,10 @@ class QApplication___ extends QApplication {
     public QApplication(String args[]) {
         this(argc(args), argv(args));
     }
+    
+    protected QApplication(long nativeId) {
+    	super(nativeId);
+    }
 
     public static void setFont(QFont font) {
         setFont(font, null);

@@ -45,6 +45,7 @@
 package generator;
 
 import com.trolltech.qt.*;
+import com.trolltech.qt.QtJambiObject.QPrivateConstructor;
 import com.trolltech.qt.core.*;
 
 class QObject___ extends QObject {
@@ -177,6 +178,27 @@ class QCoreApplication___ extends QCoreApplication {
 
     public QCoreApplication(String args[]) {
         this(argc(args), argv(args));
+    }
+    
+    protected QCoreApplication(long nativeId) {
+    	super();
+    	try{
+	    	java.lang.reflect.Field native__id = QtJambiObject.class.getDeclaredField("native__id");
+	    	native__id.setAccessible(true);
+	    	native__id.set(this, new Long(nativeId));
+    	}catch(Exception e){
+    		throw new RuntimeException(e);
+    	}
+    	com.trolltech.qt.i vcnternal.HelperFunctions.setAsMainThread();
+    	if (m_instance != null)
+            throw new RuntimeException("QCoreApplication can only be initialized once");
+    	String path = Utilities.unpackPlugins();
+        if (path != null)
+            addLibraryPath(path);
+        else
+            com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
+        m_instance = this;
+        aboutToQuit.connect(this, "disposeOfMyself()");
     }
 
     public static String translate(String context, String sourceText, String comment) {
