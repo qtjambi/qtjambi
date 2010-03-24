@@ -180,16 +180,16 @@ class QCoreApplication___ extends QCoreApplication {
         this(argc(args), argv(args));
     }
     
-    protected QCoreApplication(long nativeId) {
-    	super();
-    	try{
-	    	java.lang.reflect.Field native__id = QtJambiObject.class.getDeclaredField("native__id");
-	    	native__id.setAccessible(true);
-	    	native__id.set(this, new Long(nativeId));
-    	}catch(Exception e){
-    		throw new RuntimeException(e);
-    	}
-    	com.trolltech.qt.i vcnternal.HelperFunctions.setAsMainThread();
+    public QCoreApplication(String applicationName, String args[]) {
+        this(argc(args), argv(applicationName, args));
+    }
+    
+    protected QCoreApplication(QPrivateConstructor p) {
+    	super(p);
+    }
+    
+    private static QCoreApplication initialize() {
+    	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
     	if (m_instance != null)
             throw new RuntimeException("QCoreApplication can only be initialized once");
     	String path = Utilities.unpackPlugins();
@@ -197,8 +197,9 @@ class QCoreApplication___ extends QCoreApplication {
             addLibraryPath(path);
         else
             com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
-        m_instance = this;
-        aboutToQuit.connect(this, "disposeOfMyself()");
+        m_instance = new QCoreApplication((QPrivateConstructor)null);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
+        return m_instance;
     }
 
     public static String translate(String context, String sourceText, String comment) {
@@ -217,6 +218,21 @@ class QCoreApplication___ extends QCoreApplication {
                 comment != null ? codec.fromUnicode(comment).data() : null, Encoding.CodecForTr, n);
     }
 
+    public static void initialize(String applicationName, String args[]) {
+    	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
+
+        if (m_instance != null)
+            throw new RuntimeException("QCoreApplication can only be initialized once");
+
+        String path = Utilities.unpackPlugins();
+        if (path != null)
+            addLibraryPath(path);
+        else
+            com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
+        m_instance = new QCoreApplication(applicationName, args);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
+    }
+    
     public static void initialize(String args[]) {
         com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
 
@@ -246,6 +262,18 @@ class QCoreApplication___ extends QCoreApplication {
 	} catch (Exception e) {
 		newArgs[0] = "Qt Jambi application";
 	}
+        argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
+        return argv;
+    }
+    
+    protected final static com.trolltech.qt.QNativePointer argv(String applicationName, String args[]) {
+        String newArgs[] = new String[args.length + 1];
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+        if(applicationName!=null && applicationName.length()!=0){
+			newArgs[0] = applicationName;
+		}else{
+			newArgs[0] = "Qt Jambi application";
+		}
         argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
         return argv;
     }

@@ -46,6 +46,9 @@ package generator;
 
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.QtBlockedSlot;
+import com.trolltech.qt.Utilities;
+import com.trolltech.qt.QtJambiObject.QPrivateConstructor;
+import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QPointF;
 import com.trolltech.qt.gui.*;
@@ -1067,6 +1070,20 @@ class QApplication___ extends QApplication {
         m_instance = new QApplication(args);
         m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }
+    
+    public static QApplication initialize() {
+    	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
+    	if (m_instance != null)
+            throw new RuntimeException("QCoreApplication can only be initialized once");
+    	String path = Utilities.unpackPlugins();
+        if (path != null)
+            addLibraryPath(path);
+        else
+            com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
+        m_instance = new QApplication((QPrivateConstructor)null);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
+        return m_instance;
+    }
 
     public static void aboutQtJambi() {
         com.trolltech.qt.QtJambiGuiInternal.aboutQtJambi();
@@ -1082,8 +1099,12 @@ class QApplication___ extends QApplication {
         this(argc(args), argv(args));
     }
     
-    protected QApplication(long nativeId) {
-    	super(nativeId);
+    public QApplication(String applicationName, String args[]) {
+        this(argc(args), argv(applicationName, args));
+    }
+    
+    protected QApplication(QPrivateConstructor p) {
+    	super(p);
     }
 
     public static void setFont(QFont font) {

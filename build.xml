@@ -298,8 +298,6 @@
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
-
-        <delete dir="${outputDir}/platform-output"/>
     </target>
 
 
@@ -341,6 +339,10 @@
                 <exclude name="cpp/**/*"/>
             </fileset>
         </copy>
+        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="java/src/qtjambi">
+        </zip>
+        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${java.generated.srcdir}/qtjambi" update="true">
+        </zip>
     </target>
 
     <target name="generator.javasrc.qtjambi-designer" depends="generator.run">
@@ -480,6 +482,8 @@
             </fileset>
         </delete>
         <delete file="${java.srcdir}/qtjambi/version.properties"/>
+        <delete dir="${outputDir}/platform-output"/>
+        <delete file="qtjambi-${qtjambi.version}-src.zip"/>
     </target>
 
     <target name="help" description="Provides detailed help.">
