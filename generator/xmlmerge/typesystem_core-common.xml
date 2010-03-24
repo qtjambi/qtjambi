@@ -10,6 +10,8 @@
   <rejection class="*" field-name="d"/>
 
   <rejection class="" enum-name="QtValidLicenseForTestModule"/>
+  <rejection class="QTextCodecPlugin" function-name="create(const QString &amp;)"/>
+  <rejection class="QTextCodecPlugin" function-name="keys()const"/>
 
 
   <rejection class="" enum-name="QtValidLicenseForDBusModule"/>
@@ -30,6 +32,10 @@
   <rejection class="" enum-name="QtValidLicenseForScriptToolsModule" />
   <rejection class="" enum-name="QtValidLicenseForMultimediaModule" />
   <rejection class="" enum-name="QtValidLicenseForOpenVGModule" />
+  <rejection class="" enum-name="QtValidLicenseForDeclarativeModule" />
+  <rejection class="QEasingCurve::EasingFunction"/>
+  <rejection class="QLocalePrivate"/>
+  <rejection class="QLocale" function-name="d"/>
 
   <rejection class="QtConcurrent" enum-name="enum_1" />
   <rejection class="QtConcurrent" function-name="operator|" />
@@ -223,16 +229,8 @@
   <rejection class="QHash"/>
   <rejection class="QHashData"/>
   <rejection class="QHashDummyNode"/>
-  <rejection class="QHashDummyNode"/>
-  <rejection class="QHashDummyNode"/>
-  <rejection class="QHashDummyNode"/>
-  <rejection class="QHashDummyNode"/>
   <rejection class="QHashDummyValue"/>
   <rejection class="QHashIterator"/>
-  <rejection class="QHashNode"/>
-  <rejection class="QHashNode"/>
-  <rejection class="QHashNode"/>
-  <rejection class="QHashNode"/>
   <rejection class="QHashNode"/>
   <rejection class="QInternal"/>
   <rejection class="QIncompatibleFlag" />
@@ -435,7 +433,7 @@
   <enum-type name="Qt::GestureState" />
   <enum-type name="Qt::InputMethodHint" flags="Qt::InputMethodHints" />
   <enum-type name="Qt::NavigationMode" />
-  <enum-type name="Qt::RenderHint" />
+<!--   <enum-type name="Qt::RenderHint" /> -->
   <enum-type name="Qt::TileRule" />
   <enum-type name="Qt::TouchPointState" flags="Qt::TouchPointStates" />
 
@@ -543,7 +541,8 @@
   <enum-type name="Qt::UIEffect"/>
   <enum-type name="Qt::WhiteSpaceMode"/>
   <enum-type name="Qt::WindowModality"/>
-  <enum-type name="Qt::GestureType"/>
+  <enum-type name="Qt::GestureType">
+  </enum-type>
   <enum-type name="Qt::GestureFlag" flags="Qt::GestureFlags"/>
   <enum-type name="Qt::WindowState" flags="Qt::WindowStates"/>
   <enum-type name="Qt::WindowType" flags="Qt::WindowFlags"/>
@@ -861,7 +860,6 @@
       <include file-name="QDir" location="global"/>
     </extra-includes>
     <modify-function signature="operator!=(const QFileInfo &amp;)const" remove="all"/>
-    <modify-function signature="operator==(const QFileInfo &amp;)const" remove="all"/>
     <modify-function signature="operator=(QFileInfo)" remove="all"/>
     <modify-function signature="setFile(QFile)">
       <modify-argument index="1">
@@ -932,6 +930,7 @@
   <value-type name="QEasingCurve">
     <modify-function signature="customType()const" remove="all" />
     <modify-function signature="setCustomType(double)" remove="all" />
+    <modify-function signature="operator!=(const QEasingCurve &amp;)const" remove="all" />
   </value-type>
 
   <object-type name="QAbstractAnimation" />
@@ -950,7 +949,9 @@
   <object-type name="QSignalTransition" />
   <object-type name="QEventTransition" />
   <object-type name="QFinalState" />
-
+  <value-type name="QMargins">
+<!--     <modify-function signature="operator==(const QMargins &amp;)" remove="all" /> -->
+  </value-type>
   <object-type name="QXmlStreamEntityResolver" />
   <object-type name="QAbstractEventDispatcher"/>
   <object-type name="QEventLoop"/>
@@ -1100,13 +1101,11 @@
     <modify-function signature="mapped(int)">
       <rename to="mappedInteger"/>
     </modify-function>
-    <modify-function signature="mapped(QObject *)">
+    <modify-function signature="mapped(QObject*)">
       <rename to="mappedQObject"/>
     </modify-function>
-    <modify-function signature="mapped(QWidget *)" remove="all"/>
-
+    <modify-function signature="mapped(QWidget*)" remove="all"/>
     <modify-function signature="mapping(QWidget*)const" remove="all"/>
-
     <modify-function signature="setMapping(QObject*,QWidget*)" remove="all"/>
   </object-type>
 
@@ -1232,7 +1231,8 @@
     <!--### Obsolete in 4.3-->
   </object-type>
 
-  <object-type name="QEvent" polymorphic-base="yes" polymorphic-id-expression="%1-&gt;type() == QEvent::None"/>
+  <object-type name="QEvent" polymorphic-base="yes" polymorphic-id-expression="%1-&gt;type() == QEvent::None">
+  </object-type>
   <object-type name="QChildEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::ChildAdded || %1-&gt;type() == QEvent::ChildPolished || %1-&gt;type() == QEvent::ChildRemoved">
     <modify-field name="c" read="false" write="false"/>
   </object-type>
@@ -1523,5 +1523,12 @@
   <suppress-warning text="WARNING(Parser) :: ** WARNING scope not found for function definition:QFutureInterface&lt;void&gt;::future - definition *ignored*" />
   <suppress-warning text="WARNING(Parser) :: ** WARNING scope not found for function definition:QFutureWatcher&lt;void&gt;::setFuture - definition *ignored*" />
 
-
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unmatched enum ~0u" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unhandled enum value: ~0u in Qt::GestureType" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: signature 'mapped(QWidget*)' for function modification in 'QSignalMapper' not found. Possible candidates: mapped(QObject*) in QSignalMapper, mapped(QString) in QSignalMapper, mapped(int) in QSignalMapper" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: signature 'mapping(QWidget*)const' for function modification in 'QSignalMapper' not found. Possible candidates: mapping(QObject*)const in QSignalMapper, mapping(QString)const in QSignalMapper, mapping(int)const in QSignalMapper" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: signature 'setMapping(QObject*,QWidget*)' for function modification in 'QSignalMapper' not found. Possible candidates: setMapping(QObject*,QObject*) in QSignalMapper, setMapping(QObject*,QString) in QSignalMapper, setMapping(QObject*,int) in QSignalMapper" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function *, unmatched parameter type 'QWidget*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace '*' does not have a type entry" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'JObjectWrapper' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
 </typesystem>

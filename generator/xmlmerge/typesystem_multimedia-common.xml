@@ -1,4 +1,36 @@
 <typesystem>
+<namespace-type name="QAudio" target-type="class">
+<include file-name="qaudio.h" location="global"/>
+</namespace-type>
+<enum-type name="QAudio::Error"/>
+<enum-type name="QAudio::Mode"/>
+<enum-type name="QAudio::State"/>
+<enum-type name="QVideoFrame::FieldType"/>
+<enum-type name="QVideoFrame::PixelFormat"/>
+<enum-type name="QAbstractVideoBuffer::HandleType"/>
+<enum-type name="QAbstractVideoBuffer::MapMode"/>
+<enum-type name="QAbstractVideoSurface::Error"/>
+<enum-type name="QAudioFormat::Endian"/>
+<enum-type name="QAudioFormat::SampleType"/>
+<enum-type name="QVideoSurfaceFormat::Direction"/>
+<enum-type name="QVideoSurfaceFormat::YCbCrColorSpace"/>
+<object-type name="QVideoFrame">
+    <modify-function signature="bits()" remove="all" />
+</object-type>
+<value-type name="QAbstractVideoBuffer">
+</value-type>
+<object-type name="QAbstractVideoSurface">
+</object-type>
+<value-type name="QAudioDeviceInfo">
+</value-type>
+<value-type name="QAudioFormat">
+</value-type>
+<object-type name="QAudioInput">
+</object-type>
+<object-type name="QAudioOutput">
+</object-type>
+<value-type name="QVideoSurfaceFormat">
+</value-type>
   <!--<enum-type name="QGraphicsSvgItem::enum_1"/>-->
 
 <!--   <object-type name="QHelpContentItem"> -->

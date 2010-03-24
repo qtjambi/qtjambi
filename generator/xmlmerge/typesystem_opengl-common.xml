@@ -2,6 +2,7 @@
 <typesystem>
   <rejection class="QGLColormap::QGLColormapData" />
   <rejection class="QGLWidget" function-name="setMouseTracking"/>
+  <rejection class="QGLFramebufferObject" function-name="blitFramebuffer"/>
 
   <enum-type name="QGL::FormatOption" flags="QGL::FormatOptions"/>
   <enum-type name="QGLFormat::OpenGLVersionFlag" flags="QGLFormat::OpenGLVersionFlags"/>
@@ -86,7 +87,8 @@
     </modify-function>
     <modify-function signature="generateFontDisplayLists(QFont, int)" remove="all"/>
   </object-type>
-  <object-type name="QGLFramebufferObject"/>
+  <object-type name="QGLFramebufferObject">
+  </object-type>
   <object-type name="QGLPixelBuffer">
     <extra-includes>
         <include file-name="QImage" location="global"/>

@@ -17,6 +17,7 @@ SOURCES += \
     qvariant.cpp \
     qtdynamicmetaobject.cpp \
     qtjambivariant.cpp \
+    qtjambi_platformspecificfunctions.cpp \
 
 
 HEADERS += \
@@ -30,6 +31,7 @@ HEADERS += \
     qtjambidestructorevent_p.h \
     qtdynamicmetaobject.h \
     qtjambivariant_p.h \
+    qtjambi_platformspecificfunctions.h \
 
 contains(DEFINES, QTJAMBI_DEBUG_TOOLS) {
     SOURCES += qtjambidebugtools.cpp

@@ -1050,6 +1050,11 @@
                 <reference-count action="ignore" />
             </modify-argument>
         </modify-function>
+	<modify-function signature="grabGesture(Qt::GestureType, QFlags&lt;Qt::GestureFlag&gt;)">
+	    <modify-argument index="2">
+		  <replace-default-expression with="new com.trolltech.qt.core.Qt.GestureFlag[0]"/>
+	    </modify-argument>
+	</modify-function>
     </object-type>    
 
     <object-type name="QAbstractGraphicsShapeItem">
@@ -2488,6 +2493,12 @@
             }
             </inject-code>
         </modify-function>
+    
+	<modify-function signature="grabGesture(Qt::GestureType, QFlags&lt;Qt::GestureFlag&gt;)">
+	    <modify-argument index="2">
+		  <replace-default-expression with="new com.trolltech.qt.core.Qt.GestureFlag[0]"/>
+	    </modify-argument>
+	</modify-function>
     </object-type>
 
     <object-type name="QPrintDialog">
@@ -3305,6 +3316,14 @@
             </modify-argument>
         </modify-function>
     </interface-type>
+    
+    <object-type name="QTouchEvent">
+      <modify-function signature="QTouchEvent(QEvent::Type,QTouchEvent::DeviceType,QFlags&lt;Qt::KeyboardModifier&gt;,QFlags&lt;Qt::TouchPointState&gt;,const QList&lt;QTouchEvent::TouchPoint&gt; &amp;)">
+	  <modify-argument index="5">
+	      <replace-default-expression with="new java.util.Vector&lt;QTouchEvent_TouchPoint&gt;()"/>
+	  </modify-argument>
+      </modify-function>
+    </object-type>
 
     <suppress-warning text="WARNING(JavaGenerator) :: either add or remove specified for reference count variable '__rcItems' in 'com.trolltech.qt.gui.QGraphicsGridLayout' but not both" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Shadowing: QDialog::accepted() and QPrintDialog::accepted(); Java code will not compile" />

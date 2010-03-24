@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <typesystem>
     <namespace-type name="WebCore"/>
+    <rejection name="QWebElementCollection::const_iterator" />
+    <rejection name="QWebElementCollection::iterator" />
 
     <enum-type name="QWebSettings::FontFamily"/>
     <enum-type name="QWebSettings::FontSize"/>
@@ -22,9 +24,14 @@
     </enum-type>
     <enum-type name="QWebPage::ErrorDomain" />
     
-    
     <object-type name="QGraphicsWebView" />    
-<!--     <object-type name="QWebElementCollection" /> -->
+    <value-type name="QWebElementCollection" />
+    <object-type name="QWebInspector" />
+    <object-type name="QGraphicsWebView" />
+    <value-type name="" />
+    <value-type name="" />
+    <value-type name="" />
+    
     <object-type name="QWebView">
         <modify-function signature="setPage(QWebPage*)">
             <modify-argument index="1">

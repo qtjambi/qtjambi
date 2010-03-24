@@ -26,9 +26,9 @@
     </modify-function>-->
 <!--   </object-type> -->
 
-  <!--<object-type name="QHelpEngine">
+  <object-type name="QHelpEngine">
   </object-type>
-  <object-type name="QHelpEngineCore">
+  <!--<object-type name="QHelpEngineCore">
   </object-type>
   <object-type name="QHelpIndexModel">
   </object-type>
