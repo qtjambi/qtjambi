@@ -92,9 +92,9 @@ struct Preprocess
 
         // Include Qt
         QString qtdir = getenv ("QTDIR");
-        /*if (qtdir.isEmpty()) {
+        if (qtdir.isEmpty()) {
             qWarning("QTDIR environment variable not set. This may cause problems with finding the necessary include files.");
-        } else {*/
+        } else {
             qtdir += "/include";
             includes << (qtdir + "/QtXml");
             includes << (qtdir + "/QtNetwork");
@@ -103,7 +103,7 @@ struct Preprocess
             includes << (qtdir + "/QtOpenGL");
             includes << (qtdir + "/phonon");
             includes << qtdir;
-        //}
+        }
 
         foreach (QString include, includes)
             preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
