@@ -14,13 +14,11 @@
     <rejection class="*" field-name="k_ptr" />
     <rejection class="Phonon::AudioOutputInterface40" />
     <rejection class="Phonon::AudioOutputInterface42" />
-    <rejection class="*" function-name="availableAudioCaptureDevices()" />
-    <rejection class="*" function-name="Phonon::BackendCapabilities::availableAudioCaptureDevices()" />
-    <rejection class="Phonon::BackendCapabilities" function-name="availableAudioCaptureDevices()" />
+    <rejection class="*" function-name="availableAudioCaptureDevices" />
 
     <namespace-type name="Phonon" />
     <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities">
-<!--       <modify-function signature="availableAudioCaptureDevices()" remove="all" /> -->
+<!--        <modify-function signature="availableAudioCaptureDevices()" remove="all" /> -->
     </namespace-type>
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
@@ -126,9 +124,9 @@
         </modify-function>
     </object-type>
     
-     <!--<value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />-->
-<!--      <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" /> -->
-<!--      <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" /> -->
+     <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
+     <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
+     <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'MediaSource' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Path' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />

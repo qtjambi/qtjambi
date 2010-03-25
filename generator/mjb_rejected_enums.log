@@ -1,0 +1,45 @@
+************************************************************************
+Not in type system
+************************************************************************
+
+************************************************************************
+Generation disabled by type system
+ - QAbstractFileEngineIterator::EntryInfoType
+ - QDataStream::ByteOrder
+ - Qt::Initialization
+ - Qt::Modifier
+ - QtConcurrent::enum_1
+ - QtValidLicenseForActiveQtModule
+ - QtValidLicenseForCoreModule
+ - QtValidLicenseForDBusModule
+ - QtValidLicenseForDeclarativeModule
+ - QtValidLicenseForGuiModule
+ - QtValidLicenseForHelpModule
+ - QtValidLicenseForMultimediaModule
+ - QtValidLicenseForNetworkModule
+ - QtValidLicenseForOpenGLModule
+ - QtValidLicenseForOpenVGModule
+ - QtValidLicenseForQt3SupportLightModule
+ - QtValidLicenseForQt3SupportModule
+ - QtValidLicenseForScriptModule
+ - QtValidLicenseForScriptToolsModule
+ - QtValidLicenseForSqlModule
+ - QtValidLicenseForSvgModule
+ - QtValidLicenseForTestModule
+ - QtValidLicenseForXmlModule
+ - QtValidLicenseForXmlPatternsModule
+ - enum_1
+************************************************************************
+
+************************************************************************
+Type redefined to not be a class
+************************************************************************
+
+************************************************************************
+Unmatched argument type
+************************************************************************
+
+************************************************************************
+Unmatched return type
+************************************************************************
+

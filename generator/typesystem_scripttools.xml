@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typesystem package="com.trolltech.qt.scripttools" default-superclass="com.trolltech.qt.QtJambiObject">
+<inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("QtScriptTools");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtScript");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+    </inject-code>
+<suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'"/>
+<suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'"/>
+<suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'"/>
+  <enum-type name="QScriptEngineDebugger::DebuggerAction"/>
+  <enum-type name="QScriptEngineDebugger::DebuggerState"/>
+  <enum-type name="QScriptEngineDebugger::DebuggerWidget"/>
+  <object-type name="QScriptEngineDebugger">
+  </object-type>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QHelpContentItem::QHelpContentItem', unmatched parameter type 'QHelpDBReader*'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'changeEvent(QEvent * event)' in 'QHelpSearchQueryWidget'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'focusInEvent(QFocusEvent * focusEvent)' in 'QHelpSearchQueryWidget'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'changeEvent(QEvent * event)' in 'QHelpSearchResultWidget'"/>
+</typesystem>

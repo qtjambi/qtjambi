@@ -2,6 +2,7 @@
     <inject-code>
         com.trolltech.qt.Utilities.loadQtLibrary("QtMultimedia");
         com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
     </inject-code>
 <object-type name="QAbstractVideoSurface">
 <!--<modify-function signature="nearestFormat(const QVideoSurfaceFormat&amp;)const" remove="all">

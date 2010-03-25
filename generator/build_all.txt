@@ -12,4 +12,6 @@
   <load-typesystem name="typesystem_phonon.xml" generate="yes" />
   <load-typesystem name="typesystem_help.xml" generate="yes" />
   <load-typesystem name="typesystem_multimedia.xml" generate="yes" />
+  <load-typesystem name="typesystem_script.xml" generate="yes" />
+  <load-typesystem name="typesystem_scripttools.xml" generate="yes" />
 </typesystem>

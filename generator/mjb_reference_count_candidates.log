@@ -1,0 +1,5 @@
+The following functions have a signature pattern which may imply that
+they need to apply reference counting to their arguments (3 functions) : 
+com.trolltech.qt.script.QScriptEngine : setAgent(QScriptEngineAgent*)
+com.trolltech.qt.script.QScriptExtensionPlugin : setupPackage(QString,QScriptEngine*)const
+com.trolltech.qt.script.QScriptValue : setScriptClass(QScriptClass*)

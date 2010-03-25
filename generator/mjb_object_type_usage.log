@@ -1,0 +1,1 @@
+Number of public or protected functions that return a non-QObject object type, or that are virtual and take a non-QObject object type argument: 0
