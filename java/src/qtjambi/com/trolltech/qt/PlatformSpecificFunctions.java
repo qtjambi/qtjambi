@@ -42,22 +42,6 @@ public class PlatformSpecificFunctions {
         QtJambi_LibraryInitializer.init();
     }
 	
-	/**
-	 * Specifies the location of the Qt configuration file. You must call this function before constructing a QApplication or QCoreApplication object. If no location is specified, Qt automatically finds an appropriate location.
-	 * @param fileName
-	 */
-	public static void qt_set_library_config_file(String fileName){
-		__qt_set_library_config_file(fileName);
-	}
-	
-	/**
-	 * Specifies whether mnemonics for menu items, labels, etc., should be honored or not. On Windows and X11, this feature is on by default; on Mac OS X, it is off. When this feature is off, the QKeySequence::mnemonic() function always returns an empty string. This feature is also enabled on embedded Linux.
-	 * @param enable
-	 */
-    public static void qt_set_sequence_auto_mnemonic(boolean enable){
-		__qt_set_sequence_auto_mnemonic(enable);
-	}
-    
     /**
      * Blocks until the X11 window manager has shown the widget after a call to QWidget::show().
      * @param widget

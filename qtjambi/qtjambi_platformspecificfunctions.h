@@ -9,22 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     com_trolltech_qt_PlatformSpecificFunctions
- * Method:    __qt_set_library_config_file
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_trolltech_qt_PlatformSpecificFunctions__1_1qt_1set_1library_1config_1file
-  (JNIEnv *, jclass, jstring);
-
-/*
- * Class:     com_trolltech_qt_PlatformSpecificFunctions
- * Method:    __qt_set_sequence_auto_mnemonic
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_com_trolltech_qt_PlatformSpecificFunctions__1_1qt_1set_1sequence_1auto_1mnemonic
-  (JNIEnv *, jclass, jboolean);
-
-/*
- * Class:     com_trolltech_qt_PlatformSpecificFunctions
  * Method:    __qt_x11_wait_for_window_manager
  * Signature: (J)V
  */

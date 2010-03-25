@@ -7,47 +7,19 @@
 #include "qtjambilink.h"
 #include "qtjambi_platformspecificfunctions.h"
 
- void qt_set_sequence_auto_mnemonic(bool enable);
-#ifndef Q_WS_WIN
- void qt_set_library_config_file(const QString &fileName);
-#endif
+
 #ifdef Q_WS_X11
- void qt_x11_wait_for_window_manager(QWidget *widget);
+ extern void qt_x11_wait_for_window_manager(QWidget *widget);
 #endif
 #ifdef Q_WS_MAC
- void qt_mac_secure_keyboard(bool enable);
- void qt_mac_set_dock_menu(QMenu *menu);
- void qt_mac_set_menubar_icons(bool enable);
- void qt_mac_set_menubar_merge(bool enable);
- void qt_mac_set_native_menubar(bool enable);
- void qt_mac_set_press_and_hold_context(bool enable);
+ extern void qt_mac_secure_keyboard(bool enable);
+ extern void qt_mac_set_dock_menu(QMenu *menu);
+ extern void qt_mac_set_menubar_icons(bool enable);
+ extern void qt_mac_set_menubar_merge(bool enable);
+ extern void qt_mac_set_native_menubar(bool enable);
+ extern void qt_mac_set_press_and_hold_context(bool enable);
 #endif
 
-/*
- * Class:     com_trolltech_qt_PlatformSpecificFunctions
- * Method:    __qt_set_library_config_file
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_trolltech_qt_PlatformSpecificFunctions__1_1qt_1set_1library_1config_1file
-#ifndef Q_WS_WIN
-  (JNIEnv * __jni_env, jclass, jstring strg){
-    QString __qt_text =  qtjambi_to_qstring(__jni_env, (jstring) strg);
-    qt_set_library_config_file(__qt_text);
-#else
-  (JNIEnv * __jni_env, jclass, jstring){
-#endif    
-  }
-
-/*
- * Class:     com_trolltech_qt_PlatformSpecificFunctions
- * Method:    __qt_set_sequence_auto_mnemonic
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_com_trolltech_qt_PlatformSpecificFunctions__1_1qt_1set_1sequence_1auto_1mnemonic
-  (JNIEnv *, jclass, jboolean enable){
-    qt_set_sequence_auto_mnemonic((bool) enable);
-  }
-  
 /*
  * Class:     com_trolltech_qt_PlatformSpecificFunctions
  * Method:    __qt_x11_wait_for_window_manager

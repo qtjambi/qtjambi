@@ -14,10 +14,12 @@
     <rejection class="*" field-name="k_ptr" />
     <rejection class="Phonon::AudioOutputInterface40" />
     <rejection class="Phonon::AudioOutputInterface42" />
+<!--     <rejection class="*" function-name="availableAudioCaptureDevices" /> -->
 
     <namespace-type name="Phonon" />
-    <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities" />
-
+    <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities">
+      <modify-function signature="availableAudioCaptureDevices()" remove="all" />
+    </namespace-type>
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
     </enum-type>
@@ -89,6 +91,7 @@
             </modify-argument>
         </modify-function>
     </value-type>
+    <!--<value-type name="Phonon::ObjectDescription" generate="no" />-->
     <value-type name="Phonon::ObjectDescription" generate="no" />
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
     <value-type name="Phonon::AudioOutputDevice" java-name="AudioOutputDevice" />
