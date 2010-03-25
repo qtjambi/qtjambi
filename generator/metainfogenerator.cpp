@@ -49,6 +49,7 @@
 
 #include <QDir>
 #include <QMetaType>
+#include "typesystem/typedatabase.h"
 
 MetaInfoGenerator::MetaInfoGenerator(PriGenerator *pri):
     JavaGenerator(),

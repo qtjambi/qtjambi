@@ -45,13 +45,14 @@
 #include "main.h"
 #include "asttoxml.h"
 #include "reporthandler.h"
-#include "typesystem.h"
+#include "typesystem/typesystem.h"
 #include "generatorset.h"
 #include "fileout.h"
 #include "binder.h"
 
-
+#include <QDebug>
 #include <QDir>
+#include "typesystem/typedatabase.h"
 
 void ReportHandler_message_handler(const std::string &str)
 {
@@ -61,7 +62,6 @@ void ReportHandler_message_handler(const std::string &str)
 
 void displayHelp(GeneratorSet *generatorSet);
 
-#include <QDebug>
 int main(int argc, char *argv[])
 {
     GeneratorSet *gs = GeneratorSet::getInstance();
