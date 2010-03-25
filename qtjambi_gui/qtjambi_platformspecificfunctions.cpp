@@ -1,7 +1,6 @@
-#include <qglobal.h>
 #include <QtGui/QtGui>
 #include <QtCore/QtCore>
-#include <jni.h>
+#include "qtjambi_global.h"
 #include "qtjambi_core.h"
 #include "qtjambifunctiontable.h"
 #include "qtjambilink.h"
