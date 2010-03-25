@@ -1,7 +1,27 @@
 #/bin/bash
 
+if [ "$2" == "" ] ; then
+	echo "You need to give LIBDIR and BINDIR!"
+	exit 1
+fi
+
+LIBDIR="$1"
+BINDIR="$2"
+
+if [ "$3" == "--phonon-dir" ] ; then
+	phononlib="$4"
+else
+	phononlib=$LIBDIR
+fi
+
+if [ "$5" == "--version" ] ; then
+	VERSION="$6"
+else
+	VERSION=`cat version.properties | cut -d= -f2 | tr -d ' '`
+fi
+
+
 OS=linux32
-VERSION=`cat version.properties | cut -d= -f2 | tr -d ' '`
 RELEASE=qtjambi-$OS-community-$VERSION
 COMPILER=gcc
 
@@ -28,24 +48,24 @@ cp dist/readme.html $RELEASE
 cp -R java/src/qtjambi-examples/com $RELEASE
   
 cp bin/juic $RELEASE/bin
-cp $QTDIR/bin/lrelease $RELEASE/bin
-cp $QTDIR/bin/lupdate $RELEASE/bin
+cp $BINDIR/lrelease $RELEASE/bin
+cp $BINDIR/lupdate $RELEASE/bin
 
 cp lib/libqtjambi.so $RELEASE/lib
 
-cp $QTDIR/lib/libphonon.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtCore.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtGui.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtNetwork.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtOpenGL.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtSql.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtScript.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtSvg.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtWebKit.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtXml.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtXmlPatterns.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtDesignerComponents.so.4 $RELEASE/lib
-cp $QTDIR/lib/libQtDesigner.so.4 $RELEASE/lib
+cp $phononlib/libphonon.so.4 $RELEASE/lib
+cp $LIBDIR/libQtCore.so.4 $RELEASE/lib
+cp $LIBDIR/libQtGui.so.4 $RELEASE/lib
+cp $LIBDIR/libQtNetwork.so.4 $RELEASE/lib
+cp $LIBDIR/libQtOpenGL.so.4 $RELEASE/lib
+cp $LIBDIR/libQtSql.so.4 $RELEASE/lib
+cp $LIBDIR/libQtScript.so.4 $RELEASE/lib
+cp $LIBDIR/libQtSvg.so.4 $RELEASE/lib
+cp $LIBDIR/libQtWebKit.so.4 $RELEASE/lib
+cp $LIBDIR/libQtXml.so.4 $RELEASE/lib
+cp $LIBDIR/libQtXmlPatterns.so.4 $RELEASE/lib
+cp $LIBDIR/libQtDesignerComponents.so.4 $RELEASE/lib
+cp $LIBDIR/libQtDesigner.so.4 $RELEASE/lib
   
 cp lib/libcom_trolltech_qt_core.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_gui.so $RELEASE/lib
@@ -59,7 +79,7 @@ cp lib/libcom_trolltech_qt_xml.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_xmlpatterns.so $RELEASE/lib
 cp lib/libcom_trolltech_tools_designer.so $RELEASE/lib
   
-cp -R $QTDIR/plugins $RELEASE
+cp -R $LIBDIR/plugins $RELEASE
   
 
 tar czf $RELEASE.tar.gz $RELEASE
