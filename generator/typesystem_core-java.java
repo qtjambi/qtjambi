@@ -183,11 +183,7 @@ class QCoreApplication___ extends QCoreApplication {
     public QCoreApplication(String applicationName, String args[]) {
         this(argc(args), argv(applicationName, args));
     }
-    
-    protected QCoreApplication(QPrivateConstructor p) {
-    	super(p);
-    }
-    
+        
     private static QCoreApplication initialize() {
     	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
     	if (m_instance != null)

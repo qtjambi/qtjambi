@@ -1080,9 +1080,10 @@ class QApplication___ extends QApplication {
             addLibraryPath(path);
         else
             com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
-        m_instance = new QApplication((QPrivateConstructor)null);
-        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
-        return m_instance;
+        QApplication instance = new QApplication((QPrivateConstructor)null);
+        m_instance = instance;
+        instance.aboutToQuit.connect(instance, "disposeOfMyself()");
+        return instance;
     }
 
     public static void aboutQtJambi() {
@@ -1101,10 +1102,6 @@ class QApplication___ extends QApplication {
     
     public QApplication(String applicationName, String args[]) {
         this(argc(args), argv(applicationName, args));
-    }
-    
-    protected QApplication(QPrivateConstructor p) {
-    	super(p);
     }
 
     public static void setFont(QFont font) {
