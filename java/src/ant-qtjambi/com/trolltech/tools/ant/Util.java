@@ -190,7 +190,7 @@ class Util {
 
     public static File findInLibraryPath(String name) {
 		// I'm having technical problems with this path on Gentoo. some quick'n'dirty fix for it.
-		//libraryPath = "/usr/lib64/gcc/x86_64-pc-linux-gnu/4.4.2";
+		//	libraryPath = "/usr/lib64/gcc/x86_64-pc-linux-gnu/4.4.2";
 		String libraryPath;
 		try {
 			Process process = Runtime.getRuntime().exec("gcc-config -L");
@@ -198,7 +198,7 @@ class Util {
 			libraryPath = input.readLine();
 			input.close();
 		} catch(Exception ex) {
-			//it didn’t succeed. Fallback to java.library.path
+			//it didn't succeed. Fallback to java.library.path
 			System.out.println("FATAL: using gcc-config -B failed:");
 			ex.printStackTrace();
 			libraryPath = System.getProperty("java.library.path");

@@ -262,6 +262,9 @@ void MetaInfoGenerator::writeRegisterEnums(QTextStream &s)
       << "    }" << endl;
 }
 
+/**
+ * Builds a skip list of classes that shouldn't be built.
+ */
 void MetaInfoGenerator::buildSkipList()
 {
     AbstractMetaClassList classList = classes();
