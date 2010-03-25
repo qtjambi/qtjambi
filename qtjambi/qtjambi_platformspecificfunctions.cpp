@@ -7,8 +7,10 @@
 #include "qtjambilink.h"
 #include "qtjambi_platformspecificfunctions.h"
 
- void qt_set_library_config_file(const QString &fileName);
  void qt_set_sequence_auto_mnemonic(bool enable);
+#ifndef Q_WS_WIN
+ void qt_set_library_config_file(const QString &fileName);
+#endif
 #ifdef Q_WS_X11
  void qt_x11_wait_for_window_manager(QWidget *widget);
 #endif
@@ -27,9 +29,13 @@
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_trolltech_qt_PlatformSpecificFunctions__1_1qt_1set_1library_1config_1file
+#ifndef Q_WS_WIN
   (JNIEnv * __jni_env, jclass, jstring strg){
     QString __qt_text =  qtjambi_to_qstring(__jni_env, (jstring) strg);
     qt_set_library_config_file(__qt_text);
+#else
+  (JNIEnv * __jni_env, jclass, jstring){
+#endif    
   }
 
 /*
