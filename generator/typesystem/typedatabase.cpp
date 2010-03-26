@@ -9,6 +9,62 @@
 
 static void addRemoveFunctionToTemplates(TypeDatabase *db);
 
+TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarnings(false)
+{
+    addType(new StringTypeEntry("QString"));
+
+    StringTypeEntry *e = new StringTypeEntry("QLatin1String");
+    e->setPreferredConversion(false);
+    addType(e);
+
+    e = new StringTypeEntry("QStringRef");
+    e->setPreferredConversion(false);
+    addType(e);
+
+    e = new StringTypeEntry("QXmlStreamStringRef");
+    e->setPreferredConversion(false);
+    addType(e);
+
+    addType(new CharTypeEntry("QChar"));
+
+    CharTypeEntry *c = new CharTypeEntry("QLatin1Char");
+    c->setPreferredConversion(false);
+    addType(c);
+
+    {
+        VariantTypeEntry *qvariant = new VariantTypeEntry("QVariant");
+        qvariant->setCodeGeneration(TypeEntry::GenerateNothing);
+        addType(qvariant);
+    }
+
+    {
+        JObjectWrapperTypeEntry *wrapper = new JObjectWrapperTypeEntry("JObjectWrapper");
+        wrapper->setCodeGeneration(TypeEntry::GenerateNothing);
+        addType(wrapper);
+    }
+
+    addType(new ThreadTypeEntry());
+    addType(new VoidTypeEntry());
+
+    // Predefined containers...
+    addType(new ContainerTypeEntry("QList", ContainerTypeEntry::ListContainer));
+    addType(new ContainerTypeEntry("QStringList", ContainerTypeEntry::StringListContainer));
+    addType(new ContainerTypeEntry("QLinkedList", ContainerTypeEntry::LinkedListContainer));
+    addType(new ContainerTypeEntry("QVector", ContainerTypeEntry::VectorContainer));
+    addType(new ContainerTypeEntry("QStack", ContainerTypeEntry::StackContainer));
+    addType(new ContainerTypeEntry("QSet", ContainerTypeEntry::SetContainer));
+    addType(new ContainerTypeEntry("QMap", ContainerTypeEntry::MapContainer));
+    addType(new ContainerTypeEntry("QHash", ContainerTypeEntry::HashContainer));
+    addType(new ContainerTypeEntry("QPair", ContainerTypeEntry::PairContainer));
+    addType(new ContainerTypeEntry("QQueue", ContainerTypeEntry::QueueContainer));
+    addType(new ContainerTypeEntry("QMultiMap", ContainerTypeEntry::MultiMapContainer));
+
+    // Custom types...
+    addType(new QModelIndexTypeEntry());
+
+    addRemoveFunctionToTemplates(this);
+}
+
 TypeDatabase *TypeDatabase::instance()
 {
     static TypeDatabase *db = new TypeDatabase();
@@ -19,7 +75,8 @@ TypeEntry *TypeDatabase::findType(const QString &name) const {
     QList<TypeEntry *> entries = findTypes(name);
     foreach (TypeEntry *entry, entries) {
         if (entry != 0 &&
-            (!entry->isPrimitive() || static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
+            ( !entry->isPrimitive() ||
+                static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType() ) ) {
             return entry;
         }
     }
@@ -101,62 +158,6 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name)
         return static_cast<NamespaceTypeEntry *>(entry);
     else
         return 0;
-}
-
-TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarnings(false)
-{
-    addType(new StringTypeEntry("QString"));
-
-    StringTypeEntry *e = new StringTypeEntry("QLatin1String");
-    e->setPreferredConversion(false);
-    addType(e);
-
-    e = new StringTypeEntry("QStringRef");
-    e->setPreferredConversion(false);
-    addType(e);
-
-    e = new StringTypeEntry("QXmlStreamStringRef");
-    e->setPreferredConversion(false);
-    addType(e);
-
-    addType(new CharTypeEntry("QChar"));
-
-    CharTypeEntry *c = new CharTypeEntry("QLatin1Char");
-    c->setPreferredConversion(false);
-    addType(c);
-
-    {
-        VariantTypeEntry *qvariant = new VariantTypeEntry("QVariant");
-        qvariant->setCodeGeneration(TypeEntry::GenerateNothing);
-        addType(qvariant);
-    }
-
-    {
-        JObjectWrapperTypeEntry *wrapper = new JObjectWrapperTypeEntry("JObjectWrapper");
-        wrapper->setCodeGeneration(TypeEntry::GenerateNothing);
-        addType(wrapper);
-    }
-
-    addType(new ThreadTypeEntry());
-    addType(new VoidTypeEntry());
-
-    // Predefined containers...
-    addType(new ContainerTypeEntry("QList", ContainerTypeEntry::ListContainer));
-    addType(new ContainerTypeEntry("QStringList", ContainerTypeEntry::StringListContainer));
-    addType(new ContainerTypeEntry("QLinkedList", ContainerTypeEntry::LinkedListContainer));
-    addType(new ContainerTypeEntry("QVector", ContainerTypeEntry::VectorContainer));
-    addType(new ContainerTypeEntry("QStack", ContainerTypeEntry::StackContainer));
-    addType(new ContainerTypeEntry("QSet", ContainerTypeEntry::SetContainer));
-    addType(new ContainerTypeEntry("QMap", ContainerTypeEntry::MapContainer));
-    addType(new ContainerTypeEntry("QHash", ContainerTypeEntry::HashContainer));
-    addType(new ContainerTypeEntry("QPair", ContainerTypeEntry::PairContainer));
-    addType(new ContainerTypeEntry("QQueue", ContainerTypeEntry::QueueContainer));
-    addType(new ContainerTypeEntry("QMultiMap", ContainerTypeEntry::MultiMapContainer));
-
-    // Custom types...
-    addType(new QModelIndexTypeEntry());
-
-    addRemoveFunctionToTemplates(this);
 }
 
 bool TypeDatabase::parseFile(const QString &filename, bool generate)

@@ -80,6 +80,12 @@ private:
     QString m_error;
     TypeEntry::CodeGeneration m_generate;
 
+    /**
+     * Returns attributes corresponding element type
+     * StackElement::ElementType.
+     */
+    QHash<QString, QString> setStackElementAttributes(StackElement::ElementType type);
+
     EnumTypeEntry *m_current_enum;
 
     CodeSnipList m_code_snips;

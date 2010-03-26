@@ -228,32 +228,11 @@ bool Handler::convertBoolean(const QString &_value, const QString &attributeName
     }
 }
 
-bool Handler::startElement(const QString &, const QString &n,
-                           const QString &, const QXmlAttributes &atts)
-{
-    QString tagName = n.toLower();
-    if (tagName == "import-file") {
-        return importFileElement(atts);
-    }
+QHash<QString, QString> Handler::setStackElementAttributes(StackElement::ElementType type) {
+    QHash<QString, QString> attributes;
+    attributes["name"] = QString();
 
-    StackElement *element = new StackElement(current);
-
-    if (!tagNames.contains(tagName)) {
-        m_error = QString("Unknown tag name: '%1'").arg(tagName);
-        return false;
-    }
-
-    element->type = tagNames[tagName];
-    if (element->type & StackElement::TypeEntryMask) {
-        if (current->type != StackElement::Root) {
-            m_error = "Nested types not supported";
-            return false;
-        }
-
-        QHash<QString, QString> attributes;
-        attributes["name"] = QString();
-
-        switch (element->type) {
+    switch (type) {
         case StackElement::PrimitiveTypeEntry:
             attributes["java-name"] = QString();
             attributes["jni-name"] = QString();
@@ -292,8 +271,36 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
         default:
             ; // nada
-        };
+    };
 
+    return attributes;
+}
+
+bool Handler::startElement(const QString &, const QString &n,
+                           const QString &, const QXmlAttributes &atts)
+{
+    QString tagName = n.toLower();
+    if (tagName == "import-file") {
+        return importFileElement(atts);
+    }
+
+    StackElement *element = new StackElement(current);
+
+    if (!tagNames.contains(tagName)) {
+        m_error = QString("Unknown tag name: '%1'").arg(tagName);
+        return false;
+    }
+
+    element->type = tagNames[tagName];
+    if (element->type & StackElement::TypeEntryMask) {
+        if (current->type != StackElement::Root) {
+            m_error = "Nested types not supported";
+            return false;
+        }
+
+        QHash<QString, QString> attributes;
+
+        attributes = setStackElementAttributes(element->type);
         fetchAttributeValues(tagName, atts, &attributes);
 
         QString name = attributes["name"];
