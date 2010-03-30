@@ -46,6 +46,9 @@
 #ifndef PP_STRING_H
 #define PP_STRING_H
 
+#include <cstring>
+#include <algorithm>
+
 namespace rpp {
 
 template <typename _CharT>
@@ -98,7 +101,7 @@ public:
 
   inline bool operator == (char const *s) const
   {
-    std::size_t n = strlen (s);
+    std::size_t n = std::strlen (s);
 
     if (n != _M_size)
       return false;

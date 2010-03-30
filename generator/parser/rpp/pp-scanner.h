@@ -46,6 +46,8 @@
 #ifndef PP_SCANNER_H
 #define PP_SCANNER_H
 
+#include <cassert>
+
 namespace rpp {
 
 struct pp_skip_blanks

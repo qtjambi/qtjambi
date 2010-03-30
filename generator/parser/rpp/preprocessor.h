@@ -50,8 +50,22 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
 
-class QByteArray;
-class PreprocessorPrivate;
+#include "rpp/pp-environment.h"
+#include "pp-engine-bits.h"
+
+class PreprocessorPrivate
+{
+public:
+    QByteArray result;
+    rpp::pp_environment env;
+    QStringList includePaths;
+
+    void initPP ( rpp::pp &proc )
+    {
+        foreach ( QString path, includePaths )
+        proc.push_include_path ( path.toStdString() );
+    }
+};
 
 class Preprocessor
 {

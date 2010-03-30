@@ -46,14 +46,16 @@
 #ifndef PP_FWD_H
 #define PP_FWD_H
 
+#include "rpp/pp-string.h"
+
 namespace rpp {
 
 template <typename _CharT> class pp_string;
-
 typedef pp_string<char> pp_fast_string;
+
+} // namespace rpp
 
 #endif // PP_FWD_H
 
-} // namespace rpp
 
 // kate: space-indent on; indent-width 2; replace-tabs on;

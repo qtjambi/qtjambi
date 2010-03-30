@@ -44,12 +44,11 @@ HEADERS += \
         $$GENERATORPATH/abstractmetalang.h \
         $$GENERATORPATH/prigenerator.h \
 
-
-
-
 SOURCES += \
         $$GENERATORPATH/generator.cpp \
         $$GENERATORPATH/main.cpp \
+		$$GENERATORPATH/wrapper.cpp \
+		$$GENERATORPATH/preprocesshandler.cpp \
         $$GENERATORPATH/reporthandler.cpp \
         $$GENERATORPATH/typeparser.cpp \
 		$$GENERATORPATH/typesystem/codesnip.cpp \

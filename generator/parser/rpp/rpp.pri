@@ -1,10 +1,12 @@
 SOURCES += \
-    $$RXXPATH/rpp/preprocessor.cpp
+    $$RXXPATH/rpp/preprocessor.cpp \
+	$$RXXPATH/rpp/pp-environment.cpp \
+	$$RXXPATH/rpp/pp-engine-bits.cpp \
+	$$RXXPATH/rpp/pp-macro-expander.cpp
 
 HEADERS += \
     $$RXXPATH/rpp/pp-cctype.h \
     $$RXXPATH/rpp/pp-engine-bits.h \
-    $$RXXPATH/rpp/pp-engine.h \
     $$RXXPATH/rpp/pp-environment.h \
     $$RXXPATH/rpp/pp-fwd.h \
     $$RXXPATH/rpp/pp-internal.h \

@@ -1,0 +1,124 @@
+make -f Makefile.Release
+make[1]: Entering directory `/home/smar/Tiedostot/Projektit/java/jambi/smar-sandbox/generator'
+g++ -c -pipe -Os -pipe -march=athlon64 -fPIC -Wall -W -D_REENTRANT -DRXX_ALLOCATOR_INIT_0 -DQT_NO_DEBUG -DQT_XML_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtXml -I/usr/include/qt4 -I. -I. -I../common -Iparser -Iparser/rpp -Iparser/rpp -Irelease -o release/pp-environment.o parser/rpp/pp-environment.cpp
+In file included from parser/rpp/pp.h:107,
+                 from parser/rpp/pp-environment.h:53,
+                 from parser/rpp/pp-environment.cpp:2:
+parser/rpp/pp-engine-bits.h: In member function 'void rpp::pp::file(const std::string&, _OutputIterator)':
+parser/rpp/pp-engine-bits.h:84: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:85: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:87: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function 'bool rpp::pp::find_header_protection(_InputIterator, _InputIterator, std::string*)':
+parser/rpp/pp-engine-bits.h:125: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:132: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:139: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:144: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:150: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:157: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:161: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:176: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function 'rpp::pp::PP_DIRECTIVE_TYPE rpp::pp::find_directive(const char*, size_t) const':
+parser/rpp/pp-engine-bits.h:234: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:234: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+In file included from parser/rpp/pp.h:107,
+                 from parser/rpp/pp-environment.h:53,
+                 from parser/rpp/pp-environment.cpp:2:
+parser/rpp/pp-engine-bits.h: In member function 'FILE* rpp::pp::find_include_file(const std::string&, std::string*, rpp::pp::INCLUDE_POLICY, bool) const':
+parser/rpp/pp-engine-bits.h:275: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:276: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function '_InputIterator rpp::pp::handle_include(bool, _InputIterator, _InputIterator, _OutputIterator)':
+parser/rpp/pp-engine-bits.h:412: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:413: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:414: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:416: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:422: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:423: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:426: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:426: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function 'void rpp::pp::operator()(_InputIterator, _InputIterator, _OutputIterator)':
+parser/rpp/pp-engine-bits.h:445: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:452: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:458: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:466: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:469: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:480: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:483: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:485: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:486: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:486: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:493: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:499: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:499: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:501: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:504: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:504: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function '_InputIterator rpp::pp::handle_define(_InputIterator, _InputIterator)':
+parser/rpp/pp-engine-bits.h:606: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:627: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function '_InputIterator rpp::pp::skip(_InputIterator, _InputIterator)':
+parser/rpp/pp-engine-bits.h:643: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:648: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:653: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:658: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h:663: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function '_InputIterator rpp::pp::eval_primary(_InputIterator, _InputIterator, rpp::Value*)':
+parser/rpp/pp-engine-bits.h:717: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function '_InputIterator rpp::pp::handle_ifdef(bool, _InputIterator, _InputIterator)':
+parser/rpp/pp-engine-bits.h:1153: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-engine-bits.h: In member function '_InputIterator rpp::pp::handle_undef(_InputIterator, _InputIterator)':
+parser/rpp/pp-engine-bits.h:1187: error: invalid use of incomplete type 'struct rpp::pp_environment'
+parser/rpp/pp-macro-expander.h:54: error: forward declaration of 'struct rpp::pp_environment'
+parser/rpp/pp-environment.cpp: At global scope:
+parser/rpp/pp-environment.cpp:31: error: expected constructor, destructor, or type conversion before '*' token
+parser/rpp/pp-environment.cpp:42: error: expected constructor, destructor, or type conversion before '*' token
+make[1]: *** [release/pp-environment.o] Error 1
+make[1]: Leaving directory `/home/smar/Tiedostot/Projektit/java/jambi/smar-sandbox/generator'
+make: *** [release] Error 2
