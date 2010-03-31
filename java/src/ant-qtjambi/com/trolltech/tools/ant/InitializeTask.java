@@ -50,8 +50,16 @@ import java.io.*;
 
 import com.trolltech.qt.internal.*;
 
+// NOTE: remove this after removing support for 1.7
+@SuppressWarnings("deprecation")
 public class InitializeTask extends Task {
 
+    private Compiler compiler;
+    private boolean verbose;
+    private PropertyHelper props;
+    private String configuration;
+	private boolean debug;
+    
     public enum Compiler {
         MSVC1998("msvc98"),
         MSVC2002("msvc2002"),
@@ -93,7 +101,10 @@ public class InitializeTask extends Task {
     /*
      * These properties are set outside of this task
      */
-    public static final String QTDIR            = "qtjambi.qtdir";
+    //public static final String QTDIR            = "qtjambi.qtdir";
+    public static final String LIBDIR           = "qtjambi.qt.libdir";
+    public static final String INCLUDEDIR       = "qtjambi.qt.includedir";
+    public static final String PLUGINSDIR       = "qtjambi.qt.pluginsdir";
     public static final String LIBSUBDIR        = "qtjambi.libsubdir";
     public static final String VERSION          = "qtjambi.version";
 
@@ -136,47 +147,19 @@ public class InitializeTask extends Task {
 
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
+        
         props.setNewProperty((String) null, OSNAME, decideOSName());
-
         props.setNewProperty((String) null, COMPILER, decideCompiler());
 
         checkCompilerDetails();
-
-        // Sanity checks...
-        if (OSInfo.os() == OSInfo.OS.Windows) {
-            boolean vmx64 = decideOSName().contains("64");
-            boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64;
-            if (vmx64 != compiler64) {
-                if (vmx64)
-                    throw new BuildException("Trying to mix 64-bit virtual machine with 32-bit MSVC compiler...");
-                else
-                    throw new BuildException("Trying to mix 32-bit virtual machine with 64-bit MSVC compiler...");
-            }
-        }
+        checkCompilerBits();
 
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
-        // These depend on both qtdir, libsubdir and configration, so
-        // run rather late...
-        String phonon = decidePhonon();
-        if ("true".equals(phonon)) {
-            props.setNewProperty((String) null, PHONON, phonon);
-            switch (OSInfo.os()) {
-            case Windows:
-                props.setNewProperty((String) null, PHONON_DS9, "true");
-                break;
-            case Linux:
-                props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
-                if (doesQtLibExist("QtDBus", 4))
-                    props.setNewProperty((String) null, DBUS, "true");
-                break;
-            case MacOS:
-                props.setNewProperty((String) null, PHONON_QT7, "true");
-                if (doesQtLibExist("QtDBus", 4))
-                    props.setNewProperty((String) null, DBUS, "true");
-                break;
-            }
-        }
+        String phonon = decidePhonon(props);
+        //if ("true".equals(phonon)) {
+          //  decidePhonon(props);
+        //}
 
         props.setNewProperty((String) null, SQLITE, decideSqlite());
 
@@ -214,6 +197,23 @@ public class InitializeTask extends Task {
                 props.setNewProperty((String) null, VSREDISTDIR, redistDir);
 
                 break;
+        }
+        checkCompilerBits();
+    }
+    
+    /**
+     * check if trying to mix 32 bit vm with 64 bit compiler and other way around
+     */
+    private void checkCompilerBits() {
+        if (OSInfo.os() == OSInfo.OS.Windows) {
+            boolean vmx64 = decideOSName().contains("64");
+            boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64;
+            if (vmx64 != compiler64) {
+                if (vmx64)
+                    throw new BuildException("Trying to mix 64-bit virtual machine with 32-bit MSVC compiler...");
+                else
+                    throw new BuildException("Trying to mix 32-bit virtual machine with 64-bit MSVC compiler...");
+            }
         }
     }
 
@@ -343,9 +343,10 @@ public class InitializeTask extends Task {
 
     private boolean doesQtLibExist(String name, int version) {
         StringBuilder path = new StringBuilder();
-        path.append(props.getProperty((String) null, QTDIR));
-        path.append("/");
-        path.append(props.getProperty((String) null, LIBSUBDIR));
+        //path.append(props.getProperty((String) null, QTDIR));
+        //path.append("/");
+        //path.append(props.getProperty((String) null, LIBSUBDIR));
+        path.append(props.getProperty((String) null, LIBDIR));
         path.append("/");
         path.append(LibraryEntry.formatQtName(name, debug, version));
         return new File(path.toString()).exists();
@@ -353,23 +354,51 @@ public class InitializeTask extends Task {
 
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
-        path.append(props.getProperty((String) null, QTDIR));
-        path.append("/plugins/");
+        //path.append(props.getProperty((String) null, QTDIR));
+        //path.append("/plugins/");
+        path.append(props.getProperty((String) null, PLUGINSDIR));
+        path.append("/");
         path.append(subdir);
         path.append("/");
         path.append(LibraryEntry.formatPluginName(name, debug));
         return new File(path.toString()).exists();
     }
 
+    /**
+     * Decide whether we have phonon plugin and and 
+     * check correct phonon backend to use for this OS.
+     */
+    private String decidePhonon(PropertyHelper props) {
+        
+        String phonon = String.valueOf(doesQtLibExist("phonon", 4));
+        if (verbose) {
+            System.out.println(PHONON + ": " + phonon);
+        }
+        
+        props.setNewProperty((String) null, PHONON, phonon);
+        
+        switch (OSInfo.os()) {
+        case Windows:
+            props.setNewProperty((String) null, PHONON_DS9, "true");
+            break;
+        case Linux:
+            props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
+            if (doesQtLibExist("QtDBus", 4))
+                props.setNewProperty((String) null, DBUS, "true");
+            break;
+        case MacOS:
+            props.setNewProperty((String) null, PHONON_QT7, "true");
+            if (doesQtLibExist("QtDBus", 4))
+                props.setNewProperty((String) null, DBUS, "true");
+            break;
+        }
+        
+        return phonon;
+    }
+
     private String decideSqlite() {
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
         if (verbose) System.out.println(SQLITE + ": " + result);
-        return result;
-    }
-
-    private String decidePhonon() {
-        String result = String.valueOf(doesQtLibExist("phonon", 4));
-        if (verbose) System.out.println(PHONON + ": " + result);
         return result;
     }
 
@@ -391,13 +420,4 @@ public class InitializeTask extends Task {
         return result;
     }
 
-
-    private Compiler compiler;
-    private boolean verbose;
-    private PropertyHelper props;
-    private String configuration;
-    private boolean debug;
-    private String qmakespec;
-    private String qtdir;
-    private String libSubDir;
 }

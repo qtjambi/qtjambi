@@ -23,7 +23,6 @@ Wrapper::Wrapper(int argc, char *argv[]) :
     args = parseArguments(argc, argv);
     handleArguments();
     assignVariables();
-    runJambiGenerator();
 }
 
 void Wrapper::handleArguments() {
@@ -92,7 +91,7 @@ void Wrapper::assignVariables() {
         displayHelp(gs);
 }
 
-bool Wrapper::runJambiGenerator() {
+int Wrapper::runJambiGenerator() {
     printf("Running the Qt Jambi Generator. Please wait while source files are being generated...\n");
 
     //parse the type system file
@@ -125,7 +124,7 @@ bool Wrapper::runJambiGenerator() {
     printf("Done, %d warnings (%d known issues)\n", ReportHandler::warningCount(),
            ReportHandler::suppressedCount());
            
-    return true;
+    return 0;
 }
 
 

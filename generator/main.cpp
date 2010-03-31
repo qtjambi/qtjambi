@@ -47,12 +47,11 @@
 #include "preprocesshandler.h"
 
 bool Preprocess::preprocess(const QString &sourceFile, const QString &targetFile, const QString &commandLineIncludes) {
-    new PreprocessHandler(sourceFile, targetFile);
-    return true; //TODO
+    PreprocessHandler handler(sourceFile, targetFile);
+    return handler.handler();
 }
 
 int main(int argc, char *argv[]) {
-    new Wrapper(argc, argv);
-    
-    return 0;
+    Wrapper wrapper(argc, argv);
+    return wrapper.runJambiGenerator();
 }

@@ -1,12 +1,12 @@
+
+<!--
+ This file has two purposes:
+
+ * download ant-contrib and use it (or pick up the jar from the system itself)
+ * set various properties necessary for the build process.
+-->
+
 <project name="qtjambi.setenv" default="setenv" basedir=".">
-
-    <!--
-        This file has two purposes:
-
-        * download ant-contrib and use it (or pick up the jar from the system
-          itself)
-        * set various properties necessary for the build process.
-    -->
 
     <property file="version.properties"/>
     <property file="buildpath.properties"/>
@@ -96,18 +96,21 @@
     </target>
 
     <!--
-        Do we have QTDIR set at all?
+        Handle environment variables.
+        If QTDIR isn’t set, look LIBDIR and INCLUDEDIR, which points to 
+        to qt’s libraries’s dir and include dir. 
     -->
 
-    <target name="check-qtdir">
-        <fail message="QTDIR is not set">
-            <condition>
-                <not>
-                    <isset property="env.QTDIR"/>
-                </not>
-            </condition>
-        </fail>
+    <target name="handle-qtdir" depends="source.antcontrib">
         <property name="qtdir" value="${env.QTDIR}"/>
+        <if>
+            <isset property="env.QTDIR"/>
+            <then>
+                <property name="qt.libdir" value="${env.QTDIR}/lib"/>
+                <property name="qt.pluginsdir" value="${env.QTDIR}/plugins"/>
+                <property name="qt.includedir" value="${env.QTDIR}/include"/>
+            </then>
+        </if>
     </target>
 
     <target name="lookup-libsubdir" depends="source.antcontrib">
@@ -116,11 +119,13 @@
             <os family="windows"/>
             <then>
                 <var name="libsubdir" value="bin"/>
+                <!-- I wonder if this is good thing... TODO: check this -->
+                <property name="qt.libdir" value="${env.QTDIR}/bin"/>
             </then>
         </if>
     </target>
 
-    <target name="setenv" depends="check-qtdir, lookup-libsubdir">
+    <target name="setenv" depends="handle-qtdir, lookup-libsubdir">
         <exec executable="qmake" outputproperty="qt.version">
             <arg value="-query"/>
             <arg value="QT_VERSION"/>
@@ -132,8 +137,10 @@
                 </not>
             </condition>
         </fail>
-        <property name="qtjambi.libsubdir" value="${libsubdir}"/>
-        <property name="qtjambi.qtdir" value="${qtdir}"/>
+         <property name="qtjambi.libsubdir" value="${libsubdir}"/> 
+        <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
+        <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
+        <property name="qtjambi.qt.includedir" value="${qt.includedir}"/> 
     </target>
 
 </project>

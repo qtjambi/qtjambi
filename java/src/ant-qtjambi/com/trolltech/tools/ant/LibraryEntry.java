@@ -50,6 +50,8 @@ import java.io.File;
 
 import com.trolltech.qt.internal.*;
 
+// NOTE: remove this after removing support for 1.7
+@SuppressWarnings("deprecation")
 public class LibraryEntry extends Task {
 
     public static final String TYPE_DEFAULT            = "user";

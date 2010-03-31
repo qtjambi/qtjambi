@@ -50,6 +50,8 @@ import java.io.*;
 
 import com.trolltech.qt.internal.*;
 
+//NOTE: remove this after removing support for 1.7
+@SuppressWarnings("deprecation")
 public class MakeTask extends Task {
     private String msg = "";
     private String target = "";

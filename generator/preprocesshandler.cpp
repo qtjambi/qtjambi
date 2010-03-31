@@ -10,12 +10,18 @@
 
 PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile) :
         preprocess(env),
-        ppconfig(":/trolltech/generator/parser/rpp/pp-qt-configuration")
+        ppconfig(":/trolltech/generator/parser/rpp/pp-qt-configuration"),
+        sourceFile(sourceFile),
+        targetFile(targetFile)
 {
+    
+}
+
+bool PreprocessHandler::handler() {
     QFile file(ppconfig);
     if (!file.open(QFile::ReadOnly)) {
         std::fprintf(stderr, "Preprocessor configuration file not found '%s'\n", ppconfig);
-        return;
+        return false;
     }
     
     QByteArray ba = file.readAll();
@@ -30,6 +36,8 @@ PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile) :
     QString currentDir = QDir::current().absolutePath();
 
     writeTargetFile(sourceFile, targetFile, currentDir);
+    
+    return true;
 }
 
 void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, QString currentDir) {

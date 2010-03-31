@@ -19,10 +19,11 @@ public:
     
     static QString library_dir;
     
+    int runJambiGenerator();
+    
 private:
     void displayHelp(GeneratorSet* arg1);
     QMap<QString, QString> parseArguments(int argc, char *argv[]);
-    bool runJambiGenerator();
     void assignVariables();
     void handleArguments();
     
