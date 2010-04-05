@@ -187,6 +187,7 @@
 
     <!--
         TODO: the following two targets must go away
+        Move them to their real location or something
     -->
 
     <target name="library.java.bundle" depends="jar.qtjambi">
@@ -215,8 +216,8 @@
             <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
             <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
             <srcfiles dir="${outputDir}/qtjambi" includes="*.pr*"/>
-            <srcfiles dir="${outputDir}/designer-integration"
-                includes="**/*.pr*"/>
+            <!--<srcfiles dir="${outputDir}/designer-integration"
+                includes="**/*.pr*"/>-->
         </uptodate>
     </condition>
 
@@ -242,50 +243,53 @@
                               outdir="${outputDir}/platform-output">
 
             <!-- Qt Libraries... -->
-            <library name="QtCore"    type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtGui"     type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtXml"     type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" load="yes"/>
-            <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.opengl}"/>
-            <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
-            <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.xmlpatterns}"/>
-            <library name="phonon"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.phonon}"/>
-            <library name="QtDBus"    type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.dbus}"/>
-            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qtdir}" 
+            <library name="QtCore"    type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtGui"     type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtXml"     type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtSql"     type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtSvg"     type="qt" rootPath="${qtjambi.qt.libdir}" load="yes"/>
+            <library name="QtNetwork" type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qt.libdir}" if="${qtjambi.opengl}"/>
+            <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qt.libdir}" if="${qtjambi.webkit}"/>
+            <library name="QtXmlPatterns" type="qt" rootPath="${qtjambi.qt.libdir}" if="${qtjambi.xmlpatterns}"/>
+            <library name="phonon"    type="qt" rootPath="${qtjambi.qt.libdir}" if="${qtjambi.phonon}"/>
+            <library name="QtDBus"    type="qt" rootPath="${qtjambi.qt.libdir}" if="${qtjambi.dbus}"/>
+            <library name="phonon_ds9" type="plugin" rootPath="${qtjambi.qt.libdir}" 
                     subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_ds9}"/>
-            <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qtdir}"
+            <library name="phonon_gstreamer" type="plugin" rootPath="${qtjambi.qt.libdir}"
                     subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_gstreamer}"/>
-            <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qtdir}" 
+            <library name="phonon_qt7" type="plugin" rootPath="${qtjambi.qt.libdir}" 
                     subdir="plugins/phonon_backend" load="never" if="${qtjambi.phonon_qt7}"/>
 
             <!-- Qt Plugins... -->
-            <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
-            <library name="qgif" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
-            <library name="qmng" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
-            <library name="qtiff" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
-            <library name="qsvg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
-            <library name="qsvgicon" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/iconengines" load="never"/>
-            <library name="qcncodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
-            <library name="qjpcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
-            <library name="qkrcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
-            <library name="qtwcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never"/>
-            <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/accessible" load="never"/>
-            <library name="qsqlite" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/sqldrivers" load="never" if="${qtjambi.sqlite}"/>
+            <library name="qjpeg" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qgif" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qmng" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qtiff" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qsvg" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/imageformats" load="never"/>
+            <library name="qsvgicon" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/iconengines" load="never"/>
+            <library name="qcncodecs" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/codecs" load="never"/>
+            <library name="qjpcodecs" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/codecs" load="never"/>
+            <library name="qkrcodecs" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/codecs" load="never"/>
+            <library name="qtwcodecs" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/codecs" load="never"/>
+            <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/accessible" load="never"/>
+            <library name="qsqlite" type="plugin" rootPath="${qtjambi.qt.libdir}" subdir="plugins/sqldrivers" load="never" if="${qtjambi.sqlite}"/>
 
             <!-- Qt Jambi Libraries -->
-            <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_phonon"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.phonon}"/>
-            <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.webkit}"/>
-            <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.xmlpatterns}"/>
+            <library name="qtjambi"                  type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+            <library name="com_trolltech_qt_phonon"  type="qtjambi" 
+					rootPath="${outputDir}/${qtjambi.jambi.libdir}" if="${qtjambi.phonon}"/>
+            <library name="com_trolltech_qt_webkit"  type="qtjambi" 
+					rootPath="${outputDir}/${qtjambi.jambi.libdir}" if="${qtjambi.webkit}"/>
+            <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi" 
+					rootPath="${outputDir}/${qtjambi.jambi.libdir}" if="${qtjambi.xmlpatterns}"/>
 
         <plugin path="plugins"/>
 

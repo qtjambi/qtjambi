@@ -114,11 +114,11 @@
     </target>
 
     <target name="lookup-libsubdir" depends="source.antcontrib">
-        <var name="libsubdir" value="lib"/>
+        <!--<var name="libsubdir" value="lib"/>-->
         <if>
             <os family="windows"/>
             <then>
-                <var name="libsubdir" value="bin"/>
+                <!--<var name="libsubdir" value="bin"/>-->
                 <!-- I wonder if this is good thing... TODO: check this -->
                 <property name="qt.libdir" value="${env.QTDIR}/bin"/>
             </then>
@@ -137,10 +137,11 @@
                 </not>
             </condition>
         </fail>
-         <property name="qtjambi.libsubdir" value="${libsubdir}"/> 
+         <!--<property name="qtjambi.libsubdir" value="${libsubdir}"/>-->
         <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
-        <property name="qtjambi.qt.includedir" value="${qt.includedir}"/> 
+        <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
+        <property name="qtjambi.jambi.libdir" value="lib"/>
     </target>
 
 </project>

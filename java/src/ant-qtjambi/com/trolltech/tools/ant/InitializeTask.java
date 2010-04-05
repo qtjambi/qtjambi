@@ -102,10 +102,12 @@ public class InitializeTask extends Task {
      * These properties are set outside of this task
      */
     //public static final String QTDIR            = "qtjambi.qtdir";
+    //public static final String LIBSUBDIR        = "qtjambi.libsubdir";
     public static final String LIBDIR           = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR       = "qtjambi.qt.includedir";
     public static final String PLUGINSDIR       = "qtjambi.qt.pluginsdir";
-    public static final String LIBSUBDIR        = "qtjambi.libsubdir";
+    public static final String JAVALIBDIR		= "qtjambi.java.library.path";
+    public static final String JAMBILIBDIR	 	= "qtjambi.jambi.libdir";
     public static final String VERSION          = "qtjambi.version";
 
     /*
@@ -157,9 +159,6 @@ public class InitializeTask extends Task {
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
         String phonon = decidePhonon(props);
-        //if ("true".equals(phonon)) {
-          //  decidePhonon(props);
-        //}
 
         props.setNewProperty((String) null, SQLITE, decideSqlite());
 
@@ -370,7 +369,11 @@ public class InitializeTask extends Task {
      */
     private String decidePhonon(PropertyHelper props) {
         
-        String phonon = String.valueOf(doesQtLibExist("phonon", 4));
+    	boolean exists = doesQtLibExist("phonon", 4);
+    	if(!exists) {
+    		return "false";
+    	}
+        String phonon = String.valueOf(exists);
         if (verbose) {
             System.out.println(PHONON + ": " + phonon);
         }

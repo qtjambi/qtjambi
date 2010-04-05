@@ -150,8 +150,9 @@ class Util {
 
     public static void copy(File src, File dst) throws IOException {
         File destDir = dst.getParentFile();
-        if (!destDir.exists())
+        if (!destDir.exists()) {
             destDir.mkdirs();
+        }
 
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
@@ -188,21 +189,14 @@ class Util {
         return null;
     }
 
-    public static File findInLibraryPath(String name) {
-		// I'm having technical problems with this path on Gentoo. some quick'n'dirty fix for it.
-		//	libraryPath = "/usr/lib64/gcc/x86_64-pc-linux-gnu/4.4.2";
-		String libraryPath;
-		try {
-			Process process = Runtime.getRuntime().exec("gcc-config -L");
-			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			libraryPath = input.readLine();
-			input.close();
-		} catch(Exception ex) {
-			//it didn't succeed. Fallback to java.library.path
-			System.out.println("FATAL: using gcc-config -B failed:");
-			ex.printStackTrace();
-			libraryPath = System.getProperty("java.library.path");
-		}
+    public static File findInLibraryPath(String name, String javaLibDir) {
+		
+    	String libraryPath;
+    	if(javaLibDir != null) {
+    		libraryPath = javaLibDir;
+    	} else {
+    		libraryPath = System.getProperty("java.library.path");
+    	}
 		//System.out.println("library path is: " + libraryPath);
 
         // Make /usr/lib an implicit part of library path
@@ -212,8 +206,9 @@ class Util {
         String PATH[] = libraryPath.split(File.pathSeparator);
         for (String p : PATH) {
             File f = new File(p, name);
-            if (f.exists())
+            if (f.exists()) {
                 return f;
+            }
         }
         return null;
     }

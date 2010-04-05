@@ -45,9 +45,7 @@
 package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.*;
-
 import java.io.File;
-
 import com.trolltech.qt.internal.*;
 
 // NOTE: remove this after removing support for 1.7
@@ -66,7 +64,7 @@ public class LibraryEntry extends Task {
     public static final String LOAD_YES                = "yes";
     public static final String LOAD_NEVER              = "never";
 
-    public static final String SUBDIR_DEFAULT          = "auto";
+    public static final String SUBDIR_DEFAULT          = "";
 
     public int getVersion() {
         return version;
@@ -132,10 +130,6 @@ public class LibraryEntry extends Task {
         PropertyHelper h = PropertyHelper.getPropertyHelper(getProject());
 
         boolean debug = "debug".equals(h.getProperty((String) null, InitializeTask.CONFIGURATION));
-
-        // Change subdir...
-        if (subdir.equals("auto"))
-            subdir = (String) h.getProperty((String) null, InitializeTask.LIBSUBDIR);
 
         // Fix name...
         if (type.equals(TYPE_PLUGIN))       name = formatPluginName(name, debug);
