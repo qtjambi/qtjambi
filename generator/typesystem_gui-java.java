@@ -1076,7 +1076,7 @@ class QApplication___ extends QApplication {
      * with an already existing QApplication instance.
      * @see com.trolltech.qt.core.QCoreApplication#initialize(com.trolltech.qt.core.QCoreApplication)
      */
-    private static initialize(QApplication instance) {
+    private static void initialize(QApplication instance) {
     	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
     	if (m_instance != null)
             throw new RuntimeException("QCoreApplication can only be initialized once");

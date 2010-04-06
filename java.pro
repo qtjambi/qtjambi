@@ -19,6 +19,8 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     CONFIG += debug_and_release build_all
 }
 
+#DEFINES += QTJAMBI_DEBUG_TOOLS
+
 # This gives us a top level debug/release
 EXTRA_DEBUG_TARGETS =
 EXTRA_RELEASE_TARGETS =
