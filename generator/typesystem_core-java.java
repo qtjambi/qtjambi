@@ -184,24 +184,6 @@ class QCoreApplication___ extends QCoreApplication {
         this(argc(args), argv(applicationName, args));
     }
         
-    /**
-     * This method allows to initialize the qtjambi application
-     * with an already existing QCoreApplication instance.
-     * 
-     */
-    private static void initialize(QCoreApplication instance) {
-    	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
-    	if (m_instance != null)
-            throw new RuntimeException("QCoreApplication can only be initialized once");
-    	String path = Utilities.unpackPlugins();
-        if (path != null)
-            addLibraryPath(path);
-        else
-            com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
-        m_instance = instance;
-        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
-    }
-
     public static String translate(String context, String sourceText, String comment) {
         QTextCodec codec = QTextCodec.codecForName("UTF-8");
         return translate(context != null ? codec.fromUnicode(context).data() : null, sourceText != null ? codec.fromUnicode(sourceText).data() : null,

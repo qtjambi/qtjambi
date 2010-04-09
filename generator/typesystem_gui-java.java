@@ -1071,24 +1071,21 @@ class QApplication___ extends QApplication {
         m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }
     
-    /**
-     * This method allows to initialize the qtjambi application
-     * with an already existing QApplication instance.
-     * @see com.trolltech.qt.core.QCoreApplication#initialize(com.trolltech.qt.core.QCoreApplication)
-     */
-    private static void initialize(QApplication instance) {
-    	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
-    	if (m_instance != null)
-            throw new RuntimeException("QCoreApplication can only be initialized once");
-    	String path = Utilities.unpackPlugins();
+    public static void initialize(String applicationName, String args[]) {
+        com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
+
+        if (m_instance != null)
+            throw new RuntimeException("QApplication can only be initialized once");
+
+        String path = Utilities.unpackPlugins();
         if (path != null)
             addLibraryPath(path);
         else
             com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
-        m_instance = instance;
-        instance.aboutToQuit.connect(instance, "disposeOfMyself()");
+        m_instance = new QApplication(applicationName, args);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
     }
-
+    
     public static void aboutQtJambi() {
         com.trolltech.qt.QtJambiGuiInternal.aboutQtJambi();
     }
