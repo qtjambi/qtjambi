@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sf.qtjambi</groupId>
     <artifactId>qtjambi-maven-plugin</artifactId>
-    <version>0.1</version>
+    <version>%QTJAMBI_PLUGIN_VERSION%</version>
     <packaging>maven-plugin</packaging>
     <name>qtjambi-maven-plugin</name>
     <url>http://maven.apache.org</url>
@@ -106,7 +106,6 @@
             <id>win32</id>
             <activation>
                 <os>
-                    <!-- <name>Windows XP</name> -->
                     <family>windows</family>
                     <arch>x86</arch>
                 </os>

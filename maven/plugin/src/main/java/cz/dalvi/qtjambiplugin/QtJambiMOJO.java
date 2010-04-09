@@ -441,16 +441,19 @@ public class QtJambiMOJO extends AbstractMojo {
 
                     getLog().debug("Updating translation " + ts.getAbsolutePath());
 
-                    // [-noobsolete] -extensions java %sourcedir %dstdir -ts test.ts
-                    String[] args = new String[]{
-                        noObsoleteTranslations ? "-noobsolete" : null,
-                        "-extensions",
-                        dotJava.replace(".", ""),
-                        sourcesDir.getAbsolutePath(),
-                        destinationDir.getAbsolutePath(),
-                        "-ts",
-                        ts.getAbsolutePath()
-                    };
+                    // [-noobsolete] -extensions java %sourcedir [%dstdir] -ts test.ts
+                    LinkedList<String> arg_lst = new LinkedList<String>();
+                    arg_lst.add(noObsoleteTranslations ? "-noobsolete" : null);
+                    arg_lst.add("-extensions");
+                    arg_lst.add(dotJava.replace(".", ""));
+                    arg_lst.add(sourcesDir.getAbsolutePath());
+                    if (destinationDir.isDirectory()) {
+                        arg_lst.add(destinationDir.getAbsolutePath());
+                    }
+                    arg_lst.add("-ts");
+                    arg_lst.add(ts.getAbsolutePath());
+
+                    String[] args = arg_lst.toArray(new String[0]);
 
                     getLog().debug("Executing: lupdate " + java.util.Arrays.toString(args));
 
