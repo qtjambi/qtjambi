@@ -71,7 +71,8 @@
         <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
         <javac source="1.5" target="1.5" debug="true" deprecation="true"
-            fork="true" memorymaximumsize="1024m"
+            fork="true" memorymaximumsize="1024m" verbose="false"
+            includeantruntime="true"
             destdir="${java.outdir}/${module}">
             <src path="${java.generated.srcdir}/${module}"/>
             <classpath refid="java.compile.classpath"/>
