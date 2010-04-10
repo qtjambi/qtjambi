@@ -225,21 +225,27 @@ public class PlatformJarTask extends Task
         if ( systemLibs.equals ( SYSLIB_AUTO ) )
         {
             if ( runtimeLibs.size() > 0 )
-                writer.println ( "\n  <!-- Runtime libraries, automatically loaded... -->" );
+                writer.println ( "\n  <!-- Runtime libraries, loaded automatically -->" );
         for ( String rt : runtimeLibs )
             {
                 writer.println ( "  <library name=\"" + rt + "\" load=\"yes\" />" );
             }
         }
 
-        writer.println ( "\n  <!-- User specified libraries... -->" );
+        writer.println ( "\n  <!-- Qt libraries -->" );
     for ( LibraryEntry e : libs )
         {
             String libraryName = e.getName();
             String subdir = e.getSubdir();
             String load = e.getLoad();
+            
+            if(!"".equals(subdir)) {
+            	subdir = subdir + "/";
+            } else {
+            	subdir = "";
+            }
 
-            writer.print ( "  <library name=\"" + subdir + "/" + libraryName + "\"" );
+            writer.print ( "  <library name=\"" + e.output_directory + subdir + libraryName + "\"" );
             if ( !load.equals ( LibraryEntry.LOAD_DEFAULT ) )
                 writer.print ( " load=\"" + load + "\"" );
             writer.println ( "/>" );
@@ -277,10 +283,19 @@ public class PlatformJarTask extends Task
         String libraryName = e.getName();
         String subdir = e.getSubdir();
 
-        File src = new File ( rootPath, subdir + "/" + libraryName );
-        File dest = new File ( outdir, subdir + "/" + libraryName );
+        if(!"".equals(subdir)) {
+        	subdir = subdir + "/";
+        } else {
+        	subdir = "";
+        }
+        if(!"".equals(e.output_directory)) {
+        	new File(e.output_directory).mkdir();
+        }
+        File src = new File ( rootPath, subdir + libraryName );
+        File dest = new File ( outdir, e.output_directory + subdir + libraryName );
         try
         {
+        	//System.out.println("Copying " + src + " to " + dest);
             Util.copy ( src, dest );
             libraryDir.add ( subdir );
         }
@@ -399,14 +414,14 @@ public class PlatformJarTask extends Task
             throw new BuildException ( "Runtime library '" + name + "' was not found in library path..." );
         }
 
-        //String libdirName = (new File(InitializeTask.LIBDIR)).getName();
-        //String libDir = props.getProperty ( ( String ) null, InitializeTask.LIBDIR ).toString();
-
         try
         {
-            //Util.copy ( rt, new File ( outdir, libDir + "/" + name ) );
-        	Util.copy ( rt, new File ( outdir,  name ) );
-            runtimeLibs.add ( javaLibDir + "/" + name );
+        	//System.out.println("Copying " + rt.toString() + " to " + "lib/" + outdir + ", " + name);
+            /*
+             * "lib" is somewhat of a hack to specify where the files should be copied to.
+             */
+        	Util.copy ( rt, new File ( outdir + "/lib",  name ) );
+            runtimeLibs.add ( "lib/" + name );
         }
         catch ( IOException e )
         {

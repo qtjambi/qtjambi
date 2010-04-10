@@ -65,7 +65,25 @@ public class LibraryEntry extends Task {
     public static final String LOAD_NEVER              = "never";
 
     public static final String SUBDIR_DEFAULT          = "";
+    
+    /**
+     *  set to specify where the plugin should be saved.
+     *  Used to reduce redundancy of build.xml.
+     *  TODO:
+     *  Other variables could use same kind of solutions, I think. 
+     *  Whole path system needs to be rewritten to correspond 
+     *  new libdir, includedir, plugindir properties.  
+     */
+    public String output_directory        = "";
 
+    private String type = TYPE_DEFAULT;
+    private int version = VERSION_DEFAULT;
+    private String name;
+    private File rootpath;
+    private String subdir = SUBDIR_DEFAULT;
+    private String load = LOAD_DEFAULT;
+    private boolean included = true;
+    
     public int getVersion() {
         return version;
     }
@@ -131,11 +149,20 @@ public class LibraryEntry extends Task {
 
         boolean debug = "debug".equals(h.getProperty((String) null, InitializeTask.CONFIGURATION));
 
-        // Fix name...
-        if (type.equals(TYPE_PLUGIN))       name = formatPluginName(name, debug);
-        else if (type.equals(TYPE_QT))      name = formatQtName(name, debug, version);
-        else if (type.equals(TYPE_QTJAMBI)) name = formatQtJambiName(name, debug);
-        else if (type.equals(TYPE_UNVERSIONED_PLUGIN)) name = formatUnversionedPluginName(name, debug);
+        // Fix name
+        if (type.equals(TYPE_PLUGIN)) {
+        	name = formatPluginName(name, debug);
+        } else if (type.equals(TYPE_QT)){
+        	name = formatQtName(name, debug, version);
+        	//qt libraries are stored in "lib"
+        	// "/" is needed in the end
+        	output_directory = "lib/";
+        } else if (type.equals(TYPE_QTJAMBI)) {
+        	name = formatQtJambiName(name, debug);
+        	output_directory = "lib/";
+        } else if (type.equals(TYPE_UNVERSIONED_PLUGIN)) {
+        	name = formatUnversionedPluginName(name, debug);
+        }
 
         if (!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
             load = LOAD_DEFAULT;
@@ -231,12 +258,4 @@ public class LibraryEntry extends Task {
         throw new BuildException("unhandled case...");
     }
 
-
-    private String type = TYPE_DEFAULT;
-    private int version = VERSION_DEFAULT;
-    private String name;
-    private File rootpath;
-    private String subdir = SUBDIR_DEFAULT;
-    private String load = LOAD_DEFAULT;
-    private boolean included = true;
 }
