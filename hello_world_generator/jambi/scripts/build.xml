@@ -60,6 +60,7 @@
 
         <javac destdir="${basedir}/platform-output"
                debug="true">
+            <classpath path="${jambiDir}/"/>
             <src path="${jambiDir}/java/generated-src/qtjambi"/>
             <src path="${basedir}/.."/>
             <include name="com/poseidon/test/*.java"/>
