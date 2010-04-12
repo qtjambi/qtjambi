@@ -30,9 +30,10 @@ cp -R java/src/qtjambi-examples/com $RELEASE
 cp bin/juic $RELEASE/bin
 cp $QTDIR/bin/lrelease $RELEASE/bin
 cp $QTDIR/bin/lupdate $RELEASE/bin
+cp $QTDIR/bin/designer $RELEASE/bin
 
 cp lib/libqtjambi.so $RELEASE/lib
-
+cp lib/libqtjambi.so.1 $RELEASE/lib
 cp $QTDIR/lib/libphonon.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtCore.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtGui.so.4 $RELEASE/lib
@@ -58,8 +59,10 @@ cp lib/libcom_trolltech_qt_webkit.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_xml.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_xmlpatterns.so $RELEASE/lib
 cp lib/libcom_trolltech_tools_designer.so $RELEASE/lib
+
   
 cp -R $QTDIR/plugins $RELEASE
+cp -R /plugin/designer/ $RELEASE/plugins
   
 
 tar czf $RELEASE.tar.gz $RELEASE
