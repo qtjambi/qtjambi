@@ -665,7 +665,6 @@ void WriteInitialization::writeProperties(const QString &varName,
                 shape = QLatin1String("QFrame.Shape.VLine");
 
             output << option.indent << varName << ".setFrameShape(" << shape << ");\n";
-            output << option.indent << varName << ".setFrameShadow(QFrame.Shadow.Sunken);\n";
             continue;
 
         } else if (propertyName == QLatin1String("leftMargin")
