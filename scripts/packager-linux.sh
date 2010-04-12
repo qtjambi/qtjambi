@@ -9,6 +9,7 @@ mkdir $RELEASE
 mkdir $RELEASE/bin
 mkdir $RELEASE/lib
 
+cp version.properties $RELEASE
 cp qtjambi-$VERSION.jar $RELEASE
 cp qtjambi-designer-$VERSION.jar $RELEASE
 cp qtjambi-examples-$VERSION.jar $RELEASE
@@ -62,7 +63,7 @@ cp lib/libcom_trolltech_tools_designer.so $RELEASE/lib
 
   
 cp -R $QTDIR/plugins $RELEASE
-cp -R /plugin/designer/ $RELEASE/plugins
+cp -R plugins/designer/ $RELEASE/plugins
   
 
 tar czf $RELEASE.tar.gz $RELEASE

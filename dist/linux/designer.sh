@@ -11,8 +11,7 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    VERSION=$(ls qtjambi-4*.jar)
-    VERSION=`echo $VERSION | awk '{ print substr($1, 9, 8); }'`
+    VERSION=`sed '/^\#/d' version.properties | grep 'qtjambi.version'  | tail -n 1 | sed 's/^.*=//;s/^[[:space:]]*//;s/[[:space:]]*$//'`
     CP=$me/qtjambi-$VERSION.jar:$me/qtjambi-examples-$VERSION.jar:$me/qtjambi-designer-$VERSION.jar
     LD_LIBRARY_PATH=$me/lib QT_PLUGIN_PATH=$me/plugins CLASSPATH=$CP $me/bin/designer
 fi
