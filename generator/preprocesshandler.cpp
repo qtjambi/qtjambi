@@ -16,7 +16,7 @@ PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, con
         targetFile(targetFile),
         phononinclude(phononinclude)
 {
-    
+
 }
 
 bool PreprocessHandler::handler() {
@@ -25,7 +25,7 @@ bool PreprocessHandler::handler() {
         std::fprintf(stderr, "Preprocessor configuration file not found '%s'\n", ppconfig);
         return false;
     }
-    
+
     QByteArray ba = file.readAll();
     file.close();
     preprocess.operator() (ba.constData(), ba.constData() + ba.size(), null_out);
@@ -38,15 +38,15 @@ bool PreprocessHandler::handler() {
     QString currentDir = QDir::current().absolutePath();
 
     writeTargetFile(sourceFile, targetFile, currentDir);
-    
+
     return true;
 }
 
 void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, QString currentDir) {
-    
+
     QFileInfo sourceInfo(sourceFile);
     QDir::setCurrent(sourceInfo.absolutePath());
-    
+
     std::string result;
     result.reserve (20 * 1024); // 20K
 
@@ -55,7 +55,7 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
     result += sourceFile.toStdString();
     result += "\"\n";
 
-    preprocess.file (sourceInfo.fileName().toStdString(),
+    preprocess.file(sourceInfo.fileName().toStdString(),
                     rpp::pp_output_iterator<std::string> (result));
 
     QDir::setCurrent(currentDir);
@@ -85,7 +85,7 @@ QStringList PreprocessHandler::setIncludes() {
     } else {
         phonon_include_dir = libdir;
     }
-    
+
     includes << (libdir + "/QtXml");
     includes << (libdir + "/QtNetwork");
     includes << (libdir + "/QtCore");
@@ -93,6 +93,6 @@ QStringList PreprocessHandler::setIncludes() {
     includes << (libdir + "/QtOpenGL");
     includes << (phonon_include_dir + "/phonon");
     includes << libdir;
-    
+
     return includes;
 }
