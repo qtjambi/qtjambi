@@ -29,6 +29,7 @@ mkdir $RELEASE
 mkdir $RELEASE/bin
 mkdir $RELEASE/lib
 
+cp version.properties $RELEASE
 cp qtjambi-$VERSION.jar $RELEASE
 cp qtjambi-designer-$VERSION.jar $RELEASE
 cp qtjambi-examples-$VERSION.jar $RELEASE
@@ -47,12 +48,14 @@ cp dist/readme.html $RELEASE
   
 cp -R java/src/qtjambi-examples/com $RELEASE
   
-cp bin/juic $RELEASE/bin
+cp bin/juic $RELEASE/binbcp $BIND
+IR/lrelease $RELEASE/bin
 cp $BINDIR/lrelease $RELEASE/bin
 cp $BINDIR/lupdate $RELEASE/bin
+cp $QTDIR/bin/designer $RELEASE/bin
 
 cp lib/libqtjambi.so $RELEASE/lib
-
+cp lib/libqtjambi.so.1 $RELEASE/lib
 cp $phononlib/libphonon.so.4 $RELEASE/lib
 cp $LIBDIR/libQtCore.so.4 $RELEASE/lib
 cp $LIBDIR/libQtGui.so.4 $RELEASE/lib
@@ -78,8 +81,9 @@ cp lib/libcom_trolltech_qt_webkit.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_xml.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_xmlpatterns.so $RELEASE/lib
 cp lib/libcom_trolltech_tools_designer.so $RELEASE/lib
-  
+
 cp -R $LIBDIR/plugins $RELEASE
+cp -R plugins/designer/ $RELEASE/plugins
   
 
 tar czf $RELEASE.tar.gz $RELEASE

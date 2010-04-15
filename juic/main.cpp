@@ -381,7 +381,7 @@ JuicError runJuic(const QFileInfo &uiFile, const CmdOptions &options)
     QDateTime time = QDateTime::currentDateTime();
     stream <<
         "/********************************************************************************\n"
-        " ** Form generated from reading ui file 'CustomWidget.jui'\n"
+        " ** Form generated from reading ui file '"<< uiFile.fileName() << "'\n"
         " **\n"
         " ** Created by: Qt User Interface Compiler version " QT_VERSION_STR "\n"
         " **\n"

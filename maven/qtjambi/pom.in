@@ -103,6 +103,30 @@
             </dependencies>
         </profile>
 
+	<profile>
+            <id>mac32</id>
+            <activation>
+                <os>
+                    <name>Mac OS X</name>
+                    <family>mac</family>
+                    <arch>i386</arch>
+                    <!--   <version>5.1.2600</version> -->
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>net.sf.qtjambi</groupId>
+                    <artifactId>qtjambi-base-mac32</artifactId>
+                    <version>%QTJAMBI_VERSION%</version>
+                </dependency>
+                <dependency>
+                    <groupId>net.sf.qtjambi</groupId>
+                    <artifactId>qtjambi-platform-mac32</artifactId>
+                    <version>%QTJAMBI_VERSION%</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
     </profiles>  
 
 </project>
