@@ -58,11 +58,9 @@
 #  include <QtWebKit/QtWebKit>
 #endif
 
-//#ifndef QT_NO_PHONON
-	//qDebug("MEH!");
-	//exit(0);
+#ifndef QT_NO_PHONON
 #  include <phonon/phonon>
-//#endif
+#endif
 
 #include <../qtjambi_core/qtjambiconcurrent.h>
 #include <../qtjambi_core/qtjambi_core_qhashes.h>

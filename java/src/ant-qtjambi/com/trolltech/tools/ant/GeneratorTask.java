@@ -56,8 +56,9 @@ public class GeneratorTask extends Task{
     private String typesystem = "";
     private String outputDirectory = ".";
     private String dir = ".";
-    private String includePaths = "";
-    private boolean silent = true;
+    private String phononpath = "";
+    //private String includePaths = "";
+    //private boolean silent = true;
     private String options = null;
 
     private String searchPath() {
@@ -90,8 +91,12 @@ public class GeneratorTask extends Task{
             arguments += options + " ";
         }
 
-        if( !includePaths.equals("") ){
+        /*if( !includePaths.equals("") ){
             arguments += " --include-paths=" + includePaths;
+        }*/
+        
+        if( !phononpath.equals("") ) {
+        	arguments += " --phonon-include=" + phononpath;
         }
 
         if( !outputDirectory.equals("")){
@@ -130,18 +135,24 @@ public class GeneratorTask extends Task{
     public void setTypesystem(String typesystem) {
         this.typesystem = typesystem;
     }
-
-    public void setSilent(boolean silent) {
-        this.silent = silent;
+    
+    public void setPhononpath(String path) {
+    	this.phononpath = path;
     }
+
+    //is this used?
+    /*public void setSilent(boolean silent) {
+        this.silent = silent;
+    }*/
 
     public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
-    public void setIncludePaths(String includePaths) {
+    //from what I see, this is totally obsolete and not even a bit useful
+    /*public void setIncludePaths(String includePaths) {
         this.includePaths = includePaths;
-    }
+    }*/
 
     public void setDir(String dir) {
         this.dir = dir;

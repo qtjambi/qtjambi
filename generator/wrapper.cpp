@@ -99,7 +99,7 @@ int Wrapper::runJambiGenerator() {
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
     //preprocess using master include, preprocessed file and command line given include paths, if any
-    if (!Preprocess::preprocess(fileName, pp_file, args.value("include-paths"))) {
+    if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"))) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
     }

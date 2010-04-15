@@ -47,7 +47,7 @@
 #include "preprocesshandler.h"
 
 bool Preprocess::preprocess(const QString &sourceFile, const QString &targetFile, const QString &commandLineIncludes) {
-    PreprocessHandler handler(sourceFile, targetFile);
+    PreprocessHandler handler(sourceFile, targetFile, commandLineIncludes);
     return handler.handler();
 }
 

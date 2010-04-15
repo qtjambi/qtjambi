@@ -2,17 +2,19 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QDir>
+#include <QDebug>
 
 #include <cstdio>
 
 #include "preprocesshandler.h"
 #include "wrapper.h"
 
-PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile) :
+PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, const QString& phononinclude) :
         preprocess(env),
         ppconfig(":/trolltech/generator/parser/rpp/pp-qt-configuration"),
         sourceFile(sourceFile),
-        targetFile(targetFile)
+        targetFile(targetFile),
+        phononinclude(phononinclude)
 {
     
 }
@@ -67,31 +69,29 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
 
 QStringList PreprocessHandler::setIncludes() {
 
-#if defined Q_OS_WIN32
-    const char *path_splitter = ";";
-#else
-    const char *path_splitter = ":";
-#endif
-
     QStringList includes;
     includes << QString(".");
 
-    // Includes from the command line
-    //if (!commandLineIncludes.isEmpty())
-        //includes += commandLineIncludes.split(path_splitter);
 
     // Include Qt
     QString libdir;
     if(Wrapper::library_dir != "") {
         libdir = Wrapper::library_dir;
     } else libdir = "/usr/include/qt4";
+
+    QString phonon_include_dir;
+    if (!phononinclude.isEmpty()) {
+        phonon_include_dir = phononinclude;
+    } else {
+        phonon_include_dir = libdir;
+    }
     
     includes << (libdir + "/QtXml");
     includes << (libdir + "/QtNetwork");
     includes << (libdir + "/QtCore");
     includes << (libdir + "/QtGui");
     includes << (libdir + "/QtOpenGL");
-    includes << (libdir + "/phonon");
+    includes << (phonon_include_dir + "/phonon");
     includes << libdir;
     
     return includes;

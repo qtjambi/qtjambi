@@ -106,6 +106,7 @@ public class InitializeTask extends Task {
     public static final String LIBDIR           = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR       = "qtjambi.qt.includedir";
     public static final String PLUGINSDIR       = "qtjambi.qt.pluginsdir";
+    public static final String PHONONLIBDIR       = "qtjambi.phonon.libdir";
     public static final String JAVALIBDIR		= "qtjambi.java.library.path";
     public static final String JAMBILIBDIR	 	= "qtjambi.jambi.libdir";
     public static final String VERSION          = "qtjambi.version";
@@ -339,22 +340,21 @@ public class InitializeTask extends Task {
         if (verbose) System.out.println(CONFIGURATION + ": " + result);
         return result;
     }
-
-    private boolean doesQtLibExist(String name, int version) {
-        StringBuilder path = new StringBuilder();
-        //path.append(props.getProperty((String) null, QTDIR));
-        //path.append("/");
-        //path.append(props.getProperty((String) null, LIBSUBDIR));
-        path.append(props.getProperty((String) null, LIBDIR));
+    
+    private boolean doesQtLibExist(String name, int version, String librarydir) {
+    	StringBuilder path = new StringBuilder();
+        path.append(librarydir);
         path.append("/");
         path.append(LibraryEntry.formatQtName(name, debug, version));
         return new File(path.toString()).exists();
     }
 
+    private boolean doesQtLibExist(String name, int version) {
+        return doesQtLibExist(name, version, props.getProperty((String) null, LIBDIR).toString());
+    }
+
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
-        //path.append(props.getProperty((String) null, QTDIR));
-        //path.append("/plugins/");
         path.append(props.getProperty((String) null, PLUGINSDIR));
         path.append("/");
         path.append(subdir);
@@ -369,14 +369,14 @@ public class InitializeTask extends Task {
      */
     private String decidePhonon(PropertyHelper props) {
         
-    	boolean exists = doesQtLibExist("phonon", 4);
-    	if(!exists) {
-    		return "false";
-    	}
+    	boolean exists = doesQtLibExist("phonon", 4, props.getProperty((String) null, PHONONLIBDIR).toString());
         String phonon = String.valueOf(exists);
         if (verbose) {
-            System.out.println(PHONON + ": " + phonon);
+            System.out.println(PHONON + ": " + phonon);            
         }
+        if(!exists) {
+    		return "false";
+    	}
         
         props.setNewProperty((String) null, PHONON, phonon);
         

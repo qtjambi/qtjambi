@@ -11,7 +11,7 @@
 class PreprocessHandler {
     
     public:
-        PreprocessHandler(QString sourceFile, QString targetFile);
+        PreprocessHandler(QString sourceFile, QString targetFile, const QString &phononinclude);
         
         bool handler();
         
@@ -21,12 +21,12 @@ class PreprocessHandler {
         rpp::pp_null_output_iterator null_out;
 
         const char *ppconfig;
-    QString sourceFile;
-    QString targetFile;
+        QString sourceFile;
+        QString targetFile;
         
         QStringList setIncludes();
         void writeTargetFile( QString sourceFile, QString targetFile, QString currentDir);
-
+        QString phononinclude;
 };
 
 #endif

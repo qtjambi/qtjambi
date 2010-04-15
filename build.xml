@@ -379,14 +379,15 @@
     <available file="${timestamp.dir}/generator.run" type="file"
         property="qtjambi.generator_run.uptodate"/>
 
+      <!--  unless="qtjambi.generator_run.uptodate" -->
     <target name="generator.run" depends="init, tools.generator.make"
-        unless="qtjambi.generator_run.uptodate"
         description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
         <mkdir dir="${generator.outputdir}"/>
         <generator dir="${outputDir}/generator"
             outputDirectory="${generator.outputdir}"
             typesystem="${sourceDir}/generator/build_all.txt"
             header="${sourceDir}/generator/qtjambi_masterinclude.h"
+            phononpath="${qtjambi.phonon.includedir}"
             options="${qtjambi.generator.jumptable}"/>
         <dostamp stampfile="generator.run"/>
     </target>

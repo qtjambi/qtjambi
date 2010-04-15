@@ -38,22 +38,22 @@ std::vector<std::string>::const_iterator rpp::pp::include_paths_end () const
 bool rpp::pp::is_absolute(std::string const &filename) const
 {
 #if defined(PP_OS_WIN)
-  return filename.length() >= 3
-      && filename.at(1) == ':'
-      && (filename.at(2) == '\\' || filename.at(2) == '/');
+    return filename.length() >= 3
+           && filename.at(1) == ':'
+           && (filename.at(2) == '\\' || filename.at(2) == '/');
 #else
-  return filename.length() >= 1
-          && filename.at(0) == '/';
+    return filename.length() >= 1
+           && filename.at(0) == '/';
 #endif
 }
 
 bool rpp::pp::file_exists (std::string const &__filename) const
 {
-  struct stat __st;
+    struct stat __st;
 #if defined(PP_OS_WIN)
-  return stat(__filename.c_str (), &__st) == 0;
+    return stat(__filename.c_str (), &__st) == 0;
 #else
-  return lstat (__filename.c_str (), &__st) == 0;
+    return lstat (__filename.c_str (), &__st) == 0;
 #endif
 }
 
@@ -73,17 +73,16 @@ bool rpp::pp::file_isdir (std::string const &__filename) const
 #endif
 }
 
-void rpp::pp::push_include_path ( std::string const &__path )
+void rpp::pp::push_include_path ( std::string const &path )
 {
-    if ( __path.empty () || __path [__path.size () - 1] != PATH_SEPARATOR )
+    if ( path.empty () || path [path.size () - 1] != PATH_SEPARATOR )
     {
-        std::string __tmp ( __path );
-        __tmp += PATH_SEPARATOR;
-        rpp::pp::include_paths.push_back ( __tmp );
+        std::string tmp ( path );
+        tmp += PATH_SEPARATOR;
+        rpp::pp::include_paths.push_back ( tmp );
+    } else {
+        rpp::pp::include_paths.push_back ( path );
     }
-
-    else
-        rpp::pp::include_paths.push_back ( __path );
 }
 
 bool rpp::pp::test_if_level()
@@ -160,7 +159,7 @@ rpp::PP_DIRECTIVE_TYPE rpp::pp::find_directive ( char const *__directive, std::s
 
 
 FILE *rpp::pp::find_include_file ( std::string const &__input_filename, std::string *__filepath,
-        INCLUDE_POLICY __include_policy, bool __skip_current_path ) const
+                                   INCLUDE_POLICY __include_policy, bool __skip_current_path ) const
 {
     assert ( __filepath != 0 );
     assert ( ! __input_filename.empty() );
