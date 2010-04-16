@@ -17,7 +17,7 @@
         <module>resources-win64</module>
         <module>resources-linux32</module>
         <module>resources-linux64</module>
-	<module>resources-mac32</module>
+	<!-- missing that project pom !! <module>resources-mac32</module> -->
 
         <!-- this project is the main library what applications should use.
         It handles dependency on qtjambi jars for each platform -->

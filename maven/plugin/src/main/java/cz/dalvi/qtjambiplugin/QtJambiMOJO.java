@@ -384,8 +384,8 @@ public class QtJambiMOJO extends AbstractMojo {
         if (platform.equals(Platforms.LIN32) || platform.equals(Platforms.LIN64)) {
             b.environment().put("LD_LIBRARY_PATH", binariesDir.getAbsolutePath());
         }
-	
-	if (platform.equals(Platforms.MAC32) || platform.equals(Platforms.MAC64)) {
+
+        if (platform.equals(Platforms.MAC32) || platform.equals(Platforms.MAC64)) {
             b.environment().put("DYLD_LIBRARY_PATH", binariesDir.getAbsolutePath());
         }
 
@@ -414,11 +414,13 @@ public class QtJambiMOJO extends AbstractMojo {
         try {
 
             // ts files will be in src/main/resources/translations
-            File tsDir = new File(this.baseDir, "src/main/resources/translations");
+            if (translationsDir == null) {
+                translationsDir = new File(this.baseDir, "src/main/resources/translations");
+            }
 
 
-            if (!tsDir.isDirectory()) {
-                getLog().info("No translations found in " + tsDir.getAbsolutePath());
+            if (!translationsDir.isDirectory()) {
+                getLog().info("No translations found in " + translationsDir.getAbsolutePath());
                 return;
             }
             Process process;
@@ -430,7 +432,7 @@ public class QtJambiMOJO extends AbstractMojo {
             //findFiles(sourcesDir, lst, dotJava);
 
             // for all ts files
-            for (File ts : tsDir.listFiles()) {
+            for (File ts : translationsDir.listFiles()) {
 
                 if (ts.getName().endsWith(dotTs)) {
 

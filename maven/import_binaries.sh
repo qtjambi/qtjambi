@@ -24,7 +24,8 @@ for i in bin/juic.exe bin/lupdate.exe bin/lrelease.exe bin/QtCore4.dll bin/QtXml
 done
 
 for i in bin/juic bin/lupdate bin/lrelease lib/libQtCore.4.dylib lib/libQtXml.4.dylib; do
-	cp ${QTJAMBI_MAC32_RELEASE}/${i} resources-mac32/src/main/resources || die
+	echo
+#	cp ${QTJAMBI_MAC32_RELEASE}/${i} resources-mac32/src/main/resources || die
 done
 
 
