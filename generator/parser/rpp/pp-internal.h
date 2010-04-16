@@ -70,25 +70,25 @@ inline void extract_file_path ( const std::string &__filename, std::string *__fi
 }
 
 template <typename _OutputIterator>
-void output_line ( const std::string &__filename, int __line, _OutputIterator __result )
+void output_line ( const std::string &p_filename, int p_line, _OutputIterator p_result )
 {
-    std::string __msg;
+    std::string msg;
 
-    __msg += "# ";
+    msg += "# ";
 
-    char __line_descr[16];
-    pp_snprintf ( __line_descr, 16, "%d", __line );
-    __msg += __line_descr;
+    char line_descr[16];
+    pp_snprintf ( line_descr, 16, "%d", p_line );
+    msg += line_descr;
 
-    __msg += " \"";
+    msg += " \"";
 
-    if ( __filename.empty () )
-        __msg += "<internal>";
+    if ( p_filename.empty () )
+        msg += "<internal>";
     else
-        __msg += __filename;
+        msg += p_filename;
 
-    __msg += "\"\n";
-    std::copy ( __msg.begin (), __msg.end (), __result );
+    msg += "\"\n";
+    std::copy ( msg.begin (), msg.end (), p_result );
 }
 
 template <typename _InputIterator>

@@ -14,9 +14,9 @@ void ReportHandler_message_handler(const std::string &str)
     ReportHandler::warning(QString::fromStdString(str));
 }
 
-Wrapper::Wrapper(int argc, char *argv[]) : 
-        default_file("qtjambi_masterinclude.h"), 
-        default_system("build_all.txt"), 
+Wrapper::Wrapper(int argc, char *argv[]) :
+        default_file("qtjambi_masterinclude.h"),
+        default_system("build_all.txt"),
         pp_file(".preprocessed.tmp")
 {
     gs = GeneratorSet::getInstance();
@@ -69,7 +69,7 @@ void Wrapper::assignVariables() {
     //set file name
     fileName = args.value("arg-1");
 
-    //set typesystem filename 
+    //set typesystem filename
     typesystemFileName = args.value("arg-2");
     if (args.contains("arg-3"))
         displayHelp(gs);
@@ -86,7 +86,7 @@ void Wrapper::assignVariables() {
     if (fileName.isEmpty() || typesystemFileName.isEmpty() )
         displayHelp(gs);
 
-    //if generatorset can’t read arguments, show help
+    //if generatorset can't read arguments, show help
     if (!gs->readParameters(args))
         displayHelp(gs);
 }
@@ -123,7 +123,7 @@ int Wrapper::runJambiGenerator() {
 
     printf("Done, %d warnings (%d known issues)\n", ReportHandler::warningCount(),
            ReportHandler::suppressedCount());
-           
+
     return 0;
 }
 

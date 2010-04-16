@@ -1,7 +1,4 @@
-/home/smar/Tiedostot/Projektit/qt/qt/include/QtCore
-/home/smar/Tiedostot/Projektit/qt/qt/include/QtGui
-/home/smar/Tiedostot/Projektit/qt/qt/include/QtXml
-/home/smar/Tiedostot/Projektit/qt/qt/include/phonon
-/home/smar/Tiedostot/Projektit/qt/qt/include
-/home/smar/Tiedostot/Projektit/java/jambi/smar-sandbox/generator/parser
-/home/smar/Tiedostot/Projektit/java/jambi/smar-sandbox/generator/parser/rpp
+/usr/include/qt4/QtCore
+/usr/include/qt4/QtGui
+/home/smar/Paketit/java/jambi/smar-sandbox/generator/parser
+/home/smar/Paketit/java/jambi/smar-sandbox/generator/parser/rpp

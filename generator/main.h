@@ -51,7 +51,7 @@
 
 struct Preprocess
 {
-    static bool preprocess(const QString &sourceFile, const QString &targetFile, const QString &commandLineIncludes = QString());
+    static bool preprocess(const QString &sourceFile, const QString &targetFile, const QString &phononinclude = QString());
 };
 
 #endif // MAIN_H

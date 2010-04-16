@@ -171,65 +171,64 @@ namespace rpp {
 
 
             template <typename _InputIterator, typename _OutputIterator>
-            void operator () ( _InputIterator __first, _InputIterator __last, _OutputIterator __result ) {
+            void operator () ( _InputIterator p_first, _InputIterator p_last, _OutputIterator p_result ) {
 #ifndef PP_NO_SMART_HEADER_PROTECTION
-                std::string __prot;
-                __prot.reserve ( 255 );
-                pp_fast_string __tmp ( __prot.c_str (), __prot.size () );
+                std::string protection;
+                protection.reserve ( 255 );
+                pp_fast_string tmp ( protection.c_str (), protection.size () );
 
-                if ( find_header_protection ( __first, __last, &__prot )
-                        && env.resolve ( &__tmp ) != 0 ) {
+                if ( find_header_protection ( p_first, p_last, &protection )
+                        && env.resolve ( &tmp ) != 0 ) {
                     // std::cerr << "** DEBUG found header protection:" << __prot << std::endl;
                     return;
                 }
 #endif
 
                 env.current_line = 1;
-                char __buffer[512];
+                char buffer[512];
 
                 while ( true ) {
-                    __first = skip_blanks ( __first, __last );
+                    p_first = skip_blanks ( p_first, p_last );
                     env.current_line += skip_blanks.lines;
 
-                    if ( __first == __last )
+                    if ( p_first == p_last )
                         break;
-                    else if ( *__first == '#' ) {
-                        assert ( *__first == '#' );
-                        __first = skip_blanks ( ++__first, __last );
+                    else if ( *p_first == '#' ) {
+                        p_first = skip_blanks ( ++p_first, p_last );
                         env.current_line += skip_blanks.lines;
 
-                        _InputIterator end_id = skip_identifier ( __first, __last );
+                        _InputIterator end_id = skip_identifier ( p_first, p_last );
                         env.current_line += skip_identifier.lines;
-                        std::size_t __size = end_id - __first;
+                        std::size_t size = end_id - p_first;
 
-                        assert ( __size < 512 );
-                        char *__cp = __buffer;
-                        std::copy ( __first, end_id, __cp );
-                        __cp[__size] = '\0';
+                        assert ( size < 512 );
+                        char *copy = buffer;
+                        std::copy ( p_first, end_id, copy );
+                        copy[size] = '\0';
 
-                        end_id = skip_blanks ( end_id, __last );
-                        __first = skip ( end_id, __last );
+                        end_id = skip_blanks ( end_id, p_last );
+                        p_first = skip ( end_id, p_last );
 
                         int was = env.current_line;
-                        ( void ) handle_directive ( __buffer, __size, end_id, __first, __result );
+                        ( void ) handle_directive ( buffer, size, end_id, p_first, p_result );
 
                         if ( env.current_line != was ) {
                             env.current_line = was;
-                            _PP_internal::output_line ( env.current_file, env.current_line, __result );
+                            _PP_internal::output_line ( env.current_file, env.current_line, p_result );
                         }
-                    } else if ( *__first == '\n' ) {
+                    } else if ( *p_first == '\n' ) {
                         // ### compress the line
-                        *__result++ = *__first++;
+                        *p_result++ = *p_first++;
                         ++env.current_line;
                     } else if ( skipping () )
-                        __first = skip ( __first, __last );
+                        p_first = skip ( p_first, p_last );
                     else {
-                        _PP_internal::output_line ( env.current_file, env.current_line, __result );
-                        __first = expand ( __first, __last, __result );
-                        env.current_line += expand.lines;
+                        _PP_internal::output_line ( env.current_file, env.current_line, p_result );
+                        p_first = expand_macro ( p_first, p_last, p_result );
+                        env.current_line += expand_macro.lines;
 
-                        if ( expand.generated_lines )
-                            _PP_internal::output_line ( env.current_file, env.current_line, __result );
+                        if ( expand_macro.generated_lines )
+                            _PP_internal::output_line ( env.current_file, env.current_line, p_result );
                     }
                 }
             }
@@ -333,14 +332,12 @@ namespace rpp {
             int iflevel;
 
         private:
-
             pp_environment &env;
 
-            pp_macro_expander expand;
+            pp_macro_expander expand_macro;
             pp_skip_identifier skip_identifier;
             pp_skip_number skip_number;
             std::string _M_current_text;
-
 
             std::string fix_file_path ( std::string const &filename ) const;
 
@@ -366,93 +363,104 @@ namespace rpp {
 
             int skipping() const;
 
-            PP_DIRECTIVE_TYPE find_directive ( char const *__directive, std::size_t __size ) const;
+            /**
+             * Returns preprocessor directive type, PP_DIRECTIVE_TYPE,
+             * p_directive corresponds to.
+             */
+            PP_DIRECTIVE_TYPE find_directive ( const char* p_directive, std::size_t p_size ) const;
 
+            /**
+             * TODO
+             */
             FILE *find_include_file ( std::string const &__input_filename, std::string *__filepath,
                                       INCLUDE_POLICY __include_policy, bool __skip_current_path ) const;
 
             template <typename _InputIterator, typename _OutputIterator>
-            _InputIterator handle_directive ( char const *__directive, std::size_t __size,
-                                              _InputIterator __first, _InputIterator __last, _OutputIterator __result ) {
-                __first = skip_blanks ( __first, __last );
+            _InputIterator handle_directive ( char const *p_directive,
+                                              std::size_t p_size,
+                                              _InputIterator p_first,
+                                              _InputIterator p_last,
+                                              _OutputIterator p_result ) {
 
-                PP_DIRECTIVE_TYPE d = find_directive ( __directive, __size );
-                switch ( d ) {
+                p_first = skip_blanks ( p_first, p_last );
+
+                PP_DIRECTIVE_TYPE directive = find_directive ( p_directive, p_size );
+                switch ( directive ) {
                 case PP_DEFINE:
                     if ( ! skipping () )
-                        return handle_define ( __first, __last );
+                        return handle_define ( p_first, p_last );
                     break;
 
                 case PP_INCLUDE:
                 case PP_INCLUDE_NEXT:
                     if ( ! skipping () )
-                        return handle_include ( d == PP_INCLUDE_NEXT, __first, __last, __result );
+                        return handle_include ( directive == PP_INCLUDE_NEXT, p_first, p_last, p_result );
                     break;
 
                 case PP_UNDEF:
                     if ( ! skipping () )
-                        return handle_undef ( __first, __last );
+                        return handle_undef ( p_first, p_last );
                     break;
 
                 case PP_ELIF:
-                    return handle_elif ( __first, __last );
+                    return handle_elif ( p_first, p_last );
 
                 case PP_ELSE:
-                    return handle_else ( __first, __last );
+                    return handle_else ( p_first, p_last );
 
                 case PP_ENDIF:
-                    return handle_endif ( __first, __last );
+                    return handle_endif ( p_first, p_last );
 
                 case PP_IF:
-                    return handle_if ( __first, __last );
+                    return handle_if ( p_first, p_last );
 
                 case PP_IFDEF:
-                    return handle_ifdef ( false, __first, __last );
+                    return handle_ifdef ( false, p_first, p_last );
 
                 case PP_IFNDEF:
-                    return handle_ifdef ( true, __first, __last );
+                    return handle_ifdef ( true, p_first, p_last );
 
                 default:
                     break;
                 }
 
-                return __first;
+                return p_first;
             }
 
             template <typename _InputIterator, typename _OutputIterator>
-            _InputIterator handle_include ( bool __skip_current_path, _InputIterator __first, _InputIterator __last,
-                                            _OutputIterator __result ) {
-                if ( pp_isalpha ( *__first ) || *__first == '_' ) {
+            _InputIterator handle_include ( bool p_skip_current_path, _InputIterator p_first, _InputIterator p_last,
+                                            _OutputIterator p_result ) {
+                if ( pp_isalpha ( *p_first ) || *p_first == '_' ) {
                     pp_macro_expander expand_include ( env );
                     std::string name;
                     name.reserve ( 255 );
-                    expand_include ( __first, __last, std::back_inserter ( name ) );
+                    expand_include ( p_first, p_last, std::back_inserter ( name ) );
                     std::string::iterator it = skip_blanks ( name.begin (), name.end () );
                     assert ( it != name.end () && ( *it == '<' || *it == '"' ) );
-                    handle_include ( __skip_current_path, it, name.end (), __result );
-                    return __first;
+                    handle_include ( p_skip_current_path, it, name.end (), p_result );
+                    return p_first;
                 }
 
-                assert ( *__first == '<' || *__first == '"' );
-                int quote = ( *__first == '"' ) ? '"' : '>';
-                ++__first;
+                assert ( *p_first == '<' || *p_first == '"' );
+                int quote = ( *p_first == '"' ) ? '"' : '>';
+                ++p_first;
 
-                _InputIterator end_name = __first;
-                for ( ; end_name != __last; ++end_name ) {
+                _InputIterator end_name = p_first;
+                for ( ; end_name != p_last; ++end_name ) {
                     assert ( *end_name != '\n' );
 
                     if ( *end_name == quote )
                         break;
                 }
 
-                std::string filename ( __first, end_name );
+                std::string filename ( p_first, end_name );
 
 #ifdef PP_OS_WIN
                 std::replace ( filename.begin(), filename.end(), '/', '\\' );
 #endif
 
                 std::string filepath;
-                FILE *fp = find_include_file ( filename, &filepath, quote == '>' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, __skip_current_path );
+                FILE *fp = find_include_file ( filename, &filepath, quote == '>' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, p_skip_current_path );
 
 #if defined (PP_HOOK_ON_FILE_INCLUDED)
                 PP_HOOK_ON_FILE_INCLUDED ( env.current_file, fp ? filepath : filename, fp );
@@ -466,23 +474,22 @@ namespace rpp {
                     env.current_line = 1;
                     //output_line (env.current_file, 1, __result);
 
-                    file ( fp, __result );
+                    file ( fp, p_result );
 
                     // restore the file name and the line position
                     env.current_file = old_file;
                     env.current_line = __saved_lines;
 
                     // sync the buffer
-                    _PP_internal::output_line ( env.current_file, env.current_line, __result );
+                    _PP_internal::output_line ( env.current_file, env.current_line, p_result );
                 }
 #ifndef RPP_JAMBI
 //   else
 //     std::cerr << "*** WARNING " << filename << ": No such file or directory" << std::endl;
 #endif
 
-                return __first;
+                return p_first;
             }
-
 
             template <typename _InputIterator>
             _InputIterator handle_define ( _InputIterator __first, _InputIterator __last ) {
@@ -563,34 +570,37 @@ namespace rpp {
                 return __first;
             }
 
+            /**
+             * Handle different kind of expressions which should be skipped.
+             */
             template <typename _InputIterator>
-            _InputIterator skip ( _InputIterator __first, _InputIterator __last ) {
+            _InputIterator skip ( _InputIterator p_first, _InputIterator p_last ) {
                 pp_skip_string_literal skip_string_literal;
                 pp_skip_char_literal skip_char_literal;
 
-                while ( __first != __last && *__first != '\n' ) {
-                    if ( *__first == '/' ) {
-                        __first = skip_comment_or_divop ( __first, __last );
+                while ( p_first != p_last && *p_first != '\n' ) {
+                    if ( *p_first == '/' ) {
+                        p_first = skip_comment_or_divop ( p_first, p_last );
                         env.current_line += skip_comment_or_divop.lines;
-                    } else if ( *__first == '"' ) {
-                        __first = skip_string_literal ( __first, __last );
+                    } else if ( *p_first == '"' ) {
+                        p_first = skip_string_literal ( p_first, p_last );
                         env.current_line += skip_string_literal.lines;
-                    } else if ( *__first == '\'' ) {
-                        __first = skip_char_literal ( __first, __last );
+                    } else if ( *p_first == '\'' ) {
+                        p_first = skip_char_literal ( p_first, p_last );
                         env.current_line += skip_char_literal.lines;
-                    } else if ( *__first == '\\' ) {
-                        __first = skip_blanks ( ++__first, __last );
+                    } else if ( *p_first == '\\' ) {
+                        p_first = skip_blanks ( ++p_first, p_last );
                         env.current_line += skip_blanks.lines;
 
-                        if ( __first != __last && *__first == '\n' ) {
-                            ++__first;
+                        if ( p_first != p_last && *p_first == '\n' ) {
+                            ++p_first;
                             ++env.current_line;
                         }
                     } else
-                        ++__first;
+                        ++p_first;
                 }
 
-                return __first;
+                return p_first;
             }
 
 

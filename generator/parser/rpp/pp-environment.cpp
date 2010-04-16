@@ -28,12 +28,12 @@ void rpp::pp_environment::unbind (char const *__s, std::size_t __size)
     unbind (&__tmp);
 }
 
-rpp::pp_macro *rpp::pp_environment::resolve (pp_fast_string const *__name) const
+rpp::pp_macro *rpp::pp_environment::resolve (pp_fast_string const *p_name) const
 {
-    std::size_t h = hash_code (*__name) % _M_hash_size;
+    std::size_t h = hash_code (*p_name) % _M_hash_size;
     pp_macro *it = _M_base [h];
 
-    while (it && it->name && it->hash_code == h && (*it->name != *__name || it->hidden))
+    while (it && it->name && it->hash_code == h && (*it->name != *p_name || it->hidden))
         it = it->next;
 
     return it;

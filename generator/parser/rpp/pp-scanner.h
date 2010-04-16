@@ -47,9 +47,13 @@
 #define PP_SCANNER_H
 
 #include <cassert>
+#include "pp-cctype.h"
 
 namespace rpp {
 
+    /**
+     * Skips over different space types
+     */
     struct pp_skip_blanks {
         int lines;
 
@@ -92,11 +96,14 @@ namespace rpp {
         }
     };
 
+    /**
+     * Skip comments of //foo or /_* foo *_/
+     */
     struct pp_skip_comment_or_divop {
         int lines;
 
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator __first, _InputIterator __last ) {
+        _InputIterator operator () ( _InputIterator p_first, _InputIterator p_last ) {
             enum {
                 MAYBE_BEGIN,
                 BEGIN,
@@ -108,51 +115,51 @@ namespace rpp {
 
             lines = 0;
 
-            for ( ; __first != __last; lines += ( *__first != '\n' ? 0 : 1 ), ++__first ) {
+            for ( ; p_first != p_last; lines += ( *p_first != '\n' ? 0 : 1 ), ++p_first ) {
                 switch ( state ) {
                 default:
                     assert ( 0 );
                     break;
 
                 case MAYBE_BEGIN:
-                    if ( *__first != '/' )
-                        return __first;
+                    if ( *p_first != '/' )
+                        return p_first;
 
                     state = BEGIN;
                     break;
 
                 case BEGIN:
-                    if ( *__first == '*' )
+                    if ( *p_first == '*' )
                         state = IN_COMMENT;
-                    else if ( *__first == '/' )
+                    else if ( *p_first == '/' )
                         state = IN_CXX_COMMENT;
                     else
-                        return __first;
+                        return p_first;
                     break;
 
                 case IN_COMMENT:
-                    if ( *__first == '*' )
+                    if ( *p_first == '*' )
                         state = MAYBE_END;
                     break;
 
                 case IN_CXX_COMMENT:
-                    if ( *__first == '\n' )
-                        return __first;
+                    if ( *p_first == '\n' )
+                        return p_first;
                     break;
 
                 case MAYBE_END:
-                    if ( *__first == '/' )
+                    if ( *p_first == '/' )
                         state = END;
-                    else if ( *__first != '*' )
+                    else if ( *p_first != '*' )
                         state = IN_COMMENT;
                     break;
 
                 case END:
-                    return __first;
+                    return p_first;
                 }
             }
 
-            return __first;
+            return p_first;
         }
     };
 

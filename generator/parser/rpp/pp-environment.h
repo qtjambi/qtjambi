@@ -88,7 +88,7 @@ public:
 
     void unbind (char const *__s, std::size_t __size);
 
-    pp_macro *resolve (pp_fast_string const *__name) const;
+    pp_macro *resolve (const rpp::pp_fast_string* p_name) const;
 
     pp_macro *resolve (char const *__data, std::size_t __size) const;
 
