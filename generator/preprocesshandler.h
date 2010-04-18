@@ -4,9 +4,9 @@
 
 #include <QString>
 
-#include "rpp/pp-iterator.h"
-#include "rpp/pp-engine-bits.h"
-#include "rpp/pp-environment.h"
+#include "parser/rpp/pp-iterator.h"
+#include "parser/rpp/pp-engine-bits.h"
+#include "parser/rpp/pp-environment.h"
 
 class PreprocessHandler {
     

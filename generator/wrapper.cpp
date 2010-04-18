@@ -5,7 +5,7 @@
 #include "typesystem/typedatabase.h"
 #include "main.h"
 #include "asttoxml.h"
-#include <binder.h>
+#include "parser/binder.h"
 
 QString Wrapper::library_dir = QString();
 

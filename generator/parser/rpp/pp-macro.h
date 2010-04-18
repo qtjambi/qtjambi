@@ -50,46 +50,41 @@
 
 #include <vector>
 
-namespace rpp
-{
+namespace rpp {
 
-struct pp_macro
-{
+    struct pp_macro {
 #if defined (PP_WITH_MACRO_POSITION)
-    pp_fast_string const *file;
+        pp_fast_string const *file;
 #endif
-    pp_fast_string const *name;
-    pp_fast_string const *definition;
-    std::vector<pp_fast_string const *> formals;
+        pp_fast_string const *name;
+        pp_fast_string const *definition;
+        std::vector<pp_fast_string const *> formals;
 
-    union
-    {
-        int unsigned state;
+        union {
+            int unsigned state;
 
-        struct
-        {
-        int unsigned hidden: 1;
-        int unsigned function_like: 1;
-        int unsigned variadics: 1;
+            struct {
+            int unsigned hidden: 1;
+            int unsigned function_like: 1;
+            int unsigned variadics: 1;
+            };
         };
-    };
 
-    int lines;
-    pp_macro *next;
-    std::size_t hash_code;
+        int lines;
+        pp_macro *next;
+        std::size_t hash_code;
 
-    inline pp_macro() :
+        inline pp_macro() :
 #if defined (PP_WITH_MACRO_POSITION)
-            file ( 0 ),
+                file ( 0 ),
 #endif
-            name ( 0 ),
-            definition ( 0 ),
-            state ( 0 ),
-            lines ( 0 ),
-            next ( 0 ),
-            hash_code ( 0 )
-    {}
-};
+                name ( 0 ),
+                definition ( 0 ),
+                state ( 0 ),
+                lines ( 0 ),
+                next ( 0 ),
+                hash_code ( 0 ) {}
+    };
 
 } // namespace rpp
 

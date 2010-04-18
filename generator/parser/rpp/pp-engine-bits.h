@@ -52,10 +52,12 @@
 
 #include <sys/stat.h>
 
-#include "rpp/pp-macro-expander.h"
 #include "pp-internal.h"
 #include "pp-symbol.h"
 #include "pp-cctype.h"
+#include "pp-macro-expander.h"
+#include "pp-environment.h"
+#include "pp-scanner.h"
 
 namespace rpp {
 
@@ -430,6 +432,7 @@ namespace rpp {
             template <typename _InputIterator, typename _OutputIterator>
             _InputIterator handle_include ( bool p_skip_current_path, _InputIterator p_first, _InputIterator p_last,
                                             _OutputIterator p_result ) {
+
                 if ( pp_isalpha ( *p_first ) || *p_first == '_' ) {
                     pp_macro_expander expand_include ( env );
                     std::string name;

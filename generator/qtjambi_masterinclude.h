@@ -58,9 +58,12 @@
 #  include <QtWebKit/QtWebKit>
 #endif
 
-#ifndef QT_NO_PHONON
-#  include <phonon/phonon>
-#endif
+//this doesn’t seem to work with KDE Phonon, so it is commented out.
+//it is not a real problem anyway; you can set phonon to nil path and it won’t be
+//generated anyway.
+//#ifndef QT_NO_PHONON
+#  include <phonon>
+//#endif
 
 #include <../qtjambi_core/qtjambiconcurrent.h>
 #include <../qtjambi_core/qtjambi_core_qhashes.h>

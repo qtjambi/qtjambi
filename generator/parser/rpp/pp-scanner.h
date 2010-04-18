@@ -163,19 +163,22 @@ namespace rpp {
         }
     };
 
+    /**
+     * Skips through alphanumeric characters and _.
+     */
     struct pp_skip_identifier {
         int lines;
 
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator __first, _InputIterator __last ) {
+        _InputIterator operator () ( _InputIterator p_first, _InputIterator p_last ) {
             lines = 0;
 
-            for ( ; __first != __last; lines += ( *__first != '\n' ? 0 : 1 ), ++__first ) {
-                if ( ! pp_isalnum ( *__first ) && *__first != '_' )
+            for ( ; p_first != p_last; lines += ( *p_first != '\n' ? 0 : 1 ), ++p_first ) {
+                if ( ! pp_isalnum ( *p_first ) && *p_first != '_' )
                     break;
             }
 
-            return __first;
+            return p_first;
         }
     };
 

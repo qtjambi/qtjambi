@@ -48,9 +48,9 @@
 
 #include <string>
 
-#include "rpp/pp-macro.h"
-#include "rpp/pp-scanner.h"
-#include "rpp/pp-environment.h"
+#include "pp-macro.h"
+#include "pp-scanner.h"
+#include "pp-environment.h"
 #include "pp-internal.h"
 
 namespace rpp {
@@ -202,9 +202,9 @@ namespace rpp {
                         assert ( name_size >= 0 && name_size < 512 );
 
                         char name_buffer[512], *cp = name_buffer;
-                        std::size_t __size = name_end - name_begin;
+                        std::size_t size = name_end - name_begin;
                         std::copy ( name_begin, name_end, cp );
-                        name_buffer[__size] = '\0';
+                        name_buffer[size] = '\0';
 
                         pp_fast_string fast_name ( name_buffer, name_size );
 
@@ -219,7 +219,7 @@ namespace rpp {
                         if ( ! macro || macro->hidden || hide_next ) {
                             hide_next = ! strcmp ( name_buffer, "defined" );
 
-                            if ( __size == 8 && name_buffer [0] == '_' && name_buffer [1] == '_' ) {
+                            if ( size == 8 && name_buffer [0] == '_' && name_buffer [1] == '_' ) {
                                 if ( ! strcmp ( name_buffer, "__LINE__" ) ) {
                                     char buf [16];
                                     char *end = buf + pp_snprintf ( buf, 16, "%d", env.current_line + lines );
@@ -241,46 +241,46 @@ namespace rpp {
                         }
 
                         if ( ! macro->function_like ) {
-                            pp_macro *m = 0;
+                            pp_macro *new_macro = 0;
 
                             if ( macro->definition ) {
                                 macro->hidden = true;
 
-                                std::string __tmp;
-                                __tmp.reserve ( 256 );
+                                std::string tmp;
+                                tmp.reserve ( 256 );
 
                                 pp_macro_expander expand_macro ( env );
-                                expand_macro ( macro->definition->begin (), macro->definition->end (), std::back_inserter ( __tmp ) );
+                                expand_macro ( macro->definition->begin (), macro->definition->end (), std::back_inserter ( tmp ) );
                                 generated_lines += expand_macro.lines;
 
-                                if ( ! __tmp.empty () ) {
-                                    std::string::iterator __begin_id = skip_whitespaces ( __tmp.begin (), __tmp.end () );
-                                    std::string::iterator __end_id = skip_identifier ( __begin_id, __tmp.end () );
+                                if ( ! tmp.empty () ) {
+                                    std::string::iterator begin_id = skip_whitespaces ( tmp.begin (), tmp.end () );
+                                    std::string::iterator end_id = skip_identifier ( begin_id, tmp.end () );
 
-                                    if ( __end_id == __tmp.end () ) {
-                                        std::string __id;
-                                        __id.assign ( __begin_id, __end_id );
+                                    if ( end_id == tmp.end () ) {
+                                        std::string id;
+                                        id.assign ( begin_id, end_id );
 
-                                        std::size_t x;
+                                        std::size_t new_macro_size;
 #if defined(__SUNPRO_CC)
-                                        std::distance ( __begin_id, __end_id, x );
+                                        std::distance ( begin_id, end_id, new_macro_size );
 #else
-                                        x = std::distance ( __begin_id, __end_id );
+                                        new_macro_size = std::distance ( begin_id, end_id );
 #endif
-                                        m = env.resolve ( __id.c_str (), x );
+                                        new_macro = env.resolve ( id.c_str (), new_macro_size );
                                     }
 
-                                    if ( ! m )
-                                        std::copy ( __tmp.begin (), __tmp.end (), p_result );
+                                    if ( ! new_macro )
+                                        std::copy ( tmp.begin (), tmp.end (), p_result );
                                 }
 
                                 macro->hidden = false;
                             }
 
-                            if ( ! m )
+                            if ( ! new_macro )
                                 continue;
 
-                            macro = m;
+                            macro = new_macro;
                         }
 
                         // function like macro

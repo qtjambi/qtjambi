@@ -47,11 +47,11 @@
 
 #include <string>
 
-#include "rpp/preprocessor.h"
-#include "rpp/pp-engine-bits.h"
+#include "preprocessor.h"
+#include "pp-engine-bits.h"
 
 // register callback for include hooks
-static void includeFileHook ( const std::string &, const std::string &, FILE * );
+//static void includeFileHook ( const std::string &, const std::string &, FILE * );
 
 #define PP_HOOK_ON_FILE_INCLUDED(A, B, C) includeFileHook(A, B, C)
 
@@ -59,10 +59,10 @@ using namespace rpp;
 
 QHash<QString, QStringList> includedFiles;
 
-void includeFileHook ( const std::string &fileName, const std::string &filePath, FILE * )
+/*void includeFileHook ( const std::string &fileName, const std::string &filePath, FILE * )
 {
     includedFiles[QString::fromStdString ( fileName ) ].append ( QString::fromStdString ( filePath ) );
-}
+}*/
 
 Preprocessor::Preprocessor()
 {

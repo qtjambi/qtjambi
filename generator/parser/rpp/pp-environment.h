@@ -88,14 +88,26 @@ public:
 
     void unbind (char const *__s, std::size_t __size);
 
+    /**
+     * Find corresponding pp_macro from hash table.
+     */
     pp_macro *resolve (const rpp::pp_fast_string* p_name) const;
 
+    /**
+     * Wrapper for resolve which takes char array and size_t and constructs 
+     * pp_fast_string for the resolve(pp_fast_string).
+     *
+     * Find corresponding pp_macro from hash table.
+     */
     pp_macro *resolve (char const *__data, std::size_t __size) const;
 
     std::string current_file;
     int current_line;
 
 private:
+    /**
+     * Returns hash value for string s.
+     */
     std::size_t hash_code (pp_fast_string const &s) const;
 
     void rehash();
