@@ -222,14 +222,12 @@
     </condition>
 
     <target name="library.native.qmake" depends="init, generator.cppsrc"
-        unless="qtjambi.library.makefiles.uptodate"
-        description="Runs qmake on the Qt Jambi native library">
+        description="Runs qmake on the Qt Jambi native library"
+        unless="qtjambi.library.makefiles.uptodate">
         <delete dir="lib"/>
         <qmake recursive="true" dir="${outputDir}"
             pro="${sourceDir}/java.pro"
             config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
-            qtconfig="${qtjambi.phonon}"
-            includepath="${qtjambi.phonon.includedir}"
             debugTools="${qtjambi.debug-tools}"/>
     </target>
 
@@ -268,7 +266,7 @@
                     rootPath="${qtjambi.qt.libdir}" 
                     if="${qtjambi.xmlpatterns}"/>
             <library name="phonon"              type="qt"       
-                    rootPath="${qtjambi.phonon.libdir}" 
+                    rootPath="${qtjambi.qt.libdir}" 
                     if="${qtjambi.phonon}"/>
             <library name="QtDBus"              type="qt"       
                     rootPath="${qtjambi.qt.libdir}" 
@@ -279,9 +277,9 @@
                     load="never" 
                     if="${qtjambi.phonon_ds9}"/>
             <library name="phonon_gstreamer"    type="plugin"   
-                    rootPath="${qtjambi.phonon.pluginsdir}"
-                    load="never"
-                    kdephonon="true"
+                    rootPath="${qtjambi.qt.libdir}"
+                    subdir="plugins/phonon_backend" 
+                    load="never" 
                     if="${qtjambi.phonon_gstreamer}"/>
             <library name="phonon_qt7"          type="plugin"   
                     rootPath="${qtjambi.qt.libdir}" 
@@ -381,8 +379,8 @@
     <available file="${timestamp.dir}/generator.run" type="file"
         property="qtjambi.generator_run.uptodate"/>
 
+      <!--  unless="qtjambi.generator_run.uptodate" -->
     <target name="generator.run" depends="init, tools.generator.make"
-        unless="qtjambi.generator_run.uptodate"
         description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
         <mkdir dir="${generator.outputdir}"/>
         <generator dir="${outputDir}/generator"

@@ -54,10 +54,6 @@ public class QMakeTask extends Task {
     private String config = "";
     private String dir = ".";
     private String pro = "";
-    
-    //parameters
-    private String qtconfig = null;
-    private String includepath = null;
 
     private boolean recursive = false;
     private boolean debugTools = false;
@@ -77,31 +73,12 @@ public class QMakeTask extends Task {
 
         if (debugTools)
             arguments += " DEFINES+=QTJAMBI_DEBUG_TOOLS";
-        
+
         String command = "qmake" + arguments;
 
         if (!pro.equals("")) {
             command += " " + Util.makeCanonical(pro).getAbsolutePath();
         }
-        String parameters = "";
-        
-        if(qtconfig != null) {
-        	/* TODO:
-        	 * This kind of layout isn’t good; using external ant task on
-        	 * build.xml would help quite a bit. This currently only works with
-        	 * phonon, and this is both obscure and not helpful if other libraries
-        	 * needs reworked library system like phonon.
-        	 */
-        	if("true".equals(qtconfig)) {
-        		parameters += " QT_CONFIG+=phonon";
-        	}
-        }
-        
-        if(includepath != null) {
-        	parameters += " INCLUDEPATH+=" + includepath;
-        }
-        
-        command = command + parameters;
 
         Util.exec(command, new File(dir));
     }
@@ -113,17 +90,9 @@ public class QMakeTask extends Task {
     public void setConfig(String config) {
         this.config = config;
     }
-    
-    public void setQtconfig(String config) {
-    	this.qtconfig = config;
-    }
 
     public void setDir(String dir) {
         this.dir = dir;
-    }
-    
-    public void setIncludepath(String path) {
-    	this.includepath = path;
     }
 
     public void setRecursive(boolean recursive) {
