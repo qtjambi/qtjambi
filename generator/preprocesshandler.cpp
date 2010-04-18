@@ -91,7 +91,7 @@ QStringList PreprocessHandler::setIncludes() {
     includes << (libdir + "/QtCore");
     includes << (libdir + "/QtGui");
     includes << (libdir + "/QtOpenGL");*/
-    includes << (phonon_include_dir + "/phonon");
+    includes << (phonon_include_dir);
     includes << libdir;
 
     return includes;

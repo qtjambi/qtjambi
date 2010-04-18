@@ -331,6 +331,10 @@ public class InitializeTask extends Task {
         return osname;
     }
 
+    /**
+     * Decides whether to use debug or release configuration
+     * @return
+     */
     private String decideConfiguration() {
         String result = null;
 
@@ -359,7 +363,7 @@ public class InitializeTask extends Task {
         path.append("/");
         path.append(subdir);
         path.append("/");
-        path.append(LibraryEntry.formatPluginName(name, debug));
+        path.append(LibraryEntry.formatPluginName(name, false, debug));
         return new File(path.toString()).exists();
     }
 
