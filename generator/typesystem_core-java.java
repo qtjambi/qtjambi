@@ -45,6 +45,7 @@
 package generator;
 
 import com.trolltech.qt.*;
+import com.trolltech.qt.QtJambiObject.QPrivateConstructor;
 import com.trolltech.qt.core.*;
 
 class QObject___ extends QObject {
@@ -178,7 +179,11 @@ class QCoreApplication___ extends QCoreApplication {
     public QCoreApplication(String args[]) {
         this(argc(args), argv(args));
     }
-
+    
+    public QCoreApplication(String applicationName, String args[]) {
+        this(argc(args), argv(applicationName, args));
+    }
+        
     public static String translate(String context, String sourceText, String comment) {
         QTextCodec codec = QTextCodec.codecForName("UTF-8");
         return translate(context != null ? codec.fromUnicode(context).data() : null, sourceText != null ? codec.fromUnicode(sourceText).data() : null,
@@ -195,6 +200,21 @@ class QCoreApplication___ extends QCoreApplication {
                 comment != null ? codec.fromUnicode(comment).data() : null, Encoding.CodecForTr, n);
     }
 
+    public static void initialize(String applicationName, String args[]) {
+    	com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
+
+        if (m_instance != null)
+            throw new RuntimeException("QCoreApplication can only be initialized once");
+
+        String path = Utilities.unpackPlugins();
+        if (path != null)
+            addLibraryPath(path);
+        else
+            com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
+        m_instance = new QCoreApplication(applicationName, args);
+        m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
+    }
+    
     public static void initialize(String args[]) {
         com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
 
@@ -219,7 +239,23 @@ class QCoreApplication___ extends QCoreApplication {
     protected final static com.trolltech.qt.QNativePointer argv(String args[]) {
         String newArgs[] = new String[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
-        newArgs[0] = "Qt Jambi application";
+        try {
+		newArgs[0] = System.getProperty("qt.application.path", "Qt Jambi application");
+	} catch (Exception e) {
+		newArgs[0] = "Qt Jambi application";
+	}
+        argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
+        return argv;
+    }
+    
+    protected final static com.trolltech.qt.QNativePointer argv(String applicationName, String args[]) {
+        String newArgs[] = new String[args.length + 1];
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+        if(applicationName!=null && applicationName.length()!=0){
+			newArgs[0] = applicationName;
+		}else{
+			newArgs[0] = "Qt Jambi application";
+		}
         argv = com.trolltech.qt.QNativePointer.createCharPointerPointer(newArgs);
         return argv;
     }

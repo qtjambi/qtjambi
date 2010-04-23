@@ -4,12 +4,14 @@ TARGET = com_trolltech_qt_gui
 SOURCES += \
     qtreemodel.cpp \
     qguisignalmapper.cpp \
+    qtjambi_platformspecificfunctions.cpp \
     qtjambiitemeditorcreator.cpp
 
 HEADERS += \
     qtreemodel.h \
     qguisignalmapper.h \
     qtjambitextobjectinterface.h \
+    qtjambi_platformspecificfunctions.h \
     qtjambi_gui_qhashes.h
 
 include(../qtjambi/qtjambi_include.pri)

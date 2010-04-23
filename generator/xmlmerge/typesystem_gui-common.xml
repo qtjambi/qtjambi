@@ -6,7 +6,7 @@
   <rejection class="*" field-name="d_ptr"/>
   <rejection class="*" field-name="d"/>
 
-  <rejection class="QGenericMatrix" />  
+<!--   <rejection class="QGenericMatrix" /> -->
   <rejection class="QPixmapFilterPrivate" />
   <rejection class="QPenPrivate" />
   <rejection class="QGtkStyle" />
@@ -78,6 +78,8 @@
   <rejection class="QAccessibleInterface" function-name="foregroundColor"/>
   <rejection class="QAccessibleInterface" function-name="textInterface"/>
   <rejection class="QAccessibleInterface" function-name="valueInterface"/>
+  <rejection class="QAccessibleInterface" function-name="actionInterface"/>
+  <rejection class="QAccessibleInterface" function-name="imageInterface"/>
   <rejection class="QAccessibleInterface" function-name="tableInterface"/>
   <rejection class="QAccessibleInterface" function-name="editableTextInterface"/>
   <rejection class="QAccessibleInterface" function-name="cast_helper"/>
@@ -94,7 +96,8 @@
   <rejection class="QGradient" function-name="setInterpolationMode" />
   <rejection class="QGradient" function-name="interpolationMode" />
   <rejection class="QAbstractTextDocumentLayout" function-name="handlerForObject" />
-  
+  <rejection class="QGraphicsEffect" function-name="source"/>
+  <rejection class="QMatrix4x4" function-name="toGenericMatrix"/>
 
   <enum-type name="QStyleOptionTabBarBaseV2::StyleOptionVersion" />
   <enum-type name="QTabBar::SelectionBehavior" />
@@ -136,7 +139,6 @@
   <enum-type name="QMdiArea::ViewMode" />
   <enum-type name="QFileSystemModel::Roles" />
   <enum-type name="QFormLayout::FieldGrowthPolicy" />
-  <enum-type name="QFormLayout::FormStyle" />
   <enum-type name="QFormLayout::ItemRole" />
   <enum-type name="QFormLayout::RowWrapPolicy" />
   <enum-type name="QGraphicsProxyWidget::enum_1" />
@@ -414,6 +416,11 @@
   <enum-type name="QWizard::WizardStyle"/>
   <enum-type name="QImageIOPlugin::Capability" flags="QImageIOPlugin::Capabilities" />
   <enum-type name="QStackedLayout::StackingMode" />
+  <enum-type name="QGraphicsBlurEffect::BlurHint" flags="QGraphicsBlurEffect::BlurHints" />
+  <enum-type name="QGesture::GestureCancelPolicy" />
+  <enum-type name="QGraphicsEffect::PixmapPadMode" />
+  <enum-type name="QPinchGesture::ChangeFlag" flags="QPinchGesture::ChangeFlags" />
+  <enum-type name="QGestureRecognizer::ResultFlag" flags="QGestureRecognizer::Result" />
 
   <enum-type name="QWizard::WizardButton">
     <reject-enum-value name="NStandardButtons"/>
@@ -508,7 +515,6 @@
  <enum-type name="QAction::SoftKeyRole" />
   <enum-type name="QGraphicsEffect::ChangeFlag" flags="QGraphicsEffect::ChangeFlags" />
   <enum-type name="QGraphicsItem::PanelModality" />
-  <enum-type name="QPinchGesture::WhatChange" flags="QPinchGesture::WhatChanged" />
   <enum-type name="QStyle::RequestSoftwareInputPanel" />
   <enum-type name="QSwipeGesture::SwipeDirection" />
   <enum-type name="QTouchEvent::DeviceType" />
@@ -828,6 +834,22 @@
   <value-type name="QMatrix4x4">
     <modify-function signature="data()const" remove="all" />
     <modify-function signature="operator()(int, int)const" remove="all" />
+  </value-type>
+  <value-type name="QMatrix3x3">
+  </value-type>
+  <value-type name="QMatrix4x3">
+  </value-type>
+  <value-type name="QMatrix4x2">
+  </value-type>
+  <value-type name="QMatrix3x4">
+  </value-type>
+  <value-type name="QMatrix3x2">
+  </value-type>
+  <value-type name="QMatrix2x4">
+  </value-type>
+  <value-type name="QMatrix2x3">
+  </value-type>
+  <value-type name="QMatrix2x2">
   </value-type>
   <value-type name="QMatrix">
       <extra-includes>
@@ -1233,8 +1255,6 @@
     <modify-function signature="operator=(const QPrinterInfo &amp;)" remove="all" />
   </value-type>
 
-  <value-type name="QMargins" />
-
   <interface-type name="QLayoutItem"/>
   <interface-type name="QPaintDevice"/>
 
@@ -1332,6 +1352,11 @@
     <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </interface-type>
 
   <object-type name="QAbstractGraphicsShapeItem" delete-in-main-thread="yes">
@@ -1346,6 +1371,11 @@
     <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </object-type>
 
   <object-type name="QAbstractItemView">
@@ -1579,6 +1609,11 @@
       <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
       <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+      <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </object-type>
   <object-type name="QGraphicsLineItem" delete-in-main-thread="yes">
       <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
@@ -2299,9 +2334,16 @@
     <modify-function signature="provides(const char*)const">
         <remove/>
     </modify-function>
-
-
   </object-type>
+  
+  <object-type name="QGestureEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::Gesture || %1-&gt;type() == QEvent::GestureOverride">
+    <modify-function signature="accept()" remove="all" />
+    <modify-function signature="ignore()" remove="all" />
+    <modify-function signature="isAccepted()const" remove="all" />
+    <modify-function signature="setAccepted(bool)" remove="all" />
+  </object-type>
+  <object-type name="QTouchEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::TouchBegin || %1-&gt;type() == QEvent::TouchUpdate || %1-&gt;type() == QEvent::TouchEnd" />
+  
   <object-type name="QFileOpenEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::FileOpen"/>
   <object-type name="QFocusEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::FocusIn || %1-&gt;type() == QEvent::FocusOut">
         <modify-function signature="reason()const">
@@ -3162,10 +3204,10 @@
         </modify-argument>
     </modify-function>
 
-      <modify-function signature="matrix()const" remove="all"/> <!--### Obsolete in 4.3-->
-      <modify-function signature="resetMatrix()" remove="all"/> <!--### Obsolete in 4.3-->
-      <modify-function signature="sceneMatrix()const" remove="all"/> <!--### Obsolete in 4.3-->
-      <modify-function signature="setMatrix(QMatrix, bool)" remove="all"/> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="matrix()const" remove="all"/>--> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="resetMatrix()" remove="all"/>--> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="sceneMatrix()const" remove="all"/>--> <!--### Obsolete in 4.3-->
+       <!--<modify-function signature="setMatrix(QMatrix, bool)" remove="all"/>--> <!--### Obsolete in 4.3-->
  </object-type>
 
   <object-type name="QCompleter">
@@ -3439,7 +3481,12 @@
             <remove-default-expression />
         </modify-argument>
     </modify-function>
-
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
+    
     <inject-code class="native">
         extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QWidget__1_1qt_1QMessageBox_1setWindowTitle)
         (JNIEnv *__jni_env,
@@ -4982,7 +5029,13 @@
         </modify-argument>
     </modify-function>
   </object-type>
-  <object-type name="QGraphicsProxyWidget"/> <!-- a QObject so main-thread delete redundant -->
+  <object-type name="QGraphicsProxyWidget"> <!-- a QObject so main-thread delete redundant -->
+    <!--<modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>-->
+  </object-type>
   <object-type name="QGraphicsWidget">  <!-- a QObject so main-thread delete redundant -->
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
@@ -4991,6 +5044,11 @@
             <reference-count action="set" variable-name="__rcLayout" />
         </modify-argument>
     </modify-function>
+    <!--<modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>-->
 
     <modify-function signature="addAction(QAction*)">
         <modify-argument index="1">
@@ -5121,9 +5179,14 @@
   <object-type name="QGraphicsObject">
     <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->
     <modify-function signature="children()const" remove="all" />
+    <modify-function signature="setGraphicsEffect(QGraphicsEffect*)">
+	<modify-argument index="1">
+	    <define-ownership class="java" owner="c++"/>
+	</modify-argument>
+    </modify-function>
   </object-type>
-  <object-type name="QGraphicsOpacityEffect" />
-  <object-type name="QGraphicsPixelizeEffect" />
+<!--   <object-type name="QGraphicsOpacityEffect" /> -->
+<!--   <object-type name="QGraphicsPixelizeEffect" /> -->
   <object-type name="QGraphicsRotation" />
   <object-type name="QGraphicsScale" />
   <object-type name="QGraphicsTransform" />
@@ -5131,7 +5194,15 @@
   <object-type name="QPinchGesture" />
   <object-type name="QProxyStyle" />
   <object-type name="QSwipeGesture" />
-  <object-type name="QTouchEvent" polymorphic-id-expression="%1-&gt;type() == QEvent::TouchBegin || %1-&gt;type() == QEvent::TouchUpdate || %1-&gt;type() == QEvent::TouchEnd" />
+  <object-type name="QTapAndHoldGesture" />
+  <object-type name="QTapGesture" />
+  <object-type name="QGraphicsOpacityEffect"/>
+  <object-type name="QGraphicsColorizeEffect"/>
+  <object-type name="QGraphicsBlurEffect"/>
+  <object-type name="QGraphicsDropShadowEffect"/>
+  
+  <value-type name="QGestureRecognizer" />
+<!--   <value-type name="QGenericMatrix" /> -->
   
   <!-- Inefficient hash codes -->
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QTextFrame_iterator' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
@@ -5209,5 +5280,11 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Rejected enum has no alternative...: QPalette::NColorRoles" />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QtSharedPointer' does not have a type entry" />
+  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Object type 'QGraphicsObject' passed as value. Resulting code will not compile." />
+  
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QMatrix*' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: template baseclass 'QGenericMatrix*' of * is not known" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function '*', unmatched parameter type 'QGenericMatrix*'"/>
 
 </typesystem>

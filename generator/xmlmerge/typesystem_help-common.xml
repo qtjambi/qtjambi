@@ -1,0 +1,55 @@
+<typesystem>
+  <!--<enum-type name="QGraphicsSvgItem::enum_1"/>-->
+
+<!--   <object-type name="QHelpContentItem"> -->
+    <!--<extra-includes>
+        <include file-name="QRectF" location="global" />
+        <include file-name="QMatrix" location="global" />
+        <include file-name="QSize" location="global" />
+        <include file-name="QByteArray" location="global" />
+    </extra-includes>-->
+<!--   </object-type> -->
+
+<!--   <object-type name="QHelpContentModel"> -->
+    <!--<extra-includes>
+        <include file-name="QByteArray" location="global" />
+        <include file-name="QSvgRenderer" location="global" />
+        <include file-name="QSize" location="global" />
+    </extra-includes>-->
+<!--   </object-type> -->
+
+  <enum-type name="QHelpSearchQuery::FieldName"/>
+  <value-type name="QHelpContentItem">
+  <custom-constructor>
+    return new QHelpContentItem(*copy);
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+  </value-type>
+  <value-type name="QHelpSearchEngine::SearchHit"/>
+  <object-type name="QHelpContentWidget">
+  </object-type>
+  <object-type name="QHelpIndexWidget">
+  </object-type>
+  <object-type name="QHelpIndexModel">
+  </object-type>
+  <object-type name="QHelpContentModel">
+  </object-type>
+  <object-type name="QHelpEngineCore">
+  </object-type>
+  <object-type name="QHelpEngine">
+  </object-type>
+  <object-type name="QHelpSearchEngine">
+  </object-type>
+  <value-type name="QHelpSearchQuery">
+  </value-type>
+  <object-type name="QHelpSearchQueryWidget">
+  </object-type>
+  <object-type name="QHelpSearchResultWidget">
+  </object-type>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QHelpContentItem::QHelpContentItem', unmatched parameter type 'QHelpDBReader*'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'changeEvent(QEvent * event)' in 'QHelpSearchQueryWidget'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'focusInEvent(QFocusEvent * focusEvent)' in 'QHelpSearchQueryWidget'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'changeEvent(QEvent * event)' in 'QHelpSearchResultWidget'"/>
+</typesystem>

@@ -247,6 +247,10 @@
             <library name="QtXml"     type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtSql"     type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" load="yes"/>
+            <library name="QtHelp"     type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.help}"/>
+            <library name="QtScript"     type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.script}"/>
+            <library name="QtScriptTools"     type="qt" rootPath="${qtjambi.qtdir}"  if="${qtjambi.scripttools}"/>
+            <library name="QtMultimedia"     type="qt" rootPath="${qtjambi.qtdir}"  if="${qtjambi.multimedia}"/>
             <library name="QtNetwork" type="qt" rootPath="${qtjambi.qtdir}"/>
             <library name="QtOpenGL"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.opengl}"/>
             <library name="QtWebKit"  type="qt" rootPath="${qtjambi.qtdir}" if="${qtjambi.webkit}"/>
@@ -278,8 +282,12 @@
             <library name="com_trolltech_qt_xml"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_sql"     type="qtjambi" rootPath="${outputDir}"/>
             <library name="com_trolltech_qt_svg"     type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_help"     type="qtjambi" rootPath="${outputDir}" if="${qtjambi.help}"/>
+            <library name="com_trolltech_qt_script"     type="qtjambi" rootPath="${outputDir}" if="${qtjambi.script}"/>
+            <library name="com_trolltech_qt_scripttools"     type="qtjambi" rootPath="${outputDir}" if="${qtjambi.scripttools}"/>
+            <library name="com_trolltech_qt_multimedia"     type="qtjambi" rootPath="${outputDir}" if="${qtjambi.multimedia}"/>
             <library name="com_trolltech_qt_network" type="qtjambi" rootPath="${outputDir}"/>
-            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}"/>
+            <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.opengl}"/>
             <library name="com_trolltech_qt_phonon"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.phonon}"/>
             <library name="com_trolltech_qt_webkit"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.webkit}"/>
             <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi" rootPath="${outputDir}" if="${qtjambi.xmlpatterns}"/>
@@ -294,8 +302,6 @@
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
-
-        <delete dir="${outputDir}/platform-output"/>
     </target>
 
 
@@ -337,6 +343,10 @@
                 <exclude name="cpp/**/*"/>
             </fileset>
         </copy>
+        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="java/src/qtjambi">
+        </zip>
+        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${java.generated.srcdir}/qtjambi" update="true">
+        </zip>
     </target>
 
     <target name="generator.javasrc.qtjambi-designer" depends="generator.run">
@@ -375,10 +385,14 @@
         <xmlmerge victim="opengl"/>
         <xmlmerge victim="sql"/>
         <xmlmerge victim="svg"/>
+        <xmlmerge victim="help"/>
+        <xmlmerge victim="multimedia"/>
         <xmlmerge victim="webkit"/>
         <xmlmerge victim="phonon"/>
         <xmlmerge victim="xmlpatterns"/>
         <xmlmerge victim="designer"/>
+        <xmlmerge victim="script"/>
+        <xmlmerge victim="scripttools"/>
     </target>
 
     <target name="generator" depends="generator.run"
@@ -474,6 +488,8 @@
             </fileset>
         </delete>
         <delete file="${java.srcdir}/qtjambi/version.properties"/>
+        <delete dir="${outputDir}/platform-output"/>
+        <delete file="qtjambi-${qtjambi.version}-src.zip"/>
     </target>
 
     <target name="help" description="Provides detailed help.">

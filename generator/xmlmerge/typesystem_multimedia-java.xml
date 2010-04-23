@@ -1,0 +1,97 @@
+<typesystem package="com.trolltech.qt.multimedia" default-superclass="com.trolltech.qt.QtJambiObject">
+    <inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("QtMultimedia");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+    </inject-code>
+<object-type name="QAbstractVideoSurface">
+<!--<modify-function signature="nearestFormat(const QVideoSurfaceFormat&amp;)const" remove="all">
+</modify-function>
+<modify-function signature="surfaceFormat()const" remove="all">
+</modify-function>-->
+</object-type>
+
+<object-type name="QAudioInput">
+	<modify-function signature="QAudioInput(const QAudioFormat &amp;,QObject*)">
+            <modify-argument index="1">
+                <replace-default-expression with="new QAudioFormat()"/>
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="QAudioInput(const QAudioDeviceInfo &amp;,const QAudioFormat &amp;,QObject*)">
+            <modify-argument index="2">
+                <replace-default-expression with="new QAudioFormat()"/>
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="notify()" rename="notifySignal">
+        </modify-function>
+</object-type>
+
+<object-type name="QAudioOutput">
+	<modify-function signature="QAudioOutput(const QAudioFormat &amp;,QObject*)">
+            <modify-argument index="1">
+                <replace-default-expression with="new QAudioFormat()"/>
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="QAudioOutput(const QAudioDeviceInfo &amp;,const QAudioFormat &amp;,QObject*)">
+            <modify-argument index="2">
+                <replace-default-expression with="new QAudioFormat()"/>
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="notify()" rename="notifySignal">
+        </modify-function>
+</object-type>
+
+<value-type name="QAudioFormat">
+        <modify-function signature="operator=(const QAudioFormat)" remove="all"/>
+        <modify-function signature="operator==(const QAudioFormat)const" remove="all"/>
+        <modify-function signature="operator!=(const QAudioFormat)const" remove="all"/>
+</value-type>
+<value-type name="QVideoSurfaceFormat">
+        <modify-function signature="operator=(const QVideoSurfaceFormat)" remove="all"/>
+        <modify-function signature="operator==(const QVideoSurfaceFormat)const" remove="all"/>
+        <modify-function signature="operator!=(const QVideoSurfaceFormat)const" remove="all"/>
+</value-type>
+<!--    <object-type name="QGraphicsSvgItem" delete-in-main-thread="yes">
+        <modify-function signature="setGroup(QGraphicsItemGroup*)">
+            <modify-argument index="1">-->
+                <!-- Handled by injected code in QGraphicsItem -->
+                <!--<reference-count action="ignore" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="setParentItem(QGraphicsItem*)">
+            <modify-argument index="1">-->
+                <!-- Handled by injected code in QGraphicsItem -->
+                <!--<reference-count action="ignore" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="setSharedRenderer(QSvgRenderer*)">
+            <modify-argument index="1">
+                <define-ownership class="java" owner="c++" />
+            </modify-argument>
+            <inject-code position="beginning">
+                QSvgRenderer oldRenderer = renderer();
+            </inject-code>
+            <inject-code position="end">
+            if (oldRenderer != null)
+                oldRenderer.reenableGarbageCollection();
+            </inject-code>
+        </modify-function>
+        <modify-function signature="QGraphicsSvgItem(QGraphicsItem*)">
+            <inject-code position="end">
+                <argument-map index="1" meta-name="%1" />
+            if (%1 != null) disableGarbageCollection();
+            </inject-code>
+        </modify-function>
+        <modify-function signature="QGraphicsSvgItem(const QString &amp;,QGraphicsItem*)">
+            <inject-code position="end">
+                <argument-map index="2" meta-name="%2" />
+            if (%2 != null) disableGarbageCollection();
+            </inject-code>
+        </modify-function>
+
+    </object-type>-->
+
+    <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: hiding of function '*' in class '*'" />
+</typesystem>
