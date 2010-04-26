@@ -16,11 +16,6 @@
     <property name="sourceDir" value="."/>
     <property name="outputDir" value="."/>
 
-
-    <path id="java.compile.classpath">
-        <fileset dir="${jardir}" includes="*.jar"/>
-    </path>
-
     <tstamp/>
 
     <target name="init.taskdef">
@@ -60,9 +55,14 @@
 
         <javac destdir="${basedir}/platform-output"
                debug="true">
-            <src path="${jambiDir}/java/generated-src/qtjambi"/>
+            <classpath >
+                <pathelement path="${jambiDir}/qtjambi-util-${qtjambi.version}.jar"/>
+                <pathelement path="${jambiDir}/qtjambi-${qtjambi.version}.jar"/>
+            </classpath>
+            <src path="${jambiDir}/java/src/qtjambi-util"/>
             <src path="${basedir}/.."/>
             <include name="com/poseidon/test/*.java"/>
+            <include name="com/trolltech/qt/internal/*.java"/>
         </javac>
     </target>
 
