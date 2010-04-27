@@ -46,6 +46,7 @@ package com.trolltech.qt.designer;
 
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.Qt.*;
 import com.trolltech.qt.xml.*;
 
 import java.lang.reflect.*;
@@ -469,6 +470,9 @@ public class QUiLoader {
             } else if (property.equals("shortcut") && o instanceof QAction
                     && value instanceof String) {
                 ((QAction) o).setShortcut((String) value);
+                return;
+            } else if (property.endsWith("focusPolicy") && o instanceof QWidget && value instanceof FocusPolicy) {
+                ((QWidget)o).setFocusPolicy((FocusPolicy) value);
                 return;
             } else if (property.equals("buddy") && o instanceof QLabel) {
                 buddies.put((QLabel) o, (String) value);
