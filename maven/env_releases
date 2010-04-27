@@ -6,7 +6,7 @@
 QTJAMBI_VERSION=4.5.2_01
 
 # this is version of qtjambi maven plugin. You should specify whatever you need, but remember that it is good practice to inherit from qtjambi version.
-QTJAMBI_PLUGIN_VERSION=4.5.2_02		# same qtjambi version, but different release number
+QTJAMBI_PLUGIN_VERSION=4.5.2_03		# same qtjambi version, but different release number
 
 QTJAMBI_LINUX32_RELEASE=~/qtjambi/qtjambi-linux32-lgpl-4.5.2_01
 QTJAMBI_LINUX64_RELEASE=~/qtjambi/qtjambi-linux64-lgpl-4.5.2_01

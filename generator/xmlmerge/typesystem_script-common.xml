@@ -1,0 +1,61 @@
+<typesystem>
+  <rejection class="QScriptEngine" function-name="fromScriptValue"/>
+  <rejection class="QScriptEngine" function-name="toScriptValue"/>
+  <rejection class="QScriptEngine" function-name="newQMetaObject"/>
+  <rejection class="QScriptEngine" function-name="registerCustomType"/>
+  <rejection class="QScriptEngine" function-name="scriptValueFromQMetaObject"/>
+  <rejection class="QScriptEngine" function-name="newFunction"/>
+  <rejection class="QScriptValue" function-name="toQMetaObject"/>
+  <rejection class="QScriptValueList"/>
+  <rejection class="QScriptValue::QScriptValueList"/>
+<!--   <rejection class="QScriptContext" function-name="scopeChain"/> -->
+  <enum-type name="QScriptClass::Extension"/>
+  <enum-type name="QScriptClass::QueryFlag" flags="QScriptClass::QueryFlags"/>
+  <enum-type name="QScriptContext::Error"/>
+  <enum-type name="QScriptContext::ExecutionState"/>
+  <enum-type name="QScriptContextInfo::FunctionType"/>
+  <enum-type name="QScriptEngine::QObjectWrapOption" flags="QScriptEngine::QObjectWrapOptions"/>
+  <enum-type name="QScriptEngine::ValueOwnership"/>
+  <enum-type name="QScriptEngineAgent::Extension"/>
+  <enum-type name="QScriptValue::PropertyFlag" flags="QScriptValue::PropertyFlags"/>
+  <enum-type name="QScriptValue::ResolveFlag" flags="QScriptValue::ResolveFlags"/>
+  <enum-type name="QScriptValue::SpecialValue"/>
+  <enum-type name="QScriptSyntaxCheckResult::State"/>
+  <object-type name="QScriptClass" default-superclass ="com.trolltech.qt.QtJambiObject">
+  </object-type>
+  <value-type name="QScriptClassPropertyIterator"/>
+  <object-type name="QScriptContext" default-superclass ="com.trolltech.qt.QtJambiObject">
+  <modify-function signature="scopeChain()const" remove="all"/>
+  </object-type>
+  <value-type name="QScriptContextInfo"/>
+  <object-type name="QScriptEngineAgent" default-superclass ="com.trolltech.qt.QtJambiObject">
+  </object-type>
+  <value-type name="QScriptString"/>
+  <value-type name="QScriptProgram"/>
+  <interface-type name="QScriptExtensionInterface"/>
+  <value-type name="QScriptSyntaxCheckResult">
+    <custom-constructor>
+    return new QScriptSyntaxCheckResult(*copy);
+    </custom-constructor>
+    <custom-destructor>
+    delete copy;
+    </custom-destructor>
+  </value-type>
+  <value-type name="QScriptValueList" generate="no"/>
+  <value-type name="QScriptValue">
+      <modify-function signature="QScriptValue(uint)" remove="all"/>
+      <modify-function signature="QScriptValue(QScriptEngine*,uint)" remove="all"/>
+      <modify-function signature="QScriptValue(const QLatin1String &amp;)" remove="all"/>
+  </value-type>
+  <object-type name="QScriptValueIterator" default-superclass ="com.trolltech.qt.QtJambiObject">
+  </object-type>
+  <interface-type name="QScriptable"/>
+  <object-type name="QScriptEngine">
+  </object-type>
+  <object-type name="QScriptExtensionPlugin">
+  </object-type>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QHelpContentItem::QHelpContentItem', unmatched parameter type 'QHelpDBReader*'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'changeEvent(QEvent * event)' in 'QHelpSearchQueryWidget'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'focusInEvent(QFocusEvent * focusEvent)' in 'QHelpSearchQueryWidget'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'changeEvent(QEvent * event)' in 'QHelpSearchResultWidget'"/>
+</typesystem>

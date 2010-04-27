@@ -49,6 +49,11 @@
 #include <QtSql/QtSql>
 #include <QtSvg/QtSvg>
 #include <QtXml/QtXml>
+#include <QtHelp/QtHelp>
+#include <QtMultimedia/QtMultimedia>
+#include <QtScript/QtScript>
+#include <QtScriptTools/QtScriptTools>
+#include <QtOpenVG/QtOpenVG>
 
 #ifndef QT_NO_XMLPATTERNS
 #  include <QtXmlPatterns/QtXmlPatterns>

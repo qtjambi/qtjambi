@@ -2,3 +2,6 @@
 			Plugin versioning is now independent from qtjambi libs version.
 			Removed "Windows XP" from profiles.
 			qtjambi-maven-plugin is now 4.5.2_02
+
+16.04.2010	-	bugfix - translationsDir was ignored
+			qtjambi-maven-plugin is now 4.5.2_03

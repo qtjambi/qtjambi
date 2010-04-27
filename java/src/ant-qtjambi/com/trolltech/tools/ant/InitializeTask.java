@@ -127,6 +127,10 @@ public class InitializeTask extends Task {
     public static final String SQLITE           = "qtjambi.sqlite";
     public static final String WEBKIT           = "qtjambi.webkit";
     public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
+    public static final String HELP		= "qtjambi.help";
+    public static final String MULTIMEDIA		= "qtjambi.multimedia";
+    public static final String SCRIPT		= "qtjambi.script";
+    public static final String SCRIPTTOOLS	= "qtjambi.scripttools";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -166,6 +170,22 @@ public class InitializeTask extends Task {
         String webkit = decideWebkit();
         if ("true".equals(webkit) && "true".equals(phonon))
             props.setNewProperty((String) null, WEBKIT, webkit);
+
+	String script = decideScript();
+        if ("true".equals(script))
+            props.setNewProperty(null, SCRIPT, script);
+
+	String scripttools = decideScripttools();
+        if ("true".equals(scripttools))
+            props.setNewProperty(null, SCRIPTTOOLS, scripttools);
+
+	String helptool = decideHelp();
+        if ("true".equals(helptool))
+            props.setNewProperty(null, HELP, helptool);
+
+	String multimedia = decideMultimedia();
+        if ("true".equals(multimedia))
+            props.setNewProperty(null, MULTIMEDIA, multimedia);
 
         String patterns = decideXMLPatterns();
         if ("true".equals(patterns))
@@ -409,6 +429,30 @@ public class InitializeTask extends Task {
         return result;
     }
 
+        return result;
+    }
+
+    private String decideHelp() {
+        String result = String.valueOf(doesQtLibExist("QtHelp", 4));
+        if (verbose) System.out.println(HELP + ": " + result);
+        return result;
+    }
+
+    private String decideMultimedia() {
+        String result = String.valueOf(doesQtLibExist("QtMultimedia", 4));
+        if (verbose) System.out.println(MULTIMEDIA + ": " + result);
+        return result;
+    }
+
+    private String decideScript() {
+        String result = String.valueOf(doesQtLibExist("QtScript", 4));
+        if (verbose) System.out.println(SCRIPT + ": " + result);
+        return result;
+    }
+
+    private String decideScripttools() {
+        String result = String.valueOf(doesQtLibExist("QtScriptTools", 4));
+        if (verbose) System.out.println(SCRIPTTOOLS + ": " + result);
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
         if (verbose) System.out.println(WEBKIT + ": " + result);
