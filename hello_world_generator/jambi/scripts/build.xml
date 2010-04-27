@@ -8,18 +8,12 @@
 
     <property name="jambiLib" value="${jambiDir}/lib"/>
     <property name="jardir" value="${jambiDir}/jars"/>
-    <property name="qtjambi.libsubdir" value="lib"/>
 
     <property file="${jambiDir}/build.properties"/>
     <property file="${jambiDir}/version.properties"/>
 
     <property name="sourceDir" value="."/>
     <property name="outputDir" value="."/>
-
-
-    <path id="java.compile.classpath">
-        <fileset dir="${jardir}" includes="*.jar"/>
-    </path>
 
     <tstamp/>
 
@@ -30,6 +24,8 @@
                 <pathelement path="${jardir}/nobundle/ant-qtjambi.jar"/>
             </classpath>
         </taskdef>
+        <taskdef resource="net/sf/antcontrib/antlib.xml"
+            classpath="${jambiDir}/extjars/ant-contrib.jar"/>
     </target>
 
     <target name="help" description="Provides detailed help.">
@@ -38,7 +34,15 @@
 
 
     <target name="init" depends="init.taskdef">
-
+        <if>
+            <os family="windows"/>
+            <then>
+                <property name="qtjambi.libsubdir" value="bin"/>
+            </then>
+            <else>
+                <property name="qtjambi.libsubdir" value="lib"/>
+            </else>
+        </if>
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
 
         <mkdir dir="${basedir}/platform-output"/>
@@ -60,9 +64,14 @@
 
         <javac destdir="${basedir}/platform-output"
                debug="true">
-            <src path="${jambiDir}/java/generated-src/qtjambi"/>
+            <classpath >
+                <pathelement path="${jambiDir}/qtjambi-util-${qtjambi.version}.jar"/>
+                <pathelement path="${jambiDir}/qtjambi-${qtjambi.version}.jar"/>
+            </classpath>
+            <src path="${jambiDir}/java/src/qtjambi-util"/>
             <src path="${basedir}/.."/>
             <include name="com/poseidon/test/*.java"/>
+            <include name="com/trolltech/qt/internal/*.java"/>
         </javac>
     </target>
 
