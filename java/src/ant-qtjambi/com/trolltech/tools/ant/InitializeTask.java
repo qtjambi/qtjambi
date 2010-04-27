@@ -173,19 +173,19 @@ public class InitializeTask extends Task {
 
 	String script = decideScript();
         if ("true".equals(script))
-            props.setNewProperty(null, SCRIPT, script);
+            props.setNewProperty((String) null, SCRIPT, script);
 
 	String scripttools = decideScripttools();
         if ("true".equals(scripttools))
-            props.setNewProperty(null, SCRIPTTOOLS, scripttools);
+            props.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
 
 	String helptool = decideHelp();
         if ("true".equals(helptool))
-            props.setNewProperty(null, HELP, helptool);
+            props.setNewProperty((String) null, HELP, helptool);
 
 	String multimedia = decideMultimedia();
         if ("true".equals(multimedia))
-            props.setNewProperty(null, MULTIMEDIA, multimedia);
+            props.setNewProperty((String) null, MULTIMEDIA, multimedia);
 
         String patterns = decideXMLPatterns();
         if ("true".equals(patterns))
@@ -429,9 +429,6 @@ public class InitializeTask extends Task {
         return result;
     }
 
-        return result;
-    }
-
     private String decideHelp() {
         String result = String.valueOf(doesQtLibExist("QtHelp", 4));
         if (verbose) System.out.println(HELP + ": " + result);
@@ -453,6 +450,8 @@ public class InitializeTask extends Task {
     private String decideScripttools() {
         String result = String.valueOf(doesQtLibExist("QtScriptTools", 4));
         if (verbose) System.out.println(SCRIPTTOOLS + ": " + result);
+        return result;
+    }
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
         if (verbose) System.out.println(WEBKIT + ": " + result);
