@@ -127,10 +127,11 @@ public class InitializeTask extends Task {
     public static final String SQLITE           = "qtjambi.sqlite";
     public static final String WEBKIT           = "qtjambi.webkit";
     public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
-    public static final String HELP		= "qtjambi.help";
+    public static final String HELP				= "qtjambi.help";
     public static final String MULTIMEDIA		= "qtjambi.multimedia";
-    public static final String SCRIPT		= "qtjambi.script";
-    public static final String SCRIPTTOOLS	= "qtjambi.scripttools";
+    public static final String SCRIPT			= "qtjambi.script";
+    public static final String SCRIPTTOOLS		= "qtjambi.scripttools";
+    public static final String QTCONFIG			= "qtjambi.qtconfig";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -396,10 +397,12 @@ public class InitializeTask extends Task {
     	boolean exists = doesQtLibExist("phonon", 4, props.getProperty((String) null, PHONONLIBDIR).toString());
         String phonon = String.valueOf(exists);
         if (verbose) {
-            System.out.println(PHONON + ": " + phonon);            
+            System.out.println(PHONON + ": " + phonon);        
         }
         if(!exists) {
     		return "false";
+    	} else {
+    		addQtConfig("phonon");
     	}
         
         props.setNewProperty((String) null, PHONON, phonon);
@@ -423,7 +426,23 @@ public class InitializeTask extends Task {
         return phonon;
     }
 
-    private String decideSqlite() {
+    /**
+     * Adds new library to qtjambi.qtconfig property, which is used
+     * to specify additional qt libraries compiled. 
+     * @param config Library to add
+     */
+    private void addQtConfig(String config) {
+    	String oldConfig = (String) props.getProperty(QTCONFIG);
+    	String newConfig;
+    	if(oldConfig != null) {
+    		newConfig = oldConfig + " " + config;
+    	} else {
+    		newConfig = config;
+    	}
+        props.setNewProperty((String) null, QTCONFIG, newConfig);
+	}
+
+	private String decideSqlite() {
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
         if (verbose) System.out.println(SQLITE + ": " + result);
         return result;

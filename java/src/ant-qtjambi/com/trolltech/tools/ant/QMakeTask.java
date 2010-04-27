@@ -86,15 +86,7 @@ public class QMakeTask extends Task {
         String parameters = "";
         
         if(qtconfig != null) {
-        	/* TODO:
-        	 * This kind of layout isn’t good; using external ant task on
-        	 * build.xml would help quite a bit. This currently only works with
-        	 * phonon, and this is both obscure and not helpful if other libraries
-        	 * needs reworked library system like phonon.
-        	 */
-        	if("true".equals(qtconfig)) {
-        		parameters += " QT_CONFIG+=phonon";
-        	}
+        	parameters += " QT_CONFIG+=" + qtconfig;
         }
         
         if(includepath != null) {

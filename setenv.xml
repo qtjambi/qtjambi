@@ -17,7 +17,6 @@
     -->
 
     <property environment="env"/>
-
     <tstamp/>
 
     <!--
@@ -97,12 +96,12 @@
 
     <!--
         Handle environment variables.
-        If QTDIR isn’t set, look LIBDIR and INCLUDEDIR, which points to 
-        to qt’s libraries’s dir and include dir. 
+        If QTDIR isn't set, look LIBDIR and INCLUDEDIR, which points to
+        to qt's libraries’s dir and include dir.
     -->
 
     <target name="handle-qtdir" depends="source.antcontrib">
-        <property name="qtdir" value="${env.QTDIR}"/>
+        <!--<property name="qtdir" value="${env.QTDIR}"/>-->
         <if>
             <isset property="env.QTDIR"/>
             <then>
@@ -114,12 +113,9 @@
     </target>
 
     <target name="lookup-libsubdir" depends="source.antcontrib">
-        <!--<var name="libsubdir" value="lib"/>-->
         <if>
             <os family="windows"/>
             <then>
-                <!--<var name="libsubdir" value="bin"/>-->
-                <!-- I wonder if this is good thing... TODO: check this -->
                 <property name="qt.libdir" value="${env.QTDIR}/bin"/>
             </then>
         </if>
@@ -137,7 +133,6 @@
                 </not>
             </condition>
         </fail>
-         <!--<property name="qtjambi.libsubdir" value="${libsubdir}"/>-->
         <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
         <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
