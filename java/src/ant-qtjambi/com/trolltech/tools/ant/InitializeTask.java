@@ -399,11 +399,9 @@ public class InitializeTask extends Task {
         if (verbose) {
             System.out.println(PHONON + ": " + phonon);        
         }
-        if(!exists) {
-    		return "false";
-    	} else {
-    		addQtConfig("phonon");
-    	}
+        
+        if(!exists) return "false";
+    	else addQtConfig("phonon");
         
         props.setNewProperty((String) null, PHONON, phonon);
         
@@ -463,12 +461,14 @@ public class InitializeTask extends Task {
     private String decideScript() {
         String result = String.valueOf(doesQtLibExist("QtScript", 4));
         if (verbose) System.out.println(SCRIPT + ": " + result);
+        if("true".equals(result)) addQtConfig("script");
         return result;
     }
 
     private String decideScripttools() {
         String result = String.valueOf(doesQtLibExist("QtScriptTools", 4));
         if (verbose) System.out.println(SCRIPTTOOLS + ": " + result);
+        if("true".equals(result)) addQtConfig("script");
         return result;
     }
     private String decideWebkit() {

@@ -46,8 +46,6 @@ package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.*;
 
-import java.io.File;
-
 public class PluginPath extends Task {
 
     public void execute() throws BuildException {
@@ -55,7 +53,6 @@ public class PluginPath extends Task {
             throw new BuildException("Missing required attribute 'path'...");
         }
     }
-
 
     public void setPath(String p) {
         path = p;

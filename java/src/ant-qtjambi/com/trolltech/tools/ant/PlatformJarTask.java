@@ -181,8 +181,9 @@ public class PlatformJarTask extends Task
 
         outdir.mkdirs();
 
-    for ( LibraryEntry e : libs )
+        for ( LibraryEntry e : libs ) {
             processLibraryEntry ( e );
+    	}
 
         if ( systemLibs.equals ( SYSLIB_AUTO ) )
             processSystemLibs();

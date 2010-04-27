@@ -86,7 +86,7 @@ public class QMakeTask extends Task {
         String parameters = "";
         
         if(qtconfig != null) {
-        	parameters += " QT_CONFIG+=" + qtconfig;
+        	parameters += "QT_CONFIG+=\"" + qtconfig + '"';
         }
         
         if(includepath != null) {

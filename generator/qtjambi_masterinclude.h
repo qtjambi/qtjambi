@@ -67,7 +67,8 @@
 //it is not a real problem anyway; you can set phonon to nil path and it won’t be
 //generated anyway.
 //#ifndef QT_NO_PHONON
-#  include <phonon/phonon>
+//#  include <phonon/phonon>
+#include <phonon>
 //#endif
 
 #include <../qtjambi_core/qtjambiconcurrent.h>
