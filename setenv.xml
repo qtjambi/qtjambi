@@ -97,7 +97,7 @@
     <!--
         Handle environment variables.
         If QTDIR isn't set, look LIBDIR and INCLUDEDIR, which points to
-        to qt's libraries’s dir and include dir.
+        to qt's libraries's dir and include dir.
     -->
 
     <target name="handle-qtdir" depends="source.antcontrib">
@@ -105,24 +105,32 @@
         <if>
             <isset property="env.QTDIR"/>
             <then>
+                <property name="qmake.binary" value="${env.QTDIR}/bin/qmake"/>
+                <var name="qt.libdir" unset="true"/>
+                <var name="qt.pluginsdir" unset="true"/>
+                <var name="qt.includedir" unset="true"/>
                 <property name="qt.libdir" value="${env.QTDIR}/lib"/>
                 <property name="qt.pluginsdir" value="${env.QTDIR}/plugins"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
             </then>
+            <else>
+                <property name="qmake.binary" value="qmake"/>
+            </else>
         </if>
     </target>
 
-    <target name="lookup-libsubdir" depends="source.antcontrib">
+    <target name="lookup-libdir" depends="source.antcontrib">
         <if>
             <os family="windows"/>
             <then>
+                <var name="qt.libdir" unset="true"/>
                 <property name="qt.libdir" value="${env.QTDIR}/bin"/>
             </then>
         </if>
     </target>
 
-    <target name="setenv" depends="handle-qtdir, lookup-libsubdir">
-        <exec executable="qmake" outputproperty="qt.version">
+    <target name="setenv" depends="handle-qtdir, lookup-libdir">
+        <exec executable="${qmake.binary}" outputproperty="qt.version">
             <arg value="-query"/>
             <arg value="QT_VERSION"/>
         </exec>

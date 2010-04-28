@@ -17,7 +17,7 @@ class Wrapper {
 public:
     Wrapper(int argc, char *argv[]);
     
-    static QString library_dir;
+    static QString include_directory;
     
     int runJambiGenerator();
     

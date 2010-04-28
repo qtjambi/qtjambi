@@ -65,7 +65,7 @@ public class MakeTask extends Task {
             String compiler = (String) props.getProperty((String) null, InitializeTask.COMPILER);
 
 
-            if (InitializeTask.Compiler.MinGW.toString().equals(compiler)) {
+            if (FindCompiler.Compiler.MinGW.toString().equals(compiler)) {
                 return "mingw32-make";
             }
             return "nmake";

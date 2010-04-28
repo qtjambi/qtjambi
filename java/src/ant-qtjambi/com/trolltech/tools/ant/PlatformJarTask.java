@@ -310,7 +310,7 @@ public class PlatformJarTask extends Task
     private void processSystemLibs()
     {
         String compiler = String.valueOf ( props.getProperty ( ( String ) null, InitializeTask.COMPILER ) );
-        InitializeTask.Compiler c = InitializeTask.Compiler.resolve ( compiler );
+        FindCompiler.Compiler c = FindCompiler.Compiler.resolve ( compiler );
 
         String vcnumber = "80";
 

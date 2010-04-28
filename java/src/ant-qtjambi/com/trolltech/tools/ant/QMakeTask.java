@@ -50,6 +50,7 @@ import java.io.*;
 import java.util.*;
 
 public class QMakeTask extends Task {
+
     private String msg = "";
     private String config = "";
     private String dir = ".";
@@ -58,32 +59,31 @@ public class QMakeTask extends Task {
     //parameters
     private String qtconfig = null;
     private String includepath = null;
+    private String qmakebinary = null;
 
     private boolean recursive = false;
     private boolean debugTools = false;
-
-    @Override
-    public void execute() throws BuildException {
-        System.out.println(msg);
-
-        String arguments = "";
+    
+    private String parseArguments() {
+    	String arguments = "";
         StringTokenizer tokenizer = new StringTokenizer(config, " ");
+        
         while (tokenizer.hasMoreTokens()) {
             arguments += " -config " + tokenizer.nextToken();
         }
 
-        if (recursive)
+        if (recursive) {
             arguments += " -r ";
-
-        if (debugTools)
-            arguments += " DEFINES+=QTJAMBI_DEBUG_TOOLS";
-        
-        String command = "qmake" + arguments;
-
-        if (!pro.equals("")) {
-            command += " " + Util.makeCanonical(pro).getAbsolutePath();
         }
-        String parameters = "";
+        if (debugTools) {
+            arguments += " DEFINES+=QTJAMBI_DEBUG_TOOLS";
+        }
+        
+        return arguments;
+    }
+    
+    private String parseParameters() {
+    	String parameters = "";
         
         if(qtconfig != null) {
         	parameters += "QT_CONFIG+=\"" + qtconfig + '"';
@@ -93,7 +93,20 @@ public class QMakeTask extends Task {
         	parameters += " INCLUDEPATH+=" + includepath;
         }
         
-        command = command + parameters;
+        return parameters;
+    }
+
+    @Override
+    public void execute() throws BuildException {
+        System.out.println(msg);
+
+        String proFile = "";
+        if (!pro.equals("")) {
+            proFile = " " + Util.makeCanonical(pro).getAbsolutePath();
+        }
+        
+        //command = command + parseParameters();
+        String command = qmakebinary + proFile + parseArguments() + parseParameters();
 
         Util.exec(command, new File(dir));
     }
@@ -112,6 +125,10 @@ public class QMakeTask extends Task {
 
     public void setDir(String dir) {
         this.dir = dir;
+    }
+    
+    public void setQmakebinary(String binary) {
+    	this.qmakebinary = binary;
     }
     
     public void setIncludepath(String path) {

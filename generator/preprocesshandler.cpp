@@ -72,18 +72,18 @@ QStringList PreprocessHandler::setIncludes() {
     QStringList includes;
     includes << QString(".");
 
-
     // Include Qt
-    QString libdir;
-    if(Wrapper::library_dir != "") {
-        libdir = Wrapper::library_dir;
-    } else libdir = "/usr/include/qt4";
+    QString includedir;
+    if(Wrapper::include_directory != "") {
+        includedir = Wrapper::include_directory;
+    } else includedir = "/usr/include/qt4";
 
+    qDebug()<<includedir; exit(0);
     QString phonon_include_dir;
     if (!phononinclude.isEmpty()) {
         phonon_include_dir = phononinclude;
     } else {
-        phonon_include_dir = libdir;
+        phonon_include_dir = includedir;
     }
     //these aren't needed...it seems.
     /*includes << (libdir + "/QtXml");
@@ -92,7 +92,7 @@ QStringList PreprocessHandler::setIncludes() {
     includes << (libdir + "/QtGui");
     includes << (libdir + "/QtOpenGL");*/
     includes << (phonon_include_dir);
-    includes << libdir;
+    includes << includedir;
 
     return includes;
 }

@@ -58,11 +58,10 @@ public class GeneratorTask extends Task{
     private String dir = ".";
     private String phononpath = "";
     //private String includePaths = "";
-    //private boolean silent = true;
     private String options = null;
+	private String qtIncludeDirectory = null;
 
     private String searchPath() {
-
         String s = File.separator;
         switch(OSInfo.os()) {
         case Windows:
@@ -81,24 +80,34 @@ public class GeneratorTask extends Task{
 
     public void setOptions(String options) { this.options = options; }
     public String getOptions() { return options; }
-
-    @Override
-    public void execute() throws BuildException {
-        System.out.println(msg);
-        String arguments = " ";
-
-        if (options != null) {
-            arguments += options + " ";
+    
+    private String parseArgumentFiles() {
+    	File typesystemFile = Util.makeCanonical(typesystem);
+        if (!typesystemFile.exists()) {
+            throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
+        }
+        File headerFile = Util.makeCanonical(header);
+        if (!headerFile.exists()) {
+            throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
+        return " " + headerFile.getAbsolutePath() + " " + typesystemFile.getAbsolutePath();
+    }
+    
+    private String parseArguments() {
+    	String arguments = "";
+    	if (options != null) {
+            arguments += options + " ";
+        }
         /*if( !includePaths.equals("") ){
             arguments += " --include-paths=" + includePaths;
         }*/
-        
         if( !phononpath.equals("") ) {
         	arguments += " --phonon-include=" + phononpath;
         }
-
+        if(qtIncludeDirectory != null) {
+        	arguments += " --qt-include-directory=" + qtIncludeDirectory;
+        }
         if( !outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
@@ -106,21 +115,20 @@ public class GeneratorTask extends Task{
             }
             arguments += " --output-directory=" + file.getAbsolutePath();
         }
+        
+        arguments += parseArgumentFiles();
+        
+        return arguments;
+    }
 
-        File typesystemFile = Util.makeCanonical(typesystem);
-        if (!typesystemFile.exists()) {
-            throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
-        }
-
-        File headerFile = Util.makeCanonical(header);
-        if (!headerFile.exists()) {
-            throw new BuildException("Header file '" + header + "' does not exist.");
-        }
-
-        arguments += " " + headerFile.getAbsolutePath() + " " + typesystemFile.getAbsolutePath();
-
-        String command = Util.LOCATE_EXEC(generatorExecutable(), searchPath(), null).getAbsolutePath() + arguments;
-
+    @Override
+    public void execute() throws BuildException {
+        System.out.println(msg);
+        
+        String arguments = parseArguments();
+        String generator = Util.LOCATE_EXEC(generatorExecutable(), 
+        		searchPath(), null).getAbsolutePath();
+        String command = generator + arguments;
         Util.exec(command, new File(dir));
     }
 
@@ -140,19 +148,13 @@ public class GeneratorTask extends Task{
     	this.phononpath = path;
     }
 
-    //is this used?
-    /*public void setSilent(boolean silent) {
-        this.silent = silent;
-    }*/
+    public void setQtIncludeDirectory(String dir) {
+    	this.qtIncludeDirectory  = dir;
+    }
 
     public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
-
-    //from what I see, this is totally obsolete and not even a bit useful
-    /*public void setIncludePaths(String includePaths) {
-        this.includePaths = includePaths;
-    }*/
 
     public void setDir(String dir) {
         this.dir = dir;

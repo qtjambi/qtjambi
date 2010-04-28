@@ -40,7 +40,7 @@
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
         <copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>
 
-    	<!-- copy jogl to the jar dir. needed for compilation examples  -->
+        <!-- copy jogl to the jar dir. needed for compilation examples  -->
         <copy file="jogl/jogl.jar" todir="${jardir}"/>
     </target>
 
@@ -54,7 +54,8 @@
 
     <target name="tools.generator.qmake" depends="init, generator.xmlmerge">
         <qmake dir="generator" pro="generator/generator.pro"
-                config="${qtjambi.configuration}"/>
+                config="${qtjambi.configuration}"
+                qmakebinary="${qmake.binary}"/>
     </target>
 
     <target name="tools.generator.make" depends="tools.generator.qmake">
@@ -62,7 +63,8 @@
     </target>
 
     <target name="tools.juic.qmake" depends="init">
-        <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"/>
+        <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"
+                qmakebinary="${qmake.binary}"/>
     </target>
 
     <target name="tools.juic.make" depends="tools.juic.qmake">
@@ -230,7 +232,8 @@
             config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
             qtconfig="${qtjambi.qtconfig}"
             includepath="${qtjambi.phonon.includedir}"
-            debugTools="${qtjambi.debug-tools}"/>
+            debugTools="${qtjambi.debug-tools}"
+            qmakebinary="${qmake.binary}"/>
     </target>
 
     <target name="library.native.compile" depends="library.native.qmake"
@@ -410,11 +413,12 @@
         description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
         <mkdir dir="${generator.outputdir}"/>
         <generator dir="${outputDir}/generator"
-            outputDirectory="${generator.outputdir}"
-            typesystem="${sourceDir}/generator/build_all.txt"
-            header="${sourceDir}/generator/qtjambi_masterinclude.h"
-            phononpath="${qtjambi.phonon.includedir}"
-            options="${qtjambi.generator.jumptable}"/>
+                outputDirectory="${generator.outputdir}"
+                typesystem="${sourceDir}/generator/build_all.txt"
+                header="${sourceDir}/generator/qtjambi_masterinclude.h"
+                phononpath="${qtjambi.phonon.includedir}"
+                qtincludedirectory="${qt.qtjambi.includedir}"
+                options="${qtjambi.generator.jumptable}"/>
         <dostamp stampfile="generator.run"/>
     </target>
 

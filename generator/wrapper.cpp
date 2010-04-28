@@ -7,7 +7,7 @@
 #include "asttoxml.h"
 #include "parser/binder.h"
 
-QString Wrapper::library_dir = QString();
+QString Wrapper::include_directory = QString();
 
 void ReportHandler_message_handler(const std::string &str)
 {
@@ -60,9 +60,9 @@ void Wrapper::handleArguments() {
         TypeDatabase::instance()->setRebuildClasses(classes);
     }
 
-    if (args.contains("library-dir")) {
-        library_dir = args.value("library-dir");
-    } else library_dir = "";
+    if (args.contains("qt-include-directory")) {
+        include_directory = args.value("qt-include-directory");
+    } else include_directory = "";
 }
 
 void Wrapper::assignVariables() {
@@ -145,7 +145,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --output-directory=[dir]                  \n"
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n"
-           "  --include-dir=[dir]                       \n",
+           "  --qt-include-directory=[dir]              \n",
            path_splitter, path_splitter);
 
     printf("%s", qPrintable( generatorSet->usage()));
