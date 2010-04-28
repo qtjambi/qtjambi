@@ -309,7 +309,9 @@ class SetPropertyHandler extends PropertyHandler {
                     Array.set(enumValues, i, enumsPreprocess[i]);
 
                 Method m = enumClass.getMethod("createQFlags", enumValues.getClass());
-                return m.invoke(enumClass, enumValues);
+                com.trolltech.qt.QFlags qflags = (com.trolltech.qt.QFlags) m.invoke(enumClass, enumValues);
+
+                return qflags.value();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
