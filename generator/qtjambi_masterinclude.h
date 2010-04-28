@@ -64,7 +64,7 @@
 #endif
 
 #ifndef QT_NO_PHONON
-#  include <Phonon/Phonon>
+#  include <phonon/phonon>
 #endif
 
 #include <../qtjambi_core/qtjambiconcurrent.h>
