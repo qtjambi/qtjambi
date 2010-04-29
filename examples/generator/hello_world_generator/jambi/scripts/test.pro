@@ -1,5 +1,5 @@
 
-TARGET = com_poseidon_test
+TARGET = org_qtjambi_test
 
 DESTDIR = ../target
 
@@ -9,5 +9,5 @@ HEADERS        += ./../../src/TestItem.h ./../../src/TestSuper.h ./../../src/Tes
 SOURCES        += ./../../src/TestItem.cpp ./../../src/TestSuper.cpp ./../../src/TestView.cpp
 
 include($(JAMBIDIR)/qtjambi/qtjambi_include.pri)
-include(../cpp/com_poseidon_test/com_poseidon_test.pri)
+include(../cpp/org_qtjambi_test/org_qtjambi_test.pri)
 

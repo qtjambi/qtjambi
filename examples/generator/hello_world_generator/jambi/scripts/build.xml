@@ -70,7 +70,7 @@
             </classpath>
             <src path="${jambiDir}/java/src/qtjambi-util"/>
             <src path="${basedir}/.."/>
-            <include name="com/poseidon/test/*.java"/>
+            <include name="org/qtjambi/test/*.java"/>
             <include name="com/trolltech/qt/internal/*.java"/>
         </javac>
     </target>
@@ -113,7 +113,7 @@
             <plugin path="plugins"/>
 
             <!-- Finally the mapborealis library  -->
-            <library name="com_poseidon_test" type="qtjambi" rootPath="${basedir}/.."/>
+            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/.."/>
 
         </qtjambi-platform-jar>
 
@@ -127,7 +127,7 @@
 
         </jar>
 
-        <!-- delete dir="${basedir}/platform-output"/ -->
+        <delete dir="${basedir}/platform-output"/>
 
     </target>
 

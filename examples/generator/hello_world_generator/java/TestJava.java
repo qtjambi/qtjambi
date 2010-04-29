@@ -1,5 +1,5 @@
-import com.poseidon.test.TestItem;
-import com.poseidon.test.TestView;
+import org.qtjambi.test.TestItem;
+import org.qtjambi.test.TestView;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QGraphicsScene;
 import com.trolltech.qt.gui.QGraphicsView;
