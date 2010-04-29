@@ -5,6 +5,8 @@
 
 class TestItem : public TestSuper {
 
+ Q_OBJECT
+
  public:
   TestItem(QGraphicsScene *scene);
   int getId();

@@ -5,6 +5,8 @@
 
 class TestSuper : public QGraphicsObject {
 
+ Q_OBJECT
+
  public:
   TestSuper(QGraphicsScene *scene);
 
