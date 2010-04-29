@@ -64,6 +64,7 @@ cp lib/libcom_trolltech_tools_designer.so $RELEASE/lib
   
 cp -R $QTDIR/plugins $RELEASE
 cp -R plugins/designer/ $RELEASE/plugins
+cp -R plugins/qtjambi $RELEASE/plugins
   
 
 tar czf $RELEASE.tar.gz $RELEASE
