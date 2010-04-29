@@ -54,4 +54,8 @@
 #include "point3d.h"
 #include "useaction.h"
 
-#include "../generator/qtjambi_masterinclude.h"
+#include <QChildEvent>
+#include <QFocusEvent>
+#include <QGraphicsSceneContextMenuEvent>
+
+//#include "../generator/qtjambi_masterinclude.h"

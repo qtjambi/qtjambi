@@ -110,7 +110,7 @@ class ChickenObject extends GameObject {
     }
 }
 
-@QtJambiExample(name = "Generator Example")
+//@QtJambiExample(name = "Generator Example")
 public class GeneratorExample extends GameScene {
 
     private static final String resourcesLocation = "classpath:com/trolltech/examples/generator/images/";
