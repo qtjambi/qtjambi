@@ -78,7 +78,6 @@ QStringList PreprocessHandler::setIncludes() {
         includedir = Wrapper::include_directory;
     } else includedir = "/usr/include/qt4";
 
-    qDebug()<<includedir; exit(0);
     QString phonon_include_dir;
     if (!phononinclude.isEmpty()) {
         phonon_include_dir = phononinclude;

@@ -417,7 +417,7 @@
                 typesystem="${sourceDir}/generator/build_all.txt"
                 header="${sourceDir}/generator/qtjambi_masterinclude.h"
                 phononpath="${qtjambi.phonon.includedir}"
-                qtincludedirectory="${qt.qtjambi.includedir}"
+                qtincludedirectory="${qtjambi.qt.includedir}"
                 options="${qtjambi.generator.jumptable}"/>
         <dostamp stampfile="generator.run"/>
     </target>
