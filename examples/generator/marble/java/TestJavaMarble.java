@@ -1,4 +1,4 @@
-import com.poseidon.marble.Marble_MarbleWidget;
+import org.qtjambi.marble.Marble_MarbleWidget;
 import com.trolltech.qt.gui.QApplication;
 
 /**
