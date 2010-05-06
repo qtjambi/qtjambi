@@ -110,7 +110,7 @@
                 <var name="qt.pluginsdir" unset="true"/>
                 <var name="qt.includedir" unset="true"/>
                 <property name="qt.libdir" value="${env.QTDIR}/lib"/>
-                <property name="qt.pluginsdir" value="${env.QTDIR}/plugins"/>
+                <property name="qt.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
             </then>
             <else>

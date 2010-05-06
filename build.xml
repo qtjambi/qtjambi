@@ -307,40 +307,40 @@
 
             <!-- Qt Plugins -->
             <library name="qjpeg"               type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/imageformats" load="never"/>
             <library name="qgif"                type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/imageformats" load="never"/>
             <library name="qmng"                type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/imageformats" load="never"/>
             <library name="qtiff"               type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/imageformats" load="never"/>
             <library name="qsvg"                type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/imageformats" load="never"/>
             <library name="qsvgicon"            type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/iconengines" load="never"/>
             <library name="qcncodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/codecs" load="never"/>
             <library name="qjpcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/codecs" load="never"/>
             <library name="qkrcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/codecs" load="never"/>
             <library name="qtwcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/codecs" load="never"/>
             <library name="qtaccessiblewidgets" type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/accessible" load="never"/>
             <library name="qsqlite" type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/sqldrivers"
                     load="never"
                     if="${qtjambi.sqlite}"/>
