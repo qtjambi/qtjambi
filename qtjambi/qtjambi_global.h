@@ -49,6 +49,7 @@
 
 #include <qglobal.h>
 
+//TODO: rewrite
 #if defined(Q_WS_WIN)
 #  if !defined(QTJAMBI_EXPORT) && !defined(QT_QTJAMBI_IMPORT)
 #    define QTJAMBI_EXPORT

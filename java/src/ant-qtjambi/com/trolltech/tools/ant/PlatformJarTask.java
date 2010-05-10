@@ -167,7 +167,7 @@ public class PlatformJarTask extends Task
     {
         props = PropertyHelper.getPropertyHelper ( getProject() );
         
-        javaLibDir = props.getProperty((String) null, InitializeTask.JAVALIBDIR).toString();
+        javaLibDir = (String) props.getProperty((String) null, InitializeTask.JAVALIBDIR);
 
         debugConfiguration = "debug".equals ( props.getProperty ( ( String ) null, InitializeTask.CONFIGURATION ) );
 
