@@ -178,9 +178,14 @@ public class FindCompiler {
 	        }
 	    }
 
+	    /**
+	     * Takes output from gcc and if its platform target corresponds to mingw, returns 
+	     * Compiler.Mingw.
+	     * @return Compiler.MinGW if successful, null otherwise.
+	     */
 	    private Compiler testForMinGW() {
 	        try {
-	            String output = Util.execute("gcc", "--version")[0];
+	            String output = Util.execute("gcc", "-v")[1];
 	            if (output.contains("mingw"))
 	                return Compiler.MinGW;
 	        } catch (InterruptedException ex) {
