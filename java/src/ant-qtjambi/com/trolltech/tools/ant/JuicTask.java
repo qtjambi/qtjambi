@@ -73,15 +73,15 @@ public class JuicTask extends MatchingTask {
 
         String arguments = "";
         if (!outputDir.equals(""))
-            arguments += " -d " + outputDir;
+            arguments += " -d " + Util.escape(outputDir);
         if (!trFunction.equals(""))
-            arguments += " -tr " + trFunction;
+            arguments += " -tr " + Util.escape(trFunction);
         if (!classNamePrefix.equals(""))
-            arguments += " -pf" + classNamePrefix;
+            arguments += " -pf" + Util.escape(classNamePrefix);
         if (alwaysUpdate)
             arguments += " -a ";
 
-        String comandPart = Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath() + arguments;
+        String commandPart = Util.escape(Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath()) + arguments;
 
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
@@ -93,8 +93,8 @@ public class JuicTask extends MatchingTask {
 
                 file = file.replaceAll("\\\\", "/");
 
-                String packageString = file.substring(0, file.lastIndexOf('/')).replaceAll("/", ".");
-                String command = comandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
+                String packageString = Util.escape(file.substring(0, file.lastIndexOf('/')).replaceAll("/", "."));
+                String command = commandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
 
                 Util.exec(command);
             }

@@ -50,6 +50,7 @@ import java.io.*;
 import java.util.*;
 
 import com.trolltech.qt.internal.*;
+import com.trolltech.qt.internal.OSInfo.OS;
 
 class Util {
 
@@ -211,6 +212,14 @@ class Util {
             }
         }
         return null;
+    }
+    
+    public static String escape(String param) {
+    	OSInfo.os();
+		if(OSInfo.os() == OS.Windows) {
+    		return "\"" + param + "\"";
+    	}
+    	return param;
     }
 
     public static void exec(String command) {
