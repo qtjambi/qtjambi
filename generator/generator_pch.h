@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-#include "typesystem.h"
+#include "typesystem/typesystem.h"
 #include "metajava.h"
 #include "generator.h"
 #include "cppheadergenerator.h"

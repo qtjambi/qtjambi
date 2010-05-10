@@ -91,7 +91,7 @@ public class GeneratorTask extends Task{
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
-        return " " + headerFile.getAbsolutePath() + " " + typesystemFile.getAbsolutePath();
+        return " \"" + headerFile.getAbsolutePath() + "\" \"" + typesystemFile.getAbsolutePath() + "\"";
     }
     
     private String parseArguments() {
@@ -103,17 +103,17 @@ public class GeneratorTask extends Task{
             arguments += " --include-paths=" + includePaths;
         }*/
         if( !phononpath.equals("") ) {
-        	arguments += " --phonon-include=" + phononpath;
+        	arguments += " --phonon-include=\"" + phononpath + "\"";
         }
         if(qtIncludeDirectory != null) {
-        	arguments += " --qt-include-directory=" + qtIncludeDirectory;
+        	arguments += " --qt-include-directory=\"" + qtIncludeDirectory + "\"";
         }
         if( !outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
-            arguments += " --output-directory=" + file.getAbsolutePath();
+            arguments += " --output-directory=\"" + file.getAbsolutePath() + "\"";
         }
         
         arguments += parseArgumentFiles();
@@ -126,8 +126,8 @@ public class GeneratorTask extends Task{
         System.out.println(msg);
         
         String arguments = parseArguments();
-        String generator = Util.LOCATE_EXEC(generatorExecutable(), 
-        		searchPath(), null).getAbsolutePath();
+        String generator = "\"" + Util.LOCATE_EXEC(generatorExecutable(), 
+        		searchPath(), null).getAbsolutePath() + "\"";
         String command = generator + arguments;
         Util.exec(command, new File(dir));
     }

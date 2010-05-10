@@ -91,7 +91,8 @@ public class MakeTask extends Task {
             // Cannot happen
         }
 
-        String prefix = "env LD_LIBRARY_PATH=\"/home/smar/Paketit/qt/qt/lib\" ";
+        //String prefix = "env LD_LIBRARY_PATH=\"/home/smar/Paketit/qt/qt/lib\" ";
+		String prefix = "";
         String command = prefix + compilerName() + arguments + " " + target;
         Util.exec(command, new File(dir));
     }

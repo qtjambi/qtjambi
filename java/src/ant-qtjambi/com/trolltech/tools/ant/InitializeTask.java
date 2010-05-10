@@ -237,7 +237,7 @@ public class InitializeTask extends Task {
      * @param config Library to add
      */
     private void addQtConfig(String config) {
-    	String oldConfig = props.getProperty((String) null, QTCONFIG).toString();
+    	String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
     	String newConfig;
     	if(oldConfig != null) {
     		newConfig = oldConfig + " " + config;

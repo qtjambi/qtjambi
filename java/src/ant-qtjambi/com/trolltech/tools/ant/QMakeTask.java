@@ -102,7 +102,7 @@ public class QMakeTask extends Task {
 
         String proFile = "";
         if (!pro.equals("")) {
-            proFile = " " + Util.makeCanonical(pro).getAbsolutePath();
+            proFile = " \"" + Util.makeCanonical(pro).getAbsolutePath() + "\"";
         }
         
         //command = command + parseParameters();
