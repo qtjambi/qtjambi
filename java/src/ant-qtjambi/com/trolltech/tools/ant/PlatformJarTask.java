@@ -405,7 +405,6 @@ public class PlatformJarTask extends Task
 
     }
 
-
     private void copyRuntime ( String name )
     {
     	File rt = Util.findInLibraryPath ( name, javaLibDir );

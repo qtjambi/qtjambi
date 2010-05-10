@@ -216,9 +216,14 @@ class Util {
     public static void exec(String command) {
         exec(command, null);
     }
+    
+    public static void exec(String command, String[] args, File dir) throws BuildException {
+    	
+    }
 
     public static void exec(String command, File dir) throws BuildException {
-        System.out.println("Running : " + ((dir!=null)? "(" + makeCanonical(dir) + ")" : "") + " " + command);
+    	String directory = ((dir != null) ? "(" + makeCanonical(dir) + ")" : "");
+        System.out.println("Running : " + directory + " " + command);
         try {
             Process process = Runtime.getRuntime().exec(command, null, dir);
             Util.redirectOutput(process);

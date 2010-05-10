@@ -49,6 +49,7 @@ import org.apache.tools.ant.*;
 import java.io.*;
 
 import com.trolltech.qt.internal.*;
+import com.trolltech.qt.internal.OSInfo.OS;
 
 public class GeneratorTask extends Task {
     private String header = "";
@@ -94,7 +95,7 @@ public class GeneratorTask extends Task {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
-        return headerFile.getAbsolutePath() + " " + typesystemFile.getAbsolutePath();
+        return " " + escape(headerFile.getAbsolutePath()) + " " + escape(typesystemFile.getAbsolutePath());
     }
     
     private String parseArguments() {
@@ -106,22 +107,30 @@ public class GeneratorTask extends Task {
             arguments += " --include-paths=" + includePaths;
         }*/
         if( !phononpath.equals("") ) {
-        	arguments += " --phonon-include=" + phononpath;
+        	arguments += " --phonon-include=" + escape(phononpath);
         }
         if(qtIncludeDirectory != null) {
-        	arguments += " --qt-include-directory=" + qtIncludeDirectory;
+        	arguments += " --qt-include-directory=" + escape(qtIncludeDirectory);
         }
         if( !outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
-            arguments += " --output-directory=" + file.getAbsolutePath();
+            arguments += " --output-directory=" + escape(file.getAbsolutePath());
         }
         
         arguments += parseArgumentFiles();
         
         return arguments;
+    }
+    
+    private String escape(String param) {
+    	OSInfo.os();
+		if(OSInfo.os() == OS.Windows) {
+    		return "\"" + param + "\"";
+    	}
+    	return param;
     }
 
     @Override
