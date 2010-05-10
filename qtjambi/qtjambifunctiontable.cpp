@@ -76,18 +76,3 @@ void QtJambiFunctionTable::deref()
     --m_reference_count;
     Q_ASSERT(m_reference_count >= 0);
 }
-
-QTJAMBI_EXPORT jmethodID QtJambiFunctionTable::method(int pos) const
-{
-    Q_ASSERT(pos >= 0);
-    Q_ASSERT(pos < m_method_count);
-    return m_method_ids[pos];
-}
-
-
-QTJAMBI_EXPORT void QtJambiFunctionTable::setMethod(int pos, jmethodID id)
-{
-    Q_ASSERT(pos >= 0);
-    Q_ASSERT(pos < m_method_count);
-    m_method_ids[pos] = id;
-}
