@@ -181,7 +181,7 @@ public class FindCompiler {
 	    private Compiler testForMinGW() {
 	        try {
 	            String output = Util.execute("gcc", "--version")[0];
-	            if (output.contains("mingw") && output.contains("3."))
+	            if (output.contains("mingw"))
 	                return Compiler.MinGW;
 	        } catch (InterruptedException ex) {
 	            ex.printStackTrace();

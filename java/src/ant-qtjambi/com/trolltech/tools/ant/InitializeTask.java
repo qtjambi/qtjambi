@@ -121,7 +121,7 @@ public class InitializeTask extends Task {
         props.setNewProperty((String) null, COMPILER, finder.decideCompiler());
 
         finder.checkCompilerDetails();
-        finder.checkCompilerBits();
+        //finder.checkCompilerBits();
 
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
