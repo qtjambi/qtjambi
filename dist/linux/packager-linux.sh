@@ -38,10 +38,13 @@ cp lib/libqtjambi.so.1 $RELEASE/lib
 cp $QTDIR/lib/libphonon.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtCore.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtGui.so.4 $RELEASE/lib
+cp $QTDIR/lib/libQtHelp.so.4 $RELEASE/lib
+cp $QTDIR/lib/libQtMultimedia.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtNetwork.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtOpenGL.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtSql.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtScript.so.4 $RELEASE/lib
+cp $QTDIR/lib/libQtScriptTools.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtSvg.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtWebKit.so.4 $RELEASE/lib
 cp $QTDIR/lib/libQtXml.so.4 $RELEASE/lib
@@ -51,10 +54,14 @@ cp $QTDIR/lib/libQtDesigner.so.4 $RELEASE/lib
   
 cp lib/libcom_trolltech_qt_core.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_gui.so $RELEASE/lib
+cp lib/libcom_trolltech_qt_help.so $RELEASE/lib
+cp lib/libcom_trolltech_qt_multimedia.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_network.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_opengl.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_phonon.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_sql.so $RELEASE/lib
+cp lib/libcom_trolltech_qt_script.so $RELEASE/lib
+cp lib/libcom_trolltech_qt_scripttools.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_svg.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_webkit.so $RELEASE/lib
 cp lib/libcom_trolltech_qt_xml.so $RELEASE/lib
