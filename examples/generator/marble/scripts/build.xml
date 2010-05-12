@@ -87,6 +87,10 @@
             <library name="QtGui"     type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtOpenGL"     type="qt" rootPath="${qtjambi.qtdir}" />
             <library name="QtDBus"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtXmlPatterns"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtScript"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtNetwork"     type="qt" rootPath="${qtjambi.qtdir}" />
+            <library name="QtSvg"     type="qt" rootPath="${qtjambi.qtdir}" />
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -107,6 +111,7 @@
             <library name="com_trolltech_qt_core"    type="qtjambi" rootPath="${jambiDir}" />
             <library name="com_trolltech_qt_gui"     type="qtjambi" rootPath="${jambiDir}" />
 	    <library name="com_trolltech_qt_opengl"  type="qtjambi" rootPath="${jambiDir}" />
+	    <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi" rootPath="${jambiDir}" />
 
             <plugin path="plugins" />
 
