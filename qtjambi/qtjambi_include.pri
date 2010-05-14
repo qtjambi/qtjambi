@@ -13,6 +13,6 @@ macx:{
 
 QTJAMBI_CPP = ../cpp
 
-DEFINES += QT_QTJAMBI_IMPORT
+#DEFINES += QT_QTJAMBI_IMPORT
 
 win32-msvc2005:CONFIG += embed_manifest_dll force_embed_manifest
