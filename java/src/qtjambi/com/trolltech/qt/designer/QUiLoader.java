@@ -46,6 +46,7 @@ package com.trolltech.qt.designer;
 
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.Qt.*;
 import com.trolltech.qt.xml.*;
 
 import java.lang.reflect.*;
@@ -61,6 +62,9 @@ public class QUiLoader {
         QObject object;
         QObjectPropertyReceiver(QObject o) { this.object = o; }
         public void setProperty(String name, Object value) {
+             if (name.equals("text") && !value.toString().equals("")) {
+                 value = (Object) QApplication.translate(xmlClassName, value.toString());
+             }
              self().setProperty(object, name, value);
         }
     }
@@ -199,6 +203,7 @@ public class QUiLoader {
         else if (name.equals("addaction")) parseAddAction(domNode);
         else if (name.equals("attribute")) parseAttribute(domNode);
         else if (name.equals("action")) parseAction(domNode);
+        else if (name.equals("class")) parseClass(domNode);
         else if (!ignorableStrings.contains(name)) throw new QUiLoaderException("Unknown tag: " + name);
 
 //       if (object != null) {
@@ -470,6 +475,9 @@ public class QUiLoader {
                     && value instanceof String) {
                 ((QAction) o).setShortcut((String) value);
                 return;
+            } else if (property.endsWith("focusPolicy") && o instanceof QWidget && value instanceof FocusPolicy) {
+                ((QWidget)o).setFocusPolicy((FocusPolicy) value);
+                return;
             } else if (property.equals("buddy") && o instanceof QLabel) {
                 buddies.put((QLabel) o, (String) value);
                 return;
@@ -636,6 +644,16 @@ public class QUiLoader {
         swapPropertyReceiver(old);
     }
 
+    private void parseClass(QDomNode node) throws QUiLoaderException {
+        QDomElement e = node.toElement();
+        if (e.isNull())
+            return;
+
+        QDomNode n = e.firstChild();
+        if (!n.isNull())
+            xmlClassName = n.nodeValue();
+    }
+
     private QWidget widget() {
         return uiWidget;
     }
@@ -657,6 +675,8 @@ public class QUiLoader {
     private QIODevice inputDevice;
     private QWidget topParent;
     private QWidget uiWidget;
+
+    private String xmlClassName = "";
 
     private int parseDepth;
     private Object parent;
@@ -694,7 +714,6 @@ public class QUiLoader {
 
         ignorableStrings = new HashSet<String>();
         ignorableStrings.add("author");
-        ignorableStrings.add("class");
         ignorableStrings.add("comment");
         ignorableStrings.add("customwidgets");
         ignorableStrings.add("exportmacro");

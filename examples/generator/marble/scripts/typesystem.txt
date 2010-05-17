@@ -1,0 +1,18 @@
+<typesystem package="org.qtjambi.marble" default-superclass="com.trolltech.qt.QtJambiObject">
+
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+    com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+  </inject-code>
+
+    <load-typesystem name=":/trolltech/generator/typesystem_core.txt" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_gui.txt" generate="no" />
+
+  <namespace-type name="Marble" />
+
+  <object-type name="Marble::MarbleWidget"/>
+  <object-type name="Marble::MarbleMap"/>
+  
+  <object-type name="Marble::MarbleModel"/>
+
+</typesystem>

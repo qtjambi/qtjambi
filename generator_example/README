@@ -1,9 +1,0 @@
-The generator example is an example that illustrates how to make use
-of the Qt Jambi Generator
-
-To run the generator example, simply run 'ant' on the
-'build_generator_example.xml' file in the root directory. This will
-create a custom platform .jar file which includes the native libraries
-which should be used when deploying the generator example application.
-
-
