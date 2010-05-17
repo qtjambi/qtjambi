@@ -45,7 +45,7 @@
 #ifndef QTJAMBIFUNCTIONTABLE_H
 #define QTJAMBIFUNCTIONTABLE_H
 
-#define QTJAMBI_EXPORT
+//#define QTJAMBI_EXPORT
 #include "qtjambi_global.h"
 
 #include <QtCore/QObject>
