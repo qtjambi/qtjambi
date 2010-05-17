@@ -94,7 +94,8 @@ public class JuicTask extends MatchingTask {
                 file = file.replaceAll("\\\\", "/");
 
                 String packageString = Util.escape(file.substring(0, file.lastIndexOf('/')).replaceAll("/", "."));
-                String command = commandPart + " -p " + packageString + " " + dir.getAbsolutePath() + '/' + file;
+                String uicFileString = Util.escape(dir.getAbsolutePath() + '/' + file);
+                String command = commandPart + " -p " + packageString + " " + uicFileString;
 
                 Util.exec(command);
             }
