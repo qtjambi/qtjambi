@@ -128,6 +128,9 @@
             <then>
                 <var name="qt.libdir" unset="true"/>
                 <property name="qt.libdir" value="${env.QTDIR}/bin"/>
+
+                <var name="qtjambi.phonon.libdir" unset="true"/>
+                <property name="qtjambi.phonon.libdir" value="${env.QTDIR}/bin"/>
             </then>
         </if>
     </target>
