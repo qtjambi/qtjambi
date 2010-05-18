@@ -84,13 +84,7 @@ QStringList PreprocessHandler::setIncludes() {
     } else {
         phonon_include_dir = includedir;
     }
-    //these aren't needed...it seems.
-    /*includes << (libdir + "/QtXml");
-    includes << (libdir + "/QtNetwork");
-    includes << (libdir + "/QtCore");
-    includes << (libdir + "/QtGui");
-    includes << (libdir + "/QtOpenGL");*/
-    includes << (phonon_include_dir);
+    includes << phonon_include_dir;
     includes << includedir;
 
     return includes;
