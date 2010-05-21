@@ -224,7 +224,6 @@
     </condition>
 
     <target name="library.native.qmake" depends="init, generator.cppsrc"
-        unless="qtjambi.library.makefiles.uptodate"
         description="Runs qmake on the Qt Jambi native library">
         <delete dir="lib"/>
         <qmake recursive="true" dir="${outputDir}"

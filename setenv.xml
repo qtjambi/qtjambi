@@ -116,7 +116,7 @@
                 <var name="qtjambi.phonon.libdir" unset="true"/>
                 <var name="qtjambi.phonon.includedir" unset="true"/>
                 <property name="qtjambi.phonon.libdir" value="${env.QTDIR}/lib"/>
-                <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include"/>
+                <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
             </then>
             <else>
                 <property name="qmake.binary" value="qmake"/>
