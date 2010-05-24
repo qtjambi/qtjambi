@@ -54,8 +54,6 @@ import javax.xml.parsers.*;
 
 import org.xml.sax.helpers.*;
 
-import sun.awt.OSInfo;
-
 import com.trolltech.qt.Utilities;
 
 // !!NOTE!! This class can have no dependencies on Qt since
