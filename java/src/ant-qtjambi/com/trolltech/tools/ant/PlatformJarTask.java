@@ -392,6 +392,7 @@ public class PlatformJarTask extends Task
 
         case MinGW:
             copyRuntime ( "mingwm10.dll" );
+            copyAdditionalMingwFiles();
             break;
 
         case GCC:
@@ -403,6 +404,18 @@ public class PlatformJarTask extends Task
             break;
         }
 
+    }
+    
+    /**
+     * Copy shared linking library for MinGW.
+     * TODO: This whole class could be better factored...
+     */
+    private void copyAdditionalMingwFiles() {
+    	String dll = "libgcc_s_dw2-1.dll";
+    	File file = Util.findInLibraryPath(dll, javaLibDir);
+    	if(file == null) {
+    		throw new BuildException ( "MinGW library '" + dll + "' was not found in library path..." );
+    	}
     }
 
     private void copyRuntime ( String name )
