@@ -112,9 +112,14 @@
                 <property name="qt.libdir" value="${env.QTDIR}/lib"/>
                 <property name="qt.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
+				
+                <var name="qtjambi.java.library.path" unset="true"/>
+                <property name="qtjambi.java.library.path" value="${env.QTDIR}/bin"/>
 
+                <var name="qtjambi.phonon.pluginsdir" unset="true"/>
                 <var name="qtjambi.phonon.libdir" unset="true"/>
                 <var name="qtjambi.phonon.includedir" unset="true"/>
+                <property name="qtjambi.phonon.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qtjambi.phonon.libdir" value="${env.QTDIR}/lib"/>
                 <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
             </then>
