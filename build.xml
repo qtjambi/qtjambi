@@ -224,6 +224,7 @@
     </condition>
 
     <target name="library.native.qmake" depends="init, generator.cppsrc"
+        unless="qtjambi.library.makefiles.uptodate"
         description="Runs qmake on the Qt Jambi native library">
         <delete dir="lib"/>
         <qmake recursive="true" dir="${outputDir}"
@@ -288,7 +289,7 @@
                     rootPath="${qtjambi.qt.libdir}"
                     if="${qtjambi.dbus}"/>
             <library name="phonon_ds9"          type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.phonon.pluginsdir}"
                     subdir="plugins/phonon_backend"
                     load="never"
                     if="${qtjambi.phonon_ds9}"/>
@@ -299,7 +300,7 @@
                     kdephonon="false"
                     if="${qtjambi.phonon_gstreamer}"/>
             <library name="phonon_qt7"          type="plugin"
-                    rootPath="${qtjambi.qt.libdir}"
+                    rootPath="${qtjambi.phonon.pluginsdir}"
                     subdir="plugins/phonon_backend"
                     load="never"
                     if="${qtjambi.phonon_qt7}"/>
