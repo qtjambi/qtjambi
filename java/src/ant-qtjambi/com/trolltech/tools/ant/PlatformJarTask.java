@@ -418,7 +418,6 @@ public class PlatformJarTask extends Task
     private void copyRuntime ( String name )
     {
     	File rt = Util.findInLibraryPath ( name, javaLibDir );
-    	
         if ( rt == null )
         {
             throw new BuildException ( "Runtime library '" + name + "' was not found in library path..." );
