@@ -46,9 +46,9 @@ package com.trolltech.qt.internal;
 
 import java.io.*;
 import java.util.*;
-import java.util.jar.*;
+//import java.util.jar.*;
 import java.net.*;
-import java.security.*;
+//import java.security.*;
 
 import javax.xml.parsers.*;
 
@@ -246,11 +246,12 @@ public class NativeLibraryManager {
         }
     }
 
-    private static class ChecksumFileFilter implements FilenameFilter {
+    //no-one used this so I commented it out
+   /*private static class ChecksumFileFilter implements FilenameFilter {
         public boolean accept(File dir, String name) {
             return name.endsWith(".chk");
         }
-    }
+    }*/
 
 
     /**
@@ -622,7 +623,8 @@ public class NativeLibraryManager {
     }
 
 
-    private static String stripLibraryName(String lib) {
+    //doesn't seem to be used so commented out
+    /*private static String stripLibraryName(String lib) {
         // Strip away "lib" prefix
         if (Utilities.operatingSystem != Utilities.OperatingSystem.Windows)
             lib = lib.substring(3);
@@ -643,7 +645,7 @@ public class NativeLibraryManager {
 
         // Strip away the library postfix...
         return lib.substring(0, dot);
-    }
+    }*/
 
 
     /**

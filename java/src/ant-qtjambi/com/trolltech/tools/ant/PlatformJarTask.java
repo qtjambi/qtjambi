@@ -412,10 +412,7 @@ public class PlatformJarTask extends Task
      */
     private void copyAdditionalMingwFiles() {
     	String dll = "libgcc_s_dw2-1.dll";
-    	File file = Util.findInLibraryPath(dll, javaLibDir);
-    	if(file == null) {
-    		throw new BuildException ( "MinGW library '" + dll + "' was not found in library path..." );
-    	}
+    	copyRuntime(dll);
     }
 
     private void copyRuntime ( String name )
