@@ -10,9 +10,9 @@
 
   <namespace-type name="Marble" />
 
-  <object-type name="Marble::MarbleWidget"/>
-  <object-type name="Marble::MarbleMap"/>
+  <object-type name="Marble::MarbleWidget" java-name="MarbleWidget"/>
+  <object-type name="Marble::MarbleMap" java-name="MarbleMap"/>
   
-  <object-type name="Marble::MarbleModel"/>
+  <object-type name="Marble::MarbleModel" java-name="MarbleModel"/>
 
 </typesystem>

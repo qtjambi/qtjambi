@@ -1,11 +1,11 @@
-import org.qtjambi.marble.Marble_MarbleWidget;
+import org.qtjambi.marble.MarbleWidget;
 import com.trolltech.qt.gui.QApplication;
 
 /**
  * @author Helge Fredriksen
  * @version 1.0 Jan 8, 2010 10:18:11 PM
  */
-public class TestJavaMarble extends Marble_MarbleWidget {
+public class TestJavaMarble extends MarbleWidget {
 
 
     public static void main(String[] args) {
