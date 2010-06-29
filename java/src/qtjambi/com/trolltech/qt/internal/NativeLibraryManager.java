@@ -356,7 +356,6 @@ public class NativeLibraryManager {
         loadNativeLibrary(lib);
     }
 
-
     private static void unpack() {
         if (unpacked)
             return;

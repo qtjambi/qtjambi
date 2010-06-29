@@ -81,14 +81,6 @@ public class MakeTask extends Task {
 
         if (silent && OSInfo.os() != OSInfo.OS.Windows)
             arguments += " -s";
-        
-        //add static linking to avoid certain mingw 4.4.0 problem...
-        //TODO: this comment and this block
-        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
-        String compiler = (String) props.getProperty((String) null, InitializeTask.COMPILER);
-        if(FindCompiler.Compiler.MinGW.toString().equals(compiler)) {
-            arguments += " -static-libgcc";
-        }
 
         try {
             final String makeOptions = System.getenv("MAKEOPTS");
