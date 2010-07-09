@@ -18,7 +18,6 @@ cp qtjambi-$OS-$COMPILER-$VERSION.jar $RELEASE
     
 cp dist/linux/qtjambi.sh $RELEASE
 cp dist/linux/designer.sh $RELEASE
-cp set_qtjambi_env.sh $RELEASE
 
 cp dist/changes-$VERSION $RELEASE 
 cp dist/install.html $RELEASE

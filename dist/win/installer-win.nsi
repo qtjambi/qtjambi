@@ -39,15 +39,13 @@ Section "" ;No components page, name is not important
   SetOutPath $INSTDIR
   
   ; Put file there
-  File dist\win\QtJambi.exe
   File qtjambi-${v}.jar
   File qtjambi-designer-${v}.jar
   File qtjambi-examples-${v}.jar
-  File qtjambi-util-${v}.jar
   File qtjambi-win32-${comp}-${v}.jar
-  File set_qtjambi_env.bat
   File dist\changes-${v}
   File dist\win\designer.bat
+  File dist\win\qtjambi.bat
   File dist\install.html
   File dist\LICENSE.GPL3
   File dist\LICENSE.LGPL
@@ -117,7 +115,7 @@ Section "" ;No components page, name is not important
   SetOutPath $INSTDIR\plugins
   File /r ${QtDir}\plugins\*.dll
   File /r ${QtDir}\plugins\*.dll
-  File /r plugins\designer
+  File /r plugins\designer\*.dll
   File /r plugins\qtjambi
   
 SectionEnd ; end the section

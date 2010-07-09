@@ -133,6 +133,13 @@
 
     <target name="jar.qtjambi"
         depends="init, jar.qtjambi-util, generator.javasrc.qtjambi">
+        <!-- HF: This is a fix for adding the OsInfo class to the the main jar-->
+        <echo message="${java.outdir}"/>
+        <copy todir="${java.outdir}/qtjambi">
+            <fileset dir="${java.outdir}/qtjambi-util">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi"/>
         </ant>
