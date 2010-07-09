@@ -3,12 +3,12 @@
 
 CRCCheck force
 XPStyle on
-SetCompressor /FINAL /SOLID lzma
-SetCompressorDictSize 64
+;SetCompressor /FINAL /SOLID lzma
+;SetCompressorDictSize 64
 
-!define v 4.6.2
-!define QtDir c:\qt\4.6.2
-!define comp msvc2008
+!define v 4.6.3
+!define QtDir c:\qt\4.6.3
+!define comp msvc2005
 
 ; The default installation directory
 InstallDir c:\qtjambi-${v}
@@ -92,7 +92,7 @@ Section "" ;No components page, name is not important
   File ${QtDir}\bin\QtDesignerComponents4.dll
   File ${QtDir}\bin\QtDesigner4.dll
   
-  File /r "c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT"
+  File /r "c:\Program Files\Microsoft Visual Studio 8\VC\redist\x86\Microsoft.VC80.CRT"
   
   
   SetOutPath $INSTDIR\lib
@@ -115,7 +115,11 @@ Section "" ;No components page, name is not important
   SetOutPath $INSTDIR\plugins
   File /r ${QtDir}\plugins\*.dll
   File /r ${QtDir}\plugins\*.dll
-  File /r plugins\designer\*.dll
   File /r plugins\qtjambi
+  
+  SetOutPath $INSTDIR\plugins\designer
+  File plugins\designer\JambiLanguage.dll
+  File plugins\designer\JambiCustomWidget.dll
+
   
 SectionEnd ; end the section
