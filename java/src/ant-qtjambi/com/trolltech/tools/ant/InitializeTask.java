@@ -58,9 +58,12 @@ public class InitializeTask extends Task {
     private PropertyHelper props;
     private String configuration;
 	private boolean debug;
-    
+
     /*
      * These properties are set outside of this task
+     *
+     * TODO: These flags should be documented here and if possibly, outside in
+     * build documentation.
      */
     public static final String LIBDIR           = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR       = "qtjambi.qt.includedir";

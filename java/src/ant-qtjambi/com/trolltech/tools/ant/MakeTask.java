@@ -53,17 +53,18 @@ import com.trolltech.qt.internal.*;
 //NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")
 public class MakeTask extends Task {
+
     private String msg = "";
     private String target = "";
     private String dir = ".";
     private boolean silent = false;
+    private String compilationType = null;
 
     private String compilerName() {
         switch(OSInfo.os()){
         case Windows:
             PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
             String compiler = (String) props.getProperty((String) null, InitializeTask.COMPILER);
-
 
             if (FindCompiler.Compiler.MinGW.toString().equals(compiler)) {
                 return "mingw32-make";
@@ -91,7 +92,7 @@ public class MakeTask extends Task {
             // Cannot happen
         }
 
-		String prefix = "";
+        String prefix = "";
         String command = prefix + compilerName() + arguments + " " + target;
         Util.exec(command, new File(dir));
     }
@@ -110,5 +111,9 @@ public class MakeTask extends Task {
 
     public void setDir(String dir) {
         this.dir = dir;
+    }
+
+    public void setCompilationType(String type) {
+        this.compilationType = type;
     }
 }
