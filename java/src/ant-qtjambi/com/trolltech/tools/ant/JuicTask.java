@@ -97,7 +97,7 @@ public class JuicTask extends MatchingTask {
                 String uicFileString = Util.escape(dir.getAbsolutePath() + '/' + file);
                 String command = commandPart + " -p " + packageString + " " + uicFileString;
 
-                Util.exec(command);
+                Exec.exec(command);
             }
         }
     }

@@ -486,7 +486,7 @@ public class PlatformJarTask extends Task
                 //cmd[3] = lib.relativePath();
                 cmd[3] = lib.getName();
 
-                Util.exec ( cmd, outdir, true );
+                Exec.exec ( cmd, outdir, true );
             }
         }
         catch ( Exception e )
@@ -535,14 +535,14 @@ public class PlatformJarTask extends Task
 
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
-                Util.exec ( cmd, outdir, false );
+                Exec.exec ( cmd, outdir, false );
 
                 // full path, when Qt is configured with rpath
                 if ( "libqtjambi.jnilib".equals ( with.getName() ) )
                     cmd[2] = "libqtjambi.1.jnilib";
                 else
                     cmd[2] = with.absoluteSourcePath();
-                Util.exec ( cmd, outdir, false );
+                Exec.exec ( cmd, outdir, false );
             }
         }
     }

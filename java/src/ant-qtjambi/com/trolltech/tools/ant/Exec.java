@@ -3,13 +3,12 @@ package com.trolltech.tools.ant;
 import org.apache.tools.ant.*;
 
 import java.io.*;
-import java.util.*;
-
-import com.trolltech.qt.internal.*;
-import com.trolltech.qt.internal.OSInfo.OS;
+import java.util.List;
+import java.util.Map;
 
 
 class Exec {
+
     /**
      * Executes the command specified by cmd and returns the printed output
      * from the process' stdout and stderr in the array on position 0 and 1 respectivly.
@@ -41,12 +40,22 @@ class Exec {
         return new String[] { outdata.toString(), errdata.toString() };
     }
 
+    /**
+     * Convenience method for exec(String, File).
+     * @param command Command to be executed.
+     */
     public static void exec(String command) {
         exec(command, null);
     }
 
+    /**
+     * Execute command command in directory dir.
+     * @param command Command to be executed.
+     * @param dir Directory where command should be executed.
+     * @throws BuildException Thrown if process exit value is not zero or IOException has been occurred.
+     */
     public static void exec(String command, File dir) throws BuildException {
-        String directory = ((dir != null) ? "(" + makeCanonical(dir) + ")" : "");
+        String directory = ((dir != null) ? "(" + Util.makeCanonical(dir) + ")" : "");
         System.out.println("Running : " + directory + " " + command);
         try {
             Process process = Runtime.getRuntime().exec(command, null, dir);
@@ -59,12 +68,21 @@ class Exec {
         }
     }
 
+    /**
+     * TODO: this should be merged with above one, repeating code is not that wise.
+     * 
+     * Executes process in more verbose manner.
+     * @param cmd Array of command and its arguments to be executed.
+     * @param dir Directory where should be executed.
+     * @param verbose Whether to be verbose.
+     * @throws BuildException Thrown if process exit value is not zero or IOException has been occurred.
+     */
     public static void exec(String cmd[], File dir, boolean verbose) throws BuildException {
         if (verbose) {
             StringBuilder b = new StringBuilder();
             for (String s : cmd)
                 b.append(s).append(' ');
-            System.out.println("Running : " + ((dir!=null)? "(" + makeCanonical(dir) + ")" : "") + " " + b);
+            System.out.println("Running : " + ((dir!=null)? "(" + Util.makeCanonical(dir) + ")" : "") + " " + b);
         }
 
         try {
@@ -78,41 +96,41 @@ class Exec {
         }
     }
     
-    public static void exec(String command, String[] args, File dir) throws BuildException {
-      //  ProcessBuilder builder = new ProcessBuilder(command, );
+    public static void execute(List<String> command, String ldpath, File directory) throws BuildException {
+        ProcessBuilder builder = new ProcessBuilder(command);
+        
+        //NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
+        //but it should not be needed there in first place... Only if you want to have same kind of building
+        //environment one can have for Linux.
+        Map<String, String> env = builder.environment();
+        //we don't need other stuff to LD_LIBRARY_PATH
+        //String ldpath = env.get("LD_LIBRARY_PATH");
+        //System.out.println("ldpath: " + ldpath);
+        //ldpath = "" + ldpath;
+        env.put("LD_LIBRARY_PATH", ldpath);
+        
+        builder.directory(directory);
+        try {
+			/*Process process =*/ builder.start();
+		} catch (IOException e) {
+			 //TODO: this may not work
+			 throw new BuildException("Running: '" + join(command.toArray(new String[0])) + "' failed.", e);
+		}
     }
-
-    public static String escape(String param) {
-        OSInfo.os();
-        if(OSInfo.os() == OS.Windows) {
-            return "\"" + param + "\"";
+    
+    /**
+     * Internal helper of Exec.
+     * @param ar What to join
+     * @return array joined together to form "foo1, foo2, .."
+     */
+    private static String join(String ar[]) {
+        String s = "";
+        for (int i = 0; i<ar.length; ++i) {
+            s += ar[i];
+            if (i < ar.length - 1)
+                s += ", ";
         }
-        return param;
-    }
-
-    private static class StreamConsumer extends Thread {
-
-        private StreamConsumer(InputStream in, PrintStream out) {
-            this.in = in;
-            this.out = out;
-        }
-                                            
-        @Override
-        public void run() {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String line;
-            try {
-                while ( (line = reader.readLine()) != null) {
-                    if (out != null)
-                        out.println(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private PrintStream out;
-        private InputStream in;
+        return s;
     }
 
 }

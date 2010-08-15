@@ -166,7 +166,7 @@ public class FindCompiler {
 
 	    private Compiler testForGCC() {
 	        try {
-	            String output = Util.execute("gcc", "-dumpversion")[0];
+	            String output = Exec.execute("gcc", "-dumpversion")[0];
 	            if (output.contains("3.3."))
 	                return Compiler.OldGCC;
 	            return Compiler.GCC;
@@ -185,7 +185,7 @@ public class FindCompiler {
 	     */
 	    private Compiler testForMinGW() {
 	        try {
-	            String output = Util.execute("gcc", "-v")[1];
+	            String output = Exec.execute("gcc", "-v")[1];
 	            if (output.contains("mingw"))
 	                return Compiler.MinGW;
 	        } catch (InterruptedException ex) {
@@ -199,7 +199,7 @@ public class FindCompiler {
 
 	    private Compiler testForVisualStudio() {
 	        try {
-	            String output = Util.execute("cl.exe")[1];
+	            String output = Exec.execute("cl.exe")[1];
 	            if (output.contains("12.0"))
 	                return Compiler.MSVC1998;
 	            if (output.contains("13.00"))

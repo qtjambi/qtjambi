@@ -47,6 +47,8 @@ package com.trolltech.tools.ant;
 import org.apache.tools.ant.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.trolltech.qt.internal.*;
 
@@ -55,10 +57,12 @@ import com.trolltech.qt.internal.*;
 public class MakeTask extends Task {
 
     private String msg = "";
-    private String target = "";
+    @SuppressWarnings("unused") // used by ant
+	private String target = "";
     private String dir = ".";
     private boolean silent = false;
-    private String compilationType = null;
+    @SuppressWarnings("unused") //used by ant
+	private String compilationType = null;
 
     private String compilerName() {
         switch(OSInfo.os()){
@@ -78,23 +82,29 @@ public class MakeTask extends Task {
     public void execute() throws BuildException {
         System.out.println(msg);
 
-        String arguments = "";
+        List<String> commandArray = new ArrayList<String>();                
+        commandArray.add(compilerName());
 
-        if (silent && OSInfo.os() != OSInfo.OS.Windows)
-            arguments += " -s";
+        if (silent && OSInfo.os() != OSInfo.OS.Windows) {
+            //arguments += " -s";
+        	commandArray.add("-s");
+        }
 
         try {
             final String makeOptions = System.getenv("MAKEOPTS");
-            if (makeOptions != null)
-                arguments += " " + makeOptions;
+            if (makeOptions != null) {
+                //arguments += " " + makeOptions;
+            	commandArray.add(makeOptions);
+            }
         } catch (SecurityException e) {
         } catch (NullPointerException e) {
             // Cannot happen
         }
 
-        String prefix = "";
-        String command = prefix + compilerName() + arguments + " " + target;
-        Util.exec(command, new File(dir));
+        //String command = compilerName() + arguments + " " + target;
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+        String ldpath = (String) props.getProperty((String) null, InitializeTask.LIBDIR);
+        Exec.execute(commandArray, ldpath, new File(dir));
     }
 
     public void setMessage(String msg) {

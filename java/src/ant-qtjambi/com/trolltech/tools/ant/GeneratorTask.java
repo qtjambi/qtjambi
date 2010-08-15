@@ -130,7 +130,7 @@ public class GeneratorTask extends Task {
         String arguments = parseArguments();
         String generator = generatorExecutable();
         String command = generator + arguments;
-        Util.exec(command, new File(dir));
+        Exec.exec(command, new File(dir));
     }
 
     public void setHeader(String header) {

@@ -46,11 +46,11 @@ package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.*;
 
+import com.trolltech.qt.internal.OSInfo;
+import com.trolltech.qt.internal.OSInfo.OS;
+
 import java.io.*;
 import java.util.*;
-
-import com.trolltech.qt.internal.*;
-import com.trolltech.qt.internal.OSInfo.OS;
 
 class Util {
 
@@ -121,7 +121,14 @@ class Util {
         } else {
             copy(src, target);
         }
+    }
 
+    public static String escape(String param) {
+        OSInfo.os();
+        if(OSInfo.os() == OS.Windows) {
+            return "\"" + param + "\"";
+        }
+        return param;
     }
 
     public static File findInPath(String name) {
@@ -171,13 +178,4 @@ class Util {
         }
     }
 
-    private static String join(String ar[]) {
-        String s = "";
-        for (int i = 0; i<ar.length; ++i) {
-            s += ar[i];
-            if (i < ar.length - 1)
-                s += ", ";
-        }
-        return s;
-    }
 }

@@ -108,7 +108,7 @@ public class QMakeTask extends Task {
         //command = command + parseParameters();
         String command = qmakebinary + proFile + parseArguments() + parseParameters();
 
-        Util.exec(command, new File(dir));
+        Exec.exec(command, new File(dir));
     }
 
     public void setMessage(String msg) {
