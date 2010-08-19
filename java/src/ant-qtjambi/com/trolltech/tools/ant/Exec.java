@@ -108,13 +108,17 @@ class Exec {
         //System.out.println("ldpath: " + ldpath);
         //ldpath = "" + ldpath;
         env.put("LD_LIBRARY_PATH", ldpath);
-        
+        System.out.println("ldpath: " + ldpath);
         builder.directory(directory);
         try {
-			/*Process process =*/ builder.start();
+			Process process = builder.start();
+			Util.redirectOutput(process);
+            if (process.exitValue() != 0) {
+                throw new BuildException("Running: '" + command.toString() + "' failed.");
+            }
 		} catch (IOException e) {
 			 //TODO: this may not work
-			 throw new BuildException("Running: '" + join(command.toArray(new String[0])) + "' failed.", e);
+			 throw new BuildException("Running: '" + command.toString() + "' failed.", e);
 		}
     }
     
