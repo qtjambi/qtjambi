@@ -2014,6 +2014,8 @@
     <modify-function signature="initStyleOption(QStyleOptionProgressBar*)const">
         <access modifier="private"/>
     </modify-function>
+    <modify-function signature="textDirection()const" remove="all"/>
+    <modify-function signature="invertedAppearance()const" remove="all"/>
   </object-type>
   <object-type name="QPushButton">
     <modify-function signature="initStyleOption(QStyleOptionButton*)const">
