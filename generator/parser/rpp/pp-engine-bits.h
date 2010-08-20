@@ -46,8 +46,6 @@
 #ifndef PP_ENGINE_BITS_H
 #define PP_ENGINE_BITS_H
 
-#include <QtGlobal>
-
 #include <string>
 #include <vector>
 #include <cstdio>
@@ -378,7 +376,7 @@ namespace rpp {
              * FILE pointer to that file.
              */
             FILE *find_include_file ( std::string const &__input_filename, std::string *__filepath,
-                                      INCLUDE_POLICY __include_policy, bool __skip_current_path ) const;
+                                      INCLUDE_POLICY __include_policy, bool __skip_current_path ) ;
 
             template <typename _InputIterator, typename _OutputIterator>
             _InputIterator handle_directive ( char const *p_directive,
@@ -463,10 +461,6 @@ namespace rpp {
 
 #ifdef PP_OS_WIN
                 std::replace ( filename.begin(), filename.end(), '/', '\\' );
-#endif
-
-#ifdef QT_OS_MAC
-
 #endif
 
                 std::string filepath;

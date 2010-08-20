@@ -73,9 +73,15 @@ void rpp::pp::push_include_path ( std::string const &path ) {
     if ( path.empty () || path [path.size () - 1] != PATH_SEPARATOR ) {
         std::string tmp ( path );
         tmp += PATH_SEPARATOR;
-        rpp::pp::include_paths.push_back ( tmp );
+        if (find(rpp::pp::include_paths.begin(), rpp::pp::include_paths.end(), tmp) == rpp::pp::include_paths.end())
+        {
+            rpp::pp::include_paths.push_back ( tmp );
+        }
     } else {
-        rpp::pp::include_paths.push_back ( path );
+        if (find(rpp::pp::include_paths.begin(), rpp::pp::include_paths.end(), path) == rpp::pp::include_paths.end())
+        {
+            rpp::pp::include_paths.push_back ( path );
+        }
     }
 }
 
@@ -148,7 +154,7 @@ rpp::PP_DIRECTIVE_TYPE rpp::pp::find_directive ( char const *p_directive, std::s
 
 
 FILE *rpp::pp::find_include_file ( std::string const &p_input_filename, std::string *p_filepath,
-                                   INCLUDE_POLICY p_include_policy, bool p_skip_current_path ) const {
+                                   INCLUDE_POLICY p_include_policy, bool p_skip_current_path )  {
     assert ( p_filepath != 0 );
     assert ( ! p_input_filename.empty() );
 
@@ -189,16 +195,21 @@ FILE *rpp::pp::find_include_file ( std::string const &p_input_filename, std::str
         p_filepath->assign ( *it );
         p_filepath->append ( p_input_filename );
 
-#ifdef QT_OS_MAC
-        QString string = QString::fromStdString(p_input_filename);
-        //QStringList list = string.split("/"); //could be used for error checks
-        QString module = string.split("/")[0];
-        string.replace(module, module + ".framework/Headers");
-        string = QString::fromStdString( *it ) + string;
-        QFileInfo file = QFileInfo(string);
-        if(file.exists() && file.isFile()) {
-            return std::fopen ( string.toLatin1().data(), "r" );
-        }
+#ifdef Q_OS_MAC
+	QString string = QString::fromStdString(p_input_filename);
+	//QStringList list = string.split("/"); //could be used for error checks
+	QString module = string.split("/")[0];
+	if (!module.contains('.'))
+	{
+	    string.replace(module + "/", module + ".framework/Headers/");
+	    string = QString::fromStdString( *it ) + string;
+	    QFileInfo file = QFileInfo(string);
+	    if(file.exists() && file.isFile()) {
+		QString path = QString::fromStdString( *it ) + module + ".framework/Headers";
+		push_include_path(path.toStdString());
+		return std::fopen ( string.toLatin1().data(), "r" );
+	    }
+	}
 #endif
         if ( file_exists ( *p_filepath ) && !file_isdir ( *p_filepath ) )
             return std::fopen ( p_filepath->c_str(), "r" );

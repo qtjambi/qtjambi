@@ -23,11 +23,10 @@ INCLUDEPATH += $$PWD/../qtjambi $$PWD/../common
 DEPENDPATH += $$PWD/../qtjambi $$PWD/../common
 
 macx:{
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
+    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.5u.sdk
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.5
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
-    QMAKE_MACOSX_DEPLOYMENT_TARGET=10.4
 } else {
     INCLUDEPATH += $$JAVA/include
     win32 {
