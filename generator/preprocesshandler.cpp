@@ -76,13 +76,21 @@ QStringList PreprocessHandler::setIncludes() {
     QString includedir;
     if(Wrapper::include_directory != "") {
         includedir = Wrapper::include_directory;
+#if defined(Q_OS_MAC)
+    } else includedir = "/Library/Frameworks";
+#else
     } else includedir = "/usr/include/qt4";
+#endif
 
     QString phonon_include_dir;
     if (!phononinclude.isEmpty()) {
         phonon_include_dir = phononinclude;
     } else {
+#if defined(Q_OS_MAC)
+	phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
+#else
         phonon_include_dir = includedir;
+#endif
     }
     includes << phonon_include_dir;
     includes << includedir;

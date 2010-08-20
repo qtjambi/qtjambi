@@ -372,10 +372,11 @@ namespace rpp {
             PP_DIRECTIVE_TYPE find_directive ( const char* p_directive, std::size_t p_size ) const;
 
             /**
-             * TODO
+             * Finds correct include file from include paths or given data and returns
+             * FILE pointer to that file.
              */
             FILE *find_include_file ( std::string const &__input_filename, std::string *__filepath,
-                                      INCLUDE_POLICY __include_policy, bool __skip_current_path ) const;
+                                      INCLUDE_POLICY __include_policy, bool __skip_current_path ) ;
 
             template <typename _InputIterator, typename _OutputIterator>
             _InputIterator handle_directive ( char const *p_directive,
