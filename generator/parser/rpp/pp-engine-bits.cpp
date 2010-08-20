@@ -2,6 +2,11 @@
 #include "rpp/pp-engine-bits.h"
 #include "rpp/pp-cctype.h"
 
+#include <QVector>
+#include <QDebug>
+#include <QStringList>
+#include <QDir>
+
 rpp::pp::pp ( pp_environment &__env ) :
         env ( __env ), expand_macro ( env ) {
     iflevel = 0;
@@ -155,7 +160,7 @@ FILE *rpp::pp::find_include_file ( std::string const &p_input_filename, std::str
     if ( ! env.current_file.empty () )
         _PP_internal::extract_file_path ( env.current_file, p_filepath );
 
-    if ( p_include_policy == INCLUDE_LOCAL && ! p_skip_current_path ) {
+    if ( p_include_policy == INCLUDE_LOCAL && !p_skip_current_path ) {
         std::string __tmp ( *p_filepath );
         __tmp += p_input_filename;
 
@@ -170,11 +175,11 @@ FILE *rpp::pp::find_include_file ( std::string const &p_input_filename, std::str
     if ( p_skip_current_path ) {
         it = std::find ( include_paths.begin (), include_paths.end (), *p_filepath );
 
-        if ( it != include_paths.end () )
+        if ( it != include_paths.end () ) {
             ++it;
-
-        else
+        } else {
             it = include_paths.begin ();
+        }
     }
 
     for ( ; it != include_paths.end (); ++it ) {
@@ -184,6 +189,17 @@ FILE *rpp::pp::find_include_file ( std::string const &p_input_filename, std::str
         p_filepath->assign ( *it );
         p_filepath->append ( p_input_filename );
 
+#ifdef QT_OS_MAC
+        QString string = QString::fromStdString(p_input_filename);
+        //QStringList list = string.split("/"); //could be used for error checks
+        QString module = string.split("/")[0];
+        string.replace(module, module + ".framework/Headers");
+        string = QString::fromStdString( *it ) + string;
+        QFileInfo file = QFileInfo(string);
+        if(file.exists() && file.isFile()) {
+            return std::fopen ( string.toLatin1().data(), "r" );
+        }
+#endif
         if ( file_exists ( *p_filepath ) && !file_isdir ( *p_filepath ) )
             return std::fopen ( p_filepath->c_str(), "r" );
     }
