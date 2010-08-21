@@ -112,9 +112,11 @@
                 <property name="qt.libdir" value="${env.QTDIR}/lib"/>
                 <property name="qt.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
-				
+
+                <!-- this section can't be used on certain machines, which can't handle java.library.path natively...
                 <var name="qtjambi.java.library.path" unset="true"/>
                 <property name="qtjambi.java.library.path" value="${env.QTDIR}/bin"/>
+                -->
 
                 <var name="qtjambi.phonon.pluginsdir" unset="true"/>
                 <var name="qtjambi.phonon.libdir" unset="true"/>

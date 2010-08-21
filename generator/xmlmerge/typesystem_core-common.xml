@@ -522,7 +522,6 @@
   <enum-type name="Qt::KeyboardModifier" flags="Qt::KeyboardModifiers"/>
   <enum-type name="Qt::LayoutDirection"/>
   <enum-type name="Qt::MatchFlag" flags="Qt::MatchFlags"/>
-  <enum-type name="Qt::MouseButton" flags="Qt::MouseButtons"/>
   <enum-type name="Qt::Orientation" flags="Qt::Orientations"/>
   <enum-type name="Qt::PenCapStyle"/>
   <enum-type name="Qt::PenJoinStyle"/>
@@ -578,9 +577,13 @@
     <reject-enum-value name="TextColorRole"/>
   </enum-type>
 
+  <enum-type name="Qt::MouseButton" flags="Qt::MouseButtons">
+    <reject-enum-value name="MiddleButton"/>
+  </enum-type>
 
   <enum-type name="QDataStream::Version">
     <reject-enum-value name="Qt_4_1"/>
+    <reject-enum-value name="Qt_4_7"/>
   </enum-type>
 
   <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">
