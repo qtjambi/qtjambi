@@ -211,8 +211,9 @@ public class Launcher extends QWidget {
 
     public void openDocumentation() {
         QUrl url = new QUrl();
-        url.setScheme("file");
-        url.setPath(new QFileInfo("doc/html/com/trolltech/qt/qtjambi-index.html").absoluteFilePath());
+        url.setScheme("http");
+        url.setHost("qt.nokia.com");
+        url.setPath("doc/qtjambi-4.5/html/index.html");
         QDesktopServices.openUrl(url);
     }
 
