@@ -1,15 +1,16 @@
 #!/bin/bash
 
+# TODO: this should be parsed from version.properties...
 if  [ "$QTJAMBI_VERSION" = "" ]; then
-     export QTJAMBI_VERSION=4.4.0_01
+     export QTJAMBI_VERSION=4.7.0-r1
 fi
 
 if [ "$QDOC" = "" ]; then
     if [ "$QTDIR" = "" ]; then
-        echo "Unable to find qdoc3. Set the QDOC or QTDIR environment variables."
-        exit 1
+        export LOCAL_QDOC=`which qdoc3`
+    else
+        export LOCAL_QDOC=$QTDIR/tools/qdoc3
     fi
-    export LOCAL_QDOC=$QTDIR/tools/qdoc3
 else
     export LOCAL_QDOC=$QDOC
 fi
@@ -17,7 +18,8 @@ fi
 echo "qdoc3 found in: $LOCAL_QDOC"
 
 export JAMBI=`echo $PWD | sed s,/scripts,,g`
-echo using jambi dir $JAMBI
+
+echo "using jambi dir: $JAMBI"
 
 # build the jambidoc Doclet...
 cd $JAMBI/tools/jambidoc
