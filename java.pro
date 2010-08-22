@@ -6,14 +6,14 @@ SUBDIRS =   qtjambi qtjambi_core \
             qtjambi_network qtjambi_xml \
             qtjambi_designer qtjambi_help
 
-contains(QT_CONFIG, script): SUBDIRS += qtjambi_script
-contains(QT_CONFIG, scripttools): SUBDIRS += qtjambi_scripttools
-contains(QT_CONFIG, webkit): SUBDIRS += qtjambi_webkit
-contains(QT_CONFIG, phonon): SUBDIRS += qtjambi_phonon
-contains(QT_CONFIG, xmlpatterns): SUBDIRS += qtjambi_xmlpatterns
-contains(QT_CONFIG, opengl): SUBDIRS += qtjambi_opengl
-contains(QT_CONFIG, multimedia): SUBDIRS += qtjambi_multimedia
-contains(QT_CONFIG, svg): SUBDIRS += qtjambi_svg
+contains(QT_CONFIG, script):            SUBDIRS += src/cpp/qtjambi_script
+contains(QT_CONFIG, scripttools):       SUBDIRS += src/cpp/qtjambi_scripttools
+contains(QT_CONFIG, webkit):            SUBDIRS += src/cpp/qtjambi_webkit
+contains(QT_CONFIG, phonon):            SUBDIRS += src/cpp/qtjambi_phonon
+contains(QT_CONFIG, xmlpatterns):       SUBDIRS += src/cpp/qtjambi_xmlpatterns
+contains(QT_CONFIG, opengl):            SUBDIRS += src/cpp/qtjambi_opengl
+contains(QT_CONFIG, multimedia):        SUBDIRS += src/cpp/qtjambi_multimedia
+contains(QT_CONFIG, svg):               SUBDIRS += src/cpp/qtjambi_svg
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
