@@ -29,12 +29,12 @@ HEADERS += \
         $$GENERATORPATH/reporthandler.h \
         $$GENERATORPATH/typeparser.h \
         $$GENERATORPATH/typesystem/typesystem.h \
-		$$GENERATORPATH/typesystem/codesnip.h \
-		$$GENERATORPATH/typesystem/handler.h \
-		$$GENERATORPATH/typesystem/modification.h \
-		$$GENERATORPATH/typesystem/stackelement.h \
-		$$GENERATORPATH/typesystem/typedatabase.h \
-		$$GENERATORPATH/typesystem/typeentry.h \
+        $$GENERATORPATH/typesystem/codesnip.h \
+        $$GENERATORPATH/typesystem/handler.h \
+        $$GENERATORPATH/typesystem/modification.h \
+        $$GENERATORPATH/typesystem/stackelement.h \
+        $$GENERATORPATH/typesystem/typedatabase.h \
+        $$GENERATORPATH/typesystem/typeentry.h \
         $$GENERATORPATH/asttoxml.h \
         $$GENERATORPATH/fileout.h \
         $$GENERATORPATH/generatorset.h \
@@ -47,18 +47,18 @@ HEADERS += \
 SOURCES += \
         $$GENERATORPATH/generator.cpp \
         $$GENERATORPATH/main.cpp \
-		$$GENERATORPATH/wrapper.cpp \
-		$$GENERATORPATH/preprocesshandler.cpp \
+        $$GENERATORPATH/wrapper.cpp \
+        $$GENERATORPATH/preprocesshandler.cpp \
         $$GENERATORPATH/reporthandler.cpp \
         $$GENERATORPATH/typeparser.cpp \
-		$$GENERATORPATH/typesystem/codesnip.cpp \
-		$$GENERATORPATH/typesystem/handler.cpp \
-		$$GENERATORPATH/typesystem/modification.cpp \
-		#$$GENERATORPATH/typesystem/stackelement.cpp \
-		$$GENERATORPATH/typesystem/typedatabase.cpp \
-		$$GENERATORPATH/typesystem/typeentry.cpp \
-		$$GENERATORPATH/typesystem/typesystem.cpp \
-		#$$GENERATORPATH/typesystem/
+        $$GENERATORPATH/typesystem/codesnip.cpp \
+        $$GENERATORPATH/typesystem/handler.cpp \
+        $$GENERATORPATH/typesystem/modification.cpp \
+        #$$GENERATORPATH/typesystem/stackelement.cpp \
+        $$GENERATORPATH/typesystem/typedatabase.cpp \
+        $$GENERATORPATH/typesystem/typeentry.cpp \
+        $$GENERATORPATH/typesystem/typesystem.cpp \
+        #$$GENERATORPATH/typesystem/
         $$GENERATORPATH/asttoxml.cpp \
         $$GENERATORPATH/fileout.cpp \
         $$GENERATORPATH/generatorset.cpp \

@@ -1,26 +1,85 @@
-<!DOCTYPE RCC><RCC version="1.0">
+<!DOCTYPE RCC>
+<RCC version="1.0">
 <qresource prefix="/trolltech/generator/">
-<file alias="typesystem_core.txt">typesystem_core.xml</file>
-<file>typesystem_core-java.java</file>
-<file alias="typesystem_gui.txt">typesystem_gui.xml</file>
-<file>typesystem_gui-java.java</file>
-<file alias="typesystem_sql.txt">typesystem_sql.xml</file>
-<file>typesystem_sql-java.java</file>
-<file alias="typesystem_opengl.txt">typesystem_opengl.xml</file>
-<file>typesystem_opengl-java.java</file>
-<file alias="typesystem_svg.txt">typesystem_svg.xml</file>
-<file alias="typesystem_help.txt">typesystem_help.xml</file>
-<file alias="typesystem_multimedia.txt">typesystem_multimedia.xml</file>
-<file alias="typesystem_network.txt">typesystem_network.xml</file>
-<file>typesystem_network-java.java</file>
-<file alias="typesystem_xml.txt">typesystem_xml.xml</file>
-<file>typesystem_xml-java.java</file>
-<file alias="typesystem_phonon.txt">typesystem_phonon.xml</file>
-<file>typesystem_phonon-java.java</file>
-<file alias="typesystem_webkit.txt">typesystem_webkit.xml</file>
-<file>typesystem_webkit-java.java</file>
-<file alias="typesystem_xmlpatterns.txt">typesystem_xmlpatterns.xml</file>
-<file>typesystem_xmlpatterns-java.java</file>
-<file>parser/rpp/pp-qt-configuration</file>
+
+<file alias="typesystem_core.xml">
+    ../build/generator/typesystem_core.xml
+</file>
+<file alias="typesystem_core.java">
+    typesystem_core-java.java
+</file>
+
+<file alias="typesystem_gui.xml>
+    ../build/generator/typesystem_gui.xml
+</file>
+<file alias="typesystem_gui.java">
+    typesystem_gui-java.java
+</file>
+
+<file alias="typesystem_sql.xml>
+    ../build/generator/typesystem_sql.xml
+</file>
+<file alias="typesystem_sql.java">
+    typesystem_sql-java.java
+</file>
+
+<file alias="typesystem_opengl.xml>
+    ../build/generator/typesystem_opengl.xml
+</file>
+<file alias="typesystem_opengl.java">
+    typesystem_opengl-java.java
+</file>
+
+<file alias="typesystem_network.xml>
+    ../build/generator/typesystem_network.xml
+</file>
+<file alias="typesystem_network.java">
+    typesystem_network-java.java
+</file>
+
+<file alias="typesystem_xml.xml>
+    ../build/generator/typesystem_xml.xml
+</file>
+<file alias="typesystem_xml.java">
+    typesystem_xml-java.java
+</file>
+
+<file alias="typesystem_phonon.xml>
+    ../build/generator/typesystem_phonon.xml
+</file>
+<file alias="typesystem_phonon.java">
+    typesystem_phonon-java.java
+</file>
+
+<file alias="typesystem_webkit.xml>
+    ../build/generator/typesystem_webkit.xml
+</file>
+<file alias="typesystem_webkit.java">
+    typesystem_webkit-java.java
+</file>
+
+<file alias="typesystem_xmlpatterns.xml>
+    ../build/generator/typesystem_xmlpatterns.xml
+</file>
+<file alias="typesystem_xmlpatterns.java">
+    typesystem_xmlpatterns-java.java
+</file>
+
+<file alias="typesystem_svg.xml>
+    ../build/generator/typesystem_svg.xml
+</file>
+
+<file alias="typesystem_help.xml>
+    ../build/generator/typesystem_help.xml
+</file>
+
+<file alias="typesystem_multimedia.xml>
+    ../build/generator/typesystem_multimedia.xml
+</file>
+
+<file>
+    parser/rpp/pp-qt-configuration
+</file>
+
 </qresource>
 </RCC>
