@@ -23,7 +23,7 @@ echo "using jambi dir: $JAMBI"
 
 # build the jambidoc Doclet...
 cd $JAMBI/tools/jambidoc
-javac -d . *.java
+javac -cp /usr/lib64/icedtea6/lib/tools.jar -d . *.java
 if [ $? -ne 0 ]; then
     echo "Failed to compile jambidoclet..."
     exit 1
