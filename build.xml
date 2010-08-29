@@ -222,7 +222,7 @@
 
     <condition property="qtjambi.library.makefiles.uptodate">
         <uptodate targetfile="${outputDir}/Makefile">
-            <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
+            <srcfiles dir="${outputDir}/build/cpp" includes="**/*.pri"/>
             <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
             <srcfiles dir="${outputDir}/src/cpp/qtjambi" includes="*.pr*"/>
             <!--<srcfiles dir="${outputDir}/designer-integration"
