@@ -1,4 +1,4 @@
-<project default="all" basedir=".">
+<project default="all" basedir="." name="qtjambi.main">
 
     <property file="build.properties"/>
 
@@ -396,12 +396,15 @@
 
         </qtjambi-platform-jar>
 
-        <jar destfile="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
+        <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar"/>
+        <jar destfile="${destination-file}">
             <fileset dir="${outputDir}/platform-output"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
             </manifest>
         </jar>
+        <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>
+
     </target>
 
     <!--
