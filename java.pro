@@ -4,7 +4,7 @@ CONFIG += ordered
 SUBDIRS =   qtjambi qtjambi_core \
             qtjambi_gui qtjambi_sql \
             qtjambi_network qtjambi_xml \
-            qtjambi_designer qtjambi_help
+            qtjambi_designer qtjambi_help designer-integration
 
 contains(QT_CONFIG, script): SUBDIRS += qtjambi_script
 contains(QT_CONFIG, scripttools): SUBDIRS += qtjambi_scripttools
