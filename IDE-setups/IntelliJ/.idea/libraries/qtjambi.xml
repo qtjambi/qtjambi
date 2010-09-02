@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../jars/qtjambi.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="http://doc.trolltech.com/qtjambi-4.5.2_01" />
+    </JAVADOC>
     <SOURCES />
   </library>
 </component>

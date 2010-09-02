@@ -450,6 +450,7 @@ private:
 
         StaticCache *sc = StaticCache::instance();
         sc->resolveQClassPathEngine();
+        fileName.toAscii()
 
         jstring javaFileName = qtjambi_from_qstring(env, fileName);
         jobject javaFileEngine = env->NewObject(sc->QClassPathEngine.class_ref, sc->QClassPathEngine.constructor, javaFileName);
@@ -459,7 +460,7 @@ private:
             QtJambiLink *link = QtJambiLink::findLink(env, javaFileEngine);
             Q_ASSERT(link != 0);
 
-            link->setCppOwnership(env, javaFileEngine);
+            link->setJavaOwnership(env, javaFileEngine);
         }
         env->PopLocalFrame(0);
 
