@@ -460,7 +460,7 @@ private:
             QtJambiLink *link = QtJambiLink::findLink(env, javaFileEngine);
             Q_ASSERT(link != 0);
 
-            link->setJavaOwnership(env, javaFileEngine);
+            link->setCppOwnership(env, javaFileEngine);
         }
         env->PopLocalFrame(0);
 
