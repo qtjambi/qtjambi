@@ -450,7 +450,6 @@ private:
 
         StaticCache *sc = StaticCache::instance();
         sc->resolveQClassPathEngine();
-        fileName.toAscii()
 
         jstring javaFileName = qtjambi_from_qstring(env, fileName);
         jobject javaFileEngine = env->NewObject(sc->QClassPathEngine.class_ref, sc->QClassPathEngine.constructor, javaFileName);
