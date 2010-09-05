@@ -5,36 +5,36 @@
  ** This file is part of Qt Jambi.
  **
  ** ** $BEGIN_LICENSE$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-** 
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
-** In addition, as a special exception, Nokia gives you certain
-** additional rights. These rights are described in the Nokia Qt LGPL
-** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
-** package.
-** 
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-** 
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-** $END_LICENSE$
+ ** Commercial Usage
+ ** Licensees holding valid Qt Commercial licenses may use this file in
+ ** accordance with the Qt Commercial License Agreement provided with the
+ ** Software or, alternatively, in accordance with the terms contained in
+ ** a written agreement between you and Nokia.
+ **
+ ** GNU Lesser General Public License Usage
+ ** Alternatively, this file may be used under the terms of the GNU Lesser
+ ** General Public License version 2.1 as published by the Free Software
+ ** Foundation and appearing in the file LICENSE.LGPL included in the
+ ** packaging of this file.  Please review the following information to
+ ** ensure the GNU Lesser General Public License version 2.1 requirements
+ ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+ **
+ ** In addition, as a special exception, Nokia gives you certain
+ ** additional rights. These rights are described in the Nokia Qt LGPL
+ ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+ ** package.
+ **
+ ** GNU General Public License Usage
+ ** Alternatively, this file may be used under the terms of the GNU
+ ** General Public License version 3.0 as published by the Free Software
+ ** Foundation and appearing in the file LICENSE.GPL included in the
+ ** packaging of this file.  Please review the following information to
+ ** ensure the GNU General Public License version 3.0 requirements will be
+ ** met: http://www.gnu.org/copyleft/gpl.html.
+ **
+ ** If you are unsure which license is appropriate for your use, please
+ ** contact the sales department at qt-sales@nokia.com.
+ ** $END_LICENSE$
 
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -48,7 +48,13 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 public class Launcher extends QWidget {
 
@@ -79,27 +85,27 @@ public class Launcher extends QWidget {
     }
 
     private HtmlUpdater m_source_updater = new HtmlUpdater(this) {
-            @Override
-            protected String html(Launchable l) {
-                return l.source();
-            }
+        @Override
+        protected String html(Launchable l) {
+            return l.source();
+        }
 
-            @Override
-            protected void updateHtml(String html) {
-                ui.source.setHtml(html);
-            }
+        @Override
+        protected void updateHtml(String html) {
+            ui.source.setHtml(html);
+        }
     };
 
     private HtmlUpdater m_description_updater = new HtmlUpdater(this) {
-            @Override
-            protected String html(Launchable l) {
-                return l.description();
-            }
+        @Override
+        protected String html(Launchable l) {
+            return l.description();
+        }
 
-            @Override
-            protected void updateHtml(String html) {
-                ui.description.setHtml(html);
-            }
+        @Override
+        protected void updateHtml(String html) {
+            ui.description.setHtml(html);
+        }
     };
 
     private Ui_Launcher ui = new Ui_Launcher();
@@ -114,7 +120,8 @@ public class Launcher extends QWidget {
     }
 
     private QSortFilterProxyModel sortFilterProxyModel = new QSortFilterProxyModel();
-    public void init() {
+
+    public void init() throws IOException {
         ui.setupUi(this);
 
         ui.source.setWordWrap(false);
@@ -226,7 +233,7 @@ public class Launcher extends QWidget {
         ui.container.setCurrentIndex(i);
 
         ui.button_content.setText(i == 0 ? tr("View Source")
-                                  : tr("View Description"));
+                : tr("View Description"));
     }
 
     /**
@@ -303,7 +310,7 @@ public class Launcher extends QWidget {
     private static String styleForCurrentSystem() {
         int os = com.trolltech.qt.QSysInfo.operatingSystem();
         if (os == com.trolltech.qt.QSysInfo.OS_WIN32
-            || os == com.trolltech.qt.QSysInfo.OS_WIN64) {
+                || os == com.trolltech.qt.QSysInfo.OS_WIN64) {
             if (com.trolltech.qt.QSysInfo.windowsVersion() >= com.trolltech.qt.QSysInfo.Windows_VISTA)
                 return "WindowsVista";
             if (com.trolltech.qt.QSysInfo.windowsVersion() >= com.trolltech.qt.QSysInfo.Windows_XP)
@@ -341,50 +348,126 @@ public class Launcher extends QWidget {
         firstStyleSetup = false;
     }
 
-    private void traverseDirectory(String directory) {
-        QDir dir = new QDir(directory);
-        List<QFileInfo> infos = dir.entryInfoList(QDir.Filter.createQFlags(QDir.Filter.Files, QDir.Filter.Dirs, QDir.Filter.NoDotAndDotDot));
+    private void traverseDirectory(String directory) throws IOException {
+//        QDir dir = new QDir(directory);
+//        List<QFileInfo> infos = dir.entryInfoList(QDir.Filter.createQFlags(QDir.Filter.Files, QDir.Filter.Dirs, QDir.Filter.NoDotAndDotDot));
+//        for (QFileInfo info : infos) {
+//            if (info.isDir()) {
+//                traverseDirectory(info.filePath());
+//            } else if (info.fileName().endsWith(".class")) {
+//                int idx = directory.lastIndexOf("#") + 1;
+//                if (idx <= 0)
+//                    idx = 10;
+//                String pkg = directory.substring(idx).replace("/", ".");
+//                Launchable l = Launchable.create(pkg + "." + info.baseName());
+//                if (l != null) {
+//                    progressChanged.emit("Setting up examples: " + info.baseName());
+//                    m_model.add(l);
+//                }
+//            }
+//        }
 
-        for (QFileInfo info : infos) {
-            if (info.isDir()) {
-                traverseDirectory(info.filePath());
-            } else if (info.fileName().endsWith(".class")) {
-                int idx = directory.lastIndexOf("#") + 1;
-                if (idx <= 0)
-                    idx = 10;
-                String pkg = directory.substring(idx).replace("/", ".");
 
-                Launchable l = Launchable.create(pkg + "." + info.baseName());
-                if (l != null) {
-                    progressChanged.emit("Setting up examples: " + info.baseName());
-                    m_model.add(l);
+        // HF: Workaround for the unstable QDir.entryInfoList("classpath:....");
+        URL resource = Launcher.class.getResource(directory);
+        String s = System.getProperty("java.class.path");
+        if (s != null && s.contains("qtjambi-examples")) {
+            List<File> files = listClasspathFiles();
+            File qtjambiExampleJar = null;
+            for (File file : files) {
+                if (file.getName().contains("qtjambi-examples")) {
+                    qtjambiExampleJar = file;
                 }
+            }
+            if (qtjambiExampleJar != null) {
+                JarFile jarFile = new JarFile(qtjambiExampleJar);
+                Enumeration<JarEntry> enumeration = jarFile.entries();
+                while (enumeration.hasMoreElements()) {
+                    JarEntry jarEntry = enumeration.nextElement();
+                    String name = jarEntry.getName();
+                    if (name.startsWith(directory.substring(1)) && name.endsWith(".class")) {
+                        createLaunchable(name);
+                    }
+                }
+            }
 
+        } else if (resource != null) {
+            String dir = resource.getPath();
+            if (dir != null) {
+                File thisFile = new File(dir);
+                String[] strings = thisFile.list();
+                for (String string : strings) {
+                    File subFile = new File(thisFile, string);
+                    if (subFile.isDirectory()) {
+                        traverseDirectory(directory + "/" + string);
+                    } else if (string.endsWith(".class")) {
+                        createLaunchable(directory, string);
+
+                    }
+                }
             }
         }
+
     }
+
+    private void createLaunchable(String directory, String string) {
+        String pkg = directory.substring(1).replace("/", ".");
+        String baseName = string.substring(0, string.length() - 6);
+        Launchable l = Launchable.create(pkg + "." + baseName);
+        if (l != null) {
+            progressChanged.emit("Setting up examples: " + baseName);
+            m_model.add(l);
+        }
+    }
+
+    private void createLaunchable(String jarEntry) {
+        String clazz = jarEntry.replace("/", ".").substring(0, jarEntry.length() - 6);
+        Launchable l = Launchable.create(clazz);
+        if (l != null) {
+            progressChanged.emit("Setting up examples: " + clazz);
+            m_model.add(l);
+        }
+    }
+
 
     /**
      * Helper function for reading the list of launchable examples... We will
      * ideally pick this up from the classpath under demos and examples...
      */
-    private void setupExamples() {
-        String dirs[] = new String[] { "classpath:com/trolltech/examples",
-                                       "classpath:com/trolltech/demos" };
+    private void setupExamples() throws IOException {
+        String dirs[] = new String[]{"/com/trolltech/examples",
+                "/com/trolltech/demos"};
 
-        for (int i = 0; i < dirs.length; ++i) {
-            traverseDirectory(dirs[i]);
+        for (String dir : dirs) {
+            traverseDirectory(dir);
         }
     }
 
-    private static String[] start_qt()
-    {
+    private static String[] start_qt() {
         String args[] = new String[1];
         args[0] = "Start Qt";
         return args;
     }
 
-    public static void main(String args[]) {
+    private List<File> listClasspathFiles() {
+        String list = System.getProperty("java.class.path");
+        String pathSep = System.getProperty("path.separator");
+        List<File> deliver = new LinkedList<File>();
+        for (final String path : list.split(pathSep)) {
+            final File object = new File(path);
+            if (object.isDirectory())
+                for (String entry : object.list()) {
+                    final File thing = new File(entry);
+                    if (thing.isFile())
+                        deliver.add(thing);
+                }
+            else if (object.isFile())
+                deliver.add(object);
+        }
+        return deliver;
+    }
+
+    public static void main(String args[]) throws IOException {
         QApplication.initialize(args == null ? start_qt() : args);
         QApplication.setApplicationName("Qt Jambi Demo Launcher");
 
@@ -413,6 +496,6 @@ public class Launcher extends QWidget {
 
         QApplication.exec();
 
-        System.gc();
+//        System.gc();
     }
 }
