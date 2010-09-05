@@ -58,7 +58,7 @@
     <object-type name="QWebSettings"/>
     <object-type name="QWebPage">
         <inject-code class="java">
-            <import-file name="typesystem_webkit-java.java" quote-after-line="class QWebPage___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_webkit-java.java" quote-after-line="class QWebPage___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="javaScriptPrompt(QWebFrame*,QString,QString,QString*)">
             <access modifier="private"/>

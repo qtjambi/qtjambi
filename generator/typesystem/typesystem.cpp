@@ -62,7 +62,7 @@ QString strings_java_lang = QLatin1String("java.lang");
 QString strings_jchar = QLatin1String("jchar");
 QString strings_jobject = QLatin1String("jobject");
 
-static void addRemoveFunctionToTemplates(TypeDatabase *db);
+//static void addRemoveFunctionToTemplates(TypeDatabase *db);
 
 
 QString Include::toString() const
@@ -249,7 +249,7 @@ static void injectCode(ComplexTypeEntry *e,
 }
 
 
-static void addRemoveFunctionToTemplates(TypeDatabase *db)
+/*static void addRemoveFunctionToTemplates(TypeDatabase *db)
 {
     ContainerTypeEntry *qvector = db->findContainerType(QLatin1String("QVector"));
     removeFunction(qvector, "constData() const");
@@ -335,4 +335,4 @@ static void addRemoveFunctionToTemplates(TypeDatabase *db)
         injectCode(qlist, "takeAt(int)", code_with_return, args1);
     }
 
-}
+}*/

@@ -20,7 +20,7 @@
 
     <object-type name="QAbstractSocket">
         <inject-code>
-            <import-file name="typesystem_network-java.java" quote-after-line="class QAbstractSocket___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QAbstractSocket___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code class="constructors">
 proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
@@ -50,7 +50,7 @@ proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequire
 
     <value-type name="QHostInfo">
         <inject-code class="java">
-            <import-file name="typesystem_network-java.java" quote-after-line="class QHostInfo___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QHostInfo___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
@@ -67,7 +67,7 @@ proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequire
 
     <object-type name="QHttp">
         <inject-code>
-            <import-file name="typesystem_network-java.java" quote-after-line="class QHttp___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QHttp___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
             <access modifier="private"/>
@@ -126,7 +126,7 @@ authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, 
 
     <object-type name="QTcpServer">
         <inject-code>
-            <import-file name="typesystem_network-java.java" quote-after-line="class QTcpServer___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QTcpServer___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -167,7 +167,7 @@ authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, 
 
     <object-type name="QUdpSocket">
         <inject-code>
-            <import-file name="typesystem_network-java.java" quote-after-line="class QUdpSocket___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QUdpSocket___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code class="constructors">
 proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
@@ -207,7 +207,7 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
 
     <value-type name="QNetworkProxy">
         <inject-code>
-            <import-file name="typesystem_network-java.java" quote-after-line="class QNetworkProxy___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QNetworkProxy___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="QNetworkProxy(QNetworkProxy::ProxyType,QString,unsigned short,QString,QString)" access="private">
             <modify-argument index="2">
@@ -223,7 +223,7 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
 
     <object-type name="QNetworkAccessManager">
         <inject-code>
-            <import-file name="typesystem_network-java.java" quote-after-line="class QNetworkAccessManager___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QNetworkAccessManager___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
             <access modifier="private"/>
@@ -245,7 +245,7 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
 
     <object-type name="QLocalServer">
         <inject-code>
-            <import-file name="typesystem_network-java.java" quote-after-line="class QLocalServer___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QLocalServer___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="waitForNewConnection(int,bool*)">
             <access modifier="private"/>
@@ -281,7 +281,7 @@ sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)
 
     <object-type name="QSslSocket">
       <inject-code>
-        <import-file name="typesystem_network-java.java" quote-after-line="class QSslSocket___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QSslSocket___" quote-before-line="}// class"/>
       </inject-code>
       <modify-function signature="connectToHostImplementation(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private" />
     </object-type>

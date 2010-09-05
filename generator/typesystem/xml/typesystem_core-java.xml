@@ -160,7 +160,7 @@
 
     <value-type name="QDate">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QDate___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QDate___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -176,7 +176,7 @@
 
     <value-type name="QDir">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QDir___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QDir___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="operator[](int)const" access="private"/>
 
@@ -412,7 +412,7 @@
             <remove/>
         </modify-function>
         <inject-code class="java">
-            <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractItemModel___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QAbstractItemModel___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code class="native">
     extern "C" JNIEXPORT jboolean JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QAbstractItemModel_setData_1native)
@@ -453,7 +453,7 @@
 
     <value-type name="QByteArray">
         <inject-code class="java">
-            <import-file name="typesystem_core-java.java" quote-after-line="class QByteArray___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QByteArray___" quote-before-line="}// class"/>
 
             <template name="QByteArray::toType(base)">
     public final %TYPE% %NAME%(int base) throws NumberFormatException{
@@ -937,7 +937,7 @@
 
     <object-type name="QFile">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QFile___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QFile___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="decodeName(const char*)">
             <access modifier="private"/>
@@ -948,7 +948,7 @@
 
     <object-type name="QIODevice">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QIODevice___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QIODevice___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -1145,7 +1145,7 @@
 
     <object-type name="QCryptographicHash">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QCryptographicHash___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QCryptographicHash___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="addData(const char*,int)">
             <access modifier="private"/>
@@ -1156,7 +1156,7 @@
 
     <object-type name="QTextCodec">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QTextCodec___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QTextCodec___" quote-before-line="}// class"/>
         </inject-code>
 
         <modify-function signature="convertFromUnicode(const QChar*,int,QTextCodec::ConverterState*)const">
@@ -1237,7 +1237,7 @@
             <access modifier="private"/>
         </modify-function>
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QTranslator___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QTranslator___" quote-before-line="}// class"/>
         </inject-code>
 
         <modify-function signature="translate(const char*,const char*,const char*)const">
@@ -1305,7 +1305,7 @@
 
     <object-type name="QBuffer">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QBuffer___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QBuffer___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -1333,7 +1333,7 @@
 
     <object-type name="QTimer">
         <inject-code class="java">
-            <import-file name="typesystem_core-java.java" quote-after-line="class QTimer___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QTimer___" quote-before-line="}// class"/>
         </inject-code>
     </object-type>
 
@@ -1353,14 +1353,14 @@
             </modify-argument>
         </modify-function>
         <inject-code>
-             <import-file name="typesystem_core-java.java" quote-after-line="class QProcess___" quote-before-line="}// class"/>
+             <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QProcess___" quote-before-line="}// class"/>
         </inject-code>
   </object-type>
 
 
     <object-type name="QSignalMapper">
         <inject-code>
-            <import-file name="typesystem_core-java.java" quote-after-line="class QSignalMapper___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QSignalMapper___" quote-before-line="}// class"/>
         </inject-code>
 
 
@@ -1404,7 +1404,7 @@
 
   <object-type name="QObject">
       <inject-code class="java">
-          <import-file name="typesystem_core-java.java" quote-after-line="class QObject___" quote-before-line="}// class"/>
+          <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QObject___" quote-before-line="}// class"/>
       </inject-code>
   </object-type>
 
@@ -1427,7 +1427,7 @@
           </modify-argument>
       </modify-function>
       <inject-code>
-          <import-file name="typesystem_core-java.java" quote-after-line="class QCoreApplication___" quote-before-line="}// class"/>
+          <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QCoreApplication___" quote-before-line="}// class"/>
       </inject-code>
 
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding,int)">
@@ -1530,7 +1530,7 @@
       </modify-function>
 
       <inject-code>
-          <import-file name="typesystem_core-java.java" quote-after-line="class QDataStream___" quote-before-line="}// class"/>
+          <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QDataStream___" quote-before-line="}// class"/>
       </inject-code>
 
       <inject-code class="native">
@@ -1622,7 +1622,7 @@
         <rename to="address_private" />
     </modify-field>
     <inject-code>
-        <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_UnMapExtensionOption___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_UnMapExtensionOption___" quote-before-line="}// class"/>
     </inject-code>
   </object-type>
 
@@ -1632,13 +1632,13 @@
         <rename to="address_private" />
     </modify-field>
     <inject-code>
-        <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_MapExtensionReturn___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QAbstractFileEngine_MapExtensionReturn___" quote-before-line="}// class"/>
     </inject-code>
   </object-type>
 
   <object-type name="QAbstractFileEngine">
     <inject-code>
-        <import-file name="typesystem_core-java.java" quote-after-line="class QAbstractFileEngine___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QAbstractFileEngine___" quote-before-line="}// class"/>
     </inject-code>
   </object-type>
 
@@ -1731,7 +1731,7 @@
           <access modifier="private"/>
       </modify-function>
       <inject-code>
-          <import-file name="typesystem_core-java.java" quote-after-line="class QTextStream___" quote-before-line="}// class"/>
+          <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QTextStream___" quote-before-line="}// class"/>
       </inject-code>
 
       <inject-code class="native">
@@ -1802,7 +1802,7 @@
   </object-type>
   <value-type name="QBitArray">
       <inject-code>
-          <import-file name="typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
+          <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QBitArray___" quote-before-line="}// class"/>
       </inject-code>
   </value-type>
 
@@ -1920,7 +1920,7 @@
 
   <object-type name="QtJambiFutureWatcher">
     <inject-code>
-        <import-file name="typesystem_core-java.java" quote-after-line="class QFutureWatcher___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QFutureWatcher___" quote-before-line="}// class"/>
     </inject-code>
     <inject-code class="native">
         <insert-template name="future_function_in_futurewatcher" />
@@ -1937,7 +1937,7 @@
         </modify-argument>
     </modify-function>
     <inject-code>
-        <import-file name="typesystem_core-java.java" quote-after-line="class QFutureWatcherVoid___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QFutureWatcherVoid___" quote-before-line="}// class"/>
     </inject-code>
     <inject-code class="native">
         <insert-template name="future_function_in_futurewatcher">
@@ -1978,7 +1978,7 @@
         <insert-template name="futures_function_in_futuresynchronizer" />
       </inject-code>
       <inject-code class="java">
-        <import-file name="typesystem_core-java.java" quote-after-line="class QFutureSynchronizer___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QFutureSynchronizer___" quote-before-line="}// class"/>
       </inject-code>
   </object-type>
   <object-type name="QtJambiVoidFutureSynchronizer">
@@ -2016,7 +2016,7 @@
         </insert-template>
       </inject-code>
       <inject-code class="java">
-        <import-file name="typesystem_core-java.java" quote-after-line="class QFutureSynchronizerVoid___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QFutureSynchronizerVoid___" quote-before-line="}// class"/>
       </inject-code>
   </object-type>
 
@@ -2033,7 +2033,7 @@
 
   <namespace-type name="QtConcurrent">
     <inject-code class="java">
-        <import-file name="typesystem_core-java.java" quote-after-line="class QtConcurrent___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QtConcurrent___" quote-before-line="}// class"/>
     </inject-code>
   </namespace-type>
 

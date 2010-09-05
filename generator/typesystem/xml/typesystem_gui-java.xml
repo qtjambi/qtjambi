@@ -142,7 +142,7 @@
 
     <value-type name="QTransform">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTransform___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTransform___" quote-before-line="}// class"/>
         </inject-code>
 
         <extra-includes>
@@ -296,7 +296,7 @@
 
     <value-type name="QBitmap">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QBitmap___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QBitmap___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
     
@@ -304,7 +304,7 @@
 
     <value-type name="QTextLine">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextLine___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTextLine___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="draw(QPainter*,QPointF,const QTextLayout::FormatRange*)const">
             <access modifier="private"/>
@@ -318,7 +318,7 @@
 
     <value-type name="QLineF">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QLineF___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QLineF___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="intersect(QLineF,QPointF*)const  ">
             <access modifier="private"/>
@@ -329,7 +329,7 @@
 
     <value-type name="QKeySequence">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QKeySequence___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QKeySequence___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
@@ -338,7 +338,7 @@
 
     <value-type name="QPicture">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPicture___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPicture___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.core.QIODevice" location="java"/>
@@ -414,7 +414,7 @@
 
     <value-type name="QRegion">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QRegion___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QRegion___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="setRects(const QRect*,int)">
             <access modifier="private"/>
@@ -427,7 +427,7 @@
             <include file-name="com.trolltech.qt.core.QPoint" location="java"/>
         </extra-includes>
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPolygon___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPolygon___" quote-before-line="}// class"/>
         </inject-code>
 
         <inject-code class="native">
@@ -449,7 +449,7 @@
         </extra-includes>
 
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPolygonF___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPolygonF___" quote-before-line="}// class"/>
         </inject-code>
 
         <inject-code class="native">
@@ -468,14 +468,14 @@
 
     <value-type name="QTextFrame::iterator">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextFrame_iterator___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTextFrame_iterator___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
 
     <value-type name="QTreeWidgetItemIterator">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTreeWidgetItemIterator___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTreeWidgetItemIterator___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
@@ -483,7 +483,7 @@
 
     <value-type name="QTextBlock::iterator">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextBlock_iterator___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTextBlock_iterator___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
@@ -494,13 +494,13 @@
         <rename to="setConvolutionKernel_private" />
     </modify-function>
     <inject-code>
-        <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmapFilter___" quote-before-line="}// class"/>
+        <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPixmapFilter___" quote-before-line="}// class"/>
     </inject-code>
     </object-type>
 
     <object-type name="QAbstractTextDocumentLayout">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractTextDocumentLayout___" quote-before-line="}// class" />
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QAbstractTextDocumentLayout___" quote-before-line="}// class" />
         </inject-code>
 
         <inject-code class="native">
@@ -537,7 +537,7 @@
 
     <value-type name="QPixmap">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmap___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPixmap___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="fill(const QColor &amp;)">
             <modify-argument index="1">
@@ -703,14 +703,14 @@
 
     <value-type name="QTextCursor">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextCursor___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTextCursor___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
 
     <value-type name="QItemSelection">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QItemSelection___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QItemSelection___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="split(QItemSelectionRange,QItemSelectionRange,QItemSelection*)">
             <access modifier="private"/>
@@ -721,7 +721,7 @@
 
     <value-type name="QMatrix">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QMatrix___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QMatrix___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
@@ -729,14 +729,14 @@
 
     <value-type name="QPainterPath::Element">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPainterPath_Element___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPainterPath_Element___" quote-before-line="}// class"/>
         </inject-code>
 
     </value-type>
 
     <value-type name="QImage">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QImage___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QImage___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code>
             <insert-template name="gui.pixmap_save">
@@ -850,14 +850,14 @@
 
     <value-type name="QPen">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPen___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPen___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
 
     <value-type name="QBrush">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QBrush___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QBrush___" quote-before-line="}// class"/>
         </inject-code>
 
 
@@ -874,7 +874,7 @@
 
     <value-type name="QColor">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QColor___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QColor___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
@@ -1069,7 +1069,7 @@
 
     <object-type name="QAbstractItemView">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractItemView___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QAbstractItemView___" quote-before-line="}// class"/>
         </inject-code>
 
         <modify-function signature="setIndexWidget(const QModelIndex &amp;,QWidget *)">
@@ -1129,7 +1129,7 @@
 
     <object-type name="QAccessibleTableInterface">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QAccessibleTableInterface___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QAccessibleTableInterface___" quote-before-line="}// class"/>
         </inject-code>
 
 
@@ -1336,7 +1336,7 @@
 
     <object-type name="QAccessibleInterface">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QAccessibleInterface___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QAccessibleInterface___" quote-before-line="}// class"/>
         </inject-code>
 
 
@@ -1427,7 +1427,7 @@
 
     <object-type name="QDesktopServices">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QDesktopServices___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QDesktopServices___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -1435,7 +1435,7 @@
 
     <object-type name="QWizardPage">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QWizardPage___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QWizardPage___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -1446,7 +1446,7 @@
     <modify-function signature="open(QObject*,const char*)" remove="all" />
 
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QFontDialog___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QFontDialog___" quote-before-line="}// class"/>
         </inject-code>
 
 
@@ -1630,7 +1630,7 @@
 
     <object-type name="QMenu">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QMenu___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QMenu___" quote-before-line="}// class"/>
         </inject-code>
 
 
@@ -1685,7 +1685,7 @@
 
     <object-type name="QMenuBar">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QMenuBar___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QMenuBar___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code>
             <insert-template name="gui.addAction">
@@ -1733,7 +1733,7 @@
 
     <object-type name="QPixmapCache">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPixmapCache___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPixmapCache___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -1757,7 +1757,7 @@
 
     <object-type name="QShortcut">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QShortcut___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QShortcut___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -1844,7 +1844,7 @@
 
     <object-type name="QValidator">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QValidator___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QValidator___" quote-before-line="}// class"/>
         </inject-code>
 
 
@@ -1924,7 +1924,7 @@
 
     <object-type name="QAbstractButton">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractButton___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QAbstractButton___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -1944,7 +1944,7 @@
 
     <object-type name="QStyle">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QStyle___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QStyle___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="drawControl(QStyle::ControlElement, const QStyleOption *, QPainter *, const QWidget *) const">
             <modify-argument index="2">
@@ -2171,7 +2171,7 @@
 
     <object-type name="QLayout">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QLayout___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QLayout___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="addItem(QLayoutItem *)">
             <modify-argument index="1">
@@ -2205,7 +2205,7 @@
 
     <object-type name="QGridLayout">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QGridLayout___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QGridLayout___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -2381,7 +2381,7 @@
 
     <object-type name="QGraphicsScene">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QGraphicsScene___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QGraphicsScene___" quote-before-line="}// class"/>
         </inject-code>
 
         <modify-function signature="addEllipse(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
@@ -2465,7 +2465,7 @@
 
     <object-type name="QWidget">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QWidget___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QWidget___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="setWindowTitle(const QString &amp;)">
             <inject-code class="java">
@@ -2634,7 +2634,7 @@
 
     <object-type name="QFileDialog">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QFileDialog___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QFileDialog___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -2703,7 +2703,7 @@
 
     <object-type name="QTabBar">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTabBar___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTabBar___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -2727,7 +2727,7 @@
 
     <object-type name="QClipboard">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QClipboard___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QClipboard___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -2738,7 +2738,7 @@
 
     <object-type name="QAbstractScrollArea">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QAbstractScrollArea___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QAbstractScrollArea___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -2754,7 +2754,7 @@
 
     <object-type name="QTextDocument">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QTextDocument___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTextDocument___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -2762,7 +2762,7 @@
 
     <object-type name="QSplitter">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QSplitter___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QSplitter___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -2799,7 +2799,7 @@
         </modify-function>
 
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QLineEdit___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QLineEdit___" quote-before-line="}// class"/>
         </inject-code>
 
     </object-type>
@@ -3062,7 +3062,7 @@
 
     <object-type name="QAction">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QAction___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QAction___" quote-before-line="}// class"/>
         </inject-code>
 
         <modify-function signature="setActionGroup(QActionGroup*)">
@@ -3089,7 +3089,7 @@
 
     <object-type name="QPainter">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPainter___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPainter___" quote-before-line="}// class"/>
         </inject-code>
 
     <inject-code class="destructor-function">
@@ -3159,7 +3159,7 @@
 
     <object-type name="QApplication">
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QApplication___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QApplication___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -3182,14 +3182,14 @@
         <modify-function signature="getWidgetPosition(QWidget*,int*,QFormLayout::ItemRole*)const" access="private"/>
         <modify-function signature="getItemPosition(int,int*,QFormLayout::ItemRole*)const" access="private"/>
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QFormLayout___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QFormLayout___" quote-before-line="}// class"/>
         </inject-code>
     </object-type>
 
     <interface-type name="QGraphicsLayoutItem">
         <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>
         <inject-code class="interface">
             public QMarginsF getContentsMargins();
@@ -3198,7 +3198,7 @@
     <object-type name="QGraphicsLayout">
         <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>
     </object-type>
     <object-type name="QGraphicsProxyWidget">
@@ -3220,8 +3220,8 @@
         <modify-function signature="getWindowFrameMargins(double*,double*,double*,double*)const" access="private"/>
 
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QGraphicsWidget___" quote-before-line="}// class"/>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QGraphicsWidget___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>
 
         <modify-function signature="initStyleOption(QStyleOption*)const">
@@ -3262,7 +3262,7 @@
     <object-type name="QPrinter">
         <modify-function signature="getPageMargins(double*,double*,double*,double*,QPrinter::Unit)const" access="private" />
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QPrinter___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPrinter___" quote-before-line="}// class"/>
         </inject-code>
     </object-type>
 
@@ -3286,7 +3286,7 @@
         <modify-function signature="insertItem(int, const QString &amp;)" remove="all" />
         <modify-function signature="insertItems(int, const QStringList&lt;QString&gt; &amp;)" remove="all" />
         <inject-code>
-            <import-file name="typesystem_gui-java.java" quote-after-line="class QListWidget___" quote-before-line="}// class" />
+            <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QListWidget___" quote-before-line="}// class" />
         </inject-code>
     </object-type>
 

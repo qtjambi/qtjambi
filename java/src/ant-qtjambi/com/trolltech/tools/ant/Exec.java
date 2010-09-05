@@ -108,7 +108,6 @@ class Exec {
         //System.out.println("ldpath: " + ldpath);
         //ldpath = "" + ldpath;
         env.put("LD_LIBRARY_PATH", ldpath);
-        System.out.println("ldpath: " + ldpath);
         builder.directory(directory);
         try {
 			Process process = builder.start();

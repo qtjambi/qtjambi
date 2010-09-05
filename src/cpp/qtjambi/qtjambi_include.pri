@@ -11,7 +11,7 @@ macx:{
     LIBS += -L$$PWD/../lib -l$$QTJAMBI_LIB_NAME
 }
 
-QTJAMBI_CPP = ../cpp
+QTJAMBI_CPP = ../../../build/generator/out/cpp/
 
 #DEFINES += QT_QTJAMBI_IMPORT
 

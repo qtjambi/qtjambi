@@ -222,7 +222,7 @@
 
     <condition property="qtjambi.library.makefiles.uptodate">
         <uptodate targetfile="${outputDir}/Makefile">
-            <srcfiles dir="${outputDir}/build/cpp" includes="**/*.pri"/>
+            <srcfiles dir="${outputDir}/build/generator/out/cpp" includes="**/*.pri"/>
             <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
             <srcfiles dir="${outputDir}/src/cpp/qtjambi" includes="*.pr*"/>
             <!--<srcfiles dir="${outputDir}/designer-integration"
@@ -422,8 +422,8 @@
         <mkdir dir="${generator.outputdir}"/>
         <generator dir="${outputDir}/generator"
                 outputDirectory="${generator.outputdir}"
-                typesystem="${sourceDir}/generator/build_all.txt"
-                header="${sourceDir}/generator/qtjambi_masterinclude.h"
+                typesystem="${sourceDir}/generator/targets/build_all.xml"
+                header="${sourceDir}/generator/targets/qtjambi_masterinclude.h"
                 phononpath="${qtjambi.phonon.includedir}"
                 qtincludedirectory="${qtjambi.qt.includedir}"
                 options="${qtjambi.generator.jumptable}"/>

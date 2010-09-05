@@ -13,7 +13,7 @@
 
     <value-type name="QGLColormap">
         <inject-code>
-            <import-file name="typesystem_opengl-java.java" quote-after-line="class QGLColormap___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_opengl-java.java" quote-after-line="class QGLColormap___" quote-before-line="}// class"/>
         </inject-code>
 
   </value-type>

@@ -7,7 +7,7 @@
 
     <value-type name="QDomDocument">
         <inject-code>
-            <import-file name="typesystem_xml-java.java" quote-after-line="class QDomDocument___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_xml-java.java" quote-after-line="class QDomDocument___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer.Type" location="java"/>
@@ -185,7 +185,7 @@
 
     <value-type name="QXmlNamespaceSupport">
         <inject-code>
-            <import-file name="typesystem_xml-java.java" quote-after-line="class QXmlNamespaceSupport___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_xml-java.java" quote-after-line="class QXmlNamespaceSupport___" quote-before-line="}// class"/>
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
@@ -273,7 +273,7 @@
 
     <object-type name="QXmlStreamWriter">
         <inject-code>
-            <import-file name="typesystem_xml-java.java" quote-after-line="class QXmlStreamWriter___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_xml-java.java" quote-after-line="class QXmlStreamWriter___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="QXmlStreamWriter(QByteArray *)">
             <access modifier="private"/>
@@ -329,7 +329,7 @@
 
     <interface-type name="QXmlEntityResolver">
         <inject-code>
-            <import-file name="typesystem_xml-java.java" quote-after-line="interface QXmlEntityResolver___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_xml-java.java" quote-after-line="interface QXmlEntityResolver___" quote-before-line="}// class"/>
         </inject-code>
         <modify-function signature="resolveEntity(QString,QString,QXmlInputSource&amp;*)">
             <modify-argument index="3">

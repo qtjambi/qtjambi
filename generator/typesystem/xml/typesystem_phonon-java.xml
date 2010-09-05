@@ -20,7 +20,7 @@
         </modify-function>
         <modify-function signature="property(const char*)const" access="private" />
         <inject-code>
-            <import-file name="typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
@@ -37,7 +37,7 @@
         <modify-function signature="operator!=(Phonon::ObjectDescription)const" remove="all" />
         <modify-function signature="property(const char*)const" access="private" />
         <inject-code>
-            <import-file name="typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
@@ -54,7 +54,7 @@
         </modify-function>
         <modify-function signature="property(const char*)const" access="private" />
         <inject-code>
-            <import-file name="typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
 
@@ -72,7 +72,7 @@
         <modify-function signature="property(const char*)const" access="private" />
 
         <inject-code>
-            <import-file name="typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
     
@@ -90,7 +90,7 @@
         <modify-function signature="property(const char*)const" access="private" />
 
         <inject-code>
-            <import-file name="typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
     
@@ -102,7 +102,7 @@
         </modify-function>
         <modify-function signature="phononVersion()" access="private" rename="phononVersion_private" associated-to="phononVersion()" />
         <inject-code>
-            <import-file name="typesystem_phonon-java.java" quote-after-line="class Phonon___" quote-before-line="}// class"/>
+            <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class Phonon___" quote-before-line="}// class"/>
         </inject-code>
     </namespace-type>
 

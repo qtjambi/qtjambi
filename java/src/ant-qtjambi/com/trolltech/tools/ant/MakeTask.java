@@ -86,14 +86,12 @@ public class MakeTask extends Task {
         commandArray.add(compilerName());
 
         if (silent && OSInfo.os() != OSInfo.OS.Windows) {
-            //arguments += " -s";
         	commandArray.add("-s");
         }
 
         try {
             final String makeOptions = System.getenv("MAKEOPTS");
             if (makeOptions != null) {
-                //arguments += " " + makeOptions;
             	commandArray.add(makeOptions);
             }
         } catch (SecurityException e) {
@@ -101,7 +99,6 @@ public class MakeTask extends Task {
             // Cannot happen
         }
 
-        //String command = compilerName() + arguments + " " + target;
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         String ldpath = (String) props.getProperty((String) null, InitializeTask.LIBDIR);
         Exec.execute(commandArray, ldpath, new File(dir));
