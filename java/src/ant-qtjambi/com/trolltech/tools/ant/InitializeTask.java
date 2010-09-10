@@ -203,8 +203,7 @@ public class InitializeTask extends Task {
      * check correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper props) {
-System.out.println(props.getProperty((String) null, PHONONLIBDIR).toString());
-    	boolean exists = doesQtLibExist("phonon", 4, props.getProperty((String) null, PHONONLIBDIR).toString());
+    	boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
         String phonon = String.valueOf(exists);
         if (verbose) {
             System.out.println(PHONON + ": " + phonon);        
