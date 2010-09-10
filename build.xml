@@ -225,8 +225,8 @@
             <srcfiles dir="${outputDir}/cpp" includes="**/*.pri"/>
             <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
             <srcfiles dir="${outputDir}/qtjambi" includes="*.pr*"/>
-            <!--<srcfiles dir="${outputDir}/designer-integration"
-                includes="**/*.pr*"/>-->
+            <srcfiles dir="${outputDir}/designer-integration"
+                includes="**/*.pr*"/>
         </uptodate>
     </condition>
 
