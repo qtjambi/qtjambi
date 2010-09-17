@@ -1,0 +1,103 @@
+<project name="qtjambi.java">
+    <!--
+        Pure Java jar targets:
+
+        * qtjambi-util.jar contains classes necessary for both the build system
+          and the bundled libraries (TODO: remove the dependency on the bundled
+          libraries...);
+        * ant-qtjambi.jar contains the code for many ant tasks used along the
+          file (qmake, make, generator, juic...);
+        * qtjambi.jar is the core jar for Qt Jambi applications;
+        * qtjambi-designer.jar is the Java equivalent of Qt Designer;
+        * qtjambi-examples.jar is a jar containing examples of Qt Jambi in
+          action.
+
+        Some of them, like jar.qtjambi, depend on other parts of this build
+        file.
+
+        As you will see, each of these targets is preceeded by a fileset. The
+        rule is to create a fileset with id "java.src.<modulenamehere>" and to
+        call the ant jar.xml file with inheritrefs=true (otherwise it will NOT
+        see the defined fileset).
+    -->
+
+    <fileset id="java.src.qtjambi-util" dir="${java.srcdir}/qtjambi-util"
+        includes="**/*.java"/>
+
+    <target name="jar.qtjambi-util">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi-util"/>
+        </ant>
+    </target>
+
+    <fileset id="java.src.ant-qtjambi" dir="${java.srcdir}/ant-qtjambi"
+        includes="**/*.java"/>
+
+    <target name="jar.ant-qtjambi" depends="jar.qtjambi-util"
+        description="Creates a .jar file containing all the Qt Jambi ant tasks.">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="ant-qtjambi"/>
+            <property name="destdir" value="${jardir}/nobundle"/>
+        </ant>
+    </target>
+
+    <fileset id="java.src.qtjambi" dir="${java.srcdir}/qtjambi"
+        includes="**/*.java"/>
+
+    <target name="jar.qtjambi"
+        depends="init, jar.qtjambi-util, generator.javasrc.qtjambi">
+        <!-- HF: This is a fix for adding the OsInfo class to the the main jar-->
+        <echo message="${java.outdir}"/>
+        <copy todir="${java.outdir}/qtjambi">
+            <fileset dir="${java.outdir}/qtjambi-util">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi"/>
+        </ant>
+    </target>
+
+    <fileset id="java.src.qtjambi-designer"
+        dir="${java.srcdir}/qtjambi-designer"
+        includes="**/*.java"/>
+
+    <target name="jar.qtjambi-designer"
+        depends="init, jar.qtjambi, generator.javasrc.qtjambi-designer">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi-designer"/>
+        </ant>
+    </target>
+
+    <fileset id="java.src.qtjambi-examples"
+        dir="${java.srcdir}/qtjambi-examples">
+        <include name="**/*.java"/>
+        <exclude name="com/trolltech/demos/phonon/*.java"
+            unless="qtjambi.phonon"/>
+        <exclude name="com/trolltech/examples/phonon/*.java"
+            unless="qtjambi.phonon"/>
+        <exclude name="com/trolltech/demos/xmlpatterns/*.java"
+            unless="qtjambi.xmlpatterns"/>
+        <exclude name="com/trolltech/examples/xmlpatterns/*.java"
+            unless="qtjambi.xmlpatterns"/>
+        <exclude name="com/trolltech/demos/webkit/*.java"
+            unless="qtjambi.webkit"/>
+        <exclude name="com/trolltech/examples/webkit/*.java"
+            unless="qtjambi.webkit"/>
+        <exclude name="com/trolltech/examples/opengl/*.java"
+            unless="qtjambi.opengl"/>
+        <exclude name="com/trolltech/demos/opengl/*.java"
+            unless="qtjambi.opengl"/>
+    </fileset>
+
+    <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
+        <dojuic module="qtjambi-examples"/>
+    </target>
+
+    <target name="jar.qtjambi-examples"
+        depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi-examples"/>
+        </ant>
+    </target>
+</project>

@@ -6,7 +6,7 @@ TARGET +=
 DEPENDPATH += $$GENERATORPATH tests parser
 mac:CONFIG -= app_bundle
 INCLUDEPATH += $$GENERATORPATH/.
-INCLUDEPATH += $$GENERATORPATH/../common
+INCLUDEPATH += $$GENERATORPATH/../src/cpp/common
 
 unix:CONFIG += debug_and_release
 

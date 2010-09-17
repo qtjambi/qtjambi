@@ -149,8 +149,10 @@ public class PlatformJarTask extends Task {
 
         debugConfiguration = "debug".equals ( props.getProperty ( ( String ) null, InitializeTask.CONFIGURATION ) );
 
-        if ( outdir == null )
-            throw new BuildException ( "Missing required attribute 'outdir'. This directory is used for building the .jar file..." );
+        if ( outdir == null ) {
+            throw new BuildException ( "Missing required attribute 'outdir'. " +
+            		"This directory is used for building the .jar file..." );
+        }
 
         if ( outdir.exists() ) {
             outdir.delete();
@@ -244,6 +246,7 @@ public class PlatformJarTask extends Task {
         File rootPath = e.getRootpath();
         String libraryName = e.getName();
         String subdir = e.getSubdir();
+        //System.out.println("nyaa " + rootPath.toString() + " " + subdir + " " + libraryName);
 
         if ( !"".equals ( subdir ) ) {
             subdir = subdir + "/";

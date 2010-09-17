@@ -1,6 +1,6 @@
 #!/bin/sh
 export QTDIR="/home/smar/Tiedostot/Projektit/qt/4.7/"
-export MAKEOPTS="-j1"
+export MAKEOPTS="-j8"
 export LC_ALL="C"
 #export QTDIR=/usr/lib/qt4
 #export JAVA_HOME=/java/path  

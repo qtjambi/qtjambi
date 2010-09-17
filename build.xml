@@ -1,24 +1,48 @@
-<project default="all" basedir="." name="qtjambi.main">
+﻿<project default="all" basedir="." name="qtjambi.main">
 
     <property file="build.properties"/>
 
-    <property name="sourceDir" value="."/>
-    <property name="outputDir" value="."/>
-
-    <!--
-        Classpath for Java compiling
-    -->
+    <property name="sourceDir" value="build"/>
+    <property name="outputDir" value="build"/>
+    <property name="generatorDir" value="generator"/>
 
     <path id="java.compile.classpath">
         <fileset dir="${jardir}" includes="*.jar"/>
     </path>
 
     <!--
-        Import the setenv.xml file. It defines the setenv target, which
-        init.taskdef below depends upon.
+        Import files containing tasks for the compilation.
     -->
 
     <import file="setenv.xml"/>
+    <import file="antfiles/bundle.xml"/>
+    <import file="antfiles/java.xml"/>
+    <import file="antfiles/clean.xml"/>
+    <import file="antfiles/generator.xml"/>
+
+    <!-- 
+        Runs qmake for Jambi source
+    -->
+    <target name="library.native.qmake" depends="init, generator.cppsrc"
+        unless="qtjambi.library.makefiles.uptodate"
+        description="Runs qmake on the Qt Jambi native library">
+        <delete dir="lib"/>
+        <qmake recursive="true" dir="${outputDir}"
+            pro="java.pro"
+            config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
+            qtconfig="${qtjambi.qtconfig}"
+            includepath="${qtjambi.phonon.includedir}"
+            debugTools="${qtjambi.debug-tools}"
+            qmakebinary="${qmake.binary}"/>
+    </target>
+
+    <!--
+        Runs make for Jambi source
+    -->
+    <target name="library.native.compile" depends="library.native.qmake"
+        description="Compiles the C++ Qt Jambi library">
+        <make dir="${outputDir}"/>
+    </target>
 
     <!--
         Initialization tasks. Note that the init.taskdef task depends on a jar
@@ -38,10 +62,10 @@
     <target name="init" depends="init.taskdef"
         description="Initializes the Qt Jambi build environment." >
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
-        <copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>
+        <!--<copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>-->
 
         <!-- copy jogl to the jar dir. needed for compilation examples  -->
-        <copy file="jogl/jogl.jar" todir="${jardir}"/>
+        <!--<copy file="jogl/jogl.jar" todir="${jardir}"/>-->
     </target>
 
     <!--
@@ -89,112 +113,6 @@
     -->
 
     <!--
-        Pure Java jar targets:
-
-        * qtjambi-util.jar contains classes necessary for both the build system
-          and the bundled libraries (TODO: remove the dependency on the bundled
-          libraries...);
-        * ant-qtjambi.jar contains the code for many ant tasks used along the
-          file (qmake, make, generator, juic...);
-        * qtjambi.jar is the core jar for Qt Jambi applications;
-        * qtjambi-designer.jar is the Java equivalent of Qt Designer;
-        * qtjambi-examples.jar is a jar containing examples of Qt Jambi in
-          action.
-
-        Some of them, like jar.qtjambi, depend on other parts of this build
-        file.
-
-        As you will see, each of these targets is preceeded by a fileset. The
-        rule is to create a fileset with id "java.src.<modulenamehere>" and to
-        call the ant jar.xml file with inheritrefs=true (otherwise it will NOT
-        see the defined fileset).
-    -->
-
-    <fileset id="java.src.qtjambi-util" dir="${java.srcdir}/qtjambi-util"
-        includes="**/*.java"/>
-
-    <target name="jar.qtjambi-util">
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
-            <property name="module" value="qtjambi-util"/>
-        </ant>
-    </target>
-
-    <fileset id="java.src.ant-qtjambi" dir="${java.srcdir}/ant-qtjambi"
-        includes="**/*.java"/>
-
-    <target name="jar.ant-qtjambi" depends="jar.qtjambi-util"
-        description="Creates a .jar file containing all the Qt Jambi ant tasks.">
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
-            <property name="module" value="ant-qtjambi"/>
-            <property name="destdir" value="${jardir}/nobundle"/>
-        </ant>
-    </target>
-
-    <fileset id="java.src.qtjambi" dir="${java.srcdir}/qtjambi"
-        includes="**/*.java"/>
-
-    <target name="jar.qtjambi"
-        depends="init, jar.qtjambi-util, generator.javasrc.qtjambi">
-        <!-- HF: This is a fix for adding the OsInfo class to the the main jar-->
-        <echo message="${java.outdir}"/>
-        <copy todir="${java.outdir}/qtjambi">
-            <fileset dir="${java.outdir}/qtjambi-util">
-                <include name="**/*"/>
-            </fileset>
-        </copy>
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
-            <property name="module" value="qtjambi"/>
-        </ant>
-    </target>
-
-    <fileset id="java.src.qtjambi-designer"
-        dir="${java.srcdir}/qtjambi-designer"
-        includes="**/*.java"/>
-
-    <target name="jar.qtjambi-designer"
-        depends="init, jar.qtjambi, generator.javasrc.qtjambi-designer">
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
-            <property name="module" value="qtjambi-designer"/>
-        </ant>
-    </target>
-
-    <fileset id="java.src.qtjambi-examples"
-        dir="${java.srcdir}/qtjambi-examples">
-        <include name="**/*.java"/>
-        <exclude name="com/trolltech/demos/phonon/*.java"
-            unless="qtjambi.phonon"/>
-        <exclude name="com/trolltech/examples/phonon/*.java"
-            unless="qtjambi.phonon"/>
-        <exclude name="com/trolltech/demos/xmlpatterns/*.java"
-            unless="qtjambi.xmlpatterns"/>
-        <exclude name="com/trolltech/examples/xmlpatterns/*.java"
-            unless="qtjambi.xmlpatterns"/>
-        <exclude name="com/trolltech/demos/webkit/*.java"
-            unless="qtjambi.webkit"/>
-        <exclude name="com/trolltech/examples/webkit/*.java"
-            unless="qtjambi.webkit"/>
-        <exclude name="com/trolltech/examples/opengl/*.java"
-            unless="qtjambi.opengl"/>
-        <exclude name="com/trolltech/demos/opengl/*.java"
-            unless="qtjambi.opengl"/>
-    </fileset>
-
-    <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
-        <dojuic module="qtjambi-examples"/>
-    </target>
-
-    <target name="jar.qtjambi-examples"
-        depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
-            <property name="module" value="qtjambi-examples"/>
-        </ant>
-    </target>
-
-    <!--
-        END of pure Java jar targets
-    -->
-
-    <!--
         TODO: the following two targets must go away
         Move them to their real location or something
     -->
@@ -212,387 +130,6 @@
     <target name="examples.bundle" depends="jar.qtjambi-examples">
         <copy file="${jardir}/qtjambi-examples.jar"
             tofile="qtjambi-examples-${qtjambi.version}.jar"/>
-    </target>
-
-    <!--
-        ************************************************************
-        Library Compilation etc ...
-        ************************************************************
-    -->
-
-    <condition property="qtjambi.library.makefiles.uptodate">
-        <uptodate targetfile="${outputDir}/Makefile">
-            <srcfiles dir="${outputDir}/build/generator/out/cpp" includes="**/*.pri"/>
-            <srcfiles dir="${outputDir}" includes="**/qtjambi_*.pro"/>
-            <srcfiles dir="${outputDir}/src/cpp/qtjambi" includes="*.pr*"/>
-            <!--<srcfiles dir="${outputDir}/designer-integration"
-                includes="**/*.pr*"/>-->
-        </uptodate>
-    </condition>
-
-    <target name="library.native.qmake" depends="init, generator.cppsrc"
-        unless="qtjambi.library.makefiles.uptodate"
-        description="Runs qmake on the Qt Jambi native library">
-        <delete dir="lib"/>
-        <qmake recursive="true" dir="${outputDir}"
-            pro="${sourceDir}/java.pro"
-            config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
-            qtconfig="${qtjambi.qtconfig}"
-            includepath="${qtjambi.phonon.includedir}"
-            debugTools="${qtjambi.debug-tools}"
-            qmakebinary="${qmake.binary}"/>
-    </target>
-
-    <target name="library.native.compile" depends="library.native.qmake"
-        description="Compiles the C++ Qt Jambi library">
-        <make dir="${outputDir}"/>
-    </target>
-
-    <target name="library.native.bundle" depends="library.native.compile"
-            description="Creates a .jar file file containing native libraries.">
-
-        <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
-                              outdir="${outputDir}/platform-output">
-
-            <!-- Qt Libraries -->
-            <library name="QtCore"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtGui"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtXml"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtSql"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtSvg"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    load="yes"/>
-            <library name="QtNetwork"           type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtHelp"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.help}"/>
-            <library name="QtScript"            type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.script}"/>
-            <library name="QtScriptTools"       type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.scripttools}"/>
-            <library name="QtMultimedia"        type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.multimedia}"/>
-            <library name="QtOpenGL"            type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.opengl}"/>
-            <library name="QtWebKit"            type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.webkit}"/>
-            <library name="QtXmlPatterns"       type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.xmlpatterns}"/>
-            <library name="phonon"              type="qt"
-                    rootPath="${qtjambi.phonon.libdir}"
-                    if="${qtjambi.phonon}"/>
-            <library name="QtDBus"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.dbus}"/>
-            <library name="phonon_ds9"          type="plugin"
-                    rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="plugins/phonon_backend"
-                    load="never"
-                    if="${qtjambi.phonon_ds9}"/>
-            <library name="phonon_gstreamer"    type="plugin"
-                    rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="plugins/phonon_backend"
-                    load="never"
-                    kdephonon="false"
-                    if="${qtjambi.phonon_gstreamer}"/>
-            <library name="phonon_qt7"          type="plugin"
-                    rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="plugins/phonon_backend"
-                    load="never"
-                    if="${qtjambi.phonon_qt7}"/>
-
-            <!-- Qt Plugins -->
-            <library name="qjpeg"               type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
-            <library name="qgif"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
-            <library name="qmng"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
-            <library name="qtiff"               type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
-            <library name="qsvg"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
-            <library name="qsvgicon"            type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/iconengines" load="never"/>
-            <library name="qcncodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
-            <library name="qjpcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
-            <library name="qkrcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
-            <library name="qtwcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
-            <library name="qtaccessiblewidgets" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/accessible" load="never"/>
-            <library name="qsqlite" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/sqldrivers"
-                    load="never"
-                    if="${qtjambi.sqlite}"/>
-
-            <!-- Qt Jambi Libraries -->
-            <library name="qtjambi"                  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
-            <library name="com_trolltech_qt_core"    type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
-            <library name="com_trolltech_qt_gui"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
-            <library name="com_trolltech_qt_xml"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
-            <library name="com_trolltech_qt_sql"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
-            <library name="com_trolltech_qt_help"    type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.help}"/>
-            <library name="com_trolltech_qt_script"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.script}"/>
-            <library name="com_trolltech_qt_scripttools"    type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.scripttools}"/>
-            <library name="com_trolltech_qt_multimedia"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.multimedia}"/>
-            <library name="com_trolltech_qt_svg"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
-            <library name="com_trolltech_qt_opengl"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.opengl}"/>
-            <library name="com_trolltech_qt_network" type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
-            <library name="com_trolltech_qt_phonon"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.phonon}"/>
-            <library name="com_trolltech_qt_webkit"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.webkit}"/>
-            <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
-                    if="${qtjambi.xmlpatterns}"/>
-
-        <plugin path="plugins"/>
-
-        </qtjambi-platform-jar>
-
-        <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar"/>
-        <jar destfile="${destination-file}">
-            <fileset dir="${outputDir}/platform-output"/>
-            <manifest>
-                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-            </manifest>
-        </jar>
-        <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>
-
-    </target>
-
-    <!--
-        ************************************************************
-        Building and running the Generator...
-        ************************************************************
-    -->
-
-    <available file="${timestamp.dir}/generator.run" type="file"
-        property="qtjambi.generator_run.uptodate"/>
-
-    <target name="generator.run" depends="init, tools.generator.make"
-        unless="qtjambi.generator_run.uptodate"
-        description="Runs the Qt Jambi generator on the Qt sources, using the Qt version found at the QTDIR variable.">
-        <mkdir dir="${generator.outputdir}"/>
-        <generator dir="${outputDir}/generator"
-                outputDirectory="${generator.outputdir}"
-                typesystem="${sourceDir}/generator/targets/build_all.xml"
-                header="${sourceDir}/generator/targets/qtjambi_masterinclude.h"
-                phononpath="${qtjambi.phonon.includedir}"
-                qtincludedirectory="${qtjambi.qt.includedir}"
-                options="${qtjambi.generator.jumptable}"/>
-        <dostamp stampfile="generator.run"/>
-    </target>
-
-    <target name="generator.cppsrc" depends="generator.run">
-        <copy todir="${outputDir}">
-            <fileset dir="${generator.outputdir}" includes="cpp/**/*"/>
-        </copy>
-    </target>
-
-    <target name="generator.javasrc.qtjambi" depends="generator.run">
-        <mkdir dir="${java.generated.srcdir}/qtjambi"/>
-        <copy todir="${java.generated.srcdir}/qtjambi"
-            includeemptydirs="false">
-            <fileset dir="${generator.outputdir}">
-                <include name="**/*"/>
-                <exclude name="com/trolltech/tools/designer/**"/>
-                <exclude name="cpp/**/*"/>
-            </fileset>
-        </copy>
-        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="java/src/qtjambi">
-        </zip>
-        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${java.generated.srcdir}/qtjambi" update="true">
-        </zip>
-    </target>
-
-    <target name="generator.javasrc.qtjambi-designer" depends="generator.run">
-        <mkdir dir="${java.generated.srcdir}/qtjambi-designer"/>
-        <copy todir="${java.generated.srcdir}/qtjambi-designer"
-            includeemptydirs="false">
-            <fileset dir="${generator.outputdir}"
-                includes="com/trolltech/tools/designer/**"/>
-        </copy>
-    </target>
-
-    <!--
-        ************************************************************
-        XML Merging for the generator...
-        ************************************************************
-    -->
-
-    <macrodef name="xmlmerge">
-        <attribute name="victim"/>
-        <sequential>
-            <xslt force="true" style="${generator.xmlmerge.srcdir}/merge.xsl"
-                in="${generator.xmlmerge.srcdir}/typesystem_@{victim}-common.xml"
-                out="${generator.xmlmerge.outputdir}/typesystem_@{victim}.xml">
-                <param name="source"
-                    expression="typesystem_@{victim}-java.xml"/>
-            </xslt>
-        </sequential>
-    </macrodef>
-
-    <target name="generator.xmlmerge"
-        description="Merges the XML files used by the Qt Jambi generator.">
-        <xmlmerge victim="core"/>
-        <xmlmerge victim="gui"/>
-        <xmlmerge victim="xml"/>
-        <xmlmerge victim="network"/>
-        <xmlmerge victim="opengl"/>
-        <xmlmerge victim="sql"/>
-        <xmlmerge victim="svg"/>
-        <xmlmerge victim="help"/>
-        <xmlmerge victim="multimedia"/>
-        <xmlmerge victim="webkit"/>
-        <xmlmerge victim="phonon"/>
-        <xmlmerge victim="xmlpatterns"/>
-        <xmlmerge victim="designer"/>
-        <xmlmerge victim="script"/>
-        <xmlmerge victim="scripttools"/>
-    </target>
-
-    <target name="generator" depends="generator.run"
-        description="Compiles and runs the Qt Jambi Generator."/>
-
-    <target name="library.native" depends="library.native.bundle"
-        description="Compiles and bundles the Qt Jambi native libraries."/>
-
-    <target name="library.java" depends="library.java.bundle"
-        description="Compiles and bundles the Qt Jambi java libraries."/>
-
-    <target name="library.designer" depends="library.designer.bundle"
-        description="Compiles and bundles the Qt Jambi designer libraries."/>
-
-    <target name="library" depends="library.native, library.java, library.designer"
-        description="Compiles and bundles the Qt Jambi libraries.">
-        <copy file="${jardir}/qtjambi-util.jar"
-            tofile="qtjambi-util-${qtjambi.version}.jar"/>
-    </target>
-
-    <target name="examples" depends="examples.bundle"
-        description="Compiles and bundles the Qt Jambi examples."/>
-
-    <target name="all" depends="library, examples"
-        description="Generates, builds and bundles the Qt Jambi libraries."/>
-
-    <!--
-        CLEAN TARGETS
-    -->
-
-    <available file="Makefile" type="file" property="global.makefile.present"/>
-    <available file="juic/Makefile" type="file"
-        property="juic.makefile.present"/>
-    <available file="generator/Makefile" type="file"
-        property="generator.makefile.present"/>
-
-    <target name="make.clean.global" if="global.makefile.present"
-        depends="init">
-        <make target="clean"/>
-        <delete file="Makefile"/>
-        <delete>
-            <fileset dir=".">
-                <include name="**/Makefile*"/>
-                <exclude name="juic/Makefile*"/>
-                <exclude name="generator/Makefile*"/>
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="make.clean.juic" if="juic.makefile.present"
-        depends="init">
-        <make dir="juic" target="clean"/>
-        <delete>
-            <fileset dir="juic">
-                <include name="Makefile*"/>
-                <include name="juic"/>
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="make.clean.generator" if="generator.makefile.present"
-        depends="init">
-        <make dir="generator" target="clean"/>
-        <delete>
-            <fileset dir="generator">
-                <include name="Makefile*"/>
-                <include name="generator"/>
-                <include name="mjb_*.log"/>
-                <include name=".preprocessed.tmp"/>
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="clean" description="Cleans everything"
-        depends="make.clean.global, make.clean.generator, make.clean.juic">
-        <delete>
-            <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
-        </delete>
-        <delete dir="${java.outdir}"/>
-        <delete dir="${java.generated.srcdir}"/>
-        <delete dir="${jardir}"/>
-        <delete dir="${generator.outputdir}"/>
-        <delete dir="${timestamp.dir}"/>
-        <delete dir="extjars"/>
-        <delete dir="bin"/>
-        <delete dir="lib"/>
-        <delete dir="cpp"/>
-        <delete>
-            <fileset dir=".">
-                <include name="plugins/**/*"/>
-                <exclude name="plugins/qtjambi/**/*"/>
-                <include name="*.jar"/>
-            </fileset>
-        </delete>
-        <delete file="${java.srcdir}/qtjambi/version.properties"/>
-        <delete dir="${outputDir}/platform-output"/>
-        <delete file="qtjambi-${qtjambi.version}-src.zip"/>
     </target>
 
     <target name="help" description="Provides detailed help.">

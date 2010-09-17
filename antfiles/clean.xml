@@ -1,0 +1,74 @@
+<project name="qtjambi.clean">
+    <!--
+        CLEAN TARGETS
+    -->
+
+    <available file="Makefile" type="file" property="global.makefile.present"/>
+    <available file="juic/Makefile" type="file"
+        property="juic.makefile.present"/>
+    <available file="generator/Makefile" type="file"
+        property="generator.makefile.present"/>
+
+    <target name="make.clean.global" if="global.makefile.present"
+        depends="init">
+        <make target="clean"/>
+        <delete file="Makefile"/>
+        <delete>
+            <fileset dir=".">
+                <include name="**/Makefile*"/>
+                <exclude name="juic/Makefile*"/>
+                <exclude name="generator/Makefile*"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="make.clean.juic" if="juic.makefile.present"
+        depends="init">
+        <make dir="juic" target="clean"/>
+        <delete>
+            <fileset dir="juic">
+                <include name="Makefile*"/>
+                <include name="juic"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="make.clean.generator" if="generator.makefile.present"
+        depends="init">
+        <make dir="generator" target="clean"/>
+        <delete>
+            <fileset dir="generator">
+                <include name="Makefile*"/>
+                <include name="generator"/>
+                <include name="mjb_*.log"/>
+                <include name=".preprocessed.tmp"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="clean" description="Cleans everything"
+        depends="make.clean.global, make.clean.generator, make.clean.juic">
+        <delete>
+            <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
+        </delete>
+        <delete dir="${java.outdir}"/>
+        <delete dir="${java.generated.srcdir}"/>
+        <delete dir="${jardir}"/>
+        <delete dir="${generator.outputdir}"/>
+        <delete dir="${timestamp.dir}"/>
+        <delete dir="extjars"/>
+        <delete dir="bin"/>
+        <delete dir="lib"/>
+        <delete dir="cpp"/>
+        <delete>
+            <fileset dir=".">
+                <include name="plugins/**/*"/>
+                <exclude name="plugins/qtjambi/**/*"/>
+                <include name="*.jar"/>
+            </fileset>
+        </delete>
+        <delete file="${java.srcdir}/qtjambi/version.properties"/>
+        <delete dir="${outputDir}/platform-output"/>
+        <delete file="qtjambi-${qtjambi.version}-src.zip"/>
+    </target>
+</project>

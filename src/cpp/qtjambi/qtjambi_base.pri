@@ -69,6 +69,7 @@ jumptable{
     macx:QMAKE_LFLAGS += -Wl,-x
 }
 
-linux-g++* {
-    QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
-}
+#NOTE: this is just to test, uncomment if after all RPATHs are wanted.
+#linux-g++* {
+    #QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+#}

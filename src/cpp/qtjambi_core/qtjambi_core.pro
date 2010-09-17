@@ -8,4 +8,6 @@ INCLUDEPATH += $$PWD
 HEADERS += qtjambiconcurrent.h qtjambiconcurrent_p.h qtjambi_core_qhashes.h
 SOURCES += qtjambiconcurrent.cpp
 
+message($$DEPENDPATH)
+
 QT -= gui
