@@ -1,4 +1,4 @@
-<project default="all" basedir="." name="qtjambi.main">
+﻿<project default="all" basedir="." name="qtjambi.main">
 
     <property file="build.properties"/>
 
@@ -304,7 +304,7 @@
                     rootPath="${qtjambi.phonon.pluginsdir}"
                     subdir="plugins/phonon_backend"
                     load="never"
-                    kdephonon="false"
+                    kdephonon="${qtjambi.phonon.kdephonon}"
                     if="${qtjambi.phonon_gstreamer}"/>
             <library name="phonon_qt7"          type="plugin"
                     rootPath="${qtjambi.phonon.pluginsdir}"
