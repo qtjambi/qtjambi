@@ -2,9 +2,6 @@
     <!--
         Pure Java jar targets:
 
-        * qtjambi-util.jar contains classes necessary for both the build system
-          and the bundled libraries (TODO: remove the dependency on the bundled
-          libraries...);
         * ant-qtjambi.jar contains the code for many ant tasks used along the
           file (qmake, make, generator, juic...);
         * qtjambi.jar is the core jar for Qt Jambi applications;
@@ -45,7 +42,7 @@
         includes="**/*.java"/>
 
     <target name="jar.qtjambi"
-        depends="init, jar.qtjambi-util, generator.javasrc.qtjambi">
+        depends="init, jar.qtjambi-util">
         <!-- HF: This is a fix for adding the OsInfo class to the the main jar-->
         <echo message="${java.outdir}"/>
         <copy todir="${java.outdir}/qtjambi">
@@ -63,7 +60,7 @@
         includes="**/*.java"/>
 
     <target name="jar.qtjambi-designer"
-        depends="init, jar.qtjambi, generator.javasrc.qtjambi-designer">
+        depends="init, jar.qtjambi">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-designer"/>
         </ant>

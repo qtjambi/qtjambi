@@ -1,8 +1,6 @@
 <project name="qtjambi.generator">
     <!--
-        ************************************************************
-        Building and running the Generator...
-        ************************************************************
+        Building and running the Generator
     -->
 
     <target name="generator.run" depends="init, tools.generator.make"
@@ -17,41 +15,8 @@
                 options="${qtjambi.generator.jumptable}"/>
     </target>
 
-    <target name="generator.cppsrc" depends="generator.run">
-        <copy todir="${outputDir}">
-            <fileset dir="${generator.outputdir}" includes="cpp/**/*"/>
-        </copy>
-    </target>
-
-    <target name="generator.javasrc.qtjambi" depends="generator.run">
-        <mkdir dir="${java.generated.srcdir}/qtjambi"/>
-        <copy todir="${java.generated.srcdir}/qtjambi"
-            includeemptydirs="false">
-            <fileset dir="${generator.outputdir}">
-                <include name="**/*"/>
-                <exclude name="com/trolltech/tools/designer/**"/>
-                <exclude name="cpp/**/*"/>
-            </fileset>
-        </copy>
-        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="java/src/qtjambi">
-        </zip>
-        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${java.generated.srcdir}/qtjambi" update="true">
-        </zip>
-    </target>
-
-    <target name="generator.javasrc.qtjambi-designer" depends="generator.run">
-        <mkdir dir="${java.generated.srcdir}/qtjambi-designer"/>
-        <copy todir="${java.generated.srcdir}/qtjambi-designer"
-            includeemptydirs="false">
-            <fileset dir="${generator.outputdir}"
-                includes="com/trolltech/tools/designer/**"/>
-        </copy>
-    </target>
-
     <!--
-        ************************************************************
-        XML Merging for the generator...
-        ************************************************************
+        XML Merging for the generator
     -->
 
     <macrodef name="xmlmerge">
@@ -84,29 +49,5 @@
         <xmlmerge victim="script"/>
         <xmlmerge victim="scripttools"/>
     </target>
-
-    <target name="generator" depends="generator.run"
-        description="Compiles and runs the Qt Jambi Generator."/>
-
-    <target name="library.native" depends="library.native.bundle"
-        description="Compiles and bundles the Qt Jambi native libraries."/>
-
-    <target name="library.java" depends="library.java.bundle"
-        description="Compiles and bundles the Qt Jambi java libraries."/>
-
-    <target name="library.designer" depends="library.designer.bundle"
-        description="Compiles and bundles the Qt Jambi designer libraries."/>
-
-    <target name="library" depends="library.native, library.java, library.designer"
-        description="Compiles and bundles the Qt Jambi libraries.">
-        <copy file="${jardir}/qtjambi-util.jar"
-            tofile="qtjambi-util-${qtjambi.version}.jar"/>
-    </target>
-
-    <target name="examples" depends="examples.bundle"
-        description="Compiles and bundles the Qt Jambi examples."/>
-
-    <target name="all" depends="library, examples"
-        description="Generates, builds and bundles the Qt Jambi libraries."/>
 
 </project>

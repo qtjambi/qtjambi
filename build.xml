@@ -1,4 +1,4 @@
-﻿<project default="all" basedir="." name="qtjambi.main">
+﻿<project default="help" basedir="." name="qtjambi.main">
 
     <property file="build.properties"/>
 
@@ -19,30 +19,6 @@
     <import file="antfiles/java.xml"/>
     <import file="antfiles/clean.xml"/>
     <import file="antfiles/generator.xml"/>
-
-    <!-- 
-        Runs qmake for Jambi source
-    -->
-    <target name="library.native.qmake" depends="init, generator.cppsrc"
-        unless="qtjambi.library.makefiles.uptodate"
-        description="Runs qmake on the Qt Jambi native library">
-        <delete dir="lib"/>
-        <qmake recursive="true" dir="${outputDir}"
-            pro="java.pro"
-            config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
-            qtconfig="${qtjambi.qtconfig}"
-            includepath="${qtjambi.phonon.includedir}"
-            debugTools="${qtjambi.debug-tools}"
-            qmakebinary="${qmake.binary}"/>
-    </target>
-
-    <!--
-        Runs make for Jambi source
-    -->
-    <target name="library.native.compile" depends="library.native.qmake"
-        description="Compiles the C++ Qt Jambi library">
-        <make dir="${outputDir}"/>
-    </target>
 
     <!--
         Initialization tasks. Note that the init.taskdef task depends on a jar
@@ -112,6 +88,14 @@
         END of tools building
     -->
 
+    <!-- TODO: move to better place -->
+    <target name="qtjambi.source" depends="generator.run">
+        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="java/src/qtjambi">
+        </zip>
+        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${java.generated.srcdir}/qtjambi" update="true">
+        </zip>
+    </target>
+
     <!--
         TODO: the following two targets must go away
         Move them to their real location or something
@@ -147,5 +131,29 @@ You can also see the Qt Jambi intallation document at:
 http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </echo>
     </target>
+
+    <target name="generator" depends="generator.run"
+        description="Compiles and runs the Qt Jambi Generator."/>
+
+    <target name="library.native" depends="library.native.bundle"
+        description="Compiles and bundles the Qt Jambi native libraries."/>
+
+    <target name="library.java" depends="library.java.bundle"
+        description="Compiles and bundles the Qt Jambi java libraries."/>
+
+    <target name="library.designer" depends="library.designer.bundle"
+        description="Compiles and bundles the Qt Jambi designer libraries."/>
+
+    <target name="library" depends="library.native, library.java, library.designer"
+        description="Compiles and bundles the Qt Jambi libraries.">
+        <copy file="${jardir}/qtjambi-util.jar"
+            tofile="qtjambi-util-${qtjambi.version}.jar"/>
+    </target>
+
+    <target name="examples" depends="examples.bundle"
+        description="Compiles and bundles the Qt Jambi examples."/>
+
+    <target name="all" depends="library, examples"
+        description="Generates, builds and bundles the Qt Jambi libraries."/>
 
 </project>

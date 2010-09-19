@@ -93,13 +93,13 @@
 
     <target name="copy-resources">
         <mkdir dir="${java.outdir}/${module}"/>
-        <copy todir="${java.outdir}/${module}" includeemptydirs="false">
+        <!--<copy todir="${java.outdir}/${module}" includeemptydirs="false">
             <fileset dir="${java.srcdir}/${module}">
                 <include name="**/*"/>
                 <exclude name="**/*.java"/>
                 <exclude name="**/*.jui"/>
             </fileset>
-        </copy>
+        </copy>-->
     </target>
 
     <!--
