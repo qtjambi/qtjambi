@@ -1,4 +1,3 @@
-
 <!--
  This file has two purposes:
 
@@ -44,20 +43,20 @@
 
     <target name="check.antcontrib">
         <available file="${timestamp.dir}/antcontrib" type="file"
-            property="antcontrib.done"/>
+                   property="antcontrib.done"/>
     </target>
 
     <target name="antcontrib.systemcopy" if="antcontrib.system.location">
         <mkdir dir="extjars"/>
         <copy failonerror="true" overwrite="true"
-            file="${antcontrib.system.location}"
-            tofile="extjars/ant-contrib.jar"/>
+              file="${antcontrib.system.location}"
+              tofile="extjars/ant-contrib.jar"/>
         <property name="antcontrib.done" value="yes"/>
     </target>
 
     <target name="get.antcontrib"
-        depends="check.antcontrib, antcontrib.systemcopy"
-        unless="antcontrib.done">
+            depends="check.antcontrib, antcontrib.systemcopy"
+            unless="antcontrib.done">
         <!--
             Yes, pathnames are hardcoded here. Since this is the only use we
             have for them, there's no need to make properties out of them.
@@ -74,10 +73,10 @@
             download it again.
         -->
         <get src="${antcontrib.download.url}" dest="tmp/ant-contrib.zip"
-            verbose="true"/>
+             verbose="true"/>
         <unzip src="tmp/ant-contrib.zip" dest="tmp"/>
         <copy file="tmp/${antcontrib.jar.location}"
-            tofile="extjars/ant-contrib.jar"/>
+              tofile="extjars/ant-contrib.jar"/>
         <!--
             ... And remove the temporary directory, which we don't need anymore.
         -->
@@ -91,7 +90,7 @@
             we expect it to be, we can now import all tasks...
         -->
         <taskdef resource="net/sf/antcontrib/antlib.xml"
-            classpath="extjars/ant-contrib.jar"/>
+                 classpath="extjars/ant-contrib.jar"/>
     </target>
 
     <!--
@@ -112,14 +111,14 @@
                 <if>
                     <os family="windows"/>
                     <then>
-                        <property name="qt.libdir" value="${env.QTDIR}/bin"/>
-                        <property name="qtjambi.libdir" value="${env.JAMBIDIR}/bin"/>
+                        <property name="qt.lib.subdir" value="bin"/>
                     </then>
                     <else>
-                        <property name="qt.libdir" value="${env.QTDIR}/lib"/>
-                        <property name="qtjambi.libdir" value="${env.JAMBIDIR}/lib"/>
+                        <property name="qt.lib.subdir" value="lib"/>
                     </else>
                 </if>
+                <property name="qt.libdir" value="${env.QTDIR}/${qt.lib.subdir}"/>
+                <property name="qtjambi.libdir" value="${env.JAMBIDIR}/${qt.lib.subdir}"/>
 
 
                 <property name="qt.pluginsdir" value="${env.QTDIR}"/>
@@ -168,18 +167,18 @@
                 </not>
             </condition>
         </fail>
-        <property name="qtjambi.qt.libdir"          value="${qt.libdir}"/>
-        <property name="qtjambi.qt.pluginsdir"      value="${qt.pluginsdir}"/>
-        <property name="qtjambi.qt.includedir"      value="${qt.includedir}"/>
-        <property name="qtjambi.jambi.libdir"       value="lib"/>
+        <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
+        <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
+        <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
+        <property name="qtjambi.jambi.libdir" value="lib"/>
         <!--
             dummy-set values to phonon properties, if they
             are not set. If they are set, or if they are set by QTDIR,
             the this won't do anything.
         -->
-        <property name="qtjambi.phonon.includedir"  value="${qt.includedir}/phonon"/>
-        <property name="qtjambi.phonon.libdir"      value="${qt.libdir}"/>
-        <property name="qtjambi.phonon.pluginsdir"  value="${qt.libdir}"/>
+        <property name="qtjambi.phonon.includedir" value="${qt.includedir}/phonon"/>
+        <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
+        <property name="qtjambi.phonon.pluginsdir" value="${qt.libdir}"/>
     </target>
 
     <target name="setenv" depends="source.antcontrib, setup-properties"/>

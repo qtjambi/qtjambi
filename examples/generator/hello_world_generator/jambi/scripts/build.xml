@@ -12,8 +12,8 @@
     <property name="jambiLib" value="${jambiDir}/lib"/>
     <property name="jardir" value="${jambiDir}/jars"/>
 
-    <property file="${jambiDir}/build.properties"/>
-    <property file="${jambiDir}/version.properties"/>
+    <!--<property file="${jambiDir}/build.properties"/>-->
+    <!--<property file="${jambiDir}/version.properties"/>-->
 
     <property name="sourceDir" value="."/>
     <property name="outputDir" value="."/>
@@ -29,35 +29,6 @@
         </taskdef>
         <taskdef resource="net/sf/antcontrib/antlib.xml"
             classpath="${jambiDir}/extjars/ant-contrib.jar"/>
-    </target>
-
-    <target name="setenv-noantcontrib">
-        <antcall target="handle-qtdir"/>
-        <antcall target="lookup-libdir"/>
-        <exec executable="${qmake.binary}" outputproperty="qt.version">
-            <arg value="-query"/>
-            <arg value="QT_VERSION"/>
-        </exec>
-        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version}">
-            <condition>
-                <not>
-                    <equals arg1="${qtjambi.version}" arg2="${qt.version}"/>
-                </not>
-            </condition>
-        </fail>
-        <property name="qtjambi.qt.libdir"          value="${qt.libdir}"/>
-        <property name="qtjambi.qt.pluginsdir"      value="${qt.pluginsdir}"/>
-        <property name="qtjambi.qt.includedir"      value="${qt.includedir}"/>
-        <property name="qtjambi.jambi.libdir"       value="lib"/>
-        <!--
-            dummy-set values to phonon properties, if they
-            are not set. If they are set, or if they are set by QTDIR,
-            the this won't do anything.
-        -->
-        <property name="qtjambi.phonon.includedir"  value="${qt.includedir}/phonon"/>
-        <property name="qtjambi.phonon.libdir"      value="${qt.libdir}"/>
-        <property name="qtjambi.phonon.pluginsdir"  value="${qt.libdir}"/>
-
     </target>
 
     <target name="help" description="Provides detailed help.">
@@ -137,7 +108,7 @@
             <plugin path="plugins"/>
 
             <!-- Finally the mapborealis library  -->
-            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/../bin"/>
+            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/../${qt.lib.subdir}"/>
 
         </qtjambi-platform-jar>
 
@@ -166,7 +137,7 @@
                 <include name="**/*.cpp"/>
             </fileset>
         </delete>
-        <delete dir="../lib"/>
+        <delete dir="../${qt.lib.subdir}"/>
         <delete dir="../target"/>
     </target>
 
