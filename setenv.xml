@@ -100,7 +100,7 @@
         to qt's libraries's dir and include dir.
     -->
 
-    <target name="handle-qtdir" depends="source.antcontrib">
+    <target name="handle-qtdir">
         <!--<property name="qtdir" value="${env.QTDIR}"/>-->
         <if>
             <isset property="env.QTDIR"/>
@@ -109,7 +109,19 @@
                 <var name="qt.libdir" unset="true"/>
                 <var name="qt.pluginsdir" unset="true"/>
                 <var name="qt.includedir" unset="true"/>
-                <property name="qt.libdir" value="${env.QTDIR}/lib"/>
+                <if>
+                    <os family="windows"/>
+                    <then>
+                        <property name="qt.libdir" value="${env.QTDIR}/bin"/>
+                        <property name="qtjambi.libdir" value="${env.JAMBIDIR}/bin"/>
+                    </then>
+                    <else>
+                        <property name="qt.libdir" value="${env.QTDIR}/lib"/>
+                        <property name="qtjambi.libdir" value="${env.JAMBIDIR}/lib"/>
+                    </else>
+                </if>
+
+
                 <property name="qt.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
 
@@ -131,7 +143,7 @@
         </if>
     </target>
 
-    <target name="lookup-libdir" depends="source.antcontrib">
+    <target name="lookup-libdir">
         <if>
             <os family="windows"/>
             <then>
@@ -144,7 +156,7 @@
         </if>
     </target>
 
-    <target name="setenv" depends="handle-qtdir, lookup-libdir">
+    <target name="setup-properties" depends="handle-qtdir, lookup-libdir">
         <exec executable="${qmake.binary}" outputproperty="qt.version">
             <arg value="-query"/>
             <arg value="QT_VERSION"/>
@@ -169,5 +181,7 @@
         <property name="qtjambi.phonon.libdir"      value="${qt.libdir}"/>
         <property name="qtjambi.phonon.pluginsdir"  value="${qt.libdir}"/>
     </target>
+
+    <target name="setenv" depends="source.antcontrib, setup-properties"/>
 
 </project>

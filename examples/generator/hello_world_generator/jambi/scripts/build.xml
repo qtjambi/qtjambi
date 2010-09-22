@@ -1,10 +1,13 @@
-<project default="all" basedir=".">
+<project default="all" basedir="." name="Basic generator example">
 
     <property environment="env"/>
 
-    <property name="sourceDir" value="../../src"/>
     <property name="jambiDir" value="${env.JAMBIDIR}"/>
     <property name="qtjambi.qtdir" value="${env.QTDIR}"/>
+
+    <import file="${jambiDir}/setenv.xml"/>
+
+    <property name="sourceDir" value="../../src"/>
 
     <property name="jambiLib" value="${jambiDir}/lib"/>
     <property name="jardir" value="${jambiDir}/jars"/>
@@ -28,21 +31,41 @@
             classpath="${jambiDir}/extjars/ant-contrib.jar"/>
     </target>
 
+    <target name="setenv-noantcontrib">
+        <antcall target="handle-qtdir"/>
+        <antcall target="lookup-libdir"/>
+        <exec executable="${qmake.binary}" outputproperty="qt.version">
+            <arg value="-query"/>
+            <arg value="QT_VERSION"/>
+        </exec>
+        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version}">
+            <condition>
+                <not>
+                    <equals arg1="${qtjambi.version}" arg2="${qt.version}"/>
+                </not>
+            </condition>
+        </fail>
+        <property name="qtjambi.qt.libdir"          value="${qt.libdir}"/>
+        <property name="qtjambi.qt.pluginsdir"      value="${qt.pluginsdir}"/>
+        <property name="qtjambi.qt.includedir"      value="${qt.includedir}"/>
+        <property name="qtjambi.jambi.libdir"       value="lib"/>
+        <!--
+            dummy-set values to phonon properties, if they
+            are not set. If they are set, or if they are set by QTDIR,
+            the this won't do anything.
+        -->
+        <property name="qtjambi.phonon.includedir"  value="${qt.includedir}/phonon"/>
+        <property name="qtjambi.phonon.libdir"      value="${qt.libdir}"/>
+        <property name="qtjambi.phonon.pluginsdir"  value="${qt.libdir}"/>
+
+    </target>
+
     <target name="help" description="Provides detailed help.">
         <echo>Generates the test jambi jar file</echo>
     </target>
 
 
-    <target name="init" depends="init.taskdef">
-        <if>
-            <os family="windows"/>
-            <then>
-                <property name="qtjambi.libsubdir" value="bin"/>
-            </then>
-            <else>
-                <property name="qtjambi.libsubdir" value="lib"/>
-            </else>
-        </if>
+    <target name="init" depends="init.taskdef, setup-properties">
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
 
         <mkdir dir="${basedir}/platform-output"/>
@@ -58,7 +81,8 @@
 
         <qmake config="${qtjambi.configuration}"
                dir="${basedir}/"
-               pro="${basedir}/test.pro"/>
+               pro="${basedir}/test.pro"
+               qmakebinary="${qmake.binary}"/>
 
         <make dir="${basedir}"/>
 
@@ -83,9 +107,9 @@
                               outdir="${basedir}/platform-output">
 
             <!-- Qt Libraries... -->
-            <library name="QtCore" type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtGui" type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtOpenGL" type="qt" rootPath="${qtjambi.qtdir}"/>
+            <library name="QtCore" type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtGui" type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtOpenGL" type="qt" rootPath="${qtjambi.qt.libdir}"/>
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -105,15 +129,15 @@
                      if="${qtjambi.sqlite}"/>
 
             <!-- Qt Jambi Libraries -->
-            <library name="qtjambi" type="qtjambi" rootPath="${jambiDir}"/>
-            <library name="com_trolltech_qt_core" type="qtjambi" rootPath="${jambiDir}"/>
-            <library name="com_trolltech_qt_gui" type="qtjambi" rootPath="${jambiDir}"/>
-            <library name="com_trolltech_qt_opengl" type="qtjambi" rootPath="${jambiDir}"/>
+            <library name="qtjambi" type="qtjambi" rootPath="${qtjambi.libdir}"/>
+            <library name="com_trolltech_qt_core" type="qtjambi" rootPath="${qtjambi.libdir}"/>
+            <library name="com_trolltech_qt_gui" type="qtjambi" rootPath="${qtjambi.libdir}"/>
+            <library name="com_trolltech_qt_opengl" type="qtjambi" rootPath="${qtjambi.libdir}"/>
 
             <plugin path="plugins"/>
 
             <!-- Finally the mapborealis library  -->
-            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/.."/>
+            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/../bin"/>
 
         </qtjambi-platform-jar>
 
