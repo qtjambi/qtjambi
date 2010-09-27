@@ -8,4 +8,4 @@ export LC_ALL="C"
 #export PATH=$QTDIR/bin:$PATH  
 export LD_LIBRARY_PATH=$QTDIR/lib
 #export LD_LIBRARY_PATH=/usr/lib/qt4
-ant $1
+ant $@

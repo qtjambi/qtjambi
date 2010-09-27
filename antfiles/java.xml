@@ -18,14 +18,6 @@
         see the defined fileset).
     -->
 
-    <fileset id="java.src.qtjambi-util" dir="${java.srcdir}/qtjambi-util"
-        includes="**/*.java"/>
-
-    <target name="jar.qtjambi-util">
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
-            <property name="module" value="qtjambi-util"/>
-        </ant>
-    </target>
 
     <fileset id="java.src.ant-qtjambi" dir="${java.srcdir}/ant-qtjambi"
         includes="**/*.java"/>
@@ -35,6 +27,15 @@
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="ant-qtjambi"/>
             <property name="destdir" value="${jardir}/nobundle"/>
+        </ant>
+    </target>
+
+    <fileset id="java.src.qtjambi-util" dir="${java.srcdir}/qtjambi-util"
+        includes="**/*.java"/>
+
+    <target name="jar.qtjambi-util">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+            <property name="module" value="qtjambi-util"/>
         </ant>
     </target>
 

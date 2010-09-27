@@ -132,6 +132,13 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         </echo>
     </target>
 
+    <!--
+        Root targets
+
+        Specifies the top targets, which does not actually do anything, but
+        provides consistent and easy to use interface for humans to use.
+    -->
+
     <target name="generator" depends="generator.run"
         description="Compiles and runs the Qt Jambi Generator."/>
 
@@ -146,14 +153,14 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
 
     <target name="library" depends="library.native, library.java, library.designer"
         description="Compiles and bundles the Qt Jambi libraries.">
-        <copy file="${jardir}/qtjambi-util.jar"
-            tofile="qtjambi-util-${qtjambi.version}.jar"/>
+        <!--<copy file="${jardir}/qtjambi-util.jar"
+            tofile="qtjambi-util-${qtjambi.version}.jar"/>-->
     </target>
 
     <target name="examples" depends="examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>
 
-    <target name="all" depends="library, examples"
+    <target name="all" depends="generator, library, examples"
         description="Generates, builds and bundles the Qt Jambi libraries."/>
 
 </project>

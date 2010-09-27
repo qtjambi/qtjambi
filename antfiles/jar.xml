@@ -29,10 +29,15 @@
     </path>
 
     <!--
-        check: is "module" set at all? If not, fail immediately.
+        jar_init:
+
+        Checks if is ${module} set at all? If not, fail immediately.
+
+        Converts fileset java.src.${module} to path that specifies sources compiled
+        in javac task "compile"
     -->
 
-    <target name="check">
+    <target name="jar_init">
         <fail message="'module' is not set!">
             <condition>
                 <not>
@@ -40,6 +45,8 @@
                 </not>
             </condition>
         </fail>
+
+    <pathconvert pathsep=":" property="tmp.jarxml.path" refid="java.src.${module}" />
     </target>
 
     <!--
@@ -51,14 +58,6 @@
         it depend on the <check> target above.
     -->
 
-    <target name="prepare-sources" depends="check">
-        <mkdir dir="${java.generated.srcdir}/${module}"/>
-        <copy todir="${java.generated.srcdir}/${module}"
-            includeemptydirs="false">
-            <fileset refid="java.src.${module}"/>
-        </copy>
-    </target>
-
     <!--
         compile: create the output directory and generate the class files into
         this directory.
@@ -67,14 +66,16 @@
         supported...
     -->
 
-    <target name="compile" depends="prepare-sources">
+    <target name="compile" depends="jar_init">
+        <echo message="Compiling java classes: ${java.srcdir}/${module}"/>
         <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
         <javac source="1.5" target="1.5" debug="true" deprecation="true"
-            fork="true" memorymaximumsize="1024m" verbose="false"
-            includeantruntime="true"
+                fork="true" memorymaximumsize="1024m" verbose="false"
+                includeantruntime="true"
+                includes="${tmp.jarxml.path}"
             destdir="${java.outdir}/${module}">
-            <src path="${java.generated.srcdir}/${module}"/>
+                <src path="${java.srcdir}/${module}"/>
             <classpath refid="java.compile.classpath"/>
         </javac>
     </target>
@@ -93,13 +94,13 @@
 
     <target name="copy-resources">
         <mkdir dir="${java.outdir}/${module}"/>
-        <!--<copy todir="${java.outdir}/${module}" includeemptydirs="false">
+        <copy todir="${java.outdir}/${module}" includeemptydirs="false">
             <fileset dir="${java.srcdir}/${module}">
                 <include name="**/*"/>
                 <exclude name="**/*.java"/>
                 <exclude name="**/*.jui"/>
             </fileset>
-        </copy>-->
+        </copy>
     </target>
 
     <!--
@@ -123,9 +124,9 @@
         <mkdir dir="${destdir}"/>
         <jar basedir="${java.outdir}/${module}"
             destfile="${destdir}/${module}.jar">
-        <manifest>
-            <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-        </manifest>
+            <manifest>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+            </manifest>
         </jar>
     </target>
 
