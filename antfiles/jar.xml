@@ -46,7 +46,7 @@
             </condition>
         </fail>
 
-    <pathconvert pathsep=":" property="tmp.jarxml.path" refid="java.src.${module}" />
+   <!--<pathconvert pathsep="," property="tmp.jarxml.path" refid="java.src.${module}" />-->
     </target>
 
     <!--
@@ -70,12 +70,12 @@
         <echo message="Compiling java classes: ${java.srcdir}/${module}"/>
         <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
-        <javac source="1.5" target="1.5" debug="true" deprecation="true"
+        <javac source="1.5" target="1.5" debug="false" deprecation="true"
                 fork="true" memorymaximumsize="1024m" verbose="false"
                 includeantruntime="true"
-                includes="${tmp.jarxml.path}"
+                srcdir="${sourcedirs}"
             destdir="${java.outdir}/${module}">
-                <src path="${java.srcdir}/${module}"/>
+                <!--<src path="${java.srcdir}/${module}"/>-->
             <classpath refid="java.compile.classpath"/>
         </javac>
     </target>

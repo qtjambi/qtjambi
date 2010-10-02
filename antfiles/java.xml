@@ -27,6 +27,7 @@
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="ant-qtjambi"/>
             <property name="destdir" value="${jardir}/nobundle"/>
+            <property name="sourcedirs" value="${java.srcdir}/ant-qtjambi"/>
         </ant>
     </target>
 
@@ -36,6 +37,7 @@
     <target name="jar.qtjambi-util">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-util"/>
+            <property name="sourcedirs" value="${java.srcdir}/qtjambi-util"/>
         </ant>
     </target>
 
@@ -53,6 +55,7 @@
         </copy>
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi"/>
+            <property name="sourcedirs" value="${java.srcdir}/qtjambi:${generator.outputdir}"/>
         </ant>
     </target>
 
@@ -64,6 +67,7 @@
         depends="init, jar.qtjambi">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-designer"/>
+            <property name="sourcedirs" value="${java.srcdir}/qtjambi-designer"/>
         </ant>
     </target>
 
@@ -96,6 +100,7 @@
         depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-examples"/>
+            <property name="sourcedirs" value="${java.srcdir}/qtjambi-examples"/>
         </ant>
     </target>
 </project>
