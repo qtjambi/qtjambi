@@ -1,16 +1,19 @@
-<project default="all" basedir=".">
+<project default="all" basedir="." name="Basic generator example">
 
     <property environment="env"/>
 
-    <property name="sourceDir" value="../../src"/>
     <property name="jambiDir" value="${env.JAMBIDIR}"/>
     <property name="qtjambi.qtdir" value="${env.QTDIR}"/>
+
+    <import file="${jambiDir}/setenv.xml"/>
+
+    <property name="sourceDir" value="../../src"/>
 
     <property name="jambiLib" value="${jambiDir}/lib"/>
     <property name="jardir" value="${jambiDir}/jars"/>
 
-    <property file="${jambiDir}/build.properties"/>
-    <property file="${jambiDir}/version.properties"/>
+    <!--<property file="${jambiDir}/build.properties"/>-->
+    <!--<property file="${jambiDir}/version.properties"/>-->
 
     <property name="sourceDir" value="."/>
     <property name="outputDir" value="."/>
@@ -33,16 +36,7 @@
     </target>
 
 
-    <target name="init" depends="init.taskdef">
-        <if>
-            <os family="windows"/>
-            <then>
-                <property name="qtjambi.libsubdir" value="bin"/>
-            </then>
-            <else>
-                <property name="qtjambi.libsubdir" value="lib"/>
-            </else>
-        </if>
+    <target name="init" depends="init.taskdef, setup-properties">
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
 
         <mkdir dir="${basedir}/platform-output"/>
@@ -58,7 +52,8 @@
 
         <qmake config="${qtjambi.configuration}"
                dir="${basedir}/"
-               pro="${basedir}/test.pro"/>
+               pro="${basedir}/test.pro"
+               qmakebinary="${qmake.binary}"/>
 
         <make dir="${basedir}"/>
 
@@ -83,9 +78,9 @@
                               outdir="${basedir}/platform-output">
 
             <!-- Qt Libraries... -->
-            <library name="QtCore" type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtGui" type="qt" rootPath="${qtjambi.qtdir}"/>
-            <library name="QtOpenGL" type="qt" rootPath="${qtjambi.qtdir}"/>
+            <library name="QtCore" type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtGui" type="qt" rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtOpenGL" type="qt" rootPath="${qtjambi.qt.libdir}"/>
 
             <!-- Qt Plugins... -->
             <library name="qjpeg" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/imageformats" load="never"/>
@@ -105,15 +100,15 @@
                      if="${qtjambi.sqlite}"/>
 
             <!-- Qt Jambi Libraries -->
-            <library name="qtjambi" type="qtjambi" rootPath="${jambiDir}"/>
-            <library name="com_trolltech_qt_core" type="qtjambi" rootPath="${jambiDir}"/>
-            <library name="com_trolltech_qt_gui" type="qtjambi" rootPath="${jambiDir}"/>
-            <library name="com_trolltech_qt_opengl" type="qtjambi" rootPath="${jambiDir}"/>
+            <library name="qtjambi" type="qtjambi" rootPath="${qtjambi.libdir}"/>
+            <library name="com_trolltech_qt_core" type="qtjambi" rootPath="${qtjambi.libdir}"/>
+            <library name="com_trolltech_qt_gui" type="qtjambi" rootPath="${qtjambi.libdir}"/>
+            <library name="com_trolltech_qt_opengl" type="qtjambi" rootPath="${qtjambi.libdir}"/>
 
             <plugin path="plugins"/>
 
             <!-- Finally the mapborealis library  -->
-            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/.."/>
+            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/../${qt.lib.subdir}"/>
 
         </qtjambi-platform-jar>
 
@@ -142,7 +137,7 @@
                 <include name="**/*.cpp"/>
             </fileset>
         </delete>
-        <delete dir="../lib"/>
+        <delete dir="../${qt.lib.subdir}"/>
         <delete dir="../target"/>
     </target>
 
