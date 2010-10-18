@@ -459,16 +459,18 @@ public class PlatformJarTask extends Task {
 
         for ( LibraryEntry change : libs ) {
                 StringBuilder builder = createDotDots ( change.getSubdir() );
+                builder.append ( with.output_directory);
                 builder.append ( with.getSubdir() );
-                builder.append ( "/" );
+		builder.append ("/");
                 builder.append ( with.getName() );
                 builder.insert ( 0, "@loader_path/" );
 
                 cmd[3] = builder.toString();
-                cmd[4] = change.relativePath();
+                cmd[4] = change.output_directory + change.getSubdir() + "/" + change.getName();//change.relativePath();
 
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
+
                 Exec.exec ( cmd, outdir, false );
 
                 // full path, when Qt is configured with rpath
