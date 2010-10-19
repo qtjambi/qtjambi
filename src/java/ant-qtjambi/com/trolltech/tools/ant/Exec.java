@@ -96,18 +96,21 @@ class Exec {
         }
     }
     
-    public static void execute(List<String> command, String ldpath, File directory) throws BuildException {
+    public static void execute(List<String> command, File directory) throws BuildException {
+    	execute(command, directory, null);
+    }
+    
+    public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
         ProcessBuilder builder = new ProcessBuilder(command);
         
-        //NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
-        //but it should not be needed there in first place... Only if you want to have same kind of building
-        //environment one can have for Linux.
-        Map<String, String> env = builder.environment();
-        //we don't need other stuff to LD_LIBRARY_PATH
-        //String ldpath = env.get("LD_LIBRARY_PATH");
-        //System.out.println("ldpath: " + ldpath);
-        //ldpath = "" + ldpath;
-        env.put("LD_LIBRARY_PATH", ldpath);
+        // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
+        // but it should not be needed there in first place... Only if you want to have same kind of building
+        // environment one can have for Linux.
+        // it should’t affect to Windows environment though.
+        if(ldpath != null) {
+        	Map<String, String> env = builder.environment();
+        	env.put("LD_LIBRARY_PATH", ldpath);
+        }
         builder.directory(directory);
         try {
 			Process process = builder.start();
@@ -116,7 +119,6 @@ class Exec {
                 throw new BuildException("Running: '" + command.toString() + "' failed.");
             }
 		} catch (IOException e) {
-			 //TODO: this may not work
 			 throw new BuildException("Running: '" + command.toString() + "' failed.", e);
 		}
     }

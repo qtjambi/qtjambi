@@ -2,6 +2,8 @@
 #include "typedatabase.h"
 #include "../customtypes.h"
 
+#include <QDebug>
+
 #include <qfile.h>
 #include <qxml.h>
 #include "handler.h"
@@ -9,8 +11,7 @@
 
 static void addRemoveFunctionToTemplates(TypeDatabase *db);
 
-TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarnings(false)
-{
+TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarnings(false) {
     addType(new StringTypeEntry("QString"));
 
     StringTypeEntry *e = new StringTypeEntry("QLatin1String");
@@ -65,18 +66,17 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarning
     addRemoveFunctionToTemplates(this);
 }
 
-TypeDatabase *TypeDatabase::instance()
-{
+TypeDatabase *TypeDatabase::instance() {
     static TypeDatabase *db = new TypeDatabase();
     return db;
 }
 
 TypeEntry *TypeDatabase::findType(const QString &name) const {
     QList<TypeEntry *> entries = findTypes(name);
-    foreach (TypeEntry *entry, entries) {
+    foreach(TypeEntry *entry, entries) {
         if (entry != 0 &&
-            ( !entry->isPrimitive() ||
-                static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType() ) ) {
+                (!entry->isPrimitive() ||
+                 static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
             return entry;
         }
     }
@@ -96,12 +96,11 @@ SingleTypeEntryHash TypeDatabase::entries() {
     return returned;
 }
 
-bool TypeDatabase::isSuppressedWarning(const QString &s)
-{
+bool TypeDatabase::isSuppressedWarning(const QString &s) {
     if (!m_suppressWarnings)
         return false;
 
-    foreach (const QString &_warning, m_suppressedWarnings) {
+    foreach(const QString &_warning, m_suppressedWarnings) {
         QString warning(QString(_warning).replace("\\*", "&place_holder_for_asterisk;"));
 
         QStringList segs = warning.split("*", QString::SkipEmptyParts);
@@ -121,11 +120,10 @@ bool TypeDatabase::isSuppressedWarning(const QString &s)
     return false;
 }
 
-PrimitiveTypeEntry *TypeDatabase::findPrimitiveType(const QString &name)
-{
+PrimitiveTypeEntry *TypeDatabase::findPrimitiveType(const QString &name) {
     QList<TypeEntry *> entries = findTypes(name);
 
-    foreach (TypeEntry *entry, entries) {
+    foreach(TypeEntry *entry, entries) {
         if (entry != 0 && entry->isPrimitive() && static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())
             return static_cast<PrimitiveTypeEntry *>(entry);
     }
@@ -133,8 +131,7 @@ PrimitiveTypeEntry *TypeDatabase::findPrimitiveType(const QString &name)
     return 0;
 }
 
-ComplexTypeEntry *TypeDatabase::findComplexType(const QString &name)
-{
+ComplexTypeEntry *TypeDatabase::findComplexType(const QString &name) {
     TypeEntry *entry = findType(name);
     if (entry != 0 && entry->isComplex())
         return static_cast<ComplexTypeEntry *>(entry);
@@ -142,8 +139,7 @@ ComplexTypeEntry *TypeDatabase::findComplexType(const QString &name)
         return 0;
 }
 
-ObjectTypeEntry *TypeDatabase::findObjectType(const QString &name)
-{
+ObjectTypeEntry *TypeDatabase::findObjectType(const QString &name) {
     TypeEntry *entry = findType(name);
     if (entry != 0 && entry->isObject())
         return static_cast<ObjectTypeEntry *>(entry);
@@ -151,8 +147,7 @@ ObjectTypeEntry *TypeDatabase::findObjectType(const QString &name)
         return 0;
 }
 
-NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name)
-{
+NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name) {
     TypeEntry *entry = findType(name);
     if (entry != 0 && entry->isNamespace())
         return static_cast<NamespaceTypeEntry *>(entry);
@@ -160,9 +155,8 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name)
         return 0;
 }
 
-bool TypeDatabase::parseFile(const QString &filename, bool generate)
-{
-    //qDebug()<<filename; //this might be interesting to show anyway, to see what packages we are generating
+bool TypeDatabase::parseFile(const QString &filename, bool generate) {
+    qDebug()<<"Parsing file: "<<filename;
     QFile file(filename);
     Q_ASSERT(file.exists());
     QXmlInputSource source(&file);
@@ -185,8 +179,7 @@ bool TypeDatabase::parseFile(const QString &filename, bool generate)
     return ok;
 }
 
-ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name)
-{
+ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name) {
     QString template_name = name;
 
     int pos = name.indexOf('<');
@@ -199,10 +192,9 @@ ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name)
     return 0;
 }
 
-PrimitiveTypeEntry *TypeDatabase::findTargetLangPrimitiveType(const QString &java_name)
-{
-    foreach (QList<TypeEntry *> entries, m_entries.values()) {
-        foreach (TypeEntry *e, entries) {
+PrimitiveTypeEntry *TypeDatabase::findTargetLangPrimitiveType(const QString &java_name) {
+    foreach(QList<TypeEntry *> entries, m_entries.values()) {
+        foreach(TypeEntry *e, entries) {
             if (e && e->isPrimitive()) {
                 PrimitiveTypeEntry *pe = static_cast<PrimitiveTypeEntry *>(e);
                 if (pe->targetLangName() == java_name && pe->preferredConversion())
@@ -214,8 +206,7 @@ PrimitiveTypeEntry *TypeDatabase::findTargetLangPrimitiveType(const QString &jav
     return 0;
 }
 
-IncludeList TypeDatabase::extraIncludes(const QString &className)
-{
+IncludeList TypeDatabase::extraIncludes(const QString &className) {
     ComplexTypeEntry *typeEntry = findComplexType(className);
     if (typeEntry != 0)
         return typeEntry->extraIncludes();
@@ -224,8 +215,7 @@ IncludeList TypeDatabase::extraIncludes(const QString &className)
 }
 
 void TypeDatabase::addRejection(const QString &class_name, const QString &function_name,
-                                const QString &field_name, const QString &enum_name)
-{
+                                const QString &field_name, const QString &enum_name) {
     TypeRejection r;
     r.class_name = class_name;
     r.function_name = function_name;
@@ -235,21 +225,19 @@ void TypeDatabase::addRejection(const QString &class_name, const QString &functi
     m_rejections << r;
 }
 
-bool TypeDatabase::isClassRejected(const QString &class_name)
-{
+bool TypeDatabase::isClassRejected(const QString &class_name) {
     if (!m_rebuild_classes.isEmpty())
         return !m_rebuild_classes.contains(class_name);
 
-    foreach (const TypeRejection &r, m_rejections)
+    foreach(const TypeRejection &r, m_rejections)
     if (r.class_name == class_name && r.function_name == "*" && r.field_name == "*" && r.enum_name == "*") {
         return true;
     }
     return false;
 }
 
-bool TypeDatabase::isEnumRejected(const QString &class_name, const QString &enum_name)
-{
-    foreach (const TypeRejection &r, m_rejections) {
+bool TypeDatabase::isEnumRejected(const QString &class_name, const QString &enum_name) {
+    foreach(const TypeRejection &r, m_rejections) {
         if (r.enum_name == enum_name
                 && (r.class_name == class_name || r.class_name == "*")) {
             return true;
@@ -259,9 +247,8 @@ bool TypeDatabase::isEnumRejected(const QString &class_name, const QString &enum
     return false;
 }
 
-bool TypeDatabase::isFunctionRejected(const QString &class_name, const QString &function_name)
-{
-    foreach (const TypeRejection &r, m_rejections)
+bool TypeDatabase::isFunctionRejected(const QString &class_name, const QString &function_name) {
+    foreach(const TypeRejection &r, m_rejections)
     if (r.function_name == function_name &&
             (r.class_name == class_name || r.class_name == "*"))
         return true;
@@ -269,17 +256,15 @@ bool TypeDatabase::isFunctionRejected(const QString &class_name, const QString &
 }
 
 
-bool TypeDatabase::isFieldRejected(const QString &class_name, const QString &field_name)
-{
-    foreach (const TypeRejection &r, m_rejections)
+bool TypeDatabase::isFieldRejected(const QString &class_name, const QString &field_name) {
+    foreach(const TypeRejection &r, m_rejections)
     if (r.field_name == field_name &&
             (r.class_name == class_name || r.class_name == "*"))
         return true;
     return false;
 }
 
-FlagsTypeEntry *TypeDatabase::findFlagsType(const QString &name) const
-{
+FlagsTypeEntry *TypeDatabase::findFlagsType(const QString &name) const {
     FlagsTypeEntry *fte = (FlagsTypeEntry *) findType(name);
     return fte ? fte : (FlagsTypeEntry *) m_flags_entries.value(name);
 }
@@ -288,8 +273,7 @@ QString TypeDatabase::globalNamespaceClassName(const TypeEntry * /*entry*/) {
     return QLatin1String("Global");
 }
 
-static void removeFunction(ComplexTypeEntry *e, const char *signature)
-{
+static void removeFunction(ComplexTypeEntry *e, const char *signature) {
     FunctionModification mod;
     mod.signature = QMetaObject::normalizedSignature(signature);
     mod.removal = TypeSystem::All;
@@ -300,8 +284,7 @@ static void removeFunction(ComplexTypeEntry *e, const char *signature)
 static void injectCode(ComplexTypeEntry *e,
                        const char *signature,
                        const QByteArray &code,
-                       const ArgumentMap &args)
-{
+                       const ArgumentMap &args) {
     CodeSnip snip;
     snip.language = TypeSystem::NativeCode;
     snip.position = CodeSnip::Beginning;
@@ -316,8 +299,7 @@ static void injectCode(ComplexTypeEntry *e,
 }
 
 
-static void addRemoveFunctionToTemplates(TypeDatabase *db)
-{
+static void addRemoveFunctionToTemplates(TypeDatabase *db) {
     ContainerTypeEntry *qvector = db->findContainerType(QLatin1String("QVector"));
     removeFunction(qvector, "constData() const");
     removeFunction(qvector, "data() const");

@@ -3,7 +3,7 @@
         Building and running the Generator
     -->
 
-    <target name="generator.run" depends="init, tools.generator.make"
+    <target name="generator.run" depends="init, generator.xmlmerge"
         description="Runs the Qt Jambi generator on the Qt headers">
         <mkdir dir="${generator.outputdir}"/>
         <generator dir="${generatorDir}"
@@ -13,6 +13,16 @@
                 phononpath="${qtjambi.phonon.includedir}"
                 qtincludedirectory="${qtjambi.qt.includedir}"
                 options="${qtjambi.generator.jumptable}"/>
+    </target>
+
+    <target name="tools.generator.qmake" depends="init">
+        <qmake dir="generator" pro="generator/generator.pro"
+                config="${qtjambi.configuration}"
+                qmakebinary="${qmake.binary}"/>
+    </target>
+
+    <target name="tools.generator.make" depends="tools.generator.qmake">
+        <make dir="generator"/>
     </target>
 
     <!--

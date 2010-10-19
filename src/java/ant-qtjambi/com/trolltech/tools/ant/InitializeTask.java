@@ -210,7 +210,7 @@ public class InitializeTask extends Task {
         }
         
         if(!exists) return "false";
-    	else addQtConfig("phonon");
+    	else addToQtConfig("phonon");
         
         props.setNewProperty((String) null, PHONON, phonon);
         
@@ -238,7 +238,7 @@ public class InitializeTask extends Task {
      * to specify additional qt libraries compiled. 
      * @param config Library to add
      */
-    private void addQtConfig(String config) {
+    private void addToQtConfig(String config) {
     	String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
     	String newConfig;
     	if(oldConfig != null) {
@@ -246,7 +246,7 @@ public class InitializeTask extends Task {
     	} else {
     		newConfig = config;
     	}
-        props.setNewProperty((String) null, QTCONFIG, newConfig);
+        props.setProperty(QTCONFIG, newConfig, false);
 	}
 
 	private String decideSqlite() {
@@ -270,14 +270,14 @@ public class InitializeTask extends Task {
     private String decideScript() {
         String result = String.valueOf(doesQtLibExist("QtScript", 4));
         if (verbose) System.out.println(SCRIPT + ": " + result);
-        if("true".equals(result)) addQtConfig("script");
+        if("true".equals(result)) addToQtConfig("script");
         return result;
     }
 
     private String decideScripttools() {
         String result = String.valueOf(doesQtLibExist("QtScriptTools", 4));
         if (verbose) System.out.println(SCRIPTTOOLS + ": " + result);
-        if("true".equals(result)) addQtConfig("scripttools");
+        if("true".equals(result)) addToQtConfig("scripttools");
         return result;
     }
     private String decideWebkit() {

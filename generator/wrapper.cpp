@@ -15,8 +15,8 @@ void ReportHandler_message_handler(const std::string &str)
 }
 
 Wrapper::Wrapper(int argc, char *argv[]) :
-        default_file("qtjambi_masterinclude.h"),
-        default_system("build_all.txt"),
+        default_file("targets/qtjambi_masterinclude.h"),
+        default_system("targets/build_all.xml"),
         pp_file(".preprocessed.tmp") {
 
     gs = GeneratorSet::getInstance();

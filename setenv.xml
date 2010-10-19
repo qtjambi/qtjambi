@@ -160,7 +160,7 @@
             <arg value="-query"/>
             <arg value="QT_VERSION"/>
         </exec>
-        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version}">
+        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version})">
             <condition>
                 <not>
                     <equals arg1="${qtjambi.version}" arg2="${qt.version}"/>

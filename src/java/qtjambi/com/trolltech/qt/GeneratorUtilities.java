@@ -47,19 +47,21 @@ package com.trolltech.qt;
 import com.trolltech.qt.core.QObject;
 
 public class GeneratorUtilities {
+
     private static final boolean threadAsserts;
+
     static {
         threadAsserts = !Utilities.matchProperty("com.trolltech.qt.thread-check", "false", "no");
     }
 
     public static void threadCheck(QObject obj) {
-        if (threadAsserts)
-
+        if (threadAsserts) {
             if (obj.thread() != null && obj.thread() != Thread.currentThread()) {
                 throw new QThreadAffinityException("QObject used from outside its own thread",
                                                    obj,
                                                    Thread.currentThread());
             }
+        }
     }
 
     public static Object fetchField(Object owner, Class<?> declaringClass, String fieldName) {
