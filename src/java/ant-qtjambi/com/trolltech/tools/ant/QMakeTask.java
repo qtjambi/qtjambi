@@ -83,32 +83,44 @@ public class QMakeTask extends Task {
     }
     
     private String parseParameters() {
-    	String parameters = "";
-        
-        if(qtconfig != null) {
-        	parameters += "QT_CONFIG+=\"" + qtconfig + '"';
-        }
-        
-        if(includepath != null) {
-        	parameters += " INCLUDEPATH+=" + includepath;
-        }
-        
-        return parameters;
+	String parameters = "";
+
+	if (qtconfig != null) {
+	    StringTokenizer paramToken = new StringTokenizer(qtconfig);
+	    while(paramToken.hasMoreTokens()) {
+		parameters += " QT_CONFIG+=" + paramToken.nextToken();
+	    }
+	}
+
+	if (includepath != null) {
+	    parameters += " INCLUDEPATH+=" + includepath;
+	}
+
+	return parameters;
     }
 
     @Override
     public void execute() throws BuildException {
-        System.out.println(msg);
+	System.out.println(msg);
 
-        String proFile = "";
-        if (!pro.equals("")) {
-            proFile = " \"" + Util.makeCanonical(pro).getAbsolutePath() + "\"";
-        }
-        
-        //command = command + parseParameters();
-        String command = qmakebinary + proFile + parseArguments() + parseParameters();
+	String proFile = "";
+	if (!pro.equals("")) {
+	    proFile = " \"" + Util.makeCanonical(pro).getAbsolutePath() + "\"";
+	}
 
-        Exec.exec(command, new File(dir));
+	// command = command + parseParameters();
+	String command = qmakebinary + proFile + parseArguments() + parseParameters();
+	
+	try {
+	    StringTokenizer st = new StringTokenizer(command);
+	    while (st.hasMoreTokens()) {
+	         System.out.println(st.nextToken());
+	     }
+	    Process p = Runtime.getRuntime().exec(command, null, new File(dir));
+	    Util.redirectOutput(p);
+	} catch (IOException e) {
+	    throw new BuildException("Running: " + command);
+	}
     }
 
     public void setMessage(String msg) {
@@ -144,6 +156,6 @@ public class QMakeTask extends Task {
     }
 
     public void setDebugTools(boolean debugTools) {
-        this.debugTools = debugTools;
+	this.debugTools = debugTools;
     }
 }
