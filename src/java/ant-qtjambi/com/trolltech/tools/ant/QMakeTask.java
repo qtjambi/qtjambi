@@ -86,10 +86,7 @@ public class QMakeTask extends Task {
 	String parameters = "";
 
 	if (qtconfig != null) {
-	    StringTokenizer paramToken = new StringTokenizer(qtconfig);
-	    while(paramToken.hasMoreTokens()) {
-		parameters += " QT_CONFIG+=" + paramToken.nextToken();
-	    }
+	    parameters += "QT_CONFIG+=" + qtconfig;
 	}
 
 	if (includepath != null) {
@@ -100,26 +97,35 @@ public class QMakeTask extends Task {
     }
 
     @Override
-    public void execute() throws BuildException {
+    public void execute() {
 	System.out.println(msg);
 
 	String proFile = "";
 	if (!pro.equals("")) {
-	    proFile = " \"" + Util.makeCanonical(pro).getAbsolutePath() + "\"";
+	    proFile = Util.makeCanonical(pro).getAbsolutePath();
 	}
 
-	// command = command + parseParameters();
-	String command = qmakebinary + proFile + parseArguments() + parseParameters();
+	String commandRaw = qmakebinary + " " +proFile + parseArguments() + parseParameters();
+	
+	final List<String> command =  new ArrayList<String>();
+	
+	command.add(qmakebinary);
+	command.add(proFile);
+	
+	StringTokenizer args = new StringTokenizer(parseArguments());
+	while (args.hasMoreTokens())
+	    command.add(args.nextToken());
+	
+	command.add(parseParameters());
+	
+	ProcessBuilder pb = new ProcessBuilder(command);
+	pb.directory(new File(dir));
 	
 	try {
-	    StringTokenizer st = new StringTokenizer(command);
-	    while (st.hasMoreTokens()) {
-	         System.out.println(st.nextToken());
-	     }
-	    Process p = Runtime.getRuntime().exec(command, null, new File(dir));
+	    Process p = pb.start();
 	    Util.redirectOutput(p);
 	} catch (IOException e) {
-	    throw new BuildException("Running: " + command);
+	    throw new BuildException("Running: " + command.toString());
 	}
     }
 
