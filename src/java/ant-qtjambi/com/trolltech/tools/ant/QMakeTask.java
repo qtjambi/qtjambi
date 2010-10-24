@@ -97,15 +97,13 @@ public class QMakeTask extends Task {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws NullPointerException {
 	System.out.println(msg);
 
 	String proFile = "";
 	if (!pro.equals("")) {
 	    proFile = Util.makeCanonical(pro).getAbsolutePath();
 	}
-
-	String commandRaw = qmakebinary + " " +proFile + parseArguments() + parseParameters();
 	
 	final List<String> command =  new ArrayList<String>();
 	
