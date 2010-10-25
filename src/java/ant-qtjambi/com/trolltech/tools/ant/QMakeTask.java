@@ -116,15 +116,7 @@ public class QMakeTask extends Task {
 	
 	command.add(parseParameters());
 	
-	ProcessBuilder pb = new ProcessBuilder(command);
-	pb.directory(new File(dir));
-	
-	try {
-	    Process p = pb.start();
-	    Util.redirectOutput(p);
-	} catch (IOException e) {
-	    throw new BuildException("Running: " + command.toString());
-	}
+	Exec.execute(command, new File(dir));
     }
 
     public void setMessage(String msg) {
