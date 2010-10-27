@@ -264,6 +264,7 @@ public class InitializeTask extends Task {
     private String decideMultimedia() {
         String result = String.valueOf(doesQtLibExist("QtMultimedia", 4));
         if (verbose) System.out.println(MULTIMEDIA + ": " + result);
+        addToQtConfig("multimedia");
         return result;
     }
 
