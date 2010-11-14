@@ -16,7 +16,7 @@ PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, con
         targetFile(targetFile),
         phononinclude(phononinclude)
 {
-
+    //empty space for useless comments
 }
 
 bool PreprocessHandler::handler() {
@@ -55,6 +55,7 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
     result += sourceFile.toStdString();
     result += "\"\n";
 
+    qDebug()<<"Processing source"<<sourceInfo.absolutePath()<<sourceInfo.fileName();
     preprocess.file(sourceInfo.fileName().toStdString(),
                     rpp::pp_output_iterator<std::string> (result));
 

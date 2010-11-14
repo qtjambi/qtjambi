@@ -52,88 +52,82 @@
 #include "rpp/pp.h"
 #include "rpp/pp-fwd.h"
 
-namespace rpp
-{
+namespace rpp {
 
-namespace _PP_internal
-{
+    namespace _PP_internal {
 
-inline void extract_file_path ( const std::string &__filename, std::string *__filepath )
-{
-    std::size_t __index = __filename.rfind ( PATH_SEPARATOR );
+        inline void extract_file_path(const std::string &__filename, std::string *__filepath) {
+            std::size_t __index = __filename.rfind(PATH_SEPARATOR);
 
-    if ( __index == std::string::npos )
-        *__filepath = "/";
+            if (__index == std::string::npos)
+                *__filepath = "/";
 
-    else
-        __filepath->assign ( __filename, 0, __index + 1 );
-}
+            else
+                __filepath->assign(__filename, 0, __index + 1);
+        }
 
-template <typename _OutputIterator>
-void output_line ( const std::string &p_filename, int p_line, _OutputIterator p_result )
-{
-    std::string msg;
+        /**
+         * Writes line number and file name to _OutputIterator result.
+         */
+        template <typename _OutputIterator>
+        void output_line(const std::string &filename, int line, _OutputIterator result) {
+            std::string msg;
 
-    msg += "# ";
+            msg += "# ";
 
-    char line_descr[16];
-    pp_snprintf ( line_descr, 16, "%d", p_line );
-    msg += line_descr;
+            char line_descr[16];
+            pp_snprintf(line_descr, 16, "%d", line);
+            msg += line_descr;
 
-    msg += " \"";
+            msg += " \"";
 
-    if ( p_filename.empty () )
-        msg += "<internal>";
-    else
-        msg += p_filename;
+            if (filename.empty())
+                msg += "<internal>";
+            else
+                msg += filename;
 
-    msg += "\"\n";
-    std::copy ( msg.begin (), msg.end (), p_result );
-}
+            msg += "\"\n";
+            std::copy(msg.begin(), msg.end(), result);
+        }
 
-template <typename _InputIterator>
-inline bool comment_p ( _InputIterator __first, _InputIterator __last ) /*const*/
-{
-    if ( __first == __last )
-        return false;
+        template <typename _InputIterator>
+        inline bool comment_p(_InputIterator __first, _InputIterator __last) {  /*const*/
+            if (__first == __last)
+                return false;
 
-    if ( *__first != '/' )
-        return false;
+            if (*__first != '/')
+                return false;
 
-    if ( ++__first == __last )
-        return false;
+            if (++__first == __last)
+                return false;
 
-    return ( *__first == '/' || *__first == '*' );
-}
+            return (*__first == '/' || *__first == '*');
+        }
 
-struct _Compare_string: public std::binary_function<bool, pp_fast_string const *, pp_fast_string const *>
-{
-    inline bool operator () ( pp_fast_string const *__lhs, pp_fast_string const *__rhs ) const
-    { return *__lhs < *__rhs; }
-};
+        struct _Compare_string: public std::binary_function<bool, pp_fast_string const *, pp_fast_string const *> {
+            inline bool operator()(pp_fast_string const *__lhs, pp_fast_string const *__rhs) const
+            { return *__lhs < *__rhs; }
+        };
 
-struct _Equal_to_string: public std::binary_function<bool, pp_fast_string const *, pp_fast_string const *>
-{
-    inline bool operator () ( pp_fast_string const *__lhs, pp_fast_string const *__rhs ) const
-    { return *__lhs == *__rhs; }
-};
+        struct _Equal_to_string: public std::binary_function<bool, pp_fast_string const *, pp_fast_string const *> {
+            inline bool operator()(pp_fast_string const *__lhs, pp_fast_string const *__rhs) const
+            { return *__lhs == *__rhs; }
+        };
 
-struct _Hash_string: public std::unary_function<std::size_t, pp_fast_string const *>
-{
-    inline std::size_t operator () ( pp_fast_string const *__s ) const
-    {
-        char const *__ptr = __s->begin ();
-        std::size_t __size = __s->size ();
-        std::size_t __h = 0;
+        struct _Hash_string: public std::unary_function<std::size_t, pp_fast_string const *> {
+            inline std::size_t operator()(pp_fast_string const *__s) const {
+                char const *__ptr = __s->begin();
+                std::size_t __size = __s->size();
+                std::size_t __h = 0;
 
-        for ( std::size_t i = 0; i < __size; ++i )
-            __h = ( __h << 5 ) - __h + __ptr [i];
+                for (std::size_t i = 0; i < __size; ++i)
+                    __h = (__h << 5) - __h + __ptr [i];
 
-        return __h;
-    }
-};
+                return __h;
+            }
+        };
 
-} // _PP_internal
+    } // _PP_internal
 
 } // namespace rpp
 

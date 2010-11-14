@@ -50,6 +50,9 @@
 #include <vector>
 #include <cstdio>
 
+#include <QFile>
+#include <QDebug>
+
 #include <sys/stat.h>
 
 #include "pp-internal.h"
@@ -59,6 +62,7 @@
 #include "pp-environment.h"
 #include "pp-scanner.h"
 
+class QByteArray;
 namespace rpp {
 
     enum PP_DIRECTIVE_TYPE {
@@ -111,19 +115,19 @@ namespace rpp {
             unsigned long ul;
         };
 
-        bool is_ulong () const { return kind == Kind_ULong; }
+        bool is_ulong() const { return kind == Kind_ULong; }
 
-        void set_ulong ( unsigned long v ) {
+        void set_ulong(unsigned long v) {
             ul = v;
             kind = Kind_ULong;
         }
 
-        void set_long ( long v ) {
+        void set_long(long v) {
             l = v;
             kind = Kind_Long;
         }
 
-        bool is_zero () const { return l == 0; }
+        bool is_zero() const { return l == 0; }
 
 #define PP_DEFINE_BIN_OP(name, op) \
   inline Value &name (const Value &other) \
@@ -135,24 +139,24 @@ namespace rpp {
     return *this; \
   }
 
-        PP_DEFINE_BIN_OP ( op_add, + )
-        PP_DEFINE_BIN_OP ( op_sub, - )
-        PP_DEFINE_BIN_OP ( op_mult, * )
-        PP_DEFINE_BIN_OP ( op_div, / )
-        PP_DEFINE_BIN_OP ( op_mod, % )
-        PP_DEFINE_BIN_OP ( op_lhs, << )
-        PP_DEFINE_BIN_OP ( op_rhs, >> )
-        PP_DEFINE_BIN_OP ( op_lt, < )
-        PP_DEFINE_BIN_OP ( op_gt, > )
-        PP_DEFINE_BIN_OP ( op_le, <= )
-        PP_DEFINE_BIN_OP ( op_ge, >= )
-        PP_DEFINE_BIN_OP ( op_eq, == )
-        PP_DEFINE_BIN_OP ( op_ne, != )
-        PP_DEFINE_BIN_OP ( op_bit_and, & )
-        PP_DEFINE_BIN_OP ( op_bit_or, | )
-        PP_DEFINE_BIN_OP ( op_bit_xor, ^ )
-        PP_DEFINE_BIN_OP ( op_and, && )
-        PP_DEFINE_BIN_OP ( op_or, || )
+        PP_DEFINE_BIN_OP(op_add, +)
+        PP_DEFINE_BIN_OP(op_sub, -)
+        PP_DEFINE_BIN_OP(op_mult, *)
+        PP_DEFINE_BIN_OP(op_div, /)
+        PP_DEFINE_BIN_OP(op_mod, %)
+        PP_DEFINE_BIN_OP(op_lhs, <<)
+        PP_DEFINE_BIN_OP(op_rhs, >>)
+        PP_DEFINE_BIN_OP(op_lt, <)
+        PP_DEFINE_BIN_OP(op_gt, >)
+        PP_DEFINE_BIN_OP(op_le, <=)
+        PP_DEFINE_BIN_OP(op_ge, >=)
+        PP_DEFINE_BIN_OP(op_eq, ==)
+        PP_DEFINE_BIN_OP(op_ne, !=)
+        PP_DEFINE_BIN_OP(op_bit_and, &)
+        PP_DEFINE_BIN_OP(op_bit_or, |)
+        PP_DEFINE_BIN_OP(op_bit_xor, ^)
+        PP_DEFINE_BIN_OP(op_and, &&)
+        PP_DEFINE_BIN_OP(op_or, ||)
 
 #undef PP_DEFINE_BIN_OP
     };
@@ -167,20 +171,20 @@ namespace rpp {
 
         public:
 
-            void push_include_path ( const std::string& path );
+            void push_include_path(const std::string& path);
 
-            pp ( pp_environment &__env );
+            pp(pp_environment &__env);
 
 
             template <typename _InputIterator, typename _OutputIterator>
-            void operator () ( _InputIterator p_first, _InputIterator p_last, _OutputIterator p_result ) {
+            void operator()(_InputIterator first, _InputIterator last, _OutputIterator result) {
 #ifndef PP_NO_SMART_HEADER_PROTECTION
                 std::string protection;
-                protection.reserve ( 255 );
-                pp_fast_string tmp ( protection.c_str (), protection.size () );
+                protection.reserve(255);
+                pp_fast_string tmp(protection.c_str(), protection.size());
 
-                if ( find_header_protection ( p_first, p_last, &protection )
-                        && env.resolve ( &tmp ) != 0 ) {
+                if (find_header_protection(first, last, &protection)
+                        && env.resolve(&tmp) != 0) {
                     // std::cerr << "** DEBUG found header protection:" << __prot << std::endl;
                     return;
                 }
@@ -189,82 +193,108 @@ namespace rpp {
                 env.current_line = 1;
                 char buffer[512];
 
-                while ( true ) {
-                    p_first = skip_blanks ( p_first, p_last );
+                while (true) {
+                    first = skip_blanks(first, last);
                     env.current_line += skip_blanks.lines;
 
-                    if ( p_first == p_last )
+                    if (first == last)
                         break;
-                    else if ( *p_first == '#' ) {
-                        p_first = skip_blanks ( ++p_first, p_last );
+                    else if (*first == '#') {
+                        first = skip_blanks(++first, last);
                         env.current_line += skip_blanks.lines;
 
-                        _InputIterator end_id = skip_identifier ( p_first, p_last );
+                        _InputIterator identifier_end = skip_identifier(first, last);
                         env.current_line += skip_identifier.lines;
-                        std::size_t size = end_id - p_first;
+                        std::size_t size = identifier_end - first;
 
-                        assert ( size < 512 );
+                        assert(size < 512);
                         char *copy = buffer;
-                        std::copy ( p_first, end_id, copy );
+                        std::copy(first, identifier_end, copy);
                         copy[size] = '\0';
 
-                        end_id = skip_blanks ( end_id, p_last );
-                        p_first = skip ( end_id, p_last );
+                        identifier_end = skip_blanks(identifier_end, last);
+                        first = skip(identifier_end, last);
 
                         int was = env.current_line;
-                        ( void ) handle_directive ( buffer, size, end_id, p_first, p_result );
+                        (void) handle_directive(buffer, size, identifier_end, first, result);
 
-                        if ( env.current_line != was ) {
+                        if (env.current_line != was) {
                             env.current_line = was;
-                            _PP_internal::output_line ( env.current_file, env.current_line, p_result );
+                            _PP_internal::output_line(env.current_file, env.current_line, result);
                         }
-                    } else if ( *p_first == '\n' ) {
+                    } else if (*first == '\n') {
                         // ### compress the line
-                        *p_result++ = *p_first++;
+                        *result++ = *first++;
                         ++env.current_line;
-                    } else if ( skipping () )
-                        p_first = skip ( p_first, p_last );
-                    else {
-                        _PP_internal::output_line ( env.current_file, env.current_line, p_result );
-                        p_first = expand_macro ( p_first, p_last, p_result );
+                    } else if (skipping()) {
+                        first = skip(first, last);
+                    } else {
+                        _PP_internal::output_line(env.current_file, env.current_line, result);
+                        first = expand_macro(first, last, result);
                         env.current_line += expand_macro.lines;
 
-                        if ( expand_macro.generated_lines )
-                            _PP_internal::output_line ( env.current_file, env.current_line, p_result );
+                        if (expand_macro.generated_lines)
+                            _PP_internal::output_line(env.current_file, env.current_line, result);
                     }
                 }
             }
 
-
+            /**
+             * Opens given file and passes it to file(FILE*, _OutputIterator).
+             */
             template <typename _OutputIterator>
-            void file ( std::string const &filename, _OutputIterator __result ) {
-                FILE *fp = std::fopen ( filename.c_str(), "rb" );
-                if ( fp != 0 ) {
+            void file(std::string const &filename, _OutputIterator __result) {
+                qDebug() << "Reading file:" << filename.c_str();
+                FILE *fp = std::fopen(filename.c_str(), "rb");
+                if (fp != 0) {
                     std::string was = env.current_file;
                     env.current_file = filename;
-                    file ( fp, __result );
+                    file(fp, __result);
                     env.current_file = was;
+                } else {
+                    std::cerr << "** WARNING file ``" << filename << " not found!" << std::endl;
                 }
-                //else
-                //std::cerr << "** WARNING file ``" << filename << " not found!" << std::endl;
             }
 
+            /**
+             * Reads contents of given file and passes contents of file
+             * to operator(_InputIterator, _InputIterator, _OutputIterator).
+             */
             template <typename _OutputIterator>
-            void file ( FILE *fp, _OutputIterator __result ) {
-                assert ( fp != 0 );
+            void file(FILE *fp, _OutputIterator result) {
+                assert(fp != 0);
 
 #if defined (HAVE_MMAP)
                 struct stat st;
-                fstat ( FILENO ( fp ), &st );
+                fstat(FILENO(fp), &st);
                 std::size_t size = st.st_size;
                 char *buffer = 0;
-                buffer = ( char * ) ::mmap ( 0, size, PROT_READ, MAP_SHARED, FILENO ( fp ), 0 );
-                fclose ( fp );
-                if ( !buffer || buffer == ( char* ) -1 )
+                buffer = (char *) ::mmap(0, size, PROT_READ, MAP_SHARED, FILENO(fp), 0);
+                fclose(fp);
+                if (!buffer || buffer == (char*) - 1)
                     return;
-                this->operator () ( buffer, buffer + size, __result );
-                ::munmap ( buffer, size );
+                this->operator()(buffer, buffer + size, __result);
+                ::munmap(buffer, size);
 #else
+                QFile file;
+
+                if (!file.open(fp, QIODevice::ReadOnly)) { //succeeds always
+                    std::cout << "pp-engine-bits.h[file(FILE*, _OutputIterator)]: Failed to open file for read" << std::endl;
+                    exit(1);
+                }
+
+                QByteArray data = file.readAll();
+                if (data.isEmpty()) {
+                    std::cout << "pp-engine-bits.h[file(FILE*, _OutputIterator)]: Failed to read the file" << std::endl;
+                    exit(1);
+                }
+                file.close();
+                std::fclose(fp);
+                this->operator()(data.data(), data.data() + data.size(), result);
+                /*
+                 * NOTE: the code is commented out for it seems to have some problems...
+                 * Too lazy to fix it, so now there is Qt based solution for it
+                 * The Qt solution also does more ... secure checks ... maybe? Whatever.
                 std::string buffer;
                 while ( !std::feof ( fp ) ) {
                     char tmp[1024];
@@ -273,44 +303,44 @@ namespace rpp {
                     buffer += tmp;
                 }
                 std::fclose ( fp );
-                this->operator () ( buffer.c_str(), buffer.c_str() + buffer.size(), __result );
+                this->operator () ( buffer.c_str(), buffer.c_str() + buffer.size(), result );*/
 #endif
             }
 
             template <typename _InputIterator>
-            bool find_header_protection ( _InputIterator __first, _InputIterator __last, std::string *__prot ) {
+            bool find_header_protection(_InputIterator __first, _InputIterator __last, std::string *__prot) {
                 int was = env.current_line;
 
-                while ( __first != __last ) {
-                    if ( pp_isspace ( *__first ) ) {
-                        if ( *__first == '\n' )
+                while (__first != __last) {
+                    if (pp_isspace(*__first)) {
+                        if (*__first == '\n')
                             ++env.current_line;
 
                         ++__first;
-                    } else if ( _PP_internal::comment_p ( __first, __last ) ) {
-                        __first = skip_comment_or_divop ( __first, __last );
+                    } else if (_PP_internal::comment_p(__first, __last)) {
+                        __first = skip_comment_or_divop(__first, __last);
                         env.current_line += skip_comment_or_divop.lines;
-                    } else if ( *__first == '#' ) {
-                        __first = skip_blanks ( ++__first, __last );
+                    } else if (*__first == '#') {
+                        __first = skip_blanks(++__first, __last);
                         env.current_line += skip_blanks.lines;
 
-                        if ( __first != __last && *__first == 'i' ) {
+                        if (__first != __last && *__first == 'i') {
                             _InputIterator __begin = __first;
-                            __first = skip_identifier ( __begin, __last );
+                            __first = skip_identifier(__begin, __last);
                             env.current_line += skip_identifier.lines;
 
-                            std::string __directive ( __begin, __first );
+                            std::string __directive(__begin, __first);
 
-                            if ( __directive == "ifndef" ) {
-                                __first = skip_blanks ( __first, __last );
+                            if (__directive == "ifndef") {
+                                __first = skip_blanks(__first, __last);
                                 env.current_line += skip_blanks.lines;
 
                                 __begin = __first;
-                                __first = skip_identifier ( __first, __last );
+                                __first = skip_identifier(__first, __last);
                                 env.current_line += skip_identifier.lines;
 
-                                if ( __begin != __first && __first != __last ) {
-                                    __prot->assign ( __begin, __first );
+                                if (__begin != __first && __first != __last) {
+                                    __prot->assign(__begin, __first);
                                     return true;
                                 }
                             }
@@ -341,24 +371,23 @@ namespace rpp {
             pp_skip_number skip_number;
             std::string _M_current_text;
 
-            std::string fix_file_path ( std::string const &filename ) const;
+            std::string fix_file_path(std::string const &filename) const;
 
-            bool is_absolute ( std::string const &filename ) const;
+            bool is_absolute(std::string const &filename) const;
 
-            bool file_isdir ( std::string const &__filename ) const;
+            bool file_isdir(std::string const &__filename) const;
 
-            bool file_exists ( std::string const &__filename ) const;
+            bool file_exists(std::string const &__filename) const;
 
+            std::back_insert_iterator<std::vector<std::string> > include_paths_inserter();
 
-            std::back_insert_iterator<std::vector<std::string> > include_paths_inserter ();
+            std::vector<std::string>::iterator include_paths_begin();
 
-            std::vector<std::string>::iterator include_paths_begin ();
+            std::vector<std::string>::iterator include_paths_end();
 
-            std::vector<std::string>::iterator include_paths_end ();
+            std::vector<std::string>::const_iterator include_paths_begin() const;
 
-            std::vector<std::string>::const_iterator include_paths_begin () const;
-
-            std::vector<std::string>::const_iterator include_paths_end () const;
+            std::vector<std::string>::const_iterator include_paths_end() const;
 
 
             bool test_if_level();
@@ -369,108 +398,111 @@ namespace rpp {
              * Returns preprocessor directive type, PP_DIRECTIVE_TYPE,
              * p_directive corresponds to.
              */
-            PP_DIRECTIVE_TYPE find_directive ( const char* p_directive, std::size_t p_size ) const;
+            PP_DIRECTIVE_TYPE find_directive(const char* p_directive, std::size_t p_size) const;
 
             /**
              * Finds correct include file from include paths or given data and returns
              * FILE pointer to that file.
              */
-            FILE *find_include_file ( std::string const &__input_filename, std::string *__filepath,
-                                      INCLUDE_POLICY __include_policy, bool __skip_current_path ) ;
+            FILE *find_include_file(std::string const &__input_filename, std::string *__filepath,
+                                    INCLUDE_POLICY __include_policy, bool __skip_current_path) ;
 
+            /**
+             * 
+             */
             template <typename _InputIterator, typename _OutputIterator>
-            _InputIterator handle_directive ( char const *p_directive,
-                                              std::size_t p_size,
-                                              _InputIterator p_first,
-                                              _InputIterator p_last,
-                                              _OutputIterator p_result ) {
+            _InputIterator handle_directive(char const *given_directive,
+                                            std::size_t size,
+                                            _InputIterator first,
+                                            _InputIterator last,
+                                            _OutputIterator result) {
 
-                p_first = skip_blanks ( p_first, p_last );
+                first = skip_blanks(first, last);
 
-                PP_DIRECTIVE_TYPE directive = find_directive ( p_directive, p_size );
-                switch ( directive ) {
+                PP_DIRECTIVE_TYPE directive = find_directive(given_directive, size);
+                switch (directive) {
                 case PP_DEFINE:
-                    if ( ! skipping () )
-                        return handle_define ( p_first, p_last );
+                    if (! skipping())
+                        return handle_define(first, last);
                     break;
 
                 case PP_INCLUDE:
                 case PP_INCLUDE_NEXT:
-                    if ( ! skipping () )
-                        return handle_include ( directive == PP_INCLUDE_NEXT, p_first, p_last, p_result );
+                    if (! skipping())
+                        return handle_include(directive == PP_INCLUDE_NEXT, first, last, result);
                     break;
 
                 case PP_UNDEF:
-                    if ( ! skipping () )
-                        return handle_undef ( p_first, p_last );
+                    if (! skipping())
+                        return handle_undef(first, last);
                     break;
 
                 case PP_ELIF:
-                    return handle_elif ( p_first, p_last );
+                    return handle_elif(first, last);
 
                 case PP_ELSE:
-                    return handle_else ( p_first, p_last );
+                    return handle_else(first, last);
 
                 case PP_ENDIF:
-                    return handle_endif ( p_first, p_last );
+                    return handle_endif(first, last);
 
                 case PP_IF:
-                    return handle_if ( p_first, p_last );
+                    return handle_if(first, last);
 
                 case PP_IFDEF:
-                    return handle_ifdef ( false, p_first, p_last );
+                    return handle_ifdef(false, first, last);
 
                 case PP_IFNDEF:
-                    return handle_ifdef ( true, p_first, p_last );
+                    return handle_ifdef(true, first, last);
 
                 default:
                     break;
                 }
 
-                return p_first;
+                return first;
             }
 
             template <typename _InputIterator, typename _OutputIterator>
-            _InputIterator handle_include ( bool p_skip_current_path, _InputIterator p_first, _InputIterator p_last,
-                                            _OutputIterator p_result ) {
+            _InputIterator handle_include(bool p_skip_current_path, _InputIterator p_first, _InputIterator p_last,
+                                          _OutputIterator p_result) {
 
-                if ( pp_isalpha ( *p_first ) || *p_first == '_' ) {
-                    pp_macro_expander expand_include ( env );
+                if (pp_isalpha(*p_first) || *p_first == '_') {
+                    pp_macro_expander expand_include(env);
                     std::string name;
-                    name.reserve ( 255 );
-                    expand_include ( p_first, p_last, std::back_inserter ( name ) );
-                    std::string::iterator it = skip_blanks ( name.begin (), name.end () );
-                    assert ( it != name.end () && ( *it == '<' || *it == '"' ) );
-                    handle_include ( p_skip_current_path, it, name.end (), p_result );
+                    name.reserve(255);
+                    expand_include(p_first, p_last, std::back_inserter(name));
+                    std::string::iterator it = skip_blanks(name.begin(), name.end());
+                    assert(it != name.end() && (*it == '<' || *it == '"'));
+                    handle_include(p_skip_current_path, it, name.end(), p_result);
                     return p_first;
                 }
 
-                assert ( *p_first == '<' || *p_first == '"' );
-                int quote = ( *p_first == '"' ) ? '"' : '>';
+                assert(*p_first == '<' || *p_first == '"');
+                int quote = (*p_first == '"') ? '"' : '>';
                 ++p_first;
 
                 _InputIterator end_name = p_first;
-                for ( ; end_name != p_last; ++end_name ) {
-                    assert ( *end_name != '\n' );
+                for (; end_name != p_last; ++end_name) {
+                    assert(*end_name != '\n');
 
-                    if ( *end_name == quote )
+                    if (*end_name == quote)
                         break;
                 }
 
-                std::string filename ( p_first, end_name );
+                std::string filename(p_first, end_name);
 
 #ifdef PP_OS_WIN
-                std::replace ( filename.begin(), filename.end(), '/', '\\' );
+                std::replace(filename.begin(), filename.end(), '/', '\\');
 #endif
 
                 std::string filepath;
-                FILE *fp = find_include_file ( filename, &filepath, quote == '>' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, p_skip_current_path );
+                FILE *fp = find_include_file(filename, &filepath, quote == '>' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, p_skip_current_path);
 
 #if defined (PP_HOOK_ON_FILE_INCLUDED)
-                PP_HOOK_ON_FILE_INCLUDED ( env.current_file, fp ? filepath : filename, fp );
+                PP_HOOK_ON_FILE_INCLUDED(env.current_file, fp ? filepath : filename, fp);
 #endif
 
-                if ( fp != 0 ) {
+                if (fp != 0) {
                     std::string old_file = env.current_file;
                     env.current_file = filepath;
                     int __saved_lines = env.current_line;
@@ -478,14 +510,14 @@ namespace rpp {
                     env.current_line = 1;
                     //output_line (env.current_file, 1, __result);
 
-                    file ( fp, p_result );
+                    file(fp, p_result);
 
                     // restore the file name and the line position
                     env.current_file = old_file;
                     env.current_line = __saved_lines;
 
                     // sync the buffer
-                    _PP_internal::output_line ( env.current_file, env.current_line, p_result );
+                    _PP_internal::output_line(env.current_file, env.current_line, p_result);
                 }
 #ifndef RPP_JAMBI
 //   else
@@ -496,70 +528,70 @@ namespace rpp {
             }
 
             template <typename _InputIterator>
-            _InputIterator handle_define ( _InputIterator __first, _InputIterator __last ) {
+            _InputIterator handle_define(_InputIterator __first, _InputIterator __last) {
                 pp_macro macro;
 #if defined (PP_WITH_MACRO_POSITION)
-                macro.file = pp_symbol::get ( env.current_file );
+                macro.file = pp_symbol::get(env.current_file);
 #endif
                 std::string definition;
 
-                __first = skip_blanks ( __first, __last );
-                _InputIterator end_macro_name = skip_identifier ( __first, __last );
-                pp_fast_string const *macro_name = pp_symbol::get ( __first, end_macro_name );
+                __first = skip_blanks(__first, __last);
+                _InputIterator end_macro_name = skip_identifier(__first, __last);
+                pp_fast_string const *macro_name = pp_symbol::get(__first, end_macro_name);
                 __first = end_macro_name;
 
-                if ( __first != __last && *__first == '(' ) {
+                if (__first != __last && *__first == '(') {
                     macro.function_like = true;
-                    macro.formals.reserve ( 5 );
+                    macro.formals.reserve(5);
 
-                    __first = skip_blanks ( ++__first, __last ); // skip '('
-                    _InputIterator arg_end = skip_identifier ( __first, __last );
-                    if ( __first != arg_end )
-                        macro.formals.push_back ( pp_symbol::get ( __first, arg_end ) );
+                    __first = skip_blanks(++__first, __last);    // skip '('
+                    _InputIterator arg_end = skip_identifier(__first, __last);
+                    if (__first != arg_end)
+                        macro.formals.push_back(pp_symbol::get(__first, arg_end));
 
-                    __first = skip_blanks ( arg_end, __last );
+                    __first = skip_blanks(arg_end, __last);
 
-                    if ( *__first == '.' ) {
+                    if (*__first == '.') {
                         macro.variadics = true;
-                        while ( *__first == '.' )
+                        while (*__first == '.')
                             ++__first;
                     }
 
-                    while ( __first != __last && *__first == ',' ) {
-                        __first = skip_blanks ( ++__first, __last );
+                    while (__first != __last && *__first == ',') {
+                        __first = skip_blanks(++__first, __last);
 
-                        arg_end = skip_identifier ( __first, __last );
-                        if ( __first != arg_end )
-                            macro.formals.push_back ( pp_symbol::get ( __first, arg_end ) );
+                        arg_end = skip_identifier(__first, __last);
+                        if (__first != arg_end)
+                            macro.formals.push_back(pp_symbol::get(__first, arg_end));
 
-                        __first = skip_blanks ( arg_end, __last );
+                        __first = skip_blanks(arg_end, __last);
 
-                        if ( *__first == '.' ) {
+                        if (*__first == '.') {
                             macro.variadics = true;
-                            while ( *__first == '.' )
+                            while (*__first == '.')
                                 ++__first;
                         }
                     }
 
-                    assert ( *__first == ')' );
+                    assert(*__first == ')');
                     ++__first;
                 }
 
-                __first = skip_blanks ( __first, __last );
+                __first = skip_blanks(__first, __last);
 
-                while ( __first != __last && *__first != '\n' ) {
-                    if ( *__first == '/' ) {
-                        __first = skip_comment_or_divop ( __first, __last );
+                while (__first != __last && *__first != '\n') {
+                    if (*__first == '/') {
+                        __first = skip_comment_or_divop(__first, __last);
                         env.current_line += skip_comment_or_divop.lines;
                     }
 
-                    if ( *__first == '\\' ) {
+                    if (*__first == '\\') {
                         _InputIterator __begin = __first;
-                        __begin = skip_blanks ( ++__begin, __last );
+                        __begin = skip_blanks(++__begin, __last);
 
-                        if ( __begin != __last && *__begin == '\n' ) {
+                        if (__begin != __last && *__begin == '\n') {
                             ++macro.lines;
-                            __first = skip_blanks ( ++__begin, __last );
+                            __first = skip_blanks(++__begin, __last);
                             definition += ' ';
                             continue;
                         }
@@ -568,82 +600,82 @@ namespace rpp {
                     definition += *__first++;
                 }
 
-                macro.definition = pp_symbol::get ( definition );
-                env.bind ( macro_name, macro );
+                macro.definition = pp_symbol::get(definition);
+                env.bind(macro_name, macro);
 
                 return __first;
             }
 
             /**
-             * Handle different kind of expressions which should be skipped.
+             * Invokes different skipping functions based the on first.
              */
             template <typename _InputIterator>
-            _InputIterator skip ( _InputIterator p_first, _InputIterator p_last ) {
+            _InputIterator skip(_InputIterator first, _InputIterator last) {
                 pp_skip_string_literal skip_string_literal;
                 pp_skip_char_literal skip_char_literal;
 
-                while ( p_first != p_last && *p_first != '\n' ) {
-                    if ( *p_first == '/' ) {
-                        p_first = skip_comment_or_divop ( p_first, p_last );
+                while (first != last && *first != '\n') {
+                    if (*first == '/') {
+                        first = skip_comment_or_divop(first, last);
                         env.current_line += skip_comment_or_divop.lines;
-                    } else if ( *p_first == '"' ) {
-                        p_first = skip_string_literal ( p_first, p_last );
+                    } else if (*first == '"') {
+                        first = skip_string_literal(first, last);
                         env.current_line += skip_string_literal.lines;
-                    } else if ( *p_first == '\'' ) {
-                        p_first = skip_char_literal ( p_first, p_last );
+                    } else if (*first == '\'') {
+                        first = skip_char_literal(first, last);
                         env.current_line += skip_char_literal.lines;
-                    } else if ( *p_first == '\\' ) {
-                        p_first = skip_blanks ( ++p_first, p_last );
+                    } else if (*first == '\\') {
+                        first = skip_blanks(++first, last);
                         env.current_line += skip_blanks.lines;
 
-                        if ( p_first != p_last && *p_first == '\n' ) {
-                            ++p_first;
+                        if (first != last && *first == '\n') {
+                            ++first;
                             ++env.current_line;
                         }
                     } else
-                        ++p_first;
+                        ++first;
                 }
 
-                return p_first;
+                return first;
             }
 
 
             template <typename _InputIterator>
-            _InputIterator eval_primary ( _InputIterator __first, _InputIterator __last, Value *result ) {
+            _InputIterator eval_primary(_InputIterator __first, _InputIterator __last, Value *result) {
                 bool expect_paren = false;
                 int token;
-                __first = next_token ( __first, __last, &token );
+                __first = next_token(__first, __last, &token);
 
-                switch ( token ) {
+                switch (token) {
                 case TOKEN_NUMBER:
-                    result->set_long ( token_value );
+                    result->set_long(token_value);
                     break;
 
                 case TOKEN_UNUMBER:
-                    result->set_ulong ( token_uvalue );
+                    result->set_ulong(token_uvalue);
                     break;
 
                 case TOKEN_DEFINED:
-                    __first = next_token ( __first, __last, &token );
+                    __first = next_token(__first, __last, &token);
 
-                    if ( token == '(' ) {
+                    if (token == '(') {
                         expect_paren = true;
-                        __first = next_token ( __first, __last, &token );
+                        __first = next_token(__first, __last, &token);
                     }
 
-                    if ( token != TOKEN_IDENTIFIER ) {
-                        std::cerr << "** WARNING expected ``identifier'' found:" << char ( token ) << std::endl;
-                        result->set_long ( 0 );
+                    if (token != TOKEN_IDENTIFIER) {
+                        std::cerr << "** WARNING expected ``identifier'' found:" << char(token) << std::endl;
+                        result->set_long(0);
                         break;
                     }
 
-                    result->set_long ( env.resolve ( token_text->c_str (), token_text->size () ) != 0 );
+                    result->set_long(env.resolve(token_text->c_str(), token_text->size()) != 0);
 
-                    next_token ( __first, __last, &token ); // skip '('
+                    next_token(__first, __last, &token);    // skip '('
 
-                    if ( expect_paren ) {
-                        _InputIterator next = next_token ( __first, __last, &token );
-                        if ( token != ')' )
+                    if (expect_paren) {
+                        _InputIterator next = next_token(__first, __last, &token);
+                        if (token != ')')
                             std::cerr << "** WARNING expected ``)''" << std::endl;
                         else
                             __first = next;
@@ -651,281 +683,281 @@ namespace rpp {
                     break;
 
                 case TOKEN_IDENTIFIER:
-                    result->set_long ( 0 );
+                    result->set_long(0);
                     break;
 
                 case '-':
-                    __first = eval_primary ( __first, __last, result );
-                    result->set_long ( - result->l );
+                    __first = eval_primary(__first, __last, result);
+                    result->set_long(- result->l);
                     return __first;
 
                 case '+':
-                    __first = eval_primary ( __first, __last, result );
+                    __first = eval_primary(__first, __last, result);
                     return __first;
 
                 case '!':
-                    __first = eval_primary ( __first, __last, result );
-                    result->set_long ( result->is_zero () );
+                    __first = eval_primary(__first, __last, result);
+                    result->set_long(result->is_zero());
                     return __first;
 
                 case '(':
-                    __first = eval_constant_expression ( __first, __last, result );
-                    next_token ( __first, __last, &token );
+                    __first = eval_constant_expression(__first, __last, result);
+                    next_token(__first, __last, &token);
 
-                    if ( token != ')' )
+                    if (token != ')')
                         std::cerr << "** WARNING expected ``)'' = " << token << std::endl;
                     else
-                        __first = next_token ( __first, __last, &token );
+                        __first = next_token(__first, __last, &token);
                     break;
 
                 default:
-                    result->set_long ( 0 );
+                    result->set_long(0);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_multiplicative ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_primary ( __first, __last, result );
+            _InputIterator eval_multiplicative(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_primary(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == '*' || token == '/' || token == '%' ) {
+                while (token == '*' || token == '/' || token == '%') {
                     Value value;
-                    __first = eval_primary ( next, __last, &value );
+                    __first = eval_primary(next, __last, &value);
 
-                    if ( token == '*' )
-                        result->op_mult ( value );
-                    else if ( token == '/' ) {
-                        if ( value.is_zero () ) {
+                    if (token == '*')
+                        result->op_mult(value);
+                    else if (token == '/') {
+                        if (value.is_zero()) {
                             std::cerr << "** WARNING division by zero" << std::endl;
-                            result->set_long ( 0 );
+                            result->set_long(0);
                         } else
-                            result->op_div ( value );
+                            result->op_div(value);
                     } else {
-                        if ( value.is_zero () ) {
+                        if (value.is_zero()) {
                             std::cerr << "** WARNING division by zero" << std::endl;
-                            result->set_long ( 0 );
+                            result->set_long(0);
                         } else
-                            result->op_mod ( value );
+                            result->op_mod(value);
                     }
-                    next = next_token ( __first, __last, &token );
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_additive ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_multiplicative ( __first, __last, result );
+            _InputIterator eval_additive(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_multiplicative(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == '+' || token == '-' ) {
+                while (token == '+' || token == '-') {
                     Value value;
-                    __first = eval_multiplicative ( next, __last, &value );
+                    __first = eval_multiplicative(next, __last, &value);
 
-                    if ( token == '+' )
-                        result->op_add ( value );
+                    if (token == '+')
+                        result->op_add(value);
                     else
-                        result->op_sub ( value );
-                    next = next_token ( __first, __last, &token );
+                        result->op_sub(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_shift ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_additive ( __first, __last, result );
+            _InputIterator eval_shift(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_additive(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == TOKEN_LT_LT || token == TOKEN_GT_GT ) {
+                while (token == TOKEN_LT_LT || token == TOKEN_GT_GT) {
                     Value value;
-                    __first = eval_additive ( next, __last, &value );
+                    __first = eval_additive(next, __last, &value);
 
-                    if ( token == TOKEN_LT_LT )
-                        result->op_lhs ( value );
+                    if (token == TOKEN_LT_LT)
+                        result->op_lhs(value);
                     else
-                        result->op_rhs ( value );
-                    next = next_token ( __first, __last, &token );
+                        result->op_rhs(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_relational ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_shift ( __first, __last, result );
+            _InputIterator eval_relational(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_shift(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == '<'
+                while (token == '<'
                         || token == '>'
                         || token == TOKEN_LT_EQ
-                        || token == TOKEN_GT_EQ ) {
+                        || token == TOKEN_GT_EQ) {
                     Value value;
-                    __first = eval_shift ( next, __last, &value );
+                    __first = eval_shift(next, __last, &value);
 
-                    switch ( token ) {
+                    switch (token) {
                     default:
-                        assert ( 0 );
+                        assert(0);
                         break;
 
                     case '<':
-                        result->op_lt ( value );
+                        result->op_lt(value);
                         break;
 
                     case '>':
-                        result->op_gt ( value );
+                        result->op_gt(value);
                         break;
 
                     case TOKEN_LT_EQ:
-                        result->op_le ( value );
+                        result->op_le(value);
                         break;
 
                     case TOKEN_GT_EQ:
-                        result->op_ge ( value );
+                        result->op_ge(value);
                         break;
                     }
-                    next = next_token ( __first, __last, &token );
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_equality ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_relational ( __first, __last, result );
+            _InputIterator eval_equality(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_relational(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == TOKEN_EQ_EQ || token == TOKEN_NOT_EQ ) {
+                while (token == TOKEN_EQ_EQ || token == TOKEN_NOT_EQ) {
                     Value value;
-                    __first = eval_relational ( next, __last, &value );
+                    __first = eval_relational(next, __last, &value);
 
-                    if ( token == TOKEN_EQ_EQ )
-                        result->op_eq ( value );
+                    if (token == TOKEN_EQ_EQ)
+                        result->op_eq(value);
                     else
-                        result->op_ne ( value );
-                    next = next_token ( __first, __last, &token );
+                        result->op_ne(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_and ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_equality ( __first, __last, result );
+            _InputIterator eval_and(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_equality(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == '&' ) {
+                while (token == '&') {
                     Value value;
-                    __first = eval_equality ( next, __last, &value );
-                    result->op_bit_and ( value );
-                    next = next_token ( __first, __last, &token );
+                    __first = eval_equality(next, __last, &value);
+                    result->op_bit_and(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_xor ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_and ( __first, __last, result );
+            _InputIterator eval_xor(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_and(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == '^' ) {
+                while (token == '^') {
                     Value value;
-                    __first = eval_and ( next, __last, &value );
-                    result->op_bit_xor ( value );
-                    next = next_token ( __first, __last, &token );
+                    __first = eval_and(next, __last, &value);
+                    result->op_bit_xor(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_or ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_xor ( __first, __last, result );
+            _InputIterator eval_or(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_xor(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == '|' ) {
+                while (token == '|') {
                     Value value;
-                    __first = eval_xor ( next, __last, &value );
-                    result->op_bit_or ( value );
-                    next = next_token ( __first, __last, &token );
+                    __first = eval_xor(next, __last, &value);
+                    result->op_bit_or(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_logical_and ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_or ( __first, __last, result );
+            _InputIterator eval_logical_and(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_or(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == TOKEN_AND_AND ) {
+                while (token == TOKEN_AND_AND) {
                     Value value;
-                    __first = eval_or ( next, __last, &value );
-                    result->op_and ( value );
-                    next = next_token ( __first, __last, &token );
+                    __first = eval_or(next, __last, &value);
+                    result->op_and(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_logical_or ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_logical_and ( __first, __last, result );
+            _InputIterator eval_logical_or(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_logical_and(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                while ( token == TOKEN_OR_OR ) {
+                while (token == TOKEN_OR_OR) {
                     Value value;
-                    __first = eval_logical_and ( next, __last, &value );
-                    result->op_or ( value );
-                    next = next_token ( __first, __last, &token );
+                    __first = eval_logical_and(next, __last, &value);
+                    result->op_or(value);
+                    next = next_token(__first, __last, &token);
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_constant_expression ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                __first = eval_logical_or ( __first, __last, result );
+            _InputIterator eval_constant_expression(_InputIterator __first, _InputIterator __last, Value *result) {
+                __first = eval_logical_or(__first, __last, result);
 
                 int token;
-                _InputIterator next = next_token ( __first, __last, &token );
+                _InputIterator next = next_token(__first, __last, &token);
 
-                if ( token == '?' ) {
+                if (token == '?') {
                     Value left_value;
-                    __first = eval_constant_expression ( next, __last, &left_value );
-                    __first = skip_blanks ( __first, __last );
+                    __first = eval_constant_expression(next, __last, &left_value);
+                    __first = skip_blanks(__first, __last);
 
-                    __first = next_token ( __first, __last, &token );
-                    if ( token == ':' ) {
+                    __first = next_token(__first, __last, &token);
+                    if (token == ':') {
                         Value right_value;
-                        __first = eval_constant_expression ( __first, __last, &right_value );
+                        __first = eval_constant_expression(__first, __last, &right_value);
 
-                        *result = !result->is_zero () ? left_value : right_value;
+                        *result = !result->is_zero() ? left_value : right_value;
                     } else {
-                        std::cerr << "** WARNING expected ``:'' = " << int ( token ) << std::endl;
+                        std::cerr << "** WARNING expected ``:'' = " << int (token) << std::endl;
                         *result = left_value;
                     }
                 }
@@ -934,34 +966,34 @@ namespace rpp {
             }
 
             template <typename _InputIterator>
-            _InputIterator eval_expression ( _InputIterator __first, _InputIterator __last, Value *result ) {
-                return __first = eval_constant_expression ( skip_blanks ( __first, __last ), __last, result );
+            _InputIterator eval_expression(_InputIterator __first, _InputIterator __last, Value *result) {
+                return __first = eval_constant_expression(skip_blanks(__first, __last), __last, result);
             }
 
             template <typename _InputIterator>
-            _InputIterator handle_if ( _InputIterator __first, _InputIterator __last ) {
-                if ( test_if_level() ) {
-                    pp_macro_expander expand_condition ( env );
+            _InputIterator handle_if(_InputIterator __first, _InputIterator __last) {
+                if (test_if_level()) {
+                    pp_macro_expander expand_condition(env);
                     std::string condition;
-                    condition.reserve ( 255 );
-                    expand_condition ( skip_blanks ( __first, __last ), __last, std::back_inserter ( condition ) );
+                    condition.reserve(255);
+                    expand_condition(skip_blanks(__first, __last), __last, std::back_inserter(condition));
 
                     Value result;
-                    result.set_long ( 0 );
-                    eval_expression ( condition.c_str (), condition.c_str () + condition.size (), &result );
+                    result.set_long(0);
+                    eval_expression(condition.c_str(), condition.c_str() + condition.size(), &result);
 
-                    _M_true_test[iflevel] = !result.is_zero ();
-                    _M_skipping[iflevel] = result.is_zero ();
+                    _M_true_test[iflevel] = !result.is_zero();
+                    _M_skipping[iflevel] = result.is_zero();
                 }
 
                 return __first;
             }
 
             template <typename _InputIterator>
-            _InputIterator handle_else ( _InputIterator __first, _InputIterator /*__last*/ ) {
-                if ( iflevel == 0 && !skipping () ) {
+            _InputIterator handle_else(_InputIterator __first, _InputIterator /*__last*/) {
+                if (iflevel == 0 && !skipping()) {
                     std::cerr << "** WARNING #else without #if" << std::endl;
-                } else if ( iflevel > 0 && _M_skipping[iflevel - 1] ) {
+                } else if (iflevel > 0 && _M_skipping[iflevel - 1]) {
                     _M_skipping[iflevel] = true;
                 } else {
                     _M_skipping[iflevel] = _M_true_test[iflevel];
@@ -971,16 +1003,16 @@ namespace rpp {
             }
 
             template <typename _InputIterator>
-            _InputIterator handle_elif ( _InputIterator __first, _InputIterator __last ) {
-                assert ( iflevel > 0 );
+            _InputIterator handle_elif(_InputIterator __first, _InputIterator __last) {
+                assert(iflevel > 0);
 
-                if ( iflevel == 0 && !skipping() ) {
+                if (iflevel == 0 && !skipping()) {
                     std::cerr << "** WARNING #else without #if" << std::endl;
-                } else if ( !_M_true_test[iflevel] && !_M_skipping[iflevel - 1] ) {
+                } else if (!_M_true_test[iflevel] && !_M_skipping[iflevel - 1]) {
                     Value result;
-                    __first = eval_expression ( __first, __last, &result );
-                    _M_true_test[iflevel] = !result.is_zero ();
-                    _M_skipping[iflevel] = result.is_zero ();
+                    __first = eval_expression(__first, __last, &result);
+                    _M_true_test[iflevel] = !result.is_zero();
+                    _M_skipping[iflevel] = result.is_zero();
                 } else {
                     _M_skipping[iflevel] = true;
                 }
@@ -989,8 +1021,8 @@ namespace rpp {
             }
 
             template <typename _InputIterator>
-            _InputIterator handle_endif ( _InputIterator __first, _InputIterator /*__last*/ ) {
-                if ( iflevel == 0 && !skipping() ) {
+            _InputIterator handle_endif(_InputIterator __first, _InputIterator /*__last*/) {
+                if (iflevel == 0 && !skipping()) {
                     std::cerr << "** WARNING #endif without #if" << std::endl;
                 } else {
                     _M_skipping[iflevel] = 0;
@@ -1003,26 +1035,26 @@ namespace rpp {
             }
 
             template <typename _InputIterator>
-            _InputIterator handle_ifdef ( bool check_undefined, _InputIterator __first, _InputIterator __last ) {
-                if ( test_if_level() ) {
-                    _InputIterator end_macro_name = skip_identifier ( __first, __last );
+            _InputIterator handle_ifdef(bool check_undefined, _InputIterator __first, _InputIterator __last) {
+                if (test_if_level()) {
+                    _InputIterator end_macro_name = skip_identifier(__first, __last);
 
                     std::size_t __size;
 #if defined(__SUNPRO_CC)
-                    std::distance ( __first, end_macro_name, __size );
+                    std::distance(__first, end_macro_name, __size);
 #else
-                    __size = std::distance ( __first, end_macro_name );
+                    __size = std::distance(__first, end_macro_name);
 #endif
-                    assert ( __size < 256 );
+                    assert(__size < 256);
 
                     char __buffer [256];
-                    std::copy ( __first, end_macro_name, __buffer );
+                    std::copy(__first, end_macro_name, __buffer);
 
-                    bool value = env.resolve ( __buffer, __size ) != 0;
+                    bool value = env.resolve(__buffer, __size) != 0;
 
                     __first = end_macro_name;
 
-                    if ( check_undefined )
+                    if (check_undefined)
                         value = !value;
 
                     _M_true_test[iflevel] = value;
@@ -1033,25 +1065,25 @@ namespace rpp {
             }
 
             template <typename _InputIterator>
-            _InputIterator handle_undef ( _InputIterator __first, _InputIterator __last ) {
-                __first = skip_blanks ( __first, __last );
-                _InputIterator end_macro_name = skip_identifier ( __first, __last );
-                assert ( end_macro_name != __first );
+            _InputIterator handle_undef(_InputIterator __first, _InputIterator __last) {
+                __first = skip_blanks(__first, __last);
+                _InputIterator end_macro_name = skip_identifier(__first, __last);
+                assert(end_macro_name != __first);
 
                 std::size_t __size;
 #if defined(__SUNPRO_CC)
-                std::distance ( __first, end_macro_name, __size );
+                std::distance(__first, end_macro_name, __size);
 #else
-                __size = std::distance ( __first, end_macro_name );
+                __size = std::distance(__first, end_macro_name);
 #endif
 
-                assert ( __size < 256 );
+                assert(__size < 256);
 
                 char __buffer [256];
-                std::copy ( __first, end_macro_name, __buffer );
+                std::copy(__first, end_macro_name, __buffer);
 
-                pp_fast_string const __tmp ( __buffer, __size );
-                env.unbind ( &__tmp );
+                pp_fast_string const __tmp(__buffer, __size);
+                env.unbind(&__tmp);
 
                 __first = end_macro_name;
 
@@ -1059,30 +1091,30 @@ namespace rpp {
             }
 
             template <typename _InputIterator>
-            char peek_char ( _InputIterator __first, _InputIterator __last ) {
-                if ( __first == __last )
+            char peek_char(_InputIterator __first, _InputIterator __last) {
+                if (__first == __last)
                     return 0;
 
                 return *++__first;
             }
 
             template <typename _InputIterator>
-            _InputIterator next_token ( _InputIterator __first, _InputIterator __last, int *kind ) {
-                __first = skip_blanks ( __first, __last );
+            _InputIterator next_token(_InputIterator __first, _InputIterator __last, int *kind) {
+                __first = skip_blanks(__first, __last);
 
-                if ( __first == __last ) {
+                if (__first == __last) {
                     *kind = 0;
                     return __first;
                 }
 
                 char ch = *__first;
-                char ch2 = peek_char ( __first, __last );
+                char ch2 = peek_char(__first, __last);
 
-                switch ( ch ) {
+                switch (ch) {
                 case '/':
-                    if ( ch2 == '/' || ch2 == '*' ) {
-                        __first = skip_comment_or_divop ( __first, __last );
-                        return next_token ( __first, __last, kind );
+                    if (ch2 == '/' || ch2 == '*') {
+                        __first = skip_comment_or_divop(__first, __last);
+                        return next_token(__first, __last, kind);
                     }
                     ++__first;
                     *kind = '/';
@@ -1090,10 +1122,10 @@ namespace rpp {
 
                 case '<':
                     ++__first;
-                    if ( ch2 == '<' ) {
+                    if (ch2 == '<') {
                         ++__first;
                         *kind = TOKEN_LT_LT;
-                    } else if ( ch2 == '=' ) {
+                    } else if (ch2 == '=') {
                         ++__first;
                         *kind = TOKEN_LT_EQ;
                     } else
@@ -1103,10 +1135,10 @@ namespace rpp {
 
                 case '>':
                     ++__first;
-                    if ( ch2 == '>' ) {
+                    if (ch2 == '>') {
                         ++__first;
                         *kind = TOKEN_GT_GT;
-                    } else if ( ch2 == '=' ) {
+                    } else if (ch2 == '=') {
                         ++__first;
                         *kind = TOKEN_GT_EQ;
                     } else
@@ -1116,7 +1148,7 @@ namespace rpp {
 
                 case '!':
                     ++__first;
-                    if ( ch2 == '=' ) {
+                    if (ch2 == '=') {
                         ++__first;
                         *kind = TOKEN_NOT_EQ;
                     } else
@@ -1126,7 +1158,7 @@ namespace rpp {
 
                 case '=':
                     ++__first;
-                    if ( ch2 == '=' ) {
+                    if (ch2 == '=') {
                         ++__first;
                         *kind = TOKEN_EQ_EQ;
                     } else
@@ -1136,7 +1168,7 @@ namespace rpp {
 
                 case '|':
                     ++__first;
-                    if ( ch2 == '|' ) {
+                    if (ch2 == '|') {
                         ++__first;
                         *kind = TOKEN_OR_OR;
                     } else
@@ -1146,7 +1178,7 @@ namespace rpp {
 
                 case '&':
                     ++__first;
-                    if ( ch2 == '&' ) {
+                    if (ch2 == '&') {
                         ++__first;
                         *kind = TOKEN_AND_AND;
                     } else
@@ -1155,26 +1187,26 @@ namespace rpp {
                     return __first;
 
                 default:
-                    if ( pp_isalpha ( ch ) || ch == '_' ) {
-                        _InputIterator end = skip_identifier ( __first, __last );
-                        _M_current_text.assign ( __first, end );
+                    if (pp_isalpha(ch) || ch == '_') {
+                        _InputIterator end = skip_identifier(__first, __last);
+                        _M_current_text.assign(__first, end);
 
                         token_text = &_M_current_text;
                         __first = end;
 
-                        if ( *token_text == "defined" )
+                        if (*token_text == "defined")
                             *kind = TOKEN_DEFINED;
                         else
                             *kind = TOKEN_IDENTIFIER;
-                    } else if ( pp_isdigit ( ch ) ) {
-                        _InputIterator end = skip_number ( __first, __last );
-                        std::string __str ( __first, __last );
-                        char ch = __str [__str.size () - 1];
-                        if ( ch == 'u' || ch == 'U' ) {
-                            token_uvalue = strtoul ( __str.c_str (), 0, 0 );
+                    } else if (pp_isdigit(ch)) {
+                        _InputIterator end = skip_number(__first, __last);
+                        std::string __str(__first, __last);
+                        char ch = __str [__str.size() - 1];
+                        if (ch == 'u' || ch == 'U') {
+                            token_uvalue = strtoul(__str.c_str(), 0, 0);
                             *kind = TOKEN_UNUMBER;
                         } else {
-                            token_value = strtol ( __str.c_str (), 0, 0 );
+                            token_value = strtol(__str.c_str(), 0, 0);
                             *kind = TOKEN_NUMBER;
                         }
                         __first = end;

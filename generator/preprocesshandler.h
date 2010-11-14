@@ -25,6 +25,13 @@ class PreprocessHandler {
         QString targetFile;
         
         QStringList setIncludes();
+        
+        /**
+         * Reads through master include file and writes preprocessed file for actual
+         * processing of headers.
+         * 
+         * TODO: more indepth description of this system somewhere
+         */
         void writeTargetFile( QString sourceFile, QString targetFile, QString currentDir);
         QString phononinclude;
 };

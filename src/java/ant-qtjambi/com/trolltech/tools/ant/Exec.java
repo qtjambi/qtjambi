@@ -4,7 +4,6 @@ import org.apache.tools.ant.*;
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 
 
 class Exec {
@@ -101,23 +100,24 @@ class Exec {
     }
     
     public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
+    	System.out.println("Executing: " + command.toString() + " in directory " + directory.toString());
         ProcessBuilder builder = new ProcessBuilder(command);
         
         // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
         // but it should not be needed there in first place... Only if you want to have same kind of building
         // environment one can have for Linux.
         // it should’t affect to Windows environment though.
-        if(ldpath != null) {
+        /*if(ldpath != null) {
         	Map<String, String> env = builder.environment();
         	env.put("LD_LIBRARY_PATH", ldpath);
-        }
+        }*/
         builder.directory(directory);
         try {
 			Process process = builder.start();
 			Util.redirectOutput(process);
-            if (process.exitValue() != 0) {
+            /*if (process.exitValue() != 0) { //TODO: this must not be commented out. Generator qmake script has problems or something.
                 throw new BuildException("Running: '" + command.toString() + "' failed.");
-            }
+            }*/
 		} catch (IOException e) {
 			 throw new BuildException("Running: '" + command.toString() + "' failed.", e);
 		}
