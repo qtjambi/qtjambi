@@ -1,4 +1,12 @@
-﻿<project default="help" basedir="." name="qtjambi.main">
+﻿<!--
+    TODO:
+    - ”ant all” should be ”ant full”.
+    - (new) ant all should build everything, only if it has not been built before.
+    - Tasks like ”ant library” should be meta tasks that pulls everything it needs,
+    and something like ant library-task should pull only stuff related to library.
+    Both should be documented.
+-->
+<project default="help" basedir="." name="qtjambi.main">
 
     <property file="build.properties"/>
 
