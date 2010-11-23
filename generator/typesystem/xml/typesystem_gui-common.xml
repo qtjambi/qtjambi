@@ -421,6 +421,10 @@
     <enum-type name="QPinchGesture::ChangeFlag" flags="QPinchGesture::ChangeFlags" />
     <enum-type name="QGestureRecognizer::ResultFlag" flags="QGestureRecognizer::Result" />
 
+    <enum-type name="QStaticText::PerformanceHint"/>
+    <enum-type name="QStyleOptionTabWidgetFrameV2::StyleOptionVersion"/>
+    <enum-type name="QTextDocument::Stacks"/>
+
     <enum-type name="QWizard::WizardButton">
         <reject-enum-value name="NStandardButtons"/>
         <reject-enum-value name="NButtons"/>
@@ -542,7 +546,7 @@
 
     <value-type name="QStyleOption" delete-in-main-thread="yes" polymorphic-base="yes" polymorphic-id-expression="%1-&gt;type == QStyleOption::SO_Default">
         <modify-function signature="operator=(QStyleOption)" remove="all"/>
-        <modify-function signature="init(const QWidget*)" remove="all"/> <!--### Obsolete in 4.3-->
+        <!--<modify-function signature="init(const QWidget*)" remove="all"/>--> <!--### Obsolete in 4.3-->
     </value-type>
     <value-type name="QStyleOptionGraphicsItem" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionGraphicsItem::Type &amp;&amp; %1-&gt;version == QStyleOptionGraphicsItem::Version"/>
     <value-type name="QStyleOptionSizeGrip" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionSizeGrip::Type &amp;&amp; %1-&gt;version == QStyleOptionSizeGrip::Version"/>
@@ -587,7 +591,7 @@
         <modify-function signature="operator=(QStyleOptionTabBarBase)" remove="all" />
     </value-type>
     <value-type name="QStyleOptionTabWidgetFrame" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabWidgetFrame::Type &amp;&amp; %1-&gt;version == QStyleOptionTabWidgetFrame::Version"/>
-    <value-type name="QStyleOptionTabWidgetFrameV2"/>
+    <value-type name="QStyleOptionTabWidgetFrameV2" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTabWidgetFrameV2::Type &amp;&amp; %1-&gt;version == QStyleOptionTabWidgetFrameV2::Version"/>
     <value-type name="QStyleOptionTitleBar" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionTitleBar::Type &amp;&amp; %1-&gt;version == QStyleOptionTitleBar::Version"/>
     <value-type name="QStyleOptionToolBar" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBar::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBar::Version"/>
     <value-type name="QStyleOptionToolBox" delete-in-main-thread="yes" polymorphic-id-expression="%1-&gt;type == QStyleOptionToolBox::Type &amp;&amp; %1-&gt;version == QStyleOptionToolBox::Version"/>

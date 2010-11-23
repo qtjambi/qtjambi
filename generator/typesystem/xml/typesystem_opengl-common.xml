@@ -10,6 +10,13 @@
     <enum-type name="QGLContext::BindOption" flags="QGLContext::BindOptions" />
     <enum-type name="QGLShader::ShaderTypeBit" flags="QGLShader::ShaderType"/>
 
+    <enum-type name="QGLBuffer::Access"/>
+    <enum-type name="QGLBuffer::Type"/>
+    <enum-type name="QGLBuffer::UsagePattern"/>
+    <enum-type name="QGLFormat::OpenGLContextProfile"/>
+
+    <enum-type name="QPainter::PixmapFragmentHint" flags="QPainter::PixmapFragmentHints"/>
+
     <namespace-type name="QGL">
         <include file-name="qgl.h" location="global"/>
     </namespace-type>

@@ -18,6 +18,7 @@
     <rejection class="" enum-name="QtValidLicenseForSqlModule"/>
     <rejection class="" enum-name="QtValidLicenseForOpenGLModule"/>
     <rejection class="" enum-name="enum_1"/>
+    <rejection class="" enum-name="enum_2" />
     <rejection class="" enum-name="QtValidLicenseForXmlModule"/>
     <rejection class="" enum-name="QtValidLicenseForXmlPatternsModule"/>
     <rejection class="" enum-name="QtValidLicenseForActiveQtModule"/>

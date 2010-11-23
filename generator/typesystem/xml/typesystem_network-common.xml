@@ -37,6 +37,9 @@
     <enum-type name="QNetworkRequest::Attribute" extensible="yes" />
     <enum-type name="QNetworkRequest::CacheLoadControl" />
     <enum-type name="QNetworkRequest::KnownHeaders" />
+    <enum-type name="QNetworkAccessManager::NetworkAccessibility"/>
+    <enum-type name="QNetworkRequest::LoadControl"/>
+    <enum-type name="QNetworkRequest::Priority"/>
 
     <object-type name="QAbstractNetworkCache" />
     <object-type name="QNetworkDiskCache">
@@ -166,10 +169,10 @@
     <value-type name="QSslCipher" />
     <value-type name="QSslError" />
     <value-type name="QSslKey" />
+    <value-type name="QSslCertificate" />
+    <value-type name="QSslConfiguration" />
 
     <object-type name="QSslSocket" />
-    <object-type name="QSslCertificate" />
-    <object-type name="QSslConfiguration" />
 
     <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
 
@@ -181,6 +184,15 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkProxy' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QNetworkRequest' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QAuthenticator' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslKey' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslError' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCertificate' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QScriptContextInfo' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslCipher' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QStaticText' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QScriptProgram' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QSslConfiguration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QScriptValueList' has equals operators but no qHash() function. Hashcode of objects will consistently be 0."/>
 
     <!-- For people building without SSL support -->
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.network.QSslSocket' for enum 'SslMode' is not declared" />
