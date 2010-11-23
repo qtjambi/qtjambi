@@ -5209,7 +5209,7 @@
     <object-type name="QGraphicsDropShadowEffect"/>
 
     <value-type name="QGestureRecognizer" />
-    <value-type name="QGenericMatrix" />
+    <!-- <value-type name="QGenericMatrix" /> -->
     <value-type name="QStaticText"/>
 
     <!-- Inefficient hash codes -->
@@ -5292,7 +5292,7 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Object type 'QGraphicsObject' passed as value. Resulting code will not compile." />
 
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QMatrix*' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
-    <!-- <suppress-warning text="WARNING(MetaJavaBuilder) :: template baseclass 'QGenericMatrix*' of * is not known" />-->
-    <!--<suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function '*', unmatched parameter type 'QGenericMatrix*'"/>-->
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: template baseclass 'QGenericMatrix*' of * is not known" />
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function '*', unmatched parameter type 'QGenericMatrix*'"/>
 
 </typesystem>
