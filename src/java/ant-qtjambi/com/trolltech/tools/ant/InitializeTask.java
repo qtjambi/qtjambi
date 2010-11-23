@@ -117,9 +117,9 @@ public class InitializeTask extends Task {
 
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
-        
+
         FindCompiler finder = new FindCompiler(props);
-        
+
         props.setNewProperty((String) null, OSNAME, finder.decideOSName());
         props.setNewProperty((String) null, COMPILER, finder.decideCompiler());
 
@@ -194,6 +194,7 @@ public class InitializeTask extends Task {
         path.append("/");
         path.append(subdir);
         path.append("/");
+        //! TODO: useful?
         path.append(LibraryEntry.formatPluginName(name, false, debug));
         return new File(path.toString()).exists();
     }
@@ -208,12 +209,12 @@ public class InitializeTask extends Task {
         if (verbose) {
             System.out.println(PHONON + ": " + phonon);        
         }
-        
+
         if(!exists) return "false";
-    	else addToQtConfig("phonon");
-        
+        else addToQtConfig("phonon");
+
         props.setNewProperty((String) null, PHONON, phonon);
-        
+
         switch (OSInfo.os()) {
         case Windows:
             props.setNewProperty((String) null, PHONON_DS9, "true");
@@ -229,7 +230,7 @@ public class InitializeTask extends Task {
                 props.setNewProperty((String) null, DBUS, "true");
             break;
         }
-        
+
         return phonon;
     }
 
@@ -239,17 +240,17 @@ public class InitializeTask extends Task {
      * @param config Library to add
      */
     private void addToQtConfig(String config) {
-    	String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
-    	String newConfig;
-    	if(oldConfig != null) {
-    		newConfig = oldConfig + " " + config;
-    	} else {
-    		newConfig = config;
-    	}
-        props.setProperty(QTCONFIG, newConfig, false);
-	}
+        String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
+        String newConfig;
+        if(oldConfig != null) {
+            newConfig = oldConfig + " " + config;
+        } else {
+            newConfig = config;
+        }
+        props.setProperty((String) null, QTCONFIG, newConfig, false);
+    }
 
-	private String decideSqlite() {
+    private String decideSqlite() {
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
         if (verbose) System.out.println(SQLITE + ": " + result);
         return result;
