@@ -30,6 +30,7 @@ class JavadocBuilder
         build_jambi_doclet
         clean_old_dirs
         generate_qdoc_japi
+        generate_jdoc
         run_qdoc
         package_jdoc
         create_doclet_header
@@ -55,8 +56,11 @@ EOS
             opt :classpath, "Classpath arguments for doclet building", :type => String
             opt :qtinclude_argument, "TODO: what for was this?"
             opt :qtdir, "Base directory of Qt source", :type => String
+            opt :library_path, "Specifies where libraries used the commands are", :type => String
+            opt :path, "Append stuff before PATH", :type => String
             opt :qdoc3, "Run only qdoc3 task"
             opt :japi,  "Generate japi file"
+            opt :jdoc, "Generate jdoc"
         end
 
         Trollop::die :classpath, "Must be set" if opts[:classpath] == nil
@@ -64,6 +68,12 @@ EOS
 
         @classpath_argument = opts[:classpath]
         @qtdir = opts[:qtdir]
+
+        # this wouldn’t work for Windows, use PATH instead for it?
+        ENV["LD_LIBRARY_PATH"] = opts[:library_path] if opts[:library_path] != nil
+
+        # TODO: works only for Linux
+        ENV["PATH"] = opts[:path] + ":" + ENV["PATH"] if opts[:path] != nil
 
         if opts[:qdoc3] == true
             run_qdoc
@@ -74,6 +84,8 @@ EOS
             generate_qdoc_japi
             exit
         end
+
+        generate_jdoc if opts[:jdoc] == true
     end
 
 
@@ -117,6 +129,18 @@ EOS
         end
     end
 
+    def generate_jdoc
+        Dir.chdir "generator" do
+            command = "./generator --jdoc-enabled --jdoc-dir ../doc/html/com/trolltech/qt"
+            puts "Running " + command
+            system command
+            if $?.exitstatus != 0
+                puts "Failed to generate jdoc"
+                exit 1
+            end
+        end
+    end
+
     # TODO: gentoo has qdoc3 binary, but what about other distros?
     # And what about QTDIR configs?
     def run_qdoc
@@ -145,7 +169,7 @@ EOS
     def generate_qdoc_japi
         puts
         Dir.chdir "generator" do 
-            command = "#{@BASE_PATH}/generator/generator --build-qdoc-japi #{@qtinclude_argument} --output-directory=\"#{@OUTPUT_DIRECTORY}\""
+            command = "#{@BASE_PATH}//generator --build-qdoc-japi #{@qtinclude_argument} --output-directory=\"#{@OUTPUT_DIRECTORY}\""
             puts "Running " + command
             system command
             if $?.exitstatus != 0

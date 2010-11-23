@@ -3,6 +3,7 @@
 ## TODO ##
 
 # There should be a handler that sanitizes the arguments.
+# (or just use build_javadoc.rb)
 
 ## ##
 

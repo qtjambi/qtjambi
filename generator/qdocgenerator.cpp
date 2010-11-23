@@ -48,6 +48,7 @@
 #include "typesystem/typesystem.h"
 
 #include <QtCore/QDir>
+#include <QDebug>
 
 QDocGenerator::QDocGenerator() { }
 
