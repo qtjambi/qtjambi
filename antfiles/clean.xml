@@ -18,6 +18,8 @@
                 <include name="**/Makefile*"/>
                 <exclude name="juic/Makefile*"/>
                 <exclude name="generator/Makefile*"/>
+                <exclude name="generator/debug/***"/>
+                <exclude name="generator/release/***"/>
             </fileset>
         </delete>
     </target>
@@ -28,6 +30,7 @@
         <delete>
             <fileset dir="juic">
                 <include name="Makefile*"/>
+                <include name="*.o"/>
                 <include name="juic"/>
             </fileset>
         </delete>
@@ -48,27 +51,32 @@
 
     <target name="clean" description="Cleans everything"
         depends="make.clean.global, make.clean.generator, make.clean.juic">
-        <delete>
+        <delete quiet="true">
             <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
         </delete>
-        <delete dir="${java.outdir}"/>
-        <delete dir="${java.generated.srcdir}"/>
-        <delete dir="${jardir}"/>
-        <delete dir="${generator.outputdir}"/>
-        <delete dir="${timestamp.dir}"/>
-        <delete dir="extjars"/>
-        <delete dir="bin"/>
-        <delete dir="lib"/>
-        <delete dir="cpp"/>
-        <delete>
+        <delete dir="${java.outdir}" quiet="true"/>
+        <delete dir="${java.generated.srcdir}" quiet="true"/>
+        <delete dir="${generator.outputdir}" quiet="true"/>
+        <delete dir="bin" quiet="true"/>
+        <delete dir="lib" quiet="true"/>
+        <delete dir="cpp" quiet="true"/>
+        <delete quiet="true">
             <fileset dir=".">
                 <include name="plugins/**/*"/>
                 <exclude name="plugins/qtjambi/**/*"/>
                 <include name="*.jar"/>
             </fileset>
         </delete>
-        <delete file="${java.srcdir}/qtjambi/version.properties"/>
-        <delete dir="${outputDir}/platform-output"/>
-        <delete file="qtjambi-${qtjambi.version}-src.zip"/>
+        <delete file="${java.srcdir}/qtjambi/version.properties" quiet="true"/>
+        <delete dir="${outputDir}/platform-output" quiet="true"/>
+        <delete file="qtjambi-${qtjambi.version}-src.zip" quiet="true"/>
+        <delete dir="build" quiet="true"/>
+    </target>
+
+    <target name="distclean" description="Cleans really everything"
+        depends="clean">
+        <delete dir="${jardir}" quiet="true"/>
+        <delete dir="${timestamp.dir}" quiet="true"/>
+        <delete dir="extjars" quiet="true"/>
     </target>
 </project>
