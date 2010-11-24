@@ -13,12 +13,15 @@
     <rejection class="QTextCodecPlugin" function-name="create(const QString &amp;)"/>
     <rejection class="QTextCodecPlugin" function-name="keys()const"/>
 
+    <rejection class="" enum-name="__codecvt_result"/>
+    <rejection class="" enum-name="enum_1"/>
+    <rejection class="" enum-name="enum_2"/>
+    <rejection class="" enum-name="enum_3"/>
+    <rejection class="" enum-name="enum_4"/>
 
     <rejection class="" enum-name="QtValidLicenseForDBusModule"/>
     <rejection class="" enum-name="QtValidLicenseForSqlModule"/>
     <rejection class="" enum-name="QtValidLicenseForOpenGLModule"/>
-    <rejection class="" enum-name="enum_1"/>
-    <rejection class="" enum-name="enum_2" />
     <rejection class="" enum-name="QtValidLicenseForXmlModule"/>
     <rejection class="" enum-name="QtValidLicenseForXmlPatternsModule"/>
     <rejection class="" enum-name="QtValidLicenseForActiveQtModule"/>
@@ -348,6 +351,13 @@
     <rejection class="reverse_iterator" />
     <rejection class="stat" />
     <rejection class="tm" />
+    <rejection class="_IO_FILE" />
+    <rejection class="_IO_marker" />
+    <rejection class="__exception" />
+    <rejection class="drand48_data" />
+    <rejection class="random_data" />
+    <rejection class="timespec" />
+    <rejection class="timeval" />
 
     <rejection class="Qt" enum-name="Initialization" />
 

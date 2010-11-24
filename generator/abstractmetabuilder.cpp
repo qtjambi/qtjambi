@@ -1632,9 +1632,14 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
 }
 
 
-AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, bool *ok, bool resolveType, bool resolveScope) {
+// uncomment the qDebug()s in order to inspect internals of the function
+AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
+                                                     bool *ok,
+                                                     bool resolveType,
+                                                     bool resolveScope) {
     Q_ASSERT(ok);
     *ok = true;
+    //qDebug()<<"Start of translateType()"<<_typei.toString();
 
     // 1. Test the type info without resolving typedefs in case this is present in the
     //    type system
@@ -1642,8 +1647,10 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     if (resolveType) {
         bool ok;
         AbstractMetaType *t = translateType(_typei, &ok, false, resolveScope);
-        if (t != 0 && ok)
+        if (t != 0 && ok) {
+            //qDebug()<<"ResolveType (1.) ok"<<t->fullName();
             return t;
+        }
     }
 
     if (!resolveType)
@@ -1660,19 +1667,23 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
             if (typei.qualifiedName().join("::") != _typei.qualifiedName().join("::"))
                 break;
         }
-
+        //qDebug()<<"Resolved:"<<typei.toString();
     }
 
     if (typei.isFunctionPointer()) {
         *ok = false;
+        //qDebug()<<"isFunctionPointer";
         return 0;
     }
 
     TypeParser::Info typeInfo = TypeParser::parse(typei.toString());
     if (typeInfo.is_busted) {
         *ok = false;
+        //qDebug()<<"isBusted";
         return 0;
     }
+
+    //qDebug()<<"Typeinfo is (1.):"<<typeInfo.toString();
 
     // 2. Handle pointers specified as arrays with unspecified size
     bool array_of_unspecified_size = false;
@@ -1692,16 +1703,20 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
             newInfo.setVolatile(typei.isVolatile());
 
             AbstractMetaType *elementType = translateType(newInfo, ok);
-            if (!ok)
+            if (!ok) {
+                qDebug()<<"Something has happened.";
                 return 0;
+            }
 
             for (int i = typeInfo.arrays.size() - 1; i >= 0; --i) {
                 QString s = typeInfo.arrays.at(i);
                 bool ok;
 
                 int elems = s.toInt(&ok);
-                if (!ok)
+                if (!ok) {
+                    qDebug()<<"Something has happened.";
                     return 0;
+                }
 
                 AbstractMetaType *arrayType = createMetaType();
                 arrayType->setArrayElementCount(elems);
@@ -1712,6 +1727,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
                 elementType = arrayType;
             }
 
+            //qDebug()<<"Returning element type:"<<elementType->fullName();
             return elementType;
         }  else {
             typeInfo.indirections += typeInfo.arrays.size();
@@ -1730,6 +1746,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
 
     // 3. Special case 'void' type
     if (name == "void" && typeInfo.indirections == 0) {
+        //qDebug()<<"Returning void, zero";
         return 0;
     }
 
@@ -1774,8 +1791,10 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
             bool ok;
             info.setQualifiedName(QStringList() << contexts.at(0) << qualified_name);
             AbstractMetaType *t = translateType(info, &ok, true, false);
-            if (t != 0 && ok)
+            if (t != 0 && ok) {
+                //qDebug()<<"Returning ok"<<t->fullName();
                 return t;
+            }
 
             ClassModelItem item = m_dom->findClass(contexts.at(0));
             if (item != 0)
@@ -1794,6 +1813,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
 
     if (!type) {
         *ok = false;
+        //qDebug()<<"Invalid type"<<typei.toString()<<_typei.toString();
         return 0;
     }
 

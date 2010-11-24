@@ -5,6 +5,9 @@
     - Tasks like ”ant library” should be meta tasks that pulls everything it needs,
     and something like ant library-task should pull only stuff related to library.
     Both should be documented.
+    - There should be direct way to export output of task to pastebin,
+    for example something like ant nc generator which sends the output to pastebin
+    and returns a link.
 -->
 <project default="help" basedir="." name="qtjambi.main">
 
@@ -116,17 +119,18 @@
 
     <target name="help" description="Provides detailed help.">
         <echo>
-To build Qt Jambi, run ant without parameters.
+Welcome to Qt Jambi help task.
 
-Edit the build.properties file if you want to change the behaviour of the build system:
+Please refer for all building related questions to our building
+documentation at http://qt-jambi.org/development/building/
 
-* whether you want to build a release bundle or a debug bundle,
-* whether you want to use a native jump table (EXPERIMENTAL).
+Full command listing with ant -projecthelp
 
-To get a description of all tasks run: ant -projecthelp
+Quick howto:
+[edit buildpath.properties to suit your system]
+ant all
 
-You can also see the Qt Jambi intallation document at:
-http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
+NOTE: for now ant clean does not work, please use git clean -fdx instead.
         </echo>
     </target>
 

@@ -41,7 +41,6 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
 #define QT_NO_STL
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>

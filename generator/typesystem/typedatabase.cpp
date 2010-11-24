@@ -74,9 +74,10 @@ TypeDatabase *TypeDatabase::instance() {
 TypeEntry *TypeDatabase::findType(const QString &name) const {
     QList<TypeEntry *> entries = findTypes(name);
     foreach(TypeEntry *entry, entries) {
+        //qDebug()<<"findType()"<<entry;
         if (entry != 0 &&
                 (!entry->isPrimitive() ||
-                 static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
+                    static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
             return entry;
         }
     }
@@ -172,9 +173,11 @@ bool TypeDatabase::parseFile(const QString &filename, bool generate) {
     bool ok = reader.parse(&source, false);
     int newCount = m_entries.size();
 
-    ReportHandler::debugSparse(QString::fromLatin1("Parsed: '%1', %2 new entries")
+    QString string = QString::fromLatin1("Parsed: '%1', %2 new entries")
                                .arg(filename)
-                               .arg(newCount - count));
+                               .arg(newCount - count);
+    qDebug()<<string;
+    //ReportHandler::debugSparse(string);
 
     return ok;
 }

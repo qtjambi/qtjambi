@@ -15,8 +15,6 @@
     <enum-type name="QGLBuffer::UsagePattern"/>
     <enum-type name="QGLFormat::OpenGLContextProfile"/>
 
-    <enum-type name="QPainter::PixmapFragmentHint" flags="QPainter::PixmapFragmentHints"/>
-
     <namespace-type name="QGL">
         <include file-name="qgl.h" location="global"/>
     </namespace-type>

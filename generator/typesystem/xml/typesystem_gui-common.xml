@@ -424,6 +424,7 @@
     <enum-type name="QStaticText::PerformanceHint"/>
     <enum-type name="QStyleOptionTabWidgetFrameV2::StyleOptionVersion"/>
     <enum-type name="QTextDocument::Stacks"/>
+    <enum-type name="QPainter::PixmapFragmentHint" flags="QPainter::PixmapFragmentHints"/>
 
     <enum-type name="QWizard::WizardButton">
         <reject-enum-value name="NStandardButtons"/>
@@ -522,14 +523,13 @@
     <enum-type name="QSwipeGesture::SwipeDirection" />
     <enum-type name="QTouchEvent::DeviceType" />
 
-
     <value-type name="QPixmapCache::Key" />
     <value-type name="QTileRules" />
     <value-type name="QVector2D" />
     <value-type name="QVector3D" />
     <value-type name="QVector4D" />
     <value-type name="QTouchEvent::TouchPoint" />
-
+    <value-type name="QPainter::PixmapFragment" />
 
     <value-type name="QTransform">
         <modify-function signature="operator=(QTransform)" remove="all"/>

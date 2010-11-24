@@ -1,4 +1,6 @@
 
+#include <QDebug>
+
 #include "handler.h"
 #include "typedatabase.h"
 #include "../reporthandler.h"
@@ -233,44 +235,44 @@ QHash<QString, QString> Handler::setStackElementAttributes(StackElement::Element
     attributes["name"] = QString();
 
     switch (type) {
-        case StackElement::PrimitiveTypeEntry:
-            attributes["java-name"] = QString();
-            attributes["jni-name"] = QString();
-            attributes["preferred-conversion"] = "yes";
-            attributes["preferred-java-type"] = "yes";
-            break;
-        case StackElement::EnumTypeEntry:
-            attributes["flags"] = "no";
-            attributes["upper-bound"] = QString();
-            attributes["lower-bound"] = QString();
-            attributes["force-integer"] = "no";
-            attributes["extensible"] = "no";
+    case StackElement::PrimitiveTypeEntry:
+        attributes["java-name"] = QString();
+        attributes["jni-name"] = QString();
+        attributes["preferred-conversion"] = "yes";
+        attributes["preferred-java-type"] = "yes";
+        break;
+    case StackElement::EnumTypeEntry:
+        attributes["flags"] = "no";
+        attributes["upper-bound"] = QString();
+        attributes["lower-bound"] = QString();
+        attributes["force-integer"] = "no";
+        attributes["extensible"] = "no";
 
-            break;
+        break;
 
-        case StackElement::ObjectTypeEntry:
-        case StackElement::ValueTypeEntry:
-            attributes["force-abstract"] = QString("no");
-            attributes["deprecated"] = QString("no");
-            attributes["implements"] = QString();
-            // fall throooough
-        case StackElement::InterfaceTypeEntry:
-            attributes["default-superclass"] = m_defaultSuperclass;
-            attributes["polymorphic-id-expression"] = QString();
-            attributes["delete-in-main-thread"] = QString("no");
-            // fall through
-        case StackElement::NamespaceTypeEntry:
-            attributes["java-name"] = QString();
-            attributes["package"] = m_defaultPackage;
-            attributes["expense-cost"] = "1";
-            attributes["expense-limit"] = "none";
-            attributes["polymorphic-base"] = QString("no");
-            attributes["generate"] = QString("yes");
-            attributes["target-type"] = QString();
-            attributes["generic-class"] = QString("no");
-            break;
-        default:
-            ; // nada
+    case StackElement::ObjectTypeEntry:
+    case StackElement::ValueTypeEntry:
+        attributes["force-abstract"] = QString("no");
+        attributes["deprecated"] = QString("no");
+        attributes["implements"] = QString();
+        // fall throooough
+    case StackElement::InterfaceTypeEntry:
+        attributes["default-superclass"] = m_defaultSuperclass;
+        attributes["polymorphic-id-expression"] = QString();
+        attributes["delete-in-main-thread"] = QString("no");
+        // fall through
+    case StackElement::NamespaceTypeEntry:
+        attributes["java-name"] = QString();
+        attributes["package"] = m_defaultPackage;
+        attributes["expense-cost"] = "1";
+        attributes["expense-limit"] = "none";
+        attributes["polymorphic-base"] = QString("no");
+        attributes["generate"] = QString("yes");
+        attributes["target-type"] = QString();
+        attributes["generic-class"] = QString("no");
+        break;
+    default:
+        ; // nada
     };
 
     return attributes;
@@ -320,8 +322,7 @@ bool Handler::startElement(const QString &, const QString &n,
             return false;
         }
         switch (element->type) {
-        case StackElement::PrimitiveTypeEntry:
-        {
+        case StackElement::PrimitiveTypeEntry: {
             QString java_name = attributes["java-name"];
             QString jni_name = attributes["jni-name"];
             QString preferred_conversion = attributes["preferred-conversion"].toLower();
@@ -380,13 +381,13 @@ bool Handler::startElement(const QString &, const QString &n,
                 m_current_enum->setFlags(ftype);
 
                 m_database->addFlagsType(ftype);
+                //qDebug()<<"Adding ftype"<<ftype->name();
                 m_database->addType(ftype);
             }
         }
         break;
 
-        case StackElement::InterfaceTypeEntry:
-        {
+        case StackElement::InterfaceTypeEntry: {
             ObjectTypeEntry *otype = new ObjectTypeEntry(name);
             QString javaName = attributes["java-name"];
             if (javaName.isEmpty())
@@ -413,8 +414,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 element->entry = new ObjectTypeEntry(name);
             }
             // fall through
-        case StackElement::ValueTypeEntry:
-        {
+        case StackElement::ValueTypeEntry: {
             if (element->entry == 0) {
                 element->entry = new ValueTypeEntry(name);
             }
@@ -475,9 +475,10 @@ bool Handler::startElement(const QString &, const QString &n,
             Q_ASSERT(false);
         };
 
-        if (element->entry)
+        if (element->entry) {
+            //qDebug()<<"Adding element->entry"<<element->entry->name();
             m_database->addType(element->entry);
-        else
+        } else
             ReportHandler::warning(QString("Type: %1 was rejected by typesystem").arg(name));
 
     } else if (element->type != StackElement::None) {
@@ -615,6 +616,7 @@ bool Handler::startElement(const QString &, const QString &n,
             m_defaultSuperclass = attributes["default-superclass"];
             element->type = StackElement::Root;
             element->entry = new TypeSystemTypeEntry(m_defaultPackage);
+            //qDebug()<<"Adding element->entry (root)"<<element->entry->name();
             TypeDatabase::instance()->addType(element->entry);
             break;
         case StackElement::LoadTypesystem:
