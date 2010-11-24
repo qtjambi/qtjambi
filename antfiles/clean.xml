@@ -9,9 +9,12 @@
     <available file="generator/Makefile" type="file"
         property="generator.makefile.present"/>
 
-    <target name="make.clean.global" if="global.makefile.present"
+    <target name="make.clean.global.make" if="global.makefile.present"
         depends="init">
         <make target="clean"/>
+    </target>
+
+    <target name="make.clean.global" depends="init, make.clean.global.make">
         <delete file="Makefile" quiet="true"/>
         <delete quiet="true">
             <fileset dir=".">
@@ -22,9 +25,12 @@
         </delete>
     </target>
 
-    <target name="make.clean.juic" if="juic.makefile.present"
+    <target name="make.clean.juic.make" if="juic.makefile.present"
         depends="init">
         <make dir="juic" target="clean"/>
+    </target>
+
+    <target name="make.clean.juic" depends="init, make.clean.juic.make">
         <delete quiet="true">
             <fileset dir="juic">
                 <include name="Makefile*"/>
@@ -34,15 +40,18 @@
         </delete>
     </target>
 
-    <target name="make.clean.generator" if="generator.makefile.present"
+    <target name="make.clean.generator.make" if="generator.makefile.present"
         depends="init">
         <make dir="generator" target="clean"/>
+    </target>
+
+    <target name="make.clean.generator" depends="init, make.clean.generator.make">
         <delete quiet="true">
             <fileset dir="generator">
                 <include name="Makefile*"/>
                 <include name="generator"/>
-                <include name="generator/debug/***"/>
-                <include name="generator/release/***"/>
+                <include name="debug/***"/>
+                <include name="release/***"/>
                 <include name="mjb_*.log"/>
                 <include name=".preprocessed.tmp"/>
             </fileset>
