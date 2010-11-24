@@ -84,7 +84,7 @@ public class LibraryEntry extends Task {
     private String subdir = SUBDIR_DEFAULT;
     private String load = LOAD_DEFAULT;
     private boolean included = true;
-    
+
     public int getVersion() {
         return version;
     }
@@ -92,13 +92,13 @@ public class LibraryEntry extends Task {
     public void setVersion(int version) {
         this.version = version;
     }
-    
+
     public boolean getKdephonon() {
-    	return kdephonon;
+        return kdephonon;
     }
-    
+
     public void setKdephonon(boolean enabled) {
-    	kdephonon = enabled;
+        this.kdephonon = enabled;
     }
 
     public String getType() {
@@ -160,7 +160,7 @@ public class LibraryEntry extends Task {
 
         // Fix name
         if (type.equals(TYPE_PLUGIN)) {
-        	name = formatPluginName(name, kdephonon, debug);
+        	name = formatPluginName(name, this.kdephonon, debug);
         } else if (type.equals(TYPE_QT)){
         	name = formatQtName(name, debug, version);
         	//qt libraries are stored in "lib"
@@ -191,7 +191,8 @@ public class LibraryEntry extends Task {
             case Windows: return name + "d4.dll";
             case MacOS: return "lib" + name + "_debug.dylib";
             case Solaris:
-            case Linux: return "lib" + name + ".so";
+            case Linux: 
+            	return formatLinuxPluginName(name, kdephonon);
             }
         } else {
             switch (OSInfo.os()) {
@@ -204,15 +205,15 @@ public class LibraryEntry extends Task {
         }
         throw new BuildException("unhandled case...");
     }
-    
+
     private static String formatLinuxPluginName(String name, boolean kdephonon) {
-    	String library = null;
-    	if(kdephonon) {
-    		library = name + ".so"; 
-    	} else {
-    		library = "lib" + name + ".so";
-    	}
-    	return library;
+        String library = null;
+        if(kdephonon == true) {
+            library = name + ".so"; 
+        } else {
+            library = "lib" + name + ".so";
+        }
+        return library;
     }
 
     public static String formatQtName(String name, boolean debug) {

@@ -57,13 +57,15 @@ public class InitializeTask extends Task {
     private boolean verbose;
     private PropertyHelper props;
     private String configuration;
-	private boolean debug;
+    private boolean debug;
 
     /*
      * These properties are set outside of this task
      *
      * TODO: These flags should be documented here and if possibly, outside in
      * build documentation.
+     * Or rather these binds shouldn’t exist, how much of this could be moved to
+     * xml side?
      */
     public static final String LIBDIR           = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR       = "qtjambi.qt.includedir";
@@ -89,11 +91,11 @@ public class InitializeTask extends Task {
     public static final String SQLITE           = "qtjambi.sqlite";
     public static final String WEBKIT           = "qtjambi.webkit";
     public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
-    public static final String HELP				= "qtjambi.help";
-    public static final String MULTIMEDIA		= "qtjambi.multimedia";
-    public static final String SCRIPT			= "qtjambi.script";
-    public static final String SCRIPTTOOLS		= "qtjambi.scripttools";
-    public static final String QTCONFIG			= "qtjambi.qtconfig";
+    public static final String HELP             = "qtjambi.help";
+    public static final String MULTIMEDIA       = "qtjambi.multimedia";
+    public static final String SCRIPT           = "qtjambi.script";
+    public static final String SCRIPTTOOLS      = "qtjambi.scripttools";
+    public static final String QTCONFIG         = "qtjambi.qtconfig";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -174,9 +176,9 @@ public class InitializeTask extends Task {
         if (verbose) System.out.println(CONFIGURATION + ": " + result);
         return result;
     }
-    
+
     private boolean doesQtLibExist(String name, int version, String librarydir) {
-    	StringBuilder path = new StringBuilder();
+        StringBuilder path = new StringBuilder();
         path.append(librarydir);
         path.append("/");
         path.append(LibraryEntry.formatQtName(name, debug, version));
@@ -204,10 +206,10 @@ public class InitializeTask extends Task {
      * check correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper props) {
-    	boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
+        boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
         String phonon = String.valueOf(exists);
         if (verbose) {
-            System.out.println(PHONON + ": " + phonon);        
+            System.out.println(PHONON + ": " + phonon);
         }
 
         if(!exists) return "false";
