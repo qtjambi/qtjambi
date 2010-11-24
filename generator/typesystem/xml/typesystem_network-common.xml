@@ -182,7 +182,11 @@
 
     <object-type name="QNetworkConfigurationManager" />
     <object-type name="QSslSocket" />
-    <object-type name="QNetworkSession"/>
+
+    <object-type name="QNetworkSession">
+        <modify-function signature="interface()const"
+                rename="getInterface"/>
+    </object-type>
 
     <suppress-warning text="*unmatched parameter type 'sockaddr const*" />
 

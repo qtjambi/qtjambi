@@ -1,3 +1,4 @@
+
 The documentation for the Qt/Java technology is not ready at the time
 of this release, but the Qt/Java API is almost identical to the Qt/C++
 API so it is possible to use the Qt/C++ documentation to develop
@@ -51,7 +52,9 @@ QApplication::QApplication(const char **, int &)
 
 The arguments are converted into a QNativePointer in Java which is a C
 pointer structure that one can use to create and manipulate C pointers
-from Java. The QNativePointer based API can be difficult and dangerous to use, so Qt/Java tries to minimize its presence in the public API, but adding convenience functions such as:
+from Java. The QNativePointer based API can be difficult and dangerous 
+to use, so Qt/Java tries to minimize its presence in the public API,
+but adding convenience functions such as:
 
 QApplication(String args[])
 
