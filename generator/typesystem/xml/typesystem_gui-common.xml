@@ -5183,7 +5183,7 @@
     <object-type name="QGraphicsAnchorLayout" />
     <object-type name="QGraphicsAnchor" />
 
-    <value-type name="QGraphicsEffect" />
+    <object-type name="QGraphicsEffect" />
 
     <object-type name="QGraphicsObject">
         <!-- Duplicate function to QObject::children() to override accidental shadowing which is not present in Jambi -->

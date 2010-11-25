@@ -44,6 +44,8 @@ void Wrapper::handleArguments() {
             ReportHandler::setDebugLevel(ReportHandler::MediumDebug);
         } else if (level == "full") {
             ReportHandler::setDebugLevel(ReportHandler::FullDebug);
+        } else if (level == "types") {
+            ReportHandler::setDebugLevel(ReportHandler::TypeDebug);
         }
     }
 
@@ -127,7 +129,6 @@ int Wrapper::runJambiGenerator() {
     return 0;
 }
 
-
 void Wrapper::displayHelp(GeneratorSet* generatorSet) {
 #if defined(Q_OS_WIN32)
     char path_splitter = ';';
@@ -137,7 +138,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
     printf("Usage:\n  generator [options] header-file typesystem-file\n\n");
     printf("Available options:\n\n");
     printf("General:\n");
-    printf("  --debug-level=[sparse|medium|full]        \n"
+    printf("  --debug-level=[types|sparse|medium|full]  \n"
            "  --dump-object-tree                        \n"
            "  --help, -h or -?                          \n"
            "  --no-suppress-warnings                    \n"
@@ -145,6 +146,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --output-directory=[dir]                  \n"
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n"
+           "  --kde-phonon                              \n"
            "  --qt-include-directory=[dir]              \n",
            path_splitter, path_splitter);
 

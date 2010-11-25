@@ -376,9 +376,7 @@ bool AbstractMetaBuilder::build() {
     Binder binder(&model, p.location());
     m_dom = binder.run(ast);
 
-
     ReportHandler::setContext("MetaJavaBuilder");
-
 
     pushScope(model_dynamic_cast<ScopeModelItem>(m_dom));
 
@@ -481,7 +479,9 @@ bool AbstractMetaBuilder::build() {
                 && !entry->isCustom()
                 && !entry->isVariant()
                 && !m_meta_classes.findClass(entry->qualifiedCppName())) {
-            ReportHandler::warning(QString("type '%1' is specified in typesystem, but not defined. This could potentially lead to compilation errors.")
+            ReportHandler::warning(QString("type '%1' is specified in typesystem, "
+                                           "but not defined. This could potentially "
+                                           "lead to compilation errors.")
                                    .arg(entry->qualifiedCppName()));
         }
 

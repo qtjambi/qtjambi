@@ -50,7 +50,13 @@
 
 class ReportHandler {
     public:
-        enum DebugLevel { NoDebug, SparseDebug, MediumDebug, FullDebug };
+        enum DebugLevel {
+            NoDebug,
+            TypeDebug,
+            SparseDebug,
+            MediumDebug,
+            FullDebug
+        };
 
         static void setContext(const QString &context) { m_context = context; }
 
@@ -66,12 +72,19 @@ class ReportHandler {
         static void debugSparse(const QString &str) {
             debug(SparseDebug, str);
         }
+
+        static void debugTypes(const QString &str) {
+            debug(TypeDebug, str);
+        }
+
         static void debugMedium(const QString &str) {
             debug(MediumDebug, str);
         }
+
         static void debugFull(const QString &str) {
             debug(FullDebug, str);
         }
+
         static void debug(DebugLevel level, const QString &str);
 
     private:

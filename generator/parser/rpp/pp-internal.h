@@ -46,6 +46,8 @@
 #ifndef PP_INTERNAL_H
 #define PP_INTERNAL_H
 
+#include <QDebug>
+
 #include <string>
 #include <cstdio>
 
@@ -87,6 +89,7 @@ namespace rpp {
                 msg += filename;
 
             msg += "\"\n";
+            //qDebug()<<msg.c_str(); // file name in .preprocessed
             std::copy(msg.begin(), msg.end(), result);
         }
 

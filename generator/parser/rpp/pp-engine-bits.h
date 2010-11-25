@@ -176,6 +176,10 @@ namespace rpp {
             pp(pp_environment &__env);
 
 
+            /**
+             * Loops though the given file and writes preprocessed
+             * data to _OutputIterator result.
+             */
             template <typename _InputIterator, typename _OutputIterator>
             void operator()(_InputIterator first, _InputIterator last, _OutputIterator result) {
 #ifndef PP_NO_SMART_HEADER_PROTECTION
@@ -185,7 +189,7 @@ namespace rpp {
 
                 if (find_header_protection(first, last, &protection)
                         && env.resolve(&tmp) != 0) {
-                    // std::cerr << "** DEBUG found header protection:" << __prot << std::endl;
+                     std::cerr << "** DEBUG found header protection:" << protection << std::endl;
                     return;
                 }
 #endif
@@ -408,7 +412,7 @@ namespace rpp {
                                     INCLUDE_POLICY __include_policy, bool __skip_current_path) ;
 
             /**
-             * 
+             *
              */
             template <typename _InputIterator, typename _OutputIterator>
             _InputIterator handle_directive(char const *given_directive,
@@ -463,40 +467,42 @@ namespace rpp {
             }
 
             template <typename _InputIterator, typename _OutputIterator>
-            _InputIterator handle_include(bool p_skip_current_path, _InputIterator p_first, _InputIterator p_last,
-                                          _OutputIterator p_result) {
+            _InputIterator handle_include(bool skip_current_path, _InputIterator first, _InputIterator last,
+                                          _OutputIterator result) {
 
-                if (pp_isalpha(*p_first) || *p_first == '_') {
+                if (pp_isalpha(*first) || *first == '_') {
                     pp_macro_expander expand_include(env);
                     std::string name;
                     name.reserve(255);
-                    expand_include(p_first, p_last, std::back_inserter(name));
+                    expand_include(first, last, std::back_inserter(name));
                     std::string::iterator it = skip_blanks(name.begin(), name.end());
                     assert(it != name.end() && (*it == '<' || *it == '"'));
-                    handle_include(p_skip_current_path, it, name.end(), p_result);
-                    return p_first;
+                    handle_include(skip_current_path, it, name.end(), result);
+                    return first;
                 }
 
-                assert(*p_first == '<' || *p_first == '"');
-                int quote = (*p_first == '"') ? '"' : '>';
-                ++p_first;
+                assert(*first == '<' || *first == '"');
+                int quote = (*first == '"') ? '"' : '>';
+                ++first;
 
-                _InputIterator end_name = p_first;
-                for (; end_name != p_last; ++end_name) {
+                _InputIterator end_name = first;
+                for (; end_name != last; ++end_name) {
                     assert(*end_name != '\n');
 
                     if (*end_name == quote)
                         break;
                 }
 
-                std::string filename(p_first, end_name);
+                std::string filename(first, end_name);
+                //qDebug()<<filename.c_str(); //file name of include parsed
 
 #ifdef PP_OS_WIN
                 std::replace(filename.begin(), filename.end(), '/', '\\');
 #endif
 
                 std::string filepath;
-                FILE *fp = find_include_file(filename, &filepath, quote == '>' ? INCLUDE_GLOBAL : INCLUDE_LOCAL, p_skip_current_path);
+                FILE *fp = find_include_file(filename, &filepath, quote == '>' ?
+                        INCLUDE_GLOBAL : INCLUDE_LOCAL, skip_current_path);
 
 #if defined (PP_HOOK_ON_FILE_INCLUDED)
                 PP_HOOK_ON_FILE_INCLUDED(env.current_file, fp ? filepath : filename, fp);
@@ -510,21 +516,21 @@ namespace rpp {
                     env.current_line = 1;
                     //output_line (env.current_file, 1, __result);
 
-                    file(fp, p_result);
+                    file(fp, result);
 
                     // restore the file name and the line position
                     env.current_file = old_file;
                     env.current_line = __saved_lines;
 
                     // sync the buffer
-                    _PP_internal::output_line(env.current_file, env.current_line, p_result);
+                    _PP_internal::output_line(env.current_file, env.current_line, result);
                 }
 #ifndef RPP_JAMBI
 //   else
 //     std::cerr << "*** WARNING " << filename << ": No such file or directory" << std::endl;
 #endif
 
-                return p_first;
+                return first;
             }
 
             template <typename _InputIterator>

@@ -382,6 +382,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
                 m_database->addFlagsType(ftype);
                 //qDebug()<<"Adding ftype"<<ftype->name();
+                ReportHandler::debugTypes("Adding to TypeDatabase(1): " + ftype->name());
                 m_database->addType(ftype);
             }
         }
@@ -477,6 +478,7 @@ bool Handler::startElement(const QString &, const QString &n,
 
         if (element->entry) {
             //qDebug()<<"Adding element->entry"<<element->entry->name();
+            ReportHandler::debugTypes("Adding to TypeDatabase(2): " + element->entry->name());
             m_database->addType(element->entry);
         } else
             ReportHandler::warning(QString("Type: %1 was rejected by typesystem").arg(name));
@@ -617,10 +619,10 @@ bool Handler::startElement(const QString &, const QString &n,
             element->type = StackElement::Root;
             element->entry = new TypeSystemTypeEntry(m_defaultPackage);
             //qDebug()<<"Adding element->entry (root)"<<element->entry->name();
+            ReportHandler::debugTypes("Adding to TypeDatabase(3): " + element->entry->name());
             TypeDatabase::instance()->addType(element->entry);
             break;
-        case StackElement::LoadTypesystem:
-        {
+        case StackElement::LoadTypesystem: {
             QString name = attributes["name"];
             if (name.isEmpty()) {
                 m_error = "No typesystem name specified";
@@ -647,8 +649,7 @@ bool Handler::startElement(const QString &, const QString &n,
             }
 
         } break;
-        case StackElement::ReplaceType:
-        {
+        case StackElement::ReplaceType: {
             if (topElement.type != StackElement::ModifyArgument) {
                 m_error = "Type replacement can only be specified for argument modifications";
                 return false;
@@ -662,8 +663,7 @@ bool Handler::startElement(const QString &, const QString &n,
             m_function_mods.last().argument_mods.last().modified_type = attributes["modified-type"];
         }
         break;
-        case StackElement::ConversionRule:
-        {
+        case StackElement::ConversionRule: {
             if (topElement.type != StackElement::ModifyArgument) {
                 m_error = "Conversion rules can only be specified for argument modification";
                 return false;
@@ -688,8 +688,7 @@ bool Handler::startElement(const QString &, const QString &n,
         }
 
         break;
-        case StackElement::ModifyArgument:
-        {
+        case StackElement::ModifyArgument: {
             if (topElement.type != StackElement::ModifyFunction) {
                 m_error = QString::fromLatin1("argument modification requires function"
                                               " modification as parent, was %1")
@@ -723,8 +722,7 @@ bool Handler::startElement(const QString &, const QString &n,
             m_function_mods.last().argument_mods.append(argumentModification);
         }
         break;
-        case StackElement::NoNullPointers:
-        {
+        case StackElement::NoNullPointers: {
             if (topElement.type != StackElement::ModifyArgument) {
                 m_error = "no-null-pointer requires argument modification as parent";
                 return false;
@@ -738,8 +736,7 @@ bool Handler::startElement(const QString &, const QString &n,
             }
         }
         break;
-        case StackElement::DefineOwnership:
-        {
+        case StackElement::DefineOwnership: {
             if (topElement.type != StackElement::ModifyArgument) {
                 m_error = "define-ownership requires argument modification as parent";
                 return false;

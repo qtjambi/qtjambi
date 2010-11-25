@@ -88,7 +88,7 @@ QStringList PreprocessHandler::setIncludes() {
         phonon_include_dir = phononinclude;
     } else {
 #if defined(Q_OS_MAC)
-	phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
+    phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
 #else
         phonon_include_dir = includedir;
 #endif
