@@ -56,6 +56,7 @@ public class GeneratorTask extends Task {
     private String outputDirectory = ".";
     private String dir = ".";
     private String phononpath = "";
+    private String kdephonon = "";
     //private String includePaths = "";
     private String options = null;
 	private String qtIncludeDirectory = null;
@@ -105,18 +106,22 @@ public class GeneratorTask extends Task {
         /*if( !includePaths.equals("") ){
             arguments += " --include-paths=" + includePaths;
         }*/
-        if( !phononpath.equals("") ) {
+        if(!phononpath.equals("")) {
         	arguments += " --phonon-include=" + Util.escape(phononpath);
         }
         if(qtIncludeDirectory != null) {
         	arguments += " --qt-include-directory=" + Util.escape(qtIncludeDirectory);
         }
-        if( !outputDirectory.equals("")){
+        if(!outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
             arguments += " --output-directory=" + Util.escape(file.getAbsolutePath());
+        }
+        if(!kdephonon.equals("")) {
+        	File kdephononFile = Util.makeCanonical(kdephonon);
+        	arguments += " --kde-phonon=\"" + kdephononFile.getAbsolutePath() + "\"";
         }
         
         arguments += parseArgumentFiles();
@@ -143,6 +148,10 @@ public class GeneratorTask extends Task {
     
     public void setPhononpath(String path) {
     	this.phononpath = path;
+    }
+    
+    public void setKdephonon(String kdephonon) {
+    	this.kdephonon = kdephonon;
     }
 
     public void setQtIncludeDirectory(String dir) {

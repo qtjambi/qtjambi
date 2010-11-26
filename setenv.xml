@@ -142,6 +142,20 @@
         </if>
     </target>
 
+    <target name="check-kdephonon">
+        <if>
+        <equals arg1="${qtjambi.phonon.kdephonon}" arg2="true" />
+        <then>
+            <property name="qtjambi.phonon.kdephonon-path"
+                    value="${generatorDir}/targets/kdephonon_include.h" />
+        </then>
+        <else>
+            <property name="qtjambi.phonon.kdephonon-path"
+                    value="" />
+        </else>
+        </if>
+    </target>
+
     <target name="lookup-libdir">
         <if>
             <os family="windows"/>
@@ -155,7 +169,7 @@
         </if>
     </target>
 
-    <target name="setup-properties" depends="handle-qtdir, lookup-libdir">
+    <target name="setup-properties" depends="handle-qtdir, check-kdephonon, lookup-libdir">
         <exec executable="${qmake.binary}" outputproperty="qt.version">
             <arg value="-query"/>
             <arg value="QT_VERSION"/>

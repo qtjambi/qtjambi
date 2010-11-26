@@ -57,8 +57,9 @@ void Wrapper::handleArguments() {
         FileOut::diff = true;
     }
 
+    // path to kde phonon file
     if (args.contains("kde-phonon")) {
-        bool kdephonon = true;
+        kdephonon = args.value("kde-phonon");
     }
 
     if (args.contains("rebuild-only")) {
@@ -104,10 +105,18 @@ int Wrapper::runJambiGenerator() {
     if (!TypeDatabase::instance()->parseFile(typesystemFileName))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
+
     //preprocess using master include, preprocessed file and command line given include paths, if any
     if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"))) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
+    }
+
+    if(!kdephonon.isEmpty()) {
+        if (!Preprocess::preprocess(kdephonon, pp_file, args.value("phonon-include"))) {
+            fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
+            return 1;
+        }
     }
 
     //convert temp preprocessed file to xml
