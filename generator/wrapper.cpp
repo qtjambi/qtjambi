@@ -57,6 +57,10 @@ void Wrapper::handleArguments() {
         FileOut::diff = true;
     }
 
+    if (args.contains("kde-phonon")) {
+        bool kdephonon = true;
+    }
+
     if (args.contains("rebuild-only")) {
         QStringList classes = args.value("rebuild-only").split(",", QString::SkipEmptyParts);
         TypeDatabase::instance()->setRebuildClasses(classes);
