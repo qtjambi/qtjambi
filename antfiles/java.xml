@@ -100,7 +100,7 @@
         depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-examples"/>
-            <property name="sourcedirs" value="${java.srcdir}/qtjambi-examples"/>
+            <property name="sourcedirs" value="${java.srcdir}/qtjambi-examples:${java.generated.srcdir}/qtjambi-examples"/>
         </ant>
     </target>
 </project>

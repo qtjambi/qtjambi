@@ -52,7 +52,7 @@
         <!--<copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>-->
 
         <!-- copy jogl to the jar dir. needed for compilation examples  -->
-        <!--<copy file="jogl/jogl.jar" todir="${jardir}"/>-->
+        <copy file="jogl/jogl.jar" todir="${jardir}"/>
     </target>
 
     <!--

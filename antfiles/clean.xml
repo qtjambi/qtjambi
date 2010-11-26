@@ -9,11 +9,14 @@
     <available file="generator/Makefile" type="file"
         property="generator.makefile.present"/>
 
-    <target name="make.clean.global" if="global.makefile.present"
+    <target name="make.clean.global.make" if="global.makefile.present"
         depends="init">
         <make target="clean"/>
-        <delete file="Makefile"/>
-        <delete>
+    </target>
+
+    <target name="make.clean.global" depends="init, make.clean.global.make">
+        <delete file="Makefile" quiet="true"/>
+        <delete quiet="true">
             <fileset dir=".">
                 <include name="**/Makefile*"/>
                 <exclude name="juic/Makefile*"/>
@@ -22,24 +25,33 @@
         </delete>
     </target>
 
-    <target name="make.clean.juic" if="juic.makefile.present"
+    <target name="make.clean.juic.make" if="juic.makefile.present"
         depends="init">
         <make dir="juic" target="clean"/>
-        <delete>
+    </target>
+
+    <target name="make.clean.juic" depends="init, make.clean.juic.make">
+        <delete quiet="true">
             <fileset dir="juic">
                 <include name="Makefile*"/>
+                <include name="*.o"/>
                 <include name="juic"/>
             </fileset>
         </delete>
     </target>
 
-    <target name="make.clean.generator" if="generator.makefile.present"
+    <target name="make.clean.generator.make" if="generator.makefile.present"
         depends="init">
         <make dir="generator" target="clean"/>
-        <delete>
+    </target>
+
+    <target name="make.clean.generator" depends="init, make.clean.generator.make">
+        <delete quiet="true">
             <fileset dir="generator">
                 <include name="Makefile*"/>
                 <include name="generator"/>
+                <include name="debug/***"/>
+                <include name="release/***"/>
                 <include name="mjb_*.log"/>
                 <include name=".preprocessed.tmp"/>
             </fileset>
@@ -48,27 +60,32 @@
 
     <target name="clean" description="Cleans everything"
         depends="make.clean.global, make.clean.generator, make.clean.juic">
-        <delete>
+        <delete quiet="true">
             <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
         </delete>
-        <delete dir="${java.outdir}"/>
-        <delete dir="${java.generated.srcdir}"/>
-        <delete dir="${jardir}"/>
-        <delete dir="${generator.outputdir}"/>
-        <delete dir="${timestamp.dir}"/>
-        <delete dir="extjars"/>
-        <delete dir="bin"/>
-        <delete dir="lib"/>
-        <delete dir="cpp"/>
-        <delete>
+        <delete dir="${java.outdir}" quiet="true"/>
+        <delete dir="${java.generated.srcdir}" quiet="true"/>
+        <delete dir="${generator.outputdir}" quiet="true"/>
+        <delete dir="bin" quiet="true"/>
+        <delete dir="lib" quiet="true"/>
+        <delete dir="cpp" quiet="true"/>
+        <delete quiet="true">
             <fileset dir=".">
                 <include name="plugins/**/*"/>
                 <exclude name="plugins/qtjambi/**/*"/>
                 <include name="*.jar"/>
             </fileset>
         </delete>
-        <delete file="${java.srcdir}/qtjambi/version.properties"/>
-        <delete dir="${outputDir}/platform-output"/>
-        <delete file="qtjambi-${qtjambi.version}-src.zip"/>
+        <delete file="${java.srcdir}/qtjambi/version.properties" quiet="true"/>
+        <delete dir="${outputDir}/platform-output" quiet="true"/>
+        <delete file="qtjambi-${qtjambi.version}-src.zip" quiet="true"/>
+        <delete dir="build" quiet="true"/>
+    </target>
+
+    <target name="distclean" description="Cleans really everything"
+        depends="clean">
+        <delete dir="${jardir}" quiet="true"/>
+        <delete dir="${timestamp.dir}" quiet="true"/>
+        <delete dir="extjars" quiet="true"/>
     </target>
 </project>
