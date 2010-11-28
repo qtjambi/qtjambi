@@ -303,11 +303,11 @@ public class PlatformJarTask extends Task {
             for ( String name : files ) {
             		String libdirstring;
             		if("".equals(libDir)) {
-            			libdirstring = "lib";
+            			libdirstring = "lib/";
             		} else {
-            			libdirstring = libDir;
+            			libdirstring = libDir + "/";
             		}
-                    String lib = libdirstring + "/Microsoft.VC" + vcnumber + ".CRT/" + name;
+                    String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
                     unpackLibs.add ( lib );
 
                     try {
