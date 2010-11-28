@@ -102,7 +102,6 @@ int Wrapper::runJambiGenerator() {
 
     //removing file here for theoretical case of wanting to parse two master include files here
     QFile::remove(pp_file);
-
     //preprocess using master include, preprocessed file and command line given include paths, if any
     if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"))) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
