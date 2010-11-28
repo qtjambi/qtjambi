@@ -57,11 +57,6 @@ void Wrapper::handleArguments() {
         FileOut::diff = true;
     }
 
-    // path to kde phonon file
-    if (args.contains("kde-phonon")) {
-        kdephonon = args.value("kde-phonon");
-    }
-
     if (args.contains("rebuild-only")) {
         QStringList classes = args.value("rebuild-only").split(",", QString::SkipEmptyParts);
         TypeDatabase::instance()->setRebuildClasses(classes);
@@ -105,18 +100,13 @@ int Wrapper::runJambiGenerator() {
     if (!TypeDatabase::instance()->parseFile(typesystemFileName))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
+    //removing file here for theoretical case of wanting to parse two master include files here
+    QFile::remove(pp_file);
 
     //preprocess using master include, preprocessed file and command line given include paths, if any
     if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"))) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
-    }
-
-    if(!kdephonon.isEmpty()) {
-        if (!Preprocess::preprocess(kdephonon, pp_file, args.value("phonon-include"))) {
-            fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
-            return 1;
-        }
     }
 
     //convert temp preprocessed file to xml
@@ -159,7 +149,6 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --output-directory=[dir]                  \n"
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n"
-           "  --kde-phonon                              \n"
            "  --qt-include-directory=[dir]              \n",
            path_splitter, path_splitter);
 

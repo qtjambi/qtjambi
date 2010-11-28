@@ -29,7 +29,6 @@ private:
 
     QString default_file;
     QString default_system;
-    QString kdephonon;
 
     QString fileName;
     QString typesystemFileName;

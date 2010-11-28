@@ -62,7 +62,7 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
     QDir::setCurrent(currentDir);
 
     QFile f(targetFile);
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!f.open(QIODevice::Append | QIODevice::Text)) {
         fprintf(stderr, "Failed to write preprocessed file: %s\n", qPrintable(targetFile));
     }
     f.write(result.c_str(), result.length());
