@@ -147,7 +147,7 @@
         <equals arg1="${qtjambi.phonon.kdephonon}" arg2="true" />
         <then>
             <property name="qtjambi.phonon.kdephonon-path"
-                    value="${generatorDir}/targets/kdephonon_include.h" />
+                    value="${generatorDir}/targets/masterinclude_with_kdephonon.h" />
         </then>
         <else>
             <property name="qtjambi.phonon.kdephonon-path"

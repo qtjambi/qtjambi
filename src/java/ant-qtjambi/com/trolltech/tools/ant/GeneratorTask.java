@@ -90,8 +90,15 @@ public class GeneratorTask extends Task {
         if (!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
         }
-        File headerFile = Util.makeCanonical(header);
-        if (!headerFile.exists()) {
+        
+        File headerFile;
+    	if("".equals(kdephonon)) {
+    		headerFile = Util.makeCanonical(header);
+    	} else {
+    		headerFile = Util.makeCanonical(kdephonon);
+    	}
+        
+    	if (!headerFile.exists()) {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
@@ -118,10 +125,6 @@ public class GeneratorTask extends Task {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
             arguments += " --output-directory=" + Util.escape(file.getAbsolutePath());
-        }
-        if(!kdephonon.equals("")) {
-        	File kdephononFile = Util.makeCanonical(kdephonon);
-        	arguments += " --kde-phonon=\"" + kdephononFile.getAbsolutePath() + "\"";
         }
         
         arguments += parseArgumentFiles();

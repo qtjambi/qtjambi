@@ -62,7 +62,6 @@
 #  include <QtWebKit/QtWebKit>
 #endif
 
-//TODO: whole phonon system
 #include <phonon>
 
 #include <../../src/cpp/qtjambi_core/qtjambiconcurrent.h>
