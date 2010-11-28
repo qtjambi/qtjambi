@@ -8,6 +8,9 @@
     - There should be direct way to export output of task to pastebin,
     for example something like ant nc generator which sends the output to pastebin
     and returns a link.
+    - Instead of version.properties there should be generic way to provide (default)
+    properties to Jambi, for example in form of file, or better, in qtjambi-deploy.
+    This can include stuff like debug flag and version.
 -->
 <project default="help" basedir="." name="qtjambi.main">
 
