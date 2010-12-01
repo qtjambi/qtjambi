@@ -163,14 +163,12 @@ public class Utilities {
         return NativeLibraryManager.jambiTempDirBase("");
     }
 
-
     private static OperatingSystem decideOperatingSystem() {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.startsWith("windows")) return OperatingSystem.Windows;
         if (osName.startsWith("mac os x")) return OperatingSystem.MacOSX;
         return OperatingSystem.Linux;
     }
-
 
     private static Configuration decideConfiguration() {
         if (System.getProperty("com.trolltech.qt.debug") != null)

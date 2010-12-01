@@ -57,13 +57,15 @@ public class InitializeTask extends Task {
     private boolean verbose;
     private PropertyHelper props;
     private String configuration;
-	private boolean debug;
+    private boolean debug;
 
     /*
      * These properties are set outside of this task
      *
      * TODO: These flags should be documented here and if possibly, outside in
      * build documentation.
+     * Or rather these binds shouldn’t exist, how much of this could be moved to
+     * xml side?
      */
     public static final String LIBDIR           = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR       = "qtjambi.qt.includedir";
@@ -89,11 +91,11 @@ public class InitializeTask extends Task {
     public static final String SQLITE           = "qtjambi.sqlite";
     public static final String WEBKIT           = "qtjambi.webkit";
     public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
-    public static final String HELP				= "qtjambi.help";
-    public static final String MULTIMEDIA		= "qtjambi.multimedia";
-    public static final String SCRIPT			= "qtjambi.script";
-    public static final String SCRIPTTOOLS		= "qtjambi.scripttools";
-    public static final String QTCONFIG			= "qtjambi.qtconfig";
+    public static final String HELP             = "qtjambi.help";
+    public static final String MULTIMEDIA       = "qtjambi.multimedia";
+    public static final String SCRIPT           = "qtjambi.script";
+    public static final String SCRIPTTOOLS      = "qtjambi.scripttools";
+    public static final String QTCONFIG         = "qtjambi.qtconfig";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -117,9 +119,9 @@ public class InitializeTask extends Task {
 
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
-        
+
         FindCompiler finder = new FindCompiler(props);
-        
+
         props.setNewProperty((String) null, OSNAME, finder.decideOSName());
         props.setNewProperty((String) null, COMPILER, finder.decideCompiler());
 
@@ -174,9 +176,9 @@ public class InitializeTask extends Task {
         if (verbose) System.out.println(CONFIGURATION + ": " + result);
         return result;
     }
-    
+
     private boolean doesQtLibExist(String name, int version, String librarydir) {
-    	StringBuilder path = new StringBuilder();
+        StringBuilder path = new StringBuilder();
         path.append(librarydir);
         path.append("/");
         path.append(LibraryEntry.formatQtName(name, debug, version));
@@ -194,6 +196,7 @@ public class InitializeTask extends Task {
         path.append("/");
         path.append(subdir);
         path.append("/");
+        //! TODO: useful?
         path.append(LibraryEntry.formatPluginName(name, false, debug));
         return new File(path.toString()).exists();
     }
@@ -203,17 +206,17 @@ public class InitializeTask extends Task {
      * check correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper props) {
-    	boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
+        boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
         String phonon = String.valueOf(exists);
         if (verbose) {
-            System.out.println(PHONON + ": " + phonon);        
+            System.out.println(PHONON + ": " + phonon);
         }
-        
+
         if(!exists) return "false";
-    	else addQtConfig("phonon");
-        
+        else addToQtConfig("phonon");
+
         props.setNewProperty((String) null, PHONON, phonon);
-        
+
         switch (OSInfo.os()) {
         case Windows:
             props.setNewProperty((String) null, PHONON_DS9, "true");
@@ -229,7 +232,7 @@ public class InitializeTask extends Task {
                 props.setNewProperty((String) null, DBUS, "true");
             break;
         }
-        
+
         return phonon;
     }
 
@@ -238,18 +241,18 @@ public class InitializeTask extends Task {
      * to specify additional qt libraries compiled. 
      * @param config Library to add
      */
-    private void addQtConfig(String config) {
-    	String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
-    	String newConfig;
-    	if(oldConfig != null) {
-    		newConfig = oldConfig + " " + config;
-    	} else {
-    		newConfig = config;
-    	}
-        props.setNewProperty((String) null, QTCONFIG, newConfig);
-	}
+    private void addToQtConfig(String config) {
+        String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
+        String newConfig;
+        if(oldConfig != null) {
+            newConfig = oldConfig + " " + config;
+        } else {
+            newConfig = config;
+        }
+        props.setProperty((String) null, QTCONFIG, newConfig, false);
+    }
 
-	private String decideSqlite() {
+    private String decideSqlite() {
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
         if (verbose) System.out.println(SQLITE + ": " + result);
         return result;
@@ -264,20 +267,21 @@ public class InitializeTask extends Task {
     private String decideMultimedia() {
         String result = String.valueOf(doesQtLibExist("QtMultimedia", 4));
         if (verbose) System.out.println(MULTIMEDIA + ": " + result);
+        addToQtConfig("multimedia");
         return result;
     }
 
     private String decideScript() {
         String result = String.valueOf(doesQtLibExist("QtScript", 4));
         if (verbose) System.out.println(SCRIPT + ": " + result);
-        if("true".equals(result)) addQtConfig("script");
+        if("true".equals(result)) addToQtConfig("script");
         return result;
     }
 
     private String decideScripttools() {
         String result = String.valueOf(doesQtLibExist("QtScriptTools", 4));
         if (verbose) System.out.println(SCRIPTTOOLS + ": " + result);
-        if("true".equals(result)) addQtConfig("scripttools");
+        if("true".equals(result)) addToQtConfig("scripttools");
         return result;
     }
     private String decideWebkit() {

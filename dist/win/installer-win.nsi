@@ -6,9 +6,9 @@ XPStyle on
 ;SetCompressor /FINAL /SOLID lzma
 ;SetCompressorDictSize 64
 
-!define v 4.6.3
-!define QtDir c:\qt\4.6.3
-!define comp msvc2005
+!define v 4.7.1
+!define QtDir C:\Qt\qt-everywhere-opensource-src-4.7.1
+!define comp msvc2008
 
 ; The default installation directory
 InstallDir c:\qtjambi-${v}
@@ -51,26 +51,26 @@ Section "" ;No components page, name is not important
   File dist\LICENSE.LGPL
   File dist\readme.html
   
-  File /r java\src\qtjambi-examples\com
+  File /r build\java\out\qtjambi-examples\com
   
   SetOutPath $INSTDIR\bin
-  File bin\com_trolltech_qt_core.dll
-  File bin\com_trolltech_qt_gui.dll
-  File bin\com_trolltech_qt_help.dll
-  File bin\com_trolltech_qt_multimedia.dll
-  File bin\com_trolltech_qt_network.dll
-  File bin\com_trolltech_qt_opengl.dll
-  File bin\com_trolltech_qt_phonon.dll
-  File bin\com_trolltech_qt_script.dll
-  File bin\com_trolltech_qt_scripttools.dll
-  File bin\com_trolltech_qt_sql.dll
-  File bin\com_trolltech_qt_svg.dll
-  File bin\com_trolltech_qt_webkit.dll
-  File bin\com_trolltech_qt_xml.dll
-  File bin\com_trolltech_qt_xmlpatterns.dll
-  File bin\com_trolltech_tools_designer.dll
+  File build\src\cpp\bin\com_trolltech_qt_core.dll
+  File build\src\cpp\bin\com_trolltech_qt_gui.dll
+  File build\src\cpp\bin\com_trolltech_qt_help.dll
+  File build\src\cpp\bin\com_trolltech_qt_multimedia.dll
+  File build\src\cpp\bin\com_trolltech_qt_network.dll
+  File build\src\cpp\bin\com_trolltech_qt_opengl.dll
+  File build\src\cpp\bin\com_trolltech_qt_phonon.dll
+  File build\src\cpp\bin\com_trolltech_qt_script.dll
+  File build\src\cpp\bin\com_trolltech_qt_scripttools.dll
+  File build\src\cpp\bin\com_trolltech_qt_sql.dll
+  File build\src\cpp\bin\com_trolltech_qt_svg.dll
+  File build\src\cpp\bin\com_trolltech_qt_webkit.dll
+  File build\src\cpp\bin\com_trolltech_qt_xml.dll
+  File build\src\cpp\bin\com_trolltech_qt_xmlpatterns.dll
+  File build\src\cpp\bin\com_trolltech_tools_designer.dll
   File bin\juic.exe
-  File bin\qtjambi.dll
+  File build\src\cpp\bin\qtjambi.dll
   File ${QtDir}\bin\designer.exe
   File ${QtDir}\bin\linguist.exe
   File ${QtDir}\bin\lrelease.exe
@@ -92,25 +92,24 @@ Section "" ;No components page, name is not important
   File ${QtDir}\bin\QtDesignerComponents4.dll
   File ${QtDir}\bin\QtDesigner4.dll
   
-  File /r "c:\Program Files\Microsoft Visual Studio 8\VC\redist\x86\Microsoft.VC80.CRT"
-  
+  File /r "c:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT"
   
   SetOutPath $INSTDIR\lib
-  File bin\com_trolltech_qt_core.dll
-  File bin\com_trolltech_qt_gui.dll
-  File bin\com_trolltech_qt_multimedia.dll
-  File bin\com_trolltech_qt_network.dll
-  File bin\com_trolltech_qt_opengl.dll
-  File bin\com_trolltech_qt_phonon.dll
-  File bin\com_trolltech_qt_sql.dll
-  File bin\com_trolltech_qt_svg.dll
-  File bin\com_trolltech_qt_script.dll
-  File bin\com_trolltech_qt_scripttools.dll
-  File bin\com_trolltech_qt_webkit.dll
-  File bin\com_trolltech_qt_xml.dll
-  File bin\com_trolltech_qt_xmlpatterns.dll
-  File bin\com_trolltech_tools_designer.dll
-  File bin\qtjambi.dll
+  File build\src\cpp\bin\com_trolltech_qt_core.dll
+  File build\src\cpp\bin\com_trolltech_qt_gui.dll
+  File build\src\cpp\bin\com_trolltech_qt_multimedia.dll
+  File build\src\cpp\bin\com_trolltech_qt_network.dll
+  File build\src\cpp\bin\com_trolltech_qt_opengl.dll
+  File build\src\cpp\bin\com_trolltech_qt_phonon.dll
+  File build\src\cpp\bin\com_trolltech_qt_sql.dll
+  File build\src\cpp\bin\com_trolltech_qt_svg.dll
+  File build\src\cpp\bin\com_trolltech_qt_script.dll
+  File build\src\cpp\bin\com_trolltech_qt_scripttools.dll
+  File build\src\cpp\bin\com_trolltech_qt_webkit.dll
+  File build\src\cpp\bin\com_trolltech_qt_xml.dll
+  File build\src\cpp\bin\com_trolltech_qt_xmlpatterns.dll
+  File build\src\cpp\bin\com_trolltech_tools_designer.dll
+  File build\src\cpp\bin\qtjambi.dll
   
   SetOutPath $INSTDIR\plugins
   File /r ${QtDir}\plugins\*.dll
@@ -118,8 +117,8 @@ Section "" ;No components page, name is not important
   File /r plugins\qtjambi
   
   SetOutPath $INSTDIR\plugins\designer
-  File plugins\designer\JambiLanguage.dll
-  File plugins\designer\JambiCustomWidget.dll
+  File build\src\cpp\plugins\designer\JambiLanguage.dll
+  File build\src\cpp\plugins\designer\JambiCustomWidget.dll
 
   
 SectionEnd ; end the section

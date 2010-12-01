@@ -83,32 +83,40 @@ public class QMakeTask extends Task {
     }
     
     private String parseParameters() {
-    	String parameters = "";
-        
-        if(qtconfig != null) {
-        	parameters += "QT_CONFIG+=\"" + qtconfig + '"';
-        }
-        
-        if(includepath != null) {
-        	parameters += " INCLUDEPATH+=" + includepath;
-        }
-        
-        return parameters;
+	String parameters = "";
+
+	if (qtconfig != null) {
+	    parameters += "QT_CONFIG+=" + qtconfig;
+	}
+
+	if (includepath != null) {
+	    parameters += " INCLUDEPATH+=" + includepath;
+	}
+
+	return parameters;
     }
 
     @Override
-    public void execute() throws BuildException {
-        System.out.println(msg);
+    public void execute() throws NullPointerException {
+	System.out.println(msg);
 
-        String proFile = "";
-        if (!pro.equals("")) {
-            proFile = " \"" + Util.makeCanonical(pro).getAbsolutePath() + "\"";
-        }
-        
-        //command = command + parseParameters();
-        String command = qmakebinary + proFile + parseArguments() + parseParameters();
-
-        Exec.exec(command, new File(dir));
+	String proFile = "";
+	if (!pro.equals("")) {
+	    proFile = Util.makeCanonical(pro).getAbsolutePath();
+	}
+	
+	final List<String> command =  new ArrayList<String>();
+	
+	command.add(qmakebinary);
+	command.add(proFile);
+	
+	StringTokenizer args = new StringTokenizer(parseArguments());
+	while (args.hasMoreTokens())
+	    command.add(args.nextToken());
+	
+	command.add(parseParameters());
+	
+	Exec.execute(command, new File(dir));
     }
 
     public void setMessage(String msg) {
@@ -144,6 +152,6 @@ public class QMakeTask extends Task {
     }
 
     public void setDebugTools(boolean debugTools) {
-        this.debugTools = debugTools;
+	this.debugTools = debugTools;
     }
 }

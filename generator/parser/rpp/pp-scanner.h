@@ -57,23 +57,28 @@ namespace rpp {
     struct pp_skip_blanks {
         int lines;
 
+        /**
+         * Iterates over _InputIterator first until first == last
+         * and increases first until there is no space characters.
+         */
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator first, _InputIterator last ) {
+        _InputIterator operator()(_InputIterator first, _InputIterator last) {
             lines = 0;
 
-            for ( ; first != last; lines += ( *first != '\n' ? 0 : 1 ), ++first ) {
-                if ( *first == '\\' ) {
+            for (; first != last; ++first) {
+                if (*first == '\\') {
                     _InputIterator begin = first;
                     ++begin;
 
-                    if ( begin != last && *begin == '\n' ) {
+                    if (begin != last && *begin == '\n') {
                         ++first;
                     } else {
                         break;
                     }
-                } else if ( *first == '\n' || !pp_isspace ( *first ) ) {
+                } else if (*first == '\n' || !pp_isspace(*first)) {
                     break;
                 }
+                lines += (*first != '\n' ? 0 : 1);
             }
 
             return first;
@@ -84,11 +89,11 @@ namespace rpp {
         int lines;
 
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator __first, _InputIterator __last ) {
+        _InputIterator operator()(_InputIterator __first, _InputIterator __last) {
             lines = 0;
 
-            for ( ; __first != __last; lines += ( *__first != '\n' ? 0 : 1 ), ++__first ) {
-                if ( ! pp_isspace ( *__first ) )
+            for (; __first != __last; lines += (*__first != '\n' ? 0 : 1), ++__first) {
+                if (! pp_isspace(*__first))
                     break;
             }
 
@@ -103,7 +108,7 @@ namespace rpp {
         int lines;
 
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator p_first, _InputIterator p_last ) {
+        _InputIterator operator()(_InputIterator p_first, _InputIterator p_last) {
             enum {
                 MAYBE_BEGIN,
                 BEGIN,
@@ -111,46 +116,46 @@ namespace rpp {
                 END,
                 IN_COMMENT,
                 IN_CXX_COMMENT
-            } state ( MAYBE_BEGIN );
+            } state(MAYBE_BEGIN);
 
             lines = 0;
 
-            for ( ; p_first != p_last; lines += ( *p_first != '\n' ? 0 : 1 ), ++p_first ) {
-                switch ( state ) {
+            for (; p_first != p_last; lines += (*p_first != '\n' ? 0 : 1), ++p_first) {
+                switch (state) {
                 default:
-                    assert ( 0 );
+                    assert(0);
                     break;
 
                 case MAYBE_BEGIN:
-                    if ( *p_first != '/' )
+                    if (*p_first != '/')
                         return p_first;
 
                     state = BEGIN;
                     break;
 
                 case BEGIN:
-                    if ( *p_first == '*' )
+                    if (*p_first == '*')
                         state = IN_COMMENT;
-                    else if ( *p_first == '/' )
+                    else if (*p_first == '/')
                         state = IN_CXX_COMMENT;
                     else
                         return p_first;
                     break;
 
                 case IN_COMMENT:
-                    if ( *p_first == '*' )
+                    if (*p_first == '*')
                         state = MAYBE_END;
                     break;
 
                 case IN_CXX_COMMENT:
-                    if ( *p_first == '\n' )
+                    if (*p_first == '\n')
                         return p_first;
                     break;
 
                 case MAYBE_END:
-                    if ( *p_first == '/' )
+                    if (*p_first == '/')
                         state = END;
-                    else if ( *p_first != '*' )
+                    else if (*p_first != '*')
                         state = IN_COMMENT;
                     break;
 
@@ -169,16 +174,21 @@ namespace rpp {
     struct pp_skip_identifier {
         int lines;
 
+        /**
+         * Loops through frist until first == last or first is not _ or alphanumeric.
+         */
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator p_first, _InputIterator p_last ) {
+        _InputIterator operator()(_InputIterator first, _InputIterator last) {
             lines = 0;
 
-            for ( ; p_first != p_last; lines += ( *p_first != '\n' ? 0 : 1 ), ++p_first ) {
-                if ( ! pp_isalnum ( *p_first ) && *p_first != '_' )
+            for (; first != last; ++first) {
+                if (! pp_isalnum(*first) && *first != '_') {
                     break;
+                }
+                lines += (*first != '\n' ? 0 : 1);
             }
 
-            return p_first;
+            return first;
         }
     };
 
@@ -186,11 +196,11 @@ namespace rpp {
         int lines;
 
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator __first, _InputIterator __last ) {
+        _InputIterator operator()(_InputIterator __first, _InputIterator __last) {
             lines = 0;
 
-            for ( ; __first != __last; lines += ( *__first != '\n' ? 0 : 1 ), ++__first ) {
-                if ( ! pp_isalnum ( *__first ) && *__first != '.' )
+            for (; __first != __last; lines += (*__first != '\n' ? 0 : 1), ++__first) {
+                if (! pp_isalnum(*__first) && *__first != '.')
                     break;
             }
 
@@ -201,35 +211,39 @@ namespace rpp {
     struct pp_skip_string_literal {
         int lines;
 
+        /**
+         * Reads through string literal.
+         * Loops until end of the string, character "
+         */
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator __first, _InputIterator __last ) {
+        _InputIterator operator()(_InputIterator first, _InputIterator last) {
             enum {
                 BEGIN,
                 IN_STRING,
                 QUOTE,
                 END
-            } state ( BEGIN );
+            } state(BEGIN);
 
             lines = 0;
 
-            for ( ; __first != __last; lines += ( *__first != '\n' ? 0 : 1 ), ++__first ) {
-                switch ( state ) {
+            for (; first != last; ++first) {
+                switch (state) {
                 default:
-                    assert ( 0 );
+                    assert(0);
                     break;
 
                 case BEGIN:
-                    if ( *__first != '\"' )
-                        return __first;
+                    if (*first != '\"')
+                        return first;
                     state = IN_STRING;
                     break;
 
                 case IN_STRING:
-                    assert ( *__first != '\n' );
+                    assert(*first != '\n');
 
-                    if ( *__first == '\"' )
+                    if (*first == '\"')
                         state = END;
-                    else if ( *__first == '\\' )
+                    else if (*first == '\\')
                         state = QUOTE;
                     break;
 
@@ -238,46 +252,51 @@ namespace rpp {
                     break;
 
                 case END:
-                    return __first;
+                    return first;
                 }
+
+                lines += (*first != '\n' ? 0 : 1);
             }
 
-            return __first;
+            return first;
         }
     };
 
+    /*
+     * Skips through 'c'. See above.
+     */
     struct pp_skip_char_literal {
         int lines;
 
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator __first, _InputIterator __last ) {
+        _InputIterator operator()(_InputIterator __first, _InputIterator __last) {
             enum {
                 BEGIN,
                 IN_STRING,
                 QUOTE,
                 END
-            } state ( BEGIN );
+            } state(BEGIN);
 
             lines = 0;
 
-            for ( ; state != END && __first != __last; lines += ( *__first != '\n' ? 0 : 1 ), ++__first ) {
-                switch ( state ) {
+            for (; state != END && __first != __last; lines += (*__first != '\n' ? 0 : 1), ++__first) {
+                switch (state) {
                 default:
-                    assert ( 0 );
+                    assert(0);
                     break;
 
                 case BEGIN:
-                    if ( *__first != '\'' )
+                    if (*__first != '\'')
                         return __first;
                     state = IN_STRING;
                     break;
 
                 case IN_STRING:
-                    assert ( *__first != '\n' );
+                    assert(*__first != '\n');
 
-                    if ( *__first == '\'' )
+                    if (*__first == '\'')
                         state = END;
-                    else if ( *__first == '\\' )
+                    else if (*__first == '\\')
                         state = QUOTE;
                     break;
 
@@ -291,6 +310,9 @@ namespace rpp {
         }
     };
 
+    /**
+     * Reads through argument and skips everything inside it.
+     */
     struct pp_skip_argument {
         pp_skip_identifier skip_number;
         pp_skip_identifier skip_identifier;
@@ -299,41 +321,45 @@ namespace rpp {
         pp_skip_comment_or_divop skip_comment_or_divop;
         int lines;
 
+        /**
+         * Reads through first from ( to ) or , or to depth amount of ) if 
+         * content read has ( chars.
+         */
         template <typename _InputIterator>
-        _InputIterator operator () ( _InputIterator __first, _InputIterator __last ) {
+        _InputIterator operator()(_InputIterator first, _InputIterator last) {
             int depth = 0;
             lines = 0;
 
-            while ( __first != __last ) {
-                if ( !depth && ( *__first == ')' || *__first == ',' ) )
+            while (first != last) {
+                if (!depth && (*first == ')' || *first == ',')) // last 
                     break;
-                else if ( *__first == '(' )
-                    ++depth, ++__first;
-                else if ( *__first == ')' )
-                    --depth, ++__first;
-                else if ( *__first == '\"' ) {
-                    __first = skip_string_literal ( __first, __last );
+                else if (*first == '(') // sub block new
+                    ++depth, ++first;
+                else if (*first == ')') // sub block end
+                    --depth, ++first;
+                else if (*first == '\"') { // skips string
+                    first = skip_string_literal(first, last);
                     lines += skip_string_literal.lines;
-                } else if ( *__first == '\'' ) {
-                    __first = skip_char_literal ( __first, __last );
+                } else if (*first == '\'') { // skips char
+                    first = skip_char_literal(first, last);
                     lines += skip_char_literal.lines;
-                } else if ( *__first == '/' ) {
-                    __first = skip_comment_or_divop ( __first, __last );
+                } else if (*first == '/') { // skips comments
+                    first = skip_comment_or_divop(first, last);
                     lines += skip_comment_or_divop.lines;
-                } else if ( pp_isalpha ( *__first ) || *__first == '_' ) {
-                    __first = skip_identifier ( __first, __last );
+                } else if (pp_isalpha(*first) || *first == '_') { // skips identifier
+                    first = skip_identifier(first, last);
                     lines += skip_identifier.lines;
-                } else if ( pp_isdigit ( *__first ) ) {
-                    __first = skip_number ( __first, __last );
+                } else if (pp_isdigit(*first)) { // skips numbers
+                    first = skip_number(first, last);
                     lines += skip_number.lines;
-                } else if ( *__first == '\n' ) {
-                    ++__first;
+                } else if (*first == '\n') { // new line
+                    ++first;
                     ++lines;
                 } else
-                    ++__first;
+                    ++first;
             }
 
-            return __first;
+            return first;
         }
     };
 

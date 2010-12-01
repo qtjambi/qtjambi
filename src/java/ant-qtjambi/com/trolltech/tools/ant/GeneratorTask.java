@@ -56,6 +56,7 @@ public class GeneratorTask extends Task {
     private String outputDirectory = ".";
     private String dir = ".";
     private String phononpath = "";
+    private String kdephonon = "";
     //private String includePaths = "";
     private String options = null;
 	private String qtIncludeDirectory = null;
@@ -89,8 +90,15 @@ public class GeneratorTask extends Task {
         if (!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
         }
-        File headerFile = Util.makeCanonical(header);
-        if (!headerFile.exists()) {
+        
+        File headerFile;
+    	if("".equals(kdephonon)) {
+    		headerFile = Util.makeCanonical(header);
+    	} else {
+    		headerFile = Util.makeCanonical(kdephonon);
+    	}
+        
+    	if (!headerFile.exists()) {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
@@ -105,13 +113,13 @@ public class GeneratorTask extends Task {
         /*if( !includePaths.equals("") ){
             arguments += " --include-paths=" + includePaths;
         }*/
-        if( !phononpath.equals("") ) {
+        if(!phononpath.equals("")) {
         	arguments += " --phonon-include=" + Util.escape(phononpath);
         }
         if(qtIncludeDirectory != null) {
         	arguments += " --qt-include-directory=" + Util.escape(qtIncludeDirectory);
         }
-        if( !outputDirectory.equals("")){
+        if(!outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
@@ -143,6 +151,10 @@ public class GeneratorTask extends Task {
     
     public void setPhononpath(String path) {
     	this.phononpath = path;
+    }
+    
+    public void setKdephonon(String kdephonon) {
+    	this.kdephonon = kdephonon;
     }
 
     public void setQtIncludeDirectory(String dir) {

@@ -1,5 +1,26 @@
 #!/bin/bash
 
+## TODO ##
+
+# There should be a handler that sanitizes the arguments.
+# (or just use build_javadoc.rb)
+
+## ##
+
+export OUTPUT_DIR="javadoc"
+
+if [ "$1" = "" ]; then
+    export CP_ARGUMENT=""
+else
+    export CP_ARGUMENT="-cp $1"
+fi
+
+if [ "$2" = "" ]; then
+    export QTINCLUDE_ARGUMENT=""
+else
+    export QTINCLUDE_ARGUMENT="--qt-include-directory=$2"
+fi
+
 # TODO: this should be parsed from version.properties...
 if  [ "$QTJAMBI_VERSION" = "" ]; then
      export QTJAMBI_VERSION=4.7.0-r1
@@ -21,9 +42,13 @@ export JAMBI=`echo $PWD | sed s,/scripts,,g`
 
 echo "using jambi dir: $JAMBI"
 
+mkdir -p "$JAMBI/$OUTPUT_DIR"
+
 # build the jambidoc Doclet...
 cd $JAMBI/tools/jambidoc
-javac -cp /usr/lib64/icedtea6/lib/tools.jar -d . *.java
+command="javac $CP_ARGUMENT -d "$JAMBI/$OUTPUT_DIR" *.java"
+echo "running: $command"
+eval $command
 if [ $? -ne 0 ]; then
     echo "Failed to compile jambidoclet..."
     exit 1
@@ -38,9 +63,11 @@ fi
 
 mkdir $JAMBI/doc/html
 
+
 # Generating the QDoc JAPI file
 cd $JAMBI/generator
-./generator --build-qdoc-japi
+./generator --build-qdoc-japi $QTINCLUDE_ARGUMENT
+
 
 # Running QDoc
 cd $LOCAL_QDOC/test

@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -53,19 +53,16 @@
 #include <QtXml>
 
 DocParser::DocParser(const QString &name)
-    : m_doc_file(name),
-      m_dom(0)
-{
+        : m_doc_file(name),
+        m_dom(0) {
     build();
 }
 
-DocParser::~DocParser()
-{
+DocParser::~DocParser() {
     delete m_dom;
 }
 
-QString DocParser::documentation(const AbstractMetaClass *meta_class) const
-{
+QString DocParser::documentation(const AbstractMetaClass *meta_class) const {
     if (!m_dom)
         return QString();
 
@@ -81,18 +78,17 @@ QString DocParser::documentation(const AbstractMetaClass *meta_class) const
     return doc;
 }
 
-QString DocParser::documentationForFunction(const QString &signature, const QString &tag) const
-{
+QString DocParser::documentationForFunction(const QString &signature, const QString &tag) const {
     if (!m_dom)
         return QString();
 
     QDomElement root_node = m_dom->documentElement();
     QDomNodeList functions = root_node.elementsByTagName(tag);
 
-    for (int i=0; i<functions.size(); ++i) {
+    for (int i = 0; i < functions.size(); ++i) {
         QDomNode node = functions.item(i);
 
-        QDomElement *e = (QDomElement *) &node;
+        QDomElement *e = (QDomElement *) & node;
 
         Q_ASSERT(e->isElement());
 
@@ -104,18 +100,15 @@ QString DocParser::documentationForFunction(const QString &signature, const QStr
 }
 
 
-QString DocParser::documentationForSignal(const QString &signature) const
-{
+QString DocParser::documentationForSignal(const QString &signature) const {
     return documentationForFunction(signature, "signal");
 }
 
-QString DocParser::documentationForFunction(const QString &signature) const
-{
+QString DocParser::documentationForFunction(const QString &signature) const {
     return documentationForFunction(signature, "method");
 }
 
-QString DocParser::documentation(const AbstractMetaEnum *java_enum) const
-{
+QString DocParser::documentation(const AbstractMetaEnum *java_enum) const {
     if (!m_dom)
         return QString();
 
@@ -123,9 +116,9 @@ QString DocParser::documentation(const AbstractMetaEnum *java_enum) const
 
     QDomNodeList enums = root_node.elementsByTagName("enum");
 
-    for (int i=0; i<enums.size(); ++i) {
+    for (int i = 0; i < enums.size(); ++i) {
         QDomNode node = enums.item(i);
-        QDomElement *e = (QDomElement *) &node;
+        QDomElement *e = (QDomElement *) & node;
 
         Q_ASSERT(e->isElement());
 
@@ -137,9 +130,7 @@ QString DocParser::documentation(const AbstractMetaEnum *java_enum) const
     return QString();
 }
 
-
-QString DocParser::documentation(const AbstractMetaEnumValue *java_enum_value) const
-{
+QString DocParser::documentation(const AbstractMetaEnumValue *java_enum_value) const {
     if (!m_dom)
         return QString();
 
@@ -147,15 +138,15 @@ QString DocParser::documentation(const AbstractMetaEnumValue *java_enum_value) c
 
     QDomNodeList enums = root_node.elementsByTagName("enum");
 
-    for (int i=0; i<enums.size(); ++i) {
+    for (int i = 0; i < enums.size(); ++i) {
         QDomNode node = enums.item(i);
-        QDomElement *e = (QDomElement *) &node;
+        QDomElement *e = (QDomElement *) & node;
         Q_ASSERT(e->isElement());
 
         QDomNodeList enumValues = e->elementsByTagName("enum-value");
-        for (int j=0; j<enumValues.size(); ++j) {
+        for (int j = 0; j < enumValues.size(); ++j) {
             QDomNode node = enumValues.item(j);
-            QDomElement *ev = (QDomElement *) &node;
+            QDomElement *ev = (QDomElement *) & node;
             if (ev->attribute("name") == java_enum_value->name()) {
                 return ev->attribute("doc");
             }
@@ -165,10 +156,7 @@ QString DocParser::documentation(const AbstractMetaEnumValue *java_enum_value) c
     return QString();
 }
 
-
-
-void DocParser::build()
-{
+void DocParser::build() {
     if (!QFileInfo(m_doc_file).exists()) {
         ReportHandler::warning("Missing documentation file: " + m_doc_file);
         return;
@@ -186,18 +174,17 @@ void DocParser::build()
     int line, column;
 
     if (!m_dom->setContent(&f, &error, &line, &column)) {
-         ReportHandler::warning(QString("Failed to parse the documentation file:"
-                                        " '%1' %2 line=%3 column=%4")
-                                .arg(m_doc_file)
-                                .arg(error)
-                                .arg(line)
-                                .arg(column));
+        ReportHandler::warning(QString("Failed to parse the documentation file:"
+                                       " '%1' %2 line=%3 column=%4")
+                               .arg(m_doc_file)
+                               .arg(error)
+                               .arg(line)
+                               .arg(column));
 
         delete m_dom;
         m_dom = 0;
+        qDebug()<<"Reading document file from" << m_doc_file << "failed.";
 
         return;
     }
-
-
 }

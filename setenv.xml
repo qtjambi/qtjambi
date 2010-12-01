@@ -1,0 +1,200 @@
+<!--
+ This file has two purposes:
+
+ * download ant-contrib and use it (or pick up the jar from the system itself)
+ * set various properties necessary for the build process.
+-->
+
+<project name="qtjambi.setenv" default="setenv" basedir=".">
+
+    <property file="version.properties"/>
+    <property file="buildpath.properties"/>
+    <property file="antcontrib.properties"/>
+
+    <!--
+        We want the environment variables and we want a timestamp for jars.
+    -->
+
+    <property environment="env"/>
+    <tstamp/>
+
+    <!--
+        Macro for creating a timestamp
+    -->
+
+    <macrodef name="dostamp">
+        <attribute name="stampfile"/>
+        <sequential>
+            <mkdir dir="${timestamp.dir}"/>
+            <touch file="${timestamp.dir}/@{stampfile}"/>
+        </sequential>
+    </macrodef>
+
+    <!--
+        Preliminary: we download and enable ant-contrib tasks, unless a
+        timestamp file exists that tells us this is already done.
+
+        As an alternative, we get ant-contrib from the system itself if the
+        antcontrib.system.location is set in antcontrib.properties.
+
+        As we don't have ant-contrib yet at this stage (obviously), we must
+        rely on a proxy task to tell whether the timestamp file exists.
+    -->
+
+    <target name="check.antcontrib">
+        <available file="${timestamp.dir}/antcontrib" type="file"
+                   property="antcontrib.done"/>
+    </target>
+
+    <target name="antcontrib.systemcopy" if="antcontrib.system.location">
+        <mkdir dir="extjars"/>
+        <copy failonerror="true" overwrite="true"
+              file="${antcontrib.system.location}"
+              tofile="extjars/ant-contrib.jar"/>
+        <property name="antcontrib.done" value="yes"/>
+    </target>
+
+    <target name="get.antcontrib"
+            depends="check.antcontrib, antcontrib.systemcopy"
+            unless="antcontrib.done">
+        <!--
+            Yes, pathnames are hardcoded here. Since this is the only use we
+            have for them, there's no need to make properties out of them.
+        -->
+        <mkdir dir="tmp"/>
+        <mkdir dir="extjars"/>
+        <!--
+            NOTE about the use of <get> below: there is a usetimestamp property
+            that can avoid regetting the file if it is considered up to date wrt
+            the remote side. Unfortunately, it will not do its job quite
+            correctly since it doesn't check for the size... So we don't use it
+            here (it is set to "false" by default). Later, we should add some
+            kind of timestamp to tell that yes, the file is there, and not
+            download it again.
+        -->
+        <get src="${antcontrib.download.url}" dest="tmp/ant-contrib.zip"
+             verbose="true"/>
+        <unzip src="tmp/ant-contrib.zip" dest="tmp"/>
+        <copy file="tmp/${antcontrib.jar.location}"
+              tofile="extjars/ant-contrib.jar"/>
+        <!--
+            ... And remove the temporary directory, which we don't need anymore.
+        -->
+        <delete dir="tmp"/>
+        <dostamp stampfile="antcontrib"/>
+    </target>
+
+    <target name="source.antcontrib" depends="get.antcontrib">
+        <!--
+            OK, we have extracted the zip file, copied the ant-contrib.jar where
+            we expect it to be, we can now import all tasks...
+        -->
+        <taskdef resource="net/sf/antcontrib/antlib.xml"
+                 classpath="extjars/ant-contrib.jar"/>
+    </target>
+
+    <!--
+        Handle environment variables.
+        If QTDIR isn't set, look LIBDIR and INCLUDEDIR, which points to
+        to qt's libraries's dir and include dir.
+    -->
+
+    <target name="handle-qtdir">
+        <!--<property name="qtdir" value="${env.QTDIR}"/>-->
+        <if>
+            <isset property="env.QTDIR"/>
+            <then>
+                <property name="qmake.binary" value="${env.QTDIR}/bin/qmake"/>
+                <var name="qt.libdir" unset="true"/>
+                <var name="qt.pluginsdir" unset="true"/>
+                <var name="qt.includedir" unset="true"/>
+                <if>
+                    <os family="windows"/>
+                    <then>
+                        <property name="qt.lib.subdir" value="bin"/>
+                    </then>
+                    <else>
+                        <property name="qt.lib.subdir" value="lib"/>
+                    </else>
+                </if>
+                <property name="qt.libdir" value="${env.QTDIR}/${qt.lib.subdir}"/>
+                <property name="qtjambi.libdir" value="${env.JAMBIDIR}/${qt.lib.subdir}"/>
+
+
+                <property name="qt.pluginsdir" value="${env.QTDIR}"/>
+                <property name="qt.includedir" value="${env.QTDIR}/include"/>
+
+                <!-- this section can't be used on certain machines, which can't handle java.library.path natively...
+                <var name="qtjambi.java.library.path" unset="true"/>
+                <property name="qtjambi.java.library.path" value="${env.QTDIR}/bin"/>
+                -->
+
+                <var name="qtjambi.phonon.pluginsdir" unset="true"/>
+                <var name="qtjambi.phonon.libdir" unset="true"/>
+                <var name="qtjambi.phonon.includedir" unset="true"/>
+                <property name="qtjambi.phonon.pluginsdir" value="${env.QTDIR}"/>
+                <property name="qtjambi.phonon.libdir" value="${env.QTDIR}/lib"/>
+                <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
+            </then>
+            <else>
+                <property name="qmake.binary" value="qmake"/>
+            </else>
+        </if>
+    </target>
+
+    <target name="check-kdephonon">
+        <if>
+        <equals arg1="${qtjambi.phonon.kdephonon}" arg2="true" />
+        <then>
+            <property name="qtjambi.phonon.kdephonon-path"
+                    value="${generatorDir}/targets/masterinclude_with_kdephonon.h" />
+        </then>
+        <else>
+            <property name="qtjambi.phonon.kdephonon-path"
+                    value="" />
+        </else>
+        </if>
+    </target>
+
+    <target name="lookup-libdir">
+        <if>
+            <os family="windows"/>
+            <then>
+                <var name="qt.libdir" unset="true"/>
+                <property name="qt.libdir" value="${env.QTDIR}${file.separator}bin"/>
+
+                <var name="qtjambi.phonon.libdir" unset="true"/>
+                <property name="qtjambi.phonon.libdir" value="${env.QTDIR}${file.separator}bin"/>
+            </then>
+        </if>
+    </target>
+
+    <target name="setup-properties" depends="handle-qtdir, check-kdephonon, lookup-libdir">
+        <exec executable="${qmake.binary}" outputproperty="qt.version">
+            <arg value="-query"/>
+            <arg value="QT_VERSION"/>
+        </exec>
+        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version})">
+            <condition>
+                <not>
+                    <equals arg1="${qtjambi.version}" arg2="${qt.version}"/>
+                </not>
+            </condition>
+        </fail>
+        <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
+        <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
+        <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
+        <property name="qtjambi.jambi.libdir"       value="src/cpp/lib"/>
+        <!--
+            dummy-set values to phonon properties, if they
+            are not set. If they are set, or if they are set by QTDIR,
+            the this won't do anything.
+        -->
+        <property name="qtjambi.phonon.includedir"  value="${qt.includedir}/phonon"/>
+        <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
+        <property name="qtjambi.phonon.pluginsdir" value="${qt.libdir}"/>
+    </target>
+
+    <target name="setenv" depends="source.antcontrib, setup-properties"/>
+
+</project>

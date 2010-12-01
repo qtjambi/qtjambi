@@ -1,4 +1,18 @@
-﻿<project default="help" basedir="." name="qtjambi.main">
+﻿<!--
+    TODO:
+    - ”ant all” should be ”ant full”.
+    - (new) ant all should build everything, only if it has not been built before.
+    - Tasks like ”ant library” should be meta tasks that pulls everything it needs,
+    and something like ant library-task should pull only stuff related to library.
+    Both should be documented.
+    - There should be direct way to export output of task to pastebin,
+    for example something like ant nc generator which sends the output to pastebin
+    and returns a link.
+    - Instead of version.properties there should be generic way to provide (default)
+    properties to Jambi, for example in form of file, or better, in qtjambi-deploy.
+    This can include stuff like debug flag and version.
+-->
+<project default="help" basedir="." name="qtjambi.main">
 
     <property file="build.properties"/>
 
@@ -41,7 +55,7 @@
         <!--<copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>-->
 
         <!-- copy jogl to the jar dir. needed for compilation examples  -->
-        <!--<copy file="jogl/jogl.jar" todir="${jardir}"/>-->
+        <copy file="jogl/jogl.jar" todir="${jardir}"/>
     </target>
 
     <!--
@@ -51,16 +65,6 @@
     <!--
         Tools building
     -->
-
-    <target name="tools.generator.qmake" depends="init, generator.xmlmerge">
-        <qmake dir="generator" pro="generator/generator.pro"
-                config="${qtjambi.configuration}"
-                qmakebinary="${qmake.binary}"/>
-    </target>
-
-    <target name="tools.generator.make" depends="tools.generator.qmake">
-        <make dir="generator"/>
-    </target>
 
     <target name="tools.juic.qmake" depends="init">
         <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"
@@ -118,17 +122,18 @@
 
     <target name="help" description="Provides detailed help.">
         <echo>
-To build Qt Jambi, run ant without parameters.
+Welcome to Qt Jambi help task.
 
-Edit the build.properties file if you want to change the behaviour of the build system:
+Please refer for all building related questions to our building
+documentation at http://qt-jambi.org/development/building/
 
-* whether you want to build a release bundle or a debug bundle,
-* whether you want to use a native jump table (EXPERIMENTAL).
+Full command listing with ant -projecthelp
 
-To get a description of all tasks run: ant -projecthelp
+Quick howto:
+[edit buildpath.properties to suit your system]
+ant all
 
-You can also see the Qt Jambi intallation document at:
-http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
+NOTE: for now ant clean does not work, please use git clean -fdx instead.
         </echo>
     </target>
 
@@ -139,7 +144,10 @@ http://doc.trolltech.com/qtjambi/com/trolltech/qt/qtjambi-installation.html
         provides consistent and easy to use interface for humans to use.
     -->
 
-    <target name="generator" depends="generator.run"
+    <target name="generator.make" depends="init, tools.generator.make"
+        description="Compiles the generator."/>
+
+    <target name="generator" depends="generator.make, generator.run"
         description="Compiles and runs the Qt Jambi Generator."/>
 
     <target name="library.native" depends="library.native.bundle"

@@ -15,8 +15,8 @@ void ReportHandler_message_handler(const std::string &str)
 }
 
 Wrapper::Wrapper(int argc, char *argv[]) :
-        default_file("qtjambi_masterinclude.h"),
-        default_system("build_all.txt"),
+        default_file("targets/qtjambi_masterinclude.h"),
+        default_system("targets/build_all.xml"),
         pp_file(".preprocessed.tmp") {
 
     gs = GeneratorSet::getInstance();
@@ -44,6 +44,8 @@ void Wrapper::handleArguments() {
             ReportHandler::setDebugLevel(ReportHandler::MediumDebug);
         } else if (level == "full") {
             ReportHandler::setDebugLevel(ReportHandler::FullDebug);
+        } else if (level == "types") {
+            ReportHandler::setDebugLevel(ReportHandler::TypeDebug);
         }
     }
 
@@ -98,6 +100,8 @@ int Wrapper::runJambiGenerator() {
     if (!TypeDatabase::instance()->parseFile(typesystemFileName))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
+    //removing file here for theoretical case of wanting to parse two master include files here
+    QFile::remove(pp_file);
     //preprocess using master include, preprocessed file and command line given include paths, if any
     if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"))) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
@@ -127,7 +131,6 @@ int Wrapper::runJambiGenerator() {
     return 0;
 }
 
-
 void Wrapper::displayHelp(GeneratorSet* generatorSet) {
 #if defined(Q_OS_WIN32)
     char path_splitter = ';';
@@ -137,7 +140,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
     printf("Usage:\n  generator [options] header-file typesystem-file\n\n");
     printf("Available options:\n\n");
     printf("General:\n");
-    printf("  --debug-level=[sparse|medium|full]        \n"
+    printf("  --debug-level=[types|sparse|medium|full]  \n"
            "  --dump-object-tree                        \n"
            "  --help, -h or -?                          \n"
            "  --no-suppress-warnings                    \n"

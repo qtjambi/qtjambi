@@ -60,54 +60,54 @@ namespace rpp {
             std::size_t _M_size;
 
         public:
-            inline pp_string () :
-                    _M_begin ( 0 ), _M_size ( 0 ) {}
+            inline pp_string() :
+                    _M_begin(0), _M_size(0) {}
 
-            explicit pp_string ( std::string const &__s ) :
-                    _M_begin ( __s.c_str () ), _M_size ( __s.size () ) {}
+            explicit pp_string(std::string const &__s) :
+                    _M_begin(__s.c_str()), _M_size(__s.size()) {}
 
-            inline pp_string ( _CharT const *__begin, std::size_t __size ) :
-                    _M_begin ( __begin ), _M_size ( __size ) {}
+            inline pp_string(_CharT const *__begin, std::size_t __size) :
+                    _M_begin(__begin), _M_size(__size) {}
 
-            inline _CharT const *begin () const { return _M_begin; }
-            inline _CharT const *end () const { return _M_begin + _M_size; }
+            inline _CharT const *begin() const { return _M_begin; }
+            inline _CharT const *end() const { return _M_begin + _M_size; }
 
-            inline _CharT at ( std::size_t index ) const { return _M_begin [index]; }
+            inline _CharT at(std::size_t index) const { return _M_begin [index]; }
 
-            inline std::size_t size () const { return _M_size; }
+            inline std::size_t size() const { return _M_size; }
 
-            inline int compare ( pp_string const &__other ) const {
+            inline int compare(pp_string const &__other) const {
                 size_type const __size = this->size();
                 size_type const __osize = __other.size();
-                size_type const __len = std::min ( __size,  __osize );
+                size_type const __len = std::min(__size,  __osize);
 
-                int __r = traits_type::compare ( _M_begin, __other._M_begin, __len );
-                if ( !__r )
-                    __r = ( int ) ( __size - __osize );
+                int __r = traits_type::compare(_M_begin, __other._M_begin, __len);
+                if (!__r)
+                    __r = (int)(__size - __osize);
 
                 return __r;
             }
 
-            inline bool operator == ( pp_string const &__other ) const
-            { return compare ( __other ) == 0; }
+            inline bool operator == (pp_string const &__other) const
+            { return compare(__other) == 0; }
 
-            inline bool operator != ( pp_string const &__other ) const
-            { return compare ( __other ) != 0; }
+            inline bool operator != (pp_string const &__other) const
+            { return compare(__other) != 0; }
 
-            inline bool operator < ( pp_string const &__other ) const
-            { return compare ( __other ) < 0; }
+            inline bool operator < (pp_string const &__other) const
+            { return compare(__other) < 0; }
 
-            inline bool operator == ( char const *s ) const {
-                std::size_t n = std::strlen ( s );
+            inline bool operator == (char const *s) const {
+                std::size_t n = std::strlen(s);
 
-                if ( n != _M_size )
+                if (n != _M_size)
                     return false;
 
-                return ! strncmp ( _M_begin, s, n );
+                return ! strncmp(_M_begin, s, n);
             }
 
-            inline bool operator != ( char const *s ) const
-            { return ! operator == ( s ); }
+            inline bool operator != (char const *s) const
+            { return ! operator == (s); }
     };
 
 } // namespace rpp

@@ -59,8 +59,8 @@ namespace rpp {
         pp_macro *expanding_macro;
         std::vector<std::string> *actuals;
 
-        pp_frame ( pp_macro *__expanding_macro, std::vector<std::string> *__actuals ) :
-                expanding_macro ( __expanding_macro ), actuals ( __actuals ) {}
+        pp_frame(pp_macro *__expanding_macro, std::vector<std::string> *__actuals) :
+                expanding_macro(__expanding_macro), actuals(__actuals) {}
     };
 
     class pp_macro_expander {
@@ -76,270 +76,270 @@ namespace rpp {
             pp_skip_blanks skip_blanks;
             pp_skip_whitespaces skip_whitespaces;
 
-            std::string const *resolve_formal ( pp_fast_string const *__name );
+            std::string const *resolve_formal(pp_fast_string const *__name);
 
         public: // attributes
             int lines;
             int generated_lines;
 
         public:
-            pp_macro_expander ( pp_environment &__env, pp_frame *__frame = 0 ) :
-                    env ( __env ), frame ( __frame ), lines ( 0 ), generated_lines ( 0 ) {}
+            pp_macro_expander(pp_environment &__env, pp_frame *__frame = 0) :
+                    env(__env), frame(__frame), lines(0), generated_lines(0) {}
 
             template <typename _InputIterator>
-            _InputIterator skip_argument_variadics ( std::vector<std::string> const &__actuals, pp_macro *__macro,
-                    _InputIterator __first, _InputIterator __last ) {
-                _InputIterator arg_end = skip_argument ( __first, __last );
+            _InputIterator skip_argument_variadics(std::vector<std::string> const &actuals, pp_macro *macro,
+                                                   _InputIterator first, _InputIterator last) {
+                _InputIterator arg_end = skip_argument(first, last);
 
-                while ( __macro->variadics && __first != arg_end && arg_end != __last && *arg_end == ','
-                        && ( __actuals.size () + 1 ) == __macro->formals.size () ) {
-                    arg_end = skip_argument ( ++arg_end, __last );
+                while (macro->variadics && first != arg_end && arg_end != last && *arg_end == ','
+                        && (actuals.size() + 1) == macro->formals.size()) {
+                    arg_end = skip_argument(++arg_end, last);
                 }
 
                 return arg_end;
             }
 
             template <typename _InputIterator, typename _OutputIterator>
-            _InputIterator operator () ( _InputIterator p_first, _InputIterator p_last, _OutputIterator p_result ) {
+            _InputIterator operator()(_InputIterator first, _InputIterator last, _OutputIterator result) {
                 generated_lines = 0;
-                p_first = skip_blanks ( p_first, p_last );
+                first = skip_blanks(first, last);
                 lines = skip_blanks.lines;
 
-                while ( p_first != p_last ) {
-                    if ( *p_first == '\n' ) {
-                        *p_result++ = *p_first;
+                while (first != last) {
+                    if (*first == '\n') {
+                        *result++ = *first;
                         ++lines;
 
-                        p_first = skip_blanks ( ++p_first, p_last );
+                        first = skip_blanks(++first, last);
                         lines += skip_blanks.lines;
 
-                        if ( p_first != p_last && *p_first == '#' )
+                        if (first != last && *first == '#')
                             break;
-                    } else if ( *p_first == '#' ) {
-                        p_first = skip_blanks ( ++p_first, p_last );
+                    } else if (*first == '#') {
+                        first = skip_blanks(++first, last);
                         lines += skip_blanks.lines;
 
-                        _InputIterator end_id = skip_identifier ( p_first, p_last );
+                        _InputIterator end_id = skip_identifier(first, last);
 
                         char name_buffer[512], *cp = name_buffer;
-                        std::size_t name_size = end_id - p_first;
+                        std::size_t name_size = end_id - first;
                         assert(name_size < 511); //crude hack to test the size, needs testing
-                        std::copy ( p_first, end_id, cp );
+                        std::copy(first, end_id, cp);
                         name_buffer[name_size] = '\0';
 
-                        pp_fast_string fast_name ( name_buffer, name_size );
+                        pp_fast_string fast_name(name_buffer, name_size);
 
-                        if ( std::string const *actual = resolve_formal ( &fast_name ) ) {
-                            *p_result++ = '\"';
+                        if (std::string const *actual = resolve_formal(&fast_name)) {
+                            *result++ = '\"';
 
-                            for ( std::string::const_iterator it = skip_whitespaces ( actual->begin (), actual->end () );
-                                    it != actual->end (); ++it ) {
-                                if ( *it == '"' ) {
-                                    *p_result++ = '\\';
-                                    *p_result++ = *it;
-                                } else if ( *it == '\n' ) {
-                                    *p_result++ = '"';
-                                    *p_result++ = '\n';
-                                    *p_result++ = '"';
+                            for (std::string::const_iterator it = skip_whitespaces(actual->begin(), actual->end());
+                                    it != actual->end(); ++it) {
+                                if (*it == '"') {
+                                    *result++ = '\\';
+                                    *result++ = *it;
+                                } else if (*it == '\n') {
+                                    *result++ = '"';
+                                    *result++ = '\n';
+                                    *result++ = '"';
                                 } else
-                                    *p_result++ = *it;
+                                    *result++ = *it;
                             }
 
-                            *p_result++ = '\"';
-                            p_first = end_id;
+                            *result++ = '\"';
+                            first = end_id;
                         } else
-                            *p_result++ = '#'; // ### warning message?
-                    } else if ( *p_first == '\"' ) {
-                        _InputIterator next_pos = skip_string_literal ( p_first, p_last );
+                            *result++ = '#'; // ### warning message?
+                    } else if (*first == '\"') {
+                        _InputIterator next_pos = skip_string_literal(first, last);
                         lines += skip_string_literal.lines;
-                        std::copy ( p_first, next_pos, p_result );
-                        p_first = next_pos;
-                    } else if ( *p_first == '\'' ) {
-                        _InputIterator next_pos = skip_char_literal ( p_first, p_last );
+                        std::copy(first, next_pos, result);
+                        first = next_pos;
+                    } else if (*first == '\'') {
+                        _InputIterator next_pos = skip_char_literal(first, last);
                         lines += skip_char_literal.lines;
-                        std::copy ( p_first, next_pos, p_result );
-                        p_first = next_pos;
-                    } else if ( rpp::_PP_internal::comment_p ( p_first, p_last ) ) {
-                        p_first = skip_comment_or_divop ( p_first, p_last );
+                        std::copy(first, next_pos, result);
+                        first = next_pos;
+                    } else if (rpp::_PP_internal::comment_p(first, last)) {
+                        first = skip_comment_or_divop(first, last);
                         int n = skip_comment_or_divop.lines;
                         lines += n;
 
-                        while ( n-- > 0 )
-                            *p_result++ = '\n';
-                    } else if ( pp_isspace ( *p_first ) ) {
-                        for ( ; p_first != p_last; ++p_first ) {
-                            if ( *p_first == '\n' || !pp_isspace ( *p_first ) )
+                        while (n-- > 0)
+                            *result++ = '\n';
+                    } else if (pp_isspace(*first)) {
+                        for (; first != last; ++first) {
+                            if (*first == '\n' || !pp_isspace(*first))
                                 break;
                         }
 
-                        *p_result = ' ';
-                    } else if ( pp_isdigit ( *p_first ) ) {
-                        _InputIterator next_pos = skip_number ( p_first, p_last );
+                        *result = ' ';
+                    } else if (pp_isdigit(*first)) {
+                        _InputIterator next_pos = skip_number(first, last);
                         lines += skip_number.lines;
-                        std::copy ( p_first, next_pos, p_result );
-                        p_first = next_pos;
-                    } else if ( pp_isalpha ( *p_first ) || *p_first == '_' ) {
-                        _InputIterator name_begin = p_first;
-                        _InputIterator name_end = skip_identifier ( p_first, p_last );
-                        p_first = name_end; // advance
+                        std::copy(first, next_pos, result);
+                        first = next_pos;
+                    } else if (pp_isalpha(*first) || *first == '_') {
+                        _InputIterator name_begin = first;
+                        _InputIterator name_end = skip_identifier(first, last);
+                        first = name_end; // advance
 
                         // search for the paste token
-                        _InputIterator next = skip_blanks ( p_first, p_last );
-                        if ( next != p_last && *next == '#' ) {
+                        _InputIterator next = skip_blanks(first, last);
+                        if (next != last && *next == '#') {
                             ++next;
-                            if ( next != p_last && *next == '#' )
-                                p_first = skip_blanks ( ++next, p_last );
+                            if (next != last && *next == '#')
+                                first = skip_blanks(++next, last);
                         }
 
                         // ### rewrite: not safe
 
                         std::ptrdiff_t name_size;
 #if defined(__SUNPRO_CC)
-                        std::distance ( name_begin, name_end, name_size );
+                        std::distance(name_begin, name_end, name_size);
 #else
-                        name_size = std::distance ( name_begin, name_end );
+                        name_size = std::distance(name_begin, name_end);
 #endif
-                        assert ( name_size >= 0 && name_size < 512 );
+                        assert(name_size >= 0 && name_size < 512);
 
                         char name_buffer[512], *cp = name_buffer;
                         std::size_t size = name_end - name_begin;
-                        std::copy ( name_begin, name_end, cp );
+                        std::copy(name_begin, name_end, cp);
                         name_buffer[size] = '\0';
 
-                        pp_fast_string fast_name ( name_buffer, name_size );
+                        pp_fast_string fast_name(name_buffer, name_size);
 
-                        if ( std::string const *actual = resolve_formal ( &fast_name ) ) {
-                            std::copy ( actual->begin (), actual->end (), p_result );
+                        if (std::string const *actual = resolve_formal(&fast_name)) {
+                            std::copy(actual->begin(), actual->end(), result);
                             continue;
                         }
 
                         static bool hide_next = false; // ### remove me
 
-                        pp_macro *macro = env.resolve ( name_buffer, name_size );
-                        if ( ! macro || macro->hidden || hide_next ) {
-                            hide_next = ! strcmp ( name_buffer, "defined" );
+                        pp_macro *macro = env.resolve(name_buffer, name_size);
+                        if (! macro || macro->hidden || hide_next) {
+                            hide_next = ! strcmp(name_buffer, "defined");
 
-                            if ( size == 8 && name_buffer [0] == '_' && name_buffer [1] == '_' ) {
-                                if ( ! strcmp ( name_buffer, "__LINE__" ) ) {
+                            if (size == 8 && name_buffer [0] == '_' && name_buffer [1] == '_') {
+                                if (! strcmp(name_buffer, "__LINE__")) {
                                     char buf [16];
-                                    char *end = buf + pp_snprintf ( buf, 16, "%d", env.current_line + lines );
+                                    char *end = buf + pp_snprintf(buf, 16, "%d", env.current_line + lines);
 
-                                    std::copy ( &buf [0], end, p_result );
+                                    std::copy(&buf [0], end, result);
                                     continue;
                                 }
 
-                                else if ( ! strcmp ( name_buffer, "__FILE__" ) ) {
-                                    p_result++ = '"';
-                                    std::copy ( env.current_file.begin (), env.current_file.end (), p_result ); // ### quote
-                                    p_result++ = '"';
+                                else if (! strcmp(name_buffer, "__FILE__")) {
+                                    result++ = '"';
+                                    std::copy(env.current_file.begin(), env.current_file.end(), result);      // ### quote
+                                    result++ = '"';
                                     continue;
                                 }
                             }
 
-                            std::copy ( name_begin, name_end, p_result );
+                            std::copy(name_begin, name_end, result);
                             continue;
                         }
 
-                        if ( ! macro->function_like ) {
+                        if (! macro->function_like) {
                             pp_macro *new_macro = 0;
 
-                            if ( macro->definition ) {
+                            if (macro->definition) {
                                 macro->hidden = true;
 
                                 std::string tmp;
-                                tmp.reserve ( 256 );
+                                tmp.reserve(256);
 
-                                pp_macro_expander expand_macro ( env );
-                                expand_macro ( macro->definition->begin (), macro->definition->end (), std::back_inserter ( tmp ) );
+                                pp_macro_expander expand_macro(env);
+                                expand_macro(macro->definition->begin(), macro->definition->end(), std::back_inserter(tmp));
                                 generated_lines += expand_macro.lines;
 
-                                if ( ! tmp.empty () ) {
-                                    std::string::iterator begin_id = skip_whitespaces ( tmp.begin (), tmp.end () );
-                                    std::string::iterator end_id = skip_identifier ( begin_id, tmp.end () );
+                                if (! tmp.empty()) {
+                                    std::string::iterator begin_id = skip_whitespaces(tmp.begin(), tmp.end());
+                                    std::string::iterator end_id = skip_identifier(begin_id, tmp.end());
 
-                                    if ( end_id == tmp.end () ) {
+                                    if (end_id == tmp.end()) {
                                         std::string id;
-                                        id.assign ( begin_id, end_id );
+                                        id.assign(begin_id, end_id);
 
                                         std::size_t new_macro_size;
 #if defined(__SUNPRO_CC)
-                                        std::distance ( begin_id, end_id, new_macro_size );
+                                        std::distance(begin_id, end_id, new_macro_size);
 #else
-                                        new_macro_size = std::distance ( begin_id, end_id );
+                                        new_macro_size = std::distance(begin_id, end_id);
 #endif
-                                        new_macro = env.resolve ( id.c_str (), new_macro_size );
+                                        new_macro = env.resolve(id.c_str(), new_macro_size);
                                     }
 
-                                    if ( ! new_macro )
-                                        std::copy ( tmp.begin (), tmp.end (), p_result );
+                                    if (! new_macro)
+                                        std::copy(tmp.begin(), tmp.end(), result);
                                 }
 
                                 macro->hidden = false;
                             }
 
-                            if ( ! new_macro )
+                            if (! new_macro)
                                 continue;
 
                             macro = new_macro;
                         }
 
                         // function like macro
-                        _InputIterator arg_it = skip_whitespaces ( p_first, p_last );
+                        _InputIterator arg_it = skip_whitespaces(first, last);
 
-                        if ( arg_it == p_last || *arg_it != '(' ) {
-                            std::copy ( name_begin, name_end, p_result );
+                        if (arg_it == last || *arg_it != '(') {
+                            std::copy(name_begin, name_end, result);
                             lines += skip_whitespaces.lines;
-                            p_first = arg_it;
+                            first = arg_it;
                             continue;
                         }
 
                         std::vector<std::string> actuals;
-                        actuals.reserve ( 5 );
+                        actuals.reserve(5);
                         ++arg_it; // skip '('
 
-                        pp_macro_expander expand_actual ( env, frame );
+                        pp_macro_expander expand_actual(env, frame);
 
-                        _InputIterator arg_end = skip_argument_variadics ( actuals, macro, arg_it, p_last );
-                        if ( arg_it != arg_end ) {
-                            std::string actual ( arg_it, arg_end );
-                            actuals.resize ( actuals.size() + 1 );
-                            actuals.back ().reserve ( 255 );
-                            expand_actual ( actual.begin (), actual.end(), std::back_inserter ( actuals.back() ) );
+                        _InputIterator arg_end = skip_argument_variadics(actuals, macro, arg_it, last);
+                        if (arg_it != arg_end) {
+                            std::string actual(arg_it, arg_end);
+                            actuals.resize(actuals.size() + 1);
+                            actuals.back().reserve(255);
+                            expand_actual(actual.begin(), actual.end(), std::back_inserter(actuals.back()));
                             arg_it = arg_end;
                         }
 
-                        while ( arg_it != p_last && *arg_end == ',' ) {
+                        while (arg_it != last && *arg_end == ',') {
                             ++arg_it; // skip ','
 
-                            arg_end = skip_argument_variadics ( actuals, macro, arg_it, p_last );
-                            std::string actual ( arg_it, arg_end );
-                            actuals.resize ( actuals.size() + 1 );
-                            actuals.back ().reserve ( 255 );
-                            expand_actual ( actual.begin (), actual.end(), std::back_inserter ( actuals.back() ) );
+                            arg_end = skip_argument_variadics(actuals, macro, arg_it, last);
+                            std::string actual(arg_it, arg_end);
+                            actuals.resize(actuals.size() + 1);
+                            actuals.back().reserve(255);
+                            expand_actual(actual.begin(), actual.end(), std::back_inserter(actuals.back()));
                             arg_it = arg_end;
                         }
 
-                        assert ( arg_it != p_last && *arg_it == ')' );
+                        assert(arg_it != last && *arg_it == ')');
 
                         ++arg_it; // skip ')'
-                        p_first = arg_it;
+                        first = arg_it;
 
 #if 0 // ### enable me
-                        assert ( ( macro->variadics && macro->formals.size () >= actuals.size () )
-                                 || macro->formals.size() == actuals.size() );
+                        assert((macro->variadics && macro->formals.size() >= actuals.size())
+                               || macro->formals.size() == actuals.size());
 #endif
 
-                        pp_frame frame ( macro, &actuals );
-                        pp_macro_expander expand_macro ( env, &frame );
+                        pp_frame frame(macro, &actuals);
+                        pp_macro_expander expand_macro(env, &frame);
                         macro->hidden = true;
-                        expand_macro ( macro->definition->begin (), macro->definition->end (), p_result );
+                        expand_macro(macro->definition->begin(), macro->definition->end(), result);
                         macro->hidden = false;
                         generated_lines += expand_macro.lines;
                     } else
-                        *p_result++ = *p_first++;
+                        *result++ = *first++;
                 }
 
-                return p_first;
+                return first;
             }
 
     };

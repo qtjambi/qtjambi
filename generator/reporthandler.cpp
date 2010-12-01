@@ -52,8 +52,7 @@ ReportHandler::DebugLevel ReportHandler::m_debug_level = NoDebug;
 QSet<QString> ReportHandler::m_reported_warnings;
 
 
-void ReportHandler::warning(const QString &text)
-{
+void ReportHandler::warning(const QString &text) {
     QString warningText = QString("WARNING(%1) :: %2").arg(m_context).arg(text);
 
     TypeDatabase *db = TypeDatabase::instance();
@@ -67,8 +66,7 @@ void ReportHandler::warning(const QString &text)
     }
 }
 
-void ReportHandler::debug(DebugLevel level, const QString &text)
-{
+void ReportHandler::debug(DebugLevel level, const QString &text) {
     if (m_debug_level == NoDebug)
         return;
 

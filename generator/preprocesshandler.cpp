@@ -16,7 +16,7 @@ PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, con
         targetFile(targetFile),
         phononinclude(phononinclude)
 {
-
+    //empty space for useless comments
 }
 
 bool PreprocessHandler::handler() {
@@ -55,13 +55,14 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
     result += sourceFile.toStdString();
     result += "\"\n";
 
+    qDebug()<<"Processing source"<<sourceInfo.absolutePath()<<sourceInfo.fileName();
     preprocess.file(sourceInfo.fileName().toStdString(),
                     rpp::pp_output_iterator<std::string> (result));
 
     QDir::setCurrent(currentDir);
 
     QFile f(targetFile);
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!f.open(QIODevice::Append | QIODevice::Text)) {
         fprintf(stderr, "Failed to write preprocessed file: %s\n", qPrintable(targetFile));
     }
     f.write(result.c_str(), result.length());
@@ -87,7 +88,7 @@ QStringList PreprocessHandler::setIncludes() {
         phonon_include_dir = phononinclude;
     } else {
 #if defined(Q_OS_MAC)
-	phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
+    phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
 #else
         phonon_include_dir = includedir;
 #endif

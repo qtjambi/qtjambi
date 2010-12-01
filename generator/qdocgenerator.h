@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -48,21 +48,20 @@
 #include "javagenerator.h"
 #include "metajava.h"
 
-class QDocGenerator: public JavaGenerator
-{
-public:
-    QDocGenerator();
+class QDocGenerator: public JavaGenerator {
+    public:
+        QDocGenerator();
 
-    virtual void generate();
-    virtual QString subDirectoryForClass(const AbstractMetaClass *java_class) const;
-    virtual QString fileNameForClass(const AbstractMetaClass *java_class) const;
-    virtual void write(QTextStream &s, const AbstractMetaClass *java_class);
-    virtual void write(QTextStream &s, const AbstractMetaEnumValue *java_enum_value);
-    virtual void write(QTextStream &s, const AbstractMetaEnum *java_enum);
-    virtual void writeOverload(QTextStream &s, const AbstractMetaFunction *java_function, int arg_count);
-    virtual void write(QTextStream &s, const AbstractMetaFunction *java_function);
-    virtual void write(QTextStream &s, const AbstractMetaField *java_field);
-    virtual void writeSignal(QTextStream &s, const AbstractMetaFunction *java_function);
+        virtual void generate();
+        virtual QString subDirectoryForClass(const AbstractMetaClass *java_class) const;
+        virtual QString fileNameForClass(const AbstractMetaClass *java_class) const;
+        virtual void write(QTextStream &s, const AbstractMetaClass *java_class);
+        virtual void write(QTextStream &s, const AbstractMetaEnumValue *java_enum_value);
+        virtual void write(QTextStream &s, const AbstractMetaEnum *java_enum);
+        virtual void writeOverload(QTextStream &s, const AbstractMetaFunction *java_function, int arg_count);
+        virtual void write(QTextStream &s, const AbstractMetaFunction *java_function);
+        virtual void write(QTextStream &s, const AbstractMetaField *java_field);
+        virtual void writeSignal(QTextStream &s, const AbstractMetaFunction *java_function);
 };
 
 #endif // QDOC_GENERATOR

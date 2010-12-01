@@ -7,41 +7,43 @@
 #include "codesnip.h"
 
 struct ReferenceCount;
-struct ArgumentModification
-{
-    ArgumentModification(int idx) : removed_default_expression(false), removed(false), no_null_pointers(false), index(idx)
-    {}
+struct ArgumentModification {
+    ArgumentModification(int idx) :
+            removed_default_expression(false),
+            removed(false),
+            no_null_pointers(false),
+            index(idx) {}
 
-    // Should the default expression be removed?
+    //! Should the default expression be removed?
     uint removed_default_expression : 1;
     uint removed : 1;
     uint no_null_pointers : 1;
     uint reset_after_use : 1;
 
-    // The index of this argument
+    //! The index of this argument
     int index;
 
-    // Reference count flags for this argument
+    //! Reference count flags for this argument
     QList<ReferenceCount> referenceCounts;
 
-    // The text given for the new type of the argument
+    //! The text given for the new type of the argument
     QString modified_type;
 
     QString replace_value;
 
-    // The code to be used to construct a return value when no_null_pointers is true and
-    // the returned value is null. If no_null_pointers is true and this string is
-    // empty, then the base class implementation will be used (or a default construction
-    // if there is no implementation)
+    //! The code to be used to construct a return value when no_null_pointers is true and
+    //! the returned value is null. If no_null_pointers is true and this string is
+    //! empty, then the base class implementation will be used (or a default construction
+    //! if there is no implementation)
     QString null_pointer_default_value;
 
-    // The text of the new default expression of the argument
+    //! The text of the new default expression of the argument
     QString replaced_default_expression;
 
-    // The new definition of ownership for a specific argument
+    //! The new definition of ownership for a specific argument
     QHash<TypeSystem::Language, TypeSystem::Ownership> ownerships;
 
-    // Different conversion rules
+    //! Different conversion rules
     CodeSnipList conversion_rules;
 };
 
@@ -94,8 +96,7 @@ struct Modification {
     QString renamedToName;
 };
 
-struct FunctionModification: public Modification
-{
+struct FunctionModification: public Modification {
     FunctionModification() : removal(TypeSystem::NoLanguage) { }
 
     bool isCodeInjection() const { return modifiers & CodeInjection; }
@@ -112,8 +113,7 @@ struct FunctionModification: public Modification
 };
 typedef QList<FunctionModification> FunctionModificationList;
 
-struct FieldModification: public Modification
-{
+struct FieldModification: public Modification {
     bool isReadable() const { return modifiers & Readable; }
     bool isWritable() const { return modifiers & Writable; }
 

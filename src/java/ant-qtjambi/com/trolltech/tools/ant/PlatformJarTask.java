@@ -182,14 +182,16 @@ public class PlatformJarTask extends Task {
     private void writeQtJambiDeployment() {
         PrintWriter writer;
         try {
-            writer = new PrintWriter ( new BufferedWriter ( new FileWriter ( new File ( outdir, "qtjambi-deployment.xml" ) ) ) );
+            writer = new PrintWriter ( new BufferedWriter (
+            		new FileWriter ( new File ( outdir, "qtjambi-deployment.xml" ) ) ) );
         } catch ( IOException e ) {
             e.printStackTrace();
-            throw new BuildException ( "Failed to open 'qtjambi-deployment.xml' for writing in '" + outdir + "'" );
+            throw new BuildException("Failed to open 'qtjambi-deployment.xml' for writing in '" + outdir + "'");
         }
 
         writer.println ( "<qtjambi-deploy"
-                            + " system=\"" + props.getProperty ( ( String ) null, InitializeTask.OSNAME ).toString()
+                            + " system=\"" + props.getProperty ( ( String ) null,
+                            		InitializeTask.OSNAME ).toString()
                             + "\">" );
         writer.println ( "\n  <cache key=\"" + cacheKey + "\" />" );
 
@@ -299,7 +301,13 @@ public class PlatformJarTask extends Task {
 
         for ( String libDir : libraryDir ) {
             for ( String name : files ) {
-                    String lib = libDir + "/Microsoft.VC" + vcnumber + ".CRT/" + name;
+            		String libdirstring;
+            		if("".equals(libDir)) {
+            			libdirstring = "lib/";
+            		} else {
+            			libdirstring = libDir + "/";
+            		}
+                    String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
                     unpackLibs.add ( lib );
 
                     try {
@@ -459,16 +467,18 @@ public class PlatformJarTask extends Task {
 
         for ( LibraryEntry change : libs ) {
                 StringBuilder builder = createDotDots ( change.getSubdir() );
+                builder.append ( with.output_directory);
                 builder.append ( with.getSubdir() );
-                builder.append ( "/" );
+		builder.append ("/");
                 builder.append ( with.getName() );
                 builder.insert ( 0, "@loader_path/" );
 
                 cmd[3] = builder.toString();
-                cmd[4] = change.relativePath();
+                cmd[4] = change.output_directory + change.getSubdir() + "/" + change.getName();//change.relativePath();
 
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
+
                 Exec.exec ( cmd, outdir, false );
 
                 // full path, when Qt is configured with rpath

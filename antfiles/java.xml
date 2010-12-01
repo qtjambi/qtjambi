@@ -16,6 +16,8 @@
         rule is to create a fileset with id "java.src.<modulenamehere>" and to
         call the ant jar.xml file with inheritrefs=true (otherwise it will NOT
         see the defined fileset).
+
+        TODO: refactor. Names are horrible, atleast
     -->
 
 
@@ -46,11 +48,18 @@
 
     <target name="jar.qtjambi"
         depends="init, jar.qtjambi-util">
-        <!-- HF: This is a fix for adding the OsInfo class to the the main jar-->
+        <!-- 1. This is a fix for adding the OsInfo class to the the main jar-->
+        <!--
+            2. Copy version.properties to generated dir for packaging.
+            TODO: version.properties shouldn’t be copied in first place.
+        -->
         <echo message="${java.outdir}"/>
         <copy todir="${java.outdir}/qtjambi">
             <fileset dir="${java.outdir}/qtjambi-util">
                 <include name="**/*"/>
+            </fileset>
+            <fileset dir=".">
+                <include name="version.properties" />
             </fileset>
         </copy>
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
@@ -100,7 +109,7 @@
         depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-examples"/>
-            <property name="sourcedirs" value="${java.srcdir}/qtjambi-examples"/>
+            <property name="sourcedirs" value="${java.srcdir}/qtjambi-examples:${java.generated.srcdir}/qtjambi-examples"/>
         </ant>
     </target>
 </project>
