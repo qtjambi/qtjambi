@@ -1,6 +1,6 @@
 // TODO Progress: 80%
 
-package test;
+package com.trolltech.qt.tests;
 
 import java.lang.reflect.Field;
 

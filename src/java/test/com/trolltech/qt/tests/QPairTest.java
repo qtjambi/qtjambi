@@ -1,6 +1,6 @@
 // TODO Progress: 100%
 
-package test;
+package com.trolltech.qt.tests;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
