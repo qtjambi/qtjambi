@@ -162,6 +162,7 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name)
 
 bool TypeDatabase::parseFile(const QString &filename, bool generate)
 {
+    //qDebug()<<filename; //this might be interesting to show anyway, to see what packages we are generating
     QFile file(filename);
     Q_ASSERT(file.exists());
     QXmlInputSource source(&file);

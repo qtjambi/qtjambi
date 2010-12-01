@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<typesystem package="com.trolltech.qt.opengl" default-superclass="com.trolltech.qt.QtJambiObject">
+  <inject-code>
+    com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+    com.trolltech.qt.Utilities.loadQtLibrary("QtOpenGL");
+  </inject-code>
+
+  <primitive-type name="GLuint" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="GLint" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="GLenum" java-name="int" preferred-conversion="no" jni-name="jint"/>
+  <primitive-type name="GLfloat" java-name="float" preferred-conversion="no" jni-name="jfloat"/>
+
+
+    <value-type name="QGLColormap">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_opengl-java.java" quote-after-line="class QGLColormap___" quote-before-line="}// class"/>
+        </inject-code>
+
+  </value-type>
+</typesystem>

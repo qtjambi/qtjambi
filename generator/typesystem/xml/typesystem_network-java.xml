@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<typesystem package="com.trolltech.qt.network" default-superclass="com.trolltech.qt.QtJambiObject">
+    <inject-code>
+        com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
+    </inject-code>
+
+    <template name="network.read_char*_long_long">
+        public final int read(byte data[]) {
+            if (data.length == 0) return 0;
+
+            com.trolltech.qt.QNativePointer np = new com.trolltech.qt.QNativePointer(com.trolltech.qt.QNativePointer.Type.Byte, data.length);
+            int len = (int) read(np, data.length);
+            for (int i=0; i&lt;len; ++i) data[i] = np.byteAt(i);
+
+            return len;
+        }
+    </template>
+
+
+
+    <object-type name="QAbstractSocket">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QAbstractSocket___" quote-before-line="}// class"/>
+        </inject-code>
+        <inject-code class="constructors">
+proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+        <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
+            <access modifier="private"/>
+            <rename to="proxyAuthenticationRequiredPrivate"/>
+        </modify-function>
+        <modify-function signature="connectToHostImplementation(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private" />
+        <modify-function signature="localPort()const" access="private" rename="localPort_private"/>
+        <modify-function signature="peerPort()const" access="private" rename="peerPort_private"/>
+        <modify-function signature="setLocalPort(unsigned short)" access="private"/>
+        <modify-function signature="setPeerPort(unsigned short)" access="private"/>
+        <modify-function signature="connectToHost(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private"/>
+        <modify-function signature="connectToHost(QHostAddress, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private"/>
+
+        <modify-function signature="abort()" access="non-final" />
+        <modify-function signature="disconnectFromHostImplementation()" access="non-final" />
+        <modify-function signature="flush()" access="non-final" />
+        <modify-function signature="setReadBufferSize(long long)" access="non-final" />
+    <modify-function signature="setSocketDescriptor(int,QAbstractSocket::SocketState,QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="non-final" />
+        <modify-function signature="waitForConnected(int)" access="non-final" />
+        <modify-function signature="waitForDisconnected(int)" access="non-final" />
+
+    </object-type>
+
+    <value-type name="QHostInfo">
+        <inject-code class="java">
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QHostInfo___" quote-before-line="}// class"/>
+        </inject-code>
+    </value-type>
+
+
+    <object-type name="QFtp">
+        <modify-function signature="read(char*,long long)">
+            <access modifier="private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="network.read_char*_long_long"/>
+        </inject-code>
+    </object-type>
+
+
+    <object-type name="QHttp">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QHttp___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
+            <access modifier="private"/>
+            <rename to="proxyAuthenticationRequiredPrivate"/>
+        </modify-function>
+
+        <modify-function signature="authenticationRequired(QString,unsigned short,QAuthenticator*)">
+            <access modifier="private"/>
+            <rename to="authenticationRequiredPrivate"/>
+        </modify-function>
+
+        <inject-code class="constructors">
+proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+authenticationRequired.connect(this, "emitAuthenticationRequiredPrivate(String, int, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(String, char, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+
+        <modify-function signature="QHttp(const QString &amp;, unsigned short, QObject *)" access="private">
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="QHttp(const QString &amp;, QHttp::ConnectionMode, unsigned short, QObject *)" access="private">
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+
+        <modify-function signature="read(char*,long long)">
+            <access modifier="private"/>
+        </modify-function>
+        <inject-code>
+            <insert-template name="network.read_char*_long_long"/>
+        </inject-code>
+        <modify-function signature="setSocket(QTcpSocket*)">
+            <modify-argument index="1">
+                <reference-count action="set" variable-name="__rcSocket"/>
+            </modify-argument>
+        </modify-function>
+
+        <modify-function signature="setHost(QString, unsigned short)" access="private">
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="setHost(QString, QHttp::ConnectionMode, unsigned short)" access="private">
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+
+    </object-type>
+
+
+
+    <object-type name="QTcpServer">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QTcpServer___" quote-before-line="}// class"/>
+        </inject-code>
+        <extra-includes>
+            <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+        </extra-includes>
+        <modify-function signature="listen(QHostAddress,unsigned short)" access="private">
+            <modify-argument index="1">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+
+
+        <modify-function signature="serverPort()const" access="private" rename="serverPort_private"/>
+
+
+        <modify-function signature="waitForNewConnection(int,bool*)">
+            <access modifier="private"/>
+            <modify-argument index="1">
+                <remove-default-expression/>
+            </modify-argument>
+            <modify-argument index="2">
+                <remove-default-expression/>
+            </modify-argument>
+        </modify-function>
+
+    </object-type>
+
+    <object-type name="QTcpSocket">
+        <inject-code class="constructors">
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            AbstractSignal sig = (AbstractSignal) com.trolltech.qt.GeneratorUtilities.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");
+            sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+    </object-type>
+
+
+    <object-type name="QUdpSocket">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QUdpSocket___" quote-before-line="}// class"/>
+        </inject-code>
+        <inject-code class="constructors">
+proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+AbstractSignal sig = (AbstractSignal) com.trolltech.qt.GeneratorUtilities.fetchField(this, QAbstractSocket.class, "proxyAuthenticationRequiredPrivate");
+sig.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+
+        <extra-includes>
+            <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+        </extra-includes>
+
+        <modify-function signature="readDatagram(char*,long long,QHostAddress*,unsigned short*)">
+            <access modifier="private"/>
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+
+        <modify-function signature="bind(QHostAddress, unsigned short)" access="private" rename="bind_private"/>
+
+        <modify-function signature="bind(unsigned short)" access="private" rename="bind_private"/>
+
+        <modify-function signature="bind(QHostAddress,unsigned short,QFlags&lt;QUdpSocket::BindFlag&gt;)" access="private" rename="bind_private"/>
+
+        <modify-function signature="bind(unsigned short, QFlags&lt;QUdpSocket::BindFlag&gt;)" access="private" rename="bind_private"/>
+
+        <modify-function signature="writeDatagram(const char*,long long,QHostAddress,unsigned short)">
+            <access modifier="private"/>
+        </modify-function>
+
+        <modify-function signature="writeDatagram(QByteArray, QHostAddress, unsigned short)" access="private"/>
+    </object-type>
+
+
+    <value-type name="QNetworkProxy">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QNetworkProxy___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="QNetworkProxy(QNetworkProxy::ProxyType,QString,unsigned short,QString,QString)" access="private">
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="setPort(unsigned short)" access="private"/>
+        <modify-function signature="port()const" access="private" rename="port_private"/>
+    </value-type>
+
+    <object-type name="QNetworkAccessManager">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QNetworkAccessManager___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)">
+            <access modifier="private"/>
+            <rename to="proxyAuthenticationRequiredPrivate"/>
+        </modify-function>
+
+        <modify-function signature="authenticationRequired(QNetworkReply *,QAuthenticator*)">
+            <access modifier="private"/>
+            <rename to="authenticationRequiredPrivate"/>
+        </modify-function>
+
+        <inject-code class="constructors">
+            proxyAuthenticationRequired.connect(this, "emitProxyAuthenticationRequiredPrivate(QNetworkProxy, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            proxyAuthenticationRequiredPrivate.connect(this, "emitProxyAuthenticationRequired(QNetworkProxy,QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            authenticationRequired.connect(this, "emitAuthenticationRequiredPrivate(QNetworkReply, QAuthenticator)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+            authenticationRequiredPrivate.connect(this, "emitAuthenticationRequired(QNetworkReply, QNativePointer)", com.trolltech.qt.core.Qt.ConnectionType.DirectConnection);
+        </inject-code>
+    </object-type>
+
+    <object-type name="QLocalServer">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QLocalServer___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="waitForNewConnection(int,bool*)">
+            <access modifier="private"/>
+            <modify-argument index="1">
+                <remove-default-expression/>
+            </modify-argument>
+            <modify-argument index="2">
+                <remove-default-expression/>
+            </modify-argument>
+        </modify-function>
+    </object-type>
+
+    <value-type name="QSslCipher">
+      <modify-function signature="operator=(QSslCipher)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslError">
+      <modify-function signature="operator=(QSslError)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslKey">
+      <modify-function signature="operator=(QSslKey)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslCertificate">
+      <modify-function signature="operator=(QSslCertificate)" remove="all" />
+    </value-type>
+
+    <value-type name="QSslConfiguration">
+      <modify-function signature="operator=(QSslConfiguration)" remove="all" />
+    </value-type>
+
+
+    <object-type name="QSslSocket">
+      <inject-code>
+        <import-file name="typesystem/java/typesystem_network-java.java" quote-after-line="class QSslSocket___" quote-before-line="}// class"/>
+      </inject-code>
+      <modify-function signature="connectToHostImplementation(QString, unsigned short, QFlags&lt;QIODevice::OpenModeFlag&gt;)" access="private" />
+    </object-type>
+
+
+</typesystem>

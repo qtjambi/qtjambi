@@ -1,0 +1,17 @@
+<typesystem>
+  <load-typesystem name="../build/generator/typesystem_core.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_gui.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_sql.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_opengl.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_svg.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_network.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_xml.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_xmlpatterns.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_webkit.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_designer.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_phonon.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_help.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_multimedia.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_script.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_scripttools.xml" generate="yes" />
+</typesystem>
