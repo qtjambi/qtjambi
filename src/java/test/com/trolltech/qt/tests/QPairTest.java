@@ -13,7 +13,7 @@ public class QPairTest <T, S> extends TestCase {
     QPair<T, S> qp1;
     QPair<T ,S> qp2;
 
-    QPairTest(String name) {
+    public QPairTest(String name) {
 	super(name);
     }
 

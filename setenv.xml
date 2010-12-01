@@ -137,7 +137,7 @@
                 <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
             </then>
             <else>
-                <property name="qmake.binary" value="qmake"/>
+                <property name="qmake.binary" value="${qt.bindir}/qmake"/>
             </else>
         </if>
     </target>
