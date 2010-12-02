@@ -1,4 +1,10 @@
-// TODO Progress: 80%
+/**
+ * Unit Test implementations for GeneratorUtilities.java
+ * 
+ * TODO: testCreateExtendedEnum()
+ * 
+ * @author akoskm
+ */
 
 package com.trolltech.qt.tests;
 

@@ -1,4 +1,8 @@
-// TODO Progress: 100%
+/**
+ * Unit Test implementations for QPair.java
+ * 
+ * @author akoskm
+ */
 
 package com.trolltech.qt.tests;
 
