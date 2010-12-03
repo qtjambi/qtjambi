@@ -6,12 +6,8 @@
 
 package com.trolltech.qt.tests;
 
-import com.trolltech.examples.qtconcurrent.Map;
-import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QThread;
 import com.trolltech.qt.QtJambi_LibraryInitializer;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.QSignalMapper;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
