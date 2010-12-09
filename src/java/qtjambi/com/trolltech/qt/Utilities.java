@@ -63,7 +63,7 @@ public class Utilities {
 
     static {
         final Properties props = new Properties();
-        final ClassLoader loader = ClassLoader.getSystemClassLoader();
+        final ClassLoader loader = Utilities.class.getClassLoader();
         if (loader == null)
             throw new ExceptionInInitializerError("Could not get classloader!");
         final InputStream in = loader.getResourceAsStream("version.properties");

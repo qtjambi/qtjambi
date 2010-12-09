@@ -6,8 +6,6 @@
 
 package com.trolltech.qt.tests;
 
-import java.lang.reflect.*;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
