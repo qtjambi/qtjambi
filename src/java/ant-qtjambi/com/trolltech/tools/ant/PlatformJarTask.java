@@ -301,23 +301,23 @@ public class PlatformJarTask extends Task {
 
         for ( String libDir : libraryDir ) {
             for ( String name : files ) {
-            		String libdirstring;
-            		if("".equals(libDir)) {
-            			libdirstring = "lib/";
-            		} else {
-            			libdirstring = libDir + "/";
-            		}
-                    String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
-                    unpackLibs.add ( lib );
+            	String libdirstring;
+            	if("".equals(libDir)) {
+            		libdirstring = "lib/";
+            	} else {
+            		libdirstring = libDir + "/";
+            	}
+            	String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
+            	unpackLibs.add ( lib );
 
-                    try {
-                        Util.copy ( new File ( crt, name ), new File ( outdir, lib ) );
-                    } catch ( Exception e ) {
-                        e.printStackTrace();
-                        throw new BuildException ( "Failed to copy VS CRT libraries", e );
-                    }
-                }
+            	try {
+            		Util.copy ( new File ( crt, name ), new File ( outdir, lib ) );
+            	} catch ( Exception e ) {
+            		e.printStackTrace();
+            		throw new BuildException ( "Failed to copy VS CRT libraries", e );
+            	}
             }
+        }
 
             break;
 
@@ -365,9 +365,9 @@ public class PlatformJarTask extends Task {
     }
 
     /**
-        * Copy shared linking library for MinGW.
-        * TODO: This whole class could be better factored...
-        */
+     * Copy shared linking library for MinGW.
+     * TODO: This whole class could be better factored...
+     */
     private void copyAdditionalMingwFiles() {
         String dll = "libgcc_s_dw2-1.dll";
         copyRuntime ( dll );

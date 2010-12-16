@@ -287,6 +287,7 @@ public class InitializeTask extends Task {
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
         if (verbose) System.out.println(WEBKIT + ": " + result);
+        addToQtConfig("webkit");
         return result;
     }
 

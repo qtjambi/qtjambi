@@ -124,7 +124,8 @@
                 <property name="qt.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
 
-                <!-- this section can't be used on certain machines, which can't handle java.library.path natively...
+                <!-- this section can't be used on certain machines,
+                    which can't handle java.library.path natively...
                 <var name="qtjambi.java.library.path" unset="true"/>
                 <property name="qtjambi.java.library.path" value="${env.QTDIR}/bin"/>
                 -->
