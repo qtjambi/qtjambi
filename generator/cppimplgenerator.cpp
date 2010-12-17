@@ -2619,8 +2619,8 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
 
 
         writeTypeInfo(s, java_type, ForceValueType);
-        QString iteratorEndName = "__qt_" + qt_name + "_end_it";
-        QString iteratorName = "__qt_" + qt_name + "_it";
+        QString iteratorEndName = "__qt_" + QString(qt_name).replace('.', '_') + "_end_it";
+        QString iteratorName = "__qt_" + QString(qt_name).replace('.', '_') + "_it";
         s << "::const_iterator " << iteratorEndName << " = " << qt_name << ".constEnd();" << endl
           << INDENT;
         s << "for (";
