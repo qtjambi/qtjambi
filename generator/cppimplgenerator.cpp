@@ -2793,10 +2793,13 @@ void CppImplGenerator::writeJavaToQtContainer(QTextStream &s,
             s << INDENT << "for (int i=0; i<__qt__size; ++i) {" << endl;
             {
                 Indentation indent(INDENT);
-                s << INDENT << "jobject __java_element = "
-                  << "__jni_env->GetObjectArrayElement(__qt__array, i);" << endl;
-                writeJavaToQt(s, targ, "__qt_element", "__java_element", 0, -1, BoxedPrimitive);
-                s << INDENT << qt_name << " << __qt_element;" << endl;
+                s << INDENT <<
+                    "jobject __java_element = " <<
+                    "__jni_env->GetObjectArrayElement(__qt__array, i);" <<
+                    endl;
+                QString element_name = (qt_name == "__qt_element") ? "__qt_element2" : "__qt_element";
+                writeJavaToQt(s, targ, element_name, "__java_element", 0, -1, BoxedPrimitive);
+                s << INDENT << qt_name << " << " << element_name << ";" << endl;
             }
             s << INDENT << "}" << endl;
         }
