@@ -53,19 +53,17 @@
 // will fail. This is a work around which is only needed until that bug is fixed.
 // Since Qt works correctly with const FooBar<T> &, we simply change the
 // signature to that.
-QString CppGenerator::fixNormalizedSignatureForQt(const QString &signature)
-{
+QString CppGenerator::fixNormalizedSignatureForQt(const QString &signature) {
     QString ret = signature;
     if (signature.contains("<") && signature.endsWith("const&")) {
         ret = "const "
-            + signature.mid(0, signature.size() - 6)
-            + "&";
+              + signature.mid(0, signature.size() - 6)
+              + "&";
     }
     return ret;
 }
 
-void CppGenerator::writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option options)
-{
+void CppGenerator::writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option options) {
     if ((options & OriginalTypeDescription) && !type->originalTypeDescription().isEmpty()) {
         QString originalTypeDescription = type->originalTypeDescription();
 
@@ -102,12 +100,12 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const AbstractMetaType *type, O
     }
 
     if (type->instantiations().size() > 0
-        && (!type->isContainer()
-            || (static_cast<const ContainerTypeEntry *>(te))->type() != ContainerTypeEntry::StringListContainer)) {
+            && (!type->isContainer()
+                || (static_cast<const ContainerTypeEntry *>(te))->type() != ContainerTypeEntry::StringListContainer)) {
         s << '<';
         QList<AbstractMetaType *> args = type->instantiations();
         bool nested_template = false;
-        for (int i=0; i<args.size(); ++i) {
+        for (int i = 0; i < args.size(); ++i) {
             if (i != 0)
                 s << ", ";
             nested_template |= args.at(i)->isContainer();
@@ -129,13 +127,12 @@ void CppGenerator::writeTypeInfo(QTextStream &s, const AbstractMetaType *type, O
 
 
 void CppGenerator::writeFunctionArguments(QTextStream &s,
-                                          const AbstractMetaArgumentList &arguments,
-                                          Option option,
-                                          int numArguments)
-{
+        const AbstractMetaArgumentList &arguments,
+        Option option,
+        int numArguments) {
     if (numArguments < 0) numArguments = arguments.size();
 
-    for (int i=0; i<numArguments; ++i) {
+    for (int i = 0; i < numArguments; ++i) {
         if (i != 0)
             s << ", ";
         AbstractMetaArgument *arg = arguments.at(i);
@@ -169,14 +166,13 @@ void CppGenerator::writeFunctionArguments(QTextStream &s,
  */
 
 void CppGenerator::writeFunctionSignature(QTextStream &s,
-                                          const AbstractMetaFunction *java_function,
-                                          const AbstractMetaClass *implementor,
-                                          const QString &name_prefix,
-                                          Option option,
-                                          const QString &classname_prefix,
-                                          const QStringList &extra_arguments,
-                                          int numArguments)
-{
+        const AbstractMetaFunction *java_function,
+        const AbstractMetaClass *implementor,
+        const QString &name_prefix,
+        Option option,
+        const QString &classname_prefix,
+        const QStringList &extra_arguments,
+        int numArguments) {
 // ### remove the implementor
     AbstractMetaType *function_type = java_function->type();
 
@@ -221,10 +217,10 @@ void CppGenerator::writeFunctionSignature(QTextStream &s,
 
     s << "(";
 
-   writeFunctionArguments(s, java_function->arguments(), option, numArguments);
+    writeFunctionArguments(s, java_function->arguments(), option, numArguments);
 
     // The extra arguments...
-    for (int i=0; i<extra_arguments.size(); ++i) {
+    for (int i = 0; i < extra_arguments.size(); ++i) {
         if (i > 0 || java_function->arguments().size() != 0)
             s << ", ";
         s << extra_arguments.at(i);

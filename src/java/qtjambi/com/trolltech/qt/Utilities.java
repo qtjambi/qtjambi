@@ -45,12 +45,10 @@
 package com.trolltech.qt;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 // !!NOTE!! This class can have no dependencies on Qt since
 //          it is used by the NativeLibraryManager
-import com.trolltech.qt.internal.RetroTranslatorHelper;
 import com.trolltech.qt.internal.NativeLibraryManager;
 
 /**
@@ -81,41 +79,25 @@ public class Utilities {
 
     /** Enum for defining the operation system. */
     public enum OperatingSystem {
-    /** Windows */
         Windows,
-    /** MacOSX */
         MacOSX,
-    /** Linux */
         Linux
     }
 
     /** Defines whether Qt is build in Release or Debug. */
     public enum Configuration {
-    /** Release build. */
         Release,
-    /** Debug build. */
         Debug
     }
 
     /** The operating system Qt Jambi is running on. */
     public static OperatingSystem operatingSystem = decideOperatingSystem();
+
     /** The configuration of Qt Jambi. */
     public static Configuration configuration = decideConfiguration();
 
-    /** Whether Qt Jambi has implicit loading.
-        This variable is no longer in use...
-     */
-    @Deprecated
-    public static boolean implicitLoading = false;
-
     /** The library sub path. */
     public static String libSubPath = decideLibSubPath();
-
-    /** Whether Qt Jambi should prefer to load libraries from its cache.
-        This variable is no longer in use...
-     */
-    @Deprecated
-    public static boolean loadFromCache = matchProperty("com.trolltech.qt.load-from-cache", "true");
 
     /**
      * Returns true if the system property name contains any of the specified
@@ -183,7 +165,8 @@ public class Utilities {
     }
 
 
-    private static String stripLibraryName(String lib) {
+    //not used
+    /*private static String stripLibraryName(String lib) {
         // Strip away "lib" prefix
         if (operatingSystem != OperatingSystem.Windows)
             lib = lib.substring(3);
@@ -204,7 +187,7 @@ public class Utilities {
 
         // Strip away the library postfix...
         return lib.substring(0, dot);
-    }
+    }*/
 
     public static String unpackPlugins() {
         return null;
