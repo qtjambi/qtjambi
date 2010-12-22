@@ -15,7 +15,7 @@ SetCompressor /FINAL /SOLID lzma
 !define comp mingw
 InstallDir C:\qtjambi-${v} ; The default installation directory
 Name "Qt Jambi Installer" ; The name of the installer
-OutFile "setup-qt-jambi-${v}-win32.exe"; The file to write
+OutFile "setup-qt-jambi-${v}-win32-beta2.exe"; The file to write
 BrandingText /TRIMLEFT "Qtjambi-${v}"
 RequestExecutionLevel admin
 
@@ -161,8 +161,9 @@ File ..\LICENSE.LGPL
 File ..\README.txt
 ;File ..\readme.html ; TODO: Fails if no such file is there
 
-; Qt files
+; Qt files + Juic
 SetOutPath $INSTDIR\bin
+File ..\..\bin\juic.exe
 File ${QtDir}\bin\mingwm10.dll
 File ${QtDir}\bin\libgcc_s_dw2-1.dll
 
@@ -203,6 +204,7 @@ Delete $INSTDIR\bin\linguist.exe
 Delete $INSTDIR\bin\lrelease.exe
 Delete $INSTDIR\bin\lupdate.exe
 Delete $INSTDIR\bin\rcc.exe
+Delete $INSTDIR\bin\juic.exe
 
 Delete $INSTDIR\bin\QtCore4.dll
 Delete $INSTDIR\bin\QtDesigner4.dll
@@ -236,10 +238,10 @@ Delete $INSTDIR\README.txt
 RMDir  $INSTDIR
 
 ; Removing shortcuts
-Delete $SMPROGRAMS\Qtjambi\uninstall.lnk
 Delete "$SMPROGRAMS\Qtjambi\Qtjambi Demo.lnk"
-Delete $SMPROGRAMS\Qtjambi\Qtjambi\Designer.lnk
-RMDir  $SMPROGRAMS\Qtjambi
+Delete "$SMPROGRAMS\Qtjambi\Designer.lnk"
+Delete "$SMPROGRAMS\Qtjambi\Uninstall.lnk"
+RMDir "$SMPROGRAMS\Qtjambi"
 SectionEnd
 
 ; Function for testing installed java environment
