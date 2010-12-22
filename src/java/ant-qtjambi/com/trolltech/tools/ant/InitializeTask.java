@@ -135,10 +135,8 @@ public class InitializeTask extends Task {
         props.setNewProperty((String) null, SQLITE, decideSqlite());
 
         String webkit = decideWebkit();
-        if ("true".equals(webkit) && "true".equals(phonon)) {
+        if ("true".equals(webkit) && "true".equals(phonon))
             props.setNewProperty((String) null, WEBKIT, webkit);
-			addToQtConfig("webkit");
-		}
 
         String script = decideScript();
         if ("true".equals(script))
