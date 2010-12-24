@@ -183,7 +183,7 @@ extern "C" QTJAMBI_EXPORT void qtjambi_set_vm_location_override(const QString &l
 
 // To avoid binary incompatibilities, we keep the qtjambi_exception_check() function but
 // override it with a macro.
-QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env, char *fileName, int lineNumber);
+QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env, const char *fileName, int lineNumber);
 QTJAMBI_EXPORT bool qtjambi_exception_check(JNIEnv *env);
 #define qtjambi_exception_check(ENV) qtjambi_exception_check(ENV, __FILE__, __LINE__)
 
@@ -285,8 +285,8 @@ inline jobjectArray qtjambi_from_interface_array(JNIEnv *env, T *array,
 }
 
 QTJAMBI_EXPORT
-jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className,
-                            char *packageName, const char *lookupName, bool makeCopyOfValueTypes);
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
+                            const char *packageName, const char *lookupName, bool makeCopyOfValueTypes);
 
 QTJAMBI_EXPORT
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
