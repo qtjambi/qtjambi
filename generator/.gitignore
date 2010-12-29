@@ -1,0 +1,7 @@
+generator
+Makefile
+Makefile.Debug
+Makefile.Release
+release
+mjb*.log
+.preprocessed.tmp
