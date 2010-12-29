@@ -138,18 +138,18 @@
                 <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
             </then>
             <else>
-		<if>
-			<and>
-				<isset property="qt.bindir"/>
-				<available file="${qt.bindir}/qmake"/>
-			</and>
-			<then>
-				<property name="qmake.binary" value="${qt.bindir}/qmake"/>
-			</then>
-			<else>
-				<property name="qmake.binary" value="qmake"/>
-			</else>
-		</if>
+                <if>
+                    <and>
+                        <isset property="qt.bindir"/>
+                        <available file="${qt.bindir}/qmake"/>
+                    </and>
+                    <then>
+                        <property name="qmake.binary" value="${qt.bindir}/qmake"/>
+                    </then>
+                    <else>
+                        <property name="qmake.binary" value="qmake"/>
+                    </else>
+                </if>
             </else>
         </if>
     </target>
