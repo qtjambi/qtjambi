@@ -170,8 +170,6 @@ public class PlatformJarTask extends Task {
         if ( rpath ) {
             if ( OSInfo.os() == OSInfo.OS.MacOS ) {
                 processOSXInstallName();
-            } else if ( OSInfo.os() == OSInfo.OS.Linux ) {
-                processRPath();
             }
         }
 
@@ -301,23 +299,23 @@ public class PlatformJarTask extends Task {
 
         for ( String libDir : libraryDir ) {
             for ( String name : files ) {
-            		String libdirstring;
-            		if("".equals(libDir)) {
-            			libdirstring = "lib/";
-            		} else {
-            			libdirstring = libDir + "/";
-            		}
-                    String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
-                    unpackLibs.add ( lib );
+            	String libdirstring;
+            	if("".equals(libDir)) {
+            		libdirstring = "lib/";
+            	} else {
+            		libdirstring = libDir + "/";
+            	}
+            	String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
+            	unpackLibs.add ( lib );
 
-                    try {
-                        Util.copy ( new File ( crt, name ), new File ( outdir, lib ) );
-                    } catch ( Exception e ) {
-                        e.printStackTrace();
-                        throw new BuildException ( "Failed to copy VS CRT libraries", e );
-                    }
-                }
+            	try {
+            		Util.copy ( new File ( crt, name ), new File ( outdir, lib ) );
+            	} catch ( Exception e ) {
+            		e.printStackTrace();
+            		throw new BuildException ( "Failed to copy VS CRT libraries", e );
+            	}
             }
+        }
 
             break;
 
@@ -365,9 +363,9 @@ public class PlatformJarTask extends Task {
     }
 
     /**
-        * Copy shared linking library for MinGW.
-        * TODO: This whole class could be better factored...
-        */
+     * Copy shared linking library for MinGW.
+     * TODO: This whole class could be better factored...
+     */
     private void copyAdditionalMingwFiles() {
         String dll = "libgcc_s_dw2-1.dll";
         copyRuntime ( dll );
@@ -407,45 +405,6 @@ public class PlatformJarTask extends Task {
         System.out.println();
 
     }
-
-    private void processRPath() {
-        System.out.println ( "Processing RPATH..." );
-        String cmd[] = new String[] {
-            "chrpath",
-            "--replace",
-            null,               // New RPATH
-            null                // Binary to update...
-        };
-
-        //String jambilibdir = props.getProperty ( ( String ) null, InitializeTask.JAMBILIBDIR ).toString();
-
-        try {
-        for ( LibraryEntry lib : libs ) {
-                System.out.println ( " - updating: " + lib.getName() );
-
-                String subdir = lib.getRootpath().toString();
-                //int dotdotCount = subdir.split ( "/" ).length;
-                StringBuilder builder = createDotDots ( subdir );
-
-                builder.insert ( 0, "$ORIGIN/" );
-                builder.append ( "lib" );
-
-                cmd[2] = builder.toString();
-                //cmd[3] = lib.relativePath();
-                cmd[3] = lib.getName();
-
-                Exec.exec ( cmd, outdir, true );
-            }
-        } catch ( Exception e ) {
-            System.out.println ( " - " + e.getMessage() );
-            System.out.println ( "\n********** Warning **********" );
-            System.out.println ( "Without rpaths, you run the risk that Qt applications and plugins" );
-            System.out.println ( "load incorrect Qt libraries (such as /usr/lib/libQtCore.so), which" );
-            System.out.println ( "may result in binary incompatility and crashes." );
-            System.out.println ( "*****************************\n" );
-        }
-    }
-
 
     private void processOSXInstallName() {
         System.out.println ( "Processing Mac OS X install_name..." );

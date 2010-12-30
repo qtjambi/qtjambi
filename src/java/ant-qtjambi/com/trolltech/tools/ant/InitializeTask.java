@@ -267,7 +267,7 @@ public class InitializeTask extends Task {
     private String decideMultimedia() {
         String result = String.valueOf(doesQtLibExist("QtMultimedia", 4));
         if (verbose) System.out.println(MULTIMEDIA + ": " + result);
-        addToQtConfig("multimedia");
+        if("true".equals(result)) addToQtConfig("multimedia");
         return result;
     }
 
@@ -287,6 +287,7 @@ public class InitializeTask extends Task {
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
         if (verbose) System.out.println(WEBKIT + ": " + result);
+        if("true".equals(result)) addToQtConfig("webkit");
         return result;
     }
 

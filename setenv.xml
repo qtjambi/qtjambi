@@ -124,7 +124,8 @@
                 <property name="qt.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
 
-                <!-- this section can't be used on certain machines, which can't handle java.library.path natively...
+                <!-- this section can't be used on certain machines,
+                    which can't handle java.library.path natively...
                 <var name="qtjambi.java.library.path" unset="true"/>
                 <property name="qtjambi.java.library.path" value="${env.QTDIR}/bin"/>
                 -->
@@ -137,7 +138,18 @@
                 <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
             </then>
             <else>
-                <property name="qmake.binary" value="qmake"/>
+                <if>
+                    <and>
+                        <isset property="qt.bindir"/>
+                        <available file="${qt.bindir}/qmake"/>
+                    </and>
+                    <then>
+                        <property name="qmake.binary" value="${qt.bindir}/qmake"/>
+                    </then>
+                    <else>
+                        <property name="qmake.binary" value="qmake"/>
+                    </else>
+                </if>
             </else>
         </if>
     </target>

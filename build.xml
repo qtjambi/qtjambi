@@ -12,6 +12,7 @@
     properties to Jambi, for example in form of file, or better, in qtjambi-deploy.
     This can include stuff like debug flag and version.
 -->
+
 <project default="help" basedir="." name="qtjambi.main">
 
     <property file="build.properties"/>
@@ -40,7 +41,19 @@
         <qtjambi-initialize> task to be set at all.
     -->
 
-    <target name="init.taskdef" depends="setenv, jar.ant-qtjambi">
+    <target name="log">
+        <tstamp>
+            <format property="timestamp" pattern="yyyy-MM-dd_HH-mm-ss"/>
+        </tstamp>
+        <property name="build.log.dir" location="${basedir}/buildlogs"/>
+        <mkdir dir="${build.log.dir}"/>
+        <property name="build.log.filename" value="build_${timestamp}.log"/>
+		<property name="build.log.loglevel" value="info" />
+        <record name="${build.log.dir}/${build.log.filename}" loglevel="${build.log.loglevel}" append="false"/>
+        <echo message="Build logged to ${build.log.filename}"/>
+    </target>
+
+    <target name="init.taskdef" depends="log, setenv, jar.ant-qtjambi">
         <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
             <classpath>
                 <pathelement path="${jardir}/qtjambi-util.jar"/>
@@ -49,7 +62,7 @@
         </taskdef>
     </target>
 
-    <target name="init" depends="init.taskdef"
+    <target name="init" depends="log, init.taskdef"
         description="Initializes the Qt Jambi build environment." >
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
         <!--<copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>-->
@@ -66,12 +79,12 @@
         Tools building
     -->
 
-    <target name="tools.juic.qmake" depends="init">
+    <target name="tools.juic.qmake" depends="log, init">
         <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"
                 qmakebinary="${qmake.binary}"/>
     </target>
 
-    <target name="tools.juic.make" depends="tools.juic.qmake">
+    <target name="tools.juic.make" depends="log, tools.juic.qmake">
         <make dir="juic"/>
     </target>
 
@@ -93,7 +106,7 @@
     -->
 
     <!-- TODO: move to better place -->
-    <target name="qtjambi.source" depends="generator.run">
+    <target name="qtjambi.source" depends="log, generator.run">
         <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="java/src/qtjambi">
         </zip>
         <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${java.generated.srcdir}/qtjambi" update="true">
@@ -105,22 +118,22 @@
         Move them to their real location or something
     -->
 
-    <target name="library.java.bundle" depends="jar.qtjambi">
+    <target name="library.java.bundle" depends="log, jar.qtjambi">
         <copy file="${jardir}/qtjambi.jar"
             tofile="qtjambi-${qtjambi.version}.jar"/>
     </target>
 
-    <target name="library.designer.bundle" depends="jar.qtjambi-designer">
+    <target name="library.designer.bundle" depends="log, jar.qtjambi-designer">
         <copy file="${jardir}/qtjambi-designer.jar"
             tofile="qtjambi-designer-${qtjambi.version}.jar"/>
     </target>
 
-    <target name="examples.bundle" depends="jar.qtjambi-examples">
+    <target name="examples.bundle" depends="log, jar.qtjambi-examples">
         <copy file="${jardir}/qtjambi-examples.jar"
             tofile="qtjambi-examples-${qtjambi.version}.jar"/>
     </target>
 
-    <target name="help" description="Provides detailed help.">
+    <target name="help" description="log, Provides detailed help.">
         <echo>
 Welcome to Qt Jambi help task.
 
@@ -144,31 +157,31 @@ NOTE: for now ant clean does not work, please use git clean -fdx instead.
         provides consistent and easy to use interface for humans to use.
     -->
 
-    <target name="generator.make" depends="init, tools.generator.make"
+    <target name="generator.make" depends="log, init, tools.generator.make"
         description="Compiles the generator."/>
 
-    <target name="generator" depends="generator.make, generator.run"
+    <target name="generator" depends="log, generator.make, generator.run"
         description="Compiles and runs the Qt Jambi Generator."/>
 
-    <target name="library.native" depends="library.native.bundle"
+    <target name="library.native" depends="log, library.native.bundle"
         description="Compiles and bundles the Qt Jambi native libraries."/>
 
-    <target name="library.java" depends="library.java.bundle"
+    <target name="library.java" depends="log, library.java.bundle"
         description="Compiles and bundles the Qt Jambi java libraries."/>
 
-    <target name="library.designer" depends="library.designer.bundle"
+    <target name="library.designer" depends="log, library.designer.bundle"
         description="Compiles and bundles the Qt Jambi designer libraries."/>
 
-    <target name="library" depends="library.native, library.java, library.designer"
+    <target name="library" depends="log, library.native, library.java, library.designer"
         description="Compiles and bundles the Qt Jambi libraries.">
         <!--<copy file="${jardir}/qtjambi-util.jar"
             tofile="qtjambi-util-${qtjambi.version}.jar"/>-->
     </target>
 
-    <target name="examples" depends="examples.bundle"
+    <target name="examples" depends="log, examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>
 
-    <target name="all" depends="generator, library, examples"
+    <target name="all" depends="log, generator, library, examples"
         description="Generates, builds and bundles the Qt Jambi libraries."/>
 
 </project>
