@@ -117,6 +117,8 @@ public class Utilities {
     }
 
     public static void loadSystemLibraries() {
+        loadLibrary("libgcc_s_dw2-1");
+	loadLibrary("mingwm10");
     }
 
     public static void loadQtLibrary(String library) {
