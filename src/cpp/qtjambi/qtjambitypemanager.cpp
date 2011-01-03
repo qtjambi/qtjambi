@@ -639,8 +639,8 @@ jvalue QtJambiTypeManager::convertToPrimitive(JNIEnv *env, jobject javaRef,
     jvalue returned;
     returned.l = 0;
 
-    char *methodName;
-    char *signature;
+    const char *methodName;
+    const char *signature;
     switch (typeId) {
     case Integer:
         methodName = "intValue";

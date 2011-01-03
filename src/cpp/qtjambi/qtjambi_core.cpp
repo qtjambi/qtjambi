@@ -165,7 +165,7 @@ void jobjectwrapper_load(QDataStream &stream, void *_jObjectWrapper)
   the stack trace of any exception before clearing the exception state
   in the virtual machine.
 */
-bool qtjambi_exception_check(JNIEnv *env, char *fileName, int lineNumber)
+bool qtjambi_exception_check(JNIEnv *env, const char *fileName, int lineNumber)
 {
     if (env->ExceptionCheck()) {
         if (fileName != 0)
@@ -423,11 +423,11 @@ void *qtjambi_to_interface(JNIEnv *env,
     return reinterpret_cast<void *>(ret);
 }
 
-jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, char *className,
-                            char *packageName, const char *lookupName, bool makeCopyOfValueTypes)
+jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
+                            const char *packageName, const char *lookupName, bool makeCopyOfValueTypes)
 {
-    char *class_name = className;
-    char *package = packageName;
+    char *class_name = const_cast<char*>(className);
+    char *package = const_cast<char*>(packageName);
     if (qt_object != 0)
         qtjambi_resolve_polymorphic_id(lookupName, qt_object, &class_name, &package);
 
