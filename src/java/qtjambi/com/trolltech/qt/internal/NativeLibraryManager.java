@@ -621,32 +621,6 @@ public class NativeLibraryManager {
         throw new RuntimeException("Unreachable statement");
     }
 
-
-    //doesn't seem to be used so commented out
-    /*private static String stripLibraryName(String lib) {
-        // Strip away "lib" prefix
-        if (Utilities.operatingSystem != Utilities.OperatingSystem.Windows)
-            lib = lib.substring(3);
-
-        int dot = -1;
-
-        switch (Utilities.operatingSystem) {
-        case Windows:
-            dot = lib.indexOf(".dll");
-            break;
-        case Linux:
-            dot = lib.indexOf(".so");
-            break;
-        case MacOSX:
-            dot = lib.indexOf("."); // makes a fair attemt at matching /.[0-9]*.(jni)|(dy)lib/
-            break;
-        }
-
-        // Strip away the library postfix...
-        return lib.substring(0, dot);
-    }*/
-
-
     /**
      * Copies the data in the inputstream into the output stream.
      * @param in The source.
@@ -691,9 +665,6 @@ public class NativeLibraryManager {
 
         for (String s : pluginPaths())
             System.out.println("PluginPath: " + s);
-
-//         System.out.println(reporter.toString());
-
 
     }
 
