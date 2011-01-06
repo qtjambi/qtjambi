@@ -104,20 +104,20 @@
     <value-type name="QWebPluginFactory::Plugin" />
     <value-type name="QWebPluginFactory::MimeType" />
     <value-type name="QWebSecurityOrigin">
-      <custom-constructor>  
-	return new QWebSecurityOrigin(*copy);
-      </custom-constructor>
-      <custom-destructor>
-	delete copy;
-      </custom-destructor>
-    </value-type>
-    <value-type name="QWebDatabase">
-      <custom-constructor>  
-	return new QWebDatabase(*copy);
-      </custom-constructor>
-      <custom-destructor>
-	delete copy;
-      </custom-destructor>
+        <custom-constructor>  
+            return new QWebSecurityOrigin(*copy);
+        </custom-constructor>
+        <custom-destructor>
+            delete copy;
+        </custom-destructor>
+        </value-type>
+        <value-type name="QWebDatabase">
+        <custom-constructor>  
+            return new QWebDatabase(*copy);
+        </custom-constructor>
+        <custom-destructor>
+            delete copy;
+        </custom-destructor>
     </value-type>
     <object-type name="QWebPluginFactory::ExtensionOption" />
     <object-type name="QWebPluginFactory::ExtensionReturn" />
@@ -135,8 +135,8 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QWebPluginFactory_MimeType' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QWebElement' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
-    <!-- Needed to avoid warnings on compilers that don't support webkit -->
-    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::Plugin' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />                            
+    <!-- for webkitless builds -->
+    <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::Plugin' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::ExtensionReturn' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'QWebPluginFactory::MimeType' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.webkit.QWebPage' for enum 'Extension' is not declared" />

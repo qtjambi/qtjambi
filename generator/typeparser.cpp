@@ -45,7 +45,6 @@
 #include "typeparser.h"
 
 #include <qdebug.h>
-#include <QStack>
 
 class Scanner {
     public:
@@ -100,26 +99,26 @@ Scanner::Token Scanner::nextToken() {
 
         if (tok == NoToken) {
             switch (c.toLatin1()) {
-            case '*': tok = StarToken; break;
-            case '&': tok = AmpersandToken; break;
-            case '<': tok = LessThanToken; break;
-            case '>': tok = GreaterThanToken; break;
-            case ',': tok = CommaToken; break;
-            case '(': tok = OpenParenToken; break;
-            case ')': tok = CloseParenToken; break;
-            case '[': tok = SquareBegin; break;
-            case ']' : tok = SquareEnd; break;
-            case ':':
-                tok = ColonToken;
-                Q_ASSERT(m_pos + 1 < m_length);
-                ++m_pos;
-                break;
-            default:
-                if (c.isLetterOrNumber() || c == '_')
-                    tok = Identifier;
-                else
-                    qFatal("Unrecognized character in lexer: %c", c.toLatin1());
-                break;
+                case '*': tok = StarToken; break;
+                case '&': tok = AmpersandToken; break;
+                case '<': tok = LessThanToken; break;
+                case '>': tok = GreaterThanToken; break;
+                case ',': tok = CommaToken; break;
+                case '(': tok = OpenParenToken; break;
+                case ')': tok = CloseParenToken; break;
+                case '[': tok = SquareBegin; break;
+                case ']' : tok = SquareEnd; break;
+                case ':':
+                    tok = ColonToken;
+                    Q_ASSERT(m_pos + 1 < m_length);
+                    ++m_pos;
+                    break;
+                default:
+                    if (c.isLetterOrNumber() || c == '_')
+                        tok = Identifier;
+                    else
+                        qFatal("Unrecognized character in lexer: %c", c.toLatin1());
+                    break;
             }
         }
 
@@ -163,91 +162,91 @@ TypeParser::Info TypeParser::parse(const QString &str) {
     Scanner::Token tok = scanner.nextToken();
     while (tok != Scanner::NoToken) {
 
-//         switch (tok) {
-//         case Scanner::StarToken: printf(" - *\n"); break;
-//         case Scanner::AmpersandToken: printf(" - &\n"); break;
-//         case Scanner::LessThanToken: printf(" - <\n"); break;
-//         case Scanner::GreaterThanToken: printf(" - >\n"); break;
-//         case Scanner::ColonToken: printf(" - ::\n"); break;
-//         case Scanner::CommaToken: printf(" - ,\n"); break;
-//         case Scanner::ConstToken: printf(" - const\n"); break;
-//         case Scanner::SquareBegin: printf(" - [\n"); break;
-//         case Scanner::SquareEnd: printf(" - ]\n"); break;
-//         case Scanner::Identifier: printf(" - '%s'\n", qPrintable(scanner.identifier())); break;
-//         default:
-//             break;
-//         }
-
         switch (tok) {
 
-        case Scanner::StarToken:
-            ++stack.top()->indirections;
-            break;
+            case Scanner::StarToken:
+                ++stack.top()->indirections;
+                break;
 
-        case Scanner::AmpersandToken:
-            stack.top()->is_reference = true;
-            break;
+            case Scanner::AmpersandToken:
+                stack.top()->is_reference = true;
+                break;
 
-        case Scanner::LessThanToken:
-            stack.top()->template_instantiations << Info();
-            stack.push(&stack.top()->template_instantiations.last());
-            break;
+            case Scanner::LessThanToken:
+                stack.top()->template_instantiations << Info();
+                stack.push(&stack.top()->template_instantiations.last());
+                break;
 
-        case Scanner::CommaToken:
-            stack.pop();
-            stack.top()->template_instantiations << Info();
-            stack.push(&stack.top()->template_instantiations.last());
-            break;
+            case Scanner::CommaToken:
+                stack.pop();
+                stack.top()->template_instantiations << Info();
+                stack.push(&stack.top()->template_instantiations.last());
+                break;
 
-        case Scanner::GreaterThanToken:
-            stack.pop();
-            break;
+            case Scanner::GreaterThanToken:
+                stack.pop();
+                break;
 
-        case Scanner::ColonToken:
-            colon_prefix = true;
-            break;
+            case Scanner::ColonToken:
+                colon_prefix = true;
+                break;
 
-        case Scanner::ConstToken:
-            stack.top()->is_constant = true;
-            break;
+            case Scanner::ConstToken:
+                stack.top()->is_constant = true;
+                break;
 
-        case Scanner::OpenParenToken: // function pointers not supported
-        case Scanner::CloseParenToken: {
-            Info i;
-            i.is_busted = true;
-            return i;
-        }
-
-
-        case Scanner::Identifier:
-            if (in_array) {
-                array = scanner.identifier();
-            } else if (colon_prefix || stack.top()->qualified_name.isEmpty()) {
-                stack.top()->qualified_name << scanner.identifier();
-                colon_prefix = false;
-            } else {
-                stack.top()->qualified_name.last().append(" " + scanner.identifier());
+            case Scanner::OpenParenToken: // function pointers not supported
+            case Scanner::CloseParenToken: {
+                Info i;
+                i.is_busted = true;
+                return i;
             }
-            break;
 
-        case Scanner::SquareBegin:
-            in_array = true;
-            break;
+            case Scanner::Identifier:
+                parseIdentifier(scanner, stack, array, in_array, colon_prefix);
+                break;
 
-        case Scanner::SquareEnd:
-            in_array = false;
-            stack.top()->arrays += array;
-            break;
+            case Scanner::SquareBegin:
+                in_array = true;
+                break;
 
+            case Scanner::SquareEnd:
+                in_array = false;
+                stack.top()->arrays += array;
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
         tok = scanner.nextToken();
     }
 
     return info;
+}
+
+void TypeParser::parseIdentifier(Scanner &scanner, QStack<Info *> &stack, QString &array, bool in_array, bool &colon_prefix) {
+    if (in_array) {
+        array = scanner.identifier();
+    } else if (colon_prefix || stack.top()->qualified_name.isEmpty()) {
+        stack.top()->qualified_name << scanner.identifier();
+        colon_prefix = false;
+    } else {
+        //stack.top()->qualified_name.last().append(" " + scanner.identifier());
+        QString identifier = scanner.identifier();
+        QString &name = stack.top()->qualified_name.last();
+
+        bool set = false;
+        if (identifier != "int") set = true;
+
+        // TODO: this handles only one case
+        if(name != "short" && !name.endsWith(" short")
+                && name != "long" && !name.endsWith(" long")) {
+            set = true;
+        }
+
+        if(set) name.append(" " + identifier);
+    }
 }
 
 QString TypeParser::Info::instantiationName() const {
