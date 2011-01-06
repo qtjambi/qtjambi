@@ -1,3 +1,5 @@
+Note: moved to our website, http://qt-jambi.org/material/binding-technology/
+
 Chapter 3. BINDING TECHNOLOGY
 
 The Qt/Java bindings layer is a static layer of code which transmits

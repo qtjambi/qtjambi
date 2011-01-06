@@ -1,3 +1,5 @@
+Note: moved to our website, http://qt-jambi.org/rationale
+
 1. Rationale
 
 Qt/Java is a binding of Qt, the popular cross platform C++ toolkit, to

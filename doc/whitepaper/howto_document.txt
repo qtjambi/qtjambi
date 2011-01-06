@@ -1,3 +1,4 @@
+Note: moved to our website, http://qt-jambi.org/material/howto-document
 
 The documentation for the Qt/Java technology is not ready at the time
 of this release, but the Qt/Java API is almost identical to the Qt/C++

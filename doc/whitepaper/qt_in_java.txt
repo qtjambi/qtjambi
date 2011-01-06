@@ -1,3 +1,5 @@
+Note: moved to our website, http://qt-jambi.org/material/qt-in-java
+
 - Rationale
   * why'd we do it
   * What we offer
