@@ -27,11 +27,11 @@
         <reject-enum-value name="DefaultHistoryVersion" />
     </enum-type>-->
     <enum-type name="QWebPage::ErrorDomain" />
-    
+
     <object-type name="QGraphicsWebView" />    
     <value-type name="QWebElementCollection" />
     <object-type name="QWebInspector" />
-    
+
     <object-type name="QWebView">
         <modify-function signature="setPage(QWebPage*)">
             <modify-argument index="1">
@@ -110,8 +110,8 @@
         <custom-destructor>
             delete copy;
         </custom-destructor>
-        </value-type>
-        <value-type name="QWebDatabase">
+    </value-type>
+    <value-type name="QWebDatabase">
         <custom-constructor>  
             return new QWebDatabase(*copy);
         </custom-constructor>
