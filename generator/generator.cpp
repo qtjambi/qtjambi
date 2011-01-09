@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -50,15 +50,13 @@
 #include <QFile>
 #include <QFileInfo>
 
-Generator::Generator()
-{
+Generator::Generator() {
     m_num_generated = 0;
     m_num_generated_written = 0;
     m_out_dir = ".";
 }
 
-void Generator::generate()
-{
+void Generator::generate() {
     if (m_classes.size() == 0) {
         ReportHandler::warning(QString("%1: no java classes, skipping")
                                .arg(metaObject()->className()));
@@ -66,7 +64,7 @@ void Generator::generate()
     }
 
 
-    foreach (AbstractMetaClass *cls, m_classes) {
+    foreach(AbstractMetaClass *cls, m_classes) {
         if (!shouldGenerate(cls))
             continue;
 
@@ -76,21 +74,20 @@ void Generator::generate()
         FileOut fileOut(outputDirectory() + "/" + subDirectoryForClass(cls) + "/" + fileName);
         write(fileOut.stream, cls);
 
-        if( fileOut.done() )
+        if (fileOut.done())
             ++m_num_generated_written;
         ++m_num_generated;
     }
 }
 
 
-void Generator::printClasses()
-{
+void Generator::printClasses() {
     QTextStream s(stdout);
 
     AbstractMetaClassList classes = m_classes;
     qSort(classes);
 
-    foreach (AbstractMetaClass *cls, classes) {
+    foreach(AbstractMetaClass *cls, classes) {
         if (!shouldGenerate(cls))
             continue;
         write(s, cls);
@@ -98,8 +95,7 @@ void Generator::printClasses()
     }
 }
 
-void Generator::verifyDirectoryFor(const QFile &file)
-{
+void Generator::verifyDirectoryFor(const QFile &file) {
     QDir dir = QFileInfo(file).dir();
     if (!dir.exists()) {
         if (!dir.mkpath(dir.absolutePath()))
@@ -108,32 +104,28 @@ void Generator::verifyDirectoryFor(const QFile &file)
     }
 }
 
-QString Generator::subDirectoryForClass(const AbstractMetaClass *) const
-{
+QString Generator::subDirectoryForClass(const AbstractMetaClass *) const {
     Q_ASSERT(false);
     return QString();
 }
 
-QString Generator::fileNameForClass(const AbstractMetaClass *) const
-{
+QString Generator::fileNameForClass(const AbstractMetaClass *) const {
     Q_ASSERT(false);
     return QString();
 }
 
-void Generator::write(QTextStream &, const AbstractMetaClass *)
-{
+void Generator::write(QTextStream &, const AbstractMetaClass *) {
     Q_ASSERT(false);
 }
 
-bool Generator::hasDefaultConstructor(const AbstractMetaType *type)
-{
+bool Generator::hasDefaultConstructor(const AbstractMetaType *type) {
     QString full_name = type->typeEntry()->qualifiedTargetLangName();
     QString class_name = type->typeEntry()->targetLangName();
 
-    foreach (const AbstractMetaClass *java_class, m_classes) {
+    foreach(const AbstractMetaClass *java_class, m_classes) {
         if (java_class->typeEntry()->qualifiedTargetLangName() == full_name) {
             AbstractMetaFunctionList functions = java_class->functions();
-            foreach (const AbstractMetaFunction *function, functions) {
+            foreach(const AbstractMetaFunction *function, functions) {
                 if (function->arguments().size() == 0 && function->name() == class_name)
                     return true;
             }
