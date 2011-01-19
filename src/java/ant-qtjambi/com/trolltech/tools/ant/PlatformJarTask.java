@@ -367,8 +367,8 @@ public class PlatformJarTask extends Task {
      * TODO: This whole class could be better factored...
      */
     private void copyAdditionalMingwFiles() {
-        String dll = "libgcc_s_dw2-1.dll";
-        copyRuntime ( dll );
+        copyRuntime ( "libgcc_s_dw2-1.dll" );
+        copyRuntime ( "libstdc++-6.dll" );
     }
 
     private void copyRuntime ( String name ) {
