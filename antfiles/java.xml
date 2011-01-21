@@ -20,10 +20,6 @@
         TODO: refactor. Names are horrible, atleast
     -->
 
-
-    <fileset id="java.src.ant-qtjambi" dir="${java.srcdir}/ant-qtjambi"
-        includes="**/*.java"/>
-
     <target name="jar.ant-qtjambi" depends="jar.qtjambi-util"
         description="Creates a .jar file containing all the Qt Jambi ant tasks.">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
@@ -33,18 +29,12 @@
         </ant>
     </target>
 
-    <fileset id="java.src.qtjambi-util" dir="${java.srcdir}/qtjambi-util"
-        includes="**/*.java"/>
-
     <target name="jar.qtjambi-util">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-util"/>
             <property name="sourcedirs" value="${java.srcdir}/qtjambi-util"/>
         </ant>
     </target>
-
-    <fileset id="java.src.qtjambi" dir="${java.srcdir}/qtjambi"
-        includes="**/*.java"/>
 
     <target name="jar.qtjambi"
         depends="init, jar.qtjambi-util">
@@ -68,10 +58,6 @@
         </ant>
     </target>
 
-    <fileset id="java.src.qtjambi-designer"
-        dir="${java.srcdir}/qtjambi-designer"
-        includes="**/*.java"/>
-
     <target name="jar.qtjambi-designer"
         depends="init, jar.qtjambi">
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
@@ -83,21 +69,21 @@
     <fileset id="java.src.qtjambi-examples"
         dir="${java.srcdir}/qtjambi-examples">
         <include name="**/*.java"/>
-        <exclude name="com/trolltech/demos/phonon/*.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/phonon/*.java"
             unless="qtjambi.phonon"/>
         <exclude name="com/trolltech/examples/phonon/*.java"
             unless="qtjambi.phonon"/>
-        <exclude name="com/trolltech/demos/xmlpatterns/*.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/xmlpatterns/*.java"
             unless="qtjambi.xmlpatterns"/>
-        <exclude name="com/trolltech/examples/xmlpatterns/*.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/xmlpatterns/*.java"
             unless="qtjambi.xmlpatterns"/>
-        <exclude name="com/trolltech/demos/webkit/*.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/webkit/*.java"
             unless="qtjambi.webkit"/>
-        <exclude name="com/trolltech/examples/webkit/*.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/webkit/*.java"
             unless="qtjambi.webkit"/>
-        <exclude name="com/trolltech/examples/opengl/*.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/opengl/*.java"
             unless="qtjambi.opengl"/>
-        <exclude name="com/trolltech/demos/opengl/*.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/opengl/*.java"
             unless="qtjambi.opengl"/>
     </fileset>
 

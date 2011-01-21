@@ -50,15 +50,6 @@
     </target>
 
     <!--
-        prepare-sources: copy the already existing sources to the generated
-        sources directory, if it exists - otherwise, the directory is created by
-        this task.
-
-        This target will always be called via the dependency chain, so we make
-        it depend on the <check> target above.
-    -->
-
-    <!--
         compile: create the output directory and generate the class files into
         this directory.
 
@@ -74,7 +65,7 @@
                 fork="true" memorymaximumsize="1024m" verbose="false"
                 includeantruntime="true"
                 srcdir="${sourcedirs}"
-            destdir="${java.outdir}/${module}">
+                destdir="${java.outdir}/${module}">
                 <!--<src path="${java.srcdir}/${module}"/>-->
             <classpath refid="java.compile.classpath"/>
         </javac>
