@@ -120,6 +120,7 @@ public class Utilities {
         String os = System.getProperty("os.name");
         if(os.startsWith("Win")) {
             loadLibrary("libgcc_s_dw2-1");
+            loadLibrary("libstdc++-6");
             loadLibrary("mingwm10");
         }
     }
