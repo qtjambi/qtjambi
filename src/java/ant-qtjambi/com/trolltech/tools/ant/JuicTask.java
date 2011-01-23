@@ -59,6 +59,8 @@ public class JuicTask extends MatchingTask {
     private String trFunction = "";
     private String classNamePrefix = "";
     private boolean alwaysUpdate = false;
+    private String dir = ".";
+    private String qtLibDirectory = null;
 
     public String executableName() {
         switch (OSInfo.os()) {
@@ -71,33 +73,43 @@ public class JuicTask extends MatchingTask {
     public void execute() throws BuildException {
         System.out.println(msg);
 
-        String arguments = "";
-        if (!outputDir.equals(""))
-            arguments += " -d " + Util.escape(outputDir);
-        if (!trFunction.equals(""))
-            arguments += " -tr " + Util.escape(trFunction);
-        if (!classNamePrefix.equals(""))
-            arguments += " -pf" + Util.escape(classNamePrefix);
-        if (alwaysUpdate)
-            arguments += " -a ";
-
-        String commandPart = Util.escape(Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath()) + arguments;
+        List<String> commandList = new ArrayList<String>();
+        commandList.add(Util.escape(Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath()));
+        if (!outputDir.equals("")) {
+            commandList.add("-d");
+            commandList.add(Util.escape(outputDir));
+        }
+        if (!trFunction.equals("")) {
+            commandList.add("-tr");
+            commandList.add(Util.escape(trFunction));
+        }
+        if (!classNamePrefix.equals("")) {
+            commandList.add("-pf");
+            commandList.add(Util.escape(classNamePrefix));
+        }
+        if (alwaysUpdate) {
+            commandList.add("-a");
+        }
 
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
-            File dir = Util.makeCanonical(tokenizer.nextToken());
+            File dirToScan = Util.makeCanonical(tokenizer.nextToken());
 
-            DirectoryScanner ds = getDirectoryScanner(dir);
+            DirectoryScanner ds = getDirectoryScanner(dirToScan);
             String[] files = ds.getIncludedFiles();
             for (String file : files) {
 
                 file = file.replaceAll("\\\\", "/");
 
+                List<String> thisCommandList = new ArrayList<String>();
+                thisCommandList.addAll(commandList);
                 String packageString = Util.escape(file.substring(0, file.lastIndexOf('/')).replaceAll("/", "."));
-                String uicFileString = Util.escape(dir.getAbsolutePath() + '/' + file);
-                String command = commandPart + " -p " + packageString + " " + uicFileString;
+                String uicFileString = Util.escape(dirToScan.getAbsolutePath() + '/' + file);
+                thisCommandList.add("-p");
+                thisCommandList.add(packageString);
+                thisCommandList.add(uicFileString);
 
-                Exec.exec(command);
+                Exec.execute(thisCommandList, new File(dir), qtLibDirectory);
             }
         }
     }
@@ -124,5 +136,13 @@ public class JuicTask extends MatchingTask {
 
     public void setAlwaysUpdate(boolean alwaysUpdate) {
         this.alwaysUpdate = alwaysUpdate;
+    }
+
+    public void setDir(String dir) {
+    	this.dir  = dir;
+    }
+
+    public void setQtLibDirectory(String dir) {
+    	this.qtLibDirectory  = dir;
     }
 }

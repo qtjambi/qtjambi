@@ -93,7 +93,7 @@
         <sequential>
             <mkdir dir="${java.generated.srcdir}/@{module}"/>
             <juic message="Running juic for @{module}..." alwaysupdate="true"
-                classnameprefix="" trfunction=""
+                classnameprefix="" trfunction="" qtlibdirectory="${qtjambi.qt.libdir}"
                 classpath="${java.srcdir}/@{module}"
                 outputdir="${java.generated.srcdir}/@{module}">
                 <include name="**/*.jui"/>
