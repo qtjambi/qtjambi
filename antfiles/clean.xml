@@ -87,5 +87,6 @@
         <delete dir="${jardir}" quiet="true"/>
         <delete dir="${timestamp.dir}" quiet="true"/>
         <delete dir="extjars" quiet="true"/>
+        <delete dir="buildlogs" quiet="true"/>
     </target>
 </project>
