@@ -35,817 +35,781 @@ struct ExpensePolicy {
     }
 };
 
-struct EnumValueRedirection
-{
+struct EnumValueRedirection {
     EnumValueRedirection(const QString &rej, const QString &us)
             : rejected(rej),
-            used(us)
-    {
+            used(us) {
     }
     QString rejected;
     QString used;
 };
 
 
-class TypeEntry
-{
-public:
-    enum Type {
-        PrimitiveType,
-        VoidType,
-        FlagsType,
-        EnumType,
-        TemplateArgumentType,
-        ThreadType,
-        BasicValueType,
-        StringType,
-        ContainerType,
-        InterfaceType,
-        ObjectType,
-        NamespaceType,
-        VariantType,
-        JObjectWrapperType,
-        CharType,
-        ArrayType,
-        TypeSystemType,
-        CustomType,
-    };
+class TypeEntry {
+    public:
+        enum Type {
+            PrimitiveType,
+            VoidType,
+            FlagsType,
+            EnumType,
+            TemplateArgumentType,
+            ThreadType,
+            BasicValueType,
+            StringType,
+            ContainerType,
+            InterfaceType,
+            ObjectType,
+            NamespaceType,
+            VariantType,
+            JObjectWrapperType,
+            CharType,
+            ArrayType,
+            TypeSystemType,
+            CustomType,
+        };
 
-    enum CodeGeneration {
-        GenerateTargetLang      = 0x0001,
-        GenerateCpp             = 0x0002,
-        GenerateForSubclass     = 0x0004,
+        enum CodeGeneration {
+            GenerateTargetLang      = 0x0001,
+            GenerateCpp             = 0x0002,
+            GenerateForSubclass     = 0x0004,
 
-        GenerateNothing         = 0,
-        GenerateAll             = 0xffff,
-        GenerateCode            = GenerateTargetLang | GenerateCpp
-    };
+            GenerateNothing         = 0,
+            GenerateAll             = 0xffff,
+            GenerateCode            = GenerateTargetLang | GenerateCpp
+        };
 
-    TypeEntry(const QString &name, Type t)
-            : m_name(name),
-            m_type(t),
-            m_code_generation(GenerateAll),
-            m_preferred_conversion(true)
-    {
-    };
+        TypeEntry(const QString &name, Type t)
+                : m_name(name),
+                m_type(t),
+                m_code_generation(GenerateAll),
+                m_preferred_conversion(true) {
+        };
 
-    virtual ~TypeEntry() { }
+        virtual ~TypeEntry() { }
 
-    Type type() const {
-        return m_type;
-    }
-    bool isPrimitive() const {
-        return m_type == PrimitiveType;
-    }
-    bool isEnum() const {
-        return m_type == EnumType;
-    }
-    bool isFlags() const {
-        return m_type == FlagsType;
-    }
-    bool isInterface() const {
-        return m_type == InterfaceType;
-    }
-    bool isObject() const {
-        return m_type == ObjectType;
-    }
-    bool isString() const {
-        return m_type == StringType;
-    }
-    bool isChar() const {
-        return m_type == CharType;
-    }
-    bool isNamespace() const {
-        return m_type == NamespaceType;
-    }
-    bool isContainer() const {
-        return m_type == ContainerType;
-    }
-    bool isVariant() const {
-        return m_type == VariantType;
-    }
-    bool isJObjectWrapper() const {
-        return m_type == JObjectWrapperType;
-    }
-    bool isArray() const {
-        return m_type == ArrayType;
-    }
-    bool isTemplateArgument() const {
-        return m_type == TemplateArgumentType;
-    }
-    bool isVoid() const {
-        return m_type == VoidType;
-    }
-    bool isThread() const {
-        return m_type == ThreadType;
-    }
-    bool isCustom() const {
-        return m_type == CustomType;
-    }
-    bool isBasicValue() const {
-        return m_type == BasicValueType;
-    }
-    bool isTypeSystem() const {
-        return m_type == TypeSystemType;
-    }
+        Type type() const {
+            return m_type;
+        }
+        bool isPrimitive() const {
+            return m_type == PrimitiveType;
+        }
+        bool isEnum() const {
+            return m_type == EnumType;
+        }
+        bool isFlags() const {
+            return m_type == FlagsType;
+        }
+        bool isInterface() const {
+            return m_type == InterfaceType;
+        }
+        bool isObject() const {
+            return m_type == ObjectType;
+        }
+        bool isString() const {
+            return m_type == StringType;
+        }
+        bool isChar() const {
+            return m_type == CharType;
+        }
+        bool isNamespace() const {
+            return m_type == NamespaceType;
+        }
+        bool isContainer() const {
+            return m_type == ContainerType;
+        }
+        bool isVariant() const {
+            return m_type == VariantType;
+        }
+        bool isJObjectWrapper() const {
+            return m_type == JObjectWrapperType;
+        }
+        bool isArray() const {
+            return m_type == ArrayType;
+        }
+        bool isTemplateArgument() const {
+            return m_type == TemplateArgumentType;
+        }
+        bool isVoid() const {
+            return m_type == VoidType;
+        }
+        bool isThread() const {
+            return m_type == ThreadType;
+        }
+        bool isCustom() const {
+            return m_type == CustomType;
+        }
+        bool isBasicValue() const {
+            return m_type == BasicValueType;
+        }
+        bool isTypeSystem() const {
+            return m_type == TypeSystemType;
+        }
 
-    virtual bool preferredConversion() const {
-        return m_preferred_conversion;
-    }
-    virtual void setPreferredConversion(bool b) {
-        m_preferred_conversion = b;
-    }
+        virtual bool preferredConversion() const {
+            return m_preferred_conversion;
+        }
+        virtual void setPreferredConversion(bool b) {
+            m_preferred_conversion = b;
+        }
 
-    // The type's name in C++, fully qualified
-    QString name() const {
-        return m_name;
-    }
+        // The type's name in C++, fully qualified
+        QString name() const {
+            return m_name;
+        }
 
-    uint codeGeneration() const {
-        return m_code_generation;
-    }
-    void setCodeGeneration(uint cg) {
-        m_code_generation = cg;
-    }
+        uint codeGeneration() const {
+            return m_code_generation;
+        }
+        void setCodeGeneration(uint cg) {
+            m_code_generation = cg;
+        }
 
-    virtual QString qualifiedCppName() const {
-        return m_name;
-    }
+        virtual QString qualifiedCppName() const {
+            return m_name;
+        }
 
-    // Its type's name in JNI
-    virtual QString jniName() const {
-        return m_name;
-    }
+        // Its type's name in JNI
+        virtual QString jniName() const {
+            return m_name;
+        }
 
-    // The type's name in TargetLang
-    virtual QString targetLangName() const {
-        return m_name;
-    }
+        // The type's name in TargetLang
+        virtual QString targetLangName() const {
+            return m_name;
+        }
 
-    // The type to lookup when converting to TargetLang
-    virtual QString lookupName() const {
-        return targetLangName();
-    }
+        // The type to lookup when converting to TargetLang
+        virtual QString lookupName() const {
+            return targetLangName();
+        }
 
-    // The package
-    virtual QString javaPackage() const {
-        return QString();
-    }
+        // The package
+        virtual QString javaPackage() const {
+            return QString();
+        }
 
-    virtual QString qualifiedTargetLangName() const {
-        QString pkg = javaPackage();
-        if (pkg.isEmpty()) return targetLangName();
-        return pkg + '.' + targetLangName();
-    }
+        virtual QString qualifiedTargetLangName() const {
+            QString pkg = javaPackage();
+            if (pkg.isEmpty()) return targetLangName();
+            return pkg + '.' + targetLangName();
+        }
 
-    virtual InterfaceTypeEntry *designatedInterface() const {
-        return 0;
-    }
+        virtual InterfaceTypeEntry *designatedInterface() const {
+            return 0;
+        }
 
-    void setCustomConstructor(const CustomFunction &func) {
-        m_customConstructor = func;
-    }
-    CustomFunction customConstructor() const {
-        return m_customConstructor;
-    }
+        void setCustomConstructor(const CustomFunction &func) {
+            m_customConstructor = func;
+        }
+        CustomFunction customConstructor() const {
+            return m_customConstructor;
+        }
 
-    void setCustomDestructor(const CustomFunction &func) {
-        m_customDestructor = func;
-    }
-    CustomFunction customDestructor() const {
-        return m_customDestructor;
-    }
+        void setCustomDestructor(const CustomFunction &func) {
+            m_customDestructor = func;
+        }
+        CustomFunction customDestructor() const {
+            return m_customDestructor;
+        }
 
-    virtual bool isValue() const {
-        return false;
-    }
-    virtual bool isComplex() const {
-        return false;
-    }
+        virtual bool isValue() const {
+            return false;
+        }
+        virtual bool isComplex() const {
+            return false;
+        }
 
-    virtual bool isNativeIdBased() const {
-        return false;
-    }
+        virtual bool isNativeIdBased() const {
+            return false;
+        }
 
-private:
-    QString m_name;
-    Type m_type;
-    uint m_code_generation;
-    CustomFunction m_customConstructor;
-    CustomFunction m_customDestructor;
-    bool m_preferred_conversion;
+    private:
+        QString m_name;
+        Type m_type;
+        uint m_code_generation;
+        CustomFunction m_customConstructor;
+        CustomFunction m_customDestructor;
+        bool m_preferred_conversion;
 };
 typedef QHash<QString, QList<TypeEntry *> > TypeEntryHash;
 typedef QHash<QString, TypeEntry *> SingleTypeEntryHash;
 
 
-class TypeSystemTypeEntry : public TypeEntry
-{
-public:
-    TypeSystemTypeEntry(const QString &name)
-            : TypeEntry(name, TypeSystemType)
-    {
-    };
+class TypeSystemTypeEntry : public TypeEntry {
+    public:
+        TypeSystemTypeEntry(const QString &name)
+                : TypeEntry(name, TypeSystemType) {
+        };
 
-    QList<CodeSnip> snips;
+        QList<CodeSnip> snips;
 };
 
 
-class ThreadTypeEntry : public TypeEntry
-{
-public:
-    ThreadTypeEntry() : TypeEntry("QThread", ThreadType) {
-        setCodeGeneration(GenerateNothing);
-    }
-
-    QString jniName() const {
-        return strings_jobject;
-    }
-    QString targetLangName() const {
-        return strings_Thread;
-    }
-    QString javaPackage() const {
-        return strings_java_lang;
-    }
-};
-
-class VoidTypeEntry : public TypeEntry
-{
-public:
-    VoidTypeEntry() : TypeEntry("void", VoidType) { }
-};
-
-class TemplateArgumentEntry : public TypeEntry
-{
-public:
-    TemplateArgumentEntry(const QString &name)
-            : TypeEntry(name, TemplateArgumentType), m_ordinal(0)
-    {
-    }
-
-    int ordinal() const {
-        return m_ordinal;
-    }
-    void setOrdinal(int o) {
-        m_ordinal = o;
-    }
-
-private:
-    int m_ordinal;
-};
-
-class ArrayTypeEntry : public TypeEntry
-{
-public:
-    ArrayTypeEntry(const TypeEntry *nested_type) : TypeEntry("Array", ArrayType), m_nested_type(nested_type)
-    {
-        Q_ASSERT(m_nested_type);
-    }
-
-    void setNestedTypeEntry(TypeEntry *nested) {
-        m_nested_type = nested;
-    }
-    const TypeEntry *nestedTypeEntry() const {
-        return m_nested_type;
-    }
-
-    QString targetLangName() const {
-        return m_nested_type->targetLangName() + "[]";
-    }
-    QString jniName() const
-    {
-        if (m_nested_type->isPrimitive())
-            return m_nested_type->jniName() + "Array";
-        else
-            return "jobjectArray";
-    }
-
-private:
-    const TypeEntry *m_nested_type;
-};
-
-
-class PrimitiveTypeEntry : public TypeEntry
-{
-public:
-    PrimitiveTypeEntry(const QString &name)
-            : TypeEntry(name, PrimitiveType), m_preferred_conversion(true), m_preferred_java_type(true)
-    {
-    }
-
-    QString targetLangName() const {
-        return m_java_name;
-    }
-    void setTargetLangName(const QString &targetLangName) {
-        m_java_name  = targetLangName;
-    }
-
-    QString jniName() const {
-        return m_jni_name;
-    }
-    void setJniName(const QString &jniName) {
-        m_jni_name = jniName;
-    }
-
-    QString javaObjectFullName() const {
-        return javaObjectPackage() + "." + javaObjectName();
-    }
-    QString javaObjectName() const;
-    QString javaObjectPackage() const {
-        return strings_java_lang;
-    }
-
-    virtual bool preferredConversion() const {
-        return m_preferred_conversion;
-    }
-    virtual void setPreferredConversion(bool b) {
-        m_preferred_conversion = b;
-    }
-
-    virtual bool preferredTargetLangType() const {
-        return m_preferred_java_type;
-    }
-    virtual void setPreferredTargetLangType(bool b) {
-        m_preferred_java_type = b;
-    }
-
-private:
-    QString m_java_name;
-    QString m_jni_name;
-uint m_preferred_conversion :
-    1;
-uint m_preferred_java_type :
-    1;
-};
-
-class EnumTypeEntry : public TypeEntry
-{
-public:
-    EnumTypeEntry(const QString &nspace, const QString &enumName)
-            : TypeEntry(nspace.isEmpty() ? enumName : nspace + QLatin1String("::") + enumName,
-                        EnumType),
-            m_flags(0),
-            m_extensible(false)
-    {
-        m_qualifier = nspace;
-        m_java_name = enumName;
-    }
-
-    QString javaPackage() const {
-        return m_package_name;
-    }
-    void setTargetLangPackage(const QString &package) {
-        m_package_name = package;
-    }
-
-    QString targetLangName() const {
-        return m_java_name;
-    }
-    QString javaQualifier() const;
-    QString qualifiedTargetLangName() const {
-        QString pkg = javaPackage();
-        if (pkg.isEmpty()) return javaQualifier() + '.' + targetLangName();
-        return pkg + '.' + javaQualifier() + '.' + targetLangName();
-    }
-
-    QString jniName() const;
-
-    QString qualifier() const {
-        return m_qualifier;
-    }
-    void setQualifier(const QString &q) {
-        m_qualifier = q;
-    }
-
-    virtual bool preferredConversion() const {
-        return false;
-    }
-
-    bool isBoundsChecked() const {
-        return m_lower_bound.isEmpty() && m_upper_bound.isEmpty();
-    }
-
-    QString upperBound() const {
-        return m_upper_bound;
-    }
-    void setUpperBound(const QString &bound) {
-        m_upper_bound = bound;
-    }
-
-    QString lowerBound() const {
-        return m_lower_bound;
-    }
-    void setLowerBound(const QString &bound) {
-        m_lower_bound = bound;
-    }
-
-    void setFlags(FlagsTypeEntry *flags) {
-        m_flags = flags;
-    }
-    FlagsTypeEntry *flags() const {
-        return m_flags;
-    }
-
-    bool isExtensible() const {
-        return m_extensible;
-    }
-    void setExtensible(bool is) {
-        m_extensible = is;
-    }
-
-    bool isEnumValueRejected(const QString &name) {
-        return m_rejected_enums.contains(name);
-    }
-    void addEnumValueRejection(const QString &name) {
-        m_rejected_enums << name;
-    }
-    QStringList enumValueRejections() const {
-        return m_rejected_enums;
-    }
-
-    void addEnumValueRedirection(const QString &rejected, const QString &usedValue);
-    QString enumValueRedirection(const QString &value) const;
-
-    bool forceInteger() const {
-        return m_force_integer;
-    }
-    void setForceInteger(bool force) {
-        m_force_integer = force;
-    }
-
-private:
-    QString m_package_name;
-    QString m_qualifier;
-    QString m_java_name;
-
-    QString m_lower_bound;
-    QString m_upper_bound;
-
-    QStringList m_rejected_enums;
-    QList<EnumValueRedirection> m_enum_redirections;
-
-    FlagsTypeEntry *m_flags;
-
-    bool m_extensible;
-    bool m_force_integer;
-};
-
-class FlagsTypeEntry : public TypeEntry
-{
-public:
-    FlagsTypeEntry(const QString &name) : TypeEntry(name, FlagsType), m_enum(0)
-    {
-    }
-
-    QString qualifiedTargetLangName() const;
-    QString targetLangName() const {
-        return m_java_name;
-    }
-    QString jniName() const;
-    virtual bool preferredConversion() const {
-        return false;
-    }
-
-    QString originalName() const {
-        return m_original_name;
-    }
-    void setOriginalName(const QString &s) {
-        m_original_name = s;
-    }
-
-    QString flagsName() const {
-        return m_java_name;
-    }
-    void setFlagsName(const QString &name) {
-        m_java_name = name;
-    }
-
-    bool forceInteger() const {
-        return m_enum->forceInteger();
-    }
-
-    EnumTypeEntry *originator() const {
-        return m_enum;
-    }
-    void setOriginator(EnumTypeEntry *e) {
-        m_enum = e;
-    }
-
-    QString javaPackage() const {
-        return m_enum->javaPackage();
-    }
-
-private:
-    QString m_original_name;
-    QString m_java_name;
-    EnumTypeEntry *m_enum;
-};
-
-class ComplexTypeEntry : public TypeEntry
-{
-public:
-    enum TypeFlag {
-        ForceAbstract      = 0x1,
-        DeleteInMainThread = 0x2,
-        Deprecated         = 0x4
-    };
-    typedef QFlags<TypeFlag> TypeFlags;
-
-    ComplexTypeEntry(const QString &name, Type t)
-            : TypeEntry(QString(name).replace("::", "_"), t),
-            m_qualified_cpp_name(name),
-            m_qobject(false),
-            m_polymorphic_base(false),
-            m_generic_class(false),
-            m_type_flags(0)
-    {
-        Include inc;
-        inc.name = "QVariant";
-        inc.type = Include::IncludePath;
-
-        addExtraInclude(inc);
-    }
-
-    bool isComplex() const {
-        return true;
-    }
-
-    IncludeList extraIncludes() const {
-        return m_extra_includes;
-    }
-    void setExtraIncludes(const IncludeList &includes) {
-        m_extra_includes = includes;
-    }
-    void addExtraInclude(const Include &include)
-    {
-        if (!m_includes_used.value(include.name, false)) {
-            m_extra_includes << include;
-            m_includes_used[include.name] = true;
+class ThreadTypeEntry : public TypeEntry {
+    public:
+        ThreadTypeEntry() : TypeEntry("QThread", ThreadType) {
+            setCodeGeneration(GenerateNothing);
         }
-    }
 
-    ComplexTypeEntry *copy() const
-    {
-        ComplexTypeEntry *centry = new ComplexTypeEntry(name(), type());
-        centry->setInclude(include());
-        centry->setExtraIncludes(extraIncludes());
-        centry->setFunctionModifications(functionModifications());
-        centry->setFieldModifications(fieldModifications());
-        centry->setQObject(isQObject());
-        centry->setDefaultSuperclass(defaultSuperclass());
-        centry->setCodeSnips(codeSnips());
-        centry->setTargetLangPackage(javaPackage());
-
-        return centry;
-    }
-
-    void setLookupName(const QString &name)
-    {
-        m_lookup_name = name;
-    }
-
-    virtual QString lookupName() const
-    {
-        return m_lookup_name.isEmpty() ? targetLangName() : m_lookup_name;
-    }
-
-    QString jniName() const {
-        return strings_jobject;
-    }
-
-
-    Include include() const {
-        return m_include;
-    }
-    void setInclude(const Include &inc) {
-        m_include = inc;
-    }
-
-    void setTypeFlags(TypeFlags flags)
-    {
-        m_type_flags = flags;
-    }
-
-    TypeFlags typeFlags() const
-    {
-        return m_type_flags;
-    }
-
-    CodeSnipList codeSnips() const {
-        return m_code_snips;
-    }
-    void setCodeSnips(const CodeSnipList &codeSnips) {
-        m_code_snips = codeSnips;
-    }
-    void addCodeSnip(const CodeSnip &codeSnip) {
-        m_code_snips << codeSnip;
-    }
-
-    FunctionModificationList functionModifications() const {
-        return m_function_mods;
-    }
-    void setFunctionModifications(const FunctionModificationList &functionModifications) {
-        m_function_mods = functionModifications;
-    }
-    void addFunctionModification(const FunctionModification &functionModification) {
-        m_function_mods << functionModification;
-    }
-    FunctionModificationList functionModifications(const QString &signature) const;
-
-    FieldModification fieldModification(const QString &name) const;
-    void setFieldModifications(const FieldModificationList &mods) {
-        m_field_mods = mods;
-    }
-    FieldModificationList fieldModifications() const {
-        return m_field_mods;
-    }
-
-    QString javaPackage() const {
-        return m_package;
-    }
-    void setTargetLangPackage(const QString &package) {
-        m_package = package;
-    }
-
-    bool isQObject() const {
-        return m_qobject;
-    }
-    void setQObject(bool qobject) {
-        m_qobject = qobject;
-    }
-
-    QString defaultSuperclass() const {
-        return m_default_superclass;
-    }
-    void setDefaultSuperclass(const QString &sc) {
-        m_default_superclass = sc;
-    }
-
-    virtual QString qualifiedCppName() const {
-        return m_qualified_cpp_name;
-    }
-
-    void setImplements(const QString &implements) {
-        m_implements = implements;
-    }
-    QString implements() const {
-        return m_implements;
-    }
-
-    void setIsPolymorphicBase(bool on)
-    {
-        m_polymorphic_base = on;
-    }
-    bool isPolymorphicBase() const {
-        return m_polymorphic_base;
-    }
-
-    void setPolymorphicIdValue(const QString &value)
-    {
-        m_polymorphic_id_value = value;
-    }
-    QString polymorphicIdValue() const {
-        return m_polymorphic_id_value;
-    }
-
-    void setExpensePolicy(const ExpensePolicy &policy) {
-        m_expense_policy = policy;
-    }
-    const ExpensePolicy &expensePolicy() const {
-        return m_expense_policy;
-    }
-
-    QString targetType() const {
-        return m_target_type;
-    }
-    void setTargetType(const QString &code) {
-        m_target_type = code;
-    }
-
-    QString targetLangName() const {
-        return m_java_name.isEmpty()
-               ? TypeEntry::targetLangName()
-               : m_java_name;
-    }
-    void setTargetLangName(const QString &name) {
-        m_java_name = name;
-    }
-
-    bool isGenericClass() const {
-        return m_generic_class;
-    }
-    void setGenericClass(bool isGeneric) {
-        m_generic_class = isGeneric;
-    }
-
-private:
-    IncludeList m_extra_includes;
-    Include m_include;
-    QHash<QString, bool> m_includes_used;
-    FunctionModificationList m_function_mods;
-    FieldModificationList m_field_mods;
-    CodeSnipList m_code_snips;
-    QString m_package;
-    QString m_default_superclass;
-    QString m_qualified_cpp_name;
-    QString m_java_name;
-    QString m_implements;
-
-uint m_qobject :
-    1;
-uint m_polymorphic_base :
-    1;
-uint m_generic_class :
-    1;
-
-    QString m_polymorphic_id_value;
-    QString m_lookup_name;
-    QString m_target_type;
-    ExpensePolicy m_expense_policy;
-    TypeFlags m_type_flags;
+        QString jniName() const {
+            return strings_jobject;
+        }
+        QString targetLangName() const {
+            return strings_Thread;
+        }
+        QString javaPackage() const {
+            return strings_java_lang;
+        }
 };
 
-class NamespaceTypeEntry : public ComplexTypeEntry
-{
-public:
-    NamespaceTypeEntry(const QString &name) : ComplexTypeEntry(name, NamespaceType) { }
+class VoidTypeEntry : public TypeEntry {
+    public:
+        VoidTypeEntry() : TypeEntry("void", VoidType) { }
+};
+
+class TemplateArgumentEntry : public TypeEntry {
+    public:
+        TemplateArgumentEntry(const QString &name)
+                : TypeEntry(name, TemplateArgumentType), m_ordinal(0) {
+        }
+
+        int ordinal() const {
+            return m_ordinal;
+        }
+        void setOrdinal(int o) {
+            m_ordinal = o;
+        }
+
+    private:
+        int m_ordinal;
+};
+
+class ArrayTypeEntry : public TypeEntry {
+    public:
+        ArrayTypeEntry(const TypeEntry *nested_type) : TypeEntry("Array", ArrayType), m_nested_type(nested_type) {
+            Q_ASSERT(m_nested_type);
+        }
+
+        void setNestedTypeEntry(TypeEntry *nested) {
+            m_nested_type = nested;
+        }
+        const TypeEntry *nestedTypeEntry() const {
+            return m_nested_type;
+        }
+
+        QString targetLangName() const {
+            return m_nested_type->targetLangName() + "[]";
+        }
+        QString jniName() const {
+            if (m_nested_type->isPrimitive())
+                return m_nested_type->jniName() + "Array";
+            else
+                return "jobjectArray";
+        }
+
+    private:
+        const TypeEntry *m_nested_type;
 };
 
 
-class InterfaceTypeEntry : public ComplexTypeEntry
-{
-public:
-    InterfaceTypeEntry(const QString &name)
-            : ComplexTypeEntry(name, InterfaceType)
-    {
-    }
+class PrimitiveTypeEntry : public TypeEntry {
+    public:
+        PrimitiveTypeEntry(const QString &name)
+                : TypeEntry(name, PrimitiveType), m_preferred_conversion(true), m_preferred_java_type(true) {
+        }
 
-    static QString interfaceName(const QString &name) {
-        return name + "Interface";
-    }
+        QString targetLangName() const {
+            return m_java_name;
+        }
+        void setTargetLangName(const QString &targetLangName) {
+            m_java_name  = targetLangName;
+        }
 
-    ObjectTypeEntry *origin() const {
-        return m_origin;
-    }
-    void setOrigin(ObjectTypeEntry *origin) {
-        m_origin = origin;
-    }
+        QString jniName() const {
+            return m_jni_name;
+        }
+        void setJniName(const QString &jniName) {
+            m_jni_name = jniName;
+        }
 
-    virtual bool isNativeIdBased() const {
-        return true;
-    }
-    virtual QString qualifiedCppName() const {
-        return ComplexTypeEntry::qualifiedCppName().left(ComplexTypeEntry::qualifiedCppName().length() - interfaceName("").length());
-    }
+        QString javaObjectFullName() const {
+            return javaObjectPackage() + "." + javaObjectName();
+        }
+        QString javaObjectName() const;
+        QString javaObjectPackage() const {
+            return strings_java_lang;
+        }
 
-private:
-    ObjectTypeEntry *m_origin;
+        virtual bool preferredConversion() const {
+            return m_preferred_conversion;
+        }
+        virtual void setPreferredConversion(bool b) {
+            m_preferred_conversion = b;
+        }
+
+        virtual bool preferredTargetLangType() const {
+            return m_preferred_java_type;
+        }
+        virtual void setPreferredTargetLangType(bool b) {
+            m_preferred_java_type = b;
+        }
+
+    private:
+        QString m_java_name;
+        QString m_jni_name;
+    uint m_preferred_conversion :
+        1;
+    uint m_preferred_java_type :
+        1;
+};
+
+class EnumTypeEntry : public TypeEntry {
+    public:
+        EnumTypeEntry(const QString &nspace, const QString &enumName)
+                : TypeEntry(nspace.isEmpty() ? enumName : nspace + QLatin1String("::") + enumName,
+                            EnumType),
+                m_flags(0),
+                m_extensible(false) {
+            m_qualifier = nspace;
+            m_java_name = enumName;
+        }
+
+        QString javaPackage() const {
+            return m_package_name;
+        }
+        void setTargetLangPackage(const QString &package) {
+            m_package_name = package;
+        }
+
+        QString targetLangName() const {
+            return m_java_name;
+        }
+        QString javaQualifier() const;
+        QString qualifiedTargetLangName() const {
+            QString pkg = javaPackage();
+            if (pkg.isEmpty()) return javaQualifier() + '.' + targetLangName();
+            return pkg + '.' + javaQualifier() + '.' + targetLangName();
+        }
+
+        QString jniName() const;
+
+        QString qualifier() const {
+            return m_qualifier;
+        }
+        void setQualifier(const QString &q) {
+            m_qualifier = q;
+        }
+
+        virtual bool preferredConversion() const {
+            return false;
+        }
+
+        bool isBoundsChecked() const {
+            return m_lower_bound.isEmpty() && m_upper_bound.isEmpty();
+        }
+
+        QString upperBound() const {
+            return m_upper_bound;
+        }
+        void setUpperBound(const QString &bound) {
+            m_upper_bound = bound;
+        }
+
+        QString lowerBound() const {
+            return m_lower_bound;
+        }
+        void setLowerBound(const QString &bound) {
+            m_lower_bound = bound;
+        }
+
+        void setFlags(FlagsTypeEntry *flags) {
+            m_flags = flags;
+        }
+        FlagsTypeEntry *flags() const {
+            return m_flags;
+        }
+
+        bool isExtensible() const {
+            return m_extensible;
+        }
+        void setExtensible(bool is) {
+            m_extensible = is;
+        }
+
+        bool isEnumValueRejected(const QString &name) {
+            return m_rejected_enums.contains(name);
+        }
+        void addEnumValueRejection(const QString &name) {
+            m_rejected_enums << name;
+        }
+        QStringList enumValueRejections() const {
+            return m_rejected_enums;
+        }
+
+        void addEnumValueRedirection(const QString &rejected, const QString &usedValue);
+        QString enumValueRedirection(const QString &value) const;
+
+        bool forceInteger() const {
+            return m_force_integer;
+        }
+        void setForceInteger(bool force) {
+            m_force_integer = force;
+        }
+
+    private:
+        QString m_package_name;
+        QString m_qualifier;
+        QString m_java_name;
+
+        QString m_lower_bound;
+        QString m_upper_bound;
+
+        QStringList m_rejected_enums;
+        QList<EnumValueRedirection> m_enum_redirections;
+
+        FlagsTypeEntry *m_flags;
+
+        bool m_extensible;
+        bool m_force_integer;
+};
+
+class FlagsTypeEntry : public TypeEntry {
+    public:
+        FlagsTypeEntry(const QString &name) : TypeEntry(name, FlagsType), m_enum(0) {
+        }
+
+        QString qualifiedTargetLangName() const;
+        QString targetLangName() const {
+            return m_java_name;
+        }
+        QString jniName() const;
+        virtual bool preferredConversion() const {
+            return false;
+        }
+
+        QString originalName() const {
+            return m_original_name;
+        }
+        void setOriginalName(const QString &s) {
+            m_original_name = s;
+        }
+
+        QString flagsName() const {
+            return m_java_name;
+        }
+        void setFlagsName(const QString &name) {
+            m_java_name = name;
+        }
+
+        bool forceInteger() const {
+            return m_enum->forceInteger();
+        }
+
+        EnumTypeEntry *originator() const {
+            return m_enum;
+        }
+        void setOriginator(EnumTypeEntry *e) {
+            m_enum = e;
+        }
+
+        QString javaPackage() const {
+            return m_enum->javaPackage();
+        }
+
+    private:
+        QString m_original_name;
+        QString m_java_name;
+        EnumTypeEntry *m_enum;
+};
+
+class ComplexTypeEntry : public TypeEntry {
+    public:
+        enum TypeFlag {
+            ForceAbstract      = 0x1,
+            DeleteInMainThread = 0x2,
+            Deprecated         = 0x4
+        };
+        typedef QFlags<TypeFlag> TypeFlags;
+
+        ComplexTypeEntry(const QString &name, Type t)
+                : TypeEntry(QString(name).replace("::", "_"), t),
+                m_qualified_cpp_name(name),
+                m_qobject(false),
+                m_polymorphic_base(false),
+                m_generic_class(false),
+                m_type_flags(0) {
+            Include inc;
+            inc.name = "QVariant";
+            inc.type = Include::IncludePath;
+
+            addExtraInclude(inc);
+        }
+
+        bool isComplex() const {
+            return true;
+        }
+
+        IncludeList extraIncludes() const {
+            return m_extra_includes;
+        }
+        void setExtraIncludes(const IncludeList &includes) {
+            m_extra_includes = includes;
+        }
+        void addExtraInclude(const Include &include) {
+            if (!m_includes_used.value(include.name, false)) {
+                m_extra_includes << include;
+                m_includes_used[include.name] = true;
+            }
+        }
+
+        ComplexTypeEntry *copy() const {
+            ComplexTypeEntry *centry = new ComplexTypeEntry(name(), type());
+            centry->setInclude(include());
+            centry->setExtraIncludes(extraIncludes());
+            centry->setFunctionModifications(functionModifications());
+            centry->setFieldModifications(fieldModifications());
+            centry->setQObject(isQObject());
+            centry->setDefaultSuperclass(defaultSuperclass());
+            centry->setCodeSnips(codeSnips());
+            centry->setTargetLangPackage(javaPackage());
+
+            return centry;
+        }
+
+        void setLookupName(const QString &name) {
+            m_lookup_name = name;
+        }
+
+        virtual QString lookupName() const {
+            return m_lookup_name.isEmpty() ? targetLangName() : m_lookup_name;
+        }
+
+        QString jniName() const {
+            return strings_jobject;
+        }
+
+
+        Include include() const {
+            return m_include;
+        }
+        void setInclude(const Include &inc) {
+            m_include = inc;
+        }
+
+        void setTypeFlags(TypeFlags flags) {
+            m_type_flags = flags;
+        }
+
+        TypeFlags typeFlags() const {
+            return m_type_flags;
+        }
+
+        CodeSnipList codeSnips() const {
+            return m_code_snips;
+        }
+        void setCodeSnips(const CodeSnipList &codeSnips) {
+            m_code_snips = codeSnips;
+        }
+        void addCodeSnip(const CodeSnip &codeSnip) {
+            m_code_snips << codeSnip;
+        }
+
+        FunctionModificationList functionModifications() const {
+            return m_function_mods;
+        }
+        void setFunctionModifications(const FunctionModificationList &functionModifications) {
+            m_function_mods = functionModifications;
+        }
+        void addFunctionModification(const FunctionModification &functionModification) {
+            m_function_mods << functionModification;
+        }
+        FunctionModificationList functionModifications(const QString &signature) const;
+
+        FieldModification fieldModification(const QString &name) const;
+        void setFieldModifications(const FieldModificationList &mods) {
+            m_field_mods = mods;
+        }
+        FieldModificationList fieldModifications() const {
+            return m_field_mods;
+        }
+
+        QString javaPackage() const {
+            return m_package;
+        }
+        void setTargetLangPackage(const QString &package) {
+            m_package = package;
+        }
+
+        bool isQObject() const {
+            return m_qobject;
+        }
+        void setQObject(bool qobject) {
+            m_qobject = qobject;
+        }
+
+        QString defaultSuperclass() const {
+            return m_default_superclass;
+        }
+        void setDefaultSuperclass(const QString &sc) {
+            m_default_superclass = sc;
+        }
+
+        virtual QString qualifiedCppName() const {
+            return m_qualified_cpp_name;
+        }
+
+        void setImplements(const QString &implements) {
+            m_implements = implements;
+        }
+        QString implements() const {
+            return m_implements;
+        }
+
+        void setIsPolymorphicBase(bool on) {
+            m_polymorphic_base = on;
+        }
+        bool isPolymorphicBase() const {
+            return m_polymorphic_base;
+        }
+
+        void setPolymorphicIdValue(const QString &value) {
+            m_polymorphic_id_value = value;
+        }
+        QString polymorphicIdValue() const {
+            return m_polymorphic_id_value;
+        }
+
+        void setExpensePolicy(const ExpensePolicy &policy) {
+            m_expense_policy = policy;
+        }
+        const ExpensePolicy &expensePolicy() const {
+            return m_expense_policy;
+        }
+
+        QString targetType() const {
+            return m_target_type;
+        }
+        void setTargetType(const QString &code) {
+            m_target_type = code;
+        }
+
+        QString targetLangName() const {
+            return m_java_name.isEmpty()
+                   ? TypeEntry::targetLangName()
+                   : m_java_name;
+        }
+        void setTargetLangName(const QString &name) {
+            m_java_name = name;
+        }
+
+        bool isGenericClass() const {
+            return m_generic_class;
+        }
+        void setGenericClass(bool isGeneric) {
+            m_generic_class = isGeneric;
+        }
+
+    private:
+        IncludeList m_extra_includes;
+        Include m_include;
+        QHash<QString, bool> m_includes_used;
+        FunctionModificationList m_function_mods;
+        FieldModificationList m_field_mods;
+        CodeSnipList m_code_snips;
+        QString m_package;
+        QString m_default_superclass;
+        QString m_qualified_cpp_name;
+        QString m_java_name;
+        QString m_implements;
+
+    uint m_qobject :
+        1;
+    uint m_polymorphic_base :
+        1;
+    uint m_generic_class :
+        1;
+
+        QString m_polymorphic_id_value;
+        QString m_lookup_name;
+        QString m_target_type;
+        ExpensePolicy m_expense_policy;
+        TypeFlags m_type_flags;
+};
+
+class NamespaceTypeEntry : public ComplexTypeEntry {
+    public:
+        NamespaceTypeEntry(const QString &name) : ComplexTypeEntry(name, NamespaceType) { }
 };
 
 
-class ObjectTypeEntry : public ComplexTypeEntry
-{
-public:
-    ObjectTypeEntry(const QString &name)
-            : ComplexTypeEntry(name, ObjectType), m_interface(0)
-    {
-    }
+class InterfaceTypeEntry : public ComplexTypeEntry {
+    public:
+        InterfaceTypeEntry(const QString &name)
+                : ComplexTypeEntry(name, InterfaceType) {
+        }
 
-    InterfaceTypeEntry *designatedInterface() const {
-        return m_interface;
-    }
-    void setDesignatedInterface(InterfaceTypeEntry *entry) {
-        m_interface = entry;
-    }
+        static QString interfaceName(const QString &name) {
+            return name + "Interface";
+        }
 
-    virtual bool isNativeIdBased() const {
-        return true;
-    }
+        ObjectTypeEntry *origin() const {
+            return m_origin;
+        }
+        void setOrigin(ObjectTypeEntry *origin) {
+            m_origin = origin;
+        }
 
-private:
-    InterfaceTypeEntry *m_interface;
+        virtual bool isNativeIdBased() const {
+            return true;
+        }
+        virtual QString qualifiedCppName() const {
+            return ComplexTypeEntry::qualifiedCppName().left(ComplexTypeEntry::qualifiedCppName().length() - interfaceName("").length());
+        }
+
+    private:
+        ObjectTypeEntry *m_origin;
 };
 
-class CustomTypeEntry : public ComplexTypeEntry
-{
-public:
-    CustomTypeEntry(const QString &name) : ComplexTypeEntry(name, CustomType) { }
 
-    virtual void generateCppJavaToQt(QTextStream &s,
-                                     const AbstractMetaType *java_type,
-                                     const QString &env_name,
-                                     const QString &qt_name,
-                                     const QString &java_name) const = 0;
+class ObjectTypeEntry : public ComplexTypeEntry {
+    public:
+        ObjectTypeEntry(const QString &name)
+                : ComplexTypeEntry(name, ObjectType), m_interface(0) {
+        }
 
-    virtual void generateCppQtToJava(QTextStream &s,
-                                     const AbstractMetaType *java_type,
-                                     const QString &env_name,
-                                     const QString &qt_name,
-                                     const QString &java_name) const = 0;
+        InterfaceTypeEntry *designatedInterface() const {
+            return m_interface;
+        }
+        void setDesignatedInterface(InterfaceTypeEntry *entry) {
+            m_interface = entry;
+        }
+
+        virtual bool isNativeIdBased() const {
+            return true;
+        }
+
+    private:
+        InterfaceTypeEntry *m_interface;
 };
 
-class ValueTypeEntry : public ComplexTypeEntry
-{
+class CustomTypeEntry : public ComplexTypeEntry {
+    public:
+        CustomTypeEntry(const QString &name) : ComplexTypeEntry(name, CustomType) { }
+
+        virtual void generateCppJavaToQt(QTextStream &s,
+                                         const AbstractMetaType *java_type,
+                                         const QString &env_name,
+                                         const QString &qt_name,
+                                         const QString &java_name) const = 0;
+
+        virtual void generateCppQtToJava(QTextStream &s,
+                                         const AbstractMetaType *java_type,
+                                         const QString &env_name,
+                                         const QString &qt_name,
+                                         const QString &java_name) const = 0;
+};
+
+class ValueTypeEntry : public ComplexTypeEntry {
     public:
         ValueTypeEntry(const QString &name) : ComplexTypeEntry(name, BasicValueType) { }
 
@@ -861,12 +825,10 @@ class ValueTypeEntry : public ComplexTypeEntry
         ValueTypeEntry(const QString &name, Type t) : ComplexTypeEntry(name, t) { }
 };
 
-class StringTypeEntry : public ValueTypeEntry
-{
+class StringTypeEntry : public ValueTypeEntry {
     public:
         StringTypeEntry(const QString &name)
-        : ValueTypeEntry(name, StringType)
-        {
+                : ValueTypeEntry(name, StringType) {
             setCodeGeneration(GenerateNothing);
         }
 
@@ -885,11 +847,9 @@ class StringTypeEntry : public ValueTypeEntry
         }
 };
 
-class CharTypeEntry : public ValueTypeEntry
-{
+class CharTypeEntry : public ValueTypeEntry {
     public:
-        CharTypeEntry(const QString &name) : ValueTypeEntry(name, CharType)
-        {
+        CharTypeEntry(const QString &name) : ValueTypeEntry(name, CharType) {
             setCodeGeneration(GenerateNothing);
         }
 
@@ -908,8 +868,7 @@ class CharTypeEntry : public ValueTypeEntry
         }
 };
 
-class JObjectWrapperTypeEntry: public ValueTypeEntry
-{
+class JObjectWrapperTypeEntry: public ValueTypeEntry {
     public:
         JObjectWrapperTypeEntry(const QString &name) : ValueTypeEntry(name, JObjectWrapperType) { }
 
@@ -928,8 +887,7 @@ class JObjectWrapperTypeEntry: public ValueTypeEntry
         }
 };
 
-class VariantTypeEntry: public ValueTypeEntry
-{
+class VariantTypeEntry: public ValueTypeEntry {
     public:
         VariantTypeEntry(const QString &name) : ValueTypeEntry(name, VariantType) { }
 
@@ -949,8 +907,7 @@ class VariantTypeEntry: public ValueTypeEntry
 };
 
 
-class ContainerTypeEntry : public ComplexTypeEntry
-{
+class ContainerTypeEntry : public ComplexTypeEntry {
     public:
         enum Type {
             NoContainer,
@@ -969,8 +926,7 @@ class ContainerTypeEntry : public ComplexTypeEntry
         };
 
         ContainerTypeEntry(const QString &name, Type type)
-        : ComplexTypeEntry(name, ContainerType)
-        {
+                : ComplexTypeEntry(name, ContainerType) {
             m_type = type;
             setCodeGeneration(GenerateForSubclass);
         }
