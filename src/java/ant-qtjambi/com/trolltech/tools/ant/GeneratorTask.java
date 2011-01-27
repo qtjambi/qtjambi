@@ -47,6 +47,10 @@ package com.trolltech.tools.ant;
 import org.apache.tools.ant.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.trolltech.qt.internal.*;
 
@@ -59,7 +63,9 @@ public class GeneratorTask extends Task {
     private String kdephonon = "";
     //private String includePaths = "";
     private String options = null;
-	private String qtIncludeDirectory = null;
+    private String qtIncludeDirectory = null;
+    private String qtLibDirectory = null;
+    private List<String> commandList = new ArrayList<String>();
 
     private String searchPath() {
         String s = File.separator;
@@ -85,7 +91,7 @@ public class GeneratorTask extends Task {
     public void setOptions(String options) { this.options = options; }
     public String getOptions() { return options; }
     
-    private String parseArgumentFiles() {
+    private String parseArgumentFiles(List<String> commandList) {
     	File typesystemFile = Util.makeCanonical(typesystem);
         if (!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
@@ -102,43 +108,56 @@ public class GeneratorTask extends Task {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
+        commandList.add(Util.escape(headerFile.getAbsolutePath()));
+        commandList.add(Util.escape(typesystemFile.getAbsolutePath()));
         return " " + Util.escape(headerFile.getAbsolutePath()) + " " + Util.escape(typesystemFile.getAbsolutePath());
     }
     
-    private String parseArguments() {
-    	String arguments = "";
-    	if (options != null) {
-            arguments += options + " ";
+    private boolean parseArguments() {
+    	//String arguments = "";
+    	if (options != null && !options.equals("")) {
+            //arguments += options + " ";
+            commandList.add(options);
         }
         /*if( !includePaths.equals("") ){
             arguments += " --include-paths=" + includePaths;
+            commandList.add("--include-paths=" + includePaths);
         }*/
         if(!phononpath.equals("")) {
-        	arguments += " --phonon-include=" + Util.escape(phononpath);
+        	//arguments += " --phonon-include=" + Util.escape(phononpath);
+        	commandList.add("--phonon-include=" + Util.escape(phononpath));
         }
         if(qtIncludeDirectory != null) {
-        	arguments += " --qt-include-directory=" + Util.escape(qtIncludeDirectory);
+        	//arguments += " --qt-include-directory=" + Util.escape(qtIncludeDirectory);
+        	commandList.add("--qt-include-directory=" + Util.escape(qtIncludeDirectory));
+        }
+        if(qtLibDirectory != null) {
+        	//arguments += " --qt-lib-directory=" + Util.escape(qtLibDirectory);
+        	commandList.add("--qt-lib-directory=" + Util.escape(qtLibDirectory));
         }
         if(!outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
-            arguments += " --output-directory=" + Util.escape(file.getAbsolutePath());
+            //arguments += " --output-directory=" + Util.escape(file.getAbsolutePath());
+            commandList.add("--output-directory=" + Util.escape(file.getAbsolutePath()));
         }
         
-        arguments += parseArgumentFiles();
+        /*arguments +=*/ parseArgumentFiles(commandList);
         
-        return arguments;
+        return true;
     }
 
     @Override
     public void execute() throws BuildException {
         
-        String arguments = parseArguments();
+        parseArguments();
         String generator = generatorExecutable();
-        String command = generator + arguments;
-        Exec.exec(command, new File(dir));
+        List<String> thisCommandList = new ArrayList<String>();
+        thisCommandList.add(generator);
+        thisCommandList.addAll(commandList);
+        Exec.execute(thisCommandList, new File(dir), qtLibDirectory);
     }
 
     public void setHeader(String header) {
@@ -159,6 +178,10 @@ public class GeneratorTask extends Task {
 
     public void setQtIncludeDirectory(String dir) {
     	this.qtIncludeDirectory  = dir;
+    }
+
+    public void setQtLibDirectory(String dir) {
+    	this.qtLibDirectory  = dir;
     }
 
     public void setOutputDirectory(String outputDirectory) {

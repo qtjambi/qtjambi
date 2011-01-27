@@ -12,6 +12,7 @@
                 header="${generatorDir}/targets/qtjambi_masterinclude.h"
                 phononpath="${qtjambi.phonon.includedir}"
                 qtincludedirectory="${qtjambi.qt.includedir}"
+                qtlibdirectory="${qtjambi.qt.libdir}"
                 kdephonon="${qtjambi.phonon.kdephonon-path}"
                 options="${qtjambi.generator.jumptable}"/>
     </target>

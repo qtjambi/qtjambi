@@ -4,6 +4,7 @@ import org.apache.tools.ant.*;
 
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 
 class Exec {
@@ -107,10 +108,10 @@ class Exec {
         // but it should not be needed there in first place... Only if you want to have same kind of building
         // environment one can have for Linux.
         // it should’t affect to Windows environment though.
-        /*if(ldpath != null) {
+        if(ldpath != null) {
         	Map<String, String> env = builder.environment();
         	env.put("LD_LIBRARY_PATH", ldpath);
-        }*/
+        }
         builder.directory(directory);
         try {
 			Process process = builder.start();
