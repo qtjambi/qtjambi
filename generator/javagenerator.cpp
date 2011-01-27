@@ -1508,11 +1508,12 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
         foreach(AbstractMetaFunction *function, java_class->functions()) {
             QList<ReferenceCount> referenceCounts = function->referenceCounts(java_class);
             foreach(ReferenceCount refCount, referenceCounts) {
-                variables[refCount.variableName] |= refCount.action
-                                                    | refCount.access
-                                                    | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
-                                                    | (function->isStatic() ? ReferenceCount::Static : 0)
-                                                    | (refCount.declareVariable.isEmpty() ? ReferenceCount::DeclareVariable : 0);
+                variables[refCount.variableName] |=
+                        refCount.action
+                        | refCount.access
+                        | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
+                        | (function->isStatic() ? ReferenceCount::Static : 0)
+                        | (refCount.declareVariable.isEmpty() ? ReferenceCount::DeclareVariable : 0);
             }
         }
 
@@ -1538,14 +1539,14 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
             s << INDENT;
             switch (access) {
-            case ReferenceCount::Private:
-                s << "private "; break;
-            case ReferenceCount::Protected:
-                s << "protected "; break;
-            case ReferenceCount::Public:
-                s << "public "; break;
-            default:
-                ; // friendly
+                case ReferenceCount::Private:
+                    s << "private "; break;
+                case ReferenceCount::Protected:
+                    s << "protected "; break;
+                case ReferenceCount::Public:
+                    s << "public "; break;
+                default:
+                    ; // friendly
             }
 
             if (isStatic)
@@ -1568,7 +1569,6 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
             }
         }
     }
-
 
     if (!java_class->isInterface() && (!java_class->isNamespace() || java_class->functionsInTargetLang().size() > 0)
             && (java_class->baseClass() == 0 || java_class->package() != java_class->baseClass()->package())) {
@@ -1672,7 +1672,9 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
     // Just the private functions for abstract functions implemeneted in superclasses
     if (!java_class->isInterface() && java_class->isAbstract()) {
-        java_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NotRemovedFromTargetLang);
+        java_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions |
+                                                AbstractMetaClass::AbstractFunctions |
+                                                AbstractMetaClass::NotRemovedFromTargetLang);
         foreach(AbstractMetaFunction *java_function, java_funcs) {
             if (java_function->implementingClass() != java_class) {
                 s << endl;
@@ -1684,8 +1686,9 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
     // Field accessors
     AbstractMetaFieldList fields = java_class->fields();
     foreach(const AbstractMetaField *field, fields) {
-        if (field->wasPublic() || (field->wasProtected() && !java_class->isFinal()))
+        if (field->wasPublic() || (field->wasProtected() && !java_class->isFinal())) {
             writeFieldAccessors(s, field);
+        }
     }
 
     // the static fromNativePointer function...
@@ -1766,7 +1769,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 void JavaGenerator::generate() {
     Generator::generate();
 
-    {
+    { //log native pointer api
         const AbstractMetaClass *last_class = 0;
         QFile file("mjb_nativepointer_api.log");
         if (file.open(QFile::WriteOnly)) {
@@ -1774,12 +1777,14 @@ void JavaGenerator::generate() {
 
             AbstractMetaFunctionList nativepointer_functions;
             for (int i = 0; i < m_nativepointer_functions.size(); ++i) {
-                AbstractMetaFunction *f = const_cast<AbstractMetaFunction *>(m_nativepointer_functions[i]);
+                AbstractMetaFunction *f =
+                        const_cast<AbstractMetaFunction *>(m_nativepointer_functions[i]);
                 if (f->ownerClass() == f->declaringClass() || f->isFinal())
                     nativepointer_functions.append(f);
             }
 
-            s << "Number of public or protected functions with QNativePointer API: " << nativepointer_functions.size() << endl;
+            s << "Number of public or protected functions with QNativePointer API: " <<
+                    nativepointer_functions.size() << endl;
             foreach(const AbstractMetaFunction *f, nativepointer_functions) {
                 if (last_class != f->ownerClass()) {
                     last_class = f->ownerClass();
@@ -1795,7 +1800,7 @@ void JavaGenerator::generate() {
         }
     }
 
-    {
+    { // log object type usage of classes
         const AbstractMetaClass *last_class = 0;
         QFile file("mjb_object_type_usage.log");
         if (file.open(QFile::WriteOnly)) {
@@ -1803,12 +1808,16 @@ void JavaGenerator::generate() {
 
             AbstractMetaFunctionList resettable_object_functions;
             for (int i = 0; i < m_resettable_object_functions.size(); ++i) {
-                AbstractMetaFunction *f = const_cast<AbstractMetaFunction *>(m_resettable_object_functions[i]);
+                AbstractMetaFunction *f =
+                        const_cast<AbstractMetaFunction *>(m_resettable_object_functions[i]);
                 if (f->ownerClass() == f->declaringClass() || f->isFinal())
                     resettable_object_functions.append(f);
             }
 
-            s << "Number of public or protected functions that return a non-QObject object type, or that are virtual and take a non-QObject object type argument: " << resettable_object_functions.size() << endl;
+            s << "Number of public or protected functions that return a " <<
+                    "non-QObject object type, or that are virtual and take " <<
+                    "a non-QObject object type argument: " <<
+                    resettable_object_functions.size() << endl;
             foreach(const AbstractMetaFunction *f, resettable_object_functions) {
                 if (last_class != f->ownerClass()) {
                     last_class = f->ownerClass();
@@ -1824,7 +1833,7 @@ void JavaGenerator::generate() {
         }
     }
 
-    {
+    { // log possible reference counting candidates
         QFile file("mjb_reference_count_candidates.log");
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);

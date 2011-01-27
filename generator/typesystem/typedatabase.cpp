@@ -328,7 +328,6 @@ static void addRemoveFunctionToTemplates(TypeDatabase *db) {
     ContainerTypeEntry *qqueue = db->findContainerType(QLatin1String("QQueue"));
     removeFunction(qqueue, "head() const");
 
-
     ArgumentMap args1;
     args1[1] = QLatin1String("$1");
     ArgumentMap args2 = args1;

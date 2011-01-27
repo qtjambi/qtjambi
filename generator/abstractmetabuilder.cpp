@@ -150,7 +150,6 @@ AbstractMetaBuilder::AbstractMetaBuilder()
         : m_current_class(0) {
 }
 
-
 /**
  * This function is here, simply to print out warnings about
  * modifications not having the proper signature...
@@ -382,11 +381,9 @@ bool AbstractMetaBuilder::build() {
 
     QHash<QString, ClassModelItem> typeMap = m_dom->classMap();
 
-
     // fix up QObject's in the type system..
     TypeDatabase *types = TypeDatabase::instance();
     fixQObjectForScope(types, model_dynamic_cast<NamespaceModelItem>(m_dom));
-
 
     // Start the generation...
     foreach(ClassModelItem item, typeMap.values()) {
@@ -394,14 +391,12 @@ bool AbstractMetaBuilder::build() {
         addAbstractMetaClass(cls);
     }
 
-
     QHash<QString, NamespaceModelItem> namespaceMap = m_dom->namespaceMap();
     foreach(NamespaceModelItem item, namespaceMap.values()) {
         AbstractMetaClass *meta_class = traverseNamespace(item);
         if (meta_class)
             m_meta_classes << meta_class;
     }
-
 
     // Some trickery to support global-namespace enums...
     QHash<QString, EnumModelItem> enumMap = m_dom->enumMap();
@@ -431,10 +426,7 @@ bool AbstractMetaBuilder::build() {
             meta_enum->setEnclosingClass(global);
             meta_enum->typeEntry()->setQualifier(globalName);
         }
-
-
     }
-
 
     // Go through all typedefs to see if we have defined any
     // specific typedefs to be used as classes.
@@ -449,7 +441,6 @@ bool AbstractMetaBuilder::build() {
             setupInheritance(cls);
         }
     }
-
 
     foreach(AbstractMetaClass *cls, m_meta_classes) {
         cls->fixFunctions();
@@ -1054,7 +1045,6 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
     ComplexTypeEntry *type = TypeDatabase::instance()->findComplexType(full_class_name);
     RejectReason reason = NoReason;
 
-
     if (TypeDatabase::instance()->isClassRejected(full_class_name)) {
         reason = GenerationDisabled;
     } else if (!type) {
@@ -1117,7 +1107,6 @@ AbstractMetaClass *AbstractMetaBuilder::traverseClass(ClassModelItem class_item)
                 m_meta_classes << cl;
             }
         }
-
     }
 
     // Go through all typedefs to see if we have defined any
@@ -1147,6 +1136,8 @@ AbstractMetaField *AbstractMetaBuilder::traverseField(VariableModelItem field, c
     QString field_name = field->name();
     QString class_name = m_current_class->typeEntry()->qualifiedCppName();
 
+    //qDebug()<<"\n"<<field_name<<class_name;
+
     // Ignore friend decl.
     if (field->isFriend())
         return 0;
@@ -1159,20 +1150,21 @@ AbstractMetaField *AbstractMetaBuilder::traverseField(VariableModelItem field, c
         return 0;
     }
 
-
     AbstractMetaField *meta_field = createMetaField();
     meta_field->setName(field_name);
     meta_field->setEnclosingClass(cls);
 
     bool ok;
     TypeInfo field_type = field->type();
+    //qDebug()<<"\n\n\n"<<"Class in question:"<<cls->name()<<"\n\n\n";
     AbstractMetaType *meta_type = translateType(field_type, &ok);
 
     if (!meta_type || !ok) {
-        ReportHandler::warning(QString("skipping field '%1::%2' with unmatched type '%3'")
+        QString error = QString("skipping field '%1::%2' with unmatched type '%3'")
                                .arg(m_current_class->name())
                                .arg(field_name)
-                               .arg(TypeInfo::resolveType(field_type, currentScope()->toItem()).qualifiedName().join("::")));
+                               .arg(TypeInfo::resolveType(field_type, currentScope()->toItem()).qualifiedName().join("::"));
+        ReportHandler::warning(error);
         delete meta_field;
         return 0;
     }
@@ -1633,28 +1625,29 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
 
 
 // uncomment the qDebug()s in order to inspect internals of the function
-AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
+AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &type_info,
                                                      bool *ok,
                                                      bool resolveType,
                                                      bool resolveScope) {
     Q_ASSERT(ok);
     *ok = true;
-    //qDebug()<<"Start of translateType()"<<_typei.toString();
+    //qDebug()<<"Start of translateType()"<<type_info.toString();
 
     // 1. Test the type info without resolving typedefs in case this is present in the
     //    type system
+
     TypeInfo typei;
     if (resolveType) {
         bool ok;
-        AbstractMetaType *t = translateType(_typei, &ok, false, resolveScope);
+        AbstractMetaType *t = translateType(type_info, &ok, false, resolveScope);
         if (t != 0 && ok) {
-            //qDebug()<<"ResolveType (1.) ok"<<t->fullName();
+            //qDebug()<<"ResolveType ok (1. check)"<<t->fullName();
             return t;
         }
     }
 
     if (!resolveType)
-        typei = _typei;
+        typei = type_info;
     else {
         // Go through all parts of the current scope (including global namespace)
         // to resolve typedefs. The parser does not properly resolve typedefs in
@@ -1663,8 +1656,8 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
         // seemed non-trivial
         int i = m_scopes.size() - 1;
         while (i >= 0) {
-            typei = TypeInfo::resolveType(_typei, m_scopes.at(i--)->toItem());
-            if (typei.qualifiedName().join("::") != _typei.qualifiedName().join("::"))
+            typei = TypeInfo::resolveType(type_info, m_scopes.at(i--)->toItem());
+            if (typei.qualifiedName().join("::") != type_info.qualifiedName().join("::"))
                 break;
         }
         //qDebug()<<"Resolved:"<<typei.toString();
@@ -1672,20 +1665,22 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
 
     if (typei.isFunctionPointer()) {
         *ok = false;
-        //qDebug()<<"isFunctionPointer";
+        qDebug()<<"isFunctionPointer";
         return 0;
     }
 
     TypeParser::Info typeInfo = TypeParser::parse(typei.toString());
+
     if (typeInfo.is_busted) {
         *ok = false;
-        //qDebug()<<"isBusted";
+        qDebug()<<"Type parser doesn’t recognize the type (is_busted)";
         return 0;
     }
 
-    //qDebug()<<"Typeinfo is (1.):"<<typeInfo.toString();
+    //qDebug()<<"TypeInfo is after 1. method:"<<typeInfo.toString();
 
     // 2. Handle pointers specified as arrays with unspecified size
+
     bool array_of_unspecified_size = false;
     if (typeInfo.arrays.size() > 0) {
         array_of_unspecified_size = true;
@@ -1736,7 +1731,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
 
     QStringList qualifier_list = typeInfo.qualified_name;
     if (qualifier_list.isEmpty()) {
-        ReportHandler::warning(QString("horribly broken type '%1'").arg(_typei.toString()));
+        ReportHandler::warning(QString("horribly broken type '%1'").arg(type_info.toString()));
         *ok = false;
         return 0;
     }
@@ -1746,7 +1741,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
 
     // 3. Special case 'void' type
     if (name == "void" && typeInfo.indirections == 0) {
-        //qDebug()<<"Returning void, zero";
+        //qDebug()<<"Returning from name == \"void\" && typeInfo.indirections == 0";
         return 0;
     }
 
@@ -1756,6 +1751,9 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
 
     // 5. Try to find the type
     const TypeEntry *type = TypeDatabase::instance()->findType(qualified_name);
+
+    if (type)
+        //qDebug()<<"After 5. name: " << type->name();
 
     // 6. No? Try looking it up as a flags type
     if (!type)
@@ -1782,6 +1780,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
         contexts.append(m_current_class->qualifiedCppName());
         contexts.append(currentScope()->qualifiedName().join("::"));
 
+       // qDebug() << "9."<< contexts;
 
         TypeInfo info = typei;
         bool subclasses_done = false;
@@ -1790,37 +1789,56 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
 
             bool ok;
             info.setQualifiedName(QStringList() << contexts.at(0) << qualified_name);
+         //   qDebug()<< "whiling in 9. type," << info.toString();
             AbstractMetaType *t = translateType(info, &ok, true, false);
             if (t != 0 && ok) {
-                //qDebug()<<"Returning ok"<<t->fullName();
+           //     qDebug()<<"Returning ok from t != 0 && ok"<<t->fullName();
                 return t;
             }
 
-            ClassModelItem item = m_dom->findClass(contexts.at(0));
-            if (item != 0)
-                contexts += item->baseClasses();
-            contexts.pop_front();
+            //10. Try if the type is in a base class
+            //e.g. MimeType is QWebPluginFactory::MimeType and called by QWebPluginFactory::Plugin
+            QString base = contexts.at(0);
+            QStringList parts = base.split("::");
+            while(parts.size() > 1) {
+                parts.removeLast();
+                info.setQualifiedName(QStringList() << parts << qualified_name);
+                AbstractMetaType *t = translateType(info, &ok, true, false);
+                if (t != 0 && ok) {
+             //       qDebug()<<"Returning ok from 11. method"<<t->fullName();
+                    return t;
+                }
+            }
 
-            // 10. Last resort: Special cased prefix of Qt namespace since the meta object implicitly inherits this, so
+            ClassModelItem item = m_dom->findClass(contexts.at(0));
+            if (item != 0) {
+                contexts += item->baseClasses();
+            }
+            contexts.removeFirst();
+
+            // 11. Last resort: special cased prefix of Qt namespace since the meta object implicitly inherits this, so
             //     enum types from there may be addressed without any scope resolution in properties.
             if (contexts.size() == 0 && !subclasses_done) {
                 contexts << "Qt";
                 subclasses_done = true;
             }
         }
-
     }
 
+
+    // if error happened in type resolving
     if (!type) {
         *ok = false;
-        //qDebug()<<"Invalid type"<<typei.toString()<<_typei.toString();
+     //   qDebug()<<"Every type checking methods failed, typei:"<<typei.toString()<<", type_info:"<<type_info.toString();
         return 0;
     }
 
-    // Used to for diagnostics later...
+    //qDebug()<<"A type found:"<<type->name();
+
+    // Used to for diagnostics later
     m_used_types << type;
 
-    // These are only implicit and should not appear in code...
+    // These are only implicit and should not appear in code
     Q_ASSERT(!type->isInterface());
 
     AbstractMetaType *meta_type = createMetaType();
@@ -1828,10 +1846,11 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
     meta_type->setIndirections(typeInfo.indirections);
     meta_type->setReference(typeInfo.is_reference);
     meta_type->setConstant(typeInfo.is_constant);
-    meta_type->setOriginalTypeDescription(_typei.toString());
+    meta_type->setOriginalTypeDescription(type_info.toString());
     decideUsagePattern(meta_type);
 
     if (meta_type->typeEntry()->isContainer()) {
+     //   qDebug()<<"The type is a container, descending...";
         ContainerTypeEntry::Type container_type = static_cast<const ContainerTypeEntry *>(type)->type();
 
         if (container_type == ContainerTypeEntry::StringListContainer) {
@@ -1855,6 +1874,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei,
                 info.setFunctionPointer(false);
                 info.setQualifiedName(ta.instantiationName().split("::"));
 
+            //    qDebug()<< "Foreaching in container thingy," << info.toString();
                 AbstractMetaType *targ_type = translateType(info, ok);
                 if (!(*ok)) {
                     delete meta_type;

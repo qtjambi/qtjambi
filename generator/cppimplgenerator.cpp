@@ -146,8 +146,6 @@ QString jni_signature(const AbstractMetaType *java_type, JNISignatureFormat form
             return "Ljava/lang/Thread;";
     }
 
-
-
     QString name = java_type->name();
     if (java_type->isObject()) {
         if (const InterfaceTypeEntry *ie
@@ -166,7 +164,8 @@ QString jni_signature(const AbstractMetaType *java_type, JNISignatureFormat form
 }
 
 static QHash<QString, QString> table;
-QString default_return_statement_qt(const AbstractMetaType *java_type, Generator::Option options = Generator::NoOption) {
+QString default_return_statement_qt(const AbstractMetaType *java_type,
+                                    Generator::Option options = Generator::NoOption) {
     QString returnStr = ((options & Generator::NoReturnStatement) == 0 ? "return" : "");
     if (!java_type)
         return returnStr;
@@ -199,7 +198,9 @@ QString default_return_statement_qt(const AbstractMetaType *java_type, Generator
         return returnStr + " QChar()";
     else if (java_type->isEnum())
         return returnStr + " " + java_type->typeEntry()->name() + "(0)";
-    else if (java_type->isContainer() && ((ContainerTypeEntry *)java_type->typeEntry())->type() == ContainerTypeEntry::StringListContainer)
+    else if (java_type->isContainer() &&
+            ((ContainerTypeEntry *)java_type->typeEntry())->type() ==
+                ContainerTypeEntry::StringListContainer)
         return returnStr + " " + java_type->typeEntry()->name() + "()";
     else if (java_type->isValue() || java_type->isContainer())
         return returnStr + " " + java_type->cppSignature() + "()";
@@ -320,7 +321,8 @@ QByteArray callXxxMethod(const QString &name) {
         return "CallObjectMethod";
 }
 
-QString jni_function_signature(QString package, QString class_name,
+QString jni_function_signature(QString package,
+                               QString class_name,
                                const QString &function_name,
                                const QString &return_type,
                                const QString &mangled_arguments = QString(),
@@ -415,7 +417,9 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     // Includes
     writeExtraIncludes(s, java_class);
     bool shellInclude = (java_class->generateShellClass()
-                         || java_class->queryFunctions(AbstractMetaClass::Signals | AbstractMetaClass::Visible | AbstractMetaClass::NotRemovedFromShell).size() > 0);
+                         || java_class->queryFunctions(AbstractMetaClass::Signals
+                         | AbstractMetaClass::Visible
+                         | AbstractMetaClass::NotRemovedFromShell).size() > 0);
 
     // need to include QPainter for all widgets...
     {
@@ -521,7 +525,9 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
             writeFinalFunction(s, function, java_class);
     }
 
-    class_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions | AbstractMetaClass::AbstractFunctions | AbstractMetaClass::NotRemovedFromTargetLang);
+    class_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions
+                                             | AbstractMetaClass::AbstractFunctions
+                                             | AbstractMetaClass::NotRemovedFromTargetLang);
     foreach(AbstractMetaFunction *function, class_funcs) {
         if (function->implementingClass() != java_class) {
             writeFinalFunction(s, function, java_class);

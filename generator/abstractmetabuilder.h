@@ -116,7 +116,7 @@ class AbstractMetaBuilder {
         QString translateDefaultValue(ArgumentModelItem item, AbstractMetaType *type,
                                       AbstractMetaFunction *fnc, AbstractMetaClass *,
                                       int argument_index);
-        AbstractMetaType *translateType(const TypeInfo &type, bool *ok, bool resolveType = true, bool resolveScope = true);
+        AbstractMetaType *translateType(const TypeInfo& type_info, bool* ok, bool resolveType = true, bool resolveScope = true);
 
         void decideUsagePattern(AbstractMetaType *type);
 

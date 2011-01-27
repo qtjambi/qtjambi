@@ -56,19 +56,31 @@ class TypeParser {
     public:
         struct Info {
             Info() : is_reference(false), is_constant(false), is_busted(false), indirections(0) { }
+
             QStringList qualified_name;
+            /**
+             * List of different parts of “array”, or [foo]
+             */
             QStringList arrays;
             QList<Info> template_instantiations;
-        uint is_reference : 1;
-        uint is_constant : 1;
-        uint is_busted : 1;
-        uint indirections : 5;
+            uint is_reference : 1;
+            uint is_constant : 1;
+            /**
+             * If the type is not supported / valid
+             */
+            uint is_busted : 1;
+            uint indirections : 5;
 
             QString toString() const;
-            QString instantiationName() const;
+            QString instantiationName() const; //private?
         };
 
+        /**
+         * Loops through the text token by token and returns the data  
+         */
         static Info parse(const QString &str);
+
+    private:
         static void parseIdentifier(Scanner &scanner, QStack<Info *> &stack, QString &array, bool in_array, bool &colon_prefix);
 };
 
