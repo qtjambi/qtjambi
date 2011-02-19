@@ -54,69 +54,66 @@
 
 namespace rpp {
 
-class pp_environment
-{
-public:
-    typedef std::vector<pp_macro*>::const_iterator const_iterator;
+    class pp_environment {
+        public:
+            typedef std::vector<pp_macro*>::const_iterator const_iterator;
 
-public:
-    pp_environment ():
-            current_line (0),
-            _M_hash_size (4093)
-    {
-        _M_base = (pp_macro **) memset (new pp_macro* [_M_hash_size], 0, _M_hash_size * sizeof (pp_macro*));
-    }
+        public:
+            pp_environment():
+                    current_line(0),
+                    _M_hash_size(4093) {
+                _M_base = (pp_macro **) memset(new pp_macro* [_M_hash_size], 0, _M_hash_size * sizeof(pp_macro*));
+            }
 
-    ~pp_environment ()
-    {
-        for (std::size_t i = 0; i < _M_macros.size (); ++i)
-            delete _M_macros [i];
+            ~pp_environment() {
+                for (std::size_t i = 0; i < _M_macros.size(); ++i)
+                    delete _M_macros [i];
 
-        delete [] _M_base;
-    }
+                delete [] _M_base;
+            }
 
-    const_iterator first_macro () const {
-        return _M_macros.begin ();
-    }
-    const_iterator last_macro () const {
-        return _M_macros.end ();
-    }
+            const_iterator first_macro() const {
+                return _M_macros.begin();
+            }
+            const_iterator last_macro() const {
+                return _M_macros.end();
+            }
 
-    void bind (pp_fast_string const *__name, pp_macro const &__macro);
+            void bind(pp_fast_string const *__name, pp_macro const &__macro);
 
-    void unbind (pp_fast_string const *__name);
+            void unbind(pp_fast_string const *__name);
 
-    void unbind (char const *__s, std::size_t __size);
+            void unbind(char const *__s, std::size_t __size);
 
-    /**
-     * Find corresponding pp_macro from hash table.
-     */
-    pp_macro *resolve (const rpp::pp_fast_string* p_name) const;
+            /**
+             * Find corresponding pp_macro from hash table.
+             */
+            pp_macro *resolve(const rpp::pp_fast_string* p_name) const;
 
-    /**
-     * Wrapper for resolve which takes char array and size_t and constructs 
-     * pp_fast_string for the resolve(pp_fast_string).
-     *
-     * Find corresponding pp_macro from hash table.
-     */
-    pp_macro *resolve (char const *__data, std::size_t __size) const;
+            /**
+             * Wrapper for resolve which takes char array and size_t and constructs
+             * pp_fast_string for the resolve(pp_fast_string).
+             *
+             * Find corresponding pp_macro from hash table.
+             */
+            pp_macro *resolve(char const *__data, std::size_t __size) const;
 
-    std::string current_file;
-    int current_line;
+            std::string current_file;
+            int current_line;
 
-private:
-    /**
-     * Returns hash value for string s.
-     */
-    std::size_t hash_code (pp_fast_string const &s) const;
+        private:
+            /**
+             * Returns hash value for string s.
+             */
+            std::size_t hash_code(pp_fast_string const &s) const;
 
-    void rehash();
+            void rehash();
 
-private:
-    std::vector<pp_macro*> _M_macros;
-    pp_macro **_M_base;
-    std::size_t _M_hash_size;
-};
+        private:
+            std::vector<pp_macro*> _M_macros;
+            pp_macro **_M_base;
+            std::size_t _M_hash_size;
+    };
 
 } // namespace rpp
 

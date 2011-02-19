@@ -63,20 +63,20 @@ class TypeParser {
              */
             QStringList arrays;
             QList<Info> template_instantiations;
-            uint is_reference : 1;
-            uint is_constant : 1;
+        uint is_reference : 1;
+        uint is_constant : 1;
             /**
              * If the type is not supported / valid
              */
-            uint is_busted : 1;
-            uint indirections : 5;
+        uint is_busted : 1;
+        uint indirections : 5;
 
             QString toString() const;
             QString instantiationName() const; //private?
         };
 
         /**
-         * Loops through the text token by token and returns the data  
+         * Loops through the text token by token and returns the data
          */
         static Info parse(const QString &str);
 

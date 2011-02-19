@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -63,17 +63,16 @@ GeneratorSet *GeneratorSet::getInstance() {
 void dumpMetaJavaTree(const AbstractMetaClassList &classes);
 
 GeneratorSetJava::GeneratorSetJava() :
-    no_java(false),
-    no_cpp_h(false),
-    no_cpp_impl(false),
-    no_metainfo(false),
-    build_class_list(false),
-    build_qdoc_japi(false),
-    docs_enabled(false),
-    do_ui_convert(false),
-    native_jump_table(false),
-    doc_dir("../../main/doc/jdoc")
-{}
+        no_java(false),
+        no_cpp_h(false),
+        no_cpp_impl(false),
+        no_metainfo(false),
+        build_class_list(false),
+        build_qdoc_japi(false),
+        docs_enabled(false),
+        do_ui_convert(false),
+        native_jump_table(false),
+        doc_dir("../../main/doc/jdoc") {}
 
 QString GeneratorSetJava::usage() {
     QString usage =
@@ -210,7 +209,7 @@ QString GeneratorSetJava::generate() {
     generators << priGenerator;
     contexts << "PriGenerator";
 
-    for (int i=0; i<generators.size(); ++i) {
+    for (int i = 0; i < generators.size(); ++i) {
         Generator *generator = generators.at(i);
         ReportHandler::setContext(contexts.at(i));
 
@@ -230,24 +229,23 @@ QString GeneratorSetJava::generate() {
                   "  - cpp-h.....: %6 (%7)\n"
                   "  - meta-info.: %8 (%9)\n"
                   "  - pri.......: %10 (%11)\n"
-                  )
-        .arg(builder.classes().size())
-        .arg(java_generator ? java_generator->numGenerated() : 0)
-        .arg(java_generator ? java_generator->numGeneratedAndWritten() : 0)
-        .arg(cpp_impl_generator ? cpp_impl_generator->numGenerated() : 0)
-        .arg(cpp_impl_generator ? cpp_impl_generator->numGeneratedAndWritten() : 0)
-        .arg(cpp_header_generator ? cpp_header_generator->numGenerated() : 0)
-        .arg(cpp_header_generator ? cpp_header_generator->numGeneratedAndWritten() : 0)
-        .arg(metainfo ? metainfo->numGenerated() : 0)
-        .arg(metainfo ? metainfo->numGeneratedAndWritten() : 0)
-        .arg(priGenerator->numGenerated())
-        .arg(priGenerator->numGeneratedAndWritten());
+                 )
+          .arg(builder.classes().size())
+          .arg(java_generator ? java_generator->numGenerated() : 0)
+          .arg(java_generator ? java_generator->numGeneratedAndWritten() : 0)
+          .arg(cpp_impl_generator ? cpp_impl_generator->numGenerated() : 0)
+          .arg(cpp_impl_generator ? cpp_impl_generator->numGeneratedAndWritten() : 0)
+          .arg(cpp_header_generator ? cpp_header_generator->numGenerated() : 0)
+          .arg(cpp_header_generator ? cpp_header_generator->numGeneratedAndWritten() : 0)
+          .arg(metainfo ? metainfo->numGenerated() : 0)
+          .arg(metainfo ? metainfo->numGeneratedAndWritten() : 0)
+          .arg(priGenerator->numGenerated())
+          .arg(priGenerator->numGeneratedAndWritten());
 
     return res;
 }
 
-void dumpMetaJavaAttributes(const AbstractMetaAttributes *attr)
-{
+void dumpMetaJavaAttributes(const AbstractMetaAttributes *attr) {
     if (attr->isNative()) printf(" native");
     if (attr->isAbstract()) printf(" abstract");
     if (attr->isFinalInTargetLang()) printf(" final(java)");
@@ -259,8 +257,7 @@ void dumpMetaJavaAttributes(const AbstractMetaAttributes *attr)
     if (attr->isFriendly()) printf(" friendly");
 }
 
-void dumpMetaJavaType(const AbstractMetaType *type)
-{
+void dumpMetaJavaType(const AbstractMetaType *type) {
     if (!type) {
         printf("[void]");
     } else {
@@ -281,8 +278,7 @@ void dumpMetaJavaType(const AbstractMetaType *type)
     }
 }
 
-void dumpMetaJavaArgument(const AbstractMetaArgument *arg)
-{
+void dumpMetaJavaArgument(const AbstractMetaArgument *arg) {
     printf("        ");
     dumpMetaJavaType(arg->type());
     printf(" %s", qPrintable(arg->argumentName()));
@@ -291,8 +287,7 @@ void dumpMetaJavaArgument(const AbstractMetaArgument *arg)
     printf("\n");
 }
 
-void dumpMetaJavaFunction(const AbstractMetaFunction *func)
-{
+void dumpMetaJavaFunction(const AbstractMetaFunction *func) {
     printf("    %s() - ", qPrintable(func->name()));
     dumpMetaJavaType(func->type());
     dumpMetaJavaAttributes(func);
@@ -303,26 +298,25 @@ void dumpMetaJavaFunction(const AbstractMetaFunction *func)
     if (func->isConstant()) printf(" const");
 
     printf("\n      arguments:\n");
-    foreach (AbstractMetaArgument *arg, func->arguments())
-        dumpMetaJavaArgument(arg);
+    foreach(AbstractMetaArgument *arg, func->arguments())
+    dumpMetaJavaArgument(arg);
 }
 
-void dumpMetaJavaClass(const AbstractMetaClass *cls)
-{
+void dumpMetaJavaClass(const AbstractMetaClass *cls) {
     printf("\nclass: %s, package: %s\n", qPrintable(cls->name()), qPrintable(cls->package()));
     if (cls->hasVirtualFunctions())
         printf("    shell based\n");
     printf("  baseclass: %s %s\n", qPrintable(cls->baseClassName()), cls->isQObject() ? "'QObject-type'" : "'not a QObject-type'");
     printf("  interfaces:");
-    foreach (AbstractMetaClass *iface, cls->interfaces())
-        printf(" %s", qPrintable(iface->name()));
+    foreach(AbstractMetaClass *iface, cls->interfaces())
+    printf(" %s", qPrintable(iface->name()));
     printf("\n");
     printf("  attributes:");
     dumpMetaJavaAttributes(cls);
 
     printf("\n  functions:\n");
-    foreach (const AbstractMetaFunction *func, cls->functions())
-        dumpMetaJavaFunction(func);
+    foreach(const AbstractMetaFunction *func, cls->functions())
+    dumpMetaJavaFunction(func);
 
     //     printf("\n  fields:\n");
     //     foreach (const AbstractMetaField *field, cls->fields())
@@ -333,9 +327,8 @@ void dumpMetaJavaClass(const AbstractMetaClass *cls)
     //         dumpMetaJavaEnum(e);
 }
 
-void dumpMetaJavaTree(const AbstractMetaClassList &classes)
-{
-    foreach (AbstractMetaClass *cls, classes) {
+void dumpMetaJavaTree(const AbstractMetaClassList &classes) {
+    foreach(AbstractMetaClass *cls, classes) {
         dumpMetaJavaClass(cls);
     }
 }

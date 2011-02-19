@@ -95,26 +95,26 @@ static QString protect(const QByteArray& str) {
     int len = (int) str.length();
     for (int k = 0; k < len; k++) {
         switch (str[k]) {
-        case '\"':
-            result += QString("&quot;");
-            break;
-        case '&':
-            result += QString("&amp;");
-            break;
-        case '>':
-            result += QString("&gt;");
-            break;
-        case '<':
-            result += QString("&lt;");
-            break;
-        case '\'':
-            result += QString("&apos;");
-            break;
-        default:
-            if ((uchar) str[k] < 0x20 && str[k] != '\n')
-                result += numericEntity((uchar) str[k]);
-            else
-                result += str[k];
+            case '\"':
+                result += QString("&quot;");
+                break;
+            case '&':
+                result += QString("&amp;");
+                break;
+            case '>':
+                result += QString("&gt;");
+                break;
+            case '<':
+                result += QString("&lt;");
+                break;
+            case '\'':
+                result += QString("&apos;");
+                break;
+            default:
+                if ((uchar) str[k] < 0x20 && str[k] != '\n')
+                    result += numericEntity((uchar) str[k]);
+                else
+                    result += str[k];
         }
     }
     return result;
@@ -230,8 +230,8 @@ void QDocGenerator::writeOverload(QTextStream &s,
 
 void QDocGenerator::write(QTextStream &s, const AbstractMetaEnumValue *java_enum_value) {
     s << "<enum-value java=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
-            << "            cpp=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
-            << "            value=\"" << java_enum_value->value() << "\"/>" << endl;
+    << "            cpp=\"" << protect(java_enum_value->name().toUtf8()) << "\"" << endl
+    << "            value=\"" << java_enum_value->value() << "\"/>" << endl;
 }
 
 void QDocGenerator::write(QTextStream &s, const AbstractMetaEnum *java_enum) {
@@ -240,7 +240,7 @@ void QDocGenerator::write(QTextStream &s, const AbstractMetaEnum *java_enum) {
 
     if (java_enum->typeEntry()->flags()) {
         s << "      flags=\"" << protect(java_enum->typeEntry()->flags()->targetLangName().toUtf8())
-                << "\"" << endl;
+        << "\"" << endl;
     }
 
     s << "      >" << endl;
@@ -253,8 +253,8 @@ void QDocGenerator::write(QTextStream &s, const AbstractMetaEnum *java_enum) {
 
 void QDocGenerator::writeSignal(QTextStream &s, const AbstractMetaFunction *java_function) {
     s << "<signal java=\""
-            << protect(java_function->targetLangSignature().toUtf8()) << "\" cpp=\""
-            << protect(java_function->signature().toUtf8()) << "\"/>" << endl;
+    << protect(java_function->targetLangSignature().toUtf8()) << "\" cpp=\""
+    << protect(java_function->signature().toUtf8()) << "\"/>" << endl;
 }
 
 void QDocGenerator::write(QTextStream &s, const AbstractMetaField *java_field) {
@@ -262,23 +262,23 @@ void QDocGenerator::write(QTextStream &s, const AbstractMetaField *java_field) {
     uint excluded_attributes = 0;
     setupForFunction(java_field->getter(), &included_attributes, &excluded_attributes);
     s << "<variablegetter java=\"" << protect(functionSignature(java_field->getter(), included_attributes, excluded_attributes).toUtf8())
-            << "\"" << endl
-            << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
+    << "\"" << endl
+    << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 
     included_attributes = NoBlockedSlot;
     excluded_attributes = 0;
     setupForFunction(java_field->setter(), &included_attributes, &excluded_attributes);
     s << "<variablesetter java=\"" << protect(functionSignature(java_field->setter(), included_attributes, excluded_attributes).toUtf8())
-            << "\"" << endl
-            << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
+    << "\"" << endl
+    << "    cpp=\"" << protect(java_field->name().toUtf8()) << "\" />" << endl;
 }
 
 void QDocGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
     s << "<class" << endl
-            << "   java=\"" << protect(java_class->name().toUtf8()) << "\"" << endl
-            << "   cpp=\"" << protect(java_class->typeEntry()->qualifiedCppName().toUtf8()) << "\"" << endl
-            << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl
-            << "   package=\"" << protect(java_class->package().toUtf8()) << "\"" << endl;
+    << "   java=\"" << protect(java_class->name().toUtf8()) << "\"" << endl
+    << "   cpp=\"" << protect(java_class->typeEntry()->qualifiedCppName().toUtf8()) << "\"" << endl
+    << "   java-extends=\"" << protect(java_class->baseClass() ? java_class->baseClass()->name().toUtf8() : "") << "\"" << endl
+    << "   package=\"" << protect(java_class->package().toUtf8()) << "\"" << endl;
 
     AbstractMetaClassList interfaces = java_class->interfaces();
     if (interfaces.count() > 0) {

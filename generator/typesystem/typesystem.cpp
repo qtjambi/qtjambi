@@ -65,8 +65,7 @@ QString strings_jobject = QLatin1String("jobject");
 //static void addRemoveFunctionToTemplates(TypeDatabase *db);
 
 
-QString Include::toString() const
-{
+QString Include::toString() const {
     if (type == IncludePath)
         return "#include <" + name + '>';
     else if (type == LocalPath)
@@ -79,8 +78,7 @@ QString Include::toString() const
  * The Visual Studio 2002 compiler doesn't support these symbols,
  * which our typedefs unforntuatly expand to.
  */
-QString fixCppTypeName(const QString &name)
-{
+QString fixCppTypeName(const QString &name) {
     if (name == "long long") return "qint64";
     else if (name == "unsigned long long") return "quint64";
     return name;
@@ -145,8 +143,7 @@ QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lin
 }
 
 
-QTextStream &CodeSnip::formattedCode(QTextStream &s, Indentor &indentor) const
-{
+QTextStream &CodeSnip::formattedCode(QTextStream &s, Indentor &indentor) const {
     QStringList lst(code().split("\n"));
     while (!lst.isEmpty()) {
         QString tmp = formattedCodeHelper(s, indentor, lst);
@@ -166,31 +163,29 @@ QString TemplateInstance::expandCode() const {
             res.replace(key, replaceRules[key]);
         }
         return "// TEMPLATE - " + m_name + " - START" + res + "// TEMPLATE - " + m_name + " - END";
-    }
-    else {
+    } else {
         ReportHandler::warning("insert-template referring to non-existing template '" + m_name + "'");
     }
     return QString();
 }
 
 
-QString FunctionModification::toString() const
-{
+QString FunctionModification::toString() const {
     QString str = signature + QLatin1String("->");
     if (modifiers & AccessModifierMask) {
         switch (modifiers & AccessModifierMask) {
-        case Private:
-            str += QLatin1String("private");
-            break;
-        case Protected:
-            str += QLatin1String("protected");
-            break;
-        case Public:
-            str += QLatin1String("public");
-            break;
-        case Friendly:
-            str += QLatin1String("friendly");
-            break;
+            case Private:
+                str += QLatin1String("private");
+                break;
+            case Protected:
+                str += QLatin1String("protected");
+                break;
+            case Public:
+                str += QLatin1String("public");
+                break;
+            case Friendly:
+                str += QLatin1String("friendly");
+                break;
         }
     }
 
@@ -201,7 +196,7 @@ QString FunctionModification::toString() const
     if (modifiers & Writable) str += QLatin1String("writable");
 
     if (modifiers & CodeInjection) {
-        foreach (CodeSnip s, snips) {
+        foreach(CodeSnip s, snips) {
             str += QLatin1String("\n//code injection:\n");
             str += s.code();
         }
@@ -218,8 +213,7 @@ QString FunctionModification::toString() const
 
 //static functions
 
-static void removeFunction(ComplexTypeEntry *e, const char *signature)
-{
+static void removeFunction(ComplexTypeEntry *e, const char *signature) {
     FunctionModification mod;
     mod.signature = QMetaObject::normalizedSignature(signature);
     mod.removal = TypeSystem::All;
@@ -233,8 +227,7 @@ static void removeFunction(ComplexTypeEntry *e, const char *signature)
 static void injectCode(ComplexTypeEntry *e,
                        const char *signature,
                        const QByteArray &code,
-                       const ArgumentMap &args)
-{
+                       const ArgumentMap &args) {
     CodeSnip snip;
     snip.language = TypeSystem::NativeCode;
     snip.position = CodeSnip::Beginning;

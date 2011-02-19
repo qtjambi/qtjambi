@@ -52,15 +52,13 @@ class TemplateEntry;
 
 typedef QHash<QString, TemplateEntry *> TemplateEntryHash;
 
-class TemplateInstance
-{
+class TemplateInstance {
     public:
         TemplateInstance(const QString &name)
-        : m_name(name)
-        {}
+                : m_name(name) {}
 
-        void addReplaceRule(const QString &name, const QString &value){
-            replaceRules[name]=value;
+        void addReplaceRule(const QString &name, const QString &value) {
+            replaceRules[name] = value;
         }
 
         QString expandCode() const;
@@ -133,33 +131,33 @@ struct Include {
 struct ReferenceCount {
     ReferenceCount() : threadSafe(false), access(Public) { }
     enum Action { // 0x01 - 0xff
-    Invalid     = 0x00,
-    Add         = 0x01,
-    AddAll      = 0x02,
-    Remove      = 0x04,
-    Set         = 0x08,
-    Ignore      = 0x10,
+        Invalid     = 0x00,
+        Add         = 0x01,
+        AddAll      = 0x02,
+        Remove      = 0x04,
+        Set         = 0x08,
+        Ignore      = 0x10,
 
-    ActionsMask = 0xff,
+        ActionsMask = 0xff,
 
-    Padding     = 0xffffffff
+        Padding     = 0xffffffff
     };
 
     enum Flag { // 0x100 - 0xf00
-    ThreadSafe      = 0x100,
-    Static          = 0x200,
-    DeclareVariable = 0x400,
+        ThreadSafe      = 0x100,
+        Static          = 0x200,
+        DeclareVariable = 0x400,
 
-    FlagsMask       = 0xf00
+        FlagsMask       = 0xf00
     };
 
     enum Access { // 0x1000 - 0xf000
-    Private     = 0x1000,
-    Protected   = 0x2000,
-    Friendly    = 0x3000,
-    Public      = 0x4000,
+        Private     = 0x1000,
+        Protected   = 0x2000,
+        Friendly    = 0x3000,
+        Public      = 0x4000,
 
-    AccessMask  = 0xf000
+        AccessMask  = 0xf000
     };
 
     Action action;
@@ -167,14 +165,13 @@ struct ReferenceCount {
     QString conditional;
     QString declareVariable;
 
-    uint threadSafe : 1;
+uint threadSafe : 1;
 
     uint access;
 };
 
 
-struct TypeRejection
-{
+struct TypeRejection {
     QString class_name;
     QString function_name;
     QString field_name;

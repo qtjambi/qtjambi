@@ -885,23 +885,23 @@ void JavaGenerator::writeReferenceCount(QTextStream &s, const ReferenceCount &re
     {
         Indentation indent(INDENT);
         switch (refCount.action) {
-        case ReferenceCount::Add:
-            s << INDENT << refCountVariableName << ".add(" << argumentName << ");" << endl;
-            break;
-        case ReferenceCount::AddAll:
-            s << INDENT << refCountVariableName << ".addAll(" << argumentName << ");" << endl;
-            break;
-        case ReferenceCount::Remove:
-            s << INDENT << "while (" << refCountVariableName << ".remove(" << argumentName << ")) ;" << endl;
-            break;
-        case ReferenceCount::Set: {
-            if (refCount.declareVariable.isEmpty())
-                s << INDENT << refCount.variableName << " = " << argumentName << ";" << endl;
-            else
-                s << INDENT << "com.trolltech.qt.GeneratorUtilities.setField(this, " << refCount.declareVariable << ".class, \"" << refCountVariableName << "\", " << argumentName << ");" << endl;
-        }
-        default:
-            break;
+            case ReferenceCount::Add:
+                s << INDENT << refCountVariableName << ".add(" << argumentName << ");" << endl;
+                break;
+            case ReferenceCount::AddAll:
+                s << INDENT << refCountVariableName << ".addAll(" << argumentName << ");" << endl;
+                break;
+            case ReferenceCount::Remove:
+                s << INDENT << "while (" << refCountVariableName << ".remove(" << argumentName << ")) ;" << endl;
+                break;
+            case ReferenceCount::Set: {
+                if (refCount.declareVariable.isEmpty())
+                    s << INDENT << refCount.variableName << " = " << argumentName << ";" << endl;
+                else
+                    s << INDENT << "com.trolltech.qt.GeneratorUtilities.setField(this, " << refCount.declareVariable << ".class, \"" << refCountVariableName << "\", " << argumentName << ");" << endl;
+            }
+            default:
+                break;
         };
     }
     s << INDENT << "}" << endl;
@@ -1509,11 +1509,11 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
             QList<ReferenceCount> referenceCounts = function->referenceCounts(java_class);
             foreach(ReferenceCount refCount, referenceCounts) {
                 variables[refCount.variableName] |=
-                        refCount.action
-                        | refCount.access
-                        | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
-                        | (function->isStatic() ? ReferenceCount::Static : 0)
-                        | (refCount.declareVariable.isEmpty() ? ReferenceCount::DeclareVariable : 0);
+                    refCount.action
+                    | refCount.access
+                    | (refCount.threadSafe ? ReferenceCount::ThreadSafe : 0)
+                    | (function->isStatic() ? ReferenceCount::Static : 0)
+                    | (refCount.declareVariable.isEmpty() ? ReferenceCount::DeclareVariable : 0);
             }
         }
 
@@ -1778,13 +1778,13 @@ void JavaGenerator::generate() {
             AbstractMetaFunctionList nativepointer_functions;
             for (int i = 0; i < m_nativepointer_functions.size(); ++i) {
                 AbstractMetaFunction *f =
-                        const_cast<AbstractMetaFunction *>(m_nativepointer_functions[i]);
+                    const_cast<AbstractMetaFunction *>(m_nativepointer_functions[i]);
                 if (f->ownerClass() == f->declaringClass() || f->isFinal())
                     nativepointer_functions.append(f);
             }
 
             s << "Number of public or protected functions with QNativePointer API: " <<
-                    nativepointer_functions.size() << endl;
+            nativepointer_functions.size() << endl;
             foreach(const AbstractMetaFunction *f, nativepointer_functions) {
                 if (last_class != f->ownerClass()) {
                     last_class = f->ownerClass();
@@ -1809,15 +1809,15 @@ void JavaGenerator::generate() {
             AbstractMetaFunctionList resettable_object_functions;
             for (int i = 0; i < m_resettable_object_functions.size(); ++i) {
                 AbstractMetaFunction *f =
-                        const_cast<AbstractMetaFunction *>(m_resettable_object_functions[i]);
+                    const_cast<AbstractMetaFunction *>(m_resettable_object_functions[i]);
                 if (f->ownerClass() == f->declaringClass() || f->isFinal())
                     resettable_object_functions.append(f);
             }
 
             s << "Number of public or protected functions that return a " <<
-                    "non-QObject object type, or that are virtual and take " <<
-                    "a non-QObject object type argument: " <<
-                    resettable_object_functions.size() << endl;
+            "non-QObject object type, or that are virtual and take " <<
+            "a non-QObject object type argument: " <<
+            resettable_object_functions.size() << endl;
             foreach(const AbstractMetaFunction *f, resettable_object_functions) {
                 if (last_class != f->ownerClass()) {
                     last_class = f->ownerClass();

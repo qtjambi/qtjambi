@@ -122,45 +122,45 @@ namespace rpp {
 
             for (; p_first != p_last; lines += (*p_first != '\n' ? 0 : 1), ++p_first) {
                 switch (state) {
-                default:
-                    assert(0);
-                    break;
+                    default:
+                        assert(0);
+                        break;
 
-                case MAYBE_BEGIN:
-                    if (*p_first != '/')
+                    case MAYBE_BEGIN:
+                        if (*p_first != '/')
+                            return p_first;
+
+                        state = BEGIN;
+                        break;
+
+                    case BEGIN:
+                        if (*p_first == '*')
+                            state = IN_COMMENT;
+                        else if (*p_first == '/')
+                            state = IN_CXX_COMMENT;
+                        else
+                            return p_first;
+                        break;
+
+                    case IN_COMMENT:
+                        if (*p_first == '*')
+                            state = MAYBE_END;
+                        break;
+
+                    case IN_CXX_COMMENT:
+                        if (*p_first == '\n')
+                            return p_first;
+                        break;
+
+                    case MAYBE_END:
+                        if (*p_first == '/')
+                            state = END;
+                        else if (*p_first != '*')
+                            state = IN_COMMENT;
+                        break;
+
+                    case END:
                         return p_first;
-
-                    state = BEGIN;
-                    break;
-
-                case BEGIN:
-                    if (*p_first == '*')
-                        state = IN_COMMENT;
-                    else if (*p_first == '/')
-                        state = IN_CXX_COMMENT;
-                    else
-                        return p_first;
-                    break;
-
-                case IN_COMMENT:
-                    if (*p_first == '*')
-                        state = MAYBE_END;
-                    break;
-
-                case IN_CXX_COMMENT:
-                    if (*p_first == '\n')
-                        return p_first;
-                    break;
-
-                case MAYBE_END:
-                    if (*p_first == '/')
-                        state = END;
-                    else if (*p_first != '*')
-                        state = IN_COMMENT;
-                    break;
-
-                case END:
-                    return p_first;
                 }
             }
 
@@ -228,31 +228,31 @@ namespace rpp {
 
             for (; first != last; ++first) {
                 switch (state) {
-                default:
-                    assert(0);
-                    break;
+                    default:
+                        assert(0);
+                        break;
 
-                case BEGIN:
-                    if (*first != '\"')
+                    case BEGIN:
+                        if (*first != '\"')
+                            return first;
+                        state = IN_STRING;
+                        break;
+
+                    case IN_STRING:
+                        assert(*first != '\n');
+
+                        if (*first == '\"')
+                            state = END;
+                        else if (*first == '\\')
+                            state = QUOTE;
+                        break;
+
+                    case QUOTE:
+                        state = IN_STRING;
+                        break;
+
+                    case END:
                         return first;
-                    state = IN_STRING;
-                    break;
-
-                case IN_STRING:
-                    assert(*first != '\n');
-
-                    if (*first == '\"')
-                        state = END;
-                    else if (*first == '\\')
-                        state = QUOTE;
-                    break;
-
-                case QUOTE:
-                    state = IN_STRING;
-                    break;
-
-                case END:
-                    return first;
                 }
 
                 lines += (*first != '\n' ? 0 : 1);
@@ -281,28 +281,28 @@ namespace rpp {
 
             for (; state != END && __first != __last; lines += (*__first != '\n' ? 0 : 1), ++__first) {
                 switch (state) {
-                default:
-                    assert(0);
-                    break;
+                    default:
+                        assert(0);
+                        break;
 
-                case BEGIN:
-                    if (*__first != '\'')
-                        return __first;
-                    state = IN_STRING;
-                    break;
+                    case BEGIN:
+                        if (*__first != '\'')
+                            return __first;
+                        state = IN_STRING;
+                        break;
 
-                case IN_STRING:
-                    assert(*__first != '\n');
+                    case IN_STRING:
+                        assert(*__first != '\n');
 
-                    if (*__first == '\'')
-                        state = END;
-                    else if (*__first == '\\')
-                        state = QUOTE;
-                    break;
+                        if (*__first == '\'')
+                            state = END;
+                        else if (*__first == '\\')
+                            state = QUOTE;
+                        break;
 
-                case QUOTE:
-                    state = IN_STRING;
-                    break;
+                    case QUOTE:
+                        state = IN_STRING;
+                        break;
                 }
             }
 
@@ -322,7 +322,7 @@ namespace rpp {
         int lines;
 
         /**
-         * Reads through first from ( to ) or , or to depth amount of ) if 
+         * Reads through first from ( to ) or , or to depth amount of ) if
          * content read has ( chars.
          */
         template <typename _InputIterator>
@@ -331,7 +331,7 @@ namespace rpp {
             lines = 0;
 
             while (first != last) {
-                if (!depth && (*first == ')' || *first == ',')) // last 
+                if (!depth && (*first == ')' || *first == ',')) // last
                     break;
                 else if (*first == '(') // sub block new
                     ++depth, ++first;

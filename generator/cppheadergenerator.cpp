@@ -145,7 +145,7 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
     writeWrapperClass(s, java_class);
 
     QString pro_file_name = java_class->package().replace(".", "_") + "/" +
-            java_class->package().replace(".", "_") + ".pri";
+                            java_class->package().replace(".", "_") + ".pri";
 
     if (!java_class->generateShellClass()) {
         s << "#endif" << endl << endl;
@@ -234,7 +234,7 @@ void CppHeaderGenerator::writePublicFunctionOverride(QTextStream &s,
         const AbstractMetaFunction *java_function) {
     s << "    ";
     writeFunctionSignature(s, java_function, 0, "__public_", Option(EnumAsInts |
-            ShowStatic | UnderscoreSpaces));
+                           ShowStatic | UnderscoreSpaces));
     s << ";" << endl;
 }
 

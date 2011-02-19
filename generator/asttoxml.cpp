@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -75,23 +75,22 @@ void astToXML(QString name) {
     FileModelItem dom = binder.run(ast);
 
     QFile outputFile;
-    if (!outputFile.open(stdout, QIODevice::WriteOnly))
-    {
+    if (!outputFile.open(stdout, QIODevice::WriteOnly)) {
         return;
     }
 
-    QXmlStreamWriter s( &outputFile);
-    s.setAutoFormatting( true );
+    QXmlStreamWriter s(&outputFile);
+    s.setAutoFormatting(true);
 
     s.writeStartElement("code");
 
     QHash<QString, NamespaceModelItem> namespaceMap = dom->namespaceMap();
-    foreach (NamespaceModelItem item, namespaceMap.values()) {
+    foreach(NamespaceModelItem item, namespaceMap.values()) {
         writeOutNamespace(s, item);
     }
 
     QHash<QString, ClassModelItem> typeMap = dom->classMap();
-    foreach (ClassModelItem item, typeMap.values()) {
+    foreach(ClassModelItem item, typeMap.values()) {
         writeOutClass(s, item);
     }
     s.writeEndElement();
@@ -103,17 +102,17 @@ void writeOutNamespace(QXmlStreamWriter &s, NamespaceModelItem &item) {
     s.writeAttribute("name", item->name());
 
     QHash<QString, NamespaceModelItem> namespaceMap = item->namespaceMap();
-    foreach (NamespaceModelItem item, namespaceMap.values()) {
+    foreach(NamespaceModelItem item, namespaceMap.values()) {
         writeOutNamespace(s, item);
     }
 
     QHash<QString, ClassModelItem> typeMap = item->classMap();
-    foreach (ClassModelItem item, typeMap.values()) {
+    foreach(ClassModelItem item, typeMap.values()) {
         writeOutClass(s, item);
     }
 
     QHash<QString, EnumModelItem> enumMap = item->enumMap();
-    foreach (EnumModelItem item, enumMap.values()) {
+    foreach(EnumModelItem item, enumMap.values()) {
         writeOutEnum(s, item);
     }
 
@@ -126,9 +125,9 @@ void writeOutEnum(QXmlStreamWriter &s, EnumModelItem &item) {
     s.writeAttribute("name", qualified_name);
 
     EnumeratorList enumList = item->enumerators();
-    for(int i=0; i < enumList.size() ; i++) {
+    for (int i = 0; i < enumList.size() ; i++) {
         s.writeStartElement("enumerator");
-        if( !enumList[i]->value().isEmpty() )
+        if (!enumList[i]->value().isEmpty())
             s.writeAttribute("value", enumList[i]->value());
         s.writeCharacters(enumList[i]->name());
 
@@ -143,7 +142,7 @@ void writeOutFunction(QXmlStreamWriter &s, FunctionModelItem &item) {
     s.writeAttribute("name", qualified_name);
 
     ArgumentList arguments = item->arguments();
-    for(int i=0; i < arguments.size() ; i++) {
+    for (int i = 0; i < arguments.size() ; i++) {
         s.writeStartElement("argument");
         s.writeAttribute("type",  arguments[i]->type().qualifiedName().join("::"));
         s.writeEndElement();
@@ -157,17 +156,17 @@ void writeOutClass(QXmlStreamWriter &s, ClassModelItem &item) {
     s.writeAttribute("name", qualified_name);
 
     QHash<QString, EnumModelItem> enumMap = item->enumMap();
-    foreach (EnumModelItem item, enumMap.values()) {
+    foreach(EnumModelItem item, enumMap.values()) {
         writeOutEnum(s, item);
     }
 
     QHash<QString, FunctionModelItem> functionMap = item->functionMap();
-    foreach (FunctionModelItem item, functionMap.values()) {
+    foreach(FunctionModelItem item, functionMap.values()) {
         writeOutFunction(s, item);
     }
 
     QHash<QString, ClassModelItem> typeMap = item->classMap();
-    foreach (ClassModelItem item, typeMap.values()) {
+    foreach(ClassModelItem item, typeMap.values()) {
         writeOutClass(s, item);
     }
     s.writeEndElement();

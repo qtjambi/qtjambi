@@ -9,8 +9,7 @@
 
 QString Wrapper::include_directory = QString();
 
-void ReportHandler_message_handler(const std::string &str)
-{
+void ReportHandler_message_handler(const std::string &str) {
     ReportHandler::warning(QString::fromStdString(str));
 }
 
@@ -85,7 +84,7 @@ void Wrapper::assignVariables() {
         typesystemFileName = default_system;
 
     //if filename or typesystem filename is still empty, show help
-    if (fileName.isEmpty() || typesystemFileName.isEmpty() )
+    if (fileName.isEmpty() || typesystemFileName.isEmpty())
         displayHelp(gs);
 
     //if generatorset can't read arguments, show help
@@ -151,7 +150,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --qt-include-directory=[dir]              \n",
            path_splitter, path_splitter);
 
-    printf("%s", qPrintable( generatorSet->usage()));
+    printf("%s", qPrintable(generatorSet->usage()));
     exit(0);
 }
 
@@ -163,15 +162,15 @@ QMap<QString, QString> Wrapper::parseArguments(int argc, char *argv[]) {
         QString arg(argv[i]);
         arg = arg.trimmed();
 
-        if( arg.startsWith("--") ) {
+        if (arg.startsWith("--")) {
             int split = arg.indexOf("=");
 
-            if( split > 0 )
+            if (split > 0)
                 args[arg.mid(2).left(split-2)] = arg.mid(split + 1).trimmed();
             else
                 args[arg.mid(2)] = QString();
 
-        } else if( arg.startsWith("-")) {
+        } else if (arg.startsWith("-")) {
             args[arg.mid(1)] = QString();
         } else {
             argNum++;

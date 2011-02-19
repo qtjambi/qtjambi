@@ -96,55 +96,55 @@ int rpp::pp::skipping() const {
 
 rpp::PP_DIRECTIVE_TYPE rpp::pp::find_directive(char const *p_directive, std::size_t p_size) const {
     switch (p_size) {
-    case 2: //if
-        if (p_directive[0] == 'i'
-                && p_directive[1] == 'f')
-            return PP_IF;
-        break;
+        case 2: //if
+            if (p_directive[0] == 'i'
+                    && p_directive[1] == 'f')
+                return PP_IF;
+            break;
 
-    case 4: //elif, else
-        if (p_directive[0] == 'e' && !strcmp(p_directive, "elif"))
-            return PP_ELIF;
-        else if (p_directive[0] == 'e' && !strcmp(p_directive, "else"))
-            return PP_ELSE;
-        break;
+        case 4: //elif, else
+            if (p_directive[0] == 'e' && !strcmp(p_directive, "elif"))
+                return PP_ELIF;
+            else if (p_directive[0] == 'e' && !strcmp(p_directive, "else"))
+                return PP_ELSE;
+            break;
 
-    case 5: //ifdef, undef, endif, error
-        if (p_directive[0] == 'i' && !strcmp(p_directive, "ifdef"))
-            return PP_IFDEF;
-        else if (p_directive[0] == 'u' && !strcmp(p_directive, "undef"))
-            return PP_UNDEF;
-        else if (p_directive[0] == 'e') {
-            if (!strcmp(p_directive, "endif"))
-                return PP_ENDIF;
-            else if (!strcmp(p_directive, "error"))
-                return PP_ERROR;
-        }
-        break;
+        case 5: //ifdef, undef, endif, error
+            if (p_directive[0] == 'i' && !strcmp(p_directive, "ifdef"))
+                return PP_IFDEF;
+            else if (p_directive[0] == 'u' && !strcmp(p_directive, "undef"))
+                return PP_UNDEF;
+            else if (p_directive[0] == 'e') {
+                if (!strcmp(p_directive, "endif"))
+                    return PP_ENDIF;
+                else if (!strcmp(p_directive, "error"))
+                    return PP_ERROR;
+            }
+            break;
 
-    case 6: //ifndef, define, pragma
-        if (p_directive[0] == 'i' && !strcmp(p_directive, "ifndef"))
-            return PP_IFNDEF;
-        else if (p_directive[0] == 'd' && !strcmp(p_directive, "define"))
-            return PP_DEFINE;
-        else if (p_directive[0] == 'p' && !strcmp(p_directive, "pragma"))
-            return PP_PRAGMA;
-        break;
+        case 6: //ifndef, define, pragma
+            if (p_directive[0] == 'i' && !strcmp(p_directive, "ifndef"))
+                return PP_IFNDEF;
+            else if (p_directive[0] == 'd' && !strcmp(p_directive, "define"))
+                return PP_DEFINE;
+            else if (p_directive[0] == 'p' && !strcmp(p_directive, "pragma"))
+                return PP_PRAGMA;
+            break;
 
-    case 7: //include, warning
-        if (p_directive[0] == 'i' && !strcmp(p_directive, "include"))
-            return PP_INCLUDE;
-        else if (p_directive[0] == 'w' && !strcmp(p_directive, "warning"))
-            return PP_WARNING;
-        break;
+        case 7: //include, warning
+            if (p_directive[0] == 'i' && !strcmp(p_directive, "include"))
+                return PP_INCLUDE;
+            else if (p_directive[0] == 'w' && !strcmp(p_directive, "warning"))
+                return PP_WARNING;
+            break;
 
-    case 12: //include_next
-        if (p_directive[0] == 'i' && !strcmp(p_directive, "include_next"))
-            return PP_INCLUDE_NEXT;
-        break;
+        case 12: //include_next
+            if (p_directive[0] == 'i' && !strcmp(p_directive, "include_next"))
+                return PP_INCLUDE_NEXT;
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
     std::cerr << "** WARNING unknown directive '#" << p_directive << "' at " << env.current_file << ":" << env.current_line << std::endl;
     return PP_UNKNOWN_DIRECTIVE;

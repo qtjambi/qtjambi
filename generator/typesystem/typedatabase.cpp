@@ -77,7 +77,7 @@ TypeEntry *TypeDatabase::findType(const QString &name) const {
         //qDebug()<<"findType()"<<entry;
         if (entry != 0 &&
                 (!entry->isPrimitive() ||
-                    static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
+                 static_cast<PrimitiveTypeEntry *>(entry)->preferredTargetLangType())) {
             return entry;
         }
     }
@@ -157,7 +157,7 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name) {
 }
 
 bool TypeDatabase::parseFile(const QString &filename, bool generate) {
-    qDebug()<<"Parsing file: "<<filename;
+    qDebug() << "Parsing file: " << filename;
     QFile file(filename);
     Q_ASSERT(file.exists());
     QXmlInputSource source(&file);
@@ -174,9 +174,9 @@ bool TypeDatabase::parseFile(const QString &filename, bool generate) {
     int newCount = m_entries.size();
 
     QString string = QString::fromLatin1("Parsed: '%1', %2 new entries")
-                               .arg(filename)
-                               .arg(newCount - count);
-    qDebug()<<string;
+                     .arg(filename)
+                     .arg(newCount - count);
+    qDebug() << string;
     //ReportHandler::debugSparse(string);
 
     return ok;

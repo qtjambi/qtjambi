@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -54,8 +54,7 @@ static QHash<char, QString> expandNamesJava;
 
 bool JumpTableGenerator::active = false;
 
-static QString simplifyName(const QString &name, const QString &context, const QString &funcName)
-{
+static QString simplifyName(const QString &name, const QString &context, const QString &funcName) {
     if (shortNames.size() == 0) {
         shortNames.insert("jboolean", "Z");
         shortNames.insert("jbyte", "B");
@@ -128,16 +127,14 @@ static QString expandNameJava(const QChar &c) {
 }
 
 
-void JumpTablePreprocessor::generate()
-{
+void JumpTablePreprocessor::generate() {
     ReportHandler::setContext("JumpTablePreprocessor");
-    foreach (AbstractMetaClass *cl, m_classes) {
+    foreach(AbstractMetaClass *cl, m_classes) {
         process(cl);
     }
 }
 
-void JumpTablePreprocessor::process(AbstractMetaClass *cls)
-{
+void JumpTablePreprocessor::process(AbstractMetaClass *cls) {
     // Skip generate=no classes, such as QFutureIterator
     if (cls->typeEntry()->codeGeneration() != TypeEntry::GenerateAll) {
 //         printf("skipping class: %s, generation is : %x vs %x\n",
@@ -157,16 +154,16 @@ void JumpTablePreprocessor::process(AbstractMetaClass *cls)
 
     // Native callbacks (all java functions require native callbacks)
     AbstractMetaFunctionList class_funcs = cls->functionsInTargetLang();
-    foreach (AbstractMetaFunction *function, class_funcs) {
+    foreach(AbstractMetaFunction *function, class_funcs) {
         if (!function->isEmptyFunction())
             process(function, &signatureList);
     }
 
 
     class_funcs = cls->queryFunctions(AbstractMetaClass::NormalFunctions
-                                             | AbstractMetaClass::AbstractFunctions
-                                             | AbstractMetaClass::NotRemovedFromTargetLang);
-    foreach (AbstractMetaFunction *function, class_funcs) {
+                                      | AbstractMetaClass::AbstractFunctions
+                                      | AbstractMetaClass::NotRemovedFromTargetLang);
+    foreach(AbstractMetaFunction *function, class_funcs) {
         if (function->implementingClass() != cls) {
             process(function, &signatureList);
         }
@@ -174,8 +171,7 @@ void JumpTablePreprocessor::process(AbstractMetaClass *cls)
 }
 
 
-QString JumpTablePreprocessor::signature(const AbstractMetaFunction *func)
-{
+QString JumpTablePreprocessor::signature(const AbstractMetaFunction *func) {
     QString signature;
     QString context = func->implementingClass()->name();
     QString functionSignature = func->signature();
@@ -186,7 +182,7 @@ QString JumpTablePreprocessor::signature(const AbstractMetaFunction *func)
         signature = simplifyName(CppImplGenerator::jniReturnName(func), context, functionSignature);
 
     AbstractMetaArgumentList args = func->arguments();
-    foreach (const AbstractMetaArgument *a, args) {
+    foreach(const AbstractMetaArgument *a, args) {
         if (!func->argumentRemoved(a->argumentIndex() + 1)) {
             if (!a->type()->hasNativeId())
                 signature += simplifyName(CppImplGenerator::translateType(a->type(), EnumAsInts),
@@ -200,8 +196,7 @@ QString JumpTablePreprocessor::signature(const AbstractMetaFunction *func)
 }
 
 
-void JumpTablePreprocessor::process(AbstractMetaFunction *func, SignatureTable *table)
-{
+void JumpTablePreprocessor::process(AbstractMetaFunction *func, SignatureTable *table) {
     if (!func->needsCallThrough())
         return;
 
@@ -225,33 +220,29 @@ void JumpTablePreprocessor::process(AbstractMetaFunction *func, SignatureTable *
 
 
 JumpTableGenerator::JumpTableGenerator(JumpTablePreprocessor *pp, PriGenerator *pri)
-    : m_preprocessor(pp),
-      m_prigenerator(pri)
-{
+        : m_preprocessor(pp),
+        m_prigenerator(pri) {
     active = true;
 }
 
 
-void JumpTableGenerator::generate()
-{
+void JumpTableGenerator::generate() {
     for (PackageJumpTable::const_iterator it = m_preprocessor->table()->constBegin();
-         it != m_preprocessor->table()->constEnd(); ++it) {
+            it != m_preprocessor->table()->constEnd(); ++it) {
         QString package = it.key();
         generatePackage(package, it.value());
     }
 }
 
 
-void JumpTableGenerator::generatePackage(const QString &packageName, const SignatureTable &table)
-{
+void JumpTableGenerator::generatePackage(const QString &packageName, const SignatureTable &table) {
     generateNativeTable(packageName, table);
     generateJavaTable(packageName, table);
 }
 
 
 void JumpTableGenerator::generateJavaTable(const QString &packageName,
-                                           const SignatureTable &table)
-{
+        const SignatureTable &table) {
     QString tableFile = QString("%1/%2/JTbl.java")
                         .arg(outputDirectory())
                         .arg(QString(packageName).replace(".", "/"));
@@ -273,7 +264,7 @@ void JumpTableGenerator::generateJavaTable(const QString &packageName,
 
         s << "    static native " << ret << " " << signature << "(int id, long nid";
 
-        for (int i=1; i<signature.size(); ++i) {
+        for (int i = 1; i < signature.size(); ++i) {
             s << ", " << expandNameJava(signature.at(i)) << " a" << i;
         }
 
@@ -285,8 +276,7 @@ void JumpTableGenerator::generateJavaTable(const QString &packageName,
 
 
 void JumpTableGenerator::generateNativeTable(const QString &packageName,
-                                             const SignatureTable &table)
-{
+        const SignatureTable &table) {
     QString tableFile = QString("%1/%2/nativejumptable.cpp")
                         .arg(outputDirectory())
                         .arg(CppGenerator::subDirectoryForPackage(packageName));
@@ -308,29 +298,29 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
         QString ret = expandNameJNI(signature.at(0));
 
         s << endl << endl
-          << "extern \"C\" Q_DECL_EXPORT " << ret << " JNICALL QTJAMBI_FUNCTION_PREFIX(Java_"
-          << QString(packageName).replace("_", "_1").replace(".", "_") << "_JTbl_" << signature << ")" << endl
-          << "(JNIEnv *e, jclass, jint id, jlong nid";
+        << "extern \"C\" Q_DECL_EXPORT " << ret << " JNICALL QTJAMBI_FUNCTION_PREFIX(Java_"
+        << QString(packageName).replace("_", "_1").replace(".", "_") << "_JTbl_" << signature << ")" << endl
+        << "(JNIEnv *e, jclass, jint id, jlong nid";
 
-        for (int i=1; i<signature.size(); ++i) {
+        for (int i = 1; i < signature.size(); ++i) {
             s << ", " << expandNameJNI(signature.at(i)) << " a" << i;
         }
 
         s << ", jobject __this)" << endl
-          << "{" << endl
-          << "Q_UNUSED(__this);" << endl
-          << "Q_UNUSED(nid);" << endl
-          << "switch (id) { " << endl;
+        << "{" << endl
+        << "Q_UNUSED(__this);" << endl
+        << "Q_UNUSED(nid);" << endl
+        << "switch (id) { " << endl;
 
         AbstractMetaFunctionList functions = sit.value();
         bool hasReturn = signature.at(0) != 'V';
 
-        foreach (AbstractMetaFunction *f, functions) {
+        foreach(AbstractMetaFunction *f, functions) {
             const AbstractMetaClass *cls = f->ownerClass();
             s << endl
-              << "// " << cls->name() << "::" << f->signature() << ", declaring=" << f->declaringClass()->name() << ", implementing=" << f->implementingClass()->name() << endl
-              << "case " << f->jumpTableId() << ":" << endl
-              << "extern ";
+            << "// " << cls->name() << "::" << f->signature() << ", declaring=" << f->declaringClass()->name() << ", implementing=" << f->implementingClass()->name() << endl
+            << "case " << f->jumpTableId() << ":" << endl
+            << "extern ";
             CppImplGenerator::writeFunctionName(s, f, cls, CppImplGenerator::ReturnType);
             s << endl;
             CppImplGenerator::writeFinalFunctionArguments(s, f, "object");
@@ -350,12 +340,12 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
             else
                 s << ", __this, nid";
 
-            for (int i=1; i<signature.size(); ++i) {
+            for (int i = 1; i < signature.size(); ++i) {
                 s << ", a" << i;
             }
 
             s << ");" << endl
-              << "break;" << endl;
+            << "break;" << endl;
         }
 
         s << "} // switch..." << endl;

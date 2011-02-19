@@ -50,58 +50,54 @@
 
 namespace rpp {
 
-class pp_null_output_iterator
-            : public std::iterator<std::output_iterator_tag, void, void, void, void>
-{
-public:
-    pp_null_output_iterator() {}
+    class pp_null_output_iterator
+                : public std::iterator<std::output_iterator_tag, void, void, void, void> {
+        public:
+            pp_null_output_iterator() {}
 
-    template <typename _Tp>
-    pp_null_output_iterator &operator=(_Tp const &)
-    {
-        return *this;
-    }
+            template <typename _Tp>
+            pp_null_output_iterator &operator=(_Tp const &) {
+                return *this;
+            }
 
-    inline pp_null_output_iterator &operator * () {
-        return *this;
-    }
-    inline pp_null_output_iterator &operator ++ () {
-        return *this;
-    }
-    inline pp_null_output_iterator operator ++ (int) {
-        return *this;
-    }
-};
+            inline pp_null_output_iterator &operator * () {
+                return *this;
+            }
+            inline pp_null_output_iterator &operator ++ () {
+                return *this;
+            }
+            inline pp_null_output_iterator operator ++ (int) {
+                return *this;
+            }
+    };
 
-template <typename _Container>
-class pp_output_iterator
-            : public std::iterator<std::output_iterator_tag, void, void, void, void>
-{
-    std::string &_M_result;
+    template <typename _Container>
+    class pp_output_iterator
+                : public std::iterator<std::output_iterator_tag, void, void, void, void> {
+            std::string &_M_result;
 
-public:
-    explicit pp_output_iterator(std::string &__result):
-            _M_result (__result) {}
+        public:
+            explicit pp_output_iterator(std::string &__result):
+                    _M_result(__result) {}
 
-    inline pp_output_iterator &operator=(typename _Container::const_reference __v)
-    {
-        if (_M_result.capacity () == _M_result.size ())
-            _M_result.reserve (_M_result.capacity () << 2);
+            inline pp_output_iterator &operator=(typename _Container::const_reference __v) {
+                if (_M_result.capacity() == _M_result.size())
+                    _M_result.reserve(_M_result.capacity() << 2);
 
-        _M_result.push_back(__v);
-        return *this;
-    }
+                _M_result.push_back(__v);
+                return *this;
+            }
 
-    inline pp_output_iterator &operator * () {
-        return *this;
-    }
-    inline pp_output_iterator &operator ++ () {
-        return *this;
-    }
-    inline pp_output_iterator operator ++ (int) {
-        return *this;
-    }
-};
+            inline pp_output_iterator &operator * () {
+                return *this;
+            }
+            inline pp_output_iterator &operator ++ () {
+                return *this;
+            }
+            inline pp_output_iterator operator ++ (int) {
+                return *this;
+            }
+    };
 
 } // namespace rpp
 

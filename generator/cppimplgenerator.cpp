@@ -199,8 +199,8 @@ QString default_return_statement_qt(const AbstractMetaType *java_type,
     else if (java_type->isEnum())
         return returnStr + " " + java_type->typeEntry()->name() + "(0)";
     else if (java_type->isContainer() &&
-            ((ContainerTypeEntry *)java_type->typeEntry())->type() ==
-                ContainerTypeEntry::StringListContainer)
+             ((ContainerTypeEntry *)java_type->typeEntry())->type() ==
+             ContainerTypeEntry::StringListContainer)
         return returnStr + " " + java_type->typeEntry()->name() + "()";
     else if (java_type->isValue() || java_type->isContainer())
         return returnStr + " " + java_type->cppSignature() + "()";
@@ -418,8 +418,8 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     writeExtraIncludes(s, java_class);
     bool shellInclude = (java_class->generateShellClass()
                          || java_class->queryFunctions(AbstractMetaClass::Signals
-                         | AbstractMetaClass::Visible
-                         | AbstractMetaClass::NotRemovedFromShell).size() > 0);
+                                                       | AbstractMetaClass::Visible
+                                                       | AbstractMetaClass::NotRemovedFromShell).size() > 0);
 
     // need to include QPainter for all widgets...
     {
@@ -526,8 +526,8 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     }
 
     class_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions
-                                             | AbstractMetaClass::AbstractFunctions
-                                             | AbstractMetaClass::NotRemovedFromTargetLang);
+                  | AbstractMetaClass::AbstractFunctions
+                  | AbstractMetaClass::NotRemovedFromTargetLang);
     foreach(AbstractMetaFunction *function, class_funcs) {
         if (function->implementingClass() != java_class) {
             writeFinalFunction(s, function, java_class);
@@ -2552,19 +2552,19 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         << INDENT << "jobject " << java_name << " = ";
 
         switch (type->type()) {
-        case ContainerTypeEntry::LinkedListContainer:
-        case ContainerTypeEntry::QueueContainer:
-            s << "qtjambi_linkedlist_new(__jni_env)";
-            break;
-        case ContainerTypeEntry::StackContainer:
-            s << "qtjambi_stack_new(__jni_env)";
-            break;
-        case ContainerTypeEntry::SetContainer:
-            s << "qtjambi_hashset_new(__jni_env)";
-            break;
-        default:
-            s << "qtjambi_arraylist_new(__jni_env, " << qt_name << ".size())";
-            break;
+            case ContainerTypeEntry::LinkedListContainer:
+            case ContainerTypeEntry::QueueContainer:
+                s << "qtjambi_linkedlist_new(__jni_env)";
+                break;
+            case ContainerTypeEntry::StackContainer:
+                s << "qtjambi_stack_new(__jni_env)";
+                break;
+            case ContainerTypeEntry::SetContainer:
+                s << "qtjambi_hashset_new(__jni_env)";
+                break;
+            default:
+                s << "qtjambi_arraylist_new(__jni_env, " << qt_name << ".size())";
+                break;
         }
 
         s << ";" << endl

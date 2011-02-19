@@ -183,7 +183,7 @@ void DocParser::build() {
 
         delete m_dom;
         m_dom = 0;
-        qDebug()<<"Reading document file from" << m_doc_file << "failed.";
+        qDebug() << "Reading document file from" << m_doc_file << "failed.";
 
         return;
     }

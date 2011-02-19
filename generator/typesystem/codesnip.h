@@ -9,41 +9,38 @@
 class Indentor;
 typedef QMap<int, QString> ArgumentMap;
 
-class CodeSnipFragment{
+class CodeSnipFragment {
     private:
         const QString m_code;
         TemplateInstance *m_instance;
 
     public:
         CodeSnipFragment(const QString &code)
-        : m_code(code),
-        m_instance(0)
-        {}
+                : m_code(code),
+                m_instance(0) {}
 
         CodeSnipFragment(TemplateInstance *instance)
-        : m_instance(instance)
-        {}
+                : m_instance(instance) {}
 
         QString code() const;
 };
 
-class CodeSnipAbstract{
+class CodeSnipAbstract {
     public:
         QString code() const;
 
-        void addCode(const QString &code){
+        void addCode(const QString &code) {
             codeList.append(new CodeSnipFragment(code));
         }
 
-        void addTemplateInstance(TemplateInstance *ti){
+        void addTemplateInstance(TemplateInstance *ti) {
             codeList.append(new CodeSnipFragment(ti));
         }
 
         QList<CodeSnipFragment*> codeList;
 };
 
-class CustomFunction : public CodeSnipAbstract
-{
+class CustomFunction : public CodeSnipAbstract {
     public:
         CustomFunction(const QString &n = QString()) : name(n) { }
 
@@ -51,12 +48,10 @@ class CustomFunction : public CodeSnipAbstract
         QString param_name;
 };
 
-class TemplateEntry : public CodeSnipAbstract
-{
+class TemplateEntry : public CodeSnipAbstract {
     public:
         TemplateEntry(const QString &name)
-        : m_name(name)
-        {
+                : m_name(name) {
         };
 
         QString name() const {
@@ -67,8 +62,7 @@ class TemplateEntry : public CodeSnipAbstract
         QString m_name;
 };
 
-class CodeSnip : public CodeSnipAbstract
-{
+class CodeSnip : public CodeSnipAbstract {
     public:
         enum Position {
             Beginning,

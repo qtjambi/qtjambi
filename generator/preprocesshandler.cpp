@@ -14,8 +14,7 @@ PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, con
         ppconfig(":/trolltech/generator/parser/rpp/pp-qt-configuration"),
         sourceFile(sourceFile),
         targetFile(targetFile),
-        phononinclude(phononinclude)
-{
+        phononinclude(phononinclude) {
     //empty space for useless comments
 }
 
@@ -28,12 +27,12 @@ bool PreprocessHandler::handler() {
 
     QByteArray ba = file.readAll();
     file.close();
-    preprocess.operator() (ba.constData(), ba.constData() + ba.size(), null_out);
+    preprocess.operator()(ba.constData(), ba.constData() + ba.size(), null_out);
 
     QStringList includes = setIncludes();
 
-    foreach (QString include, includes)
-        preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
+    foreach(QString include, includes)
+    preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
 
     QString currentDir = QDir::current().absolutePath();
 
@@ -48,14 +47,14 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
     QDir::setCurrent(sourceInfo.absolutePath());
 
     std::string result;
-    result.reserve (20 * 1024); // 20K
+    result.reserve(20 * 1024);  // 20K
 
     result += "# 1 \"builtins\"\n";
     result += "# 1 \"";
     result += sourceFile.toStdString();
     result += "\"\n";
 
-    qDebug()<<"Processing source"<<sourceInfo.absolutePath()<<sourceInfo.fileName();
+    qDebug() << "Processing source" << sourceInfo.absolutePath() << sourceInfo.fileName();
     preprocess.file(sourceInfo.fileName().toStdString(),
                     rpp::pp_output_iterator<std::string> (result));
 
@@ -75,12 +74,13 @@ QStringList PreprocessHandler::setIncludes() {
 
     // Include Qt
     QString includedir;
-    if(Wrapper::include_directory != "") {
+    if (Wrapper::include_directory != "") {
         includedir = Wrapper::include_directory;
 #if defined(Q_OS_MAC)
     } else includedir = "/Library/Frameworks";
 #else
-    } else includedir = "/usr/include/qt4";
+    }
+    else includedir = "/usr/include/qt4";
 #endif
 
     QString phonon_include_dir;
@@ -88,7 +88,7 @@ QStringList PreprocessHandler::setIncludes() {
         phonon_include_dir = phononinclude;
     } else {
 #if defined(Q_OS_MAC)
-    phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
+        phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
 #else
         phonon_include_dir = includedir;
 #endif

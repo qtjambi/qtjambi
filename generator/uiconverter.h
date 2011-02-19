@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -49,39 +49,38 @@
 
 #include <QtXml>
 
-class UiConverter
-{
-public:
-    enum SearchType {
-        SignalSearch,
-        SlotSearch
-    };
+class UiConverter {
+    public:
+        enum SearchType {
+            SignalSearch,
+            SlotSearch
+        };
 
-    void setClasses(const AbstractMetaClassList &classes) { m_java_classes = classes; }
-    AbstractMetaClassList classes() const { return m_java_classes; }
+        void setClasses(const AbstractMetaClassList &classes) { m_java_classes = classes; }
+        AbstractMetaClassList classes() const { return m_java_classes; }
 
-    void convertToJui(const QString &uiFile, const QString &customWidgetFiles);
+        void convertToJui(const QString &uiFile, const QString &customWidgetFiles);
 
-private:
-    typedef QPair<QString, AbstractMetaClass *> CustomWidget;
+    private:
+        typedef QPair<QString, AbstractMetaClass *> CustomWidget;
 
-    void traverse(QDomNode node, QDomDocument *doc);
-    void fixUiNode(QDomElement node, QDomDocument *doc);
-    void fixSetNode(QDomElement node, QDomDocument *doc);
-    void fixEnumNode(QDomElement node, QDomDocument *doc);
-    void fixConnectionNode(QDomElement node, QDomDocument *doc);
-    void fixWidgetNode(QDomElement, QDomDocument *doc);
-    void fixCustomWidgetNode(QDomElement, QDomDocument *doc);
+        void traverse(QDomNode node, QDomDocument *doc);
+        void fixUiNode(QDomElement node, QDomDocument *doc);
+        void fixSetNode(QDomElement node, QDomDocument *doc);
+        void fixEnumNode(QDomElement node, QDomDocument *doc);
+        void fixConnectionNode(QDomElement node, QDomDocument *doc);
+        void fixWidgetNode(QDomElement, QDomDocument *doc);
+        void fixCustomWidgetNode(QDomElement, QDomDocument *doc);
 
-    void traverseCustomWidgets(const QString &customWidgetFiles);
-    void traverseCustomWidgetFile(const QString &customWidgetFile);
-    QString translateEnumValue(const QString &enumValue);
-    const AbstractMetaFunction *findFunction(AbstractMetaClass *javaClass, const QString &signature,
-                                         SearchType type);
+        void traverseCustomWidgets(const QString &customWidgetFiles);
+        void traverseCustomWidgetFile(const QString &customWidgetFile);
+        QString translateEnumValue(const QString &enumValue);
+        const AbstractMetaFunction *findFunction(AbstractMetaClass *javaClass, const QString &signature,
+                SearchType type);
 
-    AbstractMetaClassList m_java_classes;
-    QHash<QString, AbstractMetaClass *> m_named_widgets;
-    QMultiMap<QString, CustomWidget> m_custom_widgets;
+        AbstractMetaClassList m_java_classes;
+        QHash<QString, AbstractMetaClass *> m_named_widgets;
+        QMultiMap<QString, CustomWidget> m_custom_widgets;
 };
 
 #endif // UICONVERTER_H

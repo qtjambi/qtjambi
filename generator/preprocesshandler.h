@@ -9,12 +9,12 @@
 #include "parser/rpp/pp-environment.h"
 
 class PreprocessHandler {
-    
+
     public:
         PreprocessHandler(QString sourceFile, QString targetFile, const QString &phononinclude);
-        
+
         bool handler();
-        
+
     private:
         rpp::pp_environment env;
         rpp::pp preprocess;
@@ -23,16 +23,16 @@ class PreprocessHandler {
         const char *ppconfig;
         QString sourceFile;
         QString targetFile;
-        
+
         QStringList setIncludes();
-        
+
         /**
          * Reads through master include file and writes preprocessed file for actual
          * processing of headers.
-         * 
+         *
          * TODO: more indepth description of this system somewhere
          */
-        void writeTargetFile( QString sourceFile, QString targetFile, QString currentDir);
+        void writeTargetFile(QString sourceFile, QString targetFile, QString currentDir);
         QString phononinclude;
 };
 

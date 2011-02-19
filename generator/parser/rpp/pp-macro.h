@@ -76,14 +76,14 @@ namespace rpp {
 
         inline pp_macro() :
 #if defined (PP_WITH_MACRO_POSITION)
-                file ( 0 ),
+                file(0),
 #endif
-                name ( 0 ),
-                definition ( 0 ),
-                state ( 0 ),
-                lines ( 0 ),
-                next ( 0 ),
-                hash_code ( 0 ) {}
+                name(0),
+                definition(0),
+                state(0),
+                lines(0),
+                next(0),
+                hash_code(0) {}
     };
 
 } // namespace rpp

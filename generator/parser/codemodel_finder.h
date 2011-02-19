@@ -11,7 +11,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -19,12 +19,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -32,7 +32,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -54,36 +54,34 @@
 class TokenStream;
 class Binder;
 
-class CodeModelFinder: protected DefaultVisitor
-{
-  enum ResolvePolicy
-  {
-    ResolveScope,
-    ResolveItem
-  };
+class CodeModelFinder: protected DefaultVisitor {
+        enum ResolvePolicy {
+            ResolveScope,
+            ResolveItem
+        };
 
-public:
-  CodeModelFinder(CodeModel *model, Binder *binder);
-  virtual ~CodeModelFinder();
+    public:
+        CodeModelFinder(CodeModel *model, Binder *binder);
+        virtual ~CodeModelFinder();
 
-  ScopeModelItem resolveScope(NameAST *name, ScopeModelItem scope);
+        ScopeModelItem resolveScope(NameAST *name, ScopeModelItem scope);
 
-  inline CodeModel *model() const { return _M_model; }
+        inline CodeModel *model() const { return _M_model; }
 
-protected:
-  virtual void visitName(NameAST *node);
-  virtual void visitUnqualifiedName(UnqualifiedNameAST *node);
+    protected:
+        virtual void visitName(NameAST *node);
+        virtual void visitUnqualifiedName(UnqualifiedNameAST *node);
 
-  ScopeModelItem changeCurrentScope(ScopeModelItem scope);
+        ScopeModelItem changeCurrentScope(ScopeModelItem scope);
 
-private:
-  CodeModel *_M_model;
-  Binder *_M_binder;
-  TokenStream *_M_token_stream;
-  NameCompiler name_cc;
+    private:
+        CodeModel *_M_model;
+        Binder *_M_binder;
+        TokenStream *_M_token_stream;
+        NameCompiler name_cc;
 
-  ScopeModelItem _M_current_scope;
-  ResolvePolicy _M_resolve_policy;
+        ScopeModelItem _M_current_scope;
+        ResolvePolicy _M_resolve_policy;
 };
 
 #endif // CODEMODEL_FINDER_H

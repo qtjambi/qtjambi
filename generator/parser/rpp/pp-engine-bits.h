@@ -189,7 +189,7 @@ namespace rpp {
 
                 if (find_header_protection(first, last, &protection)
                         && env.resolve(&tmp) != 0) {
-                     std::cerr << "** DEBUG found header protection:" << protection << std::endl;
+                    std::cerr << "** DEBUG found header protection:" << protection << std::endl;
                     return;
                 }
 #endif
@@ -425,42 +425,42 @@ namespace rpp {
 
                 PP_DIRECTIVE_TYPE directive = find_directive(given_directive, size);
                 switch (directive) {
-                case PP_DEFINE:
-                    if (! skipping())
-                        return handle_define(first, last);
-                    break;
+                    case PP_DEFINE:
+                        if (! skipping())
+                            return handle_define(first, last);
+                        break;
 
-                case PP_INCLUDE:
-                case PP_INCLUDE_NEXT:
-                    if (! skipping())
-                        return handle_include(directive == PP_INCLUDE_NEXT, first, last, result);
-                    break;
+                    case PP_INCLUDE:
+                    case PP_INCLUDE_NEXT:
+                        if (! skipping())
+                            return handle_include(directive == PP_INCLUDE_NEXT, first, last, result);
+                        break;
 
-                case PP_UNDEF:
-                    if (! skipping())
-                        return handle_undef(first, last);
-                    break;
+                    case PP_UNDEF:
+                        if (! skipping())
+                            return handle_undef(first, last);
+                        break;
 
-                case PP_ELIF:
-                    return handle_elif(first, last);
+                    case PP_ELIF:
+                        return handle_elif(first, last);
 
-                case PP_ELSE:
-                    return handle_else(first, last);
+                    case PP_ELSE:
+                        return handle_else(first, last);
 
-                case PP_ENDIF:
-                    return handle_endif(first, last);
+                    case PP_ENDIF:
+                        return handle_endif(first, last);
 
-                case PP_IF:
-                    return handle_if(first, last);
+                    case PP_IF:
+                        return handle_if(first, last);
 
-                case PP_IFDEF:
-                    return handle_ifdef(false, first, last);
+                    case PP_IFDEF:
+                        return handle_ifdef(false, first, last);
 
-                case PP_IFNDEF:
-                    return handle_ifdef(true, first, last);
+                    case PP_IFNDEF:
+                        return handle_ifdef(true, first, last);
 
-                default:
-                    break;
+                    default:
+                        break;
                 }
 
                 return first;
@@ -502,7 +502,7 @@ namespace rpp {
 
                 std::string filepath;
                 FILE *fp = find_include_file(filename, &filepath, quote == '>' ?
-                        INCLUDE_GLOBAL : INCLUDE_LOCAL, skip_current_path);
+                                             INCLUDE_GLOBAL : INCLUDE_LOCAL, skip_current_path);
 
 #if defined (PP_HOOK_ON_FILE_INCLUDED)
                 PP_HOOK_ON_FILE_INCLUDED(env.current_file, fp ? filepath : filename, fp);
@@ -653,71 +653,71 @@ namespace rpp {
                 __first = next_token(__first, __last, &token);
 
                 switch (token) {
-                case TOKEN_NUMBER:
-                    result->set_long(token_value);
-                    break;
+                    case TOKEN_NUMBER:
+                        result->set_long(token_value);
+                        break;
 
-                case TOKEN_UNUMBER:
-                    result->set_ulong(token_uvalue);
-                    break;
+                    case TOKEN_UNUMBER:
+                        result->set_ulong(token_uvalue);
+                        break;
 
-                case TOKEN_DEFINED:
-                    __first = next_token(__first, __last, &token);
-
-                    if (token == '(') {
-                        expect_paren = true;
+                    case TOKEN_DEFINED:
                         __first = next_token(__first, __last, &token);
-                    }
 
-                    if (token != TOKEN_IDENTIFIER) {
-                        std::cerr << "** WARNING expected ``identifier'' found:" << char(token) << std::endl;
+                        if (token == '(') {
+                            expect_paren = true;
+                            __first = next_token(__first, __last, &token);
+                        }
+
+                        if (token != TOKEN_IDENTIFIER) {
+                            std::cerr << "** WARNING expected ``identifier'' found:" << char(token) << std::endl;
+                            result->set_long(0);
+                            break;
+                        }
+
+                        result->set_long(env.resolve(token_text->c_str(), token_text->size()) != 0);
+
+                        next_token(__first, __last, &token);    // skip '('
+
+                        if (expect_paren) {
+                            _InputIterator next = next_token(__first, __last, &token);
+                            if (token != ')')
+                                std::cerr << "** WARNING expected ``)''" << std::endl;
+                            else
+                                __first = next;
+                        }
+                        break;
+
+                    case TOKEN_IDENTIFIER:
                         result->set_long(0);
                         break;
-                    }
 
-                    result->set_long(env.resolve(token_text->c_str(), token_text->size()) != 0);
+                    case '-':
+                        __first = eval_primary(__first, __last, result);
+                        result->set_long(- result->l);
+                        return __first;
 
-                    next_token(__first, __last, &token);    // skip '('
+                    case '+':
+                        __first = eval_primary(__first, __last, result);
+                        return __first;
 
-                    if (expect_paren) {
-                        _InputIterator next = next_token(__first, __last, &token);
+                    case '!':
+                        __first = eval_primary(__first, __last, result);
+                        result->set_long(result->is_zero());
+                        return __first;
+
+                    case '(':
+                        __first = eval_constant_expression(__first, __last, result);
+                        next_token(__first, __last, &token);
+
                         if (token != ')')
-                            std::cerr << "** WARNING expected ``)''" << std::endl;
+                            std::cerr << "** WARNING expected ``)'' = " << token << std::endl;
                         else
-                            __first = next;
-                    }
-                    break;
+                            __first = next_token(__first, __last, &token);
+                        break;
 
-                case TOKEN_IDENTIFIER:
-                    result->set_long(0);
-                    break;
-
-                case '-':
-                    __first = eval_primary(__first, __last, result);
-                    result->set_long(- result->l);
-                    return __first;
-
-                case '+':
-                    __first = eval_primary(__first, __last, result);
-                    return __first;
-
-                case '!':
-                    __first = eval_primary(__first, __last, result);
-                    result->set_long(result->is_zero());
-                    return __first;
-
-                case '(':
-                    __first = eval_constant_expression(__first, __last, result);
-                    next_token(__first, __last, &token);
-
-                    if (token != ')')
-                        std::cerr << "** WARNING expected ``)'' = " << token << std::endl;
-                    else
-                        __first = next_token(__first, __last, &token);
-                    break;
-
-                default:
-                    result->set_long(0);
+                    default:
+                        result->set_long(0);
                 }
 
                 return __first;
@@ -812,25 +812,25 @@ namespace rpp {
                     __first = eval_shift(next, __last, &value);
 
                     switch (token) {
-                    default:
-                        assert(0);
-                        break;
+                        default:
+                            assert(0);
+                            break;
 
-                    case '<':
-                        result->op_lt(value);
-                        break;
+                        case '<':
+                            result->op_lt(value);
+                            break;
 
-                    case '>':
-                        result->op_gt(value);
-                        break;
+                        case '>':
+                            result->op_gt(value);
+                            break;
 
-                    case TOKEN_LT_EQ:
-                        result->op_le(value);
-                        break;
+                        case TOKEN_LT_EQ:
+                            result->op_le(value);
+                            break;
 
-                    case TOKEN_GT_EQ:
-                        result->op_ge(value);
-                        break;
+                        case TOKEN_GT_EQ:
+                            result->op_ge(value);
+                            break;
                     }
                     next = next_token(__first, __last, &token);
                 }
@@ -1117,107 +1117,107 @@ namespace rpp {
                 char ch2 = peek_char(__first, __last);
 
                 switch (ch) {
-                case '/':
-                    if (ch2 == '/' || ch2 == '*') {
-                        __first = skip_comment_or_divop(__first, __last);
-                        return next_token(__first, __last, kind);
-                    }
-                    ++__first;
-                    *kind = '/';
-                    break;
-
-                case '<':
-                    ++__first;
-                    if (ch2 == '<') {
-                        ++__first;
-                        *kind = TOKEN_LT_LT;
-                    } else if (ch2 == '=') {
-                        ++__first;
-                        *kind = TOKEN_LT_EQ;
-                    } else
-                        *kind = '<';
-
-                    return __first;
-
-                case '>':
-                    ++__first;
-                    if (ch2 == '>') {
-                        ++__first;
-                        *kind = TOKEN_GT_GT;
-                    } else if (ch2 == '=') {
-                        ++__first;
-                        *kind = TOKEN_GT_EQ;
-                    } else
-                        *kind = '>';
-
-                    return __first;
-
-                case '!':
-                    ++__first;
-                    if (ch2 == '=') {
-                        ++__first;
-                        *kind = TOKEN_NOT_EQ;
-                    } else
-                        *kind = '!';
-
-                    return __first;
-
-                case '=':
-                    ++__first;
-                    if (ch2 == '=') {
-                        ++__first;
-                        *kind = TOKEN_EQ_EQ;
-                    } else
-                        *kind = '=';
-
-                    return __first;
-
-                case '|':
-                    ++__first;
-                    if (ch2 == '|') {
-                        ++__first;
-                        *kind = TOKEN_OR_OR;
-                    } else
-                        *kind = '|';
-
-                    return __first;
-
-                case '&':
-                    ++__first;
-                    if (ch2 == '&') {
-                        ++__first;
-                        *kind = TOKEN_AND_AND;
-                    } else
-                        *kind = '&';
-
-                    return __first;
-
-                default:
-                    if (pp_isalpha(ch) || ch == '_') {
-                        _InputIterator end = skip_identifier(__first, __last);
-                        _M_current_text.assign(__first, end);
-
-                        token_text = &_M_current_text;
-                        __first = end;
-
-                        if (*token_text == "defined")
-                            *kind = TOKEN_DEFINED;
-                        else
-                            *kind = TOKEN_IDENTIFIER;
-                    } else if (pp_isdigit(ch)) {
-                        _InputIterator end = skip_number(__first, __last);
-                        std::string __str(__first, __last);
-                        char ch = __str [__str.size() - 1];
-                        if (ch == 'u' || ch == 'U') {
-                            token_uvalue = strtoul(__str.c_str(), 0, 0);
-                            *kind = TOKEN_UNUMBER;
-                        } else {
-                            token_value = strtol(__str.c_str(), 0, 0);
-                            *kind = TOKEN_NUMBER;
+                    case '/':
+                        if (ch2 == '/' || ch2 == '*') {
+                            __first = skip_comment_or_divop(__first, __last);
+                            return next_token(__first, __last, kind);
                         }
-                        __first = end;
-                    } else
-                        *kind = *__first++;
+                        ++__first;
+                        *kind = '/';
+                        break;
+
+                    case '<':
+                        ++__first;
+                        if (ch2 == '<') {
+                            ++__first;
+                            *kind = TOKEN_LT_LT;
+                        } else if (ch2 == '=') {
+                            ++__first;
+                            *kind = TOKEN_LT_EQ;
+                        } else
+                            *kind = '<';
+
+                        return __first;
+
+                    case '>':
+                        ++__first;
+                        if (ch2 == '>') {
+                            ++__first;
+                            *kind = TOKEN_GT_GT;
+                        } else if (ch2 == '=') {
+                            ++__first;
+                            *kind = TOKEN_GT_EQ;
+                        } else
+                            *kind = '>';
+
+                        return __first;
+
+                    case '!':
+                        ++__first;
+                        if (ch2 == '=') {
+                            ++__first;
+                            *kind = TOKEN_NOT_EQ;
+                        } else
+                            *kind = '!';
+
+                        return __first;
+
+                    case '=':
+                        ++__first;
+                        if (ch2 == '=') {
+                            ++__first;
+                            *kind = TOKEN_EQ_EQ;
+                        } else
+                            *kind = '=';
+
+                        return __first;
+
+                    case '|':
+                        ++__first;
+                        if (ch2 == '|') {
+                            ++__first;
+                            *kind = TOKEN_OR_OR;
+                        } else
+                            *kind = '|';
+
+                        return __first;
+
+                    case '&':
+                        ++__first;
+                        if (ch2 == '&') {
+                            ++__first;
+                            *kind = TOKEN_AND_AND;
+                        } else
+                            *kind = '&';
+
+                        return __first;
+
+                    default:
+                        if (pp_isalpha(ch) || ch == '_') {
+                            _InputIterator end = skip_identifier(__first, __last);
+                            _M_current_text.assign(__first, end);
+
+                            token_text = &_M_current_text;
+                            __first = end;
+
+                            if (*token_text == "defined")
+                                *kind = TOKEN_DEFINED;
+                            else
+                                *kind = TOKEN_IDENTIFIER;
+                        } else if (pp_isdigit(ch)) {
+                            _InputIterator end = skip_number(__first, __last);
+                            std::string __str(__first, __last);
+                            char ch = __str [__str.size() - 1];
+                            if (ch == 'u' || ch == 'U') {
+                                token_uvalue = strtoul(__str.c_str(), 0, 0);
+                                *kind = TOKEN_UNUMBER;
+                            } else {
+                                token_value = strtol(__str.c_str(), 0, 0);
+                                *kind = TOKEN_NUMBER;
+                            }
+                            __first = end;
+                        } else
+                            *kind = *__first++;
                 }
 
                 return __first;

@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -50,8 +50,7 @@
 #include <QtCore/QFileInfo>
 #include <QtXml/QDomDocument>
 
-void UiConverter::convertToJui(const QString &uiFile, const QString &customWidgetFiles)
-{
+void UiConverter::convertToJui(const QString &uiFile, const QString &customWidgetFiles) {
     ReportHandler::setContext(QLatin1String("UiConverter to .jui"));
 
     traverseCustomWidgets(customWidgetFiles);
@@ -90,7 +89,7 @@ void UiConverter::convertToJui(const QString &uiFile, const QString &customWidge
     inputFile.close();
 
     QDomNodeList customWidgets = dom.documentElement().elementsByTagName("customwidget");
-    for (int i=0; i<customWidgets.size(); ++i) {
+    for (int i = 0; i < customWidgets.size(); ++i) {
         QDomNode customWidget = customWidgets.at(i);
 
         QDomElement el = customWidget.toElement();
@@ -110,8 +109,7 @@ void UiConverter::convertToJui(const QString &uiFile, const QString &customWidge
     outputFile.close();
 }
 
-void UiConverter::traverseCustomWidgetFile(const QString &customWidgetFile)
-{
+void UiConverter::traverseCustomWidgetFile(const QString &customWidgetFile) {
     if (customWidgetFile.isEmpty())
         return;
 
@@ -131,7 +129,7 @@ void UiConverter::traverseCustomWidgetFile(const QString &customWidgetFile)
             QString className = attributes.value("class").toString();
 
             int pos = className.lastIndexOf(".");
-            m_custom_widgets.insertMulti(className.mid(pos+1), CustomWidget(className, 0));
+            m_custom_widgets.insertMulti(className.mid(pos + 1), CustomWidget(className, 0));
         }
     }
 
@@ -143,8 +141,7 @@ void UiConverter::traverseCustomWidgetFile(const QString &customWidgetFile)
     }
 }
 
-void UiConverter::traverseCustomWidgets(const QString &customWidgetFiles)
-{
+void UiConverter::traverseCustomWidgets(const QString &customWidgetFiles) {
 #ifdef Q_OS_WIN32
     char separator = ';';
 #else
@@ -152,12 +149,11 @@ void UiConverter::traverseCustomWidgets(const QString &customWidgetFiles)
 #endif
 
     QStringList customWidgets = customWidgetFiles.split(separator);
-    foreach (QString customWidget, customWidgets)
-        traverseCustomWidgetFile(customWidget);
+    foreach(QString customWidget, customWidgets)
+    traverseCustomWidgetFile(customWidget);
 }
 
-void UiConverter::traverse(QDomNode node, QDomDocument *doc)
-{
+void UiConverter::traverse(QDomNode node, QDomDocument *doc) {
     if (node.isNull())
         return;
 
@@ -176,18 +172,16 @@ void UiConverter::traverse(QDomNode node, QDomDocument *doc)
     }
 
     QDomNodeList list = node.childNodes();
-    for (int i=0; i<list.size(); ++i)
+    for (int i = 0; i < list.size(); ++i)
         traverse(list.at(i), doc);
 }
 
 
-void UiConverter::fixUiNode(QDomElement el, QDomDocument *)
-{
+void UiConverter::fixUiNode(QDomElement el, QDomDocument *) {
     el.setAttribute("language", "jambi");
 }
 
-void UiConverter::fixCustomWidgetNode(QDomElement el, QDomDocument *)
-{
+void UiConverter::fixCustomWidgetNode(QDomElement el, QDomDocument *) {
     QDomNodeList classes = el.elementsByTagName("class");
     if (classes.size() < 1) {
         ReportHandler::warning("Custom widget missing 'class' child");
@@ -226,26 +220,24 @@ void UiConverter::fixCustomWidgetNode(QDomElement el, QDomDocument *)
     classes.at(0).namedItem("#text").toText().setData(fullName);
 
     QMap<QString, CustomWidget>::iterator it;
-    for (it=m_custom_widgets.begin(); it!=m_custom_widgets.end(); ++it) {
+    for (it = m_custom_widgets.begin(); it != m_custom_widgets.end(); ++it) {
         if (it.key() == className)
             (*it).second = javaClass;
     }
 }
 
-void UiConverter::fixSetNode(QDomElement el, QDomDocument *)
-{
-   QStringList cppSet = el.firstChild().nodeValue().split(QLatin1Char('|'));
+void UiConverter::fixSetNode(QDomElement el, QDomDocument *) {
+    QStringList cppSet = el.firstChild().nodeValue().split(QLatin1Char('|'));
 
     QStringList javaSet;
-    for (int i=0; i<cppSet.size(); ++i)
+    for (int i = 0; i < cppSet.size(); ++i)
         javaSet << translateEnumValue(cppSet.at(i));
 
     el.firstChild().setNodeValue(javaSet.join(QLatin1String("|")));
 }
 
 
-void UiConverter::fixEnumNode(QDomElement el, QDomDocument *)
-{
+void UiConverter::fixEnumNode(QDomElement el, QDomDocument *) {
     QDomNode valueNode = el.firstChild();
     if (valueNode.isNull()) {
         ReportHandler::warning(QString::fromLatin1("Bad enum value at '%1'").arg(el.nodeValue()));
@@ -258,8 +250,7 @@ void UiConverter::fixEnumNode(QDomElement el, QDomDocument *)
 }
 
 
-void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
-{
+void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *) {
     QString senderName = el.namedItem("sender").firstChild().nodeValue();
     AbstractMetaClass *senderClass = m_named_widgets[senderName];
     if (!senderClass) {
@@ -269,8 +260,8 @@ void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
     QDomNode signalSignatureNode = el.namedItem("signal").toElement().firstChild();
     QString signalSignature = signalSignatureNode.nodeValue();
     const AbstractMetaFunction *signalFunction = findFunction(senderClass,
-                                                          signalSignature,
-                                                          SignalSearch);
+            signalSignature,
+            SignalSearch);
     if (!signalFunction) {
         ReportHandler::warning(QString::fromLatin1("Signal not found '%1' in '%2'")
                                .arg(signalSignature).arg(senderClass->qualifiedCppName()));
@@ -298,8 +289,7 @@ void UiConverter::fixConnectionNode(QDomElement el, QDomDocument *)
 }
 
 
-void UiConverter::fixWidgetNode(QDomElement el, QDomDocument *)
-{
+void UiConverter::fixWidgetNode(QDomElement el, QDomDocument *) {
     QString className = el.attribute(QLatin1String("class"));
     QList<CustomWidget> customWidgetNames = m_custom_widgets.values(className);
     QString customWidgetName = customWidgetNames.size() > 0 ? customWidgetNames.at(0).first : QString();
@@ -346,7 +336,7 @@ QString UiConverter::translateEnumValue(const QString &cppEnumValue) {
     int value = enumValue->value();
 
     if (javaEnum->typeEntry()->isEnumValueRejected(enumValue->name())) {
-        for (int i=0; i<enumValues.size(); ++i) {
+        for (int i = 0; i < enumValues.size(); ++i) {
             AbstractMetaEnumValue *ev = enumValues.at(i);
             if (ev->value() == value) {
                 enumValue = ev;
@@ -359,11 +349,10 @@ QString UiConverter::translateEnumValue(const QString &cppEnumValue) {
 }
 
 const AbstractMetaFunction *UiConverter::findFunction(AbstractMetaClass *javaClass,
-                                                  const QString &signature,
-                                                  SearchType type)
-{
+        const QString &signature,
+        SearchType type) {
     AbstractMetaFunctionList senderFunctions = javaClass->functions();
-    foreach (const AbstractMetaFunction *f, senderFunctions) {
+    foreach(const AbstractMetaFunction *f, senderFunctions) {
         if (type == SignalSearch && !f->isSignal())
             continue;
 
@@ -372,12 +361,12 @@ const AbstractMetaFunction *UiConverter::findFunction(AbstractMetaClass *javaCla
 
         int pos = 0;
         while (pos < signature.length()
-               && fsig.constData()[pos] == signature.constData()[pos]) ++pos;
+                && fsig.constData()[pos] == signature.constData()[pos]) ++pos;
 
         if (pos == signature.length()
-            || (type == SignalSearch
-                && pos == signature.length() - 1
-                && signature.constData()[pos] == QLatin1Char(')'))) {
+                || (type == SignalSearch
+                    && pos == signature.length() - 1
+                    && signature.constData()[pos] == QLatin1Char(')'))) {
             return f;
         }
     }

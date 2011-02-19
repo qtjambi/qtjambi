@@ -2,8 +2,7 @@
 #include "typeentry.h"
 #include "typedatabase.h"
 
-QString PrimitiveTypeEntry::javaObjectName() const
-{
+QString PrimitiveTypeEntry::javaObjectName() const {
     static QHash<QString, QString> table;
     if (table.isEmpty()) {
         table["boolean"] = "Boolean";
@@ -19,36 +18,30 @@ QString PrimitiveTypeEntry::javaObjectName() const
     return table[targetLangName()];
 }
 
-QString EnumTypeEntry::jniName() const
-{
+QString EnumTypeEntry::jniName() const {
     return "jint";
 }
 
-QString FlagsTypeEntry::jniName() const
-{
+QString FlagsTypeEntry::jniName() const {
     return "jint";
 }
 
-void EnumTypeEntry::addEnumValueRedirection(const QString &rejected, const QString &usedValue)
-{
+void EnumTypeEntry::addEnumValueRedirection(const QString &rejected, const QString &usedValue) {
     m_enum_redirections << EnumValueRedirection(rejected, usedValue);
 }
 
-QString EnumTypeEntry::enumValueRedirection(const QString &value) const
-{
-    for (int i=0; i<m_enum_redirections.size(); ++i)
+QString EnumTypeEntry::enumValueRedirection(const QString &value) const {
+    for (int i = 0; i < m_enum_redirections.size(); ++i)
         if (m_enum_redirections.at(i).rejected == value)
             return m_enum_redirections.at(i).used;
-        return QString();
+    return QString();
 }
 
-QString FlagsTypeEntry::qualifiedTargetLangName() const
-{
+QString FlagsTypeEntry::qualifiedTargetLangName() const {
     return javaPackage() + "." + m_enum->javaQualifier() + "." + targetLangName();
 }
 
-QString EnumTypeEntry::javaQualifier() const
-{
+QString EnumTypeEntry::javaQualifier() const {
     TypeEntry *te = TypeDatabase::instance()->findType(m_qualifier);
     if (te != 0)
         return te->targetLangName();
@@ -56,15 +49,13 @@ QString EnumTypeEntry::javaQualifier() const
         return m_qualifier;
 }
 
-QString ContainerTypeEntry::javaPackage() const
-{
+QString ContainerTypeEntry::javaPackage() const {
     if (m_type == PairContainer)
         return "com.trolltech.qt";
     return "java.util";
 }
 
-QString ContainerTypeEntry::targetLangName() const
-{
+QString ContainerTypeEntry::targetLangName() const {
 
     switch (m_type) {
         case StringListContainer: return "List";
@@ -77,7 +68,7 @@ QString ContainerTypeEntry::targetLangName() const
         case MapContainer: return "SortedMap";
         case MultiMapContainer: return "SortedMap";
         case HashContainer: return "HashMap";
-        //     case MultiHashCollectio: return "MultiHash";
+            //     case MultiHashCollectio: return "MultiHash";
         case PairContainer: return "QPair";
         default:
             qWarning("bad type... %d", m_type);
@@ -86,17 +77,15 @@ QString ContainerTypeEntry::targetLangName() const
     return QString();
 }
 
-QString ContainerTypeEntry::qualifiedCppName() const
-{
+QString ContainerTypeEntry::qualifiedCppName() const {
     if (m_type == StringListContainer)
         return "QStringList";
     return ComplexTypeEntry::qualifiedCppName();
 }
 
-FunctionModificationList ComplexTypeEntry::functionModifications(const QString &signature) const
-{
+FunctionModificationList ComplexTypeEntry::functionModifications(const QString &signature) const {
     FunctionModificationList lst;
-    for (int i=0; i<m_function_mods.count(); ++i) {
+    for (int i = 0; i < m_function_mods.count(); ++i) {
         FunctionModification mod = m_function_mods.at(i);
         if (mod.signature == signature) {
             lst << mod;
@@ -106,12 +95,11 @@ FunctionModificationList ComplexTypeEntry::functionModifications(const QString &
     return lst;
 }
 
-FieldModification ComplexTypeEntry::fieldModification(const QString &name) const
-{
-    for (int i=0; i<m_field_mods.size(); ++i)
+FieldModification ComplexTypeEntry::fieldModification(const QString &name) const {
+    for (int i = 0; i < m_field_mods.size(); ++i)
         if (m_field_mods.at(i).name == name)
             return m_field_mods.at(i);
-        FieldModification mod;
+    FieldModification mod;
     mod.name = name;
     mod.modifiers = FieldModification::Readable | FieldModification::Writable;
     return mod;

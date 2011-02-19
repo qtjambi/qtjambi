@@ -146,13 +146,6 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::ObjectDescription::ObjectDescription', unmatched parameter type 'QExplicitlySharedDataPointer&lt;ObjectDescriptionData&gt; const&amp;'" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'Phonon::BackendCapabilities::notifier', unmatched return type 'Phonon::BackendCapabilities::Notifier*'" />
 
-
-
-
-
-
-
-
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'Phonon::AudioOutputInterface' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'com.trolltech.qt.phonon.VolumeFaderEffect' for enum 'FadeCurve' is not declared" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: type 'Phonon::MediaSource' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />

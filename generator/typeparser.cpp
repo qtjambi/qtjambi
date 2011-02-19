@@ -240,12 +240,12 @@ void TypeParser::parseIdentifier(Scanner &scanner, QStack<Info *> &stack, QStrin
         if (identifier != "int") set = true;
 
         // TODO: this handles only one case
-        if(name != "short" && !name.endsWith(" short")
+        if (name != "short" && !name.endsWith(" short")
                 && name != "long" && !name.endsWith(" long")) {
             set = true;
         }
 
-        if(set) name.append(" " + identifier);
+        if (set) name.append(" " + identifier);
     }
 }
 

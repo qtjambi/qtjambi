@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -49,52 +49,50 @@
 #include "metajava.h"
 #include "prigenerator.h"
 
-class CppGenerator : public Generator
-{
-    Q_OBJECT
+class CppGenerator : public Generator {
+        Q_OBJECT
 
-public:
-    static inline QString subDirectoryForPackage(const QString &package) {
-        return QLatin1String("cpp/") + QString(package).replace(".", "_");
-    }
+    public:
+        static inline QString subDirectoryForPackage(const QString &package) {
+            return QLatin1String("cpp/") + QString(package).replace(".", "_");
+        }
 
-    virtual QString subDirectoryForClass(const AbstractMetaClass *cls) const
-    {
-        return subDirectoryForPackage(cls->package()) + "/";
-    }
+        virtual QString subDirectoryForClass(const AbstractMetaClass *cls) const {
+            return subDirectoryForPackage(cls->package()) + "/";
+        }
 
-    static QString fixNormalizedSignatureForQt(const QString &signature);
-    static void writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option option = NoOption);
-    static void writeFunctionSignature(QTextStream &s, const AbstractMetaFunction *java_function,
-                                const AbstractMetaClass *implementor = 0,
-                                const QString &name_prefix = QString(),
-                                Option option = NoOption,
-                                const QString &classname_prefix = QString(),
-                                const QStringList &extra_arguments = QStringList(),
-                                int numArguments = -1);
-    static void writeFunctionArguments(QTextStream &s, const AbstractMetaArgumentList &arguments,
-                                Option option = NoOption,
-                                int numArguments = -1);
+        static QString fixNormalizedSignatureForQt(const QString &signature);
+        static void writeTypeInfo(QTextStream &s, const AbstractMetaType *type, Option option = NoOption);
+        static void writeFunctionSignature(QTextStream &s, const AbstractMetaFunction *java_function,
+                                           const AbstractMetaClass *implementor = 0,
+                                           const QString &name_prefix = QString(),
+                                           Option option = NoOption,
+                                           const QString &classname_prefix = QString(),
+                                           const QStringList &extra_arguments = QStringList(),
+                                           int numArguments = -1);
+        static void writeFunctionArguments(QTextStream &s, const AbstractMetaArgumentList &arguments,
+                                           Option option = NoOption,
+                                           int numArguments = -1);
 
-    static inline AbstractMetaFunctionList signalFunctions(const AbstractMetaClass *cls);
+        static inline AbstractMetaFunctionList signalFunctions(const AbstractMetaClass *cls);
 
-    QString signalWrapperPrefix() const { return "__qt_signalwrapper_"; }
+        QString signalWrapperPrefix() const { return "__qt_signalwrapper_"; }
 
-    bool shouldGenerate(const AbstractMetaClass *java_class) const {
-        return (!java_class->isNamespace() || java_class->functionsInTargetLang().size() > 0) && !java_class->isInterface()
-            && !java_class->typeEntry()->isVariant()
-            && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp)
-            && !(java_class->attributes() & AbstractMetaAttributes::Fake);
-    }
+        bool shouldGenerate(const AbstractMetaClass *java_class) const {
+            return (!java_class->isNamespace() || java_class->functionsInTargetLang().size() > 0) && !java_class->isInterface()
+                   && !java_class->typeEntry()->isVariant()
+                   && (java_class->typeEntry()->codeGeneration() & TypeEntry::GenerateCpp)
+                   && !(java_class->attributes() & AbstractMetaAttributes::Fake);
+        }
 
-    static QString shellClassName(const AbstractMetaClass *java_class) {
-        return java_class->generateShellClass()
-               ? "QtJambiShell_" + java_class->name()
-               : java_class->qualifiedCppName();
-    }
+        static QString shellClassName(const AbstractMetaClass *java_class) {
+            return java_class->generateShellClass()
+                   ? "QtJambiShell_" + java_class->name()
+                   : java_class->qualifiedCppName();
+        }
 
- protected:
-    PriGenerator *priGenerator;
+    protected:
+        PriGenerator *priGenerator;
 
 };
 

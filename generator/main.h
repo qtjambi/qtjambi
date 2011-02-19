@@ -49,8 +49,7 @@
 #include <QDir>
 #include <QDebug>
 
-struct Preprocess
-{
+struct Preprocess {
     static bool preprocess(const QString &sourceFile, const QString &targetFile, const QString &phononinclude = QString());
 };
 
