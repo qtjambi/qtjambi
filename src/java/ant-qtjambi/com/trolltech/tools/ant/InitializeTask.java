@@ -223,6 +223,7 @@ public class InitializeTask extends Task {
             props.setNewProperty((String) null, PHONON_DS9, "true");
             break;
         case Linux:
+        case FreeBSD:
             props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
             if (doesQtLibExist("QtDBus", 4))
                 props.setNewProperty((String) null, DBUS, "true");
