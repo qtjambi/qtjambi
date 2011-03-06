@@ -15,7 +15,12 @@ macx:{
     win32 {
         INCLUDEPATH += $$(JAVADIR)/include/win32
     } else {
-        INCLUDEPATH += $$(JAVADIR)/include/linux
+        linux-g++* {
+        INCLUDEPATH += $$JAVA/include/linux
+        }
+        freebsd-g++* {
+        INCLUDEPATH += $$JAVA/include/freebsd
+        }
     }
 }
 
@@ -56,6 +61,6 @@ macx:{
     LIBS += -L../../lib -l$${LIB_QTJAMBI}
 }
 
-linux-g++* {
+linux-g++* || freebsd-g++* {
     QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
 }

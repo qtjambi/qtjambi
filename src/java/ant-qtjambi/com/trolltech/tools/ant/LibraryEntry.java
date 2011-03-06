@@ -192,6 +192,7 @@ public class LibraryEntry extends Task {
             case MacOS: return "lib" + name + "_debug.dylib";
             case Solaris:
             case Linux: 
+            case FreeBSD:
             	return formatLinuxPluginName(name, kdephonon);
             }
         } else {
@@ -200,6 +201,7 @@ public class LibraryEntry extends Task {
             case MacOS: return "lib" + name + ".dylib";
             case Solaris:
             case Linux: 
+            case FreeBSD:
             	return formatLinuxPluginName(name, kdephonon);
             }
         }
@@ -226,14 +228,16 @@ public class LibraryEntry extends Task {
             case Windows: return name + "d" + version + ".dll";
             case MacOS: return "lib" + name + "_debug." + version + ".dylib";
             case Solaris:
-            case Linux: return "lib" + name + ".so." + version;
+            case Linux:
+            case FreeBSD: return "lib" + name + ".so." + version;
             }
         } else {
             switch (OSInfo.os()) {
             case Windows: return name + version + ".dll";
             case MacOS: return "lib" + name + "." + version + ".dylib";
             case Solaris:
-            case Linux: return "lib" + name + ".so." + version;
+            case Linux:
+            case FreeBSD: return "lib" + name + ".so." + version;
             }
         }
         throw new BuildException("unhandled case...");
@@ -245,14 +249,16 @@ public class LibraryEntry extends Task {
             case Windows: return name + "d.dll";
             case MacOS: return "lib" + name + "_debug.dylib";
             case Solaris:
-            case Linux: return "lib" + name + ".so";
+            case Linux:
+            case FreeBSD: return "lib" + name + ".so";
             }
         } else {
             switch (OSInfo.os()) {
             case Windows: return name + ".dll";
             case MacOS: return "lib" + name + ".dylib";
             case Solaris:
-            case Linux: return "lib" + name + ".so";
+            case Linux:
+            case FreeBSD: return "lib" + name + ".so";
             }
         }
         throw new BuildException("unhandled case...");
@@ -264,14 +270,16 @@ public class LibraryEntry extends Task {
             case Windows: return name + "_debuglib.dll";
             case MacOS: return "lib" + name + "_debuglib.jnilib";
             case Solaris:
-            case Linux: return "lib" + name + "_debuglib.so";
+            case Linux:
+            case FreeBSD: return "lib" + name + "_debuglib.so";
             }
         } else {
             switch (OSInfo.os()) {
             case Windows: return name + ".dll";
             case MacOS: return "lib" + name + ".jnilib";
             case Solaris:
-            case Linux: return "lib" + name + ".so";
+            case Linux:
+            case FreeBSD: return "lib" + name + ".so";
             }
         }
         throw new BuildException("unhandled case...");

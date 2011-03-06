@@ -35,7 +35,11 @@ macx:{
     solaris-g++ | solaris-cc {
         INCLUDEPATH += $$JAVA/include/solaris
     } else {
+        linux-g++* {
             INCLUDEPATH += $$JAVA/include/linux
+        }
+        freebsd-g++* {
+            INCLUDEPATH += $$JAVA/include/freebsd
         }
     }
 }
@@ -70,6 +74,6 @@ jumptable{
 }
 
 #NOTE: this is just to test, uncomment if after all RPATHs are wanted.
-#linux-g++* {
+#linux-g++* || freebsd-g++* {
     #QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
 #}

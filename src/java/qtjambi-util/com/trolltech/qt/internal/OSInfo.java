@@ -57,7 +57,8 @@ public class OSInfo
         Windows ("windows"),
         Linux ("linux"),
         MacOS ("macosx"),
-        Solaris ("sunos");
+        Solaris ("sunos"),
+        FreeBSD ("freebsd");
 
         private String name;
 
@@ -87,6 +88,8 @@ public class OSInfo
                 os = OS.MacOS;
             else if (osname.contains("sunos"))
                 os = OS.Solaris;
+            else if (osname.contains("freebsd"))
+                os = OS.FreeBSD;
             else
                 os = OS.Unknown;
         }
@@ -112,6 +115,11 @@ public class OSInfo
                 osArchName = System.getProperty("os.arch").equalsIgnoreCase("amd64")
                              ? "linux64"
                              : "linux32";
+                break;
+            case FreeBSD:
+                osArchName = System.getProperty("os.arch").equalsIgnoreCase("amd64")
+                             ? "freebsd64"
+                             : "freebsd32";
                 break;
             case MacOS:
                 osArchName = "macosx";

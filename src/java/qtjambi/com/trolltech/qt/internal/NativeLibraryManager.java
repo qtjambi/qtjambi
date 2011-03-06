@@ -598,7 +598,8 @@ public class NativeLibraryManager {
         switch (Utilities.operatingSystem) {
         case Windows: return lib + ".dll";
         case MacOSX: return "lib" + lib + ".jnilib";
-        case Linux: return "lib" + lib + ".so";
+        case Linux:
+        case FreeBSD: return "lib" + lib + ".so";
         }
         throw new RuntimeException("Unreachable statement");
     }
@@ -615,6 +616,7 @@ public class NativeLibraryManager {
                 ? "lib" + lib + "_debug." + version + ".dylib"
                 : "lib" + lib + "." + version + ".dylib";
         case Linux:
+        case FreeBSD:
             // Linux doesn't have a dedicated "debug" library since 4.2
             return "lib" + lib + ".so." + version;
         }
