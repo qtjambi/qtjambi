@@ -18,7 +18,8 @@
 
     <namespace-type name="Phonon" />
     <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities">
-        <modify-function signature="availableAVCaptureDevices()" remove="all" />
+        <modify-function signature="availableAVCaptureDevices()" remove="all" /> <!-- kde phonon support -->
+        <modify-function signature="availableVideoCaptureDevices()" remove="all" /> <!-- kde phonon support -->
     </namespace-type>
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
@@ -65,6 +66,8 @@
     </value-type>
     <value-type name="Phonon::MediaSource" java-name="MediaSource">
         <modify-function signature="operator=(Phonon::MediaSource)" remove="all" /> <!-- Covered by copy constructor -->
+        <modify-function signature="MediaSource(const Phonon::ObjectDescription &amp;)" remove="all" /> <!-- kde phonon support -->
+        <modify-function signature="videoCaptureDevice()const" remove="all" /> <!-- kde phonon support -->
     </value-type>
     <value-type name="Phonon::Path" java-name="Path">
         <modify-function signature="disconnect()" rename="disconnectPath" />
