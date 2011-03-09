@@ -153,6 +153,7 @@ public class FindCompiler {
 	                compiler = Compiler.GCC;
 	                break;
 	            case Linux:
+	            case FreeBSD:
 	                compiler = testForGCC();
 	                break;
 	            case Solaris:
