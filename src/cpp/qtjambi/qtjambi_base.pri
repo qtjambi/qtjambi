@@ -34,12 +34,14 @@ macx:{
     } else {
     solaris-g++ | solaris-cc {
         INCLUDEPATH += $$JAVA/include/solaris
-    } else {
+        } else {
         linux-g++* {
             INCLUDEPATH += $$JAVA/include/linux
-        }
-        freebsd-g++* {
-            INCLUDEPATH += $$JAVA/include/freebsd
+            } else {
+                freebsd-g++* {
+                    INCLUDEPATH += $$JAVA/include/freebsd
+                }
+            }
         }
     }
 }
@@ -63,7 +65,7 @@ macx{
 }
 
 # gcc reports some functions as unused when they are not.
-linux-g++:QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
+linux-g++ || freebsd-g++:QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
 
 # Extra options to be set when using jump tables...
 jumptable{
