@@ -45,15 +45,29 @@
       <make dir="${outputDir}/autotestlib" />
     </target>
 
+    <target name="compile.deps">
+      <mkdir dir="${outputDir}/autotests" />
+      <javac destdir="${outputDir}/autotests" debug="true">
+	<classpath>
+	  <pathelement location="qtjambi-4.7.0.jar" />
+	  <pathelement location="." />
+	</classpath>
+	<src path="${outputDir}/autotestlib/com/trolltech/autotests/generated"/>
+      </javac>
+    </target>
 
-    <target name="compile.java">
+    <target name="compile.java" depends="compile.deps">
       <mkdir dir="${outputDir}/auto"/>
-      <javac destdir="${outputDir}/auto"
-	    debug="true" classpath=".:qtjambi-4.7.0.jar:junit">	<!-- qtjambi-$VERSION.jar should be included in the classpath -->
-	<src path="./src/java/autotest/com/trolltech/autotests"/>
-	<!--<src path="${sourceDir}"/>
-	<include name="com/trolltech/autotests/*.java"/>
-	<include name="com/trolltech/autotests/generated/*.java"/>-->
+      <javac destdir="${outputDir}/auto" debug="true" includeantruntime="false">
+	<compilerarg value="-Xlint:deprecation" />
+	<classpath>
+	  <pathelement location="qtjambi-4.7.0.jar" />
+	  <!-- ${ant.library.dir}/junit.jar -->
+	  <pathelement location="/usr/share/java/junit4.jar" />
+	  <pathelement location="${outputDir}/autotests" />
+	  <pathelement location="src/java/autotest" />
+	</classpath>
+	<src path="src/java/autotest/com/trolltech/autotests"/>
       </javac>
     </target>
 
@@ -86,8 +100,8 @@
       <jvmarg value="-Djava.library.path=${basedir}/${outputDir}/platform-output/lib/:${jambiLib}"/>
 	<formatter type="xml" usefile="yes" />
 	<batchtest fork="yes" todir="${outputDir}/junitxml">
-	  <fileset dir="${outputDir}/auto" includes="**/com/trolltech/autotests/generated/*.class"/>
-        </batchtest>
+	  <fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
+	</batchtest>
       </junit>
     </target>
 
