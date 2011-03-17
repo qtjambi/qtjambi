@@ -20,23 +20,23 @@
     </target>
 
     <target name="generator.autotests"
-            depends="qtjambi.init"
+            depends="init"
             description="Run the generator on the autotests.">
         <mkdir dir="${outputDir}/autotestlib"/>
-    <generator dir="${outputDir}/autotestlib"
-               header="${sourceDir}/autotestlib/global.h"
-                   typesystem="${sourceDir}/autotestlib/build.txt"
+    <generator dir="generator"
+               header="autotestlib/global.h"
+                   typesystem="autotestlib/build.txt"
            outputDirectory="${outputDir}"/>
     </target>
 
     <target name="compile.autotests"
-            depends="qtjambi.init"
+            depends="init"
             description="Compile Java and c++ files for autotests.">
-        <mkdir dir="${outputDir}/autotestlib"/>
-        <qmake dir="${outputDir}/autotestlib/"
+	<mkdir dir="${outputDir}/autotestlib"/>
+	<qmake dir="${outputDir}/autotestlib"
                recursive="true"
                config="${qtjambi.configuration}"
-               pro="${sourceDir}/autotestlib/autotestlib.pro"/>
+	       pro="autotestlib/autotestlib.pro" qmakebinary="${qmake.binary}"/>
     <make dir="${outputDir}/autotestlib" silent="true"/>
 
         <!-- Compiling to the outputDir crashes the java compiler -->

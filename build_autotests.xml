@@ -8,6 +8,7 @@
     <property name="outputDir" value="." />
 
     <property name="jambiLib" value="${outputDir}/lib" />
+    <property name="qtLib" value="${outputDir}/platform-output/lib" />    
 
     <condition property="qtjambi.osx">
       <os family="mac"/>
@@ -31,29 +32,32 @@
 
     <target name="compile.native"
         depends="init">
-
-      <generator dir="${outputDir}/autotestlib"
-		 outputDirectory="${outputDir}"
-		 typesystem="${sourceDir}/autotestlib/build.txt"
-		 header="${sourceDir}/autotestlib/global.h"/>
+      <mkdir dir="${outputDir}/autotestlib"/>
+      <generator dir="generator"
+		 outputDirectory="${outputDir}/autotestlib"
+		 typesystem="autotestlib/build.txt"
+		 header="autotestlib/global.h"/>
 
       <qmake config="${qtjambi.configuration}"
              dir="${outputDir}/autotestlib"
-             pro="${sourceDir}/autotestlib/autotestlib.pro" />
+             pro="autotestlib/autotestlib.pro" qmakebinary="${qmake.binary}"/>
 
       <make dir="${outputDir}/autotestlib" />
     </target>
 
 
     <target name="compile.java">
-      <javac destdir="${outputDir}"
-            debug="true">
-        <src path="${outputDir}"/>
-        <src path="${sourceDir}"/>
+      <mkdir dir="${outputDir}/auto"/>
+      <javac destdir="${outputDir}/auto"
+	    debug="true" classpath=".:qtjambi-4.7.0.jar:junit">	<!-- qtjambi-$VERSION.jar should be included in the classpath -->
+	<src path="./src/java/autotest/com/trolltech/autotests"/>
+	<!--<src path="${sourceDir}"/>
 	<include name="com/trolltech/autotests/*.java"/>
-        <include name="com/trolltech/autotests/generated/*.java"/>
+	<include name="com/trolltech/autotests/generated/*.java"/>-->
       </javac>
     </target>
+
+ <!-- compilation part now works ^^ -->
 
     <target name="run.osx" if="qtjambi.osx">
       <delete dir="${outputDir}/junitxml" />
@@ -75,9 +79,14 @@
       <mkdir dir="${outputDir}/junitxml"/>
       <mkdir dir="${outputDir}/TestResults"/>
       <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
-	<formatter type="xml" />
+      <classpath>
+	<pathelement location="${basedir}/qtjambi-4.7.0.jar" />
+	<pathelement path="${basedir}/${outputDir}/auto" />
+      </classpath>
+      <jvmarg value="-Djava.library.path=${basedir}/${outputDir}/platform-output/lib/:${jambiLib}"/>
+	<formatter type="xml" usefile="yes" />
 	<batchtest fork="yes" todir="${outputDir}/junitxml">
-          <fileset dir="${sourceDir}" includes="com/trolltech/autotests/Test*.java"/>
+	  <fileset dir="${outputDir}/auto" includes="**/com/trolltech/autotests/generated/*.class"/>
         </batchtest>
       </junit>
     </target>
