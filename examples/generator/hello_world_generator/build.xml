@@ -22,19 +22,17 @@
             </classpath>
         </taskdef>
         <taskdef resource="net/sf/antcontrib/antlib.xml"
-            classpath="${jambiDir}/extjars/ant-contrib.jar"/>
+            classpath="${jambi.directory}/extjars/ant-contrib.jar"/>
     </target>
 
     <target name="help" description="Provides detailed help.">
         <echo>Generates the test jambi jar file</echo>
     </target>
 
-
     <target name="init" depends="init.taskdef, setup-properties">
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
 
         <mkdir dir="${basedir}/platform-output"/>
-        <mkdir dir="../target"/>
     </target>
 
     <target name="compile" depends="init">

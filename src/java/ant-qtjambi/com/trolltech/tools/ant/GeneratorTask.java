@@ -49,8 +49,6 @@ import org.apache.tools.ant.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import com.trolltech.qt.internal.*;
 
@@ -61,7 +59,6 @@ public class GeneratorTask extends Task {
     private String dir = ".";
     private String phononpath = "";
     private String kdephonon = "";
-    //private String includePaths = "";
     private String options = null;
     private String qtIncludeDirectory = null;
     private String qtLibDirectory = null;
@@ -114,37 +111,31 @@ public class GeneratorTask extends Task {
     }
     
     private boolean parseArguments() {
-    	//String arguments = "";
     	if (options != null && !options.equals("")) {
-            //arguments += options + " ";
             commandList.add(options);
         }
-        /*if( !includePaths.equals("") ){
-            arguments += " --include-paths=" + includePaths;
-            commandList.add("--include-paths=" + includePaths);
-        }*/
+
         if(!phononpath.equals("")) {
-        	//arguments += " --phonon-include=" + Util.escape(phononpath);
         	commandList.add("--phonon-include=" + Util.escape(phononpath));
         }
+
         if(qtIncludeDirectory != null) {
-        	//arguments += " --qt-include-directory=" + Util.escape(qtIncludeDirectory);
         	commandList.add("--qt-include-directory=" + Util.escape(qtIncludeDirectory));
         }
+
         if(qtLibDirectory != null) {
-        	//arguments += " --qt-lib-directory=" + Util.escape(qtLibDirectory);
         	commandList.add("--qt-lib-directory=" + Util.escape(qtLibDirectory));
         }
+
         if(!outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
-            //arguments += " --output-directory=" + Util.escape(file.getAbsolutePath());
             commandList.add("--output-directory=" + Util.escape(file.getAbsolutePath()));
         }
         
-        /*arguments +=*/ parseArgumentFiles(commandList);
+        parseArgumentFiles(commandList);
         
         return true;
     }
@@ -157,6 +148,8 @@ public class GeneratorTask extends Task {
         List<String> thisCommandList = new ArrayList<String>();
         thisCommandList.add(generator);
         thisCommandList.addAll(commandList);
+        System.out.println("NYAAAA");
+        System.out.println(thisCommandList.toString());
         Exec.execute(thisCommandList, new File(dir), qtLibDirectory);
     }
 

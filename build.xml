@@ -48,7 +48,7 @@
         <property name="build.log.dir" location="${basedir}/buildlogs"/>
         <mkdir dir="${build.log.dir}"/>
         <property name="build.log.filename" value="build_${timestamp}.log"/>
-		<property name="build.log.loglevel" value="info" />
+        <property name="build.log.loglevel" value="info" />
         <record name="${build.log.dir}/${build.log.filename}" loglevel="${build.log.loglevel}" append="false"/>
         <echo message="Build logged to ${build.log.filename}"/>
     </target>
