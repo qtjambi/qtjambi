@@ -18,7 +18,8 @@
 
     <namespace-type name="Phonon" />
     <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities">
-<!--        <modify-function signature="availableAudioCaptureDevices()" remove="all" /> -->
+        <modify-function signature="availableAVCaptureDevices()" remove="all" /> <!-- kde phonon support -->
+        <modify-function signature="availableVideoCaptureDevices()" remove="all" /> <!-- kde phonon support -->
     </namespace-type>
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
@@ -65,6 +66,8 @@
     </value-type>
     <value-type name="Phonon::MediaSource" java-name="MediaSource">
         <modify-function signature="operator=(Phonon::MediaSource)" remove="all" /> <!-- Covered by copy constructor -->
+        <modify-function signature="MediaSource(const Phonon::ObjectDescription &amp;)" remove="all" /> <!-- kde phonon support -->
+        <modify-function signature="videoCaptureDevice()const" remove="all" /> <!-- kde phonon support -->
     </value-type>
     <value-type name="Phonon::Path" java-name="Path">
         <modify-function signature="disconnect()" rename="disconnectPath" />
@@ -123,7 +126,7 @@
             </modify-argument>
         </modify-function>
     </object-type>
-    
+
      <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
      <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
      <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
@@ -137,7 +140,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioCaptureDevice' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioOutputDevice' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioChannelDescription' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
-  
+
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Final class 'AbstractAudioOutput' set to non-final, as it is extended by other classes" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QDBus' does not have a type entry" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: private virtual function 'create(const QString &amp; name)' in 'QTextCodecPlugin'" />
