@@ -62,7 +62,6 @@
 	<compilerarg value="-Xlint:deprecation" />
 	<classpath>
 	  <pathelement location="qtjambi-4.7.0.jar" />
-	  <!-- ${ant.library.dir}/junit.jar -->
 	  <pathelement location="/usr/share/java/junit4.jar" />
 	  <pathelement location="${outputDir}/autotests" />
 	  <pathelement location="src/java/autotest" />
@@ -94,6 +93,8 @@
       <mkdir dir="${outputDir}/TestResults"/>
       <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
       <classpath>
+	<pathelement location="/usr/share/java/junit4.jar" />
+	<pathelement location="/usr/share/java/hamcrest-core.jar" />
 	<pathelement location="${basedir}/qtjambi-4.7.0.jar" />
 	<pathelement path="${basedir}/${outputDir}/auto" />
       </classpath>
