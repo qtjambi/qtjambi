@@ -62,46 +62,51 @@ public class GeneratorTask extends Task {
     private String options = null;
     private String qtIncludeDirectory = null;
     private String qtLibDirectory = null;
+    private String jambiDirectory = null;
     private List<String> commandList = new ArrayList<String>();
 
     private String searchPath() {
         String s = File.separator;
+        String prefix = "";
+        if(jambiDirectory != null) {
+            prefix = jambiDirectory + s;
+        }
         switch(OSInfo.os()) {
         case Windows:
-            return "generator\\release;generator\\debug";
+            return prefix + "generator\\release;generator\\debug";
         default:
-            return "." + s + "generator";
+            return prefix + "." + s + "generator";
         }
     }
 
     private String generatorExecutable() {
         switch (OSInfo.os()) {
             case Windows:
-            	return "\"" + Util.LOCATE_EXEC("generator.exe", 
-                		searchPath(), null).getAbsolutePath() + "\"";
-            default: 
-            	return Util.LOCATE_EXEC("generator", 
-                		searchPath(), null).getAbsolutePath();
+                return "\"" + Util.LOCATE_EXEC("generator.exe",
+                        searchPath(), null).getAbsolutePath() + "\"";
+            default:
+                return Util.LOCATE_EXEC("generator",
+                        searchPath(), null).getAbsolutePath();
         }
     }
 
     public void setOptions(String options) { this.options = options; }
     public String getOptions() { return options; }
-    
+
     private String parseArgumentFiles(List<String> commandList) {
-    	File typesystemFile = Util.makeCanonical(typesystem);
+        File typesystemFile = Util.makeCanonical(typesystem);
         if (!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
         }
-        
+
         File headerFile;
-    	if("".equals(kdephonon)) {
-    		headerFile = Util.makeCanonical(header);
-    	} else {
-    		headerFile = Util.makeCanonical(kdephonon);
-    	}
-        
-    	if (!headerFile.exists()) {
+        if("".equals(kdephonon)) {
+            headerFile = Util.makeCanonical(header);
+        } else {
+            headerFile = Util.makeCanonical(kdephonon);
+        }
+
+        if (!headerFile.exists()) {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
@@ -109,22 +114,22 @@ public class GeneratorTask extends Task {
         commandList.add(Util.escape(typesystemFile.getAbsolutePath()));
         return " " + Util.escape(headerFile.getAbsolutePath()) + " " + Util.escape(typesystemFile.getAbsolutePath());
     }
-    
+
     private boolean parseArguments() {
-    	if (options != null && !options.equals("")) {
+        if (options != null && !options.equals("")) {
             commandList.add(options);
         }
 
         if(!phononpath.equals("")) {
-        	commandList.add("--phonon-include=" + Util.escape(phononpath));
+            commandList.add("--phonon-include=" + Util.escape(phononpath));
         }
 
         if(qtIncludeDirectory != null) {
-        	commandList.add("--qt-include-directory=" + Util.escape(qtIncludeDirectory));
+            commandList.add("--qt-include-directory=" + Util.escape(qtIncludeDirectory));
         }
 
         if(qtLibDirectory != null) {
-        	commandList.add("--qt-lib-directory=" + Util.escape(qtLibDirectory));
+            commandList.add("--qt-lib-directory=" + Util.escape(qtLibDirectory));
         }
 
         if(!outputDirectory.equals("")){
@@ -134,21 +139,20 @@ public class GeneratorTask extends Task {
             }
             commandList.add("--output-directory=" + Util.escape(file.getAbsolutePath()));
         }
-        
+
         parseArgumentFiles(commandList);
-        
+
         return true;
     }
 
     @Override
     public void execute() throws BuildException {
-        
+
         parseArguments();
         String generator = generatorExecutable();
         List<String> thisCommandList = new ArrayList<String>();
         thisCommandList.add(generator);
         thisCommandList.addAll(commandList);
-        System.out.println("NYAAAA");
         System.out.println(thisCommandList.toString());
         Exec.execute(thisCommandList, new File(dir), qtLibDirectory);
     }
@@ -160,21 +164,25 @@ public class GeneratorTask extends Task {
     public void setTypesystem(String typesystem) {
         this.typesystem = typesystem;
     }
-    
+
     public void setPhononpath(String path) {
-    	this.phononpath = path;
+        this.phononpath = path;
     }
-    
+
     public void setKdephonon(String kdephonon) {
-    	this.kdephonon = kdephonon;
+        this.kdephonon = kdephonon;
+    }
+
+    public void setJambidirectory(String dir) {
+        this.jambiDirectory = dir;
     }
 
     public void setQtIncludeDirectory(String dir) {
-    	this.qtIncludeDirectory  = dir;
+        this.qtIncludeDirectory  = dir;
     }
 
     public void setQtLibDirectory(String dir) {
-    	this.qtLibDirectory  = dir;
+        this.qtLibDirectory  = dir;
     }
 
     public void setOutputDirectory(String outputDirectory) {
