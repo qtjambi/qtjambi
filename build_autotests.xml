@@ -1,14 +1,23 @@
+<!--
+	TODO:
+	- run.osx wasn't modified, may not work
+-->
 <project default="all" basedir=".">
 
-<property environment="env"/>
+	<property environment="env"/>
 
 	<tstamp/>
 
+	<property file="tests.properties"/>
+
+	<!-- same as in build.xml, isn't required
 	<property name="sourceDir" value="." />
 	<property name="outputDir" value="." />
+	-->
 
 	<property name="jambiLib" value="${outputDir}/lib" />
-	<property name="qtLib" value="${outputDir}/platform-output/lib" />    
+	<property name="qtLib" value="${outputDir}/platform-output/lib" />
+	<property name="junit.exists" value="tests.junit.exists" />
 
 	<condition property="qtjambi.osx">
 		<os family="mac"/>
@@ -19,7 +28,30 @@
 		<echo>Generates an executable .jar file that runs the generator example...</echo>
 	</target>
 
-	<target name="init">
+	<target name="tests.clean" description="Cleans built test files">
+		<delete dir="${outputDir}/autotestlib"/>
+		<delete dir="${outputDir}/autotests"/>
+		<delete dir="${outputDir}/auto"/>
+	</target>
+
+	<target name="reports.clean" description="Cleans the Unit Test results">
+		<delete dir="${outputDir}/junitxml"/>
+		<delete dir="${outputDir}/TestResults"/>
+	</target>
+
+	<target name="check.junit">
+	    <available property="junit.path" type="file" file="${tests.junit}"/>
+		<fail message="Path to JUnit is required to build the Unit Tests. Specify the path in tests.properties">
+			<condition>
+					<not>
+						<isset property="junit.path"/>
+					</not>
+			</condition>
+		</fail>
+	</target>
+
+	<!-- seems to be useless here
+	<target name="init" depends="check.junit">
 		<taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
 	    <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
 	    <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
@@ -27,6 +59,7 @@
 	    <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
 	    <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
 	</target>
+	-->
 
     <target name="compile.native" depends="init">
 	    <mkdir dir="${outputDir}/autotestlib"/>
@@ -46,25 +79,25 @@
 	    <mkdir dir="${outputDir}/autotests" />
 	    <javac destdir="${outputDir}/autotests" debug="true">
 			<classpath>
-				<pathelement location="qtjambi-4.7.0.jar" />
+				<pathelement location="qtjambi-${qtjambi.version}.jar" />
 				<pathelement location="." />
 			</classpath>
 			<src path="${outputDir}/autotestlib/com/trolltech/autotests/generated"/>
 	    </javac>
     </target>
 
-    <target name="compile.java" depends="compile.deps">
+    <target name="compile.java" depends="compile.deps, check.junit">
 	    <mkdir dir="${outputDir}/auto"/>
 	    <javac destdir="${outputDir}/auto" debug="true" includeantruntime="false">
 			<compilerarg value="-Xlint:deprecation" />
 			<classpath>
-				<pathelement location="qtjambi-4.7.0.jar" />
-				<pathelement location="/usr/share/java/junit4.jar" />
+				<pathelement location="qtjambi-${qtjambi.version}.jar" />
+				<pathelement location="${tests.junit}" />
 				<pathelement location="${outputDir}/autotests" />
 				<pathelement location="src/java/autotest" />
 			</classpath>
 			<src path="src/java/autotest/com/trolltech/autotests"/>
-      </javac>
+	    </javac>
     </target>
 
     <target name="run.osx" if="qtjambi.osx">
@@ -81,17 +114,16 @@
 		</junit>
     </target>
 
-    <target name="run.other" unless="qtjambi.osx">
-	    <delete dir="${outputDir}/junitxml" />
+    <target name="run.other" unless="qtjambi.osx" depends="check.junit">
+		<delete dir="${outputDir}/junitxml" />
 	    <delete dir="${outputDir}/TestResults" />
 	    <mkdir dir="${outputDir}/junitxml"/>
 	    <mkdir dir="${outputDir}/TestResults"/>
 	    <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
-			<!-- should unify the paths refering to junit in a new .properties file -->
 		    <classpath>
-				<pathelement location="/usr/share/java/junit4.jar" />
-				<pathelement location="/usr/share/java/hamcrest-core.jar" />
-				<pathelement location="qtjambi-4.7.0.jar" />
+				<pathelement location="${tests.junit}" />
+				<pathelement location="${tests.hamcrest}" />
+				<pathelement location="qtjambi-${qtjambi.version}.jar" />
 				<pathelement path="${outputDir}/auto" />
 		    </classpath>
 		    <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/:${jambiLib}"/>
@@ -102,7 +134,7 @@
 	    </junit>
     </target>
 
-    <target name="run" depends="init, run.other, run.osx" description="Runs tests and generates report in TestReport subdir">
+    <target name="run" depends="init, run.other, run.osx">
 	    <junitreport todir="${outputDir}/junitxml">
 			<fileset dir="${outputDir}/junitxml">
 				<include name="TEST-*.xml" />
@@ -111,10 +143,10 @@
 	    </junitreport>
     </target>
 
-    <target name="compile" 
-	    depends="compile.native, compile.java"/>
+    <target name="tests.compile" 
+	    depends="compile.native, compile.java" description="Builds tests and required libraries"/>
     
-    <target name="all"
-        depends="init, compile, run" />
+    <target name="tests.run"
+        depends="init, run" description="Runs tests and generates report in TestReport subdir"/>
 
 </project>
