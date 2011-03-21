@@ -39,6 +39,7 @@
         <mkdir dir="${generator.out}"/>
         <generator dir="${jambi.directory}/generator"
                    outputDirectory="${generator.out}"
+                   jambiDirectory="${jambi.directory}"
                    typesystem="typesystem/typesystem.xml"
                    header="typesystem/global.h"/>
 
