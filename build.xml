@@ -34,6 +34,7 @@
     <import file="antfiles/java.xml"/>
     <import file="antfiles/clean.xml"/>
     <import file="antfiles/generator.xml"/>
+    <import file="build_autotests.xml" />
 
     <!--
         Initialization tasks. Note that the init.taskdef task depends on a jar

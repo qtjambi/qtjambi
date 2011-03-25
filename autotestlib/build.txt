@@ -8,11 +8,11 @@
         com.trolltech.qt.Utilities.loadQtLibrary("QtSql");
   </inject-code>
 
-  <load-typesystem name="../generator/typesystem_core.xml" generate="no" />
-  <load-typesystem name="../generator/typesystem_gui.xml" generate="no" />
-  <load-typesystem name="../generator/typesystem_sql.xml" generate="no" />
-  <load-typesystem name="../generator/typesystem_xml.xml" generate="no" />
-  <load-typesystem name="../generator/typesystem_network.xml" generate="no" />
+  <load-typesystem name="../build/generator/typesystem_core.xml" generate="no" />
+  <load-typesystem name="../build/generator/typesystem_gui.xml" generate="no" />
+  <load-typesystem name="../build/generator/typesystem_sql.xml" generate="no" />
+  <load-typesystem name="../build/generator/typesystem_xml.xml" generate="no" />
+  <load-typesystem name="../build/generator/typesystem_network.xml" generate="no" />
 
   <value-type name="Tulip">
     <include file-name="tulip.h" location="local"/>
