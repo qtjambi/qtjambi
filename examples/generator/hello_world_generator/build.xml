@@ -101,11 +101,11 @@
             <plugin path="plugins"/>
 
             <!-- Finally the generated library  -->
-            <library name="org_qtjambi_test" type="qtjambi" rootPath="${basedir}/../${qt.lib.subdir}"/>
+            <library name="org_qtjambi_test" type="qtjambi" rootPath="src/lib"/>
 
         </qtjambi-platform-jar>
 
-        <jar destfile="${basedir}/../target/test-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
+        <jar destfile="target/test-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
             <fileset dir="${basedir}/platform-output"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
