@@ -1,15 +1,15 @@
 QT             += xml opengl
 TEMPLATE        = app
-DESTDIR         = ../bin
+DESTDIR         = out
 TARGET          = testGenerator
-MOC_DIR         = ./../tmp
-OBJECTS_DIR     = ./../tmp
+MOC_DIR         = tmp
+OBJECTS_DIR     = tmp
 CONFIG         += qt warn_on debug
-HEADERS         = ./../src/*.h
-SOURCES        += ./../src/*.cpp
+HEADERS         = src/*.h
+SOURCES        += src/*.cpp
 FORMS           =
 DEFINES        += USE_QT4
 OSGROOT         = $$(OSG_ROOT)
 
-INCLUDEPATH    += ./../src
+INCLUDEPATH    += src
 

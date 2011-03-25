@@ -196,7 +196,7 @@
         <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
         <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
-        <property name="qtjambi.jambi.libdir"       value="src/cpp/lib"/>
+        <property name="qtjambi.jambi.libdir"       value="${jambi.directory}/build/src/cpp/lib"/>
         <!--
             dummy-set values to phonon properties, if they
             are not set. If they are set, or if they are set by QTDIR,
@@ -216,7 +216,6 @@
                 <property name="jambi.directory" value="${basedir}"/>
            </else>
         </if>
-
    </target>
 
     <target name="setenv" depends="source.antcontrib, setup-properties"/>
