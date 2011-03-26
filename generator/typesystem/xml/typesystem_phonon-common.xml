@@ -94,8 +94,8 @@
             </modify-argument>
         </modify-function>
     </value-type>
-    <!--<value-type name="Phonon::ObjectDescription" java-name="ObjectDescription" />-->
-    <value-type name="Phonon::ObjectDescription" generate="no" />
+    <value-type name="Phonon::ObjectDescription" java-name="ObjectDescription" />
+    <!--<value-type name="Phonon::ObjectDescription" generate="no" />-->
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
     <value-type name="Phonon::AudioOutputDevice" java-name="AudioOutputDevice" />
 
