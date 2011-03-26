@@ -57,7 +57,7 @@ EOS
             opt :qtinclude_argument, "TODO: what for was this?"
             opt :qtdir, "Base directory of Qt source", :type => String
             opt :library_path, "Specifies where libraries used the commands are", :type => String
-            opt :path, "Append stuff before PATH", :type => String
+            #opt :path, "Append stuff before PATH", :type => String
             opt :qdoc3, "Run only qdoc3 task"
             opt :japi,  "Generate japi file"
             opt :jdoc, "Generate jdoc"
@@ -73,7 +73,7 @@ EOS
         ENV["LD_LIBRARY_PATH"] = opts[:library_path] if opts[:library_path] != nil
 
         # TODO: works only for Linux
-        ENV["PATH"] = opts[:path] + ":" + ENV["PATH"] if opts[:path] != nil
+        #ENV["PATH"] = opts[:path] + ":" + ENV["PATH"] if opts[:path] != nil
 
         if opts[:qdoc3] == true
             run_qdoc
@@ -131,7 +131,7 @@ EOS
 
     def generate_jdoc
         Dir.chdir "generator" do
-            command = "./generator --jdoc-enabled --jdoc-dir ../doc/html/com/trolltech/qt"
+            command = "./generator --jdoc-enabled --jdoc-dir ../build/doc/jdoc"
             puts "Running " + command
             system command
             if $?.exitstatus != 0
@@ -141,8 +141,6 @@ EOS
         end
     end
 
-    # TODO: gentoo has qdoc3 binary, but what about other distros?
-    # And what about QTDIR configs?
     def run_qdoc
         #cd $LOCAL_QDOC/test
         #../qdoc3 qt-for-jambi.qdocconf jambi.qdocconf
@@ -153,9 +151,8 @@ EOS
         docpath = "#{@BASE_PATH}/doc/qdocconf"
         puts
 
-        Dir.chdir "#{@qtdir}/tools/qdoc3/test" do
-            command = "qdoc3 #{docpath}/qt-for-jambi.qdocconf #{docpath}/jambi.qdocconf"
-         #   command = "qdoc3 qt-for-jambi.qdocconf jambi.qdocconf"
+        Dir.chdir "#{@BASE_PATH}/qdoc3" do
+            command = "./qdoc3 #{docpath}/qt-for-jambi.qdocconf #{docpath}/jambi.qdocconf"
             puts "Running " + command
             system command
             if $?.exitstatus != 0
@@ -169,7 +166,8 @@ EOS
     def generate_qdoc_japi
         puts
         Dir.chdir "generator" do 
-            command = "#{@BASE_PATH}//generator --build-qdoc-japi #{@qtinclude_argument} --output-directory=\"#{@OUTPUT_DIRECTORY}\""
+            #command = "#{@BASE_PATH}/generator --build-qdoc-japi #{@qtinclude_argument} --output-directory=\"#{@OUTPUT_DIRECTORY}\""
+            command = "./generator --build-qdoc-japi #{@qtinclude_argument} --output-directory=\"#{@OUTPUT_DIRECTORY}\""
             puts "Running " + command
             system command
             if $?.exitstatus != 0

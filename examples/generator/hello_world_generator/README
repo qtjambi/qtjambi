@@ -1,5 +1,7 @@
 Simple Hello World example
 
+NOTE: Text below is outdated, instead please write us proper text...
+
 This is a simple hello world example to show the most basic use of the qtjambi generator.
 The example shows how to transfer a Qt C++ Widget including some classes to a it's
 java equivalents.
@@ -8,7 +10,7 @@ Prerequisites:
 You must compile QtJambi from source to be able to run this example. This is done issuing
 ant on the root directory of your source installation.
 
-You must then set the environment variable JAMBIDIR to this root path. Then set 
+You must then set the environment variable JAMBIDIR to this root path. Then set
 PATH=$PATH:$JAMBIDIR/generator, or PATH=%PATH%;%JAMBIDIR%\generator\release if you are
 running on Windows.
 
@@ -19,9 +21,9 @@ is possible to create a binary out of these sources issuing qmake and make in th
 makefiles. The binary will end up in a new directory bin.
 
 2) Now, in the jambi sub directory you will find a directory structure suitable for building
-a qtjambi widget. The scripts directory contains the generator build files (build.xml, 
+a qtjambi widget. The scripts directory contains the generator build files (build.xml,
 pro file, typesystem file and an include file global.h). In this directory you can issue the
-command "ant" to start the build. This should produce a file 
+command "ant" to start the build. This should produce a file
 jambi/target/test-<platform>-<compiler>-<qt-version>.jar
 
 3) In the java directory you will find a TestJava.java. It corresponds mainly to src/main.cpp.
@@ -29,6 +31,6 @@ If you adjust the testit.sh with the correct name of qtjambi.jar and test.jar, a
 to a bat file if you are working on Windows, you should be able to compile and launch the
 java version of the widget.
 
-Bodø 29.04.2010, 
+Bodø 29.04.2010,
 Helge Fredriksen
- 
+

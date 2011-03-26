@@ -7,16 +7,16 @@
     com.trolltech.qt.Utilities.loadQtLibrary("QtOpenGL");
   </inject-code>
 
-    <load-typesystem name=":/trolltech/generator/typesystem_core.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_gui.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_sql.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_opengl.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_svg.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_network.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_xml.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_xmlpatterns.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_webkit.txt" generate="no" />
-    <load-typesystem name=":/trolltech/generator/typesystem_phonon.txt" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_core.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_gui.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_sql.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_opengl.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_svg.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_network.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_xml.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_xmlpatterns.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_webkit.xml" generate="no" />
+    <load-typesystem name=":/trolltech/generator/typesystem_phonon.xml" generate="no" />
 
     <template name="from_nativepointer_to_value_type">
             public final %RETURN_TYPE% %FUNCTION_NAME%() {
@@ -27,19 +27,19 @@
   <object-type name="TestSuper">
     <extra-includes>
       <include file-name="QCursor" location="global"/>
-    </extra-includes> 
+    </extra-includes>
   </object-type>
 
   <object-type name="TestItem">
     <extra-includes>
       <include file-name="QCursor" location="global"/>
-    </extra-includes> 
+    </extra-includes>
   </object-type>
 
   <object-type name="TestView">
     <extra-includes>
       <include file-name="QStyleOptionGraphicsItem" location="global"/>
-    </extra-includes> 
+    </extra-includes>
   </object-type>
 
 
