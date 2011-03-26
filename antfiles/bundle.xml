@@ -134,42 +134,42 @@
 
             <!-- Qt Jambi Libraries -->
             <library name="qtjambi"                  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_core"    type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_gui"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_xml"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_sql"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_help"    type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.help}"/>
             <library name="com_trolltech_qt_script"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.script}"/>
             <library name="com_trolltech_qt_scripttools"    type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.scripttools}"/>
             <library name="com_trolltech_qt_multimedia"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.multimedia}"/>
             <library name="com_trolltech_qt_svg"     type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_opengl"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.opengl}"/>
             <library name="com_trolltech_qt_network" type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_phonon"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.phonon}"/>
             <library name="com_trolltech_qt_webkit"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.webkit}"/>
             <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi"
-                    rootPath="${outputDir}/${qtjambi.jambi.libdir}"
+                    rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.xmlpatterns}"/>
 
         <plugin path="plugins"/>
