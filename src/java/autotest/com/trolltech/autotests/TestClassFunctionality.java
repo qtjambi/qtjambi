@@ -633,7 +633,7 @@ public class TestClassFunctionality extends QApplicationTest {
         QKeySequence seq = act.shortcut();
 
         assertEquals(seq.count(), 1);
-        assertEquals(seq.at(0), Qt.Modifier.CTRL.value() | Qt.Key.Key_A.value());
+        assertEquals(seq.at(0), Qt.KeyboardModifier.ControlModifier.value() | Qt.Key.Key_A.value());
 
         SenderTester tester = new SenderTester();
         QTimer.singleShot(1000, tester, "timeoutSlot()");
