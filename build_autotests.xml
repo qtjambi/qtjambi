@@ -104,6 +104,10 @@
 	    <delete dir="${outputDir}/TestResults" />
 	    <mkdir dir="${outputDir}/junitxml"/>
 	    <mkdir dir="${outputDir}/TestResults"/>
+		<!-- files contained in todir being accessed from the tests --> 
+		<copy todir="${outputDir}/auto/com/trolltech/autotests">
+			<fileset dir="src/java/autotest/com/trolltech/autotests" excludes="**/*.java"/>
+		</copy>
 	    <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
 		    <classpath>
 				<pathelement location="${tests.junit}" />
