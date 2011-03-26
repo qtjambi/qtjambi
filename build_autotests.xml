@@ -81,6 +81,7 @@
 				<pathelement location="src/java/autotest" />
 			</classpath>
 			<src path="src/java/autotest/com/trolltech/autotests"/>
+			<src path="src/java/autotest/com/trolltech/generatortests"/>
 	    </javac>
     </target>
 
@@ -115,6 +116,7 @@
 			<formatter type="xml" usefile="yes" />
 			<batchtest fork="yes" todir="${outputDir}/junitxml">
 				<fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
+				<fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/Test*.java"/>
 			</batchtest>
 	    </junit>
     </target>
