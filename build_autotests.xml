@@ -115,6 +115,8 @@
 				<pathelement location="qtjambi-${qtjambi.version}.jar" />
 				<pathelement path="${outputDir}/auto" />
 				<pathelement path="${outputDir}/autotests" />
+				<pathelement path="src/java/qtjambi-examples" />
+				<pathelement path="src/java/autotest" />
 		    </classpath>
 		    <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/:${jambiLib}"/>
 			<formatter type="xml" usefile="yes" />
