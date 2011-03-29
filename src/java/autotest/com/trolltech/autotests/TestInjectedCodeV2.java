@@ -103,8 +103,8 @@ public class TestInjectedCodeV2 extends QApplicationTest {
 
         ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
 
-        assertEquals("BAR", authenticator.user());
-        assertEquals("FOO", authenticator.password());
+        assertEquals("ZIM", authenticator.user());
+        assertEquals("ZUM", authenticator.password());
     }
 
     @Test
@@ -125,8 +125,8 @@ public class TestInjectedCodeV2 extends QApplicationTest {
 
         ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
 
-        assertEquals("BAR", authenticator.user());
-        assertEquals("FOO", authenticator.password());
+        assertEquals("ZIM", authenticator.user());
+        assertEquals("ZUM", authenticator.password());
     }
 
     @Test
@@ -147,8 +147,8 @@ public class TestInjectedCodeV2 extends QApplicationTest {
 
         ass.emitProxyAuthenticationRequired(as, proxy, authenticator.nativePointer());
 
-        assertEquals("BAR", authenticator.user());
-        assertEquals("FOO", authenticator.password());
+        assertEquals("ZIM", authenticator.user());
+        assertEquals("ZUM", authenticator.password());
     }
 
 

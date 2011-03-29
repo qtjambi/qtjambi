@@ -926,10 +926,7 @@ public class TestInjectedCode extends QApplicationTest {
         QImage image = new QImage();
         ImageIOHandlerSubclassSubclass iihss = new ImageIOHandlerSubclassSubclass();
         
-        //assertTrue(iihss.callRead(image.nativePointer())); //of course it gives false
-
-        iihss.read(image); //added this to make the following tests working, itself returns false
-        // take a look to read(com.trolltech.qt.gui.QImage image) in ImageIOHandlerSubclass.java
+        assertTrue(iihss.callRead(image.nativePointer()));
         
         QImage ref1 = new QImage("classpath:com/trolltech/examples/images/cheese.png");
         QImage ref2 = new QImage("classpath:com/trolltech/examples/images/bg1.png");
