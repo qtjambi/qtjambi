@@ -201,7 +201,7 @@ public class TestNativePointer extends QApplicationTest {
             assertTrue(!ptr.isNull());
             assertEquals(ptr.type(), QNativePointer.Type.Float);
             assertEquals(ptr.indirections(), 1);
-            assertEquals(ptr.floatValue(), (float) 10);
+            assertEquals(ptr.floatValue(), (float) 10, 0.0);
         }
 
         {
@@ -212,7 +212,7 @@ public class TestNativePointer extends QApplicationTest {
             for (int i = 0; i < 10; ++i)
                 ptr.setFloatAt(i, i * i);
             for (int i = 0; i < 10; ++i)
-                assertEquals(ptr.floatAt(i), (float) (i * i));
+                assertEquals(ptr.floatAt(i), (float) (i * i), 0.0);
         }
     }
 
@@ -224,7 +224,7 @@ public class TestNativePointer extends QApplicationTest {
             assertTrue(!ptr.isNull());
             assertEquals(ptr.type(), QNativePointer.Type.Double);
             assertEquals(ptr.indirections(), 1);
-            assertEquals(ptr.doubleValue(), (double) 10);
+            assertEquals(ptr.doubleValue(), (double) 10, 0.0);
         }
 
         {
@@ -235,7 +235,7 @@ public class TestNativePointer extends QApplicationTest {
             for (int i = 0; i < 10; ++i)
                 ptr.setDoubleAt(i, i * i);
             for (int i = 0; i < 10; ++i)
-                assertEquals(ptr.doubleAt(i), (double) i * i);
+                assertEquals(ptr.doubleAt(i), (double) i * i, 0.0);
         }
     }
 

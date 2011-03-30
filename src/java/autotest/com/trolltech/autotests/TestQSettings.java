@@ -76,7 +76,7 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         settings.sync();
 
         assertEquals(5, QVariant.toInt(settings.value("int")));
-        assertEquals(5.000001d, QVariant.toDouble(settings.value("double").toString()));
+        assertEquals(5.000001d, QVariant.toDouble(settings.value("double").toString()), 0.0);
         assertEquals("String", QVariant.toString(settings.value("String")));
     }
 
