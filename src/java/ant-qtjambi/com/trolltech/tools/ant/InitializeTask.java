@@ -193,7 +193,7 @@ public class InitializeTask extends Task {
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
         path.append(props.getProperty((String) null, PLUGINSDIR));
-        path.append("/");
+        path.append("/plugins/");
         path.append(subdir);
         path.append("/");
         //! TODO: useful?
