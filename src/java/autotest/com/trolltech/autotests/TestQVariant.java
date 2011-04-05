@@ -93,7 +93,7 @@ public class TestQVariant extends QApplicationTest {
         double expectedDouble = 0.0;
         QByteArray expectedByteArray = new QByteArray("this is my string");
         int expectedInt = 0;
-        boolean expectedBool = false;
+        boolean expectedBool = true;
         QBitArray expectedBitArray = new QBitArray();
         char expectedChar = 0;
         QDate expectedDate = new QDate();
@@ -109,7 +109,7 @@ public class TestQVariant extends QApplicationTest {
         List<Object> expectedList = new ArrayList<Object>();
         Map<String, Object> expectedMap = new HashMap<String, Object>();
 
-        testQVariant("QByteArray", variant, expectedDouble, true, expectedString, true, expectedByteArray, true, expectedInt, true, expectedBool, false, expectedBitArray,
+        testQVariant("QByteArray", variant, expectedDouble, true, expectedString, true, expectedByteArray, true, expectedInt, true, expectedBool, true, expectedBitArray,
                 false, expectedChar, false, expectedDate, false, expectedTime, false, expectedDateTime, false, expectedPoint, false, expectedPointF, false, expectedRect, false, expectedRectF, false,
                 expectedRegExp, false, expectedSize, false, expectedSizeF, false, expectedList, false, expectedMap, false);
     }
@@ -177,7 +177,7 @@ public class TestQVariant extends QApplicationTest {
         double expectedDouble = 456.789;
         QByteArray expectedByteArray = new QByteArray("456.789");
         int expectedInt = 0;
-        boolean expectedBool = false;
+        boolean expectedBool = true;
         QBitArray expectedBitArray = new QBitArray();
         char expectedChar = 0;
         QDate expectedDate = new QDate();
@@ -193,7 +193,7 @@ public class TestQVariant extends QApplicationTest {
         List<Object> expectedList = new ArrayList<Object>();
         Map<String, Object> expectedMap = new HashMap<String, Object>();
 
-        testQVariant("Byte array double", variant, expectedDouble, true, expectedString, true, expectedByteArray, true, expectedInt, true, expectedBool, false,
+        testQVariant("Byte array double", variant, expectedDouble, true, expectedString, true, expectedByteArray, true, expectedInt, true, expectedBool, true,
                 expectedBitArray, false, expectedChar, false, expectedDate, false, expectedTime, false, expectedDateTime, false, expectedPoint, false, expectedPointF, false, expectedRect, false,
                 expectedRectF, false, expectedRegExp, false, expectedSize, false, expectedSizeF, false, expectedList, false, expectedMap, false);
     }
@@ -347,8 +347,8 @@ public class TestQVariant extends QApplicationTest {
             List<?> expectedList, Boolean canConvertList, Map<?, ?> expectedMap, Boolean canConvertMap) {
 
         assertEquals(QVariant.toString(object), expectedString);
-        assertEquals((double)QVariant.toDouble(object), (double)expectedDouble);
-        assertEquals((int)QVariant.toInt(object), (double)expectedInt);
+        assertEquals((double)QVariant.toDouble(object), (double)expectedDouble, 0.0);
+        assertEquals((int)QVariant.toInt(object), (double)expectedInt, 0.0);
         assertEquals(QVariant.toBoolean(object), expectedBool);
         assertTrue(QVariant.toBitArray(object).equals(expectedBitArray));
         assertEquals((char)QVariant.toChar(object), (char)expectedChar);
@@ -358,21 +358,21 @@ public class TestQVariant extends QApplicationTest {
         QVariant.toDateTime(object);
         assertEquals(QVariant.toPoint(object).x(), expectedPoint.x());
         assertEquals(QVariant.toPoint(object).y(), expectedPoint.y());
-        assertEquals(QVariant.toPointF(object).x(), expectedPointF.x());
-        assertEquals(QVariant.toPointF(object).y(), expectedPointF.y());
+        assertEquals(QVariant.toPointF(object).x(), expectedPointF.x(), 0.0);
+        assertEquals(QVariant.toPointF(object).y(), expectedPointF.y(), 0.0);
         assertEquals(QVariant.toRect(object).left(), expectedRect.left());
         assertEquals(QVariant.toRect(object).top(), expectedRect.top());
         assertEquals(QVariant.toRect(object).right(), expectedRect.right());
         assertEquals(QVariant.toRect(object).bottom(), expectedRect.bottom());
-        assertEquals(QVariant.toRectF(object).left(), expectedRectF.left());
-        assertEquals(QVariant.toRectF(object).top(), expectedRectF.top());
-        assertEquals(QVariant.toRectF(object).bottom(), expectedRectF.bottom());
-        assertEquals(QVariant.toRectF(object).right(), expectedRectF.right());
+        assertEquals(QVariant.toRectF(object).left(), expectedRectF.left(), 0.0);
+        assertEquals(QVariant.toRectF(object).top(), expectedRectF.top(), 0.0);
+        assertEquals(QVariant.toRectF(object).bottom(), expectedRectF.bottom(), 0.0);
+        assertEquals(QVariant.toRectF(object).right(), expectedRectF.right(), 0.0);
         assertTrue(QVariant.toRegExp(object).equals(expectedRegExp));
         assertEquals(QVariant.toSize(object).width(), expectedSize.width());
         assertEquals(QVariant.toSize(object).height(), expectedSize.height());
-        assertEquals(QVariant.toSizeF(object).width(), expectedSizeF.width());
-        assertEquals(QVariant.toSizeF(object).height(), expectedSizeF.height());
+        assertEquals(QVariant.toSizeF(object).width(), expectedSizeF.width(), 0.0);
+        assertEquals(QVariant.toSizeF(object).height(), expectedSizeF.height(), 0.0);
         assertEquals(QVariant.toList(object), expectedList);
         assertEquals(QVariant.toMap(object), expectedMap);
         {

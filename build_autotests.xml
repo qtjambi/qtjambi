@@ -1,6 +1,6 @@
 <!--
 	TODO:
-	- run.osx wasn't modified, may not work
+	- I modified the run.osx target too, but I couldn't test it
 -->
 <project default="all" basedir=".">
 
@@ -9,11 +9,6 @@
 	<tstamp/>
 
 	<property file="tests.properties"/>
-
-	<!-- same as in build.xml, isn't required
-	<property name="sourceDir" value="." />
-	<property name="outputDir" value="." />
-	-->
 
 	<property name="jambiLib" value="${outputDir}/lib" />
 	<property name="qtLib" value="${outputDir}/platform-output/lib" />
@@ -49,17 +44,6 @@
 			</condition>
 		</fail>
 	</target>
-
-	<!-- seems to be useless here
-	<target name="init" depends="check.junit">
-		<taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
-	    <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
-	    <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
-	    <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
-	    <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
-	    <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
-	</target>
-	-->
 
     <target name="compile.native" depends="init">
 	    <mkdir dir="${outputDir}/autotestlib"/>
@@ -97,6 +81,7 @@
 				<pathelement location="src/java/autotest" />
 			</classpath>
 			<src path="src/java/autotest/com/trolltech/autotests"/>
+			<src path="src/java/autotest/com/trolltech/generatortests"/>
 	    </javac>
     </target>
 
@@ -107,29 +92,37 @@
 	    <mkdir dir="${outputDir}/TestResults"/>
 	    <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
 			<jvmarg value="-XstartOnFirstThread"/>
-			<formatter type="xml" />
-			<batchtest fork="yes" todir="${xml}">
-		        <fileset includes="com/trolltech/autotests/Test*.java"/>
+			<formatter type="xml" usefile="yes" />
+			<batchtest fork="yes" todir="${outputDir}/junitxml">
+				<fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
 			</batchtest>
 		</junit>
-    </target>
+	</target>
 
     <target name="run.other" unless="qtjambi.osx" depends="check.junit">
 		<delete dir="${outputDir}/junitxml" />
 	    <delete dir="${outputDir}/TestResults" />
 	    <mkdir dir="${outputDir}/junitxml"/>
 	    <mkdir dir="${outputDir}/TestResults"/>
+		<!-- files contained in todir being accessed from the tests --> 
+		<copy todir="${outputDir}/auto/com/trolltech/autotests">
+			<fileset dir="src/java/autotest/com/trolltech/autotests" excludes="**/*.java"/>
+		</copy>
 	    <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
 		    <classpath>
 				<pathelement location="${tests.junit}" />
 				<pathelement location="${tests.hamcrest}" />
 				<pathelement location="qtjambi-${qtjambi.version}.jar" />
 				<pathelement path="${outputDir}/auto" />
+				<pathelement path="${outputDir}/autotests" />
+				<pathelement path="src/java/qtjambi-examples" />
+				<pathelement path="src/java/autotest" />
 		    </classpath>
 		    <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/:${jambiLib}"/>
 			<formatter type="xml" usefile="yes" />
 			<batchtest fork="yes" todir="${outputDir}/junitxml">
 				<fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
+				<fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/Test*.java"/>
 			</batchtest>
 	    </junit>
     </target>

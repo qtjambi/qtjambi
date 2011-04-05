@@ -154,13 +154,13 @@ public class TestFileEngine extends QApplicationTest{
         QDir dir = new QDir("classpath:TestClassFunctionality_dir/");
         assertTrue(dir.exists());
 
-        assertEquals(dir.entryList().size(), 3);
-        assertTrue(dir.entryList().get(2).equals("TestClassFunctionality_dir2"));
+        assertEquals(dir.entryList().size(), 1);
+        assertTrue(dir.entryList().get(0).equals("TestClassFunctionality_dir2"));
 
         List<QFileInfo> entryInfoList = dir.entryInfoList();
-        assertEquals(entryInfoList.size(), 3);
+        assertEquals(entryInfoList.size(), 1);
 
-        info = entryInfoList.get(2);
+        info = entryInfoList.get(0);
         assertTrue(info.exists());
         assertTrue(info.isDir());
         assertEquals(info.fileName(), "TestClassFunctionality_dir2");
@@ -175,7 +175,7 @@ public class TestFileEngine extends QApplicationTest{
         assertTrue(dir.exists());
         assertTrue(dir.isReadable());
         assertTrue(!dir.isRoot());
-        assertEquals(dir.entryList().size(), 3);
+        assertEquals(dir.entryList().size(), 1);
 
         file = new QFile("classpath:TestClassFunctionality_dir/TestClassFunctionality_dir2/TestClassFunctionality_indir.txt");
         assertTrue(file.exists());

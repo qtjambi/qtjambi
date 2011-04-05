@@ -6,7 +6,7 @@
  * @author akoskm
  */
 
-package com.trolltech.qt.tests;
+package com.trolltech.generatortests;
 
 import java.lang.reflect.Field;
 
@@ -19,7 +19,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class GeneratorUtilitiesTest extends TestCase {
+public class TestGeneratorUtilities extends TestCase {
 
     private GeneratorUtilities gu1;
     private QObject o1;
@@ -31,8 +31,8 @@ public class GeneratorUtilitiesTest extends TestCase {
 	QtJambi_LibraryInitializer.init();
     }
     
-    public GeneratorUtilitiesTest(String name) {
-	super(name);
+    public TestGeneratorUtilities(String name) {
+		super(name);
     }
 
     public void setUp() throws Exception {
@@ -97,11 +97,11 @@ public class GeneratorUtilitiesTest extends TestCase {
 
     public static Test suite() {
 	TestSuite suite = new TestSuite();
-	suite.addTest(new GeneratorUtilitiesTest("testThreadCheck"));
-	suite.addTest(new GeneratorUtilitiesTest("testFetchField"));
-	suite.addTest(new GeneratorUtilitiesTest("testSetField"));
-	suite.addTest(new GeneratorUtilitiesTest("testCountExpense"));
-	suite.addTest(new GeneratorUtilitiesTest("testCreateExtendedEnum"));
+	suite.addTest(new TestGeneratorUtilities("testThreadCheck"));
+	suite.addTest(new TestGeneratorUtilities("testFetchField"));
+	suite.addTest(new TestGeneratorUtilities("testSetField"));
+	suite.addTest(new TestGeneratorUtilities("testCountExpense"));
+	suite.addTest(new TestGeneratorUtilities("testCreateExtendedEnum"));
 	return suite;
     }
 

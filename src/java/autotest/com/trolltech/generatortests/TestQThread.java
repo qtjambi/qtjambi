@@ -4,7 +4,7 @@
  * @author akoskm
  */
 
-package com.trolltech.qt.tests;
+package com.trolltech.generatortests;
 
 import com.trolltech.qt.QThread;
 import com.trolltech.qt.QtJambi_LibraryInitializer;
@@ -13,7 +13,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class QThreadTest extends TestCase {
+public class TestQThread extends TestCase {
     
     private QThread qthread;
     
@@ -23,7 +23,7 @@ public class QThreadTest extends TestCase {
 	QtJambi_LibraryInitializer.init();
     }
     
-    public QThreadTest(String name) {
+    public TestQThread(String name) {
 	super(name);
     }
 
@@ -48,8 +48,8 @@ public class QThreadTest extends TestCase {
     
     public static Test suite() {
 	TestSuite suite = new TestSuite();
-	suite.addTest(new QThreadTest("testInit"));
-	suite.addTest(new QThreadTest("testRun"));
+	suite.addTest(new TestQThread("testInit"));
+	suite.addTest(new TestQThread("testRun"));
 	return suite;
     }
     

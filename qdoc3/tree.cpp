@@ -71,8 +71,8 @@ struct InheritanceBound
                      const QStringList& basePath0,
                      const QString &dataTypeWithTemplateArgs0,
                      InnerNode *parent)
-	: access(access0), basePath(basePath0),
-	  dataTypeWithTemplateArgs(dataTypeWithTemplateArgs0),
+    : access(access0), basePath(basePath0),
+    dataTypeWithTemplateArgs(dataTypeWithTemplateArgs0),
           parent(parent) { }
 };
 
@@ -154,7 +154,7 @@ const Node* Tree::findNode(const QStringList &path,
 
             const Node *next =
                 static_cast<const InnerNode*>(node)->findNode(path.at(i));
-            
+
             if (!next && (findFlags & SearchEnumValues) && i == path.size()-1)
                 next = static_cast<const InnerNode*>(node)->findEnumNodeForValue(path.at(i));
 
@@ -2123,3 +2123,4 @@ QString Tree::fullDocumentName(const Node *node) const
 }
 
 QT_END_NAMESPACE
+

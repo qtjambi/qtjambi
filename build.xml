@@ -34,6 +34,7 @@
     <import file="antfiles/java.xml"/>
     <import file="antfiles/clean.xml"/>
     <import file="antfiles/generator.xml"/>
+    <import file="antfiles/qdoc3.xml"/>
     <import file="build_autotests.xml" />
 
     <!--
@@ -178,6 +179,9 @@ NOTE: for now ant clean does not work, please use git clean -fdx instead.
         <!--<copy file="${jardir}/qtjambi-util.jar"
             tofile="qtjambi-util-${qtjambi.version}.jar"/>-->
     </target>
+
+    <target name="qdoc3" depends="qdoc3.make"
+        description="Compiles qdoc3 for doc generation scripts." />
 
     <target name="examples" depends="log, examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>

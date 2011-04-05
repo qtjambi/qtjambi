@@ -176,10 +176,10 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(11, length);
 
         QLineF line = (QLineF) object;
-        assertEquals(1.2, line.x1());
-        assertEquals(2.3, line.y1());
-        assertEquals(3.4, line.x2());
-        assertEquals(4.5, line.y2());
+        assertEquals(1.2, line.x1(), 0.0);
+        assertEquals(2.3, line.y1(), 0.0);
+        assertEquals(3.4, line.x2(), 0.0);
+        assertEquals(4.5, line.y2(), 0.0);
     }
 
     @Test
@@ -204,10 +204,10 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(13, p.length());
 
         QLineF line = p.lineF();
-        assertEquals(2.3, line.x1());
-        assertEquals(3.4, line.y1());
-        assertEquals(4.5, line.x2());
-        assertEquals(5.6, line.y2());
+        assertEquals(2.3, line.x1(), 0.0);
+        assertEquals(3.4, line.y1(), 0.0);
+        assertEquals(4.5, line.x2(), 0.0);
+        assertEquals(5.6, line.y2(), 0.0);
     }
 
     @Test
@@ -235,10 +235,10 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(11, length);
 
         QRectF rect = (QRectF) object;
-        assertEquals(1.2, rect.x());
-        assertEquals(2.3, rect.y());
-        assertEquals(3.4, rect.width());
-        assertEquals(4.5, rect.height());
+        assertEquals(1.2, rect.x(), 0.0);
+        assertEquals(2.3, rect.y(), 0.0);
+        assertEquals(3.4, rect.width(), 0.0);
+        assertEquals(4.5, rect.height(), 0.0);
     }
 
     @Test
@@ -263,10 +263,10 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(13, p.length());
 
         QRectF rect = p.rectF();
-        assertEquals(2.3, rect.x());
-        assertEquals(3.4, rect.y());
-        assertEquals(4.5, rect.width());
-        assertEquals(5.6, rect.height());
+        assertEquals(2.3, rect.x(), 0.0);
+        assertEquals(3.4, rect.y(), 0.0);
+        assertEquals(4.5, rect.width(), 0.0);
+        assertEquals(5.6, rect.height(), 0.0);
     }
 
     @Test
@@ -408,8 +408,8 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(11, length);
 
         QPointF pointF = (QPointF) object;
-        assertEquals(1.0, pointF.x());
-        assertEquals(2.0, pointF.y());
+        assertEquals(1.0, pointF.x(), 0.0);
+        assertEquals(2.0, pointF.y(), 0.0);
     }
 
     @Test
@@ -434,8 +434,8 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(13, p.length());
 
         QPointF pointF = p.pointF();
-        assertEquals(2.0, pointF.x());
-        assertEquals(3.0, pointF.y());
+        assertEquals(2.0, pointF.x(), 0.0);
+        assertEquals(3.0, pointF.y(), 0.0);
     }
 
     @Test
@@ -463,8 +463,8 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(11, length);
 
         QPointF pointF = (QPointF) object;
-        assertEquals(1.0, pointF.x());
-        assertEquals(2.0, pointF.y());
+        assertEquals(1.0, pointF.x(), 0.0);
+        assertEquals(2.0, pointF.y(), 0.0);
     }
 
     @Test
@@ -489,8 +489,8 @@ public class TestQPaintEngine extends CustomPaintEngine
         assertEquals(13, p.length());
 
         QPointF pointF = p.pointF();
-        assertEquals(2.0, pointF.x());
-        assertEquals(3.0, pointF.y());
+        assertEquals(2.0, pointF.x(), 0.0);
+        assertEquals(3.0, pointF.y(), 0.0);
     }
 
     /**

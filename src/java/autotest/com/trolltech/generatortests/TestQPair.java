@@ -4,7 +4,7 @@
  * @author akoskm
  */
 
-package com.trolltech.qt.tests;
+package com.trolltech.generatortests;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -12,12 +12,12 @@ import junit.framework.TestSuite;
 
 import com.trolltech.qt.QPair;
 
-public class QPairTest <T, S> extends TestCase {
+public class TestQPair <T, S> extends TestCase {
 
     QPair<T, S> qp1;
     QPair<T ,S> qp2;
 
-    public QPairTest(String name) {
+    public TestQPair(String name) {
 	super(name);
     }
 
@@ -49,9 +49,9 @@ public class QPairTest <T, S> extends TestCase {
 
     public static Test suite() {
 	TestSuite suite = new TestSuite();
-	suite.addTest(new QPairTest("testEquals"));
-	suite.addTest(new QPairTest("testToString"));
-	suite.addTest(new QPairTest("testClone"));
+	suite.addTest(new TestQPair("testEquals"));
+	suite.addTest(new TestQPair("testToString"));
+	suite.addTest(new TestQPair("testClone"));
 	return suite;
     }
 

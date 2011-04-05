@@ -4,7 +4,7 @@
  * @author akoskm
  */
 
-package com.trolltech.qt.tests;
+package com.trolltech.generatortests;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -15,7 +15,7 @@ import com.trolltech.qt.Utilities;
 import com.trolltech.qt.Utilities.Configuration;
 import com.trolltech.qt.Utilities.OperatingSystem;
 
-public class UtilitiesTest extends TestCase {
+public class TestUtilities extends TestCase {
     
     private String singleString;
     private String failString;
@@ -29,7 +29,7 @@ public class UtilitiesTest extends TestCase {
 	QtJambi_LibraryInitializer.init();
     }
     
-    public UtilitiesTest(String name) {
+    public TestUtilities(String name) {
 	super(name);
     }
 
@@ -84,10 +84,10 @@ public class UtilitiesTest extends TestCase {
     
     public static Test suite() {
 	TestSuite suite = new TestSuite();
-	suite.addTest(new UtilitiesTest("testMatchProperty"));
-	suite.addTest(new UtilitiesTest("testLoadLibrary"));
-	suite.addTest(new UtilitiesTest("testDecideOperatingSystem"));
-	suite.addTest(new UtilitiesTest("testDecideConfiguration"));
+	suite.addTest(new TestUtilities("testMatchProperty"));
+	suite.addTest(new TestUtilities("testLoadLibrary"));
+	suite.addTest(new TestUtilities("testDecideOperatingSystem"));
+	suite.addTest(new TestUtilities("testDecideConfiguration"));
 	return suite;
     }
     
