@@ -75,7 +75,7 @@
             <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
-    
+
     <value-type name="Phonon::AudioCaptureDevice">
         <modify-function signature="fromIndex(int)" remove="all" /> 
         <modify-function signature="operator==(Phonon::ObjectDescription)const" access="private">
@@ -93,7 +93,25 @@
             <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
-    
+
+   <value-type name="Phonon::VideoCaptureDevice">
+       <modify-function signature="fromIndex(int)" remove="all" />
+       <modify-function signature="operator==(Phonon::ObjectDescription)const" access="private">
+           <modify-argument index="1">
+               <replace-type modified-type="com.trolltech.qt.phonon.VideoCaptureDevice" />
+               <conversion-rule class="native">
+                   Phonon::VideoCaptureDevice %out = (Phonon::VideoCaptureDevice) *(Phonon::VideoCaptureDevice *)%in;
+               </conversion-rule>
+           </modify-argument>
+       </modify-function>
+       <modify-function signature="operator!=(Phonon::ObjectDescription)const" remove="all" />
+       <modify-function signature="property(const char*)const" access="private" />
+
+       <inject-code>
+           <import-file name="typesystem/java/typesystem_phonon-java.java" quote-after-line="class ObjectDescriptionSubclass___" quote-before-line="}// class"/>
+       </inject-code>
+   </value-type>
+
     <namespace-type name="Phonon">
         <modify-function signature="createPlayer(Phonon::Category, Phonon::MediaSource)">
             <modify-argument index="2">
