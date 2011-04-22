@@ -52,10 +52,11 @@
     <interface-type name="Phonon::MediaNode" java-name="MediaNode" />
 
     <interface-type name="Phonon::MediaObjectInterface" java-name="AbstractMediaObject" />
-    <interface-type name="Phonon::PlatformPlugin" java-name="PlatformPlugin" />
     <interface-type name="Phonon::StreamInterface" java-name="AbstractStream" />
     <interface-type name="Phonon::VideoWidgetInterface" java-name="AbstractVideoWidget" />
     <interface-type name="Phonon::VolumeFaderInterface" java-name="AbstractVolumeFader" />
+
+   <interface-type name="Phonon::PlatformPlugin" java-name="PlatformPlugin" />
 
     <value-type name="Phonon::EffectParameter" java-name="EffectParameter">
         <modify-function signature="EffectParameter()" remove="all" /> <!-- internal -->
@@ -98,6 +99,10 @@
     <value-type name="Phonon::ObjectDescription" generate="no" />
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
     <value-type name="Phonon::AudioOutputDevice" java-name="AudioOutputDevice" />
+    <value-type name="Phonon::VideoCaptureDevice" java-name="VideoCaptureDevice" />
+    <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
+    <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
+    <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
 
     <object-type name="Phonon::AbstractAudioOutput" java-name="AbstractAudioOutput" />
     <object-type name="Phonon::AbstractMediaStream" java-name="AbstractMediaStream" />
@@ -127,9 +132,6 @@
         </modify-function>
     </object-type>
 
-     <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
-     <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
-     <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'MediaSource' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'Path' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
