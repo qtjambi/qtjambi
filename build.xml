@@ -147,8 +147,6 @@ Full command listing with ant -projecthelp
 Quick howto:
 [edit buildpath.properties to suit your system]
 ant all
-
-NOTE: for now ant clean does not work, please use git clean -fdx instead.
         </echo>
     </target>
 
