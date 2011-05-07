@@ -382,11 +382,12 @@ public class NativeLibraryManager {
 
                 // Try to decide the name of the .jar file to have a
                 // reference point for later..
-                int end = eform.length() - DEPLOY_DESCRIPTOR_NAME.length() - 2;
-                int start = eform.lastIndexOf('/', end - 1) + 1;
-
-                if (start > 0 && start < end) {
-                    String jarName = eform.substring(start, end);
+                int end = eform.lastIndexOf("!/", eform.length() - 1);
+                // eform has the "jar:url!/entry" format
+                if (end != -1) {
+                    int start = 4; //"jar:".length();
+                    URL jarUrl = new URL(eform.substring(start, end));
+                    String jarName = new File(jarUrl.getFile()).getName();
                     if (VERBOSE_LOADING)
                         reporter.report("Loading ", jarName, " from ", eform);
                     unpackDeploymentSpec(url, jarName);
