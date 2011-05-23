@@ -102,6 +102,7 @@ private:
     StringMap m_oldHeaderToNewHeader;
 
     bool m_scriptsActivated;
+    bool m_laidOut;
 };
 
 } // namespace CPP
