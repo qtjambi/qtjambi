@@ -9,3 +9,7 @@ buildlogs
 
 examples/generator/hello_world_generator/bin
 examples/generator/hello_world_generator/tmp
+
+bin
+${timestamp.dir}
+qtjambi*.jar
