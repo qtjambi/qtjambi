@@ -63,6 +63,9 @@ class GeneratorSet : public QObject {
         virtual QString generate() = 0;
 
         static GeneratorSet *getInstance();
+        QString inDir;
+        QString cppOutDir;
+        QString javaOutDir;
         QString outDir;
         bool printStdout;
 };

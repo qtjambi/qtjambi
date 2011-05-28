@@ -45,10 +45,14 @@
 #include "generatorset.h"
 
 GeneratorSet::GeneratorSet() :
+        inDir("."),
         outDir("."),
         printStdout(false) {}
 
 bool GeneratorSet::readParameters(const QMap<QString, QString> args) {
+    if (args.contains("input-directory")) {
+        inDir = args.value("input-directory");
+    }
     if (args.contains("output-directory")) {
         outDir = args.value("output-directory");
     }

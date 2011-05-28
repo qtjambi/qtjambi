@@ -16,7 +16,7 @@ void ReportHandler_message_handler(const std::string &str) {
 Wrapper::Wrapper(int argc, char *argv[]) :
         default_file("targets/qtjambi_masterinclude.h"),
         default_system("targets/build_all.xml"),
-        pp_file(".preprocessed.tmp") {
+        pp_file("preprocessed.tmp") {
 
     gs = GeneratorSet::getInstance();
     args = parseArguments(argc, argv);
@@ -63,7 +63,23 @@ void Wrapper::handleArguments() {
 
     if (args.contains("qt-include-directory")) {
         include_directory = args.value("qt-include-directory");
-    } else include_directory = "";
+    } else {
+        include_directory = "";
+    }
+
+    if (args.contains("input-directory")) {
+        default_file = QDir(args.value("input-directory")).absoluteFilePath(default_file);
+        default_system = QDir(args.value("input-directory")).absoluteFilePath(default_system);
+    }
+
+    if (args.contains("output-directory"))
+        pp_file = QDir(args.value("output-directory")).absoluteFilePath(pp_file);
+
+    if (args.contains("cpp-output-directory"))
+        gs->cppOutDir = args.value("cpp-output-directory");
+
+    if (args.contains("java-output-directory"))
+        gs->javaOutDir = args.value("java-output-directory");
 }
 
 void Wrapper::assignVariables() {
@@ -96,7 +112,7 @@ int Wrapper::runJambiGenerator() {
     printf("Running the Qt Jambi Generator. Please wait while source files are being generated...\n");
 
     //parse the type system file
-    if (!TypeDatabase::instance()->parseFile(typesystemFileName))
+    if (!TypeDatabase::instance()->parseFile(typesystemFileName, args.value("input-directory")))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
     //removing file here for theoretical case of wanting to parse two master include files here
@@ -144,7 +160,10 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --help, -h or -?                          \n"
            "  --no-suppress-warnings                    \n"
            "  --include-eclipse-warnings                \n"
+           "  --input-directory=[dir]                   \n"
            "  --output-directory=[dir]                  \n"
+           "  --cpp-output-directory=[dir]              \n"
+           "  --java-output-directory=[dir]             \n"
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n"
            "  --qt-include-directory=[dir]              \n",

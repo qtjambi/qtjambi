@@ -55,7 +55,10 @@ import com.trolltech.qt.internal.*;
 public class GeneratorTask extends Task {
     private String header = "";
     private String typesystem = "";
+    private String inputDirectory;
     private String outputDirectory = ".";
+    private String cppOutputDirectory;
+    private String javaOutputDirectory;
     private String dir = ".";
     private String phononpath = "";
     private String kdephonon = "";
@@ -132,12 +135,36 @@ public class GeneratorTask extends Task {
             commandList.add("--qt-lib-directory=" + Util.escape(qtLibDirectory));
         }
 
+        if(inputDirectory != null && !inputDirectory.equals("")){
+            File file = Util.makeCanonical(inputDirectory);
+            if (!file.exists()) {
+                throw new BuildException("Input directory '" + inputDirectory + "' does not exist.");
+            }
+            commandList.add("--input-directory=" + Util.escape(file.getAbsolutePath()));
+        }
+
         if(!outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
             if (!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
             commandList.add("--output-directory=" + Util.escape(file.getAbsolutePath()));
+        }
+
+        if(cppOutputDirectory != null && !cppOutputDirectory.equals("")){
+            File file = Util.makeCanonical(cppOutputDirectory);
+            if (!file.exists()) {
+                throw new BuildException("CPP Output directory '" + cppOutputDirectory + "' does not exist.");
+            }
+            commandList.add("--cpp-output-directory=" + Util.escape(file.getAbsolutePath()));
+        }
+
+        if(javaOutputDirectory != null && !javaOutputDirectory.equals("")){
+            File file = Util.makeCanonical(javaOutputDirectory);
+            if (!file.exists()) {
+                throw new BuildException("Java Output directory '" + javaOutputDirectory + "' does not exist.");
+            }
+            commandList.add("--java-output-directory=" + Util.escape(file.getAbsolutePath()));
         }
 
         parseArgumentFiles(commandList);
@@ -185,8 +212,20 @@ public class GeneratorTask extends Task {
         this.qtLibDirectory  = dir;
     }
 
+    public void setInputDirectory(String inputDirectory) {
+        this.inputDirectory = inputDirectory;
+    }
+
     public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
+    }
+
+    public void setCppOutputDirectory(String cppOutputDirectory) {
+        this.cppOutputDirectory = cppOutputDirectory;
+    }
+
+    public void setJavaOutputDirectory(String javaOutputDirectory) {
+        this.javaOutputDirectory = javaOutputDirectory;
     }
 
     public void setDir(String dir) {

@@ -55,6 +55,7 @@
 #include "tokens.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QTextCodec>
@@ -1665,7 +1666,7 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &type_info,
 
     if (typei.isFunctionPointer()) {
         *ok = false;
-        qDebug() << "isFunctionPointer";
+        qDebug() << "isFunctionPointer:" << type_info.toString();
         return 0;
     }
 
@@ -2541,10 +2542,37 @@ static void write_reject_log_file(const QString &name,
 
 
 void AbstractMetaBuilder::dumpLog() {
-    write_reject_log_file("mjb_rejected_classes.log", m_rejected_classes);
-    write_reject_log_file("mjb_rejected_enums.log", m_rejected_enums);
-    write_reject_log_file("mjb_rejected_functions.log", m_rejected_functions);
-    write_reject_log_file("mjb_rejected_fields.log", m_rejected_fields);
+    {
+        QString fileName("mjb_rejected_classes.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
+        write_reject_log_file(file.fileName(), m_rejected_classes);
+    }
+
+    {
+        QString fileName("mjb_rejected_enums.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
+        write_reject_log_file(file.fileName(), m_rejected_enums);
+    }
+
+    {
+        QString fileName("mjb_rejected_functions.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
+        write_reject_log_file(file.fileName(), m_rejected_functions);
+    }
+
+    {
+        QString fileName("mjb_rejected_fields.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
+        write_reject_log_file(file.fileName(), m_rejected_fields);
+    }
 }
 
 AbstractMetaClassList AbstractMetaBuilder::classesTopologicalSorted() const {

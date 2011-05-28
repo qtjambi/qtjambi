@@ -57,8 +57,7 @@ import com.trolltech.qt.internal.*;
 public class MakeTask extends Task {
 
     private String msg = "";
-    @SuppressWarnings("unused") // used by ant
-	private String target = "";
+    private String target;
     private String dir = ".";
     private boolean silent = false;
     @SuppressWarnings("unused") //used by ant
@@ -98,6 +97,9 @@ public class MakeTask extends Task {
         } catch (NullPointerException e) {
             // Cannot happen
         }
+
+        if (target != null)
+            commandArray.add(target);
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         String ldpath = (String) props.getProperty((String) null, InitializeTask.LIBDIR);

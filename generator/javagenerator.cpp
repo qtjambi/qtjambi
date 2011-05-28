@@ -1771,7 +1771,10 @@ void JavaGenerator::generate() {
 
     { //log native pointer api
         const AbstractMetaClass *last_class = 0;
-        QFile file("mjb_nativepointer_api.log");
+        QString fileName("mjb_nativepointer_api.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
@@ -1802,7 +1805,10 @@ void JavaGenerator::generate() {
 
     { // log object type usage of classes
         const AbstractMetaClass *last_class = 0;
-        QFile file("mjb_object_type_usage.log");
+        QString fileName("mjb_nativepointer_api.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
@@ -1834,7 +1840,10 @@ void JavaGenerator::generate() {
     }
 
     { // log possible reference counting candidates
-        QFile file("mjb_reference_count_candidates.log");
+        QString fileName("mjb_reference_count_candidates.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 

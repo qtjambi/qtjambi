@@ -125,6 +125,8 @@ bool GeneratorSetJava::readParameters(const QMap<QString, QString> args) {
 
 void GeneratorSetJava::buildModel(const QString pp_file) {
     builder.setFileName(pp_file);
+    if (!outDir.isNull())
+        builder.setOutputDirectory(outDir);
     builder.build();
 }
 
@@ -171,6 +173,8 @@ QString GeneratorSetJava::generate() {
         java_generator->setDocumentationDirectory(doc_dir);
         java_generator->setDocumentationEnabled(docs_enabled);
         java_generator->setNativeJumpTable(native_jump_table);
+        if (!javaOutDir.isNull())
+            java_generator->setOutputDirectory(javaOutDir);
         generators << java_generator;
 
         contexts << "JavaGenerator";
@@ -185,6 +189,8 @@ QString GeneratorSetJava::generate() {
     if (!no_cpp_impl) {
         cpp_impl_generator = new CppImplGenerator(priGenerator);
         cpp_impl_generator->setNativeJumpTable(native_jump_table);
+        if (!cppOutDir.isNull())
+            cpp_impl_generator->setOutputDirectory(cppOutDir);
         generators << cpp_impl_generator;
         contexts << "CppImplGenerator";
     }
@@ -213,7 +219,8 @@ QString GeneratorSetJava::generate() {
         Generator *generator = generators.at(i);
         ReportHandler::setContext(contexts.at(i));
 
-        generator->setOutputDirectory(outDir);
+        if (generator->outputDirectory().isNull())
+            generator->setOutputDirectory(outDir);
         generator->setClasses(builder.classes());
         if (printStdout)
             generator->printClasses();
