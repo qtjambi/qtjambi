@@ -1,5 +1,7 @@
 
 #include <QDebug>
+#include <QFileInfo>
+#include <QDir>
 
 #include "handler.h"
 #include "typedatabase.h"
@@ -157,6 +159,9 @@ bool Handler::importFileElement(const QXmlAttributes &atts) {
     }
 
     QFile file(fileName);
+    QFileInfo fileinfo(file);
+    if (fileinfo.isRelative() && !m_importInputDirectory.isNull())	// prepend
+        file.setFileName(QDir(m_importInputDirectory).absoluteFilePath(fileName));
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         file.setFileName(":/trolltech/generator/" + fileName);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -616,7 +621,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                if (!m_database->parseFile(name, convertBoolean(attributes["generate"], "generate", true))) {
+                if (!m_database->parseFile(name, m_importInputDirectory, convertBoolean(attributes["generate"], "generate", true))) {
                     m_error = QString("Failed to parse: '%1'").arg(name);
                     return false;
                 }

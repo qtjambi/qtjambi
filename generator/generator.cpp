@@ -53,7 +53,6 @@
 Generator::Generator() {
     m_num_generated = 0;
     m_num_generated_written = 0;
-    m_out_dir = ".";
 }
 
 void Generator::generate() {

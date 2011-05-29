@@ -64,6 +64,10 @@ class Handler : public QXmlDefaultHandler {
 
         bool characters(const QString &ch);
 
+        void setImportInputDirectory(const QString &importInputDirectory) {
+            m_importInputDirectory = importInputDirectory;
+        }
+
     private:
         void fetchAttributeValues(const QString &name, const QXmlAttributes &atts,
                                   QHash<QString, QString> *acceptedAttributes);
@@ -76,6 +80,7 @@ class Handler : public QXmlDefaultHandler {
         QString m_defaultPackage;
         QString m_defaultSuperclass;
         QString m_error;
+        QString m_importInputDirectory;
         TypeEntry::CodeGeneration m_generate;
 
         /**

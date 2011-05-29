@@ -130,6 +130,9 @@ class AbstractMetaBuilder {
 
         void fixQObjectForScope(TypeDatabase *types,
                                 NamespaceModelItem item);
+
+        QString outputDirectory() const { return m_out_dir; }
+        void setOutputDirectory(const QString &outDir) { m_out_dir = outDir; }
     protected:
         AbstractMetaClass *argumentToClass(ArgumentModelItem);
 
@@ -145,6 +148,7 @@ class AbstractMetaBuilder {
         void sortLists();
 
         QString m_file_name;
+        QString m_out_dir;
 
         AbstractMetaClassList m_meta_classes;
         AbstractMetaClassList m_templates;
