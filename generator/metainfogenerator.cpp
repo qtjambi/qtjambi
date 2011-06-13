@@ -345,7 +345,7 @@ void MetaInfoGenerator::writeCppFile() {
 
         FileOut *f = fileHash.value(cls->package(), 0);
         if (f == 0 && generated(cls)) {
-            f = new FileOut(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + cppFilename());
+            f = new FileOut(cppOutputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + cppFilename());
 
             writeIncludeStatements(f->stream, classList, cls->package());
             f->stream << endl;
@@ -470,7 +470,7 @@ void MetaInfoGenerator::writeHeaderFile() {
     foreach(AbstractMetaClass *cls, classList) {
         bool hasGenerated = fileHash.value(cls->package(), false);
         if (!hasGenerated && generated(cls)) {
-            FileOut file(outputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + headerFilename());
+            FileOut file(cppOutputDirectory() + "/" + subDirectoryForClass(cls, CppDirectory) + "/" + headerFilename());
             file.stream << "#ifndef " << filenameStub().toUpper() << "_H" << endl;
             file.stream << "#define " << filenameStub().toUpper() << "_H" << endl << endl;
             writeInitializationFunctionName(file.stream, cls->package(), true);
@@ -582,7 +582,7 @@ void MetaInfoGenerator::writeLibraryInitializers() {
     foreach(QString package, known_packages) {
         if (generatedMetaInfo(package)) { // write cpp file
 
-            FileOut fileOut(outputDirectory() + "/" + subDirectoryForPackage(package, CppDirectory) + "/qtjambi_libraryinitializer.cpp");
+            FileOut fileOut(cppOutputDirectory() + "/" + subDirectoryForPackage(package, CppDirectory) + "/qtjambi_libraryinitializer.cpp");
 
             QString signature = jni_function_signature(package, "QtJambi_LibraryInitializer",
                                 "__qt_initLibrary", "void");
@@ -607,7 +607,7 @@ void MetaInfoGenerator::writeLibraryInitializers() {
 
         if (generatedJavaClasses(package)) {
 
-            FileOut fileOut(outputDirectory() + "/" + subDirectoryForPackage(package, JavaDirectory) + "/QtJambi_LibraryInitializer.java");
+            FileOut fileOut(javaOutputDirectory() + "/" + subDirectoryForPackage(package, JavaDirectory) + "/QtJambi_LibraryInitializer.java");
 
             QTextStream &s = fileOut.stream;
             s << "package " << package << ";" << endl << endl
