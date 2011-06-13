@@ -1438,6 +1438,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         if (!java_class->baseClassName().isEmpty()) {
+            qDebug()<<java_class->name() << java_class->baseClass()->fullName();
             s << " extends " << java_class->baseClass()->fullName();
         } else {
             QString sc = type->defaultSuperclass();
@@ -1904,7 +1905,9 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
                                && argument->type()->isObject()
                                && !argument->type()->isQObject()
                                && !java_function->resetObjectAfterUse(argument->argumentIndex() + 1)
-                               && java_function->ownership(java_function->declaringClass(), TypeSystem::ShellCode, argument->argumentIndex() + 1) == TypeSystem::InvalidOwnership) {
+                               && java_function->ownership(java_function->declaringClass(),
+                                        TypeSystem::ShellCode, argument->argumentIndex() + 1) ==
+                                            TypeSystem::InvalidOwnership) {
 
                         resettableObject = true;
                         if (nativePointer) break ;

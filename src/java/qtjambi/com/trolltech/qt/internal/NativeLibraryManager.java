@@ -382,10 +382,10 @@ public class NativeLibraryManager {
 
                 // Try to decide the name of the .jar file to have a
                 // reference point for later..
-                int end = eform.lastIndexOf("!/", eform.length() - 1);
+                int start = 4; //"jar:".length();
+                int end = eform.indexOf("!/", start);
                 // eform has the "jar:url!/entry" format
                 if (end != -1) {
-                    int start = 4; //"jar:".length();
                     URL jarUrl = new URL(eform.substring(start, end));
                     String jarName = new File(jarUrl.getFile()).getName();
                     if (VERBOSE_LOADING)

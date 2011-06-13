@@ -100,6 +100,7 @@ public class InitializeTask extends Task {
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
     public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
+    public static final String MSYSBUILD        = "msys.build";
 
     public boolean isVerbose() {
         return verbose;

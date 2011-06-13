@@ -69,6 +69,7 @@ class QPropertySpec;
 typedef QList<AbstractMetaField *> AbstractMetaFieldList;
 typedef QList<AbstractMetaArgument *> AbstractMetaArgumentList;
 typedef QList<AbstractMetaFunction *> AbstractMetaFunctionList;
+
 class AbstractMetaClassList : public  QList<AbstractMetaClass *> {
     public:
         AbstractMetaClass *findClass(const QString &name) const;
@@ -76,8 +77,6 @@ class AbstractMetaClassList : public  QList<AbstractMetaClass *> {
         AbstractMetaEnum *findEnum(const EnumTypeEntry *entry) const;
 
 };
-
-
 
 class AbstractMetaAttributes {
     public:
@@ -731,7 +730,7 @@ class AbstractMetaClass : public AbstractMetaAttributes {
         void addInterface(AbstractMetaClass *interface);
         void setInterfaces(const AbstractMetaClassList &interface);
 
-        QString fullName() const { return package() + "." + name(); }
+        QString fullName() const;
         QString name() const;
 
         QString baseClassName() const { return m_base_class ? m_base_class->name() : QString(); }

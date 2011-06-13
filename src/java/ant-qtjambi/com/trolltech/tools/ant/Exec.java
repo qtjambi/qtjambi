@@ -97,10 +97,27 @@ class Exec {
     }
 
     public static void execute(List<String> command, File directory) throws BuildException {
-        execute(command, directory, null);
+        execute(command, directory, null, false);
+    }
+    
+    public static void execute(List<String> command, File directory, boolean msyssupport) throws BuildException {
+        execute(command, directory, null, msyssupport);
+    }
+ 
+    public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
+        execute(command, directory, ldpath, false);
     }
 
-    public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
+    public static void execute(List<String> command, File directory, String ldpath, boolean msyssupport) throws BuildException {
+        if(msyssupport == true) {
+            String argument;
+            for(int i = 0; i < command.size(); i++) {
+                argument = command.get(i);
+                argument = "\"" + argument + "\"";
+                command.set(i, argument);
+            }
+        }
+        
         System.out.println("Executing: " + command.toString() + " in directory " + directory.toString());
         ProcessBuilder builder = new ProcessBuilder(command);
 

@@ -1,16 +1,16 @@
 #ifndef __TESTITEM_H__
 #define __TESTITEM_H__
 
-#include "TestSuper.h"
+#include <QObject>
+#include <QGraphicsScene>
 
-class TestItem : public TestSuper {
+class TestItem : public QObject {
 
- Q_OBJECT
+    Q_OBJECT
 
- public:
-  TestItem(QGraphicsScene *scene);
-  int getId();
-
+    public:
+        TestItem(QGraphicsScene *scene);
+        int getId();
 
 };
 #endif

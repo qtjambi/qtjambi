@@ -133,6 +133,12 @@ QString AbstractMetaArgument::name() const {
     return QString();
 }
 
+QString AbstractMetaClass::fullName() const {
+    if(package().isEmpty()) return name();
+    return package() + "." + name();
+}
+
+
 
 /*******************************************************************************
  * AbstractMetaFunction
