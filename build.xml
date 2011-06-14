@@ -83,7 +83,7 @@
 
     <target name="tools.juic.qmake" depends="log, init">
         <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"
-                qmakebinary="${qmake.binary}"/>
+                qmakebinary="${tools.qmake.binary}"/>
     </target>
 
     <target name="tools.juic.make" depends="log, tools.juic.qmake">
