@@ -141,15 +141,27 @@
                 <if>
                     <and>
                         <isset property="qt.bindir"/>
-                        <available file="${qt.bindir}/qmake"/>
+                        <available file="${qt.bindir}/${qt.qmake}"/>
                     </and>
                     <then>
-                        <property name="qmake.binary" value="${qt.bindir}/qmake"/>
+                        <property name="qmake.binary" value="${qt.bindir}/${qt.qmake}"/>
                     </then>
                     <else>
                         <property name="qmake.binary" value="qmake"/>
                     </else>
                 </if>
+		<if>
+		    <and>
+			<isset property="generator.qt.bindir"/>
+			<available file="${generator.qt.bindir}/${generator.qt.qmake}"/>
+		    </and>
+		    <then>
+			<property name="generator.qmake.binary" value="${generator.qt.bindir}/${generator.qt.qmake}"/>
+		    </then>
+		    <else>
+			<property name="generator.qmake.binary" value="${qmake.binary}"/>
+		    </else>
+		</if>
             </else>
         </if>
     </target>
@@ -205,6 +217,7 @@
         <property name="qtjambi.phonon.includedir"  value="${qt.includedir}/phonon"/>
         <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.phonon.pluginsdir" value="${qt.pluginsdir}"/>
+	<property name="qtjambi.generator.qt.libdir" value="${generator.qt.libdir}"/>
     </target>
 
    <target name="setenv.solve-path">
