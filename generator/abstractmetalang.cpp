@@ -1352,9 +1352,8 @@ AbstractMetaFunctionList AbstractMetaClass::queryFunctions(uint query) const {
             continue;
         }
 
-        if ((query & Constructors) && (!f->isConstructor()
-                                       || f->ownerClass() != f->implementingClass())
-                || f->isConstructor() && (query & Constructors) == 0) {
+        if (((query & Constructors) && (!f->isConstructor() || f->ownerClass() != f->implementingClass())) || 
+                (f->isConstructor() && (query & Constructors) == 0)) {
             continue;
         }
 

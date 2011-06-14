@@ -111,10 +111,10 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, const Ab
     } else if (java_type->isArray()) {
         s = translateType(java_type->arrayElementType(), context) + "[]";
     } else if (java_type->isEnum() || java_type->isFlags()) {
-        if (java_type->isEnum() &&
-                ((EnumTypeEntry *) java_type->typeEntry())->forceInteger() ||
-                java_type->isFlags() &&
-                ((FlagsTypeEntry *) java_type->typeEntry())->forceInteger()) {
+        if ((java_type->isEnum() &&
+                ((EnumTypeEntry *) java_type->typeEntry())->forceInteger()) ||
+                (java_type->isFlags() &&
+                ((FlagsTypeEntry *) java_type->typeEntry())->forceInteger())) {
             if (option & BoxedPrimitive)
                 s = "java.lang.Integer";
             else
