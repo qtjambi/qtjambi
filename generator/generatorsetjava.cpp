@@ -203,6 +203,12 @@ QString GeneratorSetJava::generate() {
 
     if (!no_metainfo) {
         metainfo = new MetaInfoGenerator(priGenerator);
+        if (!cppOutDir.isNull())
+            metainfo->setCppOutputDirectory(cppOutDir);
+        if (!javaOutDir.isNull())
+            metainfo->setJavaOutputDirectory(javaOutDir);
+        if (!outDir.isNull())
+            metainfo->setOutputDirectory(outDir);
         generators << metainfo;
         contexts << "MetaInfoGenerator";
     }
