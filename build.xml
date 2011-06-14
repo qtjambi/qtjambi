@@ -34,6 +34,8 @@
     <import file="antfiles/java.xml"/>
     <import file="antfiles/clean.xml"/>
     <import file="antfiles/generator.xml"/>
+    <import file="antfiles/qdoc3.xml"/>
+    <import file="build_autotests.xml" />
 
     <!--
         Initialization tasks. Note that the init.taskdef task depends on a jar
@@ -48,7 +50,7 @@
         <property name="build.log.dir" location="${basedir}/buildlogs"/>
         <mkdir dir="${build.log.dir}"/>
         <property name="build.log.filename" value="build_${timestamp}.log"/>
-		<property name="build.log.loglevel" value="info" />
+        <property name="build.log.loglevel" value="info" />
         <record name="${build.log.dir}/${build.log.filename}" loglevel="${build.log.loglevel}" append="false"/>
         <echo message="Build logged to ${build.log.filename}"/>
     </target>
@@ -81,7 +83,7 @@
 
     <target name="tools.juic.qmake" depends="log, init">
         <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"
-                qmakebinary="${qmake.binary}"/>
+                qmakebinary="${tools.qmake.binary}"/>
     </target>
 
     <target name="tools.juic.make" depends="log, tools.juic.qmake">
@@ -145,8 +147,6 @@ Full command listing with ant -projecthelp
 Quick howto:
 [edit buildpath.properties to suit your system]
 ant all
-
-NOTE: for now ant clean does not work, please use git clean -fdx instead.
         </echo>
     </target>
 
@@ -177,6 +177,9 @@ NOTE: for now ant clean does not work, please use git clean -fdx instead.
         <!--<copy file="${jardir}/qtjambi-util.jar"
             tofile="qtjambi-util-${qtjambi.version}.jar"/>-->
     </target>
+
+    <target name="qdoc3" depends="qdoc3.make"
+        description="Compiles qdoc3 for doc generation scripts." />
 
     <target name="examples" depends="log, examples.bundle"
         description="Compiles and bundles the Qt Jambi examples."/>

@@ -156,7 +156,7 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name) {
         return 0;
 }
 
-bool TypeDatabase::parseFile(const QString &filename, bool generate) {
+bool TypeDatabase::parseFile(const QString &filename, const QString &importInputDirectory, bool generate) {
     qDebug() << "Parsing file: " << filename;
     QFile file(filename);
     Q_ASSERT(file.exists());
@@ -166,6 +166,8 @@ bool TypeDatabase::parseFile(const QString &filename, bool generate) {
 
     QXmlSimpleReader reader;
     Handler handler(this, generate);
+    if (!importInputDirectory.isNull())
+        handler.setImportInputDirectory(importInputDirectory);
 
     reader.setContentHandler(&handler);
     reader.setErrorHandler(&handler);

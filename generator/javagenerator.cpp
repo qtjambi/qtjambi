@@ -111,10 +111,10 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, const Ab
     } else if (java_type->isArray()) {
         s = translateType(java_type->arrayElementType(), context) + "[]";
     } else if (java_type->isEnum() || java_type->isFlags()) {
-        if (java_type->isEnum() &&
-                ((EnumTypeEntry *) java_type->typeEntry())->forceInteger() ||
-                java_type->isFlags() &&
-                ((FlagsTypeEntry *) java_type->typeEntry())->forceInteger()) {
+        if ((java_type->isEnum() &&
+                ((EnumTypeEntry *) java_type->typeEntry())->forceInteger()) ||
+                (java_type->isFlags() &&
+                ((FlagsTypeEntry *) java_type->typeEntry())->forceInteger())) {
             if (option & BoxedPrimitive)
                 s = "java.lang.Integer";
             else
@@ -1438,6 +1438,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         if (!java_class->baseClassName().isEmpty()) {
+            qDebug()<<java_class->name() << java_class->baseClass()->fullName();
             s << " extends " << java_class->baseClass()->fullName();
         } else {
             QString sc = type->defaultSuperclass();
@@ -1771,7 +1772,10 @@ void JavaGenerator::generate() {
 
     { //log native pointer api
         const AbstractMetaClass *last_class = 0;
-        QFile file("mjb_nativepointer_api.log");
+        QString fileName("mjb_nativepointer_api.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
@@ -1802,7 +1806,10 @@ void JavaGenerator::generate() {
 
     { // log object type usage of classes
         const AbstractMetaClass *last_class = 0;
-        QFile file("mjb_object_type_usage.log");
+        QString fileName("mjb_nativepointer_api.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
@@ -1834,7 +1841,10 @@ void JavaGenerator::generate() {
     }
 
     { // log possible reference counting candidates
-        QFile file("mjb_reference_count_candidates.log");
+        QString fileName("mjb_reference_count_candidates.log");
+        QFile file(fileName);
+        if (!outputDirectory().isNull())
+            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
@@ -1895,7 +1905,9 @@ void JavaGenerator::writeFunctionAttributes(QTextStream &s, const AbstractMetaFu
                                && argument->type()->isObject()
                                && !argument->type()->isQObject()
                                && !java_function->resetObjectAfterUse(argument->argumentIndex() + 1)
-                               && java_function->ownership(java_function->declaringClass(), TypeSystem::ShellCode, argument->argumentIndex() + 1) == TypeSystem::InvalidOwnership) {
+                               && java_function->ownership(java_function->declaringClass(),
+                                        TypeSystem::ShellCode, argument->argumentIndex() + 1) ==
+                                            TypeSystem::InvalidOwnership) {
 
                         resettableObject = true;
                         if (nativePointer) break ;

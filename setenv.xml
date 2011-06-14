@@ -5,11 +5,11 @@
  * set various properties necessary for the build process.
 -->
 
-<project name="qtjambi.setenv" default="setenv" basedir=".">
+<project name="qtjambi.setenv" default="setenv">
 
-    <property file="version.properties"/>
-    <property file="buildpath.properties"/>
-    <property file="antcontrib.properties"/>
+    <property file="${jambi.directory}/version.properties"/>
+    <property file="${jambi.directory}/buildpath.properties"/>
+    <property file="${jambi.directory}/antcontrib.properties"/>
 
     <!--
         We want the environment variables and we want a timestamp for jars.
@@ -141,13 +141,25 @@
                 <if>
                     <and>
                         <isset property="qt.bindir"/>
-                        <available file="${qt.bindir}/qmake"/>
+                        <available file="${qt.bindir}/${qt.qmake}"/>
                     </and>
                     <then>
-                        <property name="qmake.binary" value="${qt.bindir}/qmake"/>
+                        <property name="qmake.binary" value="${qt.bindir}/${qt.qmake}"/>
                     </then>
                     <else>
                         <property name="qmake.binary" value="qmake"/>
+                    </else>
+                </if>
+                <if>
+                    <and>
+                    <isset property="tools.qt.bindir"/>
+                    <available file="${tools.qt.bindir}/${tools.qt.qmake}"/>
+                    </and>
+                    <then>
+                    <property name="tools.qmake.binary" value="${tools.qt.bindir}/${tools.qt.qmake}"/>
+                    </then>
+                    <else>
+                    <property name="tools.qmake.binary" value="${qmake.binary}"/>
                     </else>
                 </if>
             </else>
@@ -181,7 +193,7 @@
         </if>
     </target>
 
-    <target name="setup-properties" depends="handle-qtdir, check-kdephonon, lookup-libdir">
+    <target name="setup-properties" depends="setenv.solve-path, handle-qtdir, check-kdephonon, lookup-libdir">
         <exec executable="${qmake.binary}" outputproperty="qt.version">
             <arg value="-query"/>
             <arg value="QT_VERSION"/>
@@ -196,7 +208,7 @@
         <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
         <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
-        <property name="qtjambi.jambi.libdir"       value="src/cpp/lib"/>
+        <property name="qtjambi.jambi.libdir"       value="${jambi.directory}/build/src/cpp/lib"/>
         <!--
             dummy-set values to phonon properties, if they
             are not set. If they are set, or if they are set by QTDIR,
@@ -205,7 +217,19 @@
         <property name="qtjambi.phonon.includedir"  value="${qt.includedir}/phonon"/>
         <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.phonon.pluginsdir" value="${qt.pluginsdir}"/>
+        <property name="qtjambi.tools.qt.libdir" value="${tools.qt.libdir}"/>
     </target>
+
+   <target name="setenv.solve-path">
+       <if>
+           <isset property="jambi.directory"/>
+           <then>
+           </then>
+           <else>
+                <property name="jambi.directory" value="${basedir}"/>
+           </else>
+        </if>
+   </target>
 
     <target name="setenv" depends="source.antcontrib, setup-properties"/>
 

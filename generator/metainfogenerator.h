@@ -83,6 +83,19 @@ class MetaInfoGenerator : public JavaGenerator {
         bool generatedJavaClasses(const QString &package) const;
         bool generatedMetaInfo(const QString &package) const;
 
+        QString cppOutputDirectory() const {
+            if (!m_cpp_out_dir.isNull())
+                return m_cpp_out_dir;
+            return outputDirectory();
+        }
+        void setCppOutputDirectory(const QString &cppOutDir) { m_cpp_out_dir = cppOutDir; }
+        QString javaOutputDirectory() const {
+            if (!m_java_out_dir.isNull())
+                return m_java_out_dir;
+            return outputDirectory();
+        }
+        void setJavaOutputDirectory(const QString &javaOutDir) { m_java_out_dir = javaOutDir; }
+
     private:
         void writeCppFile();
         void writeHeaderFile();
@@ -114,6 +127,9 @@ class MetaInfoGenerator : public JavaGenerator {
         const AbstractMetaClass* lookupClassWithPublicDestructor(const AbstractMetaClass *cls);
 
         PriGenerator *priGenerator;
+
+        QString m_cpp_out_dir;
+        QString m_java_out_dir;
 };
 
 #endif // METAINFOGENERATOR_H

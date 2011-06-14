@@ -305,6 +305,7 @@ bool JambiApiParser::startElement(const QString & /* namespaceURI */,
 
         if (!info.cppNode) {
             japiLocation.warning(tr("Cannot find C++ class or enum '%1'").arg(info.cppName));
+            exit(1);
         } else {
             if (qName == "class") {
                 ClassNode *javaClass = new ClassNode(javaParent, info.javaName);

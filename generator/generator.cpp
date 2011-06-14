@@ -53,7 +53,6 @@
 Generator::Generator() {
     m_num_generated = 0;
     m_num_generated_written = 0;
-    m_out_dir = ".";
 }
 
 void Generator::generate() {
@@ -62,7 +61,6 @@ void Generator::generate() {
                                .arg(metaObject()->className()));
         return;
     }
-
 
     foreach(AbstractMetaClass *cls, m_classes) {
         if (!shouldGenerate(cls))
@@ -79,7 +77,6 @@ void Generator::generate() {
         ++m_num_generated;
     }
 }
-
 
 void Generator::printClasses() {
     QTextStream s(stdout);

@@ -133,6 +133,12 @@ QString AbstractMetaArgument::name() const {
     return QString();
 }
 
+QString AbstractMetaClass::fullName() const {
+    if(package().isEmpty()) return name();
+    return package() + "." + name();
+}
+
+
 
 /*******************************************************************************
  * AbstractMetaFunction
@@ -1346,9 +1352,8 @@ AbstractMetaFunctionList AbstractMetaClass::queryFunctions(uint query) const {
             continue;
         }
 
-        if ((query & Constructors) && (!f->isConstructor()
-                                       || f->ownerClass() != f->implementingClass())
-                || f->isConstructor() && (query & Constructors) == 0) {
+        if (((query & Constructors) && (!f->isConstructor() || f->ownerClass() != f->implementingClass())) || 
+                (f->isConstructor() && (query & Constructors) == 0)) {
             continue;
         }
 

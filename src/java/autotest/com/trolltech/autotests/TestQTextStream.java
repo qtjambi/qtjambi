@@ -73,12 +73,12 @@ public class TestQTextStream {
             QPolygonF p2 = new QPolygonF();
             p2.readFrom(stream);
 
-            assertEquals(10.0, p2.at(0).x());
-            assertEquals(11.0, p2.at(0).y());
-            assertEquals(12.2, p2.at(1).x());
-            assertEquals(13.3, p2.at(1).y());
-            assertEquals(14.0, p2.at(2).x());
-            assertEquals(15.0, p2.at(2).y());
+            assertEquals(10.0, p2.at(0).x(), 0.0);
+            assertEquals(11.0, p2.at(0).y(), 0.0);
+            assertEquals(12.2, p2.at(1).x(), 0.0);
+            assertEquals(13.3, p2.at(1).y(), 0.0);
+            assertEquals(14.0, p2.at(2).x(), 0.0);
+            assertEquals(15.0, p2.at(2).y(), 0.0);
         }
     }
 
@@ -210,10 +210,10 @@ public class TestQTextStream {
             assertEquals(26l, stream.readLong());
             stream.skipWhiteSpace();
 
-            assertEquals((float) 24.5, stream.readFloat());
+            assertEquals((float) 24.5, stream.readFloat(), 0.0);
             stream.skipWhiteSpace();
 
-            assertEquals(26.4, stream.readDouble());
+            assertEquals(26.4, stream.readDouble(), 0.0);
             stream.skipWhiteSpace();
         }
     }

@@ -100,6 +100,7 @@ public class InitializeTask extends Task {
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
     public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
+    public static final String MSYSBUILD        = "msys.build";
 
     public boolean isVerbose() {
         return verbose;
@@ -193,7 +194,7 @@ public class InitializeTask extends Task {
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
         path.append(props.getProperty((String) null, PLUGINSDIR));
-        path.append("/");
+        path.append("/plugins/");
         path.append(subdir);
         path.append("/");
         //! TODO: useful?

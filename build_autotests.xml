@@ -1,100 +1,145 @@
+<!--
+	TODO:
+	- I modified the run.osx target too, but I couldn't test it
+-->
 <project default="all" basedir=".">
 
-    <property environment="env"/>
+	<property environment="env"/>
 
-    <tstamp/>
+	<tstamp/>
 
-    <property name="sourceDir" value="." />
-    <property name="outputDir" value="." />
+	<property file="tests.properties"/>
 
-    <property name="jambiLib" value="${outputDir}/lib" />
+	<property name="jambiLib" value="${outputDir}/lib" />
+	<property name="qtLib" value="${outputDir}/platform-output/lib" />
+	<property name="junit.exists" value="tests.junit.exists" />
 
-    <condition property="qtjambi.osx">
-      <os family="mac"/>
-    </condition>
+	<condition property="qtjambi.osx">
+		<os family="mac"/>
+	</condition>
 
-    <target name="help"
+	<target name="help"
             description="Provides detailed help.">
-    <echo>Generates an executable .jar file that runs the generator example...</echo>
+		<echo>Generates an executable .jar file that runs the generator example...</echo>
+	</target>
+
+	<target name="tests.clean" description="Cleans built test files">
+		<delete dir="${outputDir}/autotestlib"/>
+		<delete dir="${outputDir}/autotests"/>
+		<delete dir="${outputDir}/auto"/>
+	</target>
+
+	<target name="reports.clean" description="Cleans the Unit Test results">
+		<delete dir="${outputDir}/junitxml"/>
+		<delete dir="${outputDir}/TestResults"/>
+	</target>
+
+	<target name="check.junit">
+	    <available property="junit.path" type="file" file="${tests.junit}"/>
+		<fail message="Path to JUnit is required to build the Unit Tests. Specify the path in tests.properties">
+			<condition>
+					<not>
+						<isset property="junit.path"/>
+					</not>
+			</condition>
+		</fail>
+	</target>
+
+    <target name="compile.native" depends="init">
+	    <mkdir dir="${outputDir}/autotestlib"/>
+	    <generator dir="generator"
+			outputDirectory="${outputDir}/autotestlib"
+			typesystem="autotestlib/build.txt"
+			header="autotestlib/global.h"/>
+
+	    <qmake config="${qtjambi.configuration}"
+            dir="${outputDir}/autotestlib"
+            pro="autotestlib/autotestlib.pro" qmakebinary="${qmake.binary}"/>
+
+	    <make dir="${outputDir}/autotestlib" />
+	</target>
+
+    <target name="compile.deps">
+	    <mkdir dir="${outputDir}/autotests" />
+	    <javac destdir="${outputDir}/autotests" debug="true">
+			<classpath>
+				<pathelement location="qtjambi-${qtjambi.version}.jar" />
+				<pathelement location="." />
+			</classpath>
+			<src path="${outputDir}/autotestlib/com/trolltech/autotests/generated"/>
+	    </javac>
     </target>
 
-
-    <target name="init">
-        <taskdef name="qmake"     classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.QMakeTask"/>
-        <taskdef name="make"      classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.MakeTask"/>
-        <taskdef name="generator" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.GeneratorTask"/>
-        <taskdef name="qtjambi-platform-jar" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.PlatformJarTask"/>
-        <taskdef name="qtjambi-initialize" classpath="${outputDir}/ant-qtjambi.jar" classname="com.trolltech.tools.ant.InitializeTask"/>
-
-        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}" />
-    </target>
-
-    <target name="compile.native"
-        depends="init">
-
-      <generator dir="${outputDir}/autotestlib"
-		 outputDirectory="${outputDir}"
-		 typesystem="${sourceDir}/autotestlib/build.txt"
-		 header="${sourceDir}/autotestlib/global.h"/>
-
-      <qmake config="${qtjambi.configuration}"
-             dir="${outputDir}/autotestlib"
-             pro="${sourceDir}/autotestlib/autotestlib.pro" />
-
-      <make dir="${outputDir}/autotestlib" />
-    </target>
-
-
-    <target name="compile.java">
-      <javac destdir="${outputDir}"
-            debug="true">
-        <src path="${outputDir}"/>
-        <src path="${sourceDir}"/>
-	<include name="com/trolltech/autotests/*.java"/>
-        <include name="com/trolltech/autotests/generated/*.java"/>
-      </javac>
+    <target name="compile.java" depends="compile.deps, check.junit">
+	    <mkdir dir="${outputDir}/auto"/>
+	    <javac destdir="${outputDir}/auto" debug="true" includeantruntime="false">
+			<compilerarg value="-Xlint:deprecation" />
+			<classpath>
+				<pathelement location="qtjambi-${qtjambi.version}.jar" />
+				<pathelement location="${tests.junit}" />
+				<pathelement location="${outputDir}/autotests" />
+				<pathelement location="src/java/autotest" />
+			</classpath>
+			<src path="src/java/autotest/com/trolltech/autotests"/>
+			<src path="src/java/autotest/com/trolltech/generatortests"/>
+	    </javac>
     </target>
 
     <target name="run.osx" if="qtjambi.osx">
-      <delete dir="${outputDir}/junitxml" />
-      <delete dir="${outputDir}/TestResults" />
-      <mkdir dir="${outputDir}/junitxml"/>
-      <mkdir dir="${outputDir}/TestResults"/>
-      <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
-	<jvmarg value="-XstartOnFirstThread"/>
-	<formatter type="xml" />
-	<batchtest fork="yes" todir="${xml}">
-          <fileset includes="com/trolltech/autotests/Test*.java"/>
-        </batchtest>
-      </junit>
+	    <delete dir="${outputDir}/junitxml" />
+	    <delete dir="${outputDir}/TestResults" />
+	    <mkdir dir="${outputDir}/junitxml"/>
+	    <mkdir dir="${outputDir}/TestResults"/>
+	    <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
+			<jvmarg value="-XstartOnFirstThread"/>
+			<formatter type="xml" usefile="yes" />
+			<batchtest fork="yes" todir="${outputDir}/junitxml">
+				<fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
+			</batchtest>
+		</junit>
+	</target>
+
+    <target name="run.other" unless="qtjambi.osx" depends="check.junit">
+		<delete dir="${outputDir}/junitxml" />
+	    <delete dir="${outputDir}/TestResults" />
+	    <mkdir dir="${outputDir}/junitxml"/>
+	    <mkdir dir="${outputDir}/TestResults"/>
+		<!-- files contained in todir being accessed from the tests --> 
+		<copy todir="${outputDir}/auto/com/trolltech/autotests">
+			<fileset dir="src/java/autotest/com/trolltech/autotests" excludes="**/*.java"/>
+		</copy>
+	    <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
+		    <classpath>
+				<pathelement location="${tests.junit}" />
+				<pathelement location="${tests.hamcrest}" />
+				<pathelement location="qtjambi-${qtjambi.version}.jar" />
+				<pathelement path="${outputDir}/auto" />
+				<pathelement path="${outputDir}/autotests" />
+				<pathelement path="src/java/qtjambi-examples" />
+				<pathelement path="src/java/autotest" />
+		    </classpath>
+		    <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/:${jambiLib}"/>
+			<formatter type="xml" usefile="yes" />
+			<batchtest fork="yes" todir="${outputDir}/junitxml">
+				<fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
+				<fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/Test*.java"/>
+			</batchtest>
+	    </junit>
     </target>
 
-    <target name="run.other" unless="qtjambi.osx">
-      <delete dir="${outputDir}/junitxml" />
-      <delete dir="${outputDir}/TestResults" />
-      <mkdir dir="${outputDir}/junitxml"/>
-      <mkdir dir="${outputDir}/TestResults"/>
-      <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
-	<formatter type="xml" />
-	<batchtest fork="yes" todir="${outputDir}/junitxml">
-          <fileset dir="${sourceDir}" includes="com/trolltech/autotests/Test*.java"/>
-        </batchtest>
-      </junit>
+    <target name="run" depends="init, run.other, run.osx">
+	    <junitreport todir="${outputDir}/junitxml">
+			<fileset dir="${outputDir}/junitxml">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${outputDir}/TestResults" />
+	    </junitreport>
     </target>
 
-    <target name="run" depends="init, run.other, run.osx" description="Runs tests and generates report in TestReport subdir">
-      <junitreport todir="${outputDir}/junitxml">
-	<fileset dir="${outputDir}/junitxml">
-	  <include name="TEST-*.xml" />
-	</fileset>
-	<report format="frames" todir="${outputDir}/TestResults" />
-      </junitreport>
-    </target>
-
-    <target name="compile" 
-	    depends="compile.native, compile.java"/>
+    <target name="tests.compile" 
+	    depends="compile.native, compile.java" description="Builds tests and required libraries"/>
     
-    <target name="all"
-        depends="init, compile, run" />
+    <target name="tests.run"
+        depends="init, run" description="Runs tests and generates report in TestReport subdir"/>
 
 </project>

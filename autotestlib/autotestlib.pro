@@ -1,9 +1,9 @@
 TARGET = com_trolltech_autotests_generated
 
-include(../qtjambi/qtjambi_include.pri)
-include(../cpp/com_trolltech_autotests_generated/com_trolltech_autotests_generated.pri)
+include(../../src/cpp/qtjambi/qtjambi_include.pri)
+include(./cpp/com_trolltech_autotests_generated/com_trolltech_autotests_generated.pri)
 
-INCLUDEPATH += ../cpp/com_trolltech_autotests_generated
+INCLUDEPATH += ./cpp/com_trolltech_autotests_generated
 
 HEADERS += \
     abstractclass.h \

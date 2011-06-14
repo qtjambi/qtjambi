@@ -54,10 +54,12 @@ import java.util.*;
 
 class Util {
 
+    @Deprecated
     public static File LOCATE_EXEC(String name) {
         return LOCATE_EXEC(name, "", "");
     }
 
+    @Deprecated
     public static File LOCATE_EXEC(String name, String prepend, String append) {
         String searchPath = "";
 
@@ -75,6 +77,7 @@ class Util {
             if (exec.isFile())
                 return makeCanonical(exec);
         }
+
         throw new BuildException("Could not find executable: " + name);
     }
 
