@@ -134,6 +134,13 @@ class JavaGenerator : public Generator {
         inline bool nativeJumpTable() const { return m_native_jump_table; }
         inline void setNativeJumpTable(bool n) { m_native_jump_table = n; }
 
+        QString javaOutputDirectory() const {
+            if (!m_java_out_dir.isNull())
+                return m_java_out_dir;
+            return outputDirectory();
+        }
+        void setJavaOutputDirectory(const QString &javaOutDir) { m_java_out_dir = javaOutDir; }
+
     private:
         QString subDirectoryForPackage(const QString &package) const { return QString(package).replace(".", "/"); }
         void writeInstantiatedType(QTextStream &s, const AbstractMetaType *abstractMetaType) const;
@@ -141,6 +148,7 @@ class JavaGenerator : public Generator {
     protected:
         QString m_package_name;
         QString m_doc_directory;
+        QString m_java_out_dir;		// needed to *.log generation
         DocParser *m_doc_parser;
         bool m_docs_enabled;
         bool m_native_jump_table;

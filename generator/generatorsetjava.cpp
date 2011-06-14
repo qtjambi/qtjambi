@@ -174,7 +174,7 @@ QString GeneratorSetJava::generate() {
         java_generator->setDocumentationEnabled(docs_enabled);
         java_generator->setNativeJumpTable(native_jump_table);
         if (!javaOutDir.isNull())
-            java_generator->setOutputDirectory(javaOutDir);
+            java_generator->setJavaOutputDirectory(javaOutDir);
         generators << java_generator;
 
         contexts << "JavaGenerator";
@@ -182,6 +182,8 @@ QString GeneratorSetJava::generate() {
 
     if (!no_cpp_h) {
         cpp_header_generator = new CppHeaderGenerator(priGenerator);
+        if (!cppOutDir.isNull())
+            cpp_header_generator->setOutputDirectory(cppOutDir);
         generators << cpp_header_generator;
         contexts << "CppHeaderGenerator";
     }
@@ -218,6 +220,8 @@ QString GeneratorSetJava::generate() {
         contexts << "ClassListGenerator";
     }
 
+    if (!cppOutDir.isNull())
+        priGenerator->setOutputDirectory(cppOutDir);
     generators << priGenerator;
     contexts << "PriGenerator";
 
