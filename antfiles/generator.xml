@@ -13,7 +13,7 @@
                 header="${generatorDir}/targets/qtjambi_masterinclude.h"
                 phononpath="${qtjambi.phonon.includedir}"
                 qtincludedirectory="${qtjambi.qt.includedir}"
-                qtlibdirectory="${qtjambi.generator.qt.libdir}"
+                qtlibdirectory="${qtjambi.tools.qt.libdir}"
                 kdephonon="${qtjambi.phonon.kdephonon-path}"
                 options="${qtjambi.generator.jumptable}"/>
     </target>
@@ -21,7 +21,7 @@
     <target name="tools.generator.qmake" depends="init">
         <qmake dir="generator" pro="generator/generator.pro"
                 config="${qtjambi.configuration}"
-                qmakebinary="${generator.qmake.binary}"/>
+                qmakebinary="${tools.qmake.binary}"/>
     </target>
 
     <target name="tools.generator.make" depends="tools.generator.qmake">
