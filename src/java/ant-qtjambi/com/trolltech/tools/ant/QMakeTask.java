@@ -138,9 +138,6 @@ public class QMakeTask extends Task {
     
     public void setQmakebinary(String binary) {
         this.qmakebinary = binary;
-        if(this.qmakebinary != null && OSInfo.os() == OSInfo.OS.FreeBSD) {
-            this.qmakebinary = qmakebinary.replaceAll("qmake", "qmake-qt4"); //FreeBSD hack
-        }
     }
     
     public void setIncludepath(String path) {
