@@ -3,6 +3,8 @@ package com.trolltech.tools.ant;
 import org.apache.tools.ant.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -97,12 +99,38 @@ class Exec {
     }
 
     public static void execute(List<String> command, File directory) throws BuildException {
-        execute(command, directory, null);
+        execute(command, directory, null, false);
+    }
+    
+    public static void execute(List<String> command, File directory, boolean msyssupport) throws BuildException {
+        execute(command, directory, null, msyssupport);
+    }
+ 
+    public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
+        execute(command, directory, ldpath, false);
     }
 
-    public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
-        System.out.println("Executing: " + command.toString() + " in directory " + directory.toString());
-        ProcessBuilder builder = new ProcessBuilder(command);
+    public static void execute(List<String> command, File directory, String ldpath, boolean msyssupport) throws BuildException {
+        String fullCommand = null;
+        if(msyssupport == true) {
+            Iterator<String> iter = command.iterator();
+            String baseCommand = iter.next();
+            StringBuilder builder = new StringBuilder();
+            while(iter.hasNext()) {
+                builder.append(iter.next() + " ");
+            }
+            
+            fullCommand = baseCommand + " " + builder.toString(); 
+        }
+        
+        ProcessBuilder builder;
+        if(fullCommand == null) {
+            System.out.println("Executing: " + command.toString() + " in directory " + directory.toString());
+            builder = new ProcessBuilder(command);
+        } else {
+            System.out.println("Executing: " + fullCommand + " in directory " + directory.toString());
+            builder = new ProcessBuilder(fullCommand);
+        }
 
         // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
         // but it should not be needed there in first place... Only if you want to have same kind of building

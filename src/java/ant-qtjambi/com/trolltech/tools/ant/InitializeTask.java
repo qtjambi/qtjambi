@@ -100,6 +100,7 @@ public class InitializeTask extends Task {
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
     public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
+    public static final String MSYSBUILD        = "msys.build";
 
     public boolean isVerbose() {
         return verbose;
@@ -222,6 +223,7 @@ public class InitializeTask extends Task {
             props.setNewProperty((String) null, PHONON_DS9, "true");
             break;
         case Linux:
+        case FreeBSD:
             props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
             if (doesQtLibExist("QtDBus", 4))
                 props.setNewProperty((String) null, DBUS, "true");

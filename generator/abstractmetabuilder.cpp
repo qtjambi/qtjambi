@@ -680,12 +680,36 @@ Operator findOperator(QString *s) {
     return Operator();
 }
 
-int AbstractMetaBuilder::figureOutEnumValue(const QString &stringValue,
+int AbstractMetaBuilder::figureOutEnumValue(const QString &origStringValue,
         int oldValuevalue,
         AbstractMetaEnum *meta_enum,
         AbstractMetaFunction *meta_function) {
-    if (stringValue.isEmpty())
+    if (origStringValue.isEmpty())
         return oldValuevalue;
+
+    QString stringValue(origStringValue);
+
+    // This block deals with "static_cast<FooBar::Type>" prefix on cpp defaulted values
+    const QString keyword_static_cast("static_cast");
+    if (stringValue.startsWith(keyword_static_cast)) {
+        stringValue = stringValue.remove(0, keyword_static_cast.length()).trimmed();
+        if (stringValue.length() > 0 && stringValue.at(0) == QChar('<')) {
+            int end_pos = stringValue.indexOf(QChar('>'));
+            if (end_pos >= 0)	// remove the whole "<FooBar::Type>"
+                stringValue = stringValue.remove(0, end_pos).trimmed();
+        }
+    }
+    // This block deals with "FooBar::Type(.....)" around the part we really want "....."
+    {
+        int beg_pos = stringValue.indexOf(QChar('('));
+        if (beg_pos >= 0) {
+            stringValue = stringValue.remove(0, beg_pos+1).trimmed();	// remove "FooBar::Type("
+
+            int end_pos = stringValue.lastIndexOf(QChar(')'));
+            if (end_pos >= 0)
+                stringValue = stringValue.remove(end_pos, 1).trimmed();	// remove ")"
+        }
+    }
 
     QStringList stringValues = stringValue.split("|");
 
@@ -2033,6 +2057,8 @@ QString AbstractMetaBuilder::translateDefaultValue(ArgumentModelItem item, Abstr
             return "null";
         } else if (expr == "QString()") {
             return "null";
+        } else if (expr == "QChar()") {
+            return "'\\0'";
         } else if (expr.endsWith(")") && expr.contains("::")) {
             TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(expr.indexOf("::")));
             if (typeEntry)

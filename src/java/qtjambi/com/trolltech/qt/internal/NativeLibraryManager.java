@@ -382,10 +382,10 @@ public class NativeLibraryManager {
 
                 // Try to decide the name of the .jar file to have a
                 // reference point for later..
-                int end = eform.lastIndexOf("!/", eform.length() - 1);
+                int start = 4; //"jar:".length();
+                int end = eform.indexOf("!/", start);
                 // eform has the "jar:url!/entry" format
                 if (end != -1) {
-                    int start = 4; //"jar:".length();
                     URL jarUrl = new URL(eform.substring(start, end));
                     String jarName = new File(jarUrl.getFile()).getName();
                     if (VERBOSE_LOADING)
@@ -599,7 +599,8 @@ public class NativeLibraryManager {
         switch (Utilities.operatingSystem) {
         case Windows: return lib + ".dll";
         case MacOSX: return "lib" + lib + ".jnilib";
-        case Linux: return "lib" + lib + ".so";
+        case Linux:
+        case FreeBSD: return "lib" + lib + ".so";
         }
         throw new RuntimeException("Unreachable statement");
     }
@@ -616,6 +617,7 @@ public class NativeLibraryManager {
                 ? "lib" + lib + "_debug." + version + ".dylib"
                 : "lib" + lib + "." + version + ".dylib";
         case Linux:
+        case FreeBSD:
             // Linux doesn't have a dedicated "debug" library since 4.2
             return "lib" + lib + ".so." + version;
         }

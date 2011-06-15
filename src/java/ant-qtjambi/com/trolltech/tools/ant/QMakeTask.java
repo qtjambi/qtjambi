@@ -44,6 +44,7 @@
 
 package com.trolltech.tools.ant;
 
+import com.trolltech.qt.internal.OSInfo;
 import org.apache.tools.ant.*;
 
 import java.io.*;
@@ -136,7 +137,7 @@ public class QMakeTask extends Task {
     }
     
     public void setQmakebinary(String binary) {
-    	this.qmakebinary = binary;
+        this.qmakebinary = binary;
     }
     
     public void setIncludepath(String path) {

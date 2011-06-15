@@ -81,7 +81,8 @@ public class Utilities {
     public enum OperatingSystem {
         Windows,
         MacOSX,
-        Linux
+        Linux,
+        FreeBSD
     }
 
     /** Defines whether Qt is build in Release or Debug. */
@@ -155,6 +156,7 @@ public class Utilities {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.startsWith("windows")) return OperatingSystem.Windows;
         if (osName.startsWith("mac os x")) return OperatingSystem.MacOSX;
+        if (osName.startsWith("freebsd")) return OperatingSystem.FreeBSD;
         return OperatingSystem.Linux;
     }
 

@@ -172,6 +172,8 @@ public class GeneratorTask extends Task {
         return true;
     }
 
+    //! TODO: remove when ant 1.7 is not anymore supported.
+    @SuppressWarnings("deprecation")
     @Override
     public void execute() throws BuildException {
 
@@ -181,7 +183,14 @@ public class GeneratorTask extends Task {
         thisCommandList.add(generator);
         thisCommandList.addAll(commandList);
         System.out.println(thisCommandList.toString());
-        Exec.execute(thisCommandList, new File(dir), qtLibDirectory);
+
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+        String msyssupportStr = (String) props.getProperty((String) null, InitializeTask.MSYSBUILD);
+        boolean msyssupport = false;
+        if("true".equals(msyssupportStr)) {
+            msyssupport = true;
+        }
+        Exec.execute(thisCommandList, new File(dir), qtLibDirectory, msyssupport);
     }
 
     public void setHeader(String header) {

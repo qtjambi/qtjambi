@@ -25,6 +25,11 @@ RESOURCES += resources.qrc
 
 INCLUDEPATH += $$PWD $$QTDIR/QtDesigner $$PWD/../include
 
+freebsd-g++* {
+    QT_SOURCE_TREE=$$fromfile($$(QTDIR)/.qmake.cache,QT_SOURCE_TREE)
+    INCLUDEPATH += $$QT_SOURCE_TREE/include/Qt
+}
+
 # patch up some bad things set in qtjambi_include...
 DESTDIR = ../../plugins/designer
 macx:QMAKE_EXTENSION_SHLIB = dylib

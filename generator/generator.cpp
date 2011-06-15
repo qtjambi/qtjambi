@@ -62,7 +62,6 @@ void Generator::generate() {
         return;
     }
 
-
     foreach(AbstractMetaClass *cls, m_classes) {
         if (!shouldGenerate(cls))
             continue;
@@ -78,7 +77,6 @@ void Generator::generate() {
         ++m_num_generated;
     }
 }
-
 
 void Generator::printClasses() {
     QTextStream s(stdout);
