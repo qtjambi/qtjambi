@@ -44,7 +44,6 @@
 
 package com.trolltech.tools.ant;
 
-import com.trolltech.qt.internal.OSInfo;
 import org.apache.tools.ant.*;
 
 import java.io.*;
