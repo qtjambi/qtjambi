@@ -31,18 +31,15 @@ macx:{
     INCLUDEPATH += $$JAVA/include
     win32 {
         INCLUDEPATH += $$JAVA/include/win32
-    } else {
+    }
     solaris-g++ | solaris-cc {
         INCLUDEPATH += $$JAVA/include/solaris
-        } else {
-        linux-g++* {
-            INCLUDEPATH += $$JAVA/include/linux
-            } else {
-                freebsd-g++* {
-                    INCLUDEPATH += $$JAVA/include/freebsd
-                }
-            }
-        }
+    }
+    linux-g++* {
+        INCLUDEPATH += $$JAVA/include/linux
+    }
+    freebsd-g++* {
+        INCLUDEPATH += $$JAVA/include/freebsd
     }
 }
 
