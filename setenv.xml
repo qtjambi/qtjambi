@@ -136,6 +136,8 @@
                 <property name="qtjambi.phonon.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qtjambi.phonon.libdir" value="${env.QTDIR}/lib"/>
                 <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
+                <property name="tools.qmake.binary" value="${qmake.binary}"/>
+                <property name="tools.qt.libdir" value="${qt.libdir}"/>
             </then>
             <else>
                 <if>
