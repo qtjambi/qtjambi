@@ -131,10 +131,6 @@ public class GeneratorTask extends Task {
             commandList.add("--qt-include-directory=" + Util.escape(qtIncludeDirectory));
         }
 
-        if(qtLibDirectory != null) {
-            commandList.add("--qt-lib-directory=" + Util.escape(qtLibDirectory));
-        }
-
         if(inputDirectory != null && !inputDirectory.equals("")){
             File file = Util.makeCanonical(inputDirectory);
             if (!file.exists()) {
@@ -214,11 +210,14 @@ public class GeneratorTask extends Task {
     }
 
     public void setQtIncludeDirectory(String dir) {
-        this.qtIncludeDirectory  = dir;
+        this.qtIncludeDirectory = dir;
     }
 
+    /**
+     * Used for LD_LIBRARY_PATH assurance only.
+     */
     public void setQtLibDirectory(String dir) {
-        this.qtLibDirectory  = dir;
+        this.qtLibDirectory = dir;
     }
 
     public void setInputDirectory(String inputDirectory) {
