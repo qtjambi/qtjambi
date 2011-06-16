@@ -174,7 +174,9 @@ QString GeneratorSetJava::generate() {
         java_generator->setDocumentationEnabled(docs_enabled);
         java_generator->setNativeJumpTable(native_jump_table);
         if (!javaOutDir.isNull())
-            java_generator->setJavaOutputDirectory(javaOutDir);
+            java_generator->setOutputDirectory(javaOutDir);
+        if (!outDir.isNull())
+            java_generator->setLogOutputDirectory(outDir);
         generators << java_generator;
 
         contexts << "JavaGenerator";
