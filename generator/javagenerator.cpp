@@ -1438,7 +1438,6 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         if (!java_class->baseClassName().isEmpty()) {
-            qDebug()<<java_class->name() << java_class->baseClass()->fullName();
             s << " extends " << java_class->baseClass()->fullName();
         } else {
             QString sc = type->defaultSuperclass();
