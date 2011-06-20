@@ -144,9 +144,9 @@ class Exec {
         try {
 			Process process = builder.start();
 			Util.redirectOutput(process);
-            /*if (process.exitValue() != 0) { //TODO: this must not be commented out. Generator qmake script has problems or something.
+            if (process.exitValue() != 0) { //TODO: this must not be commented out. Generator qmake script has problems or something.
                 throw new BuildException("Running: '" + command.toString() + "' failed.");
-            }*/
+            }
 		} catch (IOException e) {
 			 throw new BuildException("Running: '" + command.toString() + "' failed.", e);
 		}
@@ -162,7 +162,7 @@ class Exec {
         for (int i = 0; i<ar.length; ++i) {
             s += ar[i];
             if (i < ar.length - 1)
-                s += ", ";
+                s += " ";
         }
         return s;
     }
