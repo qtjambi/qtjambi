@@ -11,7 +11,7 @@
 class PreprocessHandler {
 
     public:
-        PreprocessHandler(QString sourceFile, QString targetFile, const QString &phononinclude);
+        PreprocessHandler(QString sourceFile, QString targetFile, const QString &phononInclude, const QStringList &includePathList);
 
         bool handler();
 
@@ -23,6 +23,8 @@ class PreprocessHandler {
         const char *ppconfig;
         QString sourceFile;
         QString targetFile;
+        QString phononInclude;
+        QStringList includePathList;
 
         QStringList setIncludes();
 
@@ -33,7 +35,6 @@ class PreprocessHandler {
          * TODO: more indepth description of this system somewhere
          */
         void writeTargetFile(QString sourceFile, QString targetFile, QString currentDir);
-        QString phononinclude;
 };
 
 #endif
