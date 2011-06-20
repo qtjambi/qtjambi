@@ -162,6 +162,14 @@
                     <property name="tools.qmake.binary" value="${qmake.binary}"/>
                     </else>
                 </if>
+		<if>
+		    <isset property="tools.qt.libdir"/>
+		    <then>
+		    </then>
+		    <else>
+			<property name="tools.qt.libdir" value="${qt.libdir}"/>
+		    </else>
+		</if>
             </else>
         </if>
     </target>
