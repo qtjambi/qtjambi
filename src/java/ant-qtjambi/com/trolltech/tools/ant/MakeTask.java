@@ -103,7 +103,7 @@ public class MakeTask extends Task {
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         String ldpath = (String) props.getProperty((String) null, InitializeTask.LIBDIR);
-        Exec.execute(commandArray, new File(dir), ldpath);
+        Exec.execute(commandArray, new File(dir), getProject(), ldpath);
     }
 
     public void setMessage(String msg) {

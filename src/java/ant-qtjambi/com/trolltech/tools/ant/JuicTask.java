@@ -109,7 +109,7 @@ public class JuicTask extends MatchingTask {
                 thisCommandList.add(packageString);
                 thisCommandList.add(uicFileString);
 
-                Exec.execute(thisCommandList, new File(dir), qtLibDirectory);
+                Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory);
             }
         }
     }
