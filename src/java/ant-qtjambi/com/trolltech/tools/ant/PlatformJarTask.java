@@ -303,8 +303,10 @@ public class PlatformJarTask extends Task {
             	if("".equals(libDir)) {
             		libdirstring = "lib/";
             	} else {
-            		libdirstring = libDir + "/";
-            	}
+                        libdirstring = libDir;
+                        if(!libdirstring.endsWith("/"))
+                            libdirstring += "/";
+                }
             	String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
             	unpackLibs.add ( lib );
 
