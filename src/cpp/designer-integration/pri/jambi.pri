@@ -1,26 +1,27 @@
-
-
-!macx:!exists($$(JAVADIR)) {
-  error("Please set your JAVADIR environment variable to point to the directory of your Java SDK:\nCurrent JAVADIR: $$(JAVADIR)")
+!macx:!exists($$(JAVA_HOME_TARGET)) {
+    # Ant/Maven should set this up (this can't be a symlink)
+    error("Please set your JAVA_HOME_TARGET environment variable to point to the directory of your Java SDK.  Current JAVA_HOME_TARGET: $$(JAVA_HOME_TARGET)")
 }
 
 isEmpty(TARGET) {
-  error("Please specify TARGET name before including qtjambi_base.pri");
+    error("Please specify TARGET name before including qtjambi_base.pri");
 }
 
 macx:{
     LIBS += -framework JavaVM
 } else {
-    INCLUDEPATH += $$(JAVADIR)/include
+    INCLUDEPATH += $$(JAVA_HOME_TARGET)/include
     win32 {
-        INCLUDEPATH += $$(JAVADIR)/include/win32
-    } else {
-        linux-g++* {
-        INCLUDEPATH += $$JAVA/include/linux
-        }
-        freebsd-g++* {
-        INCLUDEPATH += $$JAVA/include/freebsd
-        }
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/win32
+    }
+    solaris-g++ | solaris-cc {
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/solaris
+    }
+    linux-g++* {
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/linux
+    }
+    freebsd-g++* {
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/freebsd
     }
 }
 

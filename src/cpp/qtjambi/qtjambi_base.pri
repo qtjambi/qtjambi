@@ -1,13 +1,10 @@
-!macx {
-      JAVA=$(JAVA_HOME)
-      !exists($$JAVA):JAVA=$(JAVADIR)
-      !exists($$JAVA) {
-          error("Qt Jambi needs the path to the Java SDK. Please set your JAVA_HOME environment variable to point to it...");
-      }
+!macx:!exists($$(JAVA_HOME_TARGET)) {
+    # Ant/Maven should set this up (this can't be a symlink)
+    error("Please set your JAVA_HOME_TARGET environment variable to point to the directory of your Java SDK.  Current JAVA_HOME_TARGET: $$(JAVA_HOME_TARGET)")
 }
 
 isEmpty(TARGET) {
-  error("Please specify TARGET name before including qtjambi_base.pri");
+    error("Please specify TARGET name before including qtjambi_base.pri");
 }
 
 TEMPLATE = lib
@@ -19,8 +16,8 @@ CONFIG(debug, debug|release) {
     TARGET = $$member(TARGET, 0)_debuglib
 }
 
-INCLUDEPATH += $$PWD/../qtjambi $$PWD/../common
-DEPENDPATH += $$PWD/../qtjambi $$PWD/../common
+INCLUDEPATH += $$PWD/.. $$PWD/../qtjambi $$PWD/../common
+DEPENDPATH += $$PWD/.. $$PWD/../qtjambi $$PWD/../common
 
 macx:{
     QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
@@ -28,18 +25,18 @@ macx:{
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
-    INCLUDEPATH += $$JAVA/include
+    INCLUDEPATH += $$(JAVA_HOME_TARGET)/include
     win32 {
-        INCLUDEPATH += $$JAVA/include/win32
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/win32
     }
     solaris-g++ | solaris-cc {
-        INCLUDEPATH += $$JAVA/include/solaris
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/solaris
     }
     linux-g++* {
-        INCLUDEPATH += $$JAVA/include/linux
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/linux
     }
     freebsd-g++* {
-        INCLUDEPATH += $$JAVA/include/freebsd
+        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/freebsd
     }
 }
 
