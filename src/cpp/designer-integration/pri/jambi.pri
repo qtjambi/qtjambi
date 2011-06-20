@@ -62,5 +62,5 @@ macx:{
 }
 
 linux-g++* | freebsd-g++* {
-    QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+    QMAKE_LFLAGS += -Wl,--rpath,\\\$\$ORIGIN/../lib
 }
