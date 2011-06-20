@@ -38,6 +38,6 @@ mac {
     CONFIG -= precompile_header
 }
 
-linux-g++* || freebsd-g++* {
+linux-g++* | freebsd-g++* {
     QMAKE_LFLAGS += -Wl,--rpath,\\\$\$ORIGIN/../lib
 }
