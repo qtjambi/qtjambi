@@ -57,7 +57,7 @@
 //
 //
 
-#include <QVariant>
+#include <QtCore/QVariant>
 #include "qtjambi_core.h"
 
 class QtJambiVariant: private QVariant

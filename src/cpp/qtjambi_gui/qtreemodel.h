@@ -49,7 +49,7 @@
 #include <QtCore/QHash>
 #include <QtCore/QVariant>
 
-#include <qtjambi_global.h>
+#include <qtjambi/qtjambi_global.h>
 
 class Node;
 

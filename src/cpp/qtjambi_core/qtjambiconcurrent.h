@@ -47,12 +47,12 @@
 
 #ifndef QT_NO_CONCURRENT
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 
-#include <QVariant>
-#include <qfuture.h>
-#include <qfuturewatcher.h>
-#include <qfuturesynchronizer.h>
+#include <QtCore/QVariant>
+#include <QtCore/qfuture.h>
+#include <QtCore/qfuturewatcher.h>
+#include <QtCore/qfuturesynchronizer.h>
 
 typedef QFutureWatcher<void> QtJambiVoidFutureWatcher;
 typedef QFuture<void> QtJambiVoidFuture;
@@ -65,4 +65,3 @@ typedef QFutureIterator<JObjectWrapper> QtJambiFutureIterator;
 #endif // QT_NO_CONCURRENT
 
 #endif
-
