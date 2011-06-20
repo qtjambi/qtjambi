@@ -136,10 +136,15 @@ class Exec {
         // but it should not be needed there in first place... Only if you want to have same kind of building
         // environment one can have for Linux.
         // it should’t affect to Windows environment though.
-        if(ldpath != null) {
-        	Map<String, String> env = builder.environment();
+        Map<String, String> env = builder.environment();
+        if(ldpath != null)
         	env.put("LD_LIBRARY_PATH", ldpath);
-        }
+
+        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+        String s = (String) props.getProperty((String)null, "java.home.target");
+        if(s != null)
+            env.put("JAVA_HOME_TARGET", s);
+
         builder.directory(directory);
         try {
 			Process process = builder.start();

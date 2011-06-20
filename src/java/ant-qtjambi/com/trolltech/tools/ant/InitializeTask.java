@@ -67,13 +67,15 @@ public class InitializeTask extends Task {
      * Or rather these binds shouldn’t exist, how much of this could be moved to
      * xml side?
      */
-    public static final String LIBDIR           = "qtjambi.qt.libdir";
-    public static final String INCLUDEDIR       = "qtjambi.qt.includedir";
-    public static final String PLUGINSDIR       = "qtjambi.qt.pluginsdir";
-    public static final String PHONONLIBDIR     = "qtjambi.phonon.libdir";
+    public static final String LIBDIR           	= "qtjambi.qt.libdir";
+    public static final String INCLUDEDIR       	= "qtjambi.qt.includedir";
+    public static final String PLUGINSDIR       	= "qtjambi.qt.pluginsdir";
+    public static final String PHONONLIBDIR     	= "qtjambi.phonon.libdir";
     public static final String JAVALIBDIR		= "qtjambi.java.library.path";
-    public static final String JAMBILIBDIR	 	= "qtjambi.jambi.libdir";
-    public static final String VERSION          = "qtjambi.version";
+    public static final String JAMBILIBDIR		= "qtjambi.jambi.libdir";
+    public static final String VERSION          	= "qtjambi.version";
+    public static final String JAVA_HOME_TARGET		= "java.home.target";
+    public static final String JAVA_OSARCH_TARGET	= "java.osarch.target";
 
     /*
      * These properties are set inside this task
@@ -129,6 +131,9 @@ public class InitializeTask extends Task {
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();
 
+        props.setNewProperty((String) null, JAVA_HOME_TARGET, decideJavaHomeTarget());
+        props.setNewProperty((String) null, JAVA_OSARCH_TARGET, decideJavaOsarchTarget());
+
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
         String phonon = decidePhonon(props);
@@ -162,6 +167,49 @@ public class InitializeTask extends Task {
         String opengl = decideOpenGL();
         if ("true".equals(opengl))
             props.setNewProperty((String) null, OPENGL, opengl);
+    }
+
+    private String decideJavaHomeTarget() {
+        String s = (String) props.getProperty((String) null, JAVA_HOME_TARGET);
+        if (s == null)
+            s = System.getenv("JAVA_HOME_TARGET");
+        if (s == null)
+            s = System.getenv("JAVA_HOME");
+        String result = s;
+        props.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);	// does this work?
+        props.setProperty("env", "JAVA_HOME_TARGET", result, false);	// does this work?
+        if (verbose) System.out.println(JAVA_HOME_TARGET + ": " + result);
+        return result;
+    }
+
+    private String decideJavaOsarchTarget() {
+        String method = "";
+        String s = (String) props.getProperty((String) null, JAVA_OSARCH_TARGET);
+        if (s == null)
+            s = System.getenv("JAVA_OSARCH_TARGET");
+        if (s == null) {	// auto-detect using what we find
+            // This is based on a token observation that the include direcory
+            //  only had one sub-directory (this is needed for jni_md.h).
+            File includeDir = new File((String)props.getProperty((String) null, JAVA_HOME_TARGET), "include");
+            File found = null;
+            int foundCount = 0;
+            if (includeDir.exists()) {
+                File[] listFiles = includeDir.listFiles();
+                for (File f : listFiles) {
+                    if (f.isDirectory()) {
+                        foundCount++;
+                        found = f;
+                    }
+                }
+            }
+            if (foundCount == 1) {
+                s = found.getName();
+                method = " (auto-detected)";
+            }
+        }
+        String result = s;
+        if (verbose) System.out.println(JAVA_OSARCH_TARGET + ": " + result + method);
+        return result;
     }
 
     /**
