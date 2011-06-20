@@ -62,7 +62,9 @@ macx{
 }
 
 # gcc reports some functions as unused when they are not.
-linux-g++ || freebsd-g++:QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
+linux-g++ | freebsd-g++ {
+    QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
+}
 
 # Extra options to be set when using jump tables...
 jumptable{
@@ -73,6 +75,6 @@ jumptable{
 }
 
 #NOTE: this is just to test, uncomment if after all RPATHs are wanted.
-#linux-g++* || freebsd-g++* {
-    #QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+#linux-g++* | freebsd-g++* {
+    #QMAKE_LFLAGS += -Wl,--rpath,\\\$\$ORIGIN/../lib
 #}
