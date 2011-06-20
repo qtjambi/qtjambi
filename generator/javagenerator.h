@@ -134,6 +134,8 @@ class JavaGenerator : public Generator {
         inline bool nativeJumpTable() const { return m_native_jump_table; }
         inline void setNativeJumpTable(bool n) { m_native_jump_table = n; }
 
+        /*virtual*/ QString resolveOutputDirectory() const { return outputDirectory() + QLatin1String("/java"); }
+
         QString logOutputDirectory() const {
             if (!m_log_out_dir.isNull())
                 return m_log_out_dir;

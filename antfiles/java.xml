@@ -54,7 +54,7 @@
         </copy>
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi"/>
-            <property name="sourcedirs" value="${java.srcdir}/qtjambi:${generator.outputdir}"/>
+            <property name="sourcedirs" value="${java.srcdir}/qtjambi:${generator.outputdir}/java"/>
         </ant>
     </target>
 

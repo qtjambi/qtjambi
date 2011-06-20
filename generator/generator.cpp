@@ -69,7 +69,7 @@ void Generator::generate() {
         QString fileName = fileNameForClass(cls);
         ReportHandler::debugSparse(QString("generating: %1").arg(fileName));
 
-        FileOut fileOut(outputDirectory() + "/" + subDirectoryForClass(cls) + "/" + fileName);
+        FileOut fileOut(resolveOutputDirectory() + "/" + subDirectoryForClass(cls) + "/" + fileName);
         write(fileOut.stream, cls);
 
         if (fileOut.done())

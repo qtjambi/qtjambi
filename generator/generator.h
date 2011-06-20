@@ -95,6 +95,8 @@ class Generator : public QObject {
         void setClasses(const AbstractMetaClassList &classes) { m_classes = classes; }
         AbstractMetaClassList classes() const { return m_classes; }
 
+        virtual QString resolveOutputDirectory() const { return outputDirectory(); }
+
         QString outputDirectory() const { return m_out_dir; }
         void setOutputDirectory(const QString &outDir) { m_out_dir = outDir; }
         virtual void generate();
