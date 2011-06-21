@@ -1552,7 +1552,7 @@ bool qtjambi_initialize_vm()
     return true;
 }
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_SOLARIS)
+#if defined(Q_OS_LINUX) || defined(Q_OS_SOLARIS) || defined(Q_OS_FREEBSD)
 static QString locate_vm_linux_and_solaris()
 {
     QStringList envVariables;
@@ -1682,6 +1682,26 @@ static QString locate_vm()
 {
     // If libjvm is already loaded, make sure we report the same jvm.
     QFile file("/proc/self/maps");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&file);
+        QString line = in.readLine();
+        while (!line.isNull()) {
+            if(line.endsWith("libjvm.so")) {
+                return line.mid(line.indexOf('/'));
+            }
+            line = in.readLine();
+        }
+    }
+
+    return locate_vm_linux_and_solaris();
+}
+
+#elif defined(Q_OS_FREEBSD)
+
+static QString locate_vm()
+{
+    // If libjvm is already loaded, make sure we report the same jvm.
+    QFile file("/proc/currproc/map");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
         QString line = in.readLine();

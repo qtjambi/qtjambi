@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -51,14 +51,12 @@
 
 Q_GLOBAL_STATIC(QReadWriteLock, gStaticDataLock)
 
-QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env, bool convertEnums, QtJambiTypeManager::ConversionMode conversionMode) 
-    : mEnvironment(env), mConvertEnums(convertEnums), mConversionMode(conversionMode)
-{
+QtJambiTypeManager::QtJambiTypeManager(JNIEnv *env, bool convertEnums, QtJambiTypeManager::ConversionMode conversionMode)
+        : mEnvironment(env), mConvertEnums(convertEnums), mConversionMode(conversionMode) {
 }
 
 
-QtJambiTypeManager::~QtJambiTypeManager()
-{
+QtJambiTypeManager::~QtJambiTypeManager() {
     destroyConstructedInternal(mOwnedVariables_internal.keys().toVector());
 }
 
@@ -73,10 +71,9 @@ QtJambiTypeManager::~QtJambiTypeManager()
     return a default value (which will not be overwritten by the slot.)
 */
 bool QtJambiTypeManager::canConvertInternalToExternal(const QString &internalTypeName,
-    const QString &externalTypeName, VariableContext ctx) const
-{
+        const QString &externalTypeName, VariableContext ctx) const {
     bool result = (externalTypeName == getExternalTypeName(internalTypeName, ctx))
-                   || (ctx == ReturnType && internalTypeName == QLatin1String("void"));
+                  || (ctx == ReturnType && internalTypeName == QLatin1String("void"));
 
     return result;
 }
@@ -92,10 +89,9 @@ bool QtJambiTypeManager::canConvertInternalToExternal(const QString &internalTyp
     propagated.
 */
 bool QtJambiTypeManager::canConvertExternalToInternal(const QString &externalTypeName,
-    const QString &internalTypeName, VariableContext ctx) const
-{
+        const QString &internalTypeName, VariableContext ctx) const {
     bool result = (internalTypeName == getInternalTypeName(externalTypeName, ctx))
-                   || (ctx == ReturnType && internalTypeName == QLatin1String("void"));
+                  || (ctx == ReturnType && internalTypeName == QLatin1String("void"));
 
     return result;
 }
@@ -104,15 +100,14 @@ bool QtJambiTypeManager::canConvertExternalToInternal(const QString &externalTyp
     Converts the type names in a C++ signature to external type names and returns the converted
     signature.
 */
-QString QtJambiTypeManager::internalToExternalSignature(const QString &internalSignature) const
-{
+QString QtJambiTypeManager::internalToExternalSignature(const QString &internalSignature) const {
     QString name;
     QVector<QString> typeList = parseSignature(internalSignature, &name);
 
     QString returned = getExternalTypeName(typeList.at(0), ReturnType) + QLatin1Char(' ')
                        + name + QLatin1Char('(');
 
-    for (int i=1; i<typeList.count(); ++i) {
+    for (int i = 1; i < typeList.count(); ++i) {
         if (i > 1)
             returned += QLatin1Char(',');
         returned += getExternalTypeName(typeList.at(i), ArgumentType);
@@ -126,8 +121,7 @@ QString QtJambiTypeManager::internalToExternalSignature(const QString &internalS
     Converts the type names in an external signature to C++ type names and returns the converted
     signature.
 */
-QString QtJambiTypeManager::externalToInternalSignature(const QString &externalSignature) const
-{
+QString QtJambiTypeManager::externalToInternalSignature(const QString &externalSignature) const {
     QString name;
     QVector<QString> typeList = parseSignature(externalSignature, &name);
 
@@ -136,7 +130,7 @@ QString QtJambiTypeManager::externalToInternalSignature(const QString &externalS
         returned += QLatin1Char(' ');
     returned += name + QLatin1Char('(');
 
-    for (int i=1; i<typeList.count(); ++i) {
+    for (int i = 1; i < typeList.count(); ++i) {
         if (i > 1)
             returned += QLatin1Char(',');
         returned += getInternalTypeName(typeList.at(i), ArgumentType);
@@ -152,9 +146,8 @@ QString QtJambiTypeManager::externalToInternalSignature(const QString &externalS
     any values that has not been constructed using constructInternal() (and therefore it will
     always ignore null pointers.)
 */
-void QtJambiTypeManager::destroyConstructedInternal(const QVector<void *> &in)
-{
-    for (int i=0; i<in.size(); ++i)
+void QtJambiTypeManager::destroyConstructedInternal(const QVector<void *> &in) {
+    for (int i = 0; i < in.size(); ++i)
         destroyInternal(in.at(i), i == 0 ? ReturnType : ArgumentType);
 }
 
@@ -164,9 +157,8 @@ void QtJambiTypeManager::destroyConstructedInternal(const QVector<void *> &in)
     any values that has not been constructed using constructExternal() (and therefore it will
     always ignore null pointers.)
 */
-void QtJambiTypeManager::destroyConstructedExternal(const QVector<void *> &in)
-{
-    for (int i=0; i<in.size(); ++i)
+void QtJambiTypeManager::destroyConstructedExternal(const QVector<void *> &in) {
+    for (int i = 0; i < in.size(); ++i)
         destroyExternal(in.at(i), i == 0 ? ReturnType : ArgumentType);
 }
 
@@ -185,8 +177,7 @@ void QtJambiTypeManager::destroyConstructedExternal(const QVector<void *> &in)
     The default implementation converts arguments using convertInternalToExternalArgument().
 */
 bool QtJambiTypeManager::decodeArgumentList(const QVector<void *> &in,
-                                             QVector<void *> *out, const QVector<QString> &typeList)
-{
+        QVector<void *> *out, const QVector<QString> &typeList) {
     Q_ASSERT(out != 0);
     Q_ASSERT(in.size() == out->size() - 1);
     Q_ASSERT(typeList.size() == out->size());
@@ -194,7 +185,7 @@ bool QtJambiTypeManager::decodeArgumentList(const QVector<void *> &in,
     bool success = true;
 
     void **outData = out->data();
-    for (int i=0; i<in.size(); ++i) {
+    for (int i = 0; i < in.size(); ++i) {
         void *inv = in.at(i);
 
         const QString &externalType = typeList.at(i + 1);
@@ -224,15 +215,14 @@ bool QtJambiTypeManager::decodeArgumentList(const QVector<void *> &in,
     The default implementation converts arguments using convertExternalToInternalArgument().
 */
 bool QtJambiTypeManager::encodeArgumentList(const QVector<void *> &in,  QVector<void *> *out,
-                                             const QVector<QString> &typeList)
-{
+        const QVector<QString> &typeList) {
     Q_ASSERT(out != 0);
     Q_ASSERT(in.size() == out->size() - 1);
     Q_ASSERT(typeList.size() == out->size());
 
     bool success = true;
     void **outData = out->data();
-    for (int i=0; i<in.size(); ++i) {
+    for (int i = 0; i < in.size(); ++i) {
         void *inv = in.at(i);
 
         const QString &externalType = typeList.at(i + 1);
@@ -255,14 +245,13 @@ bool QtJambiTypeManager::encodeArgumentList(const QVector<void *> &in,  QVector<
     metaTypeOfInternal() to find the meta type ID.
     If you reimplement this method, you must also reimplement constructInternal().
 */
-void QtJambiTypeManager::destroyInternal(void *value, VariableContext ctx)
-{
+void QtJambiTypeManager::destroyInternal(void *value, VariableContext ctx) {
     if (value != 0) {
         if (mOwnedVariables_internal.contains(value)) {
             QString typeName = mOwnedVariables_internal.value(value);
             int metaType = metaTypeOfInternal(typeName, ctx);
             if (metaType != int(QMetaType::Void)
-                && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
+                    && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
                 QMetaType::destroy(metaType, value);
 
                 mOwnedVariables_internal.remove(value);
@@ -281,52 +270,51 @@ void QtJambiTypeManager::destroyInternal(void *value, VariableContext ctx)
     you must also reimplement destroyInternal().
 */
 void *QtJambiTypeManager::constructInternal(const QString &internalTypeName,
-                                            VariableContext ctx,
-                                            const void *copy,
-                                            int metaType)
-{
+        VariableContext ctx,
+        const void *copy,
+        int metaType) {
     if (metaType == QMetaType::Void)
         metaType = metaTypeOfInternal(internalTypeName, ctx);
 
     void *returned = 0;
     if (metaType != int(QMetaType::Void)
-        && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
+            && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
 
         returned = QMetaType::construct(metaType, copy);
 
         // We need to initialize everything to zero by default
         if (copy == 0) {
             switch (metaType) {
-            case QMetaType::VoidStar:
-            case QMetaType::QObjectStar:
-            case QMetaType::QWidgetStar:
-                *(reinterpret_cast<void **>(returned)) = 0; break ;
-            case QMetaType::Long:
-                *(reinterpret_cast<long *>(returned)) = 0; break ;
-            case QMetaType::Int:
-                *(reinterpret_cast<int *>(returned)) = 0; break ;
-            case QMetaType::Short:
-                *(reinterpret_cast<short *>(returned)) = 0; break ;
-            case QMetaType::Char:
-                *(reinterpret_cast<char *>(returned)) = 0; break ;
-            case QMetaType::ULong:
-                *(reinterpret_cast<ulong *>(returned)) = 0; break ;
-            case QMetaType::UInt:
-                *(reinterpret_cast<uint *>(returned)) = 0; break ;
-            case QMetaType::UShort:
-                *(reinterpret_cast<ushort *>(returned)) = 0; break ;
-            case QMetaType::UChar:
-                *(reinterpret_cast<uchar *>(returned)) = 0; break ;
-            case QMetaType::Bool:
-                *(reinterpret_cast<bool *>(returned)) = false; break ;
-            case QMetaType::Float:
-                *(reinterpret_cast<float *>(returned)) = 0.0; break ;
-            case QMetaType::Double:
-                *(reinterpret_cast<double *>(returned)) = 0.0; break ;
-            default:
-                if (QMetaType::type("qint64") == metaType)
-                    *(reinterpret_cast<qint64 *>(returned)) = 0; break ;
-                break ;
+                case QMetaType::VoidStar:
+                case QMetaType::QObjectStar:
+                case QMetaType::QWidgetStar:
+                    *(reinterpret_cast<void **>(returned)) = 0; break ;
+                case QMetaType::Long:
+                    *(reinterpret_cast<long *>(returned)) = 0; break ;
+                case QMetaType::Int:
+                    *(reinterpret_cast<int *>(returned)) = 0; break ;
+                case QMetaType::Short:
+                    *(reinterpret_cast<short *>(returned)) = 0; break ;
+                case QMetaType::Char:
+                    *(reinterpret_cast<char *>(returned)) = 0; break ;
+                case QMetaType::ULong:
+                    *(reinterpret_cast<ulong *>(returned)) = 0; break ;
+                case QMetaType::UInt:
+                    *(reinterpret_cast<uint *>(returned)) = 0; break ;
+                case QMetaType::UShort:
+                    *(reinterpret_cast<ushort *>(returned)) = 0; break ;
+                case QMetaType::UChar:
+                    *(reinterpret_cast<uchar *>(returned)) = 0; break ;
+                case QMetaType::Bool:
+                    *(reinterpret_cast<bool *>(returned)) = false; break ;
+                case QMetaType::Float:
+                    *(reinterpret_cast<float *>(returned)) = 0.0; break ;
+                case QMetaType::Double:
+                    *(reinterpret_cast<double *>(returned)) = 0.0; break ;
+                default:
+                    if (QMetaType::type("qint64") == metaType)
+                        *(reinterpret_cast<qint64 *>(returned)) = 0; break ;
+                    break ;
             };
         }
     }
@@ -344,15 +332,13 @@ void *QtJambiTypeManager::constructInternal(const QString &internalTypeName,
     converted to latin 1. \a ctx indicates the intended context of use for the type.
 */
 int QtJambiTypeManager::metaTypeOfInternal(const QString &internalTypeName,
-                                            VariableContext) const
-{
+        VariableContext) const {
     return QMetaType::type(internalTypeName.toLatin1().constData());
 }
 
 
 QVector<void *> QtJambiTypeManager::initExternalToInternal(const QVector<void *> &externalVariables,
-                                                 const QVector<QString> &externalTypeNames)
-{
+        const QVector<QString> &externalTypeNames) {
     QVector<void *> convertedArguments(externalTypeNames.size(), 0);
     encodeArgumentList(externalVariables, &convertedArguments, externalTypeNames);
     convertedArguments[0] =
@@ -361,8 +347,7 @@ QVector<void *> QtJambiTypeManager::initExternalToInternal(const QVector<void *>
 }
 
 QVector<void *> QtJambiTypeManager::initInternalToExternal(const QVector<void *> &internalVariables,
-                                                          const QVector<QString> &externalTypeNames)
-{
+        const QVector<QString> &externalTypeNames) {
     QVector<void *> convertedArguments(externalTypeNames.count(), 0);
     decodeArgumentList(internalVariables, &convertedArguments, externalTypeNames);
     convertedArguments[0] =
@@ -370,46 +355,43 @@ QVector<void *> QtJambiTypeManager::initInternalToExternal(const QVector<void *>
     return convertedArguments;
 }
 
-QString QtJambiTypeManager::complexTypeOf(Type type)
-{
+QString QtJambiTypeManager::complexTypeOf(Type type) {
     switch (type) {
-    case Integer: return QLatin1String("java/lang/Integer");
-    case Long: return QLatin1String("java/lang/Long");
-    case Boolean: return QLatin1String("java/lang/Boolean");
-    case Short: return QLatin1String("java/lang/Short");
-    case Char: return QLatin1String("java/lang/Character");
-    case Byte: return QLatin1String("java/lang/Byte");
-    case Float: return QLatin1String("java/lang/Float");
-    case Double: return QLatin1String("java/lang/Double");
-    default:
-        break;
+        case Integer: return QLatin1String("java/lang/Integer");
+        case Long: return QLatin1String("java/lang/Long");
+        case Boolean: return QLatin1String("java/lang/Boolean");
+        case Short: return QLatin1String("java/lang/Short");
+        case Char: return QLatin1String("java/lang/Character");
+        case Byte: return QLatin1String("java/lang/Byte");
+        case Float: return QLatin1String("java/lang/Float");
+        case Double: return QLatin1String("java/lang/Double");
+        default:
+            break;
     };
 
     qWarning("Cannot find complex type of type id '%d'", int(type));
     return QString();
 }
 
-QString QtJambiTypeManager::primitiveTypeOf(Type type)
-{
+QString QtJambiTypeManager::primitiveTypeOf(Type type) {
     switch (type) {
-    case Integer: return QLatin1String("int");
-    case Long: return QLatin1String("long");
-    case Boolean: return QLatin1String("boolean");
-    case Short: return QLatin1String("short");
-    case Char: return QLatin1String("char");
-    case Byte: return QLatin1String("byte");
-    case Float: return QLatin1String("float");
-    case Double: return QLatin1String("double");
-    default:
-        break;
+        case Integer: return QLatin1String("int");
+        case Long: return QLatin1String("long");
+        case Boolean: return QLatin1String("boolean");
+        case Short: return QLatin1String("short");
+        case Char: return QLatin1String("char");
+        case Byte: return QLatin1String("byte");
+        case Float: return QLatin1String("float");
+        case Double: return QLatin1String("double");
+        default:
+            break;
     };
 
     qWarning("Cannot find complex type of type id '%d'", int(type));
     return QString();
 }
 
-QString QtJambiTypeManager::mangle(const QString &_typeName)
-{
+QString QtJambiTypeManager::mangle(const QString &_typeName) {
     int indirections = _typeName.count("[]");
     QString typeName = _typeName.left(_typeName.length() - indirections * 2);
     QString strIndirections(indirections, QLatin1Char('['));
@@ -441,7 +423,7 @@ QString QtJambiTypeManager::mangle(const QString &_typeName)
 
     if (returned.isEmpty()) {
         return strIndirections + QLatin1Char('L') + QString(typeName).replace(QLatin1Char('.'),
-               QLatin1Char('/')) + QLatin1Char(';');
+                QLatin1Char('/')) + QLatin1Char(';');
     } else {
         return strIndirections + returned;
     }
@@ -449,47 +431,44 @@ QString QtJambiTypeManager::mangle(const QString &_typeName)
 
 // Converts a JVM compatible type specification (J, N, I, Z, B, etc) to a
 // type name.
-QString QtJambiTypeManager::demangle(const QString &_typeName)
-{
+QString QtJambiTypeManager::demangle(const QString &_typeName) {
     int indirections = _typeName.count("[");
     QString typeName = _typeName.right(_typeName.length() - indirections);
     QString strIndirections;
     QString brackets = QLatin1String("[]");
-    for (int i=0; i<indirections; ++i)
+    for (int i = 0; i < indirections; ++i)
         strIndirections += brackets;
 
     switch (typeName.at(0).toLatin1()) {
-    case 'I': return QLatin1String("int") + strIndirections;
-    case 'Z': return QLatin1String("boolean") + strIndirections;
-    case 'B': return QLatin1String("byte") + strIndirections;
-    case 'J': return QLatin1String("long") + strIndirections;
-    case 'C': return QLatin1String("char") + strIndirections;
-    case 'D': return QLatin1String("double") + strIndirections;
-    case 'F': return QLatin1String("float") + strIndirections;
-    case 'S': return QLatin1String("short") + strIndirections;
-    case 'V': return QLatin1String("void") + strIndirections;
-    case 'L':
-        return typeName.mid(1, typeName.length() - 2)
-                       .replace(QLatin1Char('/'), QLatin1Char('.')) + strIndirections;
-    default:
-        qWarning("demangle: Unrecognized java type specification: %s",
-            qPrintable(typeName));
-        break ;
+        case 'I': return QLatin1String("int") + strIndirections;
+        case 'Z': return QLatin1String("boolean") + strIndirections;
+        case 'B': return QLatin1String("byte") + strIndirections;
+        case 'J': return QLatin1String("long") + strIndirections;
+        case 'C': return QLatin1String("char") + strIndirections;
+        case 'D': return QLatin1String("double") + strIndirections;
+        case 'F': return QLatin1String("float") + strIndirections;
+        case 'S': return QLatin1String("short") + strIndirections;
+        case 'V': return QLatin1String("void") + strIndirections;
+        case 'L':
+            return typeName.mid(1, typeName.length() - 2)
+                   .replace(QLatin1Char('/'), QLatin1Char('.')) + strIndirections;
+        default:
+            qWarning("demangle: Unrecognized java type specification: %s",
+                     qPrintable(typeName));
+            break ;
     };
 
     return QString();
 }
 
-bool QtJambiTypeManager::isQtSubClass(JNIEnv *env, const QString &className, const QString &package)
-{
+bool QtJambiTypeManager::isQtSubClass(JNIEnv *env, const QString &className, const QString &package) {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
     return (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QtJambiObject.class_ref)));
 }
 
-bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const QString &package)
-{
+bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const QString &package) {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
     sc->resolveQtJambiInternal();
@@ -497,8 +476,7 @@ bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const 
     return (clazz != 0 && env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, clazz));
 }
 
-bool QtJambiTypeManager::isQObjectSubclass(JNIEnv *env, const QString &className, const QString &package)
-{
+bool QtJambiTypeManager::isQObjectSubclass(JNIEnv *env, const QString &className, const QString &package) {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQObject();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
@@ -506,8 +484,7 @@ bool QtJambiTypeManager::isQObjectSubclass(JNIEnv *env, const QString &className
 }
 
 QString QtJambiTypeManager::closestQtSuperclass(JNIEnv *env, const QString &className,
-                                               const QString &package)
-{
+        const QString &package) {
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
     jclass sc = resolveClosestQtSuperclass(env, clazz);
 
@@ -518,8 +495,7 @@ QString QtJambiTypeManager::closestQtSuperclass(JNIEnv *env, const QString &clas
 }
 
 jvalue QtJambiTypeManager::convertToComplex(JNIEnv *env, jvalue val, Type typeId,
-                                           bool *success)
-{
+        bool *success) {
     if (success != 0)
         *success = false;
 
@@ -528,18 +504,18 @@ jvalue QtJambiTypeManager::convertToComplex(JNIEnv *env, jvalue val, Type typeId
     if (typeId != None) {
         char jniType;
         switch (typeId) {
-        case Integer: jniType = 'I'; break ;
-        case Long: jniType = 'J'; break ;
-        case Float: jniType = 'F'; break ;
-        case Double: jniType = 'D'; break ;
-        case Boolean: jniType = 'Z'; break ;
-        case Short: jniType = 'S'; break ;
-        case Char: jniType = 'C'; break ;
-        case Byte: jniType = 'B'; break ;
-        default:
-            qWarning("QtJambiTypeManager::convertToComplex: Unhandled type id '%d'",
-                int(typeId));
-            jniType = (char) 0; // silence gcc
+            case Integer: jniType = 'I'; break ;
+            case Long: jniType = 'J'; break ;
+            case Float: jniType = 'F'; break ;
+            case Double: jniType = 'D'; break ;
+            case Boolean: jniType = 'Z'; break ;
+            case Short: jniType = 'S'; break ;
+            case Char: jniType = 'C'; break ;
+            case Byte: jniType = 'B'; break ;
+            default:
+                qWarning("QtJambiTypeManager::convertToComplex: Unhandled type id '%d'",
+                         int(typeId));
+                jniType = (char) 0; // silence gcc
         };
 
         QString qualifiedName = complexTypeOf(typeId);
@@ -565,121 +541,119 @@ jvalue QtJambiTypeManager::convertToComplex(JNIEnv *env, jvalue val, Type typeId
 }
 
 jvalue QtJambiTypeManager::callMethod(JNIEnv *env, jobject javaRef, jmethodID methodId,
-                                     Type typeId, jvalue *param)
-{
+                                      Type typeId, jvalue *param) {
     jvalue returned;
     returned.j = 0;
 
     switch (typeId) {
-    case Integer:
-        returned.i = param
-            ? env->CallIntMethodA(javaRef, methodId, param)
-            : env->CallIntMethod(javaRef, methodId);
-        break ;
+        case Integer:
+            returned.i = param
+                         ? env->CallIntMethodA(javaRef, methodId, param)
+                         : env->CallIntMethod(javaRef, methodId);
+            break ;
 
-    case Long:
-        returned.j = param
-            ? env->CallLongMethodA(javaRef, methodId, param)
-            : env->CallLongMethod(javaRef, methodId);
-        break ;
+        case Long:
+            returned.j = param
+                         ? env->CallLongMethodA(javaRef, methodId, param)
+                         : env->CallLongMethod(javaRef, methodId);
+            break ;
 
-    case Boolean:
-        returned.z = param
-            ? env->CallBooleanMethodA(javaRef, methodId, param)
-            : env->CallBooleanMethod(javaRef, methodId);
-        break ;
+        case Boolean:
+            returned.z = param
+                         ? env->CallBooleanMethodA(javaRef, methodId, param)
+                         : env->CallBooleanMethod(javaRef, methodId);
+            break ;
 
-    case Short:
-        returned.s = param
-            ? env->CallShortMethodA(javaRef, methodId, param)
-            : env->CallShortMethod(javaRef, methodId);
-        break ;
+        case Short:
+            returned.s = param
+                         ? env->CallShortMethodA(javaRef, methodId, param)
+                         : env->CallShortMethod(javaRef, methodId);
+            break ;
 
-    case Float:
-        returned.f = param
-            ? env->CallFloatMethodA(javaRef, methodId, param)
-            : env->CallFloatMethod(javaRef, methodId);
-        break ;
+        case Float:
+            returned.f = param
+                         ? env->CallFloatMethodA(javaRef, methodId, param)
+                         : env->CallFloatMethod(javaRef, methodId);
+            break ;
 
-    case Double:
-        returned.d = param
-            ? env->CallDoubleMethodA(javaRef, methodId, param)
-            : env->CallDoubleMethod(javaRef, methodId);
-        break ;
+        case Double:
+            returned.d = param
+                         ? env->CallDoubleMethodA(javaRef, methodId, param)
+                         : env->CallDoubleMethod(javaRef, methodId);
+            break ;
 
-    case Byte:
-        returned.b = param
-            ? env->CallByteMethodA(javaRef, methodId, param)
-            : env->CallByteMethod(javaRef, methodId);
-        break ;
+        case Byte:
+            returned.b = param
+                         ? env->CallByteMethodA(javaRef, methodId, param)
+                         : env->CallByteMethod(javaRef, methodId);
+            break ;
 
-    case Char:
-        returned.c = param
-            ? env->CallCharMethodA(javaRef, methodId, param)
-            : env->CallCharMethod(javaRef, methodId);
-        break ;
+        case Char:
+            returned.c = param
+                         ? env->CallCharMethodA(javaRef, methodId, param)
+                         : env->CallCharMethod(javaRef, methodId);
+            break ;
 
-    case None:
-        returned.j = 0;
-        param
+        case None:
+            returned.j = 0;
+            param
             ? env->CallVoidMethodA(javaRef, methodId, param)
             : env->CallVoidMethod(javaRef, methodId);
-        break ;
-    default: // avoid compiler warnings
-        qWarning("QtJambiTypeManager::callMethod: Unknown primitive id '%d'", int(typeId));
-        break ;
+            break ;
+        default: // avoid compiler warnings
+            qWarning("QtJambiTypeManager::callMethod: Unknown primitive id '%d'", int(typeId));
+            break ;
     };
 
     return returned;
 }
 
 jvalue QtJambiTypeManager::convertToPrimitive(JNIEnv *env, jobject javaRef,
-                                             Type typeId)
-{
+        Type typeId) {
     jvalue returned;
     returned.l = 0;
 
     const char *methodName;
     const char *signature;
     switch (typeId) {
-    case Integer:
-        methodName = "intValue";
-        signature = "()I";
-        break ;
-    case Long:
-        methodName = "longValue";
-        signature = "()J";
-        break ;
-    case Boolean:
-        methodName = "booleanValue";
-        signature = "()Z";
-        break ;
-    case Short:
-        methodName = "shortValue";
-        signature = "()S";
-        break ;
-    case Float:
-        methodName = "floatValue";
-        signature = "()F";
-        break ;
-    case Double:
-        methodName = "doubleValue";
-        signature = "()D";
-        break ;
-    case Byte:
-        methodName = "byteValue";
-        signature = "()B";
-        break ;
-    case Char:
-        methodName = "charValue";
-        signature = "()C";
-        break ;
-    case None:
-        return returned;
-    default: // nothing
-        qWarning("QtJambiTypeManager::convertToPrimitive: Primitive id '%d' not recognized",
-            int(typeId));
-        return returned;
+        case Integer:
+            methodName = "intValue";
+            signature = "()I";
+            break ;
+        case Long:
+            methodName = "longValue";
+            signature = "()J";
+            break ;
+        case Boolean:
+            methodName = "booleanValue";
+            signature = "()Z";
+            break ;
+        case Short:
+            methodName = "shortValue";
+            signature = "()S";
+            break ;
+        case Float:
+            methodName = "floatValue";
+            signature = "()F";
+            break ;
+        case Double:
+            methodName = "doubleValue";
+            signature = "()D";
+            break ;
+        case Byte:
+            methodName = "byteValue";
+            signature = "()B";
+            break ;
+        case Char:
+            methodName = "charValue";
+            signature = "()C";
+            break ;
+        case None:
+            return returned;
+        default: // nothing
+            qWarning("QtJambiTypeManager::convertToPrimitive: Primitive id '%d' not recognized",
+                     int(typeId));
+            return returned;
     };
 
     jmethodID methodId = 0;
@@ -695,8 +669,7 @@ jvalue QtJambiTypeManager::convertToPrimitive(JNIEnv *env, jobject javaRef,
 /*!
     \internal
 */
-QString QtJambiTypeManager::toJNISignature(const QString &signature, QString *name)
-{
+QString QtJambiTypeManager::toJNISignature(const QString &signature, QString *name) {
     QString tmp(signature);
 
     // Remove generic parameters from signature
@@ -742,8 +715,7 @@ QString QtJambiTypeManager::toJNISignature(const QString &signature, QString *na
     return outSignature;
 }
 
-QtJambiTypeManager::Type QtJambiTypeManager::valueTypePattern(const QString &javaName)
-{
+QtJambiTypeManager::Type QtJambiTypeManager::valueTypePattern(const QString &javaName) {
     int type = Value;
 
     static QHash<QString, Type> valueTypeHash;
@@ -783,16 +755,14 @@ QtJambiTypeManager::Type QtJambiTypeManager::valueTypePattern(const QString &jav
 }
 
 QString QtJambiTypeManager::processInternalTypeName(const QString &_internalTypeName,
-                                                      int *_indirections)
-{
+        int *_indirections) {
     int indirections = _internalTypeName.count(QLatin1Char('*'));
     if (_indirections != 0)
         *_indirections = indirections;
     return _internalTypeName.left(_internalTypeName.length() - indirections);
 }
 
-QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_internalTypeName) const
-{
+QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_internalTypeName) const {
     // For "void" we always return None.
     if (_internalTypeName == QLatin1String("void"))
         return None;
@@ -834,8 +804,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfInternal(const QString &_in
     return Type(type);
 }
 
-int QtJambiTypeManager::intForQtEnumerator(jobject enum_value) const
-{
+int QtJambiTypeManager::intForQtEnumerator(jobject enum_value) const {
     if (enum_value == 0)
         return 0;
 
@@ -854,8 +823,7 @@ int QtJambiTypeManager::intForQtEnumerator(jobject enum_value) const
     }
 }
 
-bool QtJambiTypeManager::isEnumType(jclass clazz) const
-{
+bool QtJambiTypeManager::isEnumType(jclass clazz) const {
     Q_ASSERT(clazz != 0);
 #ifndef QTJAMBI_RETRO_JAVA
     StaticCache *sc = StaticCache::instance();
@@ -868,16 +836,14 @@ bool QtJambiTypeManager::isEnumType(jclass clazz) const
 #endif
 }
 
-bool QtJambiTypeManager::isFlagsType(jclass clazz) const
-{
+bool QtJambiTypeManager::isFlagsType(jclass clazz) const {
     Q_ASSERT(clazz != 0);
     StaticCache *sc = StaticCache::instance();
     sc->resolveQFlags();
     return mEnvironment->IsAssignableFrom(clazz, sc->QFlags.class_ref);
 }
 
-bool QtJambiTypeManager::isEnumType(const QString &className, const QString &package) const
-{
+bool QtJambiTypeManager::isEnumType(const QString &className, const QString &package) const {
     jclass clazz = resolveClass(mEnvironment, className.toUtf8().constData(), package.toUtf8().constData());
     if (clazz != 0)
         return isEnumType(clazz);
@@ -885,8 +851,7 @@ bool QtJambiTypeManager::isEnumType(const QString &className, const QString &pac
         return false;
 }
 
-bool QtJambiTypeManager::isFlagsType(const QString &className, const QString &package) const
-{
+bool QtJambiTypeManager::isFlagsType(const QString &className, const QString &package) const {
     jclass clazz = resolveClass(mEnvironment, className.toUtf8().constData(), package.toUtf8().constData());
     if (clazz != 0)
         return isFlagsType(clazz);
@@ -896,14 +861,12 @@ bool QtJambiTypeManager::isFlagsType(const QString &className, const QString &pa
 
 // Returns true if conversion mode is QVariantMode and the type is a subclass of a Qt type
 // or if the type is exactly a Qt type.
-bool QtJambiTypeManager::conditionsMetForQtClass(uint type) const
-{
-    return ( ((mConversionMode == QVariantMode) && (type & QtSubClass))
-           || (type & QtClass));
+bool QtJambiTypeManager::conditionsMetForQtClass(uint type) const {
+    return (((mConversionMode == QVariantMode) && (type & QtSubClass))
+            || (type & QtClass));
 }
 
-QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &className, const QString &_package) const
-{
+QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &className, const QString &_package) const {
     QString package = _package;
 
     // For "void" we always return None.
@@ -912,7 +875,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &cla
 
     // Native pointers are native pointers
     if (package == QLatin1String("com/trolltech/qt/") &&
-        className == QLatin1String("QNativePointer")) {
+            className == QLatin1String("QNativePointer")) {
         return NativePointer;
     }
 
@@ -962,8 +925,7 @@ QtJambiTypeManager::Type QtJambiTypeManager::typeIdOfExternal(const QString &cla
     function after when the call to parseSignature() returns.
 */
 QVector<QString> QtJambiTypeManager::parseSignature(const QString &signature,
-                                                   QString *name) const
-{
+        QString *name) const {
     QString tmp(signature.trimmed());
     tmp.replace(QLatin1Char('.'), QLatin1Char('/'));
 
@@ -1027,8 +989,7 @@ QVector<QString> QtJambiTypeManager::parseSignature(const QString &signature,
         jobjects
 */
 QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
-                                               VariableContext /*ctx*/) const
-{
+        VariableContext /*ctx*/) const {
     // First we try a simple look up. This will handle any type in the type system,
     // so: primitives, boxed primitives and direct mappings of Qt types
     QString qtName = getQtName(externalTypeName);
@@ -1052,7 +1013,7 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
         return QLatin1String("void *");
     } else if (type & Object) {
         return className(closestQtSuperclass(mEnvironment, strClassName, strPackage))
-            + QLatin1Char('*');
+               + QLatin1Char('*');
     } else { // All java types can be converted to jobjects
         return QLatin1String("JObjectWrapper");
     }
@@ -1073,8 +1034,7 @@ QString QtJambiTypeManager::getInternalTypeName(const QString &externalTypeName,
         Translated to equivalent java class, fully qualified.
 */
 QString QtJambiTypeManager::getExternalTypeName(const QString &internalTypeName,
-                                               VariableContext ctx) const
-{
+        VariableContext ctx) const {
     // Handle types in the type system, so: primitives and direct mappings.
     // Primitives need to be converted to objects for return types, so we
     // have to do some more work for them.
@@ -1095,12 +1055,11 @@ QString QtJambiTypeManager::getExternalTypeName(const QString &internalTypeName,
         return QLatin1String("void");
 
     qWarning("QtJambiTypeManager::getExternalTypeName: Couldn't convert '%s' to Java type",
-        qPrintable(internalTypeName));
+             qPrintable(internalTypeName));
     return QString();
 }
 
-jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, const QString &package) const
-{
+jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, const QString &package) const {
     QByteArray utfClassName = className.toUtf8();
     QByteArray utfPackage = package.toUtf8();
     jclass clazz = resolveClass(mEnvironment, utfClassName.constData(), utfPackage.constData());
@@ -1121,8 +1080,7 @@ jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, con
     return flags;
 }
 
-jobject QtJambiTypeManager::enumForInt(int value, const QString &className, const QString &package) const
-{
+jobject QtJambiTypeManager::enumForInt(int value, const QString &className, const QString &package) const {
     QByteArray utfClassName = className.toUtf8();
     QByteArray utfPackage = package.toUtf8();
     jclass clazz = resolveClass(mEnvironment, utfClassName.constData(), utfPackage.constData());
@@ -1165,8 +1123,8 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
 #else
         sc->resolveRetroTranslatorHelper();
         jobjectArray enum_constants = reinterpret_cast<jobjectArray>(mEnvironment->CallStaticObjectMethod(sc->RetroTranslatorHelper.class_ref,
-                                                                                                          sc->RetroTranslatorHelper.getEnumConstants,
-                                                                                                          clazz));
+                                      sc->RetroTranslatorHelper.getEnumConstants,
+                                      clazz));
 #endif
 
         resolved = mEnvironment->GetObjectArrayElement(enum_constants, value);
@@ -1189,10 +1147,9 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
     \a out is expected to be a pointer to a jvalue struct.
 */
 bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
-                                                  const QString &internalTypeName,
-                                                  const QString &externalTypeName,
-                                                  VariableContext ctx)
-{
+        const QString &internalTypeName,
+        const QString &externalTypeName,
+        VariableContext ctx) {
     if (in == 0)
         return true;
 
@@ -1218,17 +1175,17 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
     if (type & TypeMask) {
         jvalue val;
         switch (type & TypeMask) {
-        case Integer: memcpy(&val.i, in, 4); break ;
-        case Long: memcpy(&val.j, in, 8); break ;
-        case Boolean: memcpy(&val.z, in, 1); break ;
-        case Short: memcpy(&val.s, in, 2); break ;
-        case Float: memcpy(&val.f, in, 4); break ;
-        case Double: memcpy(&val.d, in, 8); break ;
-        case Byte: memcpy(&val.b, in, 1); break ;
-        case Char: memcpy(&val.c, in, 2); break ;
-        default:
-            val.j = 0;
-            break ;
+            case Integer: memcpy(&val.i, in, 4); break ;
+            case Long: memcpy(&val.j, in, 8); break ;
+            case Boolean: memcpy(&val.z, in, 1); break ;
+            case Short: memcpy(&val.s, in, 2); break ;
+            case Float: memcpy(&val.f, in, 4); break ;
+            case Double: memcpy(&val.d, in, 8); break ;
+            case Byte: memcpy(&val.b, in, 1); break ;
+            case Char: memcpy(&val.c, in, 2); break ;
+            default:
+                val.j = 0;
+                break ;
         };
 
         if (ctx == ReturnType) {
@@ -1319,14 +1276,14 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
         int metaType = QMetaType::type(internalTypeName.toLatin1().constData());
 
         if (metaType == qMetaTypeId<JObjectWrapper>()) {
-            p->l = mEnvironment->NewLocalRef( ((JObjectWrapper *)in)->object);
+            p->l = mEnvironment->NewLocalRef(((JObjectWrapper *)in)->object);
             success = true;
         }
     }
 
     if (!success) {
         qWarning("QtJambiTypeManager::convertInternalToExternal: Cannot convert to type '%s' from '%s'",
-            qPrintable(externalTypeName), qPrintable(internalTypeName));
+                 qPrintable(externalTypeName), qPrintable(internalTypeName));
     }
 
     return success;
@@ -1335,8 +1292,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 /*!
     Always returns a pointer to a jvalue
 */
-void *QtJambiTypeManager::constructExternal(const QString &, VariableContext, const void *copy)
-{
+void *QtJambiTypeManager::constructExternal(const QString &, VariableContext, const void *copy) {
     jvalue *val = new jvalue;
     val->j = 0;
 
@@ -1347,8 +1303,7 @@ void *QtJambiTypeManager::constructExternal(const QString &, VariableContext, co
     return val;
 }
 
-void QtJambiTypeManager::destroyExternal(void *p, VariableContext )
-{
+void QtJambiTypeManager::destroyExternal(void *p, VariableContext) {
     jvalue *val = reinterpret_cast<jvalue *>(p);
     if (mOwnedVariables_external.contains(val)) {
         delete val;
@@ -1377,10 +1332,9 @@ struct PlaceHolder {
 };
 
 bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
-                                                  const QString &externalTypeName,
-                                                  const QString &internalTypeName,
-                                                  VariableContext ctx)
-{
+        const QString &externalTypeName,
+        const QString &internalTypeName,
+        VariableContext ctx) {
     if (in == 0)
         return true;
 
@@ -1414,18 +1368,18 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
     PlaceHolder placeHolder;
     if (typemasked) {
         switch (typemasked) {
-        case None: break ;
-        case Integer: copy = &pval->i; break ;
-        case Long: copy = &pval->j; break ;
-        case Boolean: copy = &pval->z; break ;
-        case Short: copy = &pval->s; break ;
-        case Float: copy = &pval->f; break ;
-        case Double: copy = &pval->d; break ;
-        case Byte: copy = &pval->b; break ;
-        case Char: copy = &pval->c; break ;
-        default:
-            success = false;
-            break ;
+            case None: break ;
+            case Integer: copy = &pval->i; break ;
+            case Long: copy = &pval->j; break ;
+            case Boolean: copy = &pval->z; break ;
+            case Short: copy = &pval->s; break ;
+            case Float: copy = &pval->f; break ;
+            case Double: copy = &pval->d; break ;
+            case Byte: copy = &pval->b; break ;
+            case Char: copy = &pval->c; break ;
+            default:
+                success = false;
+                break ;
         }
     } else if (type & String) {
         placeHolder.str = qtjambi_to_qstring(mEnvironment, reinterpret_cast<jstring>(pval->l));
@@ -1438,7 +1392,7 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
 
         if (link == 0 || link->pointer() == 0) {
             qWarning("Java object of type '%s' not linked to C++ object",
-                qPrintable(externalTypeName));
+                     qPrintable(externalTypeName));
             success = false;
         } else if (type & Value) {
             copy = link->pointer();
@@ -1460,13 +1414,13 @@ bool QtJambiTypeManager::convertExternalToInternal(const void *in, void **out,
 
     if (!success) {
         qWarning("QtJambiTypeManager::convertExternalToInternal: Couldn't convert external type "
-            " '%s' to '%s'", qPrintable(externalTypeName), qPrintable(internalTypeName));
+                 " '%s' to '%s'", qPrintable(externalTypeName), qPrintable(internalTypeName));
     } else {
         if (*out == 0) { // Construct a new one
             *out = constructInternal(internalTypeName, ctx, copy, metaType);
         } else { // Use QDataStream to copy the value over
             if (metaType != int(QMetaType::Void)
-                && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
+                    && (metaType < QMetaType::User || QMetaType::isRegistered(metaType))) {
 
                 QByteArray ba;
                 /* write the copy to the stream */ {

@@ -1438,7 +1438,6 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         if (!java_class->baseClassName().isEmpty()) {
-            qDebug()<<java_class->name() << java_class->baseClass()->fullName();
             s << " extends " << java_class->baseClass()->fullName();
         } else {
             QString sc = type->defaultSuperclass();
@@ -1774,8 +1773,8 @@ void JavaGenerator::generate() {
         const AbstractMetaClass *last_class = 0;
         QString fileName("mjb_nativepointer_api.log");
         QFile file(fileName);
-        if (!outputDirectory().isNull())
-            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
+        if (!logOutputDirectory().isNull())
+            file.setFileName(QDir(logOutputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
@@ -1808,8 +1807,8 @@ void JavaGenerator::generate() {
         const AbstractMetaClass *last_class = 0;
         QString fileName("mjb_nativepointer_api.log");
         QFile file(fileName);
-        if (!outputDirectory().isNull())
-            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
+        if (!logOutputDirectory().isNull())
+            file.setFileName(QDir(logOutputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
@@ -1843,8 +1842,8 @@ void JavaGenerator::generate() {
     { // log possible reference counting candidates
         QString fileName("mjb_reference_count_candidates.log");
         QFile file(fileName);
-        if (!outputDirectory().isNull())
-            file.setFileName(QDir(outputDirectory()).absoluteFilePath(fileName));
+        if (!logOutputDirectory().isNull())
+            file.setFileName(QDir(logOutputDirectory()).absoluteFilePath(fileName));
         if (file.open(QFile::WriteOnly)) {
             QTextStream s(&file);
 
