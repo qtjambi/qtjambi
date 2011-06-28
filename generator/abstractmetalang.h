@@ -168,6 +168,7 @@ class AbstractMetaType {
             EnumPattern,
             ValuePattern,
             StringPattern,
+            StringRefPattern,
             CharPattern,
             ObjectPattern,
             QObjectPattern,
@@ -235,6 +236,9 @@ class AbstractMetaType {
 
         // returns true if the type was originally a QString or const QString & or equivalent for QLatin1String
         bool isTargetLangString() const { return m_pattern == StringPattern; }
+
+        // returns true if the type was originally a QStringRef or const QStringRef &
+        bool isTargetLangStringRef() const { return m_pattern == StringRefPattern; }
 
         // returns true if the type was originally a QChar or const QChar &
         bool isTargetLangChar() const { return m_pattern == CharPattern; }

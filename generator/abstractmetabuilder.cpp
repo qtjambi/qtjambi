@@ -466,6 +466,7 @@ bool AbstractMetaBuilder::build() {
 
         if ((entry->isValue() || entry->isObject())
                 && !entry->isString()
+                && !entry->isStringRef()
                 && !entry->isChar()
                 && !entry->isContainer()
                 && !entry->isCustom()
@@ -1929,6 +1930,12 @@ void AbstractMetaBuilder::decideUsagePattern(AbstractMetaType *meta_type) {
 
     } else if (type->isVoid()) {
         meta_type->setTypeUsagePattern(AbstractMetaType::NativePointerPattern);
+
+    } else if (type->isStringRef()
+               && meta_type->indirections() == 0
+               && (meta_type->isConstant() == meta_type->isReference()
+                   || meta_type->isConstant())) {
+        meta_type->setTypeUsagePattern(AbstractMetaType::StringRefPattern);
 
     } else if (type->isString()
                && meta_type->indirections() == 0

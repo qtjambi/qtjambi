@@ -292,6 +292,7 @@ void dumpMetaJavaType(const AbstractMetaType *type) {
         if (type->isQObject()) printf(" q_obj");
         if (type->isNativePointer()) printf(" n_ptr");
         if (type->isTargetLangString()) printf(" java_string");
+        if (type->isTargetLangStringRef()) printf(" java_string");
         if (type->isConstant()) printf(" const");
         printf("]");
     }

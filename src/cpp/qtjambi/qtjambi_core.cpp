@@ -844,6 +844,15 @@ void qtjambi_from_cellatindex(JNIEnv *env, jobject cellAtIndex, int *row, int *c
 }
 
 
+jstring qtjambi_from_qstringref(JNIEnv *env, const QStringRef &s)
+{
+    QTJAMBI_EXCEPTION_CHECK(env);
+    jstring str = env->NewString(reinterpret_cast<const jchar *>(s.constData()), s.length());
+    Q_ASSERT(str != 0);
+
+    return str;
+}
+
 jstring qtjambi_from_qstring(JNIEnv *env, const QString &s)
 {
     QTJAMBI_EXCEPTION_CHECK(env);

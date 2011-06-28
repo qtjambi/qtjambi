@@ -194,6 +194,8 @@ QString default_return_statement_qt(const AbstractMetaType *java_type,
         return returnStr + " QVariant()";
     if (java_type->isTargetLangString())
         return returnStr + " QString()";
+    if (java_type->isTargetLangStringRef())
+        return returnStr + " QStringRef()";
     if (java_type->isTargetLangChar())
         return returnStr + " QChar()";
     else if (java_type->isEnum())
@@ -2164,6 +2166,12 @@ void CppImplGenerator::writeJavaToQt(QTextStream &s,
         s << INDENT << "QString " << qt_name
         << " =  qtjambi_to_qstring(__jni_env, (jstring) " << java_name << ");" << endl;
 
+    } else if (java_type->isTargetLangStringRef()) {
+        s << INDENT << "QString " << qt_name << "_s"
+        << " =  qtjambi_to_qstring(__jni_env, (jstring) " << java_name << ");" << endl;
+        s << INDENT << "QStringRef " << qt_name
+        << " =  QStringRef(&" << qt_name << "_s);" << endl;
+
     } else if (java_type->isTargetLangChar()) {
         s << INDENT << "QChar " << qt_name
         << " = (ushort)" << java_name << ";" << endl;
@@ -2426,6 +2434,10 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
 
     } else if (java_type->isTargetLangString()) {
         s << INDENT << "jstring " << java_name << " = qtjambi_from_qstring(__jni_env, "
+        << qt_name << ");" << endl;
+
+    } else if (java_type->isTargetLangStringRef()) {
+        s << INDENT << "jstring " << java_name << " = qtjambi_from_qstringref(__jni_env, "
         << qt_name << ");" << endl;
 
     } else if (java_type->isTargetLangChar()) {
@@ -2939,6 +2951,7 @@ QString CppImplGenerator::translateType(const AbstractMetaType *java_type, Optio
 
     if (java_type->isPrimitive()
             || java_type->isTargetLangString()
+            || java_type->isTargetLangStringRef()
             || java_type->isVariant()
             || java_type->isJObjectWrapper()
             || java_type->isTargetLangChar()

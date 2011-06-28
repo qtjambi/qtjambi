@@ -56,6 +56,7 @@ class TypeEntry {
             ThreadType,
             BasicValueType,
             StringType,
+            StringRefType,
             ContainerType,
             InterfaceType,
             ObjectType,
@@ -107,6 +108,9 @@ class TypeEntry {
         }
         bool isString() const {
             return m_type == StringType;
+        }
+        bool isStringRef() const {
+            return m_type == StringRefType;
         }
         bool isChar() const {
             return m_type == CharType;
@@ -829,6 +833,28 @@ class StringTypeEntry : public ValueTypeEntry {
     public:
         StringTypeEntry(const QString &name)
                 : ValueTypeEntry(name, StringType) {
+            setCodeGeneration(GenerateNothing);
+        }
+
+        QString jniName() const {
+            return strings_jobject;
+        }
+        QString targetLangName() const {
+            return strings_String;
+        }
+        QString javaPackage() const {
+            return strings_java_lang;
+        }
+
+        virtual bool isNativeIdBased() const {
+            return false;
+        }
+};
+
+class StringRefTypeEntry : public ValueTypeEntry {
+    public:
+        StringRefTypeEntry(const QString &name)
+                : ValueTypeEntry(name, StringRefType) {
             setCodeGeneration(GenerateNothing);
         }
 
