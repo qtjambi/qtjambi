@@ -110,7 +110,7 @@ public class TestQScriptEngine extends TestCase {
     }
     
     /* TODO
-     * write tests for pop/push context
+     * write tests for pop/push context, memory, etc.
      */
     
     public static Test suite() {
