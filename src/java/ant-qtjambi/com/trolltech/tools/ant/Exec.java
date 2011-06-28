@@ -136,20 +136,35 @@ class Exec {
         // but it should not be needed there in first place... Only if you want to have same kind of building
         // environment one can have for Linux.
         // it should’t affect to Windows environment though.
-        if(ldpath != null) {
-        	Map<String, String> env = builder.environment();
-        	env.put("LD_LIBRARY_PATH", ldpath);
+        Map<String, String> env = builder.environment();
+        if(ldpath != null)
+            env.put("LD_LIBRARY_PATH", ldpath);
+
+        if(project != null) {
+            PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+            String s = (String) props.getProperty((String)null, "java.home.target");
+            if(s != null)
+                env.put("JAVA_HOME_TARGET", s);
+
+            s = (String) props.getProperty((String)null, "qtjambi.phonon.includedir");
+            if(s != null && s.length() > 0)
+                env.put("PHONON_INCLUDEPATH", s);
+
+            s = (String) props.getProperty((String)null, "qtjambi.phonon.libdir");
+            if(s != null && s.length() > 0)
+                env.put("PHONON_LIBS", s);
         }
+
         builder.directory(directory);
         try {
-			Process process = builder.start();
-			Util.redirectOutput(process);
-            /*if (process.exitValue() != 0) { //TODO: this must not be commented out. Generator qmake script has problems or something.
-                throw new BuildException("Running: '" + command.toString() + "' failed.");
-            }*/
-		} catch (IOException e) {
-			 throw new BuildException("Running: '" + command.toString() + "' failed.", e);
-		}
+            Process process = builder.start();
+            Util.redirectOutput(process);
+            if (process.exitValue() != 0) {
+                throw new BuildException("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue());
+            }
+        } catch (IOException e) {
+            throw new BuildException("Running: '" + command.toString() + "' failed.", e);
+        }
     }
     
     /**

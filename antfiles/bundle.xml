@@ -15,7 +15,6 @@
             pro="java.pro"
             config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
             qtconfig="${qtjambi.qtconfig}"
-            includepath="${qtjambi.phonon.includedir}"
             debugTools="${qtjambi.debug-tools}"
             qmakebinary="${qmake.binary}"/>
     </target>

@@ -14,6 +14,8 @@
 #include <phonon/abstractmediastream.h>
 #include <phonon/abstractvideooutput.h>
 #include <phonon/addoninterface.h>
+#include <phonon/audiodataoutput.h>
+#include <phonon/audiodataoutputinterface.h>
 #include <phonon/audiooutput.h>
 #include <phonon/audiooutputinterface.h>
 #include <phonon/backendcapabilities.h>
@@ -22,6 +24,7 @@
 #include <phonon/effectinterface.h>
 #include <phonon/effectparameter.h>
 #include <phonon/effectwidget.h>
+#include <phonon/globalconfig.h>
 #include <phonon/mediacontroller.h>
 #include <phonon/medianode.h>
 #include <phonon/mediaobject.h>
@@ -33,6 +36,7 @@
 #include <phonon/phonondefs.h>
 #include <phonon/phononnamespace.h>
 #include <phonon/platformplugin.h>
+#include <phonon/pulsesupport.h>
 #include <phonon/seekslider.h>
 #include <phonon/streaminterface.h>
 #include <phonon/videoplayer.h>
