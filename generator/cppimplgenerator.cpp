@@ -1902,8 +1902,8 @@ void CppImplGenerator::writeSignalInitialization(QTextStream &s, const AbstractM
     << "                               java_object," << endl
     << "                               qt_wrapper->m_signals," << endl
     << "                               qtjambi_signal_count," << endl
-    << "                               (char **) qtjambi_signal_names," << endl
-    << "                               (int *) qtjambi_signal_argumentcounts);" << endl
+    << "                               qtjambi_signal_names," << endl
+    << "                               qtjambi_signal_argumentcounts);" << endl
     << "   }" << endl
     << "   QString signal_name = qtjambi_to_qstring(__jni_env, java_signal_name);" << endl
     << "   return qtjambi_connect_cpp_to_java(__jni_env," << endl
