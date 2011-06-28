@@ -428,7 +428,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
             qwidget = qwidget->baseClass();
         }
         if (qwidget)
-            s << "#include <QPainter>" << endl << endl;
+            s << "#include <QtGui/QPainter>" << endl << endl;
     }
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
@@ -439,7 +439,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         s << "#include \"qtjambishell_" << java_class->name() << ".h\"" << endl;
 
     if (java_class->isQObject())
-        s << "#include <qtdynamicmetaobject.h>" << endl;
+        s << "#include <qtjambi/qtdynamicmetaobject.h>" << endl;
 
     Include inc = java_class->typeEntry()->include();
     if (!inc.name.isEmpty()) {
@@ -456,9 +456,9 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         s << endl;
     }
 
-    s << "#include \"qtjambi_core.h\"" << endl
-    << "#include \"qtjambifunctiontable.h\"" << endl
-    << "#include \"qtjambilink.h\"" << endl;
+    s << "#include <qtjambi/qtjambi_core.h>" << endl
+    << "#include <qtjambi/qtjambifunctiontable.h>" << endl
+    << "#include <qtjambi/qtjambilink.h>" << endl;
 
     writeShellSignatures(s, java_class);
 
@@ -657,7 +657,7 @@ void CppImplGenerator::writeToStringFunction(QTextStream &s, const AbstractMetaC
         QString deref = QLatin1String(indirections == 0 ? "*" : "");
 
         s << endl;
-        s << "#include <QDebug>" << endl;
+        s << "#include <QtCore/QDebug>" << endl;
         s << jni_function_signature(java_class->package(), java_class->name(), "__qt_toString", "jstring")
         << "(JNIEnv *__jni_env, jobject, jlong __this_nativeId)" << endl
         << INDENT << "{" << endl;

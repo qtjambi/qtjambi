@@ -72,6 +72,21 @@ QStringList PreprocessHandler::setIncludes() {
 
     QStringList includes;
 
+    // It is important any explicitly given phonon include dir is before the main Qt include
+    //  directory in the search order.  This is so that on a build system that has both a Qt
+    //  Phonon and another Phonon implementation (like from KDE) it should find the ecplicitly
+    //  given include location first.
+    QString phonon_include_dir;
+    if (!phononInclude.isEmpty()) {
+        phonon_include_dir = phononInclude;
+    } else {
+#if defined(Q_OS_MAC)
+        phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
+#endif
+    }
+    if (!phonon_include_dir.isNull())
+        includes << phonon_include_dir;
+
     // Include Qt
     QString includedir;
     if (!Wrapper::include_directory.isNull()) {
@@ -85,17 +100,6 @@ QStringList PreprocessHandler::setIncludes() {
     }
     if (!includedir.isNull())
         includes << includedir;
-
-    QString phonon_include_dir;
-    if (!phononInclude.isEmpty()) {
-        phonon_include_dir = phononInclude;
-    } else {
-#if defined(Q_OS_MAC)
-        phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
-#endif
-    }
-    if (!phonon_include_dir.isNull())
-        includes << phonon_include_dir;
 
     // Additional include locations from command line
     if (!includePathList.isEmpty())

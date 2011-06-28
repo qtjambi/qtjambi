@@ -14,11 +14,13 @@
                 phononpath="${qtjambi.phonon.includedir}"
                 qtincludedirectory="${qtjambi.qt.includedir}"
                 qtlibdirectory="${qtjambi.tools.qt.libdir}"
-                includepaths="${basedir}/generator/targets:${basedir}/src/cpp:${java.home.target}/include:${java.home.target}/include/${java.osarch.target}"
+                includepaths="${generator.includepaths}"
                 kdephonon="${qtjambi.phonon.kdephonon-path}"
                 options="${qtjambi.generator.jumptable}"/>
     </target>
     <!-- NOTES includepaths: For Linux the following paths _APPENDED_ to the
+         minimum:
+             ${basedir}/generator/targets:${basedir}/src/cpp:${java.home.target}/include:${java.home.target}/include/${java.osarch.target}
          above made quiet the WARNINGs:
              /usr/include:/usr/include/c++/4.4.4:/usr/include/c++/4.4.4/x86_64-redhat-linux:/usr/lib/gcc/x86_64-redhat-linux/4.4.4/include
          Only the cross platform settings are included in generator element

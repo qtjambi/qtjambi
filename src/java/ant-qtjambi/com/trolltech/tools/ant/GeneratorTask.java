@@ -211,7 +211,10 @@ public class GeneratorTask extends Task {
     }
 
     public void setIncludePaths(String includePaths) {
-        this.includePaths = includePaths;
+        // HACK - We need (recursive) expansion of ${properties} this appears to do the trick
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+        String x = props.replaceProperties(null, includePaths, null);
+        this.includePaths = x;
     }
 
     public void setJambidirectory(String dir) {

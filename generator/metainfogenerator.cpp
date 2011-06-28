@@ -588,7 +588,7 @@ void MetaInfoGenerator::writeLibraryInitializers() {
                                 "__qt_initLibrary", "void");
             QTextStream &s = fileOut.stream;
             s << "#include \"metainfo.h\"" << endl
-            << "#include \"qtjambi_global.h\"" << endl << endl
+            << "#include <qtjambi/qtjambi_global.h>" << endl << endl
             << signature << "(JNIEnv *, jclass)" << endl
             << "{" << endl
             << "    ";
@@ -662,8 +662,8 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const AbstractMet
     writeInclude(s, Include(Include::IncludePath, "QReadWriteLock"));
     writeInclude(s, Include(Include::IncludePath, "QReadLocker"));
     writeInclude(s, Include(Include::IncludePath, "QWriteLocker"));
-    writeInclude(s, Include(Include::IncludePath, "qtjambi_cache.h"));
-    writeInclude(s, Include(Include::IncludePath, "qtjambi_core.h"));
+    writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_cache.h"));
+    writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_core.h"));
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
     writeInclude(s, Include(Include::IncludePath, "qtjambidebugtools_p.h"));

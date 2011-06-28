@@ -67,10 +67,15 @@ void Wrapper::handleArguments() {
     if (args.contains("include-paths")) {        // split on path
         QString arg = args.value("include-paths");
 #if defined(Q_OS_WIN32)
-        QChar pathSeparator(';');	// CHECKME Qt already has this somewhere?
+        QChar pathSeparator(';');
 #else
         QChar pathSeparator(':');
 #endif
+        if(arg.length() > 0) {
+            const QChar firstChar = arg.at(0);
+            if(firstChar == QChar(':') || firstChar == QChar(';'))
+                pathSeparator = firstChar;	// this allows override default trick
+        }
         includePathsList = arg.split(pathSeparator, QString::SkipEmptyParts);
     }
 

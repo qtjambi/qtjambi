@@ -64,15 +64,18 @@
 
 #include <phonon>
 
-#include <../../src/cpp/qtjambi_core/qtjambiconcurrent.h>
-#include <../../src/cpp/qtjambi_core/qtjambi_core_qhashes.h>
 
-#include <../../src/cpp/qtjambi_designer/designer.h>
 
-#include <../../src/cpp/qtjambi_gui/qtreemodel.h>
-#include <../../src/cpp/qtjambi_gui/qguisignalmapper.h>
-#include <../../src/cpp/qtjambi_gui/qtjambitextobjectinterface.h>
-#include <../../src/cpp/qtjambi_gui/qtjambi_gui_qhashes.h>
+
+#include <qtjambi_core/qtjambiconcurrent.h>
+#include <qtjambi_core/qtjambi_core_qhashes.h>
+
+#include <qtjambi_designer/designer.h>
+
+#include <qtjambi_gui/qtreemodel.h>
+#include <qtjambi_gui/qguisignalmapper.h>
+#include <qtjambi_gui/qtjambitextobjectinterface.h>
+#include <qtjambi_gui/qtjambi_gui_qhashes.h>
 
 
 #ifndef QT_NO_OPENGL
