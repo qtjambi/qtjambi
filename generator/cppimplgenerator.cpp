@@ -700,6 +700,9 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
 
     // Write the function names...
     if (has_constructors && java_class->hasVirtualFunctions()) {
+        // FIXME This is sometimes emitted when it does not need to be and results in
+        //  compiler warning (gcc linux - at least) about unused static data.
+        // I suspect the test above is not good enough.
         AbstractMetaFunctionList virtual_functions = java_class->virtualFunctions();
         {
             Indentation indent(INDENT);
@@ -3015,6 +3018,9 @@ void CppImplGenerator::writeDefaultConstructedValues(QTextStream &s, const Abstr
     }
 
     if (!values.isEmpty()) {
+        // FIXME This is sometimes emitted when it does not need to be and results in
+        //  compiler warning (gcc linux - at least) about unused static data.
+        // I suspect the test above is not good enough.
         s << endl << endl
         << "// Default constructed values used throughout final functions..." << endl;
         for (QSet<QString>::const_iterator it = values.constBegin(); it != values.constEnd(); ++it) {
