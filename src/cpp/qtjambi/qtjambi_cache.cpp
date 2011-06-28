@@ -143,19 +143,19 @@ PtrDestructorFunction destructor(const QString &java_name)
     return gDestructorHash()->value(java_name, 0);
 }
 
-typedef QHash<QString, DeletionPolicy> DeletionPolicyHash;
-Q_GLOBAL_STATIC(QReadWriteLock, gDeletionPolicyHashLock);
-Q_GLOBAL_STATIC(DeletionPolicyHash, gDeletionPolicyHash);
-void registerDeletionPolicy(const QString &java_name, DeletionPolicy policy)
+typedef QHash<QString, ObjectDeletionPolicy> ObjectDeletionPolicyHash;
+Q_GLOBAL_STATIC(QReadWriteLock, gObjectDeletionPolicyHashLock);
+Q_GLOBAL_STATIC(ObjectDeletionPolicyHash, gObjectDeletionPolicyHash);
+void registerObjectDeletionPolicy(const QString &java_name, ObjectDeletionPolicy policy)
 {
-    QWriteLocker locker(gDeletionPolicyHashLock());
-    gDeletionPolicyHash()->insert(java_name, policy);
+    QWriteLocker locker(gObjectDeletionPolicyHashLock());
+    gObjectDeletionPolicyHash()->insert(java_name, policy);
 }
 
-DeletionPolicy deletionPolicy(const QString &java_name)
+ObjectDeletionPolicy objectDeletionPolicy(const QString &java_name)
 {
-    QReadLocker locker(gDeletionPolicyHashLock());
-    return gDeletionPolicyHash()->value(java_name, DeletionPolicyNormal);
+    QReadLocker locker(gObjectDeletionPolicyHashLock());
+    return gObjectDeletionPolicyHash()->value(java_name, ObjectDeletionPolicyNormal);
 }
 
 /*******************************************************************************
