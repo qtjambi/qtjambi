@@ -4,7 +4,7 @@
     <rejection class="QScriptEngine" function-name="newQMetaObject"/>
     <rejection class="QScriptEngine" function-name="registerCustomType"/>
     <rejection class="QScriptEngine" function-name="scriptValueFromQMetaObject"/>
-    <rejection class="QScriptEngine" function-name="newFunction"/>
+    <!-- <rejection class="QScriptEngine" function-name="newFunction"/> -->
     <rejection class="QScriptValue" function-name="toQMetaObject"/>
     <rejection class="QScriptValueList"/>
     <rejection class="QScriptValue::QScriptValueList"/>
