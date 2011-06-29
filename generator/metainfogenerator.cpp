@@ -62,7 +62,7 @@ MetaInfoGenerator::MetaInfoGenerator(PriGenerator *pri):
 QString MetaInfoGenerator::subDirectoryForPackage(const QString &package, OutputDirectoryType type) const {
     switch (type) {
         case CppDirectory:
-            return "cpp/" + QString(package).replace(".", "_") + "/";
+            return QString(package).replace(".", "_") + "/";
         case JavaDirectory:
             return QString(package).replace(".", "/");
         default:

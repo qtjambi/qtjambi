@@ -53,8 +53,17 @@ class CppGenerator : public Generator {
         Q_OBJECT
 
     public:
+        /*virtual*/ QString resolveOutputDirectory() const { return cppOutputDirectory(); }
+
+        QString cppOutputDirectory() const {
+            if (!m_cpp_out_dir.isNull())
+                return m_cpp_out_dir;
+            return outputDirectory() + QLatin1String("/cpp");
+        }
+        void setCppOutputDirectory(const QString &cppOutDir) { m_cpp_out_dir = cppOutDir; }
+
         static inline QString subDirectoryForPackage(const QString &package) {
-            return QLatin1String("cpp/") + QString(package).replace(".", "_");
+            return QString(package).replace(".", "_");
         }
 
         virtual QString subDirectoryForClass(const AbstractMetaClass *cls) const {
@@ -93,6 +102,7 @@ class CppGenerator : public Generator {
 
     protected:
         PriGenerator *priGenerator;
+        QString m_cpp_out_dir;
 
 };
 

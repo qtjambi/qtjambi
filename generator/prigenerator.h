@@ -59,6 +59,15 @@ class PriGenerator : public Generator {
         Q_OBJECT
 
     public:
+        /*virtual*/ QString resolveOutputDirectory() const { return cppOutputDirectory(); }
+
+        QString cppOutputDirectory() const {
+            if (!m_cpp_out_dir.isNull())
+                return m_cpp_out_dir;
+            return outputDirectory() + QLatin1String("/cpp");
+        }
+        void setCppOutputDirectory(const QString &cppOutDir) { m_cpp_out_dir = cppOutDir; }
+
         virtual void generate();
 
         void addHeader(const QString &folder, const QString &header);
@@ -66,6 +75,7 @@ class PriGenerator : public Generator {
 
     private:
         QHash<QString, Pri> priHash;
+        QString m_cpp_out_dir;
 
 };
 #endif // PRIGENERATOR_H

@@ -59,15 +59,15 @@ void PriGenerator::generate() {
     while (pri.hasNext()) {
         pri.next();
 
-        FileOut file(m_out_dir + "/cpp/" + pri.key());
+        FileOut file(resolveOutputDirectory() + "/" + pri.key());
         file.stream << "HEADERS += \\\n";
         QStringList list = pri.value().headers;
         qSort(list.begin(), list.end());
         foreach(const QString &entry, list) {
             file.stream << "           $$PWD/" << entry << " \\\n";
         }
-
         file.stream << "\n";
+
         file.stream << "SOURCES += \\\n";
         list = pri.value().sources;
         qSort(list.begin(), list.end());

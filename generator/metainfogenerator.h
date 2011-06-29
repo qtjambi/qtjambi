@@ -86,13 +86,13 @@ class MetaInfoGenerator : public JavaGenerator {
         QString cppOutputDirectory() const {
             if (!m_cpp_out_dir.isNull())
                 return m_cpp_out_dir;
-            return outputDirectory();
+            return outputDirectory() + QLatin1String("/cpp");
         }
         void setCppOutputDirectory(const QString &cppOutDir) { m_cpp_out_dir = cppOutDir; }
         QString javaOutputDirectory() const {
             if (!m_java_out_dir.isNull())
                 return m_java_out_dir;
-            return outputDirectory();
+            return outputDirectory() + QLatin1String("/java");
         }
         void setJavaOutputDirectory(const QString &javaOutDir) { m_java_out_dir = javaOutDir; }
 
