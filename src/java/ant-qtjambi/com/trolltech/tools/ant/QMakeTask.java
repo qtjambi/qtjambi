@@ -116,7 +116,7 @@ public class QMakeTask extends Task {
 	
 	command.add(parseParameters());
 	
-	Exec.execute(command, new File(dir));
+	Exec.execute(command, new File(dir), getProject());
     }
 
     public void setMessage(String msg) {

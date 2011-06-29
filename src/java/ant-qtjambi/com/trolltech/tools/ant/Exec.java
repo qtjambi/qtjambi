@@ -46,8 +46,8 @@ class Exec {
      * Convenience method for exec(String, File).
      * @param command Command to be executed.
      */
-    public static void exec(String command) {
-        exec(command, null);
+    public static void exec(String command, Project project) {
+        exec(command, null, project);
     }
 
     /**
@@ -56,7 +56,7 @@ class Exec {
      * @param dir Directory where command should be executed.
      * @throws BuildException Thrown if process exit value is not zero or IOException has been occurred.
      */
-    public static void exec(String command, File dir) throws BuildException {
+    public static void exec(String command, File dir, Project project) throws BuildException {
         String directory = ((dir != null) ? "(" + Util.makeCanonical(dir) + ")" : "");
         System.out.println("Running : " + directory + " " + command);
         try {
@@ -79,7 +79,7 @@ class Exec {
      * @param verbose Whether to be verbose.
      * @throws BuildException Thrown if process exit value is not zero or IOException has been occurred.
      */
-    public static void exec(String cmd[], File dir, boolean verbose) throws BuildException {
+    public static void exec(String cmd[], File dir, Project project, boolean verbose) throws BuildException {
         if (verbose) {
             StringBuilder b = new StringBuilder();
             for (String s : cmd)
@@ -98,19 +98,19 @@ class Exec {
         }
     }
 
-    public static void execute(List<String> command, File directory) throws BuildException {
-        execute(command, directory, null, false);
+    public static void execute(List<String> command, File directory, Project project) throws BuildException {
+        execute(command, directory, project, null, false);
     }
 
-    public static void execute(List<String> command, File directory, boolean msyssupport) throws BuildException {
-        execute(command, directory, null, msyssupport);
+    public static void execute(List<String> command, File directory, Project project, boolean msyssupport) throws BuildException {
+        execute(command, directory, project, null, msyssupport);
     }
 
-    public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
-        execute(command, directory, ldpath, false);
+    public static void execute(List<String> command, File directory, Project project, String ldpath) throws BuildException {
+        execute(command, directory, project, ldpath, false);
     }
 
-    public static void execute(List<String> command, File directory, String ldpath, boolean msyssupport) throws BuildException {
+    public static void execute(List<String> command, File directory, Project project, String ldpath, boolean msyssupport) throws BuildException {
         String fullCommand = null;
         if(msyssupport == true) {
             Iterator<String> iter = command.iterator();
@@ -153,7 +153,6 @@ class Exec {
             s = (String) props.getProperty((String)null, "qtjambi.phonon.libdir");
             if(s != null && s.length() > 0)
                 env.put("PHONON_LIBS", s);
-        }
 
         builder.directory(directory);
         try {

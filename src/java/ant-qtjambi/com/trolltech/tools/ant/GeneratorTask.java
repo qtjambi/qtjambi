@@ -186,7 +186,7 @@ public class GeneratorTask extends Task {
         if("true".equals(msyssupportStr)) {
             msyssupport = true;
         }
-        Exec.execute(thisCommandList, new File(dir), qtLibDirectory, msyssupport);
+        Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory, msyssupport);
     }
 
     public void setHeader(String header) {
