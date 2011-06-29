@@ -374,6 +374,7 @@
     <rejection class="QList" function-name="begin"/>
     <rejection class="QList" function-name="constBegin"/>
     <rejection class="QList" function-name="constEnd"/>
+    <rejection class="QList" function-name="detach_helper_grow"/>
     <rejection class="QList" function-name="end"/>
     <rejection class="QList" function-name="erase"/>
     <rejection class="QList" function-name="erase"/>
@@ -801,7 +802,6 @@
     <value-type name="QLocale">
         <modify-function signature="toString(unsigned long long) const" remove="all"/>
         <modify-function signature="toString(unsigned short) const" remove="all"/>
-        <modify-function signature="toString(unsigned short int) const" remove="all"/>
         <modify-function signature="toString(unsigned int) const" remove="all"/>
         <modify-function signature="toUInt(QString,bool*,int)const" remove="all"/>
         <modify-function signature="toULongLong(QString,bool*,int)const" remove="all"/>
@@ -935,7 +935,6 @@
         <modify-function signature="setNum(uint,int)" remove="all"/>
         <modify-function signature="setNum(unsigned long long,int)" remove="all"/>
         <modify-function signature="setNum(unsigned short,int)" remove="all"/>
-        <modify-function signature="setNum(unsigned short int,int)" remove="all"/>
         <modify-function signature="toLong(bool*, int) const" remove="all"/>
         <modify-function signature="toLongLong(bool*, int) const" remove="all"/>
         <modify-function signature="toShort(bool*, int) const" remove="all"/>
