@@ -36,6 +36,7 @@ class Wrapper {
         QStringList rebuild_classes;
         GeneratorSet *gs;
         QMap< QString, QString > args;
+        QStringList includePathsList;
 
 };
 

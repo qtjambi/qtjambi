@@ -16,7 +16,7 @@
 #include <QtGui/QTransform>
 #include <QtGui/QPolygonF>
 
-#include <qtjambi_core_qhashes.h>
+#include <qtjambi_core/qtjambi_core_qhashes.h>
 
 inline int qHash(const QColor &color)
 {

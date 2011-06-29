@@ -47,7 +47,7 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <qglobal.h>
+#include <QtCore/qglobal.h>
 
 //TODO: rewrite
 #if defined(Q_WS_WIN)

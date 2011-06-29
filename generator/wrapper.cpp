@@ -61,10 +61,22 @@ void Wrapper::handleArguments() {
         TypeDatabase::instance()->setRebuildClasses(classes);
     }
 
-    if (args.contains("qt-include-directory")) {
+    if (args.contains("qt-include-directory"))
         include_directory = args.value("qt-include-directory");
-    } else {
-        include_directory = "";
+
+    if (args.contains("include-paths")) {        // split on path
+        QString arg = args.value("include-paths");
+#if defined(Q_OS_WIN32)
+        QChar pathSeparator(';');
+#else
+        QChar pathSeparator(':');
+#endif
+        if(arg.length() > 0) {
+            const QChar firstChar = arg.at(0);
+            if(firstChar == QChar(':') || firstChar == QChar(';'))
+                pathSeparator = firstChar;	// this allows override default trick
+        }
+        includePathsList = arg.split(pathSeparator, QString::SkipEmptyParts);
     }
 
     if (args.contains("input-directory")) {
@@ -118,7 +130,7 @@ int Wrapper::runJambiGenerator() {
     //removing file here for theoretical case of wanting to parse two master include files here
     QFile::remove(pp_file);
     //preprocess using master include, preprocessed file and command line given include paths, if any
-    if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"))) {
+    if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"), includePathsList)) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
     }

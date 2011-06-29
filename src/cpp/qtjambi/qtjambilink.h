@@ -47,13 +47,13 @@
 
 #include "qtjambi_global.h"
 
-#include <QObject>
-#include <QString>
-#include <QList>
-#include <QHash>
-#include <QVector>
-#include <QMetaType>
-#include <QEvent>
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QList>
+#include <QtCore/QHash>
+#include <QtCore/QVector>
+#include <QtCore/QMetaType>
+#include <QtCore/QEvent>
 
 class QtJambiLink;
 

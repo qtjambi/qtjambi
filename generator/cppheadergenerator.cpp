@@ -102,7 +102,7 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
 
     s << "#ifndef " << include_block << endl
     << "#define " << include_block << endl << endl
-    << "#include <qtjambi_core.h>" << endl
+    << "#include <qtjambi/qtjambi_core.h>" << endl
     << "#include <QtCore/QHash>" << endl;
 
     Include inc = java_class->typeEntry()->include();

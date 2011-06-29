@@ -9,12 +9,13 @@
 #include "preprocesshandler.h"
 #include "wrapper.h"
 
-PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, const QString& phononinclude) :
+PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, const QString &phononInclude, const QStringList &includePathList) :
         preprocess(env),
         ppconfig(":/trolltech/generator/parser/rpp/pp-qt-configuration"),
         sourceFile(sourceFile),
         targetFile(targetFile),
-        phononinclude(phononinclude) {
+        phononInclude(phononInclude),
+        includePathList(includePathList) {
     //empty space for useless comments
 }
 
@@ -70,31 +71,39 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
 QStringList PreprocessHandler::setIncludes() {
 
     QStringList includes;
-    includes << QString(".");
 
-    // Include Qt
-    QString includedir;
-    if (Wrapper::include_directory != "") {
-        includedir = Wrapper::include_directory;
-#if defined(Q_OS_MAC)
-    } else includedir = "/Library/Frameworks";
-#else
-    }
-    else includedir = "/usr/include/qt4";
-#endif
-
+    // It is important any explicitly given phonon include dir is before the main Qt include
+    //  directory in the search order.  This is so that on a build system that has both a Qt
+    //  Phonon and another Phonon implementation (like from KDE) it should find the ecplicitly
+    //  given include location first.
     QString phonon_include_dir;
-    if (!phononinclude.isEmpty()) {
-        phonon_include_dir = phononinclude;
+    if (!phononInclude.isEmpty()) {
+        phonon_include_dir = phononInclude;
     } else {
 #if defined(Q_OS_MAC)
         phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
-#else
-        phonon_include_dir = includedir;
 #endif
     }
-    includes << phonon_include_dir;
-    includes << includedir;
+    if (!phonon_include_dir.isNull())
+        includes << phonon_include_dir;
+
+    // Include Qt
+    QString includedir;
+    if (!Wrapper::include_directory.isNull()) {
+        includedir = Wrapper::include_directory;
+    } else {
+#if defined(Q_OS_MAC)
+        includedir = "/Library/Frameworks";
+#else
+        includedir = "/usr/include/qt4";
+#endif
+    }
+    if (!includedir.isNull())
+        includes << includedir;
+
+    // Additional include locations from command line
+    if (!includePathList.isEmpty())
+        includes << includePathList;
 
     return includes;
 }

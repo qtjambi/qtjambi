@@ -46,8 +46,8 @@
 #include "wrapper.h"
 #include "preprocesshandler.h"
 
-bool Preprocess::preprocess(const QString& sourceFile, const QString& targetFile, const QString& phononinclude) {
-    PreprocessHandler handler(sourceFile, targetFile, phononinclude);
+bool Preprocess::preprocess(const QString& sourceFile, const QString& targetFile, const QString& phononinclude, const QStringList& includePathList) {
+    PreprocessHandler handler(sourceFile, targetFile, phononinclude, includePathList);
     return handler.handler();
 }
 

@@ -290,7 +290,7 @@ void JumpTableGenerator::generateNativeTable(const QString &packageName,
 
     QTextStream &s = file.stream;
 
-    s << "#include <qtjambi_global.h>" << endl;
+    s << "#include <qtjambi/qtjambi_global.h>" << endl;
 
     for (SignatureTable::const_iterator sit = table.constBegin(); sit != table.constEnd(); ++sit) {
         QString signature = sit.key();

@@ -66,6 +66,7 @@ public class GeneratorTask extends Task {
     private String qtIncludeDirectory = null;
     private String qtLibDirectory = null;
     private String jambiDirectory = null;
+    private String includePaths = null;
     private List<String> commandList = new ArrayList<String>();
 
     private String searchPath() {
@@ -121,6 +122,10 @@ public class GeneratorTask extends Task {
     private boolean parseArguments() {
         if (options != null && !options.equals("")) {
             commandList.add(options);
+        }
+
+        if(includePaths != null) {
+            commandList.add("--include-paths=" + Util.escape(includePaths));
         }
 
         if(!phononpath.equals("")) {
@@ -203,6 +208,13 @@ public class GeneratorTask extends Task {
 
     public void setKdephonon(String kdephonon) {
         this.kdephonon = kdephonon;
+    }
+
+    public void setIncludePaths(String includePaths) {
+        // HACK - We need (recursive) expansion of ${properties} this appears to do the trick
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+        String x = props.replaceProperties(null, includePaths, null);
+        this.includePaths = x;
     }
 
     public void setJambidirectory(String dir) {

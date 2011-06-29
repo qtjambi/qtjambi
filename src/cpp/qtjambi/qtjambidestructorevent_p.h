@@ -59,7 +59,7 @@
 
 #include "qtjambilink.h"
 
-#include <QEvent>
+#include <QtCore/QEvent>
 
 class QtJambiDestructorEvent : public QEvent
 {
