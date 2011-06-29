@@ -72,7 +72,7 @@ class Exec {
 
     /**
      * TODO: this should be merged with above one, repeating code is not that wise.
-     * 
+     *
      * Executes process in more verbose manner.
      * @param cmd Array of command and its arguments to be executed.
      * @param dir Directory where should be executed.
@@ -101,11 +101,11 @@ class Exec {
     public static void execute(List<String> command, File directory) throws BuildException {
         execute(command, directory, null, false);
     }
-    
+
     public static void execute(List<String> command, File directory, boolean msyssupport) throws BuildException {
         execute(command, directory, null, msyssupport);
     }
- 
+
     public static void execute(List<String> command, File directory, String ldpath) throws BuildException {
         execute(command, directory, ldpath, false);
     }
@@ -119,10 +119,10 @@ class Exec {
             while(iter.hasNext()) {
                 builder.append(iter.next() + " ");
             }
-            
-            fullCommand = baseCommand + " " + builder.toString(); 
+
+            fullCommand = baseCommand + " " + builder.toString();
         }
-        
+
         ProcessBuilder builder;
         if(fullCommand == null) {
             System.out.println("Executing: " + command.toString() + " in directory " + directory.toString());
@@ -137,21 +137,21 @@ class Exec {
         // environment one can have for Linux.
         // it should’t affect to Windows environment though.
         if(ldpath != null) {
-        	Map<String, String> env = builder.environment();
-        	env.put("LD_LIBRARY_PATH", ldpath);
+            Map<String, String> env = builder.environment();
+            env.put("LD_LIBRARY_PATH", ldpath);
         }
         builder.directory(directory);
         try {
-			Process process = builder.start();
-			Util.redirectOutput(process);
+            Process process = builder.start();
+            Util.redirectOutput(process);
             /*if (process.exitValue() != 0) { //TODO: this must not be commented out. Generator qmake script has problems or something.
                 throw new BuildException("Running: '" + command.toString() + "' failed.");
             }*/
-		} catch (IOException e) {
-			 throw new BuildException("Running: '" + command.toString() + "' failed.", e);
-		}
+        } catch (IOException e) {
+            throw new BuildException("Running: '" + command.toString() + "' failed.", e);
+        }
     }
-    
+
     /**
      * Internal helper of Exec.
      * @param ar What to join
