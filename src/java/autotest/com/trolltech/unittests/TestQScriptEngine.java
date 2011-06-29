@@ -15,6 +15,7 @@ import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPushButton;
+import com.trolltech.qt.script.QScriptContext;
 import com.trolltech.qt.script.QScriptEngine;
 import com.trolltech.qt.script.QScriptValue;
 
@@ -27,6 +28,7 @@ public class TestQScriptEngine extends TestCase {
     QScriptValue scriptButton1;
     QScriptValue val;
     QScriptValue val1;
+    QScriptContext scriptContext;
     
     public TestQScriptEngine(String name) {
 	super(name);
@@ -46,6 +48,7 @@ public class TestQScriptEngine extends TestCase {
 	scriptButton1 = null;
 	val = null;
 	val1 = null;
+	scriptContext = null;
 	QApplication.quit();
 	QApplication.instance().dispose();
     }
@@ -109,8 +112,17 @@ public class TestQScriptEngine extends TestCase {
 	assertTrue(val.isNull());
     }
     
+    public void testPushPopContext() {
+	testEngine.setProperty("global", new QScriptValue(3));
+	scriptContext = testEngine.pushContext();
+	scriptContext.activationObject().setProperty("local", new QScriptValue(5));
+	assertTrue(testEngine.evaluate("global = 6; global + local;").toInt32() == 11);
+	testEngine.popContext();
+	assertTrue(((QScriptValue)testEngine.property("global")).toInt32() == 3);
+    }
+    
     /* TODO
-     * write tests for pop/push context, memory, etc.
+     * write tests for memory, etc.
      */
     
     public static Test suite() {
@@ -125,6 +137,7 @@ public class TestQScriptEngine extends TestCase {
 	suite.addTest(new TestQScriptEngine("testNewRegExp"));
 	suite.addTest(new TestQScriptEngine("testNullValue"));
 	suite.addTest(new TestQScriptEngine("testNewVariant"));
+	suite.addTest(new TestQScriptEngine("testPushPopContext"));
 	return suite;
     }
     
