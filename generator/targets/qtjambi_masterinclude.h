@@ -52,7 +52,9 @@
 #include <QtMultimedia/QtMultimedia>
 #include <QtScript/QtScript>
 #include <QtScriptTools/QtScriptTools>
-#include <QtOpenVG/QtOpenVG>
+#ifndef QT_NO_OPENVG
+#  include <QtOpenVG/QtOpenVG>
+#endif
 
 #ifndef QT_NO_XMLPATTERNS
 #  include <QtXmlPatterns/QtXmlPatterns>
@@ -62,7 +64,9 @@
 #  include <QtWebKit/QtWebKit>
 #endif
 
-#include <phonon>
+#ifndef QT_NO_PHONON
+#  include <phonon/phonon>
+#endif
 
 
 
