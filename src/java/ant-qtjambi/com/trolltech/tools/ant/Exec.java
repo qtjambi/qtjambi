@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @todo Rewrite. This kind of API is PITA to use and maintain.
+ */
 class Exec {
 
     /**
