@@ -278,7 +278,7 @@ public class QtJambiInternal {
         if (strTypes.length() == 0)
             argumentTypes = new String[0];
         else
-            argumentTypes = strTypes.split(",");
+            argumentTypes = RetroTranslatorHelper.split(strTypes, ",");
 
         for (int i = 0; i < argumentTypes.length; ++i)
             argumentTypes[i] = argumentTypes[i].replace(" ", "");
