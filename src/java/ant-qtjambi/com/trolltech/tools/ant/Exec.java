@@ -143,19 +143,19 @@ class Exec {
         if(ldpath != null)
             env.put("LD_LIBRARY_PATH", ldpath);
 
-        if(project != null) {
-            PropertyHelper props = PropertyHelper.getPropertyHelper(project);
-            String s = (String) props.getProperty((String)null, "java.home.target");
-            if(s != null)
-                env.put("JAVA_HOME_TARGET", s);
+        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+        String s = (String) props.getProperty((String) null, "java.home.target");
+        if(s != null)
+            env.put("JAVA_HOME_TARGET", s);
 
-            s = (String) props.getProperty((String)null, "qtjambi.phonon.includedir");
-            if(s != null && s.length() > 0)
-                env.put("PHONON_INCLUDEPATH", s);
+        //something extra?
+        s = (String) props.getProperty((String) null, "qtjambi.phonon.includedir");
+        if(s != null && s.length() > 0)
+            env.put("PHONON_INCLUDEPATH", s);
 
-            s = (String) props.getProperty((String)null, "qtjambi.phonon.libdir");
-            if(s != null && s.length() > 0)
-                env.put("PHONON_LIBS", s);
+        s = (String) props.getProperty((String) null, "qtjambi.phonon.libdir");
+        if(s != null && s.length() > 0)
+            env.put("PHONON_LIBS", s);
 
         builder.directory(directory);
         try {
