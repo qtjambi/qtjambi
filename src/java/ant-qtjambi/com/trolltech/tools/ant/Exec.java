@@ -177,7 +177,7 @@ class Exec {
         for (int i = 0; i<ar.length; ++i) {
             s += ar[i];
             if (i < ar.length - 1)
-                s += ", ";
+                s += " ";
         }
         return s;
     }
