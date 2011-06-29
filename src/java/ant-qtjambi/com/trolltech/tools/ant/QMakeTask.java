@@ -64,33 +64,35 @@ public class QMakeTask extends Task {
     private boolean recursive = false;
     private boolean debugTools = false;
     
-    private String parseArguments() {
-    	String arguments = "";
+    private List<String> parseArguments() {
+	List<String> arguments = new ArrayList<String>();
+
         StringTokenizer tokenizer = new StringTokenizer(config, " ");
         
         while (tokenizer.hasMoreTokens()) {
-            arguments += " -config " + tokenizer.nextToken();
+            arguments.add("-config");
+            arguments.add(tokenizer.nextToken());
         }
 
         if (recursive) {
-            arguments += " -r ";
+            arguments.add("-r");
         }
         if (debugTools) {
-            arguments += " DEFINES+=QTJAMBI_DEBUG_TOOLS";
+            arguments.add("DEFINES+=QTJAMBI_DEBUG_TOOLS");
         }
         
         return arguments;
     }
     
-    private String parseParameters() {
-	String parameters = "";
+    private List<String> parseParameters() {
+	List<String> parameters = new ArrayList<String>();
 
 	if (qtconfig != null) {
-	    parameters += "QT_CONFIG+=" + qtconfig;
+	    parameters.add("QT_CONFIG+=" + qtconfig);
 	}
 
 	if (includepath != null) {
-	    parameters += " INCLUDEPATH+=" + includepath;
+	    parameters.add("INCLUDEPATH+=" + includepath);
 	}
 
 	return parameters;
@@ -109,12 +111,14 @@ public class QMakeTask extends Task {
 	
 	command.add(qmakebinary);
 	command.add(proFile);
-	
-	StringTokenizer args = new StringTokenizer(parseArguments());
-	while (args.hasMoreTokens())
-	    command.add(args.nextToken());
-	
-	command.add(parseParameters());
+
+        List<String> arguments = parseArguments();
+        if (!arguments.isEmpty())
+            command.addAll(arguments);
+
+        List<String> parameters = parseParameters();
+        if (!parameters.isEmpty())
+	    command.addAll(parameters);
 	
 	Exec.execute(command, new File(dir), getProject());
     }
