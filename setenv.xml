@@ -132,10 +132,14 @@
 
                 <var name="qtjambi.phonon.pluginsdir" unset="true"/>
                 <var name="qtjambi.phonon.libdir" unset="true"/>
-                <var name="qtjambi.phonon.includedir" unset="true"/>
+                <!-- <var name="qtjambi.phonon.includedir" unset="true"/> -->
                 <property name="qtjambi.phonon.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qtjambi.phonon.libdir" value="${env.QTDIR}/lib"/>
-                <property name="qtjambi.phonon.includedir" value="${env.QTDIR}/include/phonon"/>
+                <!-- If we are using QT_PHONON then the correct includedir
+                is ${env.QTDIR}/include since we prefix include directives with
+                phonon directory <phonon/file.h> -->
+                <!--  Set this to empty value if not given in buildpath.properties -->
+                <property name="qtjambi.phonon.includedir" value=""/>
                 <property name="tools.qmake.binary" value="${qmake.binary}"/>
                 <property name="tools.qt.libdir" value="${qt.libdir}"/>
             </then>
@@ -223,7 +227,11 @@
             are not set. If they are set, or if they are set by QTDIR,
             the this won't do anything.
         -->
-        <property name="qtjambi.phonon.includedir"  value="${qt.includedir}/phonon"/>
+        <!--
+            for QT_PHONON it is the same include directory as Qt
+        -->
+        <!--  Set this to empty value if not given in buildpath.properties -->
+        <property name="qtjambi.phonon.includedir"  value=""/>
         <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.phonon.pluginsdir" value="${qt.pluginsdir}"/>
         <property name="qtjambi.tools.qt.libdir" value="${tools.qt.libdir}"/>
