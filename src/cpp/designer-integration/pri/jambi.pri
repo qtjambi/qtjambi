@@ -61,6 +61,6 @@ macx:{
     LIBS += -L../../lib -l$${LIB_QTJAMBI}
 }
 
-linux-g++* || freebsd-g++* {
-    QMAKE_LFLAGS = -Wl,--rpath,\\\$\$ORIGIN/../lib
+linux-g++* | freebsd-g++* {
+    QMAKE_LFLAGS += -Wl,--rpath,\\\$\$ORIGIN/../lib
 }
