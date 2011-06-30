@@ -722,7 +722,7 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
     if (entry->isComplex()) {
         const ComplexTypeEntry *centry = static_cast<const ComplexTypeEntry *>(entry);
         if (centry->typeFlags() & ComplexTypeEntry::DeleteInMainThread)
-            s << "    registerDeletionPolicy(\"" << javaName << "\", DeletionPolicyDeleteInMainThread);" << endl;
+            s << "    registerObjectDeletionPolicy(\"" << javaName << "\", ObjectDeletionPolicyDeleteInMainThread);" << endl;
     }
 
     QString qtName = entry->qualifiedCppName();

@@ -485,7 +485,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
         if (metaType != QMetaType::Void && makeCopyOfValueTypes)
             link->setJavaOwnership(env, link->javaObject(env));
 
-        if (deletionPolicy(java_name) == DeletionPolicyDeleteInMainThread)
+        if (objectDeletionPolicy(java_name) == ObjectDeletionPolicyDeleteInMainThread)
             link->setDeleteInMainThread(true);
     } else {
         if (metaType != QMetaType::Void && copy != 0)

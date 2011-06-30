@@ -53,22 +53,22 @@
 class QtJambiFunctionTable;
 class QString;
 
-enum DeletionPolicy {
-    DeletionPolicyNormal,
-    DeletionPolicyDeleteInMainThread
+enum ObjectDeletionPolicy {
+    ObjectDeletionPolicyNormal,
+    ObjectDeletionPolicyDeleteInMainThread
 };
 
 QTJAMBI_EXPORT void registerQtToJava(const QString &qt_name, const QString &java_name);
 QTJAMBI_EXPORT void registerJavaToQt(const QString &java_name, const QString &qt_name);
 QTJAMBI_EXPORT void registerDestructor(const QString &java_name, PtrDestructorFunction destructor);
 QTJAMBI_EXPORT void registerJavaSignature(const QString &qt_name, const QString &java_signature);
-QTJAMBI_EXPORT void registerDeletionPolicy(const QString &java_name, DeletionPolicy policy);
+QTJAMBI_EXPORT void registerObjectDeletionPolicy(const QString &java_name, ObjectDeletionPolicy policy);
 
 QTJAMBI_EXPORT QString getQtName(const QString &java_name);
 QTJAMBI_EXPORT QString getJavaName(const QString &qt_name);
 QTJAMBI_EXPORT QString getJavaSignature(const QString &qt_name);
 PtrDestructorFunction destructor(const QString &java_name);
-DeletionPolicy deletionPolicy(const QString &java_name);
+ObjectDeletionPolicy objectDeletionPolicy(const QString &java_name);
 
 QTJAMBI_EXPORT jclass resolveClass(JNIEnv *env, const char *className, const char *package);
 QTJAMBI_EXPORT jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature, jclass clazz,
