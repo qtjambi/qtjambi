@@ -428,6 +428,7 @@ void MetaInfoGenerator::writeCppFile() {
                 if (entry &&
                         ((shouldGenerate(entry) && entry->isPrimitive())
                          || entry->isString()
+                         || entry->isStringRef()
                          || entry->isChar())) {
                     writeInitialization(f->stream, entry, 0);
                 }

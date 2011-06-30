@@ -18,13 +18,18 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarning
     e->setPreferredConversion(false);
     addType(e);
 
-    e = new StringTypeEntry("QStringRef");
-    e->setPreferredConversion(false);
-    addType(e);
-
-    e = new StringTypeEntry("QXmlStreamStringRef");
-    e->setPreferredConversion(false);
-    addType(e);
+    // We need the generator to perform type conversion in C++ with the
+    //  construct:
+    // QString qstring = QString("string"); QStringRef(&qstring)"
+    //  not with:
+    // (const QStringRef &)QString("string")
+    StringRefTypeEntry *sr = new StringRefTypeEntry("QStringRef");
+    addType(sr);
+    // TODO: Use of StringRefTypeEntry for QXmlStreamStringRef has not been tested,
+    //  I am sure the previous code would cause a crash.
+    sr = new StringRefTypeEntry("QXmlStreamStringRef");
+    sr->setPreferredConversion(false);
+    addType(sr);
 
     addType(new CharTypeEntry("QChar"));
 

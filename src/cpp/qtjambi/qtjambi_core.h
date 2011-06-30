@@ -309,12 +309,10 @@ QTJAMBI_EXPORT jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char 
 QTJAMBI_EXPORT int qtjambi_to_enumerator(JNIEnv *env, jobject value);
 
 QTJAMBI_EXPORT
-jstring qtjambi_from_qstring(JNIEnv *env, const QString &s);
+jstring qtjambi_from_qstringref(JNIEnv *env, const QStringRef &s);
 
-inline jstring qtjambi_from_qstring(JNIEnv *env, const QStringRef &s)
-{
-    return qtjambi_from_qstring(env, s.toString());
-}
+QTJAMBI_EXPORT
+jstring qtjambi_from_qstring(JNIEnv *env, const QString &s);
 
 QTJAMBI_EXPORT
 void qtjambi_invalidate_object(JNIEnv *env, jobject java_object, bool checkJavaOwnership = true);
