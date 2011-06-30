@@ -892,5 +892,3 @@ void Binder::updateItemPosition(CodeModelItem item, AST *node) {
 void Binder::installMessageHandler(MessageHandler handler) {
     _M_message_handler = handler;
 }
-
-// kate: space-indent on; indent-width 2; replace-tabs on;
