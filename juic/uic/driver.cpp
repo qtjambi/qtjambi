@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
@@ -178,7 +178,10 @@ QString Driver::unique(const QString &instanceName, const QString &className)
     }
 
     if (alreadyUsed && className.size()) {
-        fprintf(stderr, "Warning: name %s is already used\n", qPrintable(instanceName));
+        fprintf(stderr, "%s: Warning: The name '%s' (%s) is already in use, defaulting to '%s'.\n",
+                qPrintable(m_option.messagePrefix()),
+                qPrintable(instanceName), qPrintable(className),
+                qPrintable(name));
     }
 
     m_nameRepository.insert(name, true);

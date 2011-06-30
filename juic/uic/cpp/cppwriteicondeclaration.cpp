@@ -34,38 +34,42 @@
 **
 ****************************************************************************/
 
-#ifndef CPPWRITEICONDECLARATION_H
-#define CPPWRITEICONDECLARATION_H
+#include "cppwriteicondeclaration.h"
+#include "driver.h"
+#include "ui4.h"
+#include "uic.h"
 
-#include "treewalker.h"
+#include <QtCore/QTextStream>
 
 QT_BEGIN_NAMESPACE
 
-class QTextStream;
-class Driver;
-class Uic;
-
-struct Option;
-
 namespace CPP {
 
-class WriteIconDeclaration : public TreeWalker
+WriteIconDeclaration::WriteIconDeclaration(Uic *uic)
+    : driver(uic->driver()), output(uic->output()), option(uic->option())
 {
-public:
-    WriteIconDeclaration(Uic *uic);
+}
 
-    void acceptUI(DomUI *node);
-    void acceptImages(DomImages *images);
-    void acceptImage(DomImage *image);
+void WriteIconDeclaration::acceptUI(DomUI *node)
+{
+    TreeWalker::acceptUI(node);
+}
 
-private:
-    Driver *driver;
-    QTextStream &output;
-    const Option &option;
-};
+void WriteIconDeclaration::acceptImages(DomImages *images)
+{
+    TreeWalker::acceptImages(images);
+}
+
+void WriteIconDeclaration::acceptImage(DomImage *image)
+{
+    QString name = image->attributeName();
+    if (name.isEmpty())
+        return;
+
+    driver->insertPixmap(name);
+    output << option.indent << option.indent << name << "_ID,\n";
+}
 
 } // namespace CPP
 
 QT_END_NAMESPACE
-
-#endif // CPPWRITEICONDECLARATION_H

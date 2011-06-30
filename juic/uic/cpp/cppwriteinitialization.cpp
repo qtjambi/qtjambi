@@ -1,40 +1,35 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-**
 ** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this
+** file. Please review the following information to ensure the GNU Lesser
+** General Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
 ** In addition, as a special exception, Nokia gives you certain additional
-** rights.  These rights are described in the Nokia Qt LGPL Exception
+** rights. These rights are described in the Nokia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
+** Alternatively, this file may be used under the terms of the GNU General
+** Public License version 3.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of this
+** file. Please review the following information to ensure the GNU General
+** Public License version 3.0 requirements will be met:
+** http://www.gnu.org/copyleft/gpl.html.
 **
-** If you have questions regarding the use of this file, please contact
-** Nokia at qt-info@nokia.com.
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms and
+** conditions contained in a signed written agreement between you and Nokia.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
@@ -155,7 +150,7 @@ namespace {
             if (const DomResourceIcon *dri = p->elementIconSet()) {
                 if (!isIconFormat44(dri)) {
                     if (dri->text().isEmpty())  {
-                        const QString msg = QString::fromUtf8("%1: An invalid icon property '%2' was encountered.").arg(fileName).arg(p->attributeName());
+                        const QString msg = QString::fromUtf8("%1: Warning: An invalid icon property '%2' was encountered.").arg(fileName).arg(p->attributeName());
                         qWarning("%s", qPrintable(msg));
                         return false;
                     }
@@ -165,7 +160,7 @@ namespace {
         case DomProperty::Pixmap:
             if (const DomResourcePixmap *drp = p->elementPixmap())
                 if (drp->text().isEmpty()) {
-                    const QString msg = QString::fromUtf8("%1: An invalid pixmap property '%2' was encountered.").arg(fileName).arg(p->attributeName());
+                    const QString msg = QString::fromUtf8("%1: Warning: An invalid pixmap property '%2' was encountered.").arg(fileName).arg(p->attributeName());
                     qWarning("%s", qPrintable(msg));
                     return false;
                 }
@@ -539,10 +534,14 @@ void WriteInitialization::acceptUI(DomUI *node)
         const Buddy &b = m_buddies.at(i);
 
         if (!m_registeredWidgets.contains(b.objName)) {
-            fprintf(stderr, "'%s' isn't a valid widget\n", b.objName.toLatin1().data());
+            fprintf(stderr, "%s: Warning: Buddy assignment: '%s' is not a valid widget.\n",
+                    qPrintable(m_option.messagePrefix()),
+                    b.objName.toLatin1().data());
             continue;
         } else if (!m_registeredWidgets.contains(b.buddy)) {
-            fprintf(stderr, "'%s' isn't a valid widget\n", b.buddy.toLatin1().data());
+            fprintf(stderr, "%s: Warning: Buddy assignment: '%s' is not a valid widget.\n",
+                    qPrintable(m_option.messagePrefix()),
+                    b.buddy.toLatin1().data());
             continue;
         }
 
@@ -867,7 +866,9 @@ void WriteInitialization::acceptWidget(DomWidget *node)
         const QString name = zOrder.at(i);
 
         if (!m_registeredWidgets.contains(name)) {
-            fprintf(stderr, "'%s' isn't a valid widget\n", name.toLatin1().data());
+            fprintf(stderr, "%s: Warning: Z-order assignment: '%s' is not a valid widget.\n",
+                    qPrintable(m_option.messagePrefix()),
+                    name.toLatin1().data());
             continue;
         }
 
@@ -895,7 +896,9 @@ void WriteInitialization::addButtonGroup(const DomWidget *buttonNode, const QStr
         DomButtonGroup *newGroup = new DomButtonGroup;
         newGroup->setAttributeName(attributeName);
         group = newGroup;
-        fprintf(stderr, "Warning: Creating button group `%s'\n", attributeName.toLatin1().data());
+        fprintf(stderr, "%s: Warning: Creating button group `%s'\n",
+                qPrintable(m_option.messagePrefix()),
+                attributeName.toLatin1().data());
     }
     const QString groupName = m_driver->findOrInsertButtonGroup(group);
     // Create on demand
@@ -1163,7 +1166,9 @@ void WriteInitialization::acceptActionRef(DomActionRef *node)
             return;
         }
     } else if (!(m_driver->actionByName(actionName) || isSeparator)) {
-        fprintf(stderr, "Warning: action `%s' not declared\n", actionName.toLatin1().data());
+        fprintf(stderr, "%s: Warning: action `%s' not declared\n",
+                qPrintable(m_option.messagePrefix()),
+                actionName.toLatin1().data());
         return;
     }
 
@@ -1853,7 +1858,9 @@ void WriteInitialization::acceptTabStops(DomTabStops *tabStops)
         const QString name = l.at(i);
 
         if (!m_registeredWidgets.contains(name)) {
-            fprintf(stderr, "'%s' isn't a valid widget\n", name.toLatin1().data());
+            fprintf(stderr, "%s: Warning: Tab-stop assignment: '%s' is not a valid widget.\n",
+                    qPrintable(m_option.messagePrefix()),
+                    name.toLatin1().data());
             continue;
         }
 
@@ -2083,7 +2090,8 @@ QString WriteInitialization::pixCall(const DomProperty *p) const
         s = p->elementPixmap()->text();
         break;
     default:
-        qWarning() << "Warning: Unknown icon format encountered. The ui-file was generated with a too-recent version of Designer.";
+        qWarning("%s: Warning: Unknown icon format encountered. The ui-file was generated with a too-recent version of Designer.",
+                 qPrintable(m_option.messagePrefix()));
         return QLatin1String("QIcon()");
         break;
     }
@@ -2573,7 +2581,7 @@ void WriteInitialization::initializeQ3SqlDataTable(DomWidget *w)
     }
 
     if (table.isEmpty() || connection.isEmpty()) {
-        fprintf(stderr, "invalid database connection\n");
+        fprintf(stderr, "%s: Warning: Invalid database connection\n", qPrintable(m_option.messagePrefix()));
         return;
     }
 
@@ -2613,7 +2621,7 @@ void WriteInitialization::initializeQ3SqlDataBrowser(DomWidget *w)
     }
 
     if (table.isEmpty() || connection.isEmpty()) {
-        fprintf(stderr, "invalid database connection\n");
+        fprintf(stderr, "%s: Warning: Invalid database connection\n", qPrintable(m_option.messagePrefix()));
         return;
     }
 
@@ -2788,8 +2796,8 @@ static void generateMultiDirectiveBegin(QTextStream &outputStream, const QSet<QS
         return;
 
     QMap<QString, bool> map; // bool is dummy. The idea is to sort that (always generate in the same order) by putting a set into a map
-    foreach (QString str, directives)
-        map[str] = true;
+    foreach (const QString &str, directives)
+        map.insert(str, true);
 
     if (map.size() == 1) {
         outputStream << "#ifndef " << map.constBegin().key() << endl;
@@ -2798,7 +2806,7 @@ static void generateMultiDirectiveBegin(QTextStream &outputStream, const QSet<QS
 
     outputStream << "#if";
     bool doOr = false;
-    foreach (QString str, map.keys()) {
+    foreach (const QString &str, map.keys()) {
         if (doOr)
             outputStream << " ||";
         outputStream << " !defined(" << str << ')';

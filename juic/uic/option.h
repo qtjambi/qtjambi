@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
@@ -43,6 +43,7 @@
 #define OPTION_H
 
 #include <QtCore/QString>
+#include <QtCore/QDir>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,6 +62,7 @@ struct Option
     unsigned int autoConnection : 1;
     unsigned int dependencies : 1;
     unsigned int extractImages : 1;
+    unsigned int limitXPM_LineLength : 1;
     unsigned int implicitIncludes: 1;
     Generator generator;
 
@@ -85,10 +87,18 @@ struct Option
           autoConnection(1),
           dependencies(0),
           extractImages(0),
+          limitXPM_LineLength(0),
           implicitIncludes(1),
           generator(CppGenerator),
           prefix(QLatin1String("Ui_"))
     { indent.fill(QLatin1Char(' '), 4); }
+
+    QString messagePrefix() const
+    {
+        return inputFile.isEmpty() ?
+               QString(QLatin1String("stdin")) :
+               QDir::toNativeSeparators(inputFile);
+    }
 };
 
 QT_END_NAMESPACE
