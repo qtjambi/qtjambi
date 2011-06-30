@@ -96,6 +96,9 @@ class MetaInfoGenerator : public JavaGenerator {
         }
         void setJavaOutputDirectory(const QString &javaOutDir) { m_java_out_dir = javaOutDir; }
 
+        bool qtJambiDebugTools() const { return m_qtjambi_debug_tools; }
+        void setQtJambiDebugTools(bool bf) { m_qtjambi_debug_tools = bf; }
+
     private:
         void writeCppFile();
         void writeHeaderFile();
@@ -115,9 +118,8 @@ class MetaInfoGenerator : public JavaGenerator {
         bool shouldGenerate(const TypeEntry *entry) const;
         void buildSkipList();
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
+        // This is only needed when qtJambiDebugTools() is set
         void writeNameLiteral(QTextStream &, const TypeEntry *, const QString &fileName);
-#endif
 
         QHash<QString, int> m_skip_list;
         QString m_filenameStub;
@@ -130,6 +132,8 @@ class MetaInfoGenerator : public JavaGenerator {
 
         QString m_cpp_out_dir;
         QString m_java_out_dir;
+
+        bool m_qtjambi_debug_tools;
 };
 
 #endif // METAINFOGENERATOR_H

@@ -207,12 +207,16 @@ class CppImplGenerator : public CppGenerator {
 
         static QString jniReturnName(const AbstractMetaFunction *java_function);
 
+        bool qtJambiDebugTools() const { return m_qtjambi_debug_tools; }
+        void setQtJambiDebugTools(bool bf) { m_qtjambi_debug_tools = bf; }
+
     private:
         void writeDefaultConstructedValues_helper(QSet<QString> &values,
                 const AbstractMetaFunction *function);
         QString fromObject(const TypeEntry *centry, const QString &var_name);
 
         bool m_native_jump_table;
+        bool m_qtjambi_debug_tools;
 };
 
 #endif // CPPIMPLGENERATOR_H

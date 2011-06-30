@@ -93,6 +93,7 @@ bool GeneratorSetJava::readParameters(const QMap<QString, QString> args) {
     no_metainfo = args.contains("no-metainfo");
     build_class_list = args.contains("build-class-list");
     native_jump_table = args.contains("native-jump-table");
+    qtjambi_debug_tools = args.contains("qtjambi-debug-tools");
 
     if (args.contains("build-qdoc-japi")) {
         no_java = true;
@@ -193,6 +194,7 @@ QString GeneratorSetJava::generate() {
     if (!no_cpp_impl) {
         cpp_impl_generator = new CppImplGenerator(priGenerator);
         cpp_impl_generator->setNativeJumpTable(native_jump_table);
+        cpp_impl_generator->setQtJambiDebugTools(qtjambi_debug_tools);
         if (!cppOutDir.isNull())
             cpp_impl_generator->setCppOutputDirectory(cppOutDir);
         generators << cpp_impl_generator;
@@ -207,6 +209,7 @@ QString GeneratorSetJava::generate() {
 
     if (!no_metainfo) {
         metainfo = new MetaInfoGenerator(priGenerator);
+        metainfo->setQtJambiDebugTools(qtjambi_debug_tools);
         if (!cppOutDir.isNull())
             metainfo->setCppOutputDirectory(cppOutDir);
         if (!javaOutDir.isNull())

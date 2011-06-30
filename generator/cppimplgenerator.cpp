@@ -433,9 +433,8 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
             s << "#include <QtGui/QPainter>" << endl << endl;
     }
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-    s << "#include <qtjambidebugtools_p.h>" << endl << endl;
-#endif
+    if (qtJambiDebugTools())
+        s << "#include <qtjambi/qtjambidebugtools_p.h>" << endl << endl;
 
     if (shellInclude)
         s << "#include \"qtjambishell_" << java_class->name() << ".h\"" << endl;
@@ -990,9 +989,8 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
             << INDENT << "    if (__jni_env != 0) m_link->nativeShellObjectDestroyed(__jni_env);" << endl;
         }
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-        s << INDENT << "    qtjambi_increase_shellDestructorCalledCount(QString::fromLatin1(\"" << java_class->name() << "\"));" << endl;
-#endif
+        if (qtJambiDebugTools())
+            s << INDENT << "    qtjambi_increase_shellDestructorCalledCount(QString::fromLatin1(\"" << java_class->name() << "\"));" << endl;
 
         s << INDENT << "}" << endl;
     }
@@ -1754,9 +1752,8 @@ void CppImplGenerator::writeFinalDestructor(QTextStream &s, const AbstractMetaCl
 
             s << INDENT << "delete (" << shellClassName(cls) << " *)ptr;" << endl;
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-            s << INDENT << "qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(\"" << cls->name() << "\"));" << endl;
-#endif
+            if (qtJambiDebugTools())
+                s << INDENT << "qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(\"" << cls->name() << "\"));" << endl;
         }
 
         s << INDENT << "}" << endl << endl;

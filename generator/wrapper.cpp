@@ -178,7 +178,8 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --java-output-directory=[dir]             \n"
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n"
-           "  --qt-include-directory=[dir]              \n",
+           "  --qt-include-directory=[dir]              \n"
+           "  --qtjambi-debug-tools                     \n",
            path_splitter, path_splitter);
 
     printf("%s", qPrintable(generatorSet->usage()));

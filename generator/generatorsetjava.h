@@ -73,6 +73,7 @@ class GeneratorSetJava : public GeneratorSet {
         bool docs_enabled;
         bool do_ui_convert;
         bool native_jump_table;
+        bool qtjambi_debug_tools;
 
         QString doc_dir;
         QString ui_file_name;

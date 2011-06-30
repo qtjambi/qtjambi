@@ -321,7 +321,7 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
     return handlers;
 }
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
+// This is only needed when qtJambiDebugTools() is set
 void MetaInfoGenerator::writeNameLiteral(QTextStream &s, const TypeEntry *entry, const QString &fileName) {
     static QSet<QString> used;
 
@@ -330,7 +330,6 @@ void MetaInfoGenerator::writeNameLiteral(QTextStream &s, const TypeEntry *entry,
         used.insert(fileName + ":" + entry->name());
     }
 }
-#endif
 
 void MetaInfoGenerator::writeCppFile() {
     TypeEntryHash entries = TypeDatabase::instance()->allEntries();
@@ -350,22 +349,22 @@ void MetaInfoGenerator::writeCppFile() {
             writeIncludeStatements(f->stream, classList, cls->package());
             f->stream << endl;
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-            // Write the generic destructors and constructors
-            f->stream << "template <typename T, const char *NAME>" << endl
-            << "void genericDestructor(void *t)" << endl
-            << "{" << endl
-            << "    delete (T *) t;" << endl
-            << "    qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(NAME));" << endl
-            << "}" << endl << endl
-            << "template <typename T>" << endl
-            << "void *genericConstructor(const void *t)" << endl
-            << "{" << endl
-            << "    if (!t)" << endl
-            << "        return new T;" << endl
-            << "    return new T(*reinterpret_cast<const T *>(t));" << endl
-            << "}" << endl;
-#endif
+            if (qtJambiDebugTools()) {
+                // Write the generic destructors and constructors
+                f->stream << "template <typename T, const char *NAME>" << endl
+                << "void genericDestructor(void *t)" << endl
+                << "{" << endl
+                << "    delete (T *) t;" << endl
+                << "    qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(NAME));" << endl
+                << "}" << endl << endl
+                << "template <typename T>" << endl
+                << "void *genericConstructor(const void *t)" << endl
+                << "{" << endl
+                << "    if (!t)" << endl
+                << "        return new T;" << endl
+                << "    return new T(*reinterpret_cast<const T *>(t));" << endl
+                << "}" << endl;
+            }
 
 
             fileHash.insert(cls->package(), f);
@@ -388,10 +387,10 @@ void MetaInfoGenerator::writeCppFile() {
                 classes_with_polymorphic_id.append(cls);
         }
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-        if (cls->typeEntry()->isValue() && shouldGenerate(cls->typeEntry()))
-            writeNameLiteral(f->stream, cls->typeEntry(), f->name());
-#endif
+        if (qtJambiDebugTools()) {
+            if (cls->typeEntry()->isValue() && shouldGenerate(cls->typeEntry()))
+                writeNameLiteral(f->stream, cls->typeEntry(), f->name());
+        }
     }
 
     QHash<QString, QStringList> handlers_to_register;
@@ -412,9 +411,8 @@ void MetaInfoGenerator::writeCppFile() {
             foreach(TypeEntry *entry, entries) {
                 if (shouldGenerate(entry) && entry->isPrimitive()) {
                     writeCustomStructors(f->stream, entry);
-#if defined(QTJAMBI_DEBUG_TOOLS)
-                    writeNameLiteral(f->stream, entry, f->name());
-#endif
+                    if (qtJambiDebugTools())
+                        writeNameLiteral(f->stream, entry, f->name());
                 }
             }
         }
@@ -523,9 +521,8 @@ void MetaInfoGenerator::writeDestructors(QTextStream &s, const AbstractMetaClass
             << "{" << endl
             << "    delete reinterpret_cast<" << clsWithPublicDestructor->qualifiedCppName() << " *>(ptr);" << endl;
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-            s   << "    qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(\"" << cls->name() << "\"));" << endl;
-#endif
+            if (qtJambiDebugTools())
+                s   << "    qtjambi_increase_destructorFunctionCalledCount(QString::fromLatin1(\"" << cls->name() << "\"));" << endl;
 
             s   << "}" << endl << endl;
         }
@@ -666,9 +663,8 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const AbstractMet
     writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_cache.h"));
     writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_core.h"));
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
-    writeInclude(s, Include(Include::IncludePath, "qtjambidebugtools_p.h"));
-#endif
+    if (qtJambiDebugTools())
+        writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambidebugtools_p.h"));
 
     s << endl;
 
@@ -699,15 +695,15 @@ void MetaInfoGenerator::writeInitialization(QTextStream &s, const TypeEntry *ent
 
     QString constructorName = entry->customConstructor().name;
     QString destructorName = entry->customDestructor().name;
-#if defined(QTJAMBI_DEBUG_TOOLS)
 
-    if (constructorName.isEmpty())
-        constructorName = "genericConstructor<" + entry->qualifiedCppName() + ">";
 
-    if (destructorName.isEmpty())
-        destructorName = "genericDestructor<" + entry->qualifiedCppName() + ", __name_" + entry->name() + ">";
+    if (qtJambiDebugTools()) {
+        if (constructorName.isEmpty())
+            constructorName = "genericConstructor<" + entry->qualifiedCppName() + ">";
 
-#endif
+        if (destructorName.isEmpty())
+            destructorName = "genericDestructor<" + entry->qualifiedCppName() + ", __name_" + entry->name() + ">";
+    }
 
 
     if (constructorName.isEmpty() != destructorName.isEmpty()) {
