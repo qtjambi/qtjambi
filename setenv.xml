@@ -228,15 +228,14 @@
         <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
         <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
         <property name="qtjambi.jambi.libdir"       value="${jambi.directory}/build/src/cpp/lib"/>
+
         <!--
             dummy-set values to phonon properties, if they
             are not set. If they are set, or if they are set by QTDIR,
             the this won't do anything.
         -->
-        <!--
-            for QT_PHONON it is the same include directory as Qt
-        -->
-        <!--  Set this to empty value if not given in buildpath.properties -->
+
+        <!-- Include dir should default to empty, Qt include dir is used for phonon in that case -->
         <property name="qtjambi.phonon.includedir"  value=""/>
         <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.phonon.pluginsdir" value="${qt.pluginsdir}"/>
