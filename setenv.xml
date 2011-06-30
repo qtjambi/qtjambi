@@ -1,8 +1,8 @@
 <!--
- This file has two purposes:
+    This file has two purposes:
 
- * download ant-contrib and use it (or pick up the jar from the system itself)
- * set various properties necessary for the build process.
+    * download ant-contrib and use it (or pick up the jar from the system itself)
+    * set various properties necessary for the build process.
 -->
 
 <project name="qtjambi.setenv" default="setenv">
@@ -100,7 +100,6 @@
     -->
 
     <target name="handle-qtdir">
-        <!--<property name="qtdir" value="${env.QTDIR}"/>-->
         <if>
             <isset property="env.QTDIR"/>
             <then>
@@ -124,20 +123,27 @@
                 <property name="qt.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
 
-                <!-- this section can't be used on certain machines,
+                <!--
+                    This section can't be used on certain machines,
                     which can't handle java.library.path natively...
+
                 <var name="qtjambi.java.library.path" unset="true"/>
                 <property name="qtjambi.java.library.path" value="${env.QTDIR}/bin"/>
                 -->
 
                 <var name="qtjambi.phonon.pluginsdir" unset="true"/>
                 <var name="qtjambi.phonon.libdir" unset="true"/>
-                <!-- <var name="qtjambi.phonon.includedir" unset="true"/> -->
+
+                <!--
+                    If user is using Qt phonon then the correct includedir
+                    is ${env.QTDIR}/include since we prefix include directives with
+                    phonon directory <phonon/file.h>
+
+                <var name="qtjambi.phonon.includedir" unset="true"/>
+                -->
                 <property name="qtjambi.phonon.pluginsdir" value="${env.QTDIR}"/>
                 <property name="qtjambi.phonon.libdir" value="${env.QTDIR}/lib"/>
-                <!-- If we are using QT_PHONON then the correct includedir
-                is ${env.QTDIR}/include since we prefix include directives with
-                phonon directory <phonon/file.h> -->
+
                 <!--  Set this to empty value if not given in buildpath.properties -->
                 <property name="qtjambi.phonon.includedir" value=""/>
                 <property name="tools.qmake.binary" value="${qmake.binary}"/>
