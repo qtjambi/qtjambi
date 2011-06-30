@@ -22,7 +22,7 @@ class AbstractMetaType;
 class EnumTypeEntry;
 class FlagsTypeEntry;
 
-class Include;
+struct Include;
 
 typedef QList<Include> IncludeList;
 
