@@ -171,11 +171,11 @@ inline void *qtjambi_from_jlong(jlong ptr)
     }
 }
 
-typedef bool (*QtJambiPolymorphicHandler)(const void *object, char **class_name, char **package);
+typedef bool (*QtJambiPolymorphicHandler)(const void *object, const char **class_name, const char **package);
 
 QTJAMBI_EXPORT void qtjambi_register_polymorphic_id(const char *lookup, QtJambiPolymorphicHandler handler);
 QTJAMBI_EXPORT void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
-                                                   char **class_name, char **package);
+                                                   const char **class_name, const char **package);
 
 QTJAMBI_EXPORT bool qtjambi_initialize_vm();
 QTJAMBI_EXPORT bool qtjambi_destroy_vm();
@@ -239,7 +239,7 @@ inline void *qtjambi_to_interface(JNIEnv *env,
 
 template <typename T>
 inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array,
-                                       int size, char *className, char *packageName)
+                                       int size, const char *className, const char *packageName)
 {
     if (array == 0)
         return 0;
@@ -262,8 +262,8 @@ inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array,
 
 template <typename T>
 inline jobjectArray qtjambi_from_interface_array(JNIEnv *env, T *array,
-                                                 int size, char *interfaceName, char *className,
-                                                 char *packageName)
+                                                 int size, const char *interfaceName, const char *className,
+                                                 const char *packageName)
 {
     if (array == 0)
         return 0;
@@ -617,8 +617,8 @@ void qtjambi_resolve_signals(JNIEnv *env,
                              jobject java_object,
                              QtJambiSignalInfo *infos,
                              int count,
-                             char **names,
-                             int *argument_counts);
+                             const char **names,
+                             const int *argument_counts);
 
 QTJAMBI_EXPORT
 bool qtjambi_connect_cpp_to_java(JNIEnv *,

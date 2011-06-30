@@ -169,7 +169,7 @@ public:
     virtual const QDesignerMetaPropertyInterface *userProperty() const;
 
     const QMetaObject *metaObject() const;
-    const bool metaObjectIsDynamic() const;
+    bool metaObjectIsDynamic() const;
     QString fullClassName() const;
     void resolve();
 
@@ -821,7 +821,7 @@ const QMetaObject *QtJambiMetaObject::metaObject() const
     return m_regular_meta_object;
 }
 
-const bool QtJambiMetaObject::metaObjectIsDynamic() const
+bool QtJambiMetaObject::metaObjectIsDynamic() const
 {
     return m_meta_object_is_dynamic;
 }

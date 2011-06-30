@@ -286,7 +286,7 @@ QStringList MetaInfoGenerator::writePolymorphicHandler(QTextStream &s, const QSt
                         handlers.append(handler);
 
                         s << "static bool polymorphichandler_" << handler
-                        << "(const void *ptr, char **class_name, char **package)" << endl
+                        << "(const void *ptr, const char **class_name, const char **package)" << endl
                         << "{" << endl
                         << "    Q_ASSERT(ptr != 0);" << endl
                         << "    " << cls->qualifiedCppName() << " *object = ("

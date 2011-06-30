@@ -206,7 +206,7 @@ void qtjambi_register_polymorphic_id(const char *lookup, QtJambiPolymorphicHandl
 }
 
 void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
-                                    char **class_name, char **package)
+                                    const char **class_name, const char **package)
 {
     QReadLocker locker(g_polymorphic_id_lock());
     QList<QtJambiPolymorphicHandler> handlers = g_polymorphic_ids()->values(lookup);
@@ -426,8 +426,8 @@ void *qtjambi_to_interface(JNIEnv *env,
 jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *className,
                             const char *packageName, const char *lookupName, bool makeCopyOfValueTypes)
 {
-    char *class_name = const_cast<char*>(className);
-    char *package = const_cast<char*>(packageName);
+    const char *class_name = className;
+    const char *package = packageName;
     if (qt_object != 0)
         qtjambi_resolve_polymorphic_id(lookupName, qt_object, &class_name, &package);
 
@@ -1031,8 +1031,8 @@ void qtjambi_resolve_signals(JNIEnv *env,
                              jobject java_object,
                              QtJambiSignalInfo *infos,
                              int count,
-                             char **names,
-                             int *argument_counts)
+                             const char **names,
+                             const int *argument_counts)
 {
     Q_ASSERT(java_object);
     jclass clazz = qtjambi_find_generated_superclass(env,  java_object);
