@@ -280,50 +280,62 @@ void Binder::declare_symbol(SimpleDeclarationAST *node, InitDeclaratorAST *init_
         foreach(DeclaratorCompiler::Parameter p, decl_cc.parameters()) {
             ArgumentModelItem arg = model()->create<ArgumentModelItem>();
             TypeInfo tti = qualifyType(p.type, _M_context);
-            // This is trying to work out the parameter is an enum, that uses
-            //  QFlags<> that also has isConstant() and isReference() set so
-            //  we can revoke the isReference().  This was needed to get the
-            //  method QScriptValue::setProperty() to emit code, this is the only
-            //  part of the Qt API todate to need this.
-            //   QScriptValue::PropertyFlag   QScriptValue::ResolveFlag
-            //   typedef QFlag<QScriptValue::PropertyFlag> QScriptValue::PropertyFlags
-            // Revoking the isReference() does not seem to matter since the
-            //  C++ code emitter already creates a new instance in order to pass-by-value.
-            // In order to implement "const&" in Java it would need to provide an read-only
-            //  emcapsulated version of such objects, which has no setters methods.
+
+            /*
+            This is trying to work out a parameter that is an enum, that uses
+            QFlags<> and has isConstant() and isReference() set so
+            we can revoke the isReference().  This was needed to get the
+            method QScriptValue::setProperty() to emit code, this is the only
+            part of the Qt API to date to need this.
+
+            QScriptValue::PropertyFlag   QScriptValue::ResolveFlag
+            typedef QFlag<QScriptValue::PropertyFlag> QScriptValue::PropertyFlags
+
+            Revoking the isReference() does not seem to matter since the
+            C++ code emitter already creates a new instance in order to pass-by-value.
+            In order to implement "const&" in Java it would need to provide an read-only
+            encapsulated version of such objects, which has no setters methods.
+            */
             CodeModelItem scope = model()->findItem(_M_context, _M_current_file->toItem());
             if(ClassModelItem class_scope = model_dynamic_cast<ClassModelItem> (scope)) {
-                // Ok this found the class that is the: typedef QFlag<QScriptValue::PropertyFlag> QScriptValue::PropertyFlags
+
+                // found the class that is the: typedef QFlag<QScriptValue::PropertyFlag> QScriptValue::PropertyFlags
                 QStringList enumQualifiedName(tti.qualifiedName());
                 QString last = enumQualifiedName.takeLast();
                 int lastCharOffset = last.length() - 1;
+
                 if(lastCharOffset >= 0) {
                     const QChar lastChar = last.at(lastCharOffset);
                     if(lastChar == QChar('s')) {
                         // We're editing the last part of the qualifiedName to remove
-                        //  any trailing 's' character this the convention of the QFlags typedef.
+                        // any trailing 's' character, this the convention used in QFlags typedefs.
                         last = last.left(lastCharOffset);
                         enumQualifiedName.append(last);
                     }
                 }
+
                 CodeModelItem enum_scope = model()->findItem(enumQualifiedName, _M_current_file->toItem());
                 if(EnumModelItem klass = model_dynamic_cast<EnumModelItem> (enum_scope)) {
                     if(tti.isConstant() && tti.isReference()) {
                         tti.setReference(false);
                         tti.setConstant(false);
                     } else if(tti.isReference()) {
-                        qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() << " " << enumQualifiedName << "; isReference=" << tti.isReference();
+                        qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() <<
+                            " " << enumQualifiedName << "; isReference=" << tti.isReference();
                     } else if(tti.isConstant()) {
-                        qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() << " " << enumQualifiedName << "; isConstant=" << tti.isConstant();
+                        qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() <<
+                            " " << enumQualifiedName << "; isConstant=" << tti.isConstant();
                     }
                 }
             }
+
             // End of code for QScriptValue::setProperty(... const QScriptValue::PropertyFlag & ...) support
             arg->setType(tti);
             arg->setName(p.name);
             arg->setDefaultValue(p.defaultValue);
             if (p.defaultValue)
                 arg->setDefaultValueExpression(p.defaultValueExpression);
+
             fun->addArgument(arg);
         }
 
