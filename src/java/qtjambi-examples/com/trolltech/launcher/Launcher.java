@@ -47,6 +47,7 @@ package com.trolltech.launcher;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.*;
+import com.trolltech.qt.internal.RetroTranslatorHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -453,7 +454,7 @@ public class Launcher extends QWidget {
         String list = System.getProperty("java.class.path");
         String pathSep = System.getProperty("path.separator");
         List<File> deliver = new LinkedList<File>();
-        for (final String path : list.split(pathSep)) {
+        for (final String path : RetroTranslatorHelper.split(list, pathSep)) {
             final File object = new File(path);
             if (object.isDirectory())
                 for (String entry : object.list()) {

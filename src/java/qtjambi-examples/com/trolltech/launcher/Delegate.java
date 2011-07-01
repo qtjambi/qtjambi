@@ -46,6 +46,7 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.internal.RetroTranslatorHelper;
 
 public class Delegate extends QItemDelegate {
 
@@ -58,7 +59,7 @@ public class Delegate extends QItemDelegate {
     }
 
     private static String stripName(String s) {
-        String[] tmp = s.split("\\.");
+        String[] tmp = RetroTranslatorHelper.split(s, "\\.");
         return tmp[tmp.length - 1];
     }
 
