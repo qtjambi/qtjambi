@@ -3,8 +3,7 @@
     exists($$(JAVA_HOME)) {
         JAVA_HOME_TARGET = $$(JAVA_HOME)
     } else {
-        error("Please set your JAVA_HOME_TARGET or JAVA_HOME environment variable to
-                point to the directory of your Java SDK. Current JAVA_HOME_TARGET: $$(JAVA_HOME_TARGET) JAVA_HOME: $$(JAVA_HOME)")
+        error("Please set your JAVA_HOME_TARGET or JAVA_HOME environment variable to point to the directory of your Java SDK. Current JAVA_HOME_TARGET: $$(JAVA_HOME_TARGET) JAVA_HOME: $$(JAVA_HOME)")
     }
 }
 
