@@ -62,7 +62,7 @@
     QTJAMBI_COUNTER_DECLARATIONS(linkConstructedCount);
 
 #else
-#  error Don't include this file without QTJAMBI_DEBUG_TOOLS defined
+#  error "Don't include this file without QTJAMBI_DEBUG_TOOLS defined"
 #endif
 
 #endif

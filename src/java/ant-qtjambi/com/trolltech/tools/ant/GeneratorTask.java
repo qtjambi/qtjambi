@@ -67,6 +67,7 @@ public class GeneratorTask extends Task {
     private String qtLibDirectory = null;
     private String jambiDirectory = null;
     private String includePaths = null;
+    private boolean debugTools = false;
     private List<String> commandList = new ArrayList<String>();
 
     private String searchPath() {
@@ -168,6 +169,9 @@ public class GeneratorTask extends Task {
             commandList.add("--java-output-directory=" + Util.escape(file.getAbsolutePath()));
         }
 
+        if(debugTools)
+            commandList.add("--qtjambi-debug-tools");
+
         parseArgumentFiles(commandList);
 
         return true;
@@ -250,5 +254,13 @@ public class GeneratorTask extends Task {
 
     public void setDir(String dir) {
         this.dir = dir;
+    }
+
+    /**
+     * Enable code generation with additional debugging output, this
+     *  output may inhibit runtime performance.
+     */
+    public void setDebugTools(boolean debugTools) {
+	this.debugTools = debugTools;
     }
 }

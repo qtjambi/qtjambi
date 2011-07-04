@@ -311,20 +311,20 @@ void Binder::declare_symbol(SimpleDeclarationAST *node, InitDeclaratorAST *init_
                         // any trailing 's' character, this the convention used in QFlags typedefs.
                         last = last.left(lastCharOffset);
                         enumQualifiedName.append(last);
-                    }
-                }
 
-                CodeModelItem enum_scope = model()->findItem(enumQualifiedName, _M_current_file->toItem());
-                if(EnumModelItem klass = model_dynamic_cast<EnumModelItem> (enum_scope)) {
-                    if(tti.isConstant() && tti.isReference()) {
-                        tti.setReference(false);
-                        tti.setConstant(false);
-                    } else if(tti.isReference()) {
-                        qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() <<
-                            " " << enumQualifiedName << "; isReference=" << tti.isReference();
-                    } else if(tti.isConstant()) {
-                        qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() <<
-                            " " << enumQualifiedName << "; isConstant=" << tti.isConstant();
+                        CodeModelItem enum_scope = model()->findItem(enumQualifiedName, _M_current_file->toItem());
+                        if(EnumModelItem klass = model_dynamic_cast<EnumModelItem> (enum_scope)) {
+                            if(tti.isConstant() && tti.isReference()) {
+                                tti.setReference(false);
+                                tti.setConstant(false);
+                            } else if(tti.isReference()) {
+                                qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() <<
+                                    " " << enumQualifiedName << "; isReference=" << tti.isReference();
+                            } else if(tti.isConstant()) {
+                                qDebug() << "CHECKME: " << tti.toString() << " " << tti.qualifiedName() <<
+                                    " " << enumQualifiedName << "; isConstant=" << tti.isConstant();
+                            }
+                        }
                     }
                 }
             }
