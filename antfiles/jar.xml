@@ -59,11 +59,13 @@
 
     <target name="compile" depends="jar_init">
         <echo message="Compiling java classes: ${java.srcdir}/${module}"/>
+        <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
         <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
         <javac source="1.5" target="1.5" debug="false" deprecation="true"
                 fork="true" memorymaximumsize="1024m" verbose="false"
                 includeantruntime="true"
+                excludes="${module.excludes}"
                 srcdir="${sourcedirs}"
                 destdir="${java.outdir}/${module}">
                 <!--<src path="${java.srcdir}/${module}"/>-->
