@@ -957,6 +957,7 @@
     <value-type name="QEasingCurve">
         <modify-function signature="customType()const" remove="all" />
         <modify-function signature="setCustomType(double)" remove="all" />
+        <modify-function signature="setCustomType(float)" remove="all" />
         <modify-function signature="operator!=(const QEasingCurve &amp;)const" remove="all" />
     </value-type>
 
