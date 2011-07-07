@@ -85,6 +85,8 @@
             unless="qtjambi.opengl"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/demos/opengl/*.java"
             unless="qtjambi.opengl"/>
+        <exclude name="src/java/qtjambi-examples/com/tolltech/examples/SvgCards.java"
+            unless="qtjambi.svg"/>
     </fileset>
 
     <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
@@ -106,10 +108,14 @@
         <condition property="javac.webkit.excludes" value="**/webkit/**/*.java">
             <isfalse value="${qtjambi.webkit}"/>
         </condition>
+        <condition property="javac.svg.excludes" value="**/SvgCards.java">
+            <isfalse value="${qtjambi.svg}"/>
+        </condition>
         <property name="javac.excludes" value="${javac.opengl.excludes}
                                                ${javac.xmlpatterns.excludes}
                                                ${javac.phonon.excludes}
-                                               ${javac.webkit.excludes}"/>
+                                               ${javac.webkit.excludes}
+                                               ${javac.svg.excludes}"/>
         <echo message="processed excludes ${javac.excludes}"/>
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-examples"/>
