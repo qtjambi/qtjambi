@@ -751,7 +751,9 @@ bool Handler::startElement(const QString &, const QString &n,
                 static QHash<QString, TypeSystem::Ownership> ownershipNames;
                 if (ownershipNames.isEmpty()) {
                     ownershipNames["java"] = TypeSystem::TargetLangOwnership;
+                    // c++ - This is not allowed in a DTD validator as the "+" is not allowed for XML Name
                     ownershipNames["c++"] = TypeSystem::CppOwnership;
+                    ownershipNames["cplusplus"] = TypeSystem::CppOwnership;
                     ownershipNames["default"] = TypeSystem::DefaultOwnership;
                 }
 
