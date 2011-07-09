@@ -35,7 +35,7 @@
     <object-type name="QWebView">
         <modify-function signature="setPage(QWebPage*)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>
@@ -70,7 +70,7 @@
         </modify-function>
         <modify-function signature="setNetworkAccessManager(QNetworkAccessManager*)">
             <modify-argument index="1">
-                 <define-ownership class="java" owner="c++"/>
+                 <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>

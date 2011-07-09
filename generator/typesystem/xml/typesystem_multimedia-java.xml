@@ -66,7 +66,7 @@
         </modify-function>
         <modify-function signature="setSharedRenderer(QSvgRenderer*)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++" />
+                <define-ownership class="java" owner="cplusplus" />
             </modify-argument>
             <inject-code position="beginning">
                 QSvgRenderer oldRenderer = renderer();
