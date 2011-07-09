@@ -332,25 +332,52 @@ class QPen___ extends QPen {
 }// class
 
 class QColor___ extends QColor {
+        /**
+         * Please refactor your code from using these variables into initializing directly with:
+         *   new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)
+         * These variable are scheduled for removal in the Qt5 release of QtJambi due to the
+         * color values being mutable.
+         * @deprecated
+         */
+        @Deprecated
         public static final QColor white = new QColor(com.trolltech.qt.core.Qt.GlobalColor.white);
+        @Deprecated
         public static final QColor black = new QColor(com.trolltech.qt.core.Qt.GlobalColor.black);
+        @Deprecated
         public static final QColor red = new QColor(com.trolltech.qt.core.Qt.GlobalColor.red);
+        @Deprecated
         public static final QColor darkRed = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkRed);
+        @Deprecated
         public static final QColor green = new QColor(com.trolltech.qt.core.Qt.GlobalColor.green);
+        @Deprecated
         public static final QColor darkGreen = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGreen);
+        @Deprecated
         public static final QColor blue = new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue);
+        @Deprecated
         public static final QColor darkBlue = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkBlue);
+        @Deprecated
         public static final QColor cyan = new QColor(com.trolltech.qt.core.Qt.GlobalColor.cyan);
+        @Deprecated
         public static final QColor darkCyan = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkCyan);
+        @Deprecated
         public static final QColor magenta = new QColor(com.trolltech.qt.core.Qt.GlobalColor.magenta);
+        @Deprecated
         public static final QColor darkMagenta = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkMagenta);
+        @Deprecated
         public static final QColor yellow = new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow);
+        @Deprecated
         public static final QColor darkYellow = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkYellow);
+        @Deprecated
         public static final QColor gray = new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray);
+        @Deprecated
         public static final QColor darkGray = new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGray);
+        @Deprecated
         public static final QColor lightGray = new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray);
+        @Deprecated
         public static final QColor transparent = new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent);
+        @Deprecated
         public static final QColor color0 = new QColor(com.trolltech.qt.core.Qt.GlobalColor.color0);
+        @Deprecated
         public static final QColor color1 = new QColor(com.trolltech.qt.core.Qt.GlobalColor.color1);
 
 }// class
