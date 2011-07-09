@@ -2339,8 +2339,8 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
                 }
             }
             const int newplen = newP.length();
-            if(state >= 2 && newP.at(newplen) == QChar(' '))	/* remove that last space we added */
-                newP = newP.left(newplen - 1);
+            if(state >= 2 && newplen > 1 && newP.at(newplen - 1) == QChar(' '))	/* remove that last space we added */
+                newP = newP.left(newplen - 2);
             if(!newP.isNull()) {
                 if (newP != p)
                     p = newP;
