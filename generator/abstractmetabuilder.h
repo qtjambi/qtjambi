@@ -116,9 +116,10 @@ class AbstractMetaBuilder {
         QString translateDefaultValue(ArgumentModelItem item, AbstractMetaType *type,
                                       AbstractMetaFunction *fnc, AbstractMetaClass *,
                                       int argument_index);
-        AbstractMetaType *translateType(const TypeInfo& type_info, bool* ok, bool resolveType = true, bool resolveScope = true);
+        AbstractMetaType *translateType(const TypeInfo& type_info, bool* ok, const QString &contextString = QString(),
+                                      bool resolveType = true, bool resolveScope = true);
 
-        void decideUsagePattern(AbstractMetaType *type);
+        void decideUsagePattern(AbstractMetaType *type, const QString &contextSting);
 
         bool inheritTemplate(AbstractMetaClass *subclass,
                              const AbstractMetaClass *template_class,
@@ -134,7 +135,7 @@ class AbstractMetaBuilder {
         QString outputDirectory() const { return m_out_dir; }
         void setOutputDirectory(const QString &outDir) { m_out_dir = outDir; }
     protected:
-        AbstractMetaClass *argumentToClass(ArgumentModelItem);
+        AbstractMetaClass *argumentToClass(ArgumentModelItem, const QString &contextString);
 
         virtual AbstractMetaClass *createMetaClass() = 0;
         virtual AbstractMetaEnum *createMetaEnum() = 0;
