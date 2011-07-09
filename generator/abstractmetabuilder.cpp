@@ -2311,7 +2311,145 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
     for (int i = 0; i < declarations.size(); ++i) {
         QString p = declarations.at(i);
 
+        // Normalize Pass1: normalize all whitespace
+        //  remove leading/trailing, convert contigious whitespace sequences to a single space character
+        {
+            QString newP = QString();
+            const int len = p.length();
+            int state = 0;
+            int j;
+            for (j = 0; j < len; j++) {
+                QChar c = p.at(j);
+                if (state == 0) {       /* skip leading spaces */
+                    if(!c.isSpace()) {
+                        newP += c;
+                        state++;
+                    }
+                } else if(state == 1) {	/* last token was not whitespace */
+                    if(c.isSpace()) {
+                        newP += ' ';	/* normalize to an actual space, from maybe \r\n\v\t etc... */
+                        state++;
+                    } else {
+                        newP += c;
+                    }
+                } else {		/* last token was whitespace */
+                    newP += c;
+                    if(!c.isSpace())
+                        state--;
+                }
+            }
+            const int newplen = newP.length();
+            if(state >= 2 && newP.at(newplen) == QChar(' '))	/* remove that last space we added */
+                newP = newP.left(newplen - 1);
+            if(!newP.isNull()) {
+                if (newP != p)
+                    p = newP;
+            }
+        }
+
+        // Normalize Pass2: Correct the first word to always be the type (this means removing
+        // all whitespace from the type declaration) by looking ahead at the data.
+        // Convert "Q_PROPERTY(QGraphicsObject * parent READ parentObject WRITE setParentItem NOTIFY parentChanged DESIGNABLE false)"
+        //    into "Q_PROPERTY(QGraphicsObject* parent READ parentObject WRITE setParentItem NOTIFY parentChanged DESIGNABLE false)"
+        // moc.exe doesn't allow any comma in the property spec string we do just in case
+        // that changes someday since it can be part of a type with multiple template info.
+        {
+            QString newFirstWord = QString();
+            const int len = p.length();
+            // 0 = start (expect isalnum() || :)
+            // 1 = last-char-was-space (expect <*&)
+            // 2+ = inside-open-angle (expect isalnum() || : || <>*&, || ">")
+            int state = 0;
+            int j;
+            for (j = 0; j < len; j++) {
+                QChar c = p.at(j);
+                if (state == 0) {
+                    if (c.isLetterOrNumber() || c == QChar(':') || c == QChar('*') || c == QChar('&')) {
+                        newFirstWord += c;
+                    } else if(c == QChar('<')) {
+                        newFirstWord += c;
+                        state = 2;
+                    } else if (c.isSpace()) {
+                        state = 1;
+                    }
+                } else if (state == 1) {
+                    if (c == QChar('<')) {
+                        newFirstWord += c;
+                        state = 2;
+                    } else if (c == QChar('*') || c == QChar('&')) {
+                        newFirstWord += c;
+                    } else if (c.isSpace()) {
+                        /* use-case from state==0: strictly speaking 2 space chars in a row are not allowed */
+                        /* use-case from state==2: */
+                        /* we want to eat the space between 1st and 2nd word */
+                    } else /* if (c.isLetterOrNumber()) */ {
+                        /* this is to be the 2nd word, so we are done */
+                        break;
+                    }
+                } else if (state >= 2) {
+                    if (c.isLetterOrNumber() || c == QChar(':') || c == QChar('*') || c == QChar('&') || c == QChar(',')) {
+                        newFirstWord += c;
+                    } else if (c == QChar('<')) {
+                        newFirstWord += c;
+                        state++;
+                    } else if (c == QChar('>')) {
+                        newFirstWord += c;
+                        state--;
+                    } else if (c.isSpace()) {
+                        /* nop - strictly speaking space is only allow around non-isalnum() chars */
+                    } else {
+                        qDebug() << "Q_PROPERTY() parse error p=" << p;
+                        newFirstWord = QString();	/* abort */
+                        break;
+                    }
+                }
+            }
+            // cut length i from left(), stitch newFirstWord
+            if(!newFirstWord.isNull()) {
+                QString newP = newFirstWord + ' ' + p.mid(j);
+                if (newP != p)
+                    p = newP;
+            }
+        }
+
+        // Normalize Pass3: Split by space character then normalize parentesis by joining
+        // expression parts into single elements.
+        //  "FooClass*" "foo" "READ" "(expr" "!=" "0)" "WRITE" "setFoo"
+        // becomes:
+        //  "FooClass*" "foo" "READ" "(expr != 0)" "WRITE" "setFoo"
+        // This is known to allow correct parsing of some Q_PROPERTY in QToolBar.
         QStringList l = p.split(QLatin1String(" "));
+        {
+            QStringList newL = QStringList();
+            const int l_size = l.size();
+            int nest = 0;
+            QString newItem = QString();	// recombined item
+            for (int j = 0; j < l_size; j++) {
+                const QString item = l.at(j);	// original item
+                const int item_length = item.length();
+                for (int k = 0; k < item_length; k++) {
+                    const QChar ch = item.at(k);
+                    if (ch == QChar('('))
+                        nest++;
+                    else if (ch == QChar(')'))
+                        nest--;
+                }
+                if (newItem.isNull()) {
+                    newItem = item;
+                } else {
+                    // only add spaces between parts we join
+                    newItem += ' ';
+                    newItem += item;
+                }
+                if(nest == 0) {
+                    newL.append(newItem);
+                    newItem = QString();	// set to null
+                }
+            }
+            if (!newItem.isNull())
+                newL.append(newItem);
+            l = newL;
+        }
 
 
         QStringList qualifiedScopeName = currentScope()->qualifiedName();
@@ -2342,14 +2480,26 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
         spec->setIndex(i);
 
         for (int pos = 2; pos + 1 < l.size(); pos += 2) {
+            // I have seen DESIGNABLE and SCRIPTABLE examples that do not have
+            //  a true/false after but another keyword.
             if (l.at(pos) == QLatin1String("READ"))
                 spec->setRead(l.at(pos + 1));
             else if (l.at(pos) == QLatin1String("WRITE"))
                 spec->setWrite(l.at(pos + 1));
             else if (l.at(pos) == QLatin1String("DESIGNABLE"))
                 spec->setDesignable(l.at(pos + 1));
+            else if (l.at(pos) == QLatin1String("SCRIPTABLE"))
+                spec->setScriptable(l.at(pos + 1));
             else if (l.at(pos) == QLatin1String("RESET"))
                 spec->setReset(l.at(pos + 1));
+            else if (l.at(pos) == QLatin1String("NOTIFY"))
+                spec->setNotify(l.at(pos + 1));
+            else if (l.at(pos) == QLatin1String("USER"))
+                spec->setUser(l.at(pos + 1));
+            else if (l.at(pos) == QLatin1String("STORED"))
+                spec->setStored(l.at(pos + 1));
+            else
+                qDebug() << "WARNING: Q_PROPERTY(" << spec->name() << ", " << typeName << "): unknown aspect " << l.at(pos);
         }
 
         meta_class->addPropertySpec(spec);
