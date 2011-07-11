@@ -2333,9 +2333,10 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
                         newP += c;
                     }
                 } else {		/* last token was whitespace */
-                    newP += c;
-                    if(!c.isSpace())
+                    if(!c.isSpace()) {
+                        newP += c;
                         state--;
+                    }
                 }
             }
             const int newplen = newP.length();
