@@ -52,7 +52,6 @@ class StackElement {
             Removal                  = 0x020000,
             Rename                   = 0x040000,
             ModifyArgument           = 0x080000,
-            PrivateSignal            = 0x100000,
             FunctionModifiers        = 0xff0000,
 
             // Argument modifier tags (0x01000000 ... 0xf0000000)
