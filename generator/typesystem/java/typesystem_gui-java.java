@@ -334,9 +334,12 @@ class QPen___ extends QPen {
 class QColor___ extends QColor {
         /**
          * Please refactor your code from using these variables into initializing directly with:
-         *   new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)
-         * These variable are scheduled for removal in the Qt5 release of QtJambi due to the
+		 *
+         *     new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)
+		 *
+         * These variable are scheduled for removal in the Qt Jambi 5 release due to the
          * color values being mutable.
+		 *
          * @deprecated
          */
         @Deprecated
