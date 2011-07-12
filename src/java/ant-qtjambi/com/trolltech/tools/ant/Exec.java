@@ -144,16 +144,19 @@ class Exec {
             env.put("LD_LIBRARY_PATH", ldpath);
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(project);
-        String s = (String) props.getProperty((String) null, "java.home.target");
+        String s = (String) props.getProperty("java.home.target");
         if(s != null)
             env.put("JAVA_HOME_TARGET", s);
+        s = (String) props.getProperty("java.osarch.target");
+        if(s != null)
+            env.put("JAVA_OSARCH_TARGET", s);
 
         //something extra?
-        s = (String) props.getProperty((String) null, "qtjambi.phonon.includedir");
+        s = (String) props.getProperty("qtjambi.phonon.includedir");
         if(s != null && s.length() > 0)
             env.put("PHONON_INCLUDEPATH", s);
 
-        s = (String) props.getProperty((String) null, "qtjambi.phonon.libdir");
+        s = (String) props.getProperty("qtjambi.phonon.libdir");
         if(s != null && s.length() > 0)
             env.put("PHONON_LIBS", s);
 
