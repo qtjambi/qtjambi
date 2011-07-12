@@ -1038,7 +1038,7 @@
 
         <modify-function signature="QTextCodec()">
         <modify-argument index="-1">
-            <define-ownership class="java" owner="c++"/>
+            <define-ownership class="java" owner="cplusplus"/>
         </modify-argument>
         </modify-function>
 
@@ -1098,7 +1098,7 @@
     <object-type name="QAbstractFileEngineHandler">
         <modify-function signature="create(const QString &amp;) const">
         <modify-argument index="return">
-            <define-ownership owner="c++" class="shell"/>
+            <define-ownership owner="cplusplus" class="shell"/>
         </modify-argument>
         </modify-function>
     </object-type>
@@ -1236,7 +1236,7 @@
 
         <modify-function signature="postEvent(QObject*,QEvent*)">
         <modify-argument index="2">
-            <define-ownership class="java" owner="c++"/>
+            <define-ownership class="java" owner="cplusplus"/>
         </modify-argument>
         </modify-function>
     </object-type>

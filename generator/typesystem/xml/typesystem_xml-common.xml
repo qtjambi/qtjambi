@@ -204,7 +204,7 @@
     <interface-type name="QXmlContentHandler">
         <modify-function signature="setDocumentLocator(QXmlLocator*)">
             <modify-argument index="1">
-                <define-ownership class="shell" owner="c++" />
+                <define-ownership class="shell" owner="cplusplus" />
             </modify-argument>
         </modify-function>
     </interface-type>
@@ -217,7 +217,7 @@
     <object-type name="QXmlDefaultHandler">
         <modify-function signature="setDocumentLocator(QXmlLocator*)">
             <modify-argument index="1">
-                <define-ownership class="shell" owner="c++" />
+                <define-ownership class="shell" owner="cplusplus" />
             </modify-argument>
         </modify-function>
     </object-type>

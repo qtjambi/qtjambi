@@ -1501,7 +1501,7 @@
         </modify-function>
         <modify-function signature="addToGroup(QGraphicsItem*)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="removeFromGroup(QGraphicsItem*)">
@@ -1622,7 +1622,7 @@
     <object-type name="QItemEditorFactory">
         <modify-function signature="setDefaultFactory(QItemEditorFactory*)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>
@@ -1765,42 +1765,42 @@
     <object-type name="QStandardItem">
         <modify-function signature="appendColumn(const QList&lt;QStandardItem *&gt; &amp;)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="appendRow(const QList&lt;QStandardItem *&gt; &amp;)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="appendRow(QStandardItem *)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="insertColumn(int, const QList&lt;QStandardItem *&gt; &amp;)">
             <modify-argument index="2">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="insertRow(int, const QList&lt;QStandardItem *&gt; &amp;)">
             <modify-argument index="2">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="insertRow(int, QStandardItem *)">
             <modify-argument index="2">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="setChild(int,int,QStandardItem *)">
             <modify-argument index="3">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="setChild(int,QStandardItem *)">
             <modify-argument index="2">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="takeChild(int,int)">
@@ -1820,7 +1820,7 @@
         </modify-function>
         <modify-function signature="clone()const">
             <modify-argument index="return">
-                <define-ownership class="shell" owner="c++"/>
+                <define-ownership class="shell" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>
@@ -1836,7 +1836,7 @@
     <object-type name="QUndoStack">
         <modify-function signature="push(QUndoCommand *)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>
@@ -1916,7 +1916,7 @@
     <object-type name="QWidgetAction">
         <modify-function signature="setDefaultWidget(QWidget*)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>
@@ -2175,7 +2175,7 @@
         </inject-code>
         <modify-function signature="addItem(QLayoutItem *)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="removeItem(QLayoutItem *)">
@@ -2185,17 +2185,17 @@
         </modify-function>
         <modify-function signature="addChildLayout(QLayout *)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="addChildLayout(QLayout *)">
             <modify-argument index="1">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
         <modify-function signature="itemAt(int) const">
             <modify-argument index="return">
-                <define-ownership class="java" owner="c++"/>
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
 

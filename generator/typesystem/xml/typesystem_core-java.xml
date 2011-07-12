@@ -446,7 +446,7 @@
 
         <modify-function signature="mimeData(QList&lt;QModelIndex&gt;)const">
             <modify-argument index="0">
-                <define-ownership class="shell" owner="c++"/>
+                <define-ownership class="shell" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>
