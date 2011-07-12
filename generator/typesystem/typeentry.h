@@ -319,7 +319,9 @@ class ArrayTypeEntry : public TypeEntry {
 class PrimitiveTypeEntry : public TypeEntry {
     public:
         PrimitiveTypeEntry(const QString &name)
-                : TypeEntry(name, PrimitiveType), m_preferred_conversion(true), m_preferred_java_type(true) {
+                : TypeEntry(name, PrimitiveType), 
+                m_preferred_java_type(true) {
+            setPreferredConversion(true);
         }
 
         QString targetLangName() const {
@@ -344,13 +346,6 @@ class PrimitiveTypeEntry : public TypeEntry {
             return strings_java_lang;
         }
 
-        virtual bool preferredConversion() const {
-            return m_preferred_conversion;
-        }
-        virtual void setPreferredConversion(bool b) {
-            m_preferred_conversion = b;
-        }
-
         virtual bool preferredTargetLangType() const {
             return m_preferred_java_type;
         }
@@ -361,10 +356,7 @@ class PrimitiveTypeEntry : public TypeEntry {
     private:
         QString m_java_name;
         QString m_jni_name;
-    uint m_preferred_conversion :
-        1;
-    uint m_preferred_java_type :
-        1;
+        bool m_preferred_java_type;
 };
 
 class EnumTypeEntry : public TypeEntry {
