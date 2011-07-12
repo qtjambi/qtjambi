@@ -91,6 +91,8 @@ public class InitializeTask extends Task {
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
     public static final String QMAKESPEC        = "qtjambi.qmakespec";
     public static final String SQLITE           = "qtjambi.sqlite";
+    public static final String MNG              = "qtjambi.mng";
+    public static final String TIFF             = "qtjambi.tiff";
     public static final String WEBKIT           = "qtjambi.webkit";
     public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
     public static final String HELP             = "qtjambi.help";
@@ -139,6 +141,10 @@ public class InitializeTask extends Task {
         String phonon = decidePhonon(props);
 
         props.setNewProperty((String) null, SQLITE, decideSqlite());
+
+        props.setNewProperty((String) null, MNG, decideMng());
+
+        props.setNewProperty((String) null, TIFF, decideTiff());
 
         String webkit = decideWebkit();
         if ("true".equals(webkit) && "true".equals(phonon))
@@ -305,6 +311,18 @@ public class InitializeTask extends Task {
     private String decideSqlite() {
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
         if (verbose) System.out.println(SQLITE + ": " + result);
+        return result;
+    }
+
+    private String decideMng(){
+        String result = String.valueOf(doesQtPluginExist("qmng", "imageformats"));
+        if (verbose) System.out.println(MNG + ": " + result);
+        return result;
+    }
+
+    private String decideTiff() {
+        String result = String.valueOf(doesQtPluginExist("qtiff", "imageformats"));
+        if (verbose) System.out.println(TIFF + ": " + result);
         return result;
     }
 
