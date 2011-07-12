@@ -535,7 +535,7 @@ class ComplexTypeEntry : public TypeEntry {
                 m_generic_class(false),
                 m_type_flags(0) {
             Include inc;
-            inc.name = "QVariant";
+            inc.name = "QtCore/QVariant";
             inc.type = Include::IncludePath;
 
             addExtraInclude(inc);

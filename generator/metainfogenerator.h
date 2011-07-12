@@ -103,7 +103,7 @@ class MetaInfoGenerator : public JavaGenerator {
         void writeCppFile();
         void writeHeaderFile();
         void writeLibraryInitializers();
-        void writeInclude(QTextStream &s, const Include &inc);
+        void writeInclude(QTextStream &s, const Include &inc, QSet<QString> &dedupe);
         void writeIncludeStatements(QTextStream &s, const AbstractMetaClassList &classList, const QString &package);
         void writeInitializationFunctionName(QTextStream &s, const QString &package, bool fullSignature);
         void writeInitialization(QTextStream &s, const TypeEntry *entry, const AbstractMetaClass *cls, bool registerMetaType = true);

@@ -638,33 +638,44 @@ void MetaInfoGenerator::writeLibraryInitializers() {
     }
 }
 
-void MetaInfoGenerator::writeInclude(QTextStream &s, const Include &inc) {
+void MetaInfoGenerator::writeInclude(QTextStream &s, const Include &inc, QSet<QString> &dedupe) {
     if (inc.name.isEmpty())
         return;
 
-    s << "#include ";
+    QString incString;
     if (inc.type == Include::LocalPath)
-        s << "\"" << inc.name << "\"";
+        incString = "\"" + inc.name + "\"";
     else
-        s << "<" << inc.name << ">";
-    s << endl;
+        incString = "<" + inc.name + ">";
+
+    if (dedupe.contains(incString))
+        return;    // no need to emit this #include it is already in the generared file
+
+    dedupe.insert(incString);
+
+    s << "#include " << incString << endl;
 }
 
 void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const AbstractMetaClassList &classList,
         const QString &package) {
-    writeInclude(s, Include(Include::LocalPath, headerFilename()));
-    writeInclude(s, Include(Include::IncludePath, "QMetaType"));
-    writeInclude(s, Include(Include::IncludePath, "QString"));
-    writeInclude(s, Include(Include::IncludePath, "QLatin1String"));
-    writeInclude(s, Include(Include::IncludePath, "QHash"));
-    writeInclude(s, Include(Include::IncludePath, "QReadWriteLock"));
-    writeInclude(s, Include(Include::IncludePath, "QReadLocker"));
-    writeInclude(s, Include(Include::IncludePath, "QWriteLocker"));
-    writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_cache.h"));
-    writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_core.h"));
+    QSet<QString> dedupe = QSet<QString>();
 
-    if (qtJambiDebugTools())
-        writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambidebugtools_p.h"));
+    writeInclude(s, Include(Include::LocalPath, headerFilename()), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "QtCore/QMetaType"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "QtCore/QString"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "QtCore/QLatin1String"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "QtCore/QHash"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "QtCore/QReadWriteLock"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "QtCore/QReadLocker"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "QtCore/QWriteLocker"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_cache.h"), dedupe);
+    writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambi_core.h"), dedupe);
+
+    if (qtJambiDebugTools()) {
+        s << "#if defined(QTJAMBI_DEBUG_TOOLS)" << endl;
+        writeInclude(s, Include(Include::IncludePath, "qtjambi/qtjambidebugtools_p.h"), dedupe);
+        s << "#endif /* QTJAMBI_DEBUG_TOOLS */" << endl;
+    }
 
     s << endl;
 
@@ -673,7 +684,7 @@ void MetaInfoGenerator::writeIncludeStatements(QTextStream &s, const AbstractMet
             const ComplexTypeEntry *ctype = cls->typeEntry();
 
             Include inc = ctype->include();
-            writeInclude(s, inc);
+            writeInclude(s, inc, dedupe);
         }
     }
 }
