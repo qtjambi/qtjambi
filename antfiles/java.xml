@@ -93,8 +93,27 @@
 
     <target name="jar.qtjambi-examples"
         depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
+        <!-- exclude java classes, which were not build, depending on qtjambi config -->
+        <condition property="javac.opengl.excludes" value="**/opengl/**/*.java">
+            <isfalse value="${qtjambi.opengl}"/>
+        </condition>
+        <condition property="javac.xmlpatterns.excludes" value="**/xmlpatterns/**/*.java">
+            <isfalse value="${qtjambi.xmlpatterns}"/>
+        </condition>
+        <condition property="javac.phonon.excludes" value="**/phonon/**/*.java">
+            <isfalse value="${qtjambi.phonon}"/>
+        </condition>
+        <condition property="javac.webkit.excludes" value="**/webkit/**/*.java">
+            <isfalse value="${qtjambi.webkit}"/>
+        </condition>
+        <property name="javac.excludes" value="${javac.opengl.excludes}
+                                               ${javac.xmlpatterns.excludes}
+                                               ${javac.phonon.excludes}
+                                               ${javac.webkit.excludes}"/>
+        <echo message="processed excludes ${javac.excludes}"/>
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-examples"/>
+            <property name="module.excludes" value="${javac.excludes}"/>
             <property name="sourcedirs" value="${java.srcdir}/qtjambi-examples:${java.generated.srcdir}/qtjambi-examples"/>
         </ant>
     </target>
