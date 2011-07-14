@@ -91,6 +91,7 @@ public class InitializeTask extends Task {
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
     public static final String QMAKESPEC        = "qtjambi.qmakespec";
     public static final String SQLITE           = "qtjambi.sqlite";
+    public static final String SVG              = "qtjambi.svg";
     public static final String MNG              = "qtjambi.mng";
     public static final String TIFF             = "qtjambi.tiff";
     public static final String WEBKIT           = "qtjambi.webkit";
@@ -141,6 +142,8 @@ public class InitializeTask extends Task {
         String phonon = decidePhonon(props);
 
         props.setNewProperty((String) null, SQLITE, decideSqlite());
+
+        props.setNewProperty((String) null, SVG, decideSvg());
 
         props.setNewProperty((String) null, MNG, decideMng());
 
@@ -311,6 +314,13 @@ public class InitializeTask extends Task {
     private String decideSqlite() {
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
         if (verbose) System.out.println(SQLITE + ": " + result);
+        return result;
+    }
+
+    private String decideSvg() {
+        String result = String.valueOf(doesQtLibExist("QtSvg", 4));
+        if (verbose) System.out.println(SVG + ": " + result);
+        if("true".equals(result)) addToQtConfig("svg");
         return result;
     }
 

@@ -44,7 +44,8 @@
                     rootPath="${qtjambi.qt.libdir}"/>
             <library name="QtSvg"               type="qt"
                     rootPath="${qtjambi.qt.libdir}"
-                    load="yes"/>
+                    load="yes"
+                    if="${qtjambi.svg}"/>
             <library name="QtNetwork"           type="qt"
                     rootPath="${qtjambi.qt.libdir}"/>
             <library name="QtHelp"              type="qt"
@@ -108,10 +109,12 @@
                     if="{qtjambi.tiff}"/>
             <library name="qsvg"                type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
+                    subdir="plugins/imageformats" load="never"
+                    if="{qtjambi.svg}"/>
             <library name="qsvgicon"            type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/iconengines" load="never"/>
+                    subdir="plugins/iconengines" load="never"
+                    if="{qtjambi.svg}"/>
             <library name="qcncodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/codecs" load="never"/>
@@ -157,7 +160,8 @@
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.multimedia}"/>
             <library name="com_trolltech_qt_svg"     type="qtjambi"
-                    rootPath="${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.svg}"/>
             <library name="com_trolltech_qt_opengl"  type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.opengl}"/>
