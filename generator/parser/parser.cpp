@@ -3949,8 +3949,15 @@ bool Parser::parseQ_PROPERTY(DeclarationAST *&node) {
     token_stream.nextToken();
 
     int firstToken = token_stream.cursor();
-    while (token_stream.lookAhead() != ')') {
-        token_stream.nextToken();
+    int nestCount = 1;
+    while (nestCount > 0) {
+        if (token_stream.lookAhead() == '(')
+            nestCount++;
+        else if (token_stream.lookAhead() == ')')
+            nestCount--;
+
+        if (nestCount > 0)	// don't include last ')'
+            token_stream.nextToken();
     }
     QPropertyAST *ast = CreateNode<QPropertyAST>(_M_pool);
     UPDATE_POS(ast, firstToken, token_stream.cursor());
