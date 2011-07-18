@@ -438,23 +438,22 @@ bool Handler::startElement(const QString &, const QString &n,
                 ctype->setIsPolymorphicBase(convertBoolean(attributes["polymorphic-base"], "polymorphic-base", false));
                 ctype->setPolymorphicIdValue(attributes["polymorphic-id-expression"]);
 
-                if (element->type == StackElement::ObjectTypeEntry || element->type == StackElement::ValueTypeEntry) {
-                    if (convertBoolean(attributes["force-abstract"], "force-abstract", false))
-                        ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
-                    if (convertBoolean(attributes["deprecated"], "deprecated", false))
-                        ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::Deprecated);
-                }
-
-                if (element->type == StackElement::InterfaceTypeEntry ||
+                if (element->type == StackElement::ObjectTypeEntry ||
                         element->type == StackElement::ValueTypeEntry ||
-                        element->type == StackElement::ObjectTypeEntry) {
+                        element->type == StackElement::InterfaceTypeEntry) {
+                    if (element->type != StackElement::InterfaceTypeEntry) {	// OTE || VTE
+                        if (convertBoolean(attributes["force-abstract"], "force-abstract", false))
+                            ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
+                        if (convertBoolean(attributes["deprecated"], "deprecated", false))
+                            ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::Deprecated);
+                    }
                     if (convertBoolean(attributes["delete-in-main-thread"], "delete-in-main-thread", false))
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::DeleteInMainThread);
                 }
 
                 QString targetType = attributes["target-type"];
-                if (!targetType.isEmpty() && element->entry->isComplex())
-                    static_cast<ComplexTypeEntry *>(element->entry)->setTargetType(targetType);
+                if (!targetType.isEmpty())
+                    ctype->setTargetType(targetType);
 
                 // ctype->setInclude(Include(Include::IncludePath, ctype->name()));
                 ctype = ctype->designatedInterface();
@@ -465,7 +464,7 @@ bool Handler::startElement(const QString &, const QString &n,
             break;
             default:
                 Q_ASSERT(false);
-        };
+        }
 
         if (element->entry) {
             //qDebug()<<"Adding element->entry"<<element->entry->name();
@@ -633,9 +632,7 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
                 QString name = attributes["name"];
 
-                bool added = false;
                 if (!name.isEmpty()) {
-                    added = true;
                     EnumTypeEntry *eentry = static_cast<EnumTypeEntry*>(current->entry);
                     eentry->addEnumValueRejection(name);
                 }
@@ -782,13 +779,13 @@ bool Handler::startElement(const QString &, const QString &n,
                 bool ok;
                 int pos = attributes["index"].toInt(&ok);
                 if (!ok) {
-                    m_error = QString("Can't convert position '%1' to integer")
-                              .arg(attributes["position"]);
+                    m_error = QString("Can't convert attribute index '%1' to integer")
+                              .arg(attributes["index"]);
                     return false;
                 }
 
                 if (pos <= 0) {
-                    m_error = QString("Argument position %1 must be a positive number").arg(pos);
+                    m_error = QString("Argument index %1 must be a positive number").arg(pos);
                     return false;
                 }
 
@@ -978,7 +975,7 @@ bool Handler::startElement(const QString &, const QString &n,
             }
             break;
             case StackElement::ReplaceDefaultExpression:
-                if (!(topElement.type & StackElement::ModifyArgument)) {
+                if (topElement.type != StackElement::ModifyArgument) {
                     m_error = "Replace default expression only allowed as child of argument modification";
                     return false;
                 }
@@ -1117,6 +1114,12 @@ bool Handler::startElement(const QString &, const QString &n,
             }
             break;
             case StackElement::Include: {
+                if (((topElement.type & StackElement::ComplexTypeEntryMask) == 0)
+                        && (topElement.type != StackElement::ExtraIncludes)) {
+                    m_error = "wrong parent type for include";
+                    return false;
+                }
+
                 QString location = attributes["location"].toLower();
 
                 static QHash<QString, Include::IncludeType> locationNames;
@@ -1144,10 +1147,11 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                inc = ctype->include();
-                IncludeList lst = ctype->extraIncludes();
                 ctype = ctype->designatedInterface();
                 if (ctype != 0) {
+                    inc = ctype->include();
+                    IncludeList lst = ctype->extraIncludes();
+
                     ctype->setExtraIncludes(lst);
                     ctype->setInclude(inc);
                 }
@@ -1187,6 +1191,13 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
                 element->parent->value.templateInstance->addReplaceRule(attributes["from"], attributes["to"]);
                 break;
+            case StackElement::ExtraIncludes: {
+                if ((topElement.type & StackElement::ComplexTypeEntryMask) == 0) {
+                    m_error = "wrong parent type for extra-includes";
+                    return false;
+                }
+            }
+            break;
             default:
                 break; // nada
         };
