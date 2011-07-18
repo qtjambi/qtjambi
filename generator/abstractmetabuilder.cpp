@@ -2311,8 +2311,10 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
     for (int i = 0; i < declarations.size(); ++i) {
         QString p = declarations.at(i);
 
-        // Normalize Pass1: normalize all whitespace
-        //  remove leading/trailing, convert contigious whitespace sequences to a single space character
+        /*
+        Pass 1: normalize all whitespace.
+        Remove leading/trailing, convert contiguous whitespace sequences to a single space character.
+        */
         {
             QString newP = QString();
             const int len = p.length();
@@ -2320,47 +2322,60 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
             int j;
             for (j = 0; j < len; j++) {
                 QChar c = p.at(j);
-                if (state == 0) {       /* skip leading spaces */
+                if (state == 0) { // skip leading spaces
                     if(!c.isSpace()) {
                         newP += c;
                         state++;
                     }
-                } else if(state == 1) {	/* last token was not whitespace */
-                    if(c.isSpace()) {
-                        newP += ' ';	/* normalize to an actual space, from maybe \r\n\v\t etc... */
+                } else if(state == 1) { // last token was not whitespace
+                    if(c.isSpace()) { // normalize to an actual space, from maybe \r\n\v\t etc.
+                        newP += ' ';
                         state++;
                     } else {
                         newP += c;
                     }
-                } else {		/* last token was whitespace */
+                } else { // last token was whitespace
                     if(!c.isSpace()) {
                         newP += c;
                         state--;
                     }
                 }
             }
+
             const int newplen = newP.length();
-            if(state >= 2 && newplen > 1 && newP.at(newplen - 1) == QChar(' '))	/* remove that last space we added */
+
+            // remove that last space we added
+            if(state >= 2 && newplen > 1 && newP.at(newplen - 1) == QChar(' ')) {
                 newP = newP.left(newplen - 2);
+            }
+
             if(!newP.isNull()) {
                 if (newP != p)
                     p = newP;
             }
         }
 
-        // Normalize Pass2: Correct the first word to always be the type (this means removing
-        // all whitespace from the type declaration) by looking ahead at the data.
-        // Convert "Q_PROPERTY(QGraphicsObject * parent READ parentObject WRITE setParentItem NOTIFY parentChanged DESIGNABLE false)"
-        //    into "Q_PROPERTY(QGraphicsObject* parent READ parentObject WRITE setParentItem NOTIFY parentChanged DESIGNABLE false)"
-        // moc.exe doesn't allow any comma in the property spec string we do just in case
-        // that changes someday since it can be part of a type with multiple template info.
+        /*
+        Pass 2: Correct the first word to always be a type (this means removing
+        all whitespace from the type declaration) by looking ahead at the data.
+
+        Convert "Q_PROPERTY(QGraphicsObject * parent READ parentObject WRITE setParentItem NOTIFY parentChanged DESIGNABLE false)"
+        into "Q_PROPERTY(QGraphicsObject* parent READ parentObject WRITE setParentItem NOTIFY parentChanged DESIGNABLE false)"
+
+        moc.exe doesn't allow any comma in the property spec string, we do just in case
+        that changes someday since it can be part of a type with multiple template info.
+        */
         {
             QString newFirstWord = QString();
             const int len = p.length();
-            // 0 = start (expect isalnum() || :)
-            // 1 = last-char-was-space (expect <*&)
-            // 2+ = inside-open-angle (expect isalnum() || : || <>*&, || ">")
+
+            /*
+            0 = start (expect isalnum() || :)
+            1 = last-char-was-space (expect <*&)
+            2+ = inside-open-angle (expect isalnum() || : || <>*&, || ">")
+            */
             int state = 0;
+
             int j;
             for (j = 0; j < len; j++) {
                 QChar c = p.at(j);
@@ -2380,11 +2395,12 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
                     } else if (c == QChar('*') || c == QChar('&')) {
                         newFirstWord += c;
                     } else if (c.isSpace()) {
-                        /* use-case from state==0: strictly speaking 2 space chars in a row are not allowed */
-                        /* use-case from state==2: */
-                        /* we want to eat the space between 1st and 2nd word */
-                    } else /* if (c.isLetterOrNumber()) */ {
-                        /* this is to be the 2nd word, so we are done */
+                        /*
+                        Use-case from state==0: strictly speaking 2 space chars in a row are not allowed
+                        Use-case from state==2: we want to eat the space between 1st and 2nd word
+                        */
+                    } else { // if (c.isLetterOrNumber())
+                        // this is to be the 2nd word, so we are done
                         break;
                     }
                 } else if (state >= 2) {
@@ -2397,10 +2413,10 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
                         newFirstWord += c;
                         state--;
                     } else if (c.isSpace()) {
-                        /* nop - strictly speaking space is only allow around non-isalnum() chars */
+                        // nop - strictly speaking space is only allowed around non-isalnum() chars
                     } else {
                         qDebug() << "Q_PROPERTY() parse error p=" << p;
-                        newFirstWord = QString();	/* abort */
+                        newFirstWord = QString(); // abort
                         break;
                     }
                 }
@@ -2413,20 +2429,26 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
             }
         }
 
-        // Normalize Pass3: Split by space character then normalize parentesis by joining
-        // expression parts into single elements.
-        //  "FooClass*" "foo" "READ" "(expr" "!=" "0)" "WRITE" "setFoo"
-        // becomes:
-        //  "FooClass*" "foo" "READ" "(expr != 0)" "WRITE" "setFoo"
-        // This is known to allow correct parsing of some Q_PROPERTY in QToolBar.
+        /*
+        Pass 3: Split by space character then normalize parentesis by joining
+        expression parts into single elements.
+
+        "FooClass*" "foo" "READ" "(expr" "!=" "0)" "WRITE" "setFoo"
+
+        becomes:
+
+        "FooClass*" "foo" "READ" "(expr != 0)" "WRITE" "setFoo"
+
+        This is known to allow correct parsing of some Q_PROPERTY in QToolBar.
+        */
         QStringList l = p.split(QLatin1String(" "));
         {
             QStringList newL = QStringList();
             const int l_size = l.size();
             int nest = 0;
-            QString newItem = QString();	// recombined item
+            QString newItem = QString(); // recombined item
             for (int j = 0; j < l_size; j++) {
-                const QString item = l.at(j);	// original item
+                const QString item = l.at(j); // original item
                 const int item_length = item.length();
                 for (int k = 0; k < item_length; k++) {
                     const QChar ch = item.at(k);
@@ -2444,11 +2466,12 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
                 }
                 if(nest == 0) {
                     newL.append(newItem);
-                    newItem = QString();	// set to null
+                    newItem = QString(); // set to null
                 }
             }
             if (!newItem.isNull())
                 newL.append(newItem);
+
             l = newL;
         }
 
