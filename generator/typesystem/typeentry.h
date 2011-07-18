@@ -319,7 +319,7 @@ class ArrayTypeEntry : public TypeEntry {
 class PrimitiveTypeEntry : public TypeEntry {
     public:
         PrimitiveTypeEntry(const QString &name)
-                : TypeEntry(name, PrimitiveType), 
+                : TypeEntry(name, PrimitiveType),
                 m_preferred_java_type(true) {
             setPreferredConversion(true);
         }
