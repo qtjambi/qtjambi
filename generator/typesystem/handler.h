@@ -12,7 +12,6 @@ class Handler : public QXmlDefaultHandler {
     public:
         Handler(TypeDatabase *database, bool generate)
                 : m_database(database), m_generate(generate ? TypeEntry::GenerateAll : TypeEntry::GenerateForSubclass) {
-            m_current_enum = 0;
             current = 0;
 
             tagNames["rejection"]                   = StackElement::Rejection;
@@ -88,8 +87,6 @@ class Handler : public QXmlDefaultHandler {
          * StackElement::ElementType.
          */
         QHash<QString, QString> setStackElementAttributes(StackElement::ElementType type);
-
-        EnumTypeEntry *m_current_enum;
 
         CodeSnipList m_code_snips;
         FunctionModificationList m_function_mods;
