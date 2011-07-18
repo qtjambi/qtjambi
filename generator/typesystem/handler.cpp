@@ -297,9 +297,11 @@ bool Handler::startElement(const QString &, const QString &n,
 
         QString name = attributes["name"];
 
-        // We need to be able to have duplicate primitive type entries, or it's not possible to
-        // cover all primitive java types (which we need to do in order to support fake
-        // meta objects)
+        /*
+        We need to be able to have duplicate primitive type entries, or it's not possible to
+        cover all primitive java types (which we need to do in order to support fake
+        meta objects)
+        */
         if (element->type != StackElement::PrimitiveTypeEntry) {
             TypeEntry *tmp = m_database->findType(name);
             if (tmp != 0) {
@@ -441,12 +443,15 @@ bool Handler::startElement(const QString &, const QString &n,
                 if (element->type == StackElement::ObjectTypeEntry ||
                         element->type == StackElement::ValueTypeEntry ||
                         element->type == StackElement::InterfaceTypeEntry) {
-                    if (element->type != StackElement::InterfaceTypeEntry) {	// OTE || VTE
+
+                    if (element->type != StackElement::InterfaceTypeEntry) { // ObjectTypeEntry or ValueTypeEntry
                         if (convertBoolean(attributes["force-abstract"], "force-abstract", false))
                             ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::ForceAbstract);
+
                         if (convertBoolean(attributes["deprecated"], "deprecated", false))
                             ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::Deprecated);
                     }
+
                     if (convertBoolean(attributes["delete-in-main-thread"], "delete-in-main-thread", false))
                         ctype->setTypeFlags(ctype->typeFlags() | ComplexTypeEntry::DeleteInMainThread);
                 }
