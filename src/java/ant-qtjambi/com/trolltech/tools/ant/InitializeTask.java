@@ -150,7 +150,11 @@ public class InitializeTask extends Task {
         props.setNewProperty((String) null, TIFF, decideTiff());
 
         String webkit = decideWebkit();
-        if ("true".equals(webkit) && "true".equals(phonon))
+        // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
+        //  if you have headers and DSOs for WebKit then QtJambi should build the support.
+        if ("true".equals(webkit) && "true".equals(phonon) == false)
+            if (verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
+        if ("true".equals(webkit))
             props.setNewProperty((String) null, WEBKIT, webkit);
 
         String script = decideScript();
