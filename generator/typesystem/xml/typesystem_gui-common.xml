@@ -2443,7 +2443,7 @@
 
         <modify-function signature="getColor(const QColor &amp;, QWidget *)">
         <modify-argument index="1">
-            <replace-default-expression with="QColor.white"/>
+            <replace-default-expression with="new com.trolltech.qt.gui.QColor(com.trolltech.qt.core.Qt.GlobalColor.white)"/>
         </modify-argument>
         </modify-function>
         <modify-function signature="getRgba(uint,bool*,QWidget*)">
@@ -4400,7 +4400,7 @@
     <object-type name="QSplashScreen">
         <modify-function signature="showMessage(const QString &amp;, int, const QColor &amp;)">
         <modify-argument index="3">
-            <replace-default-expression with="QColor.black"/>
+            <replace-default-expression with="new com.trolltech.qt.gui.QColor(com.trolltech.qt.core.Qt.GlobalColor.black)"/>
         </modify-argument>
         </modify-function>
         <modify-function signature="repaint()" remove="all"/>

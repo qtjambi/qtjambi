@@ -110,10 +110,10 @@ public class HourGlass extends QWidget {
         p.translate(rect().center());
 
         p.rotate(rotation);
-        p.setBrush(new QBrush(QColor.gray));
+        p.setBrush(new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray)));
         p.setPen(QPen.NoPen);
 
-        p.fillPath(path, new QBrush(QColor.gray));
+        p.fillPath(path, new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray)));
     }
 
     @Override

@@ -398,7 +398,7 @@ public class PathStrokeWidget extends QWidget {
 
             // Draw the path
             {
-                QColor lg = QColor.red;
+                QColor lg = new QColor(com.trolltech.qt.core.Qt.GlobalColor.red);
 
                 // The "custom" pen
                 if (m_penStyle == Qt.PenStyle.NoPen) {
@@ -441,7 +441,7 @@ public class PathStrokeWidget extends QWidget {
                     painter.drawEllipse(new QRectF(pos.x() - m_pointSize, pos.y() - m_pointSize,
                             m_pointSize * 2, m_pointSize * 2));
                 }
-                painter.setPen(new QPen(QColor.lightGray, 0, Qt.PenStyle.SolidLine));
+                painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray), 0, Qt.PenStyle.SolidLine));
                 painter.setBrush(Qt.BrushStyle.NoBrush);
 
                 QPolygonF pol = new QPolygonF();

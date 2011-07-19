@@ -110,7 +110,7 @@ public class PadNavigator extends QGraphicsView {
                 painter.setBrush(col);
             }
 
-            painter.setPen(new QPen(QColor.black, 1));
+            painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 1));
             painter.drawRoundRect(rect());
 
             if (pix != null) {
@@ -215,7 +215,7 @@ public class PadNavigator extends QGraphicsView {
         backItem.setTransform(new QTransform().rotate(180, Qt.Axis.YAxis), false);
         backItem.setParentItem(baseItem);
 
-        selectionItem = new RoundRectItem(new QRectF(-60, -60, 120, 120), QColor.gray, null);
+        selectionItem = new RoundRectItem(new QRectF(-60, -60, 120, 120), new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray), null);
         selectionItem.setParentItem(baseItem);
         selectionItem.setZValue(-1);
         selectionItem.setPos(posForLocation(0, 0));

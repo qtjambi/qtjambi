@@ -57,11 +57,11 @@ public class View extends QWidget
 
         int size = 40;
         QPixmap bg = new QPixmap(size, size);
-        bg.fill(QColor.white);
+        bg.fill(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
         QPainter p = new QPainter();
         p.begin(bg);
-        p.fillRect(0, 0, size/2, size/2, new QBrush(QColor.lightGray));
-        p.fillRect(size/2, size/2, size/2, size/2, new QBrush(QColor.lightGray));
+        p.fillRect(0, 0, size/2, size/2, new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray)));
+        p.fillRect(size/2, size/2, size/2, size/2, new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray)));
         p.end();
 
         QPalette pal = palette();
@@ -122,7 +122,7 @@ public class View extends QWidget
             background = new QPixmap(size());
             QPainter p = new QPainter(background);
             QLinearGradient lg = new QLinearGradient(0, 0, 0, height());
-            lg.setColorAt(0.5, QColor.black);
+            lg.setColorAt(0.5, new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
             lg.setColorAt(0.7, QColor.fromRgbF(0.5, 0.5, 0.6));
             lg.setColorAt(1, QColor.fromRgbF(0.8, 0.8, 0.9));
             p.fillRect(background.rect(), new QBrush(lg));
@@ -184,25 +184,25 @@ public class View extends QWidget
         p.begin(modified);
         p.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceAtop);
         if (redCyan != 0) {
-            QColor c = decideColor(redCyan, QColor.cyan, QColor.red);
+            QColor c = decideColor(redCyan, new QColor(com.trolltech.qt.core.Qt.GlobalColor.cyan), new QColor(com.trolltech.qt.core.Qt.GlobalColor.red));
             p.fillRect(0, 0, modified.width(), modified.height(), new QBrush(c));
         }
         if (greenMagenta != 0) {
-            QColor c = decideColor(greenMagenta, QColor.magenta, QColor.green);
+            QColor c = decideColor(greenMagenta, new QColor(com.trolltech.qt.core.Qt.GlobalColor.magenta), new QColor(com.trolltech.qt.core.Qt.GlobalColor.green));
             p.fillRect(0, 0, modified.width(), modified.height(), new QBrush(c));
         }
         if (blueYellow != 0) {
-            QColor c = decideColor(blueYellow, QColor.yellow, QColor.blue);
+            QColor c = decideColor(blueYellow, new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow), new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue));
             p.fillRect(0, 0, modified.width(), modified.height(), new QBrush(c));
         }
         if (colorBalance != 0) {
-            QColor c = decideColor(colorBalance, QColor.white, QColor.black);
+            QColor c = decideColor(colorBalance, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white), new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
             p.fillRect(0, 0, modified.width(), modified.height(), new QBrush(c));
         }
 
         if (invert) {
             p.setCompositionMode(QPainter.CompositionMode.CompositionMode_Difference);
-            p.fillRect(modified.rect(), new QBrush(QColor.white));
+            p.fillRect(modified.rect(), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)));
         }
 
         p.end();
@@ -264,7 +264,7 @@ public class View extends QWidget
 
         QLinearGradient lg = new QLinearGradient(0, 0, 0, image.height());
         lg.setColorAt(0.1, QColor.fromRgbF(0, 0, 0, 0.4));
-        lg.setColorAt(0.6, QColor.transparent);
+        lg.setColorAt(0.6, new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent));
         pt.setCompositionMode(QPainter.CompositionMode.CompositionMode_DestinationIn);
         pt.fillRect(image.rect(), new QBrush(lg));
         pt.end();

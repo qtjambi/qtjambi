@@ -209,7 +209,7 @@ public class SyntaxHighlighter extends QMainWindow {
 //! [9]
 
 //! [10]
-            brush = new QBrush(QColor.darkBlue,Qt.BrushStyle.SolidPattern);
+            brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkBlue),Qt.BrushStyle.SolidPattern);
             keywordFormat.setForeground(brush);
             keywordFormat.setFontWeight(QFont.Weight.Bold.value());
 
@@ -239,7 +239,7 @@ public class SyntaxHighlighter extends QMainWindow {
 //! [11]
             // Any word starting with Q
 //! [12]
-            brush = new QBrush(QColor.darkMagenta);
+            brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkMagenta));
             pattern = new QRegExp("\\bQ[A-Za-z]+\\b");
             classFormat.setForeground(brush);
             classFormat.setFontWeight(QFont.Weight.Bold.value());
@@ -249,7 +249,7 @@ public class SyntaxHighlighter extends QMainWindow {
 
             // Comment starting with //
 //! [13]
-            brush = new QBrush(QColor.gray, Qt.BrushStyle.SolidPattern);
+            brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray), Qt.BrushStyle.SolidPattern);
             pattern = new QRegExp("//[^\n]*");
             commentFormat.setForeground(brush);
             rule = new HighlightingRule(pattern, commentFormat);
@@ -258,7 +258,7 @@ public class SyntaxHighlighter extends QMainWindow {
 
             // String
 //! [14]
-            brush = new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern);
+            brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue), Qt.BrushStyle.SolidPattern);
             pattern = new QRegExp("\".*\"");
             pattern.setMinimal(true);
             quotationFormat.setForeground(brush);
@@ -267,7 +267,7 @@ public class SyntaxHighlighter extends QMainWindow {
 //! [14]
 
             // Function
-            brush = new QBrush(QColor.darkGreen, Qt.BrushStyle.SolidPattern);
+            brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGreen), Qt.BrushStyle.SolidPattern);
             pattern = new QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
             functionFormat.setForeground(brush);
             functionFormat.setFontItalic(true);

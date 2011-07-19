@@ -65,7 +65,7 @@ class ArthurFrame extends QWidget
         super(parent);
 
         m_tile = new QPixmap(100, 100);
-        m_tile.fill(QColor.white);
+        m_tile.fill(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
 
         QPainter pt = new QPainter();
         pt.begin(m_tile);
@@ -127,7 +127,7 @@ class ArthurFrame extends QWidget
                 clearRect.width() - shade + 1, shade);
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, false);
         painter.setBrush(new QBrush(new QColor(255, 255, 255, 220)));
-        painter.setPen(QColor.black);
+        painter.setPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
         painter.drawRect(clearRect);
 
         painter.setClipRegion(new QRegion(textRect), Qt.ClipOperation.IntersectClip);
@@ -135,9 +135,9 @@ class ArthurFrame extends QWidget
 
         QAbstractTextDocumentLayout_PaintContext ctx = new QAbstractTextDocumentLayout_PaintContext();
         QLinearGradient g = new QLinearGradient(0, 0, 0, textRect.height());
-        g.setColorAt(0, QColor.black);
-        g.setColorAt(0.9, QColor.black);
-        g.setColorAt(1, QColor.transparent);
+        g.setColorAt(0, new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
+        g.setColorAt(0.9, new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
+        g.setColorAt(1, new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent));
 
         QPalette pal = palette();
         pal.setBrush(QPalette.ColorRole.Text, new QBrush(g));

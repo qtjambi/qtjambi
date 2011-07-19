@@ -185,13 +185,13 @@ public class CollidingMice extends QWidget {
             painter.drawEllipse(-10, -20, 20, 40);
 
             // Eyes
-            brush.setColor(QColor.white);
+            brush.setColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
             painter.setBrush(brush);
             painter.drawEllipse(-10, -17, 8, 8);
             painter.drawEllipse(2, -17, 8, 8);
 
             // Nose
-            brush.setColor(QColor.black);
+            brush.setColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
             painter.setBrush(brush);
             painter.drawEllipse(-2, -22, 4, 4);
 
@@ -201,9 +201,9 @@ public class CollidingMice extends QWidget {
 
             // Ears
             if (scene().collidingItems(this).isEmpty())
-                brush.setColor(QColor.darkYellow);
+                brush.setColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkYellow));
             else
-                brush.setColor(QColor.red);
+                brush.setColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red));
             painter.setBrush(brush);
 
             painter.drawEllipse(-17, -12, 16, 16);

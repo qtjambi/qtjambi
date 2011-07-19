@@ -64,9 +64,9 @@ public class ElasticNodes extends QGraphicsView {
     private Node centerNode;
     private Vector<Node> nodes = new Vector<Node>();
 
-    private static final QBrush BRUSH_DARK_GRAY = new QBrush(QColor.darkGray);
-    private static final QPen QPEN_EDGE = new QPen(QColor.black, 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin);
-    private static final QPen QPEN_BLACK = new QPen(QColor.black, 0);
+    private static final QBrush BRUSH_DARK_GRAY = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGray));
+    private static final QPen QPEN_EDGE = new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin);
+    private static final QPen QPEN_BLACK = new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 0);
 
     private static QRadialGradient GRADIENT_SUNKEN;
     private static QRadialGradient GRADIENT_NORMAL;
@@ -79,12 +79,12 @@ public class ElasticNodes extends QGraphicsView {
         GRADIENT_SUNKEN = new QRadialGradient(-3, -3, 10);
         GRADIENT_SUNKEN.setCenter(3, 3);
         GRADIENT_SUNKEN.setFocalPoint(3, 3);
-        GRADIENT_SUNKEN.setColorAt(1, new QColor(QColor.yellow).lighter(120));
-        GRADIENT_SUNKEN.setColorAt(0, new QColor(QColor.darkYellow).lighter(120));
+        GRADIENT_SUNKEN.setColorAt(1, new QColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow)).lighter(120));
+        GRADIENT_SUNKEN.setColorAt(0, new QColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkYellow)).lighter(120));
 
         GRADIENT_NORMAL = new QRadialGradient(-3, -3, 10);
-        GRADIENT_NORMAL.setColorAt(0, QColor.yellow);
-        GRADIENT_NORMAL.setColorAt(1, QColor.darkYellow);
+        GRADIENT_NORMAL.setColorAt(0, new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow));
+        GRADIENT_NORMAL.setColorAt(1, new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkYellow));
     }
 
 
@@ -230,8 +230,8 @@ public class ElasticNodes extends QGraphicsView {
 
         // Fill
         QLinearGradient gradient = new QLinearGradient(sceneRect.topLeft(), sceneRect.bottomRight());
-        gradient.setColorAt(0, QColor.white);
-        gradient.setColorAt(1, QColor.lightGray);
+        gradient.setColorAt(0, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
+        gradient.setColorAt(1, new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray));
         painter.fillRect(rect.intersected(sceneRect), new QBrush(gradient));
         painter.setBrush(QBrush.NoBrush);
         painter.drawRect(sceneRect);
@@ -244,9 +244,9 @@ public class ElasticNodes extends QGraphicsView {
         font.setBold(true);
         font.setPointSize(14);
         painter.setFont(font);
-        painter.setPen(QColor.lightGray);
+        painter.setPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray));
         painter.drawText(textRect.translated(2, 2), message);
-        painter.setPen(QColor.black);
+        painter.setPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
         painter.drawText(textRect, message);
     }
 
@@ -340,7 +340,7 @@ public class ElasticNodes extends QGraphicsView {
         @Override
         public void paint(QPainter painter, QStyleOptionGraphicsItem option, QWidget widget) {
             painter.setPen(Qt.PenStyle.NoPen);
-            painter.setBrush(QColor.fromRgba(QColor.black.rgb() & 0x7fffffff));
+            painter.setBrush(QColor.fromRgba(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black).rgb() & 0x7fffffff));
             painter.drawEllipse(-7, -7, 20, 20);
 
             if ((option.state().isSet(QStyle.StateFlag.State_Sunken))) {
@@ -494,7 +494,7 @@ public class ElasticNodes extends QGraphicsView {
             pol2.append(destArrowP1);
             pol2.append(destArrowP2);
 
-            painter.setBrush(QColor.black);
+            painter.setBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
             painter.drawPolygon(pol1);
             painter.drawPolygon(pol2);
         }

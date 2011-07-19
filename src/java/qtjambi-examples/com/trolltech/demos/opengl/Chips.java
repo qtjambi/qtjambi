@@ -174,7 +174,7 @@ public class Chips extends QWidget {
                     return;
                 }
 
-                painter.setPen(new QPen(QColor.black, 0));
+                painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 0));
                 painter.setBrush(fillColor);
                 painter.drawRect(13, 13, 97, 57);
                 return;
@@ -191,10 +191,10 @@ public class Chips extends QWidget {
 
             painter.drawRect(new QRect(14, 14, 79, 39));
             if (option.levelOfDetail() >= 1) {
-                painter.setPen(new QPen(QColor.gray, 1));
+                painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray), 1));
                 painter.drawLine(15, 54, 94, 54);
                 painter.drawLine(94, 53, 94, 15);
-                painter.setPen(new QPen(QColor.black, 0));
+                painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 0));
             }
 
             // Draw text
@@ -235,7 +235,7 @@ public class Chips extends QWidget {
 
             // Draw red ink
             if (stuff.size() > 1) {
-                painter.setPen(new QPen(QColor.red, 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin));
+                painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red), 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin));
                 painter.setBrush(QBrush.NoBrush);
                 QPainterPath path = new QPainterPath();
                 path.moveTo(stuff.get(0));

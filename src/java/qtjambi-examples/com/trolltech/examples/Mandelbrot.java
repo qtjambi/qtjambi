@@ -121,11 +121,11 @@ public class Mandelbrot extends QWidget {
         QPainter painter = new QPainter();
         painter.begin(this);
         painter.setRenderHint(RenderHint.SmoothPixmapTransform);
-        painter.fillRect(rect(), new QBrush(QColor.black));
+        painter.fillRect(rect(), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black)));
 
         if (pixmap.isNull()) {
             String message = tr("Rendering initial image, please wait...");
-            painter.setPen(QColor.white);
+            painter.setPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
             painter.drawText(rect(), Qt.AlignmentFlag.AlignCenter.value(),
                              message);
             painter.end();
@@ -171,7 +171,7 @@ public class Mandelbrot extends QWidget {
         painter.setPen(QPen.NoPen);
         painter.setBrush(new QColor(0, 0, 0, 127));
         painter.drawRect(offset - 5, 0, textWidth + 10, metrics.lineSpacing() + 5);
-        painter.setPen(QColor.white);
+        painter.setPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
         painter.drawText(offset, metrics.leading() + metrics.ascent(), text);
         painter.end();
     }

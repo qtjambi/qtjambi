@@ -222,12 +222,12 @@ public class Spreadsheet extends QMainWindow {
 
         m.addSeparator();
 
-        actionTextColor = new QAction(createPixmapForButton(tr("T"), QColor.black, QColor.transparent), "&Color...", this);
+        actionTextColor = new QAction(createPixmapForButton(tr("T"), new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent)), "&Color...", this);
         actionTextColor.triggered.connect(this, "textColor()");
         b.addAction(actionTextColor);
         m.addAction(actionTextColor);
 
-        actionCellColor = new QAction(createPixmapForButton(tr("T"), QColor.white, QColor.black), "&Color...", this);
+        actionCellColor = new QAction(createPixmapForButton(tr("T"), new QColor(com.trolltech.qt.core.Qt.GlobalColor.white), new QColor(com.trolltech.qt.core.Qt.GlobalColor.black)), "&Color...", this);
         actionCellColor.triggered.connect(this, "backgroundColor()");
         b.addAction(actionCellColor);
         m.addAction(actionCellColor);
@@ -772,9 +772,9 @@ public class Spreadsheet extends QMainWindow {
 
         public CellDelegate() {
             penBorder.setWidth(2);
-            penBorder.setColor(QColor.darkBlue);
+            penBorder.setColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkBlue));
 
-            penNormal.setColor(QColor.lightGray);
+            penNormal.setColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray));
         }
 
         @Override
@@ -898,8 +898,8 @@ public class Spreadsheet extends QMainWindow {
                 actionTextUnderline.setChecked(font != null && font.underline());
                 actionTextItalic.setChecked(font != null && font.italic());
 
-                actionTextColor.setIcon(createPixmapForButton(tr("T"), cell.textColor != null ? cell.textColor : QColor.black, QColor.transparent));
-                actionCellColor.setIcon(createPixmapForButton(tr("T"), QColor.white, cell.backgroundColor != null ? cell.backgroundColor : QColor.black));
+                actionTextColor.setIcon(createPixmapForButton(tr("T"), cell.textColor != null ? cell.textColor : new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent)));
+                actionCellColor.setIcon(createPixmapForButton(tr("T"), new QColor(com.trolltech.qt.core.Qt.GlobalColor.white), cell.backgroundColor != null ? cell.backgroundColor : new QColor(com.trolltech.qt.core.Qt.GlobalColor.black)));
             } else {
                 cellEdit.setText("");
             }

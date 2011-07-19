@@ -121,7 +121,7 @@ public class Chat extends QDialog {
 
         if (text.startsWith("/")) {
             QColor color = ui.textEdit.textColor();
-            ui.textEdit.setTextColor(QColor.red);
+            ui.textEdit.setTextColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red));
             ui.textEdit.append(tr("! Unknown command: ") + text.substring(text.indexOf(' ')));
             ui.textEdit.setTextColor(color);
         } else {
@@ -137,7 +137,7 @@ public class Chat extends QDialog {
             return;
 
         QColor color = ui.textEdit.textColor();
-        ui.textEdit.setTextColor(QColor.gray);
+        ui.textEdit.setTextColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray));
         ui.textEdit.append(String.format(tr("* %1$s has joined"), nick));
         ui.textEdit.setTextColor(color);
         ui.listWidget.addItem(new QListWidgetItem(nick));
@@ -156,7 +156,7 @@ public class Chat extends QDialog {
         }
 
         QColor color = ui.textEdit.textColor();
-        ui.textEdit.setTextColor(QColor.gray);
+        ui.textEdit.setTextColor(new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray));
         ui.textEdit.append(String.format(tr("* %1$s has left"), nick));
         ui.textEdit.setTextColor(color);
     }

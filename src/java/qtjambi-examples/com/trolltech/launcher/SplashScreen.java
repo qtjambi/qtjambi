@@ -141,8 +141,8 @@ class SplashScreen extends QSplashScreen {
 
         p.setClipPath(clipPath);
 
-        final QColor dark = QColor.black;
-        final QColor light = QColor.transparent;
+        final QColor dark = new QColor(com.trolltech.qt.core.Qt.GlobalColor.black);
+        final QColor light = new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent);
 
         // Drop shadow: right shadow
         {
@@ -204,10 +204,10 @@ class SplashScreen extends QSplashScreen {
 
         if (com.trolltech.qt.QSysInfo.macVersion() > 0) {
             QBitmap bm = new QBitmap(tr.size().toSize());
-            bm.fill(QColor.color0);
+            bm.fill(new QColor(com.trolltech.qt.core.Qt.GlobalColor.color0));
             QPainter bmp = new QPainter(bm);
             bmp.translate(-tr.x(), -tr.y());
-            bmp.fillPath(path, new QBrush(QColor.color1));
+            bmp.fillPath(path, new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.color1)));
             bmp.end();
             setMask(bm);
         }
