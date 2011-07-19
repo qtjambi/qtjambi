@@ -94,7 +94,7 @@ public class FridgeMagnets extends QWidget {
 
 //! [4]
         QPalette newPalette = palette();
-        newPalette.setColor(QPalette.ColorRole.Window, QColor.white);
+        newPalette.setColor(QPalette.ColorRole.Window, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
         setPalette(newPalette);
 
         setMinimumSize(400, Math.max(200, y));
@@ -216,13 +216,13 @@ public class FridgeMagnets extends QWidget {
             QPainter painter = new QPainter();
             painter.begin(image);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
-            painter.setBrush(QColor.white);
+            painter.setBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
             QRectF frame = new QRectF(0.5, 0.5, image.width() - 1,
                                       image.height() - 1);
             painter.drawRoundRect(frame, 10 * 100 / image.width(), 10 * 100 / image.height());
 
             painter.setFont(font);
-            painter.setBrush(QColor.black);
+            painter.setBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
 
             QRect rectangle = new QRect(new QPoint(6, 6), size);
             painter.drawText(rectangle, Qt.AlignmentFlag.AlignCenter.value(),

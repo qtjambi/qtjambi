@@ -75,7 +75,7 @@ public class DraggableText extends QWidget
         }
 
         QPalette newPalette = palette();
-        newPalette.setColor(QPalette.ColorRole.Window, QColor.white);
+        newPalette.setColor(QPalette.ColorRole.Window, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
         setPalette(newPalette);
 
         setAcceptDrops(true);

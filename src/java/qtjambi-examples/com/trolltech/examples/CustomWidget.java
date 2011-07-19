@@ -83,7 +83,7 @@ public class CustomWidget extends QWidget {
     private QPainterPath needlePath = null;
     private QBrush radialGradient = null;
     private QPainterPath framePath = null;
-    private QPen speedBarPen = new QPen(QColor.black, 4);
+    private QPen speedBarPen = new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 4);
     private QTimeLine timeLine = new QTimeLine(1, this); {
         timeLine.valueChanged.connect(this, "animateSpeed(double)");
         timeLine.finished.connect(this, "noLongerAnimating()");
@@ -295,7 +295,7 @@ public class CustomWidget extends QWidget {
     //
     // needleColor property
     //
-    private static final QColor NEEDLE_COLOR = QColor.red;
+    private static final QColor NEEDLE_COLOR = new QColor(com.trolltech.qt.core.Qt.GlobalColor.red);
     private QColor needleColor = NEEDLE_COLOR;
 
     @QtBlockedSlot public final QColor needleColor() { return needleColor; }
@@ -308,7 +308,7 @@ public class CustomWidget extends QWidget {
     //
     // backgroundColor property
     //
-    private static final QColor BACKGROUND_COLOR = QColor.white;
+    private static final QColor BACKGROUND_COLOR = new QColor(com.trolltech.qt.core.Qt.GlobalColor.white);
     private QColor backgroundColor = BACKGROUND_COLOR;
 
     @QtBlockedSlot public final QColor backgroundColor() { return backgroundColor; }
@@ -324,7 +324,7 @@ public class CustomWidget extends QWidget {
     //
     // needleFrameColor property
     //
-    private static final QColor NEEDLE_FRAME_COLOR = QColor.black;
+    private static final QColor NEEDLE_FRAME_COLOR = new QColor(com.trolltech.qt.core.Qt.GlobalColor.black);
     private QColor needleFrameColor = NEEDLE_FRAME_COLOR;
 
     @QtBlockedSlot public final QColor needleFrameColor() { return needleFrameColor; }
@@ -607,7 +607,7 @@ public class CustomWidget extends QWidget {
     private void drawFrame(QPainter p) {
         p.save();
 
-        p.setPen(new QPen(QColor.black, 2));
+        p.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 2));
         p.setBrush(radialGradient());
         p.drawPath(framePath());
 

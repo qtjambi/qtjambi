@@ -541,7 +541,7 @@
         </inject-code>
         <modify-function signature="fill(const QColor &amp;)">
             <modify-argument index="1">
-                <replace-default-expression with="QColor.white"/>
+                <replace-default-expression with="new com.trolltech.qt.gui.QColor(com.trolltech.qt.core.Qt.GlobalColor.white)"/>
             </modify-argument>
         </modify-function>
 

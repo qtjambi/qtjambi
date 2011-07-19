@@ -82,7 +82,7 @@ public class XMLHighlighter extends QSyntaxHighlighter {
         QRegExp pattern;
 
         // Tagname
-        brush = new QBrush(QColor.darkMagenta);
+        brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkMagenta));
         tagNameFormat.setForeground(brush);
         tagNameFormat.setFontWeight(QFont.Weight.Bold.value());
         pattern = new QRegExp("<[A-Za-z//-]+");
@@ -93,7 +93,7 @@ public class XMLHighlighter extends QSyntaxHighlighter {
         highlightingRules.add(rule);
 
         // Attribute
-        brush = new QBrush(QColor.darkGreen);
+        brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGreen));
         attributeFormat.setForeground(brush);
         attributeFormat.setFontWeight(QFont.Weight.Bold.value());
         pattern = new QRegExp("[A-Za-z//-]+=");
@@ -102,7 +102,7 @@ public class XMLHighlighter extends QSyntaxHighlighter {
 
 
         // String
-        brush = new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern);
+        brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue), Qt.BrushStyle.SolidPattern);
         pattern = new QRegExp("\".*\"");
         pattern.setMinimal(true);
         quotationFormat.setForeground(brush);
@@ -110,7 +110,7 @@ public class XMLHighlighter extends QSyntaxHighlighter {
         highlightingRules.add(rule);
 
         // Block comment
-        brush = new QBrush(QColor.gray, Qt.BrushStyle.SolidPattern);
+        brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.gray), Qt.BrushStyle.SolidPattern);
         commentFormat.setForeground(brush);
 
         commentStartExpression = new QRegExp("<!--");

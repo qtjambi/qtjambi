@@ -195,7 +195,7 @@ public class SvgCards extends QGraphicsView {
                           QWidget widget) {
 
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
-            painter.setPen(new QPen(QColor.black));
+            painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black)));
             QLinearGradient gradient = new QLinearGradient(rectangle.topLeft(),
                                                            rectangle.bottomLeft());
             gradient.setColorAt(0, new QColor(0, 0, 0, 127));

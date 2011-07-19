@@ -131,7 +131,7 @@ public class CodeEditor extends QPlainTextEdit
             QTextEdit_ExtraSelection selection =
                 new QTextEdit_ExtraSelection();
             
-            QColor lineColor = QColor.yellow.lighter(160);
+            QColor lineColor = new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow).lighter(160);
 
             QTextCharFormat format = selection.format();
             format.setBackground(new QBrush(lineColor));
@@ -151,8 +151,8 @@ public class CodeEditor extends QPlainTextEdit
     public void lineNumberAreaPaintEvent(QPaintEvent event)
     {
         QPainter painter = new QPainter(lineNumberArea);
-        painter.setPen(new QPen(QColor.black));
-        painter.fillRect(event.rect(), new QBrush(QColor.lightGray));
+        painter.setPen(new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black)));
+        painter.fillRect(event.rect(), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.lightGray)));
 
 //![extraAreaPaintEvent_0]
 

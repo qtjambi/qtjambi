@@ -378,7 +378,7 @@ class PathDeformRenderer extends ArthurFrame
         int skip_y = (int)Math.round(m_pathBounds.height() + pad_y);
 
         painter.setPen(QPen.NoPen);
-        painter.setBrush(new QBrush(QColor.black));
+        painter.setBrush(new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black)));
 
         QRectF clip = painter.clipPath().boundingRect();
         int overlap = pad_x / 2;

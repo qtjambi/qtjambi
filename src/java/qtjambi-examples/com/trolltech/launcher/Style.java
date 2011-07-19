@@ -63,7 +63,7 @@ public class Style extends QWindowsStyle {
 
     public static QPen PEN_THICK_GREEN = new QPen(BRUSH_GREEN, 2);
     public static QPen PEN_THICK_LIGHT_GREEN = new QPen(BRUSH_LIGHT_GREEN, 2);
-    public static QPen PEN_BLACK = new QPen(QColor.black, 0);
+    public static QPen PEN_BLACK = new QPen(new QColor(com.trolltech.qt.core.Qt.GlobalColor.black), 0);
     public static QPen PEN_GRAY = new QPen(COLOR_GRAY, 0);
 
     public static final double GROUPBOX_LINE_THICKNESS = 2;
@@ -79,12 +79,12 @@ public class Style extends QWindowsStyle {
     static {
         GRADIENT_LIGHT = new QLinearGradient(0, 0, 0, 1);
         GRADIENT_LIGHT.setColorAt(0, TT_BG_GREEN_DARK);
-        GRADIENT_LIGHT.setColorAt(0.25, QColor.white);
+        GRADIENT_LIGHT.setColorAt(0.25, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
         GRADIENT_LIGHT.setColorAt(0.5, TT_BG_GREEN_LIGHT);
         GRADIENT_LIGHT.setColorAt(1, TT_BG_GREEN_DARK);
 
         GRADIENT_DARK = new QLinearGradient(0, 0, 0, 1);
-        GRADIENT_DARK.setColorAt(0, QColor.white);
+        GRADIENT_DARK.setColorAt(0, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
         GRADIENT_DARK.setColorAt(0.25, TT_BG_GREEN_DARK);
         GRADIENT_DARK.setColorAt(0.5, TT_BG_GREEN_DARK);
         GRADIENT_DARK.setColorAt(1, TT_BG_GREEN_LIGHT);
@@ -324,7 +324,7 @@ public class Style extends QWindowsStyle {
     public void drawScrollBarSlider(QStyleOptionSlider opt, QPainter p) {
         QRectF rect = new QRectF(opt.rect());
         p.save();
-        p.fillRect(rect, new QBrush(QColor.white));
+        p.fillRect(rect, new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)));
         QStyle.State state = opt.state();
         state.clear(QStyle.StateFlag.State_Sunken);
         drawButtonOutline(p, rect, state);
@@ -334,7 +334,7 @@ public class Style extends QWindowsStyle {
     public void drawScrollBarLine(QStyleOptionSlider opt, QPainter p, QStyle.ControlElement ce) {
         QRectF rect = new QRectF(opt.rect());
         p.save();
-        p.fillRect(rect, new QBrush(QColor.white));
+        p.fillRect(rect, new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)));
         drawButtonOutline(p, rect, opt.state());
 
         p.translate(new QRectF(opt.rect()).center());

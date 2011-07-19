@@ -125,7 +125,7 @@ public class ScrollingHTMLView extends QWidget {
         p.begin(this);
 
         if (w > background.width() || h > background.height() || background == null)
-            p.fillRect(rect(), new QBrush(QColor.white));
+            p.fillRect(rect(), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)));
         p.drawPixmap(w / 2 - background.width() / 2, h / 2 - background.height() / 2, background);
 
         QRectF textRect = new QRectF(w * margin, 0, w * (1 - margin), h);
