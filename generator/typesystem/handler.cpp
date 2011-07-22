@@ -33,10 +33,12 @@ void Handler::fetchAttributeValues(const QString &name, const QXmlAttributes &at
 
     for (int i = 0; i < atts.length(); ++i) {
         QString key = atts.localName(i).toLower();
-        QString val = atts.value(i);
+        const QString val = atts.value(i);
 
         if (!acceptedAttributes->contains(key)) {
-            ReportHandler::warning(QString("Unknown attribute for '%1': '%2'").arg(name).arg(key));
+            const QString qname = atts.qName(i);
+            if (qname.indexOf(':') < 0)	// FIXME remove this once namespace work is done
+                ReportHandler::warning(QString("Unknown attribute for '%1': '%2'").arg(name).arg(key));
         } else {
             (*acceptedAttributes)[key] = val;
         }
