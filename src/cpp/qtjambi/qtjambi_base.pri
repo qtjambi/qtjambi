@@ -29,18 +29,18 @@ macx:{
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
-    INCLUDEPATH += $$(JAVA_HOME_TARGET)/include
+    INCLUDEPATH += "$$JAVA_HOME_TARGET/include"
     win32 {
-        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/win32
+        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/win32"
     }
     solaris-g++ | solaris-cc {
-        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/solaris
+        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/solaris"
     }
     linux-g++* {
-        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/linux
+        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/linux"
     }
     freebsd-g++* {
-        INCLUDEPATH += $$(JAVA_HOME_TARGET)/include/freebsd
+        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/freebsd"
     }
 }
 
