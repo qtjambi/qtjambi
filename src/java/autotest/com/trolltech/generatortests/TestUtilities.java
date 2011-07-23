@@ -33,6 +33,7 @@ public class TestUtilities extends TestCase {
 	super(name);
     }
 
+    @org.junit.Before
     public void setUp() {
 	    singleString = "test";
 	    failString = "bad";
@@ -43,6 +44,7 @@ public class TestUtilities extends TestCase {
 	    configuration = System.getProperty("com.trolltech.qt.debug");
     }
     
+    @org.junit.After
     public void tearDown() {
 	singleString = null;
 	failString = null;
@@ -53,17 +55,20 @@ public class TestUtilities extends TestCase {
 	
     }
     
+    @org.junit.Test
     public void testMatchProperty() {
 	System.setProperty(singleString, strings);
 	assertTrue(Utilities.matchProperty(singleString, strings));
 	assertFalse(Utilities.matchProperty(failString, strings));
     }
     
+    @org.junit.Test
     public void testLoadLibrary() {
 	assertTrue(Utilities.loadLibrary(validLibrary));
 	assertFalse(Utilities.loadLibrary(falseLibrary));
     }
     
+    @org.junit.Test
     public void testDecideOperatingSystem() {
 	if(thisOs.startsWith("linux"))
 	    assertTrue(Utilities.operatingSystem.equals(OperatingSystem.Linux));
@@ -75,6 +80,7 @@ public class TestUtilities extends TestCase {
 	    assertFalse(true);
     }
     
+    @org.junit.Test
     public void testDecideConfiguration() {
 	if(configuration != null)
 	    assertTrue(Utilities.configuration.equals(Configuration.Debug));

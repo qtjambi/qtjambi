@@ -27,14 +27,17 @@ public class TestQThread extends TestCase {
 	super(name);
     }
 
+    @org.junit.Before
     public void setUp() {
 	qthread = new QThread(r);
     }
     
+    @org.junit.After
     public void tearDown() {
 	qthread = null;
     }
     
+    @org.junit.Test
     public void testRun() {
 	qthread.run();
 	assertTrue(!(qthread.isAlive()));

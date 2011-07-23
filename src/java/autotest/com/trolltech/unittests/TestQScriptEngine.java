@@ -34,6 +34,7 @@ public class TestQScriptEngine extends TestCase {
 	super(name);
     }
     
+    @org.junit.Before
     public void setUp() throws Exception {
 	QApplication.initialize(new String[] {});
 	testEngine = new QScriptEngine();
@@ -41,6 +42,7 @@ public class TestQScriptEngine extends TestCase {
 	scriptButton = testEngine.newQObject(button);
     }
     
+    @org.junit.After
     public void tearDown() throws Exception {
 	testEngine = null;
 	button = null;
@@ -53,6 +55,7 @@ public class TestQScriptEngine extends TestCase {
 	QApplication.instance().dispose();
     }
     
+    @org.junit.Test
     public void testEvaluate() {
 	assertTrue(testEngine.evaluate("1 + 2").toString().equals("3"));
 	assertTrue(testEngine.evaluate("1 + 2").toInteger() == 3);
@@ -60,27 +63,32 @@ public class TestQScriptEngine extends TestCase {
 	assertTrue(testEngine.evaluate("var res = 1; for(var i = 1; i <= 5; i++)res = res*i;").toInt32() == 120);
     }
     
+    @org.junit.Test
     public void testSetProperty() {
 	testEngine.globalObject().setProperty("button", scriptButton);
 	scriptButton.setProperty("checkable", new QScriptValue(true));
 	assertTrue(testEngine.evaluate("button.checkable = true").toBoolean());
     }
     
+    @org.junit.Test
     public void testProperty() {
 	scriptButton.setProperty("aBooleanProperty", new QScriptValue(true));	
 	assertTrue(scriptButton.property("aBooleanProperty").toBoolean());
     }
     
+    @org.junit.Test
     public void testNewQObject() {
 	scriptButton1 = testEngine.newQObject(button);
 	assertTrue(scriptButton1.isQObject());
     }
     
+    @org.junit.Test
     public void testNewQArray() {
 	val = testEngine.newArray(1);
 	assertTrue(val.isArray());
     }
     
+    @org.junit.Test
     public void testNewDate() {
 	val = testEngine.newDate(456789);
 	assertTrue(val.isDate());
@@ -88,11 +96,13 @@ public class TestQScriptEngine extends TestCase {
 	assertTrue(val1.isDate());
     }
     
+    @org.junit.Test
     public void testNewObject() {
 	val = testEngine.newObject();
 	assertTrue(val.isObject());
     }
     
+    @org.junit.Test
     public void testNewRegExp() {
 	val = testEngine.newRegExp(new QRegExp());
 	assertTrue(val.isRegExp());
@@ -100,6 +110,7 @@ public class TestQScriptEngine extends TestCase {
 	assertTrue(val1.isRegExp());
     }
     
+    @org.junit.Test
     public void testNewVariant() {
 	val = testEngine.newVariant(new QVariant());
 	assertTrue(val.isVariant());
@@ -107,11 +118,13 @@ public class TestQScriptEngine extends TestCase {
 	assertTrue(val1.isVariant());
     }
     
+    @org.junit.Test
     public void testNullValue() {
 	val = testEngine.nullValue();
 	assertTrue(val.isNull());
     }
     
+    @org.junit.Test
     public void testPushPopContext() {
 	testEngine.setProperty("global", new QScriptValue(3));
 	scriptContext = testEngine.pushContext();

@@ -35,6 +35,7 @@ public class TestGeneratorUtilities extends TestCase {
 		super(name);
     }
 
+    @org.junit.Before
     public void setUp() throws Exception {
 	super.setUp();
 	gu1 = new GeneratorUtilities();
@@ -44,6 +45,7 @@ public class TestGeneratorUtilities extends TestCase {
 	image = new QImage();
     }
 
+    @org.junit.After
     public void tearDown() throws Exception {
 	super.tearDown();
 	gu1 = null;
@@ -54,6 +56,7 @@ public class TestGeneratorUtilities extends TestCase {
 	ftc = null;
     }
 
+    @org.junit.Test
     public void testThreadCheck() throws Exception {
 	Field threadAssertsTest = GeneratorUtilities.class.getDeclaredField("threadAsserts");
 	threadAssertsTest.setAccessible(true);
@@ -67,6 +70,7 @@ public class TestGeneratorUtilities extends TestCase {
 	}
     }
     
+    @org.junit.Test
     public void testFetchField() throws Exception {
 	/*
 	 * Access the class variable with it's getter method,
@@ -77,12 +81,14 @@ public class TestGeneratorUtilities extends TestCase {
 	assertFalse(!(ftc.getFakeVar1().equals(GeneratorUtilities.fetchField(ftc, FetchableTestClass.class, "fakeVar1"))));
     }
     
+    @org.junit.Test
     public void testSetField() throws Exception {
 	GeneratorUtilities.setField(ftc, FetchableTestClass.class, "str1", "some text");
 	assertTrue(ftc.getStr1().equals("some text"));
 	assertFalse(!(ftc.getStr1().equals("some text")));
     }
     
+    @org.junit.Test
     public void testCountExpense() {
 	image.load("./src/com/trolltech/images/qt-logo.png");
 	assertTrue(image.height()*image.bytesPerLine() <= 67108864);
@@ -90,6 +96,7 @@ public class TestGeneratorUtilities extends TestCase {
     }
 
     // TODO implement testCreateExtendedEnum(), example from QAbstractFileEngine.java
+    @org.junit.Test
     public void testCreateExtendedEnum() {
 	assertTrue(true);
 	assertFalse(false);

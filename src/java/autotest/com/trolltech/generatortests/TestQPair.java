@@ -21,26 +21,31 @@ public class TestQPair <T, S> extends TestCase {
 	super(name);
     }
 
+    @org.junit.Before
     public void setUp() throws Exception {
 	qp1 = new QPair(3, 5);
 	qp2 = new QPair(5, 3);
     }
 
+    @org.junit.After
     public void tearDown() throws Exception {
 	qp1 = null;
 	qp2 = null;
     }
 
+    @org.junit.Test
     public void testEquals() {
 	assertTrue(qp1.equals(qp1));
 	assertFalse(qp1.equals(qp2));
     }
 
+    @org.junit.Test
     public void testToString() {
 	assertTrue(qp1.toString().equals("Pair(3,5)"));
 	assertFalse(!(qp1.toString().equals("Pair(3,5)")));
     }
 
+    @org.junit.Test
     public void testClone() {
 	qp1 = qp2.clone();
 	assertTrue(qp1.equals(qp2));
