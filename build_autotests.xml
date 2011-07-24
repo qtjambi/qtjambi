@@ -48,6 +48,7 @@
     <target name="compile.native" depends="init">
 	    <mkdir dir="${outputDir}/autotestlib"/>
 	    <generator dir="${basedir}/generator"
+			includepaths="${basedir}/autotestlib:${generator.includepaths}"
 			outputDirectory="${outputDir}/autotestlib"
 			typesystem="${basedir}/autotestlib/build.txt"
 			header="${basedir}/autotestlib/global.h"/>
@@ -67,7 +68,7 @@
 				<pathelement location="." />
 			</classpath>
 			<!-- pick up the generated code from compile.native -->
-			<src path="${outputDir}/autotestlib/com/trolltech/autotests/generated"/>
+			<src path="${outputDir}/autotestlib/java/com/trolltech/autotests/generated"/>
 	    </javac>
     </target>
 
@@ -76,10 +77,10 @@
 	    <javac destdir="${outputDir}/auto" debug="true" includeantruntime="false">
 			<compilerarg value="-Xlint:deprecation" />
 			<classpath>
-				<pathelement location="${basedir}qtjambi-${qtjambi.version}.jar" />
+				<pathelement location="${basedir}/qtjambi-${qtjambi.version}.jar" />
 				<pathelement location="${tests.junit}" />
 				<pathelement location="${outputDir}/autotests" />
-				<pathelement location="${basedir}src/java/autotest" />
+				<pathelement location="${basedir}/src/java/autotest" />
 			</classpath>
 			<src path="src/java/autotest/com/trolltech/autotests"/>
 			<src path="src/java/autotest/com/trolltech/generatortests"/>
