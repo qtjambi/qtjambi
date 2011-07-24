@@ -45,11 +45,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <QtCore/QtCore>
-#include <QtGui/QtGui>
-#include <QtNetwork/QtNetwork>
-#include <QtSql/QtSql>
-#include <QtXml/QtXml>
+#include <qstring.h>
 
 #include "abstractclass.h"
 #include "destruction.h"
