@@ -65,8 +65,8 @@ public class TestGeneratorUtilities extends TestCase {
 	 * threadAsserts is true
 	 */
 	if (threadAssertsTest.getBoolean(gu1)) {
-	    assertFalse(o1.thread() == null);
-	    assertTrue(o1.thread() == Thread.currentThread());
+	    assertNotNull(o1.thread());
+	    assertEquals(o1.thread(), Thread.currentThread());
 	}
     }
     
@@ -78,21 +78,18 @@ public class TestGeneratorUtilities extends TestCase {
 	 * Compare the references.
 	 */
 	assertTrue(ftc.getFakeVar1().equals(GeneratorUtilities.fetchField(ftc, FetchableTestClass.class, "fakeVar1")));
-	assertFalse(!(ftc.getFakeVar1().equals(GeneratorUtilities.fetchField(ftc, FetchableTestClass.class, "fakeVar1"))));
     }
     
     @org.junit.Test
     public void testSetField() throws Exception {
 	GeneratorUtilities.setField(ftc, FetchableTestClass.class, "str1", "some text");
-	assertTrue(ftc.getStr1().equals("some text"));
-	assertFalse(!(ftc.getStr1().equals("some text")));
+	assertEquals(ftc.getStr1(), "some text");
     }
     
     @org.junit.Test
     public void testCountExpense() {
-	image.load("./src/com/trolltech/images/qt-logo.png");
-	assertTrue(image.height()*image.bytesPerLine() <= 67108864);
-	assertFalse(image.height()*image.bytesPerLine() > 67108864);
+	image.load("./src/java/qtjambi/com/trolltech/images/qt-logo.png");
+	assertEquals(image.height()*image.bytesPerLine(), 4096);
     }
 
     // TODO implement testCreateExtendedEnum(), example from QAbstractFileEngine.java
@@ -123,20 +120,8 @@ class FetchableTestClass {
 	this.fakeVar1 = fakeVar1;
     }
     
-    public FetchableTestClass(String str1) {
-	this.str1 = str1;
-    }
-    
-    public void setFakeVar1(QObject fakeVar1) {
-	this.fakeVar1 = fakeVar1;
-    }
-    
     public QObject getFakeVar1() {
 	return fakeVar1;
-    }
-    
-    public void setStr1(String str1) {
-	this.str1 = str1;
     }
     
     public String getStr1() {

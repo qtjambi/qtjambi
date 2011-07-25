@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.trolltech.qt.QVariant;
+import com.trolltech.qt.QtJambi_LibraryInitializer;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.gui.QApplication;
@@ -58,9 +59,11 @@ public class TestQScriptEngine extends TestCase {
     @org.junit.Test
     public void testEvaluate() {
 	assertTrue(testEngine.evaluate("1 + 2").toString().equals("3"));
-	assertTrue(testEngine.evaluate("1 + 2").toInteger() == 3);
-	assertTrue(testEngine.evaluate("1 == 2").toBoolean() == false);
-	assertTrue(testEngine.evaluate("var res = 1; for(var i = 1; i <= 5; i++)res = res*i;").toInt32() == 120);
+	assertEquals(testEngine.evaluate("1 + 2").toInt32(), 3);
+	assertFalse(testEngine.evaluate("1 == 2").toBoolean());
+	assertEquals(testEngine.evaluate("var res = 1; for(var i = 1; i <= 5; i++)res = res*i;").toInt32(), 120);
+	assertEquals(testEngine.evaluate("1 + 2").toInteger(), 3.00);
+	assertEquals(testEngine.evaluate("3.14").toNumber(), 3.14);
     }
     
     @org.junit.Test
@@ -129,9 +132,9 @@ public class TestQScriptEngine extends TestCase {
 	testEngine.setProperty("global", new QScriptValue(3));
 	scriptContext = testEngine.pushContext();
 	scriptContext.activationObject().setProperty("local", new QScriptValue(5));
-	assertTrue(testEngine.evaluate("global = 6; global + local;").toInt32() == 11);
+	assertEquals(testEngine.evaluate("global = 6; global + local;").toInt32(), 11);
 	testEngine.popContext();
-	assertTrue(((QScriptValue)testEngine.property("global")).toInt32() == 3);
+	assertEquals(((QScriptValue)testEngine.property("global")).toInt32(), 3);
     }
     
     /* TODO

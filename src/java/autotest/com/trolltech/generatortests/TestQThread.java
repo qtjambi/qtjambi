@@ -40,13 +40,12 @@ public class TestQThread extends TestCase {
     @org.junit.Test
     public void testRun() {
 	qthread.run();
-	assertTrue(!(qthread.isAlive()));
 	assertFalse(qthread.isAlive());
     }
     
     public void testInit() {
-	assertTrue(qthread.starting != null);
-	assertTrue(qthread.finished != null);
+	assertNotNull(qthread.starting);
+	assertNotNull(qthread.finished);
     }
     
     public static Test suite() {

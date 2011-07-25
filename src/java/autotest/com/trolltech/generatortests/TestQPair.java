@@ -14,8 +14,8 @@ import com.trolltech.qt.QPair;
 
 public class TestQPair <T, S> extends TestCase {
 
-    QPair<T, S> qp1;
-    QPair<T ,S> qp2;
+    QPair<Integer, Integer> qp1;
+    QPair<Integer, Integer> qp2;
 
     public TestQPair(String name) {
 	super(name);
@@ -23,8 +23,8 @@ public class TestQPair <T, S> extends TestCase {
 
     @org.junit.Before
     public void setUp() throws Exception {
-	qp1 = new QPair(3, 5);
-	qp2 = new QPair(5, 3);
+	qp1 = new QPair<Integer, Integer>(3, 5);
+	qp2 = new QPair<Integer, Integer>(5, 3);
     }
 
     @org.junit.After
@@ -41,22 +41,20 @@ public class TestQPair <T, S> extends TestCase {
 
     @org.junit.Test
     public void testToString() {
-	assertTrue(qp1.toString().equals("Pair(3,5)"));
-	assertFalse(!(qp1.toString().equals("Pair(3,5)")));
+	assertEquals(qp1.toString(), "Pair(3,5)");
     }
 
     @org.junit.Test
     public void testClone() {
 	qp1 = qp2.clone();
-	assertTrue(qp1.equals(qp2));
-	assertFalse(!(qp1.equals(qp2)));
+	assertEquals(qp1, qp2);
     }
 
     public static Test suite() {
 	TestSuite suite = new TestSuite();
-	suite.addTest(new TestQPair("testEquals"));
-	suite.addTest(new TestQPair("testToString"));
-	suite.addTest(new TestQPair("testClone"));
+	suite.addTest(new TestQPair<Object, Object>("testEquals"));
+	suite.addTest(new TestQPair<Object, Object>("testToString"));
+	suite.addTest(new TestQPair<Object, Object>("testClone"));
 	return suite;
     }
 
