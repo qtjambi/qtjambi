@@ -53,20 +53,6 @@ public class TestGeneratorUtilities {
 		t = null;
 	}
 
-	@org.junit.Test
-	public void testThreadAsserts() throws Exception {
-		Field threadAssertsTest = GeneratorUtilities.class.getDeclaredField("threadAsserts");
-		threadAssertsTest.setAccessible(true);
-		/*
-		 * if threadAsserts is false threadCheck won't run, we test the case
-		 * only when threadAsserts is true
-		 */
-		if (threadAssertsTest.getBoolean(gu1)) {
-			assertNotNull(o1.thread());
-			assertEquals(o1.thread(), Thread.currentThread());
-		}
-	}
-
 	@org.junit.Test(expected = com.trolltech.qt.QThreadAffinityException.class)
 	public void testThreadCheck() {
 		o1.moveToThread(t);
