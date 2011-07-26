@@ -18,106 +18,106 @@ import com.trolltech.qt.gui.QImage;
 
 public class TestGeneratorUtilities {
 
-    private GeneratorUtilities gu1;
-    private QObject o1;
-    private FetchableTestClass ftc;
-    private QObject o2;
-    private QImage image;
-    private Thread t;
+	private GeneratorUtilities gu1;
+	private QObject o1;
+	private FetchableTestClass ftc;
+	private QObject o2;
+	private QImage image;
+	private Thread t;
 
-    @org.junit.BeforeClass
-    public static void setUpClass() {
-	QtJambi_LibraryInitializer.init();
-    }
-    
-    @org.junit.Before
-    public void setUp() {
-	gu1 = new GeneratorUtilities();
-	o1 = new QObject();
-	o2 = new QObject();
-	ftc = new FetchableTestClass(o2);
-	image = new QImage();
-	t = new Thread();
-	t.start();
-    }
-
-    @org.junit.After
-    public void tearDown() {
-	gu1 = null;
-	o1 = null;
-	ftc = null;
-	o2 = null;
-	image = null;
-	ftc = null;
-	t.interrupt();
-	t = null;
-    }
-
-    @org.junit.Test
-    public void testThreadAsserts() throws Exception {
-	Field threadAssertsTest = GeneratorUtilities.class.getDeclaredField("threadAsserts");
-	threadAssertsTest.setAccessible(true);
-	/*
-	 * if threadAsserts is false threadCheck won't run, we test the case
-	 * only when threadAsserts is true
-	 */
-	if (threadAssertsTest.getBoolean(gu1)) {
-	    assertNotNull(o1.thread());
-	    assertEquals(o1.thread(), Thread.currentThread());
+	@org.junit.BeforeClass
+	public static void setUpClass() {
+		QtJambi_LibraryInitializer.init();
 	}
-    }
 
-    @org.junit.Test(expected = com.trolltech.qt.QThreadAffinityException.class)
-    public void testThreadCheck() {
-	o1.moveToThread(t);
-	GeneratorUtilities.threadCheck(o1);
-    }
+	@org.junit.Before
+	public void setUp() {
+		gu1 = new GeneratorUtilities();
+		o1 = new QObject();
+		o2 = new QObject();
+		ftc = new FetchableTestClass(o2);
+		image = new QImage();
+		t = new Thread();
+		t.start();
+	}
 
-    @org.junit.Test
-    public void testFetchField() {
+	@org.junit.After
+	public void tearDown() {
+		gu1 = null;
+		o1 = null;
+		ftc = null;
+		o2 = null;
+		image = null;
+		ftc = null;
+		t.interrupt();
+		t = null;
+	}
+
+	@org.junit.Test
+	public void testThreadAsserts() throws Exception {
+		Field threadAssertsTest = GeneratorUtilities.class.getDeclaredField("threadAsserts");
+		threadAssertsTest.setAccessible(true);
+		/*
+		 * if threadAsserts is false threadCheck won't run, we test the case
+		 * only when threadAsserts is true
+		 */
+		if (threadAssertsTest.getBoolean(gu1)) {
+			assertNotNull(o1.thread());
+			assertEquals(o1.thread(), Thread.currentThread());
+		}
+	}
+
+	@org.junit.Test(expected = com.trolltech.qt.QThreadAffinityException.class)
+	public void testThreadCheck() {
+		o1.moveToThread(t);
+		GeneratorUtilities.threadCheck(o1);
+	}
+
+	@org.junit.Test
+	public void testFetchField() {
+		/*
+		 * Access the class variable with it's getter method, then with
+		 * GeneratorUtilities.fetchfield(QObject, Class, String); Compare the
+		 * references.
+		 */
+		assertTrue(ftc.getFakeVar1().equals(GeneratorUtilities.fetchField(ftc, FetchableTestClass.class, "fakeVar1")));
+	}
+
+	@org.junit.Test
+	public void testSetField() {
+		GeneratorUtilities.setField(ftc, FetchableTestClass.class, "str1", "some text");
+		assertEquals(ftc.getStr1(), "some text");
+	}
+
+	@org.junit.Test
+	public void testCountExpense() {
+		image.load("./src/java/qtjambi/com/trolltech/images/qt-logo.png");
+		assertEquals(image.height() * image.bytesPerLine(), 4096);
+	}
+
+	// TODO implement testCreateExtendedEnum(), example from
+	// QAbstractFileEngine.java
 	/*
-	 * Access the class variable with it's getter method, then with
-	 * GeneratorUtilities.fetchfield(QObject, Class, String); Compare the
-	 * references.
+	 * @org.junit.Test public void testCreateExtendedEnum() { }
 	 */
-	assertTrue(ftc.getFakeVar1().equals(GeneratorUtilities.fetchField(ftc, FetchableTestClass.class, "fakeVar1")));
-    }
-
-    @org.junit.Test
-    public void testSetField() {
-	GeneratorUtilities.setField(ftc, FetchableTestClass.class, "str1", "some text");
-	assertEquals(ftc.getStr1(), "some text");
-    }
-
-    @org.junit.Test
-    public void testCountExpense() {
-	image.load("./src/java/qtjambi/com/trolltech/images/qt-logo.png");
-	assertEquals(image.height() * image.bytesPerLine(), 4096);
-    }
-
-    // TODO implement testCreateExtendedEnum(), example from
-    // QAbstractFileEngine.java
-    /*
-     * @org.junit.Test public void testCreateExtendedEnum() { }
-     */
 
 }
 
 class FetchableTestClass {
 
-    private QObject fakeVar1;
-    private String str1;
+	private QObject fakeVar1;
+	private String str1;
 
-    public FetchableTestClass(QObject fakeVar1) {
-	this.fakeVar1 = fakeVar1;
-    }
+	public FetchableTestClass(QObject fakeVar1) {
+		this.fakeVar1 = fakeVar1;
+	}
 
-    public QObject getFakeVar1() {
-	return fakeVar1;
-    }
+	public QObject getFakeVar1() {
+		return fakeVar1;
+	}
 
-    public String getStr1() {
-	return str1;
-    }
+	public String getStr1() {
+		return str1;
+	}
 
 }
