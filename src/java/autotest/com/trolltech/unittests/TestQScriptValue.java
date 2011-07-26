@@ -1,3 +1,11 @@
+/**
+ * Unit Test implementations for QScriptValue.java
+ * 
+ * TODO write tests for memory, etc.
+ * 
+ * @author akoskm
+ */
+
 package com.trolltech.unittests;
 
 import static org.junit.Assert.assertTrue;
