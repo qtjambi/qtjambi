@@ -12,29 +12,35 @@ import static org.junit.Assert.*;
 
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QDateTime;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.script.QScriptContext;
 import com.trolltech.qt.script.QScriptEngine;
+import com.trolltech.qt.script.QScriptProgram;
 import com.trolltech.qt.script.QScriptValue;
 
-public class TestQScriptEngine {
+public class TestQScriptEngine extends Thread {
 
-	QScriptEngine testEngine;
+	private QScriptEngine testEngine;
+	private QScriptEngine testEngineFromObj;
+	private QObject engineParent;
 
-	QScriptValue testValue;
-	QPushButton button;
-	QScriptValue scriptButton;
-	QScriptValue scriptButton1;
-	QScriptValue val;
-	QScriptValue val1;
-	QScriptContext scriptContext;
+	private QScriptProgram qsprogram;
+	private QPushButton button;
+	private QScriptValue scriptButton;
+	private QScriptValue scriptButton1;
+	private QScriptValue val;
+	private QScriptValue val1;
+	private QScriptContext scriptContext;
 
 	@org.junit.Before
 	public void setUp() {
 		QApplication.initialize(new String[] {});
 		testEngine = new QScriptEngine();
+		qsprogram = new QScriptProgram("5 - 2");
+		engineParent = new QObject();
 		button = new QPushButton();
 		scriptButton = testEngine.newQObject(button);
 	}
@@ -50,6 +56,14 @@ public class TestQScriptEngine {
 		scriptContext = null;
 		QApplication.quit();
 		QApplication.instance().dispose();
+	}
+
+	@org.junit.Test
+	public void testQscripEngineQObjConst() {
+		testEngineFromObj = new QScriptEngine(engineParent);
+		assertEquals(testEngineFromObj.parent(), engineParent);
+		testEngineFromObj = new QScriptEngine(null);
+		assertEquals(testEngineFromObj.parent(), null);
 	}
 
 	@org.junit.Test
@@ -85,6 +99,8 @@ public class TestQScriptEngine {
 	public void testNewQArray() {
 		val = testEngine.newArray(1);
 		assertTrue(val.isArray());
+		val1 = testEngine.newArray();
+		assertTrue(val1.isArray());
 	}
 
 	@org.junit.Test
@@ -131,6 +147,29 @@ public class TestQScriptEngine {
 		assertEquals(testEngine.evaluate("global = 6; global + local;").toInt32(), 11);
 		testEngine.popContext();
 		assertEquals(((QScriptValue) testEngine.property("global")).toInt32(), 3);
+	}
+
+	/*
+	 * TODO fix: public final boolean canEvaluate(java.lang.String program)
+	 * always returns with true, however if the program looks incomplete
+	 * (Syntactically) it should return false.
+	 * 
+	 * Possible workaround is to check the return value of
+	 * evaluate(java.lang.String program) because it returns
+	 * "SyntaxError: Parse error" when canEvaluate(java.lang.String program)
+	 * should return false
+	 * 
+	 * ps.: anyway this method is obsolete member of QScriptEngine class
+	 */
+	@org.junit.Test
+	public void testCanEvaluate() {
+		assertTrue(testEngine.canEvaluate("foo = 3;"));
+		assertFalse(testEngine.canEvaluate("foo[\"bar\""));
+	}
+
+	@org.junit.Test
+	public void testEvaluateQScriptPorgram() {
+		assertEquals(testEngine.evaluate(qsprogram).toInt32(), 3);
 	}
 
 }

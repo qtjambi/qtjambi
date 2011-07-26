@@ -40,7 +40,6 @@ public class TestUtilities {
 
 	@org.junit.Before
 	public void setUp() {
-		System.out.println("*");
 		singleString = "test";
 		failString = "bad";
 		strings = "test test1 test2";
