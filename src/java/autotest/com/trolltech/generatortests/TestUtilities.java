@@ -1,7 +1,6 @@
 /**
  * Unit Test implementations for Utilities.java
  * 
- * @author akoskm
  */
 
 package com.trolltech.generatortests;

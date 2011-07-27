@@ -1,7 +1,6 @@
 /**
  * Unit Test implementations for QThread.java
  * 
- * @author akoskm
  */
 
 package com.trolltech.generatortests;
