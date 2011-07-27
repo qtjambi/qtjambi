@@ -1282,13 +1282,18 @@ void qtjambi_metacall(JNIEnv *env, QEvent *event)
 }
 
 
-
-struct QModelIndexAccessor {
-    int row;
-    int col;
-    void *ptr;
-    QAbstractItemModel *model;
-};
+// FIXME: We need some way of comparing the pointer to this type offsets and sizes
+//  of the members against QModelIndex so any changes show up.
+// We have to do this in the first place because Qt provides no way to create
+//  QModelIndex from public API this is because application code should never
+//  create them.  But Qt Jambi is nearer Qt library code than an application
+//  so it should not be bound by these rules.   
+typedef struct _QModelIndexAccessor {
+    int r;
+    int c;
+    void *p;
+    QAbstractItemModel *m;
+} /*__attribute__((__may_alias__))*/ QModelIndexAccessor;
 
 QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index)
 {
@@ -1306,7 +1311,14 @@ QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index)
         qtjambi_to_qobject(env, env->GetObjectField(index, sc->QModelIndex.field_model))
     };
     QTJAMBI_EXCEPTION_CHECK(env);
+    // Newer GCC show this as type-prunned pointer will break strict-aliasing rules
+#if 1
+    void *vp = (void *) &mia;
+    QModelIndex *qmi = (QModelIndex *) vp;
+    return *qmi;
+#else
     return * (QModelIndex *) (void *) (&mia) ;
+#endif
 
 }
 
@@ -1773,7 +1785,7 @@ static QString locate_vm()
 
         if (javaHome.isEmpty()) {
             qWarning("Jambi: Failed to locate jvm.dll\n%s", qPrintable(error));
-            return false;
+            return QString();
         }
     }
 
