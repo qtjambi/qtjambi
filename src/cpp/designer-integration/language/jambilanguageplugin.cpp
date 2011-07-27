@@ -46,16 +46,16 @@
 
 #include "qtjambiintrospection_p.h"
 
-#include "qtjambi_core.h"
-#include "qtjambi_utils.h"
+#include <qtjambi/qtjambi_core.h>
+#include <qtjambi/qtjambi_utils.h>
 
-#include <QtDebug>
-#include <QtPlugin>
+#include <QtCore/QtDebug>
+#include <QtCore/QtPlugin>
 
 #include <private/ui4_p.h>
 
-#include <QtGui>
-#include <QMessageBox>
+#include <QtGui/QtGui>
+#include <QtGui/QMessageBox>
 
 jclass class_ResourceBrowser;
 

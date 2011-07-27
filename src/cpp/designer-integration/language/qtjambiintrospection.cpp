@@ -43,9 +43,9 @@
 ****************************************************************************/
 
 #include "qtjambiintrospection_p.h"
-#include "qtdynamicmetaobject.h"
-#include "qtjambi_core.h"
-#include "qtjambi_cache.h"
+#include <qtjambi/qtdynamicmetaobject.h>
+#include <qtjambi/qtjambi_core.h>
+#include <qtjambi/qtjambi_cache.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QMetaEnum>

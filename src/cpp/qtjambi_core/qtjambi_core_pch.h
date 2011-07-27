@@ -42,5 +42,5 @@
 **
 ****************************************************************************/
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 #include <qobject.h>
