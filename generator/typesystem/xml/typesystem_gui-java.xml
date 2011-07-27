@@ -3163,7 +3163,6 @@
         </inject-code>
         <extra-includes>
             <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
-            <include file-name="qtjambi_cache.h" location="local"/>
         </extra-includes>
         <modify-function signature="QApplication(int &amp;, char  **, int)">
             <inject-code class="shell">

@@ -46,9 +46,9 @@
 #include "jambicustomwidget.h"
 #include <jambilanguageextension.h>
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 #include <QtCore/QtDebug>
 #include <QtCore/QMetaObject>
 

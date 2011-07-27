@@ -44,7 +44,7 @@
 
 #include "qtjambiconcurrent.h"
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 #include "qtjambiconcurrent_p.h"
 
 #include <QtCore>

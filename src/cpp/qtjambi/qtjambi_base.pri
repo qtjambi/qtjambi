@@ -20,8 +20,8 @@ CONFIG(debug, debug|release) {
     TARGET = $$member(TARGET, 0)_debuglib
 }
 
-INCLUDEPATH += $$PWD/.. $$PWD/../qtjambi $$PWD/../common
-DEPENDPATH += $$PWD/.. $$PWD/../qtjambi $$PWD/../common
+INCLUDEPATH += $$PWD/..
+DEPENDPATH += $$PWD/..
 
 macx:{
     QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk

@@ -47,7 +47,7 @@
 
 #ifndef QT_NO_CONCURRENT
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 #include <QList>
 #include <QFutureWatcher>
 

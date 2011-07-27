@@ -1,10 +1,18 @@
+/*
+ *
+ *
+ *
+ */
+
+#include "qtjambi_platformspecificfunctions.h"
+
 #include <QtGui/QtGui>
 #include <QtCore/QtCore>
-#include "qtjambi_global.h"
-#include "qtjambi_core.h"
-#include "qtjambifunctiontable.h"
-#include "qtjambilink.h"
-#include "qtjambi_platformspecificfunctions.h"
+
+#include <qtjambi/qtjambi_global.h>
+#include <qtjambi/qtjambi_core.h>
+#include <qtjambi/qtjambifunctiontable.h>
+#include <qtjambi/qtjambilink.h>
 
 
 #ifdef Q_WS_X11

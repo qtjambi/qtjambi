@@ -53,7 +53,7 @@
 
 #include "qtjambi_global.h"
 
-#include "qtjambi_cache.h"
+#include <qtjambi/qtjambi_cache.h>
 #include "qtjambilink.h"
 
 #include <QtCore/QObject>

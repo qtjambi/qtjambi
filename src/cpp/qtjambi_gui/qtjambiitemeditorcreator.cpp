@@ -42,11 +42,11 @@
 **
 ****************************************************************************/
 
-#include <QItemEditorCreator>
-#include <QWidget>
+#include <QtGui/QItemEditorCreator>
+#include <QtGui/QWidget>
 
-#include <qtjambilink.h>
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambilink.h>
+#include <qtjambi/qtjambi_core.h>
 
 class JavaWidgetCreator
 {

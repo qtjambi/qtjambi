@@ -48,7 +48,7 @@
 #include <QtCore/QStack>
 #include <QtGui/QIcon>
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 
 const char *string_IllegalArgumentException = "java/lang/IllegalArgumentException";
 
