@@ -19,20 +19,27 @@ import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.script.QScriptContext;
 import com.trolltech.qt.script.QScriptEngine;
 import com.trolltech.qt.script.QScriptProgram;
+import com.trolltech.qt.script.QScriptString;
+import com.trolltech.qt.script.QScriptSyntaxCheckResult;
 import com.trolltech.qt.script.QScriptValue;
+import com.trolltech.qt.script.QScriptEngine.QObjectWrapOptions;
 
 public class TestQScriptEngine {
 
 	private QScriptEngine testEngine;
 	private QScriptEngine testEngineFromObj;
 	private QObject engineParent;
-
+	private QObject holder;
+	private Object result;
+	
 	private QScriptProgram qsprogram;
 	private QPushButton button;
+	private QPushButton button1;
 	private QScriptValue scriptButton;
 	private QScriptValue scriptButton1;
 	private QScriptValue val;
 	private QScriptValue val1;
+	private QScriptString testString;
 	private QScriptContext scriptContext;
 
 	@org.junit.Before
@@ -41,7 +48,9 @@ public class TestQScriptEngine {
 		testEngine = new QScriptEngine();
 		qsprogram = new QScriptProgram("5 - 2");
 		engineParent = new QObject();
+		holder = new QObject();
 		button = new QPushButton();
+		button1 = new QPushButton();
 		scriptButton = testEngine.newQObject(button);
 	}
 
@@ -49,6 +58,7 @@ public class TestQScriptEngine {
 	public void tearDown() {
 		testEngine = null;
 		button = null;
+		button1 = null;
 		scriptButton = null;
 		scriptButton1 = null;
 		val = null;
@@ -93,8 +103,50 @@ public class TestQScriptEngine {
 	public void testNewQObject() {
 		scriptButton1 = testEngine.newQObject(button);
 		assertTrue(scriptButton1.isQObject());
+		val = testEngine.newQObject(null);
+		assertTrue(val.isNull());
+	}
+	
+	@org.junit.Test
+	public void testNewQObjectOwnerWrapperConstructor() {
+		val1 = testEngine.newQObject(button, QScriptEngine.ValueOwnership.ScriptOwnership);
+		assertTrue(val1.isQObject());
+		val = testEngine.newQObject(button, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
+		assertTrue(val.isQObject());
+	}
+	
+	@org.junit.Test
+	public void testNewQObjectScriptValueConstructor() {
+		scriptButton = testEngine.newQObject(scriptButton1, button, QScriptEngine.ValueOwnership.ScriptOwnership);
+		assertTrue(scriptButton.isQObject());
+		val = testEngine.newQObject(val1, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+		assertTrue(val.isQObject());
 	}
 
+	@org.junit.Test
+	public void testNewQObjectScriptValueObjectConstructor() {
+		val = testEngine.newQObject(val1, button1);
+		assertTrue(val.isQObject());
+	}
+	
+	@org.junit.Test
+	public void testNewQObjectNullQObj() {
+		val = testEngine.newQObject(val1, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+		assertTrue(val.isNull());
+	}
+	
+	@org.junit.Test
+	public void testNewQObjectNullQScripVal() {
+		val = testEngine.newQObject(null, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+		assertTrue(val.isQObject());
+	}
+	
+	@org.junit.Test
+	public void testNewQObjectBothNull() {
+		val = testEngine.newQObject(null, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+		assertTrue(val.isNull());
+	}
+	
 	@org.junit.Test
 	public void testNewQArray() {
 		val = testEngine.newArray(1);
@@ -105,10 +157,18 @@ public class TestQScriptEngine {
 
 	@org.junit.Test
 	public void testNewDate() {
-		val = testEngine.newDate(456789);
+		val = testEngine.newDate(456789.0);
+		assertTrue(val.isDate());
+		val = testEngine.newDate(-42.42);
 		assertTrue(val.isDate());
 		val1 = testEngine.newDate(new QDateTime());
 		assertTrue(val1.isDate());
+		val1 = testEngine.newDate(null);
+		assertTrue(val1.isDate());
+		val1 = testEngine.newDate(new QDateTime().addSecs(456789));
+		assertTrue(val1.isDate());
+		val = testEngine.newDate(0.0);
+		assertTrue(val.isDate());
 	}
 
 	@org.junit.Test
@@ -123,6 +183,8 @@ public class TestQScriptEngine {
 		assertTrue(val.isRegExp());
 		val1 = testEngine.newRegExp("ABCD", "g");
 		assertTrue(val1.isRegExp());
+		scriptButton = testEngine.newRegExp(null);
+		assertTrue(scriptButton.isRegExp());
 	}
 
 	@org.junit.Test
@@ -172,8 +234,60 @@ public class TestQScriptEngine {
 	}
 
 	@org.junit.Test
+	public void testCheckSyntax() {
+		assertEquals(QScriptEngine.checkSyntax("foo = 3;").state(), QScriptSyntaxCheckResult.State.Valid);
+		assertEquals(QScriptEngine.checkSyntax("foo[\"bar\"").state(), QScriptSyntaxCheckResult.State.Error);
+		assertEquals(QScriptEngine.checkSyntax("if (\n").state(), QScriptSyntaxCheckResult.State.Intermediate);
+	}
+	
+	@org.junit.Test
 	public void testEvaluateQScriptPorgram() {
 		assertEquals(testEngine.evaluate(qsprogram).toInt32(), 3);
 	}
+	
+	/*
+	 * The following test crashes the JVM
+	 */
+	@org.junit.Ignore
+	@org.junit.Test
+	public void testObjectById() {
+		val = testEngine.newQObject(button);
+		assertEquals(testEngine.objectById(val.nativeId()), val);
+	}
+	
+	@org.junit.Test
+	public void testProcessEventsInterval() {
+		testEngine.setProcessEventsInterval(5);
+		assertEquals(testEngine.processEventsInterval(), 5);
+	}
+	
+	@org.junit.Test
+	public void testsetGlobalObject() {
+		val = testEngine.newQObject(holder);
+		testEngine.setGlobalObject(val);
+		val.setProperty("testProperty1", new QScriptValue(5));
+		assertEquals(testEngine.globalObject().property("testProperty1").toInt32(), 5);
+		val.setProperty("testProperty1", new QScriptValue("test"));
+		assertTrue(testEngine.globalObject().property("testProperty1").toString().equals("test"));
+	}
+	
+	@org.junit.Test
+	public void testToObject() {
+		val = new QScriptValue(5);
+		val1 = new QScriptValue();
+		assertFalse(val1.isObject());
+		val1 = testEngine.toObject(val);
+		assertTrue(val1.isObject());
+		val1 = testEngine.toObject(null);
+		assertFalse(val1.isValid());
+	}
 
+	@org.junit.Test
+	public void testToStringHandle() {
+		val = testEngine.newQObject(holder);
+		val.setProperty("testProperty", new QScriptValue("te$t"));
+		testString = testEngine.toStringHandle("testProperty");
+		assertTrue(val.property(testString).toString().equals("te$t"));
+	}
+	
 }
