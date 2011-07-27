@@ -22,7 +22,6 @@ import com.trolltech.qt.script.QScriptProgram;
 import com.trolltech.qt.script.QScriptString;
 import com.trolltech.qt.script.QScriptSyntaxCheckResult;
 import com.trolltech.qt.script.QScriptValue;
-import com.trolltech.qt.script.QScriptEngine.QObjectWrapOptions;
 
 public class TestQScriptEngine {
 
@@ -30,7 +29,6 @@ public class TestQScriptEngine {
 	private QScriptEngine testEngineFromObj;
 	private QObject engineParent;
 	private QObject holder;
-	private Object result;
 	
 	private QScriptProgram qsprogram;
 	private QPushButton button;
