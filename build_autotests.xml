@@ -47,14 +47,15 @@
 
     <target name="compile.native" depends="init">
 	    <mkdir dir="${outputDir}/autotestlib"/>
-	    <generator dir="generator"
+	    <generator dir="${basedir}/generator"
+			includepaths="${basedir}/autotestlib:${generator.includepaths}"
 			outputDirectory="${outputDir}/autotestlib"
-			typesystem="autotestlib/build.txt"
-			header="autotestlib/global.h"/>
+			typesystem="${basedir}/autotestlib/build.txt"
+			header="${basedir}/autotestlib/global.h"/>
 
 	    <qmake config="${qtjambi.configuration}"
             dir="${outputDir}/autotestlib"
-            pro="autotestlib/autotestlib.pro" qmakebinary="${qmake.binary}"/>
+            pro="${basedir}/autotestlib/autotestlib.pro" qmakebinary="${qmake.binary}"/>
 
 	    <make dir="${outputDir}/autotestlib" />
 	</target>
@@ -66,7 +67,8 @@
 				<pathelement location="qtjambi-${qtjambi.version}.jar" />
 				<pathelement location="." />
 			</classpath>
-			<src path="${outputDir}/autotestlib/com/trolltech/autotests/generated"/>
+			<!-- pick up the generated code from compile.native -->
+			<src path="${outputDir}/autotestlib/java/com/trolltech/autotests/generated"/>
 	    </javac>
     </target>
 
@@ -75,10 +77,10 @@
 	    <javac destdir="${outputDir}/auto" debug="true" includeantruntime="false">
 			<compilerarg value="-Xlint:deprecation" />
 			<classpath>
-				<pathelement location="qtjambi-${qtjambi.version}.jar" />
+				<pathelement location="${basedir}/qtjambi-${qtjambi.version}.jar" />
 				<pathelement location="${tests.junit}" />
 				<pathelement location="${outputDir}/autotests" />
-				<pathelement location="src/java/autotest" />
+				<pathelement location="${basedir}/src/java/autotest" />
 			</classpath>
 			<src path="src/java/autotest/com/trolltech/autotests"/>
 			<src path="src/java/autotest/com/trolltech/generatortests"/>

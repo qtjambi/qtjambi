@@ -6,51 +6,73 @@
 
 package com.trolltech.generatortests;
 
+import static org.junit.Assert.*;
+
 import com.trolltech.qt.QThread;
 import com.trolltech.qt.QtJambi_LibraryInitializer;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+public class TestQThread {
 
-public class TestQThread extends TestCase {
-    
-    private QThread qthread;
-    
-    private Runnable r;
-    
-    static {
-	QtJambi_LibraryInitializer.init();
-    }
-    
-    public TestQThread(String name) {
-	super(name);
-    }
+	private QThread qthread1;
+	private QThread qthread2;
+	private QThread qthread3;
+	private QThread qthread4;
+	private QThread qthread5;
+	private ThreadGroup threads;
+	private Runnable r;
+	private Runnable stacked;
+	private String threadName = "myThread";
 
-    public void setUp() {
-	qthread = new QThread(r);
-    }
-    
-    public void tearDown() {
-	qthread = null;
-    }
-    
-    public void testRun() {
-	qthread.run();
-	assertTrue(!(qthread.isAlive()));
-	assertFalse(qthread.isAlive());
-    }
-    
-    public void testInit() {
-	assertTrue(qthread.starting != null);
-	assertTrue(qthread.finished != null);
-    }
-    
-    public static Test suite() {
-	TestSuite suite = new TestSuite();
-	suite.addTest(new TestQThread("testInit"));
-	suite.addTest(new TestQThread("testRun"));
-	return suite;
-    }
-    
+	@org.junit.BeforeClass
+	public static void setUpClass() {
+		QtJambi_LibraryInitializer.init();
+	}
+
+	@org.junit.Before
+	public void setUp() {
+		threads = new ThreadGroup("qtjambiThreads");
+		qthread1 = new QThread(r);
+		qthread2 = new QThread(threads, qthread2);
+		qthread3 = new QThread(r, threadName);
+		qthread4 = new QThread(threads, r, threadName);
+		qthread5 = new QThread(threads, stacked, threadName, 1);
+	}
+
+	@org.junit.After
+	public void tearDown() {
+		qthread1 = null;
+	}
+
+	@org.junit.Test
+	public void testGroupConstructor() {
+		assertEquals(qthread2.getThreadGroup(), threads);
+	}
+
+	@org.junit.Test
+	public void testNameConstructor() {
+		assertEquals(qthread3.getName(), threadName);
+	}
+
+	@org.junit.Test
+	public void testNameGroupConstructor() {
+		assertEquals(qthread4.getThreadGroup(), threads);
+		assertEquals(qthread4.getName(), threadName);
+	}
+
+	/*
+	 * @org.junit.Test public void testNameGroupStackSize() { }
+	 */
+
+	@org.junit.Test
+	public void testRun() {
+		qthread1.run();
+		assertFalse(qthread1.isAlive());
+	}
+
+	@org.junit.Test
+	public void testInit() {
+		assertNotNull(qthread1.starting);
+		assertNotNull(qthread1.finished);
+	}
+
 }
