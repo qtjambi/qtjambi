@@ -80,6 +80,37 @@ namespace rpp {
             explicit pp_output_iterator(std::string &__result):
                     _M_result(__result) {}
 
+#if 0
+            // This fixes the MSVC2010 compiler compile issues with "*result++ = *first++;"
+            //  however I am concerned for (this._M_result == __v._M_result) behavior, so
+            //  this is implemented via operator type conversion, which forces the source
+            //  to become a copy.  I do it this way because I consider is strange for an
+            //  output_iterator to be the source for another output_iterator, however it
+            //  it natural to think of a std::string to be a valid source to emit.
+            inline pp_output_iterator &operator=(pp_output_iterator &__v) {
+                const size_t need = _M_result.size() + __v._M_result.size();
+                if (_M_result.capacity() < need)
+                    _M_result.reserve(need);
+
+                _M_result = __v._M_result;
+
+                return *this;
+            }
+#else
+            inline pp_output_iterator &operator=(const std::string &__v) {
+                const size_t need = _M_result.size() + __v.size();
+                if (_M_result.capacity() < need)
+                    _M_result.reserve(need);
+
+                _M_result = __v;
+
+                return *this;
+            }
+            inline operator const std::string() {
+                const std::string c = std::string(_M_result);    // forces a copy
+                return c;
+            }
+#endif
             inline pp_output_iterator &operator=(typename _Container::const_reference __v) {
                 if (_M_result.capacity() == _M_result.size())
                     _M_result.reserve(_M_result.capacity() << 2);
