@@ -1282,12 +1282,15 @@ void qtjambi_metacall(JNIEnv *env, QEvent *event)
 }
 
 
-// FIXME: We need some way of comparing the pointer to this type offsets and sizes
-//  of the members against QModelIndex so any changes show up.
-// We have to do this in the first place because Qt provides no way to create
-//  QModelIndex from public API this is because application code should never
-//  create them.  But Qt Jambi is nearer Qt library code than an application
-//  so it should not be bound by these rules.   
+/*
+FIXME:
+We need some way of comparing the pointer to this type offsets and sizes
+of the members against QModelIndex so any changes show up.
+We have to do this in the first place because Qt provides no way to create
+QModelIndex from public API. This is because application code should never
+create them, but Jambi is closer Qt library code than an application
+and hence needs to play with QModelIndex.
+*/
 typedef struct _QModelIndexAccessor {
     int r;
     int c;
