@@ -205,8 +205,18 @@ class QtJambiTypeManager {
 };
 
 // *********** Implementations ***********
+#if (defined(__LP64__))
+// LP64 => (sizeof(void*) == sizeof(long)) even on 64bit architectures
 inline void *QtJambiTypeManager::jlongToPtr(jlong id) { return reinterpret_cast<void *>(static_cast<long>(id)); }
 inline jlong QtJambiTypeManager::ptrToJlong(void *ptr) { return static_cast<jlong>(reinterpret_cast<long>(ptr)); }
+#elif (defined(__LLP64__) || defined(Q_OS_WIN64))
+// LLP64 => (sizeof(void*) != sizeof(long)) ala Windows 64bit
+inline void *QtJambiTypeManager::jlongToPtr(jlong id) { return reinterpret_cast<void *>(static_cast<long long>(id)); }
+inline jlong QtJambiTypeManager::ptrToJlong(void *ptr) { return static_cast<jlong>(reinterpret_cast<long long>(ptr)); }
+#else
+inline void *QtJambiTypeManager::jlongToPtr(jlong id) { return reinterpret_cast<void *>(static_cast<long>(id)); }
+inline jlong QtJambiTypeManager::ptrToJlong(void *ptr) { return static_cast<jlong>(reinterpret_cast<long>(ptr)); }
+#endif
 
 inline QString QtJambiTypeManager::className(const QString &qualifiedName) {
     int idx = qualifiedName.lastIndexOf(QLatin1Char('/'));
