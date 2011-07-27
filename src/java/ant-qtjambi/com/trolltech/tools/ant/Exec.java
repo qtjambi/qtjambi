@@ -138,7 +138,7 @@ class Exec {
         // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
         // but it should not be needed there in first place... Only if you want to have same kind of building
         // environment one can have for Linux.
-        // it should’t affect to Windows environment though.
+        // it shouldn't affect to Windows environment though.
         Map<String, String> env = builder.environment();
         if(ldpath != null)
             env.put("LD_LIBRARY_PATH", ldpath);
