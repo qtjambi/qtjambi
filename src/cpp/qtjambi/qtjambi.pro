@@ -2,9 +2,6 @@ TARGET = qtjambi
 
 include(qtjambi_base.pri)
 
-INCLUDEPATH += $$PWD/../common
-DEPENDPATH += $$PWD/../common
-
 SOURCES += \
     qnativepointer.cpp \
     qsysinfo.cpp \
