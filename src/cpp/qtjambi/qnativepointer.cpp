@@ -43,8 +43,9 @@
 ****************************************************************************/
 
 #include "qtjambi_global.h"
-#include "qnativepointer.h"
 #include "qtjambi_core.h"
+
+#include <common/qnativepointer.h>
 
 #include <stdlib.h>
 
