@@ -1,9 +1,14 @@
-!macx:!exists($$(JAVA_HOME_TARGET)) {
-    # Ant/Maven should set this up (this can't be a symlink)
-    exists($$(JAVA_HOME)) {
-        JAVA_HOME_TARGET = $$(JAVA_HOME)
+!macx {
+    !exists($$(JAVA_HOME_TARGET)) {
+        # Ant/Maven should set this up (this can't be a symlink)
+        exists($$(JAVA_HOME)) {
+            JAVA_HOME_TARGET = $$(JAVA_HOME)
+        } else {
+            error("Please set your JAVA_HOME_TARGET or JAVA_HOME environment variable to point to the directory of your Java SDK. Current JAVA_HOME_TARGET: $$(JAVA_HOME_TARGET) JAVA_HOME: $$(JAVA_HOME)")
+        }
     } else {
-        error("Please set your JAVA_HOME_TARGET or JAVA_HOME environment variable to point to the directory of your Java SDK. Current JAVA_HOME_TARGET: $$(JAVA_HOME_TARGET) JAVA_HOME: $$(JAVA_HOME)")
+        # This has the effect of making $$JAVA_HOME_TARGET work in this file as used below
+        JAVA_HOME_TARGET = $$(JAVA_HOME_TARGET)
     }
 }
 
@@ -29,18 +34,18 @@ macx:{
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
-    INCLUDEPATH += "$$JAVA_HOME_TARGET/include"
+    INCLUDEPATH += $$quote($$JAVA_HOME_TARGET/include)
     win32 {
-        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/win32"
+        INCLUDEPATH += $$quote($$JAVA_HOME_TARGET/include/win32)
     }
     solaris-g++ | solaris-cc {
-        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/solaris"
+        INCLUDEPATH += $$quote($$JAVA_HOME_TARGET/include/solaris)
     }
     linux-g++* {
-        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/linux"
+        INCLUDEPATH += $$quote($$JAVA_HOME_TARGET/include/linux)
     }
     freebsd-g++* {
-        INCLUDEPATH += "$$JAVA_HOME_TARGET/include/freebsd"
+        INCLUDEPATH += $$quote($$JAVA_HOME_TARGET/include/freebsd)
     }
 }
 
