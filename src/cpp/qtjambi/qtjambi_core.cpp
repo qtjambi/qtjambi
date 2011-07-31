@@ -47,10 +47,11 @@
 #include "qtjambifunctiontable.h"
 #include "qtjambilink.h"
 #include "qtjambitypemanager_p.h"
-#include "qnativepointer.h"
 #include "qtjambidestructorevent_p.h"
 #include "qtdynamicmetaobject.h"
 #include "qtjambivariant_p.h"
+
+#include <common/qnativepointer.h>
 
 #include <qglobal.h>
 
