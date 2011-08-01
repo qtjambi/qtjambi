@@ -1,1 +1,1 @@
-#include "../../../tools/designer/src/lib/shared/csshighlighter_p.h"
+#include "../../../../tools/designer/src/lib/shared/csshighlighter_p.h"

@@ -23,7 +23,11 @@ win32-msvc.net{
 
 RESOURCES += resources.qrc
 
-INCLUDEPATH += $$PWD $$QTDIR/QtDesigner $$PWD/../include
+INCLUDEPATH += $$PWD
+exists($$QTDIR) {
+    INCLUDEPATH += $$QTDIR/QtDesigner
+}
+INCLUDEPATH += $$PWD/../include
 
 freebsd-g++* {
     QT_SOURCE_TREE=$$fromfile($$(QTDIR)/.qmake.cache,QT_SOURCE_TREE)
