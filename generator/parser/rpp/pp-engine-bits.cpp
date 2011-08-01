@@ -1,4 +1,6 @@
 
+#include <errno.h>
+
 #include "rpp/pp-engine-bits.h"
 #include "rpp/pp-cctype.h"
 
@@ -6,6 +8,9 @@
 #include <QDebug>
 #include <QStringList>
 #include <QDir>
+
+// Enable stderr output of the include file resolution process.
+//#define DEBUG_FIND_INCLUDE
 
 rpp::pp::pp(pp_environment &__env) :
         env(__env), expand_macro(env) {
@@ -170,6 +175,9 @@ FILE *rpp::pp::find_include_file(std::string const &p_input_filename, std::strin
 
         if (file_exists(__tmp) && !file_isdir(__tmp)) {
             p_filepath->append(p_input_filename);
+#ifdef DEBUG_FIND_INCLUDE
+            std::cerr << "** INCLUDE local  " << *p_filepath << ": found" << std::endl;
+#endif
             return std::fopen(p_filepath->c_str(), "r");
         }
     }
@@ -204,12 +212,23 @@ FILE *rpp::pp::find_include_file(std::string const &p_input_filename, std::strin
             if (file.exists() && file.isFile()) {
                 QString path = QString::fromStdString(*it) + module + ".framework/Headers";
                 push_include_path(path.toStdString());
+ #ifdef DEBUG_FIND_INCLUDE
+                std::cerr << "** INCLUDE system " << string.toStdString() << ": found" << std::endl;
+ #endif
                 return std::fopen(string.toLatin1().data(), "r");
             }
         }
 #endif
-        if (file_exists(*p_filepath) && !file_isdir(*p_filepath))
+        if (file_exists(*p_filepath) && !file_isdir(*p_filepath)) {
+#ifdef DEBUG_FIND_INCLUDE
+            std::cerr << "** INCLUDE system " << *p_filepath << ": found" << std::endl;
+#endif
             return std::fopen(p_filepath->c_str(), "r");
+        }
+
+#ifdef DEBUG_FIND_INCLUDE
+        std::cerr << "** INCLUDE system " << *p_filepath << ": " << strerror(errno) << std::endl;
+#endif
     }
 
     return 0;
