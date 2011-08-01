@@ -181,7 +181,7 @@ public class TestInjectedCode extends QApplicationTest {
             this.painter = painter;
             this.option = option;
             this.widget = widget;
-            painter.fillRect(new QRect(51, 0, 50, 50), new QBrush(QColor.green));
+            painter.fillRect(new QRect(51, 0, 50, 50), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.green)));
             super.paint(painter, option, widget);
         }
     }
@@ -428,8 +428,8 @@ public class TestInjectedCode extends QApplicationTest {
             QPicture picture = new QPicture();
             QPainter painter = new QPainter();
             painter.begin(picture);
-            painter.fillRect(new QRect(0, 0, 10, 10), new QBrush(QColor.green));
-            painter.fillRect(new QRect(11, 0, 10, 10), new QBrush(QColor.red));
+            painter.fillRect(new QRect(0, 0, 10, 10), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.green)));
+            painter.fillRect(new QRect(11, 0, 10, 10), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red)));
             painter.end();
 
             assertTrue(picture.save(file));
@@ -446,8 +446,8 @@ public class TestInjectedCode extends QApplicationTest {
         painter.drawPicture(new QPoint(0, 0), picture);
         painter.end();
 
-        assertEquals(QColor.green.rgba(), img.pixel(4, 4));
-        assertEquals(QColor.red.rgba(), img.pixel(12, 4));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.green).rgba(), img.pixel(4, 4));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), img.pixel(12, 4));
     }
 
     private static class MyAccessibleTableInterface extends AccessibleTableInterfaceSubclass
@@ -780,17 +780,17 @@ public class TestInjectedCode extends QApplicationTest {
 
     @Test
     public void testQGLColorMapSetEntries() {
-        int firstColors[] = { QColor.red.rgba(), QColor.green.rgba() };
-        int secondColors[] = { QColor.blue.rgba(), QColor.yellow.rgba() };
+        int firstColors[] = { new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.green).rgba() };
+        int secondColors[] = { new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue).rgba(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow).rgba() };
 
         QGLColormap map = new QGLColormap();
         map.setEntries(firstColors);
-        assertEquals(QColor.red.rgba(), map.entryRgb(0));
-        assertEquals(QColor.green.rgba(), map.entryRgb(1));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), map.entryRgb(0));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.green).rgba(), map.entryRgb(1));
 
         map.setEntries(secondColors, 1);
-        assertEquals(QColor.red.rgba(), map.entryRgb(0));
-        assertEquals(QColor.blue.rgba(), map.entryRgb(1));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), map.entryRgb(0));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue).rgba(), map.entryRgb(1));
     }
 
     @Test
@@ -1153,8 +1153,8 @@ public class TestInjectedCode extends QApplicationTest {
         giss.callPaint(painter, item, w);
         painter.end();
 
-        assertEquals(QColor.red.rgba(), image.pixel(2, 2));
-        assertEquals(QColor.green.rgba(), image.pixel(52, 2));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), image.pixel(2, 2));
+        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.green).rgba(), image.pixel(52, 2));
         assertTrue(w == giss.widget);
         assertTrue(w == giss.widget());
         assertTrue(giss.widget instanceof QPushButton);
@@ -1192,7 +1192,7 @@ public class TestInjectedCode extends QApplicationTest {
 
     @Test
     public void testQBrushGradient() {
-        QBrush brush = new QBrush(QColor.red);
+        QBrush brush = new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red));
         assertEquals(null, brush.gradient());
 
         QGradient gradient = new QLinearGradient(0, 0, 11, 12);

@@ -672,7 +672,7 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(so.icon().isNull());
 
         QPixmap pm = new QPixmap(100, 100);
-        pm.fill(QColor.red);
+        pm.fill(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red));
         QIcon icon = new QIcon(pm);
         so.setIcon(icon);
         so.setText("A travelling salesman walks into a bar");
