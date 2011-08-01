@@ -45,7 +45,7 @@
 #ifndef ABSTRACTCLASS_H
 #define ABSTRACTCLASS_H
 
-#include <qstring.h>
+#include <QtCore/QString>
 
 class AbstractClass
 {

@@ -175,11 +175,12 @@ public:
 protected:
     qint64 readData(char *data, qint64 maxSize) {
         Q_UNUSED(maxSize);
-        char *inp = "I am a boy";
-        for (int i=0; i<int(strlen(inp)); ++i)
+        const char *inp = "I am a boy";
+        const int len = strlen(inp);
+        for (int i=0; i<len; ++i)
             data[i] = inp[i];
 
-        return strlen(inp);
+        return len;
     }
 
     qint64 writeData(const char *data, qint64 maxSize) {
@@ -193,11 +194,12 @@ protected:
 
     qint64 readLineData(char *data, qint64 maxSize) {
         Q_UNUSED(maxSize)
-        char *inp = "Confucius say: Don't go outside with wet hair";
-        for (int i=0; i<int(strlen(inp)); ++i)
+        const char *inp = "Confucius say: Don't go outside with wet hair";
+        const int len = strlen(inp);
+        for (int i=0; i<len; ++i)
             data[i] = inp[i];
 
-        return strlen(inp);
+        return len;
     }
 
 public:

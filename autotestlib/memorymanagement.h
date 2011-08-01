@@ -45,7 +45,7 @@
 #ifndef MEMORYMANAGEMENT_H
 #define MEMORYMANAGEMENT_H
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 
 class PolymorphicObjectType
 {
