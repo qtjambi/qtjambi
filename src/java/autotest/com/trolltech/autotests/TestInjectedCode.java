@@ -768,7 +768,7 @@ public class TestInjectedCode extends QApplicationTest {
         boolean timeout = false;
         while (http.bytesAvailable() < 32 && !timeout) {
             QApplication.processEvents();
-            timeout = (System.currentTimeMillis() - time > 5000);
+            timeout = (System.currentTimeMillis() - time > 15000);
         }
 
         assertTrue("Timeout", !timeout);
