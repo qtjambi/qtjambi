@@ -45,7 +45,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <qstring.h>
+#include <QtCore/QString>
 
 #include "abstractclass.h"
 #include "destruction.h"
@@ -65,6 +65,6 @@
 #include "general.h"
 #include "memorymanagement.h"
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 
 #endif
