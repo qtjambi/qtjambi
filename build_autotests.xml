@@ -48,7 +48,7 @@
     <target name="compile.native" depends="init">
         <mkdir dir="${outputDir}/autotestlib"/>
         <generator dir="${basedir}/generator"
-                includepaths="${basedir}/autotestlib:${qtjambi.qt.includedir}:${generator.includepaths}"
+                includepaths="${basedir}/autotestlib:${generator.includepaths}"
                 outputDirectory="${outputDir}/autotestlib"
                 typesystem="${basedir}/autotestlib/build.txt"
                 header="${basedir}/autotestlib/global.h"
