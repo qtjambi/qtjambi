@@ -526,9 +526,10 @@ namespace rpp {
                     _PP_internal::output_line(env.current_file, env.current_line, result);
                 }
 //#ifndef RPP_JAMBI
-    else {
-        std::cerr << "*** WARNING " << env.current_file << ":" << env.current_line << "  " << (quote != '>' ? '"' : '<') << filename << (quote != '>' ? '"' : '>') << ": No such file or directory" << std::endl;
-    }
+                else {
+                    std::cerr << "*** WARNING " << env.current_file << ":" << env.current_line << "  " <<
+                            (quote != '>' ? '"' : '<') << filename << (quote != '>' ? '"' : '>') << ": No such file or directory" << std::endl;
+                }
 //#endif
 
                 return first;
