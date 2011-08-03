@@ -3,11 +3,7 @@
  * This file serves as meta <phonon/phonon> include which is missing
  * in default KDE phonon installation.
  *
- * Included when flag --kde-phonon is passed to generator.
- *
- * This does not inlude phonon/ before files as actual phonon
- * directory, not /usr/include, where it usually is, is passed
- * to generator.
+ * Used when flag --kde-phonon is passed to generator.
  */
 
 #include <phonon/abstractaudiooutput.h>
