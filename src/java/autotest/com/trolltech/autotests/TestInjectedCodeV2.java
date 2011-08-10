@@ -240,7 +240,9 @@ public class TestInjectedCodeV2 extends QApplicationTest {
             QApplication.processEvents();
         }
 
-        assertEquals("62.70.27.67", helloObject.fromFirstSlot);
+        // Was: 62.70.27.67 (pre 02-Aug-2011)
+        // Now: 87.238.50.190 (since 02-Aug-2011)
+        assertEquals("87.238.50.190", helloObject.fromFirstSlot);
     }
 
     @Test
@@ -253,7 +255,9 @@ public class TestInjectedCodeV2 extends QApplicationTest {
             QApplication.processEvents();
         }
 
-        assertEquals("62.70.27.67", helloObject.fromSecondSlot);
+        // Was: 62.70.27.67 (pre 02-Aug-2011)
+        // Now: 87.238.50.190 (since 02-Aug-2011)
+        assertEquals("87.238.50.190", helloObject.fromSecondSlot);
     }
 
     @Test
