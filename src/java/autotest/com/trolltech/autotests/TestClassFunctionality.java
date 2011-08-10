@@ -201,7 +201,6 @@ public class TestClassFunctionality extends QApplicationTest {
     @Test
     public void testGraphicsSceneDrawItemsInjections() {
         GraphicsSceneSubclassSubclass gsss = new GraphicsSceneSubclassSubclass();
-        QGraphicsView view = new QGraphicsView();
         QGraphicsEllipseItem item1 = new QGraphicsEllipseItem(new QRectF(1.0, 2.0, 3.0, 4.0));
         item1.setZValue(2.0);
         QGraphicsEllipseItem item2 = new QGraphicsEllipseItem(new QRectF(2.0, 3.0, 4.0, 5.0));
@@ -209,7 +208,10 @@ public class TestClassFunctionality extends QApplicationTest {
         gsss.addItem(item1);
         gsss.addItem(item2);
 
+        QGraphicsView view = new QGraphicsView();
         view.setScene(gsss);
+        // Since Qt 4.6 GraphicsScene#drawItems(...) is not called unless IndirectPainting is set.
+        view.setOptimizationFlag(QGraphicsView.OptimizationFlag.IndirectPainting);
         view.show();
 
 	long t = System.currentTimeMillis();
