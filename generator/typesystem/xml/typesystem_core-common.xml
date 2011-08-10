@@ -18,6 +18,7 @@
     <rejection class="" enum-name="enum_2"/>
     <rejection class="" enum-name="enum_3"/>
     <rejection class="" enum-name="enum_4"/>
+    <rejection class="" enum-name="enum_5"/>
 
     <rejection class="" enum-name="QtValidLicenseForDBusModule"/>
     <rejection class="" enum-name="QtValidLicenseForSqlModule"/>
