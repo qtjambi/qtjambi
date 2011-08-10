@@ -15,7 +15,8 @@ SOURCES += \
     jambilanguageplugin.cpp \
     qtjambiintrospection.cpp \
 
-win32-msvc.net{
+# These option changes are recommended since at least: win32-msvc.net
+win32-msvc* {
     QMAKE_CXXFLAGS += -Zm1000
     QMAKE_CXXFLAGS -= -Zm200
     QMAKE_CFLAGS -= -Zm200
