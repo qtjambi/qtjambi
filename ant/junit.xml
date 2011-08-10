@@ -41,7 +41,7 @@
 
         <!-- Compiling to the outputDir crashes the java compiler -->
         <mkdir dir="${outputDir}/auto"/>
-        <javac destdir="${outputDir}/auto">
+        <javac destdir="${outputDir}/auto" debug="true" source="1.5" target="1.5">
             <src path="${sourceDir}"/>
             <src path="${outputDir}"/>
             <include name="com/trolltech/autotests/**.java" />

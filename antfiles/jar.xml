@@ -62,7 +62,7 @@
         <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
         <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
-        <javac source="1.5" target="1.5" debug="false" deprecation="true"
+        <javac source="1.5" target="1.5" debug="true" deprecation="true"
                 fork="true" memorymaximumsize="1024m" verbose="false"
                 includeantruntime="true"
                 excludes="${module.excludes}"
