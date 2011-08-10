@@ -421,7 +421,7 @@ class QDataStream___ extends QDataStream {
         }
 
         public final char readChar() {
-            operator_shift_right_char(srb);
+            operator_shift_right_short(srb);
             return srb.charValue();
         }
 
@@ -435,8 +435,8 @@ class QDataStream___ extends QDataStream {
             return srb.doubleValue();
         }
 
-        public final QDataStream writeShort(short s) {
-            writeShort_char((char) s);
+        public final QDataStream writeChar(char c) {
+            writeShort((short) c);
             return this;
         }
 
@@ -520,13 +520,9 @@ class QTextStream___ extends QTextStream {
             return srb.doubleValue();
         }
 
-        public final QTextStream writeShort(short s) {
-            writeShort_char((char) s);
-            return this;
-        }
-
+        @com.trolltech.qt.QtBlockedSlot
         public final QTextStream writeChar(char c) {
-            writeShort_char(c);
+            writeShort((short) c);
             return this;
         }
 

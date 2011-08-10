@@ -966,10 +966,10 @@
         <modify-function signature="setNum(unsigned short,int)" remove="all"/>
         <modify-function signature="toLong(bool*, int) const" remove="all"/>
         <modify-function signature="toLongLong(bool*, int) const" remove="all"/>
-        <modify-function signature="toShort(bool*, int) const" remove="all"/>
         <modify-function signature="toUInt(bool*, int) const" remove="all"/>
         <modify-function signature="toULong(bool*, int) const" remove="all"/>
         <modify-function signature="toULongLong(bool*, int) const" remove="all"/>
+        <modify-function signature="toUShort(bool*, int) const" remove="all"/>
 
         <!-- functions made private... -->
         <modify-function signature="operator=(QByteArray)" access="private"/>
@@ -1362,6 +1362,9 @@
         <remove/>
         </modify-function>
         <modify-function signature="operator&gt;&gt;(unsigned char&amp;)">
+        <remove/>
+        </modify-function>
+        <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
         <remove/>
         </modify-function>
         <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)">

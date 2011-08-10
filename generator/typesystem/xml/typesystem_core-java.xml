@@ -128,11 +128,11 @@
     <primitive-type name="long long" java-name="long" jni-name="jlong"/>
     <primitive-type name="quintptr" preferred-conversion="no" java-name="long" jni-name="jlong" />
 
-    <primitive-type name="short" preferred-conversion="no" java-name="char" jni-name="jchar"/>
-    <primitive-type name="short" preferred-java-type="no" java-name="short" jni-name="jshort" />
-    <primitive-type name="signed short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
-    <primitive-type name="unsigned short" java-name="char" preferred-conversion="no" jni-name="jchar"/>
-    <primitive-type name="unsigned short int" java-name="char" preferred-conversion="no" jni-name="jchar"/>
+    <primitive-type name="short" java-name="char" preferred-java-type="no" preferred-conversion="no" jni-name="jchar"/>
+    <primitive-type name="short" java-name="short" jni-name="jshort" />
+    <primitive-type name="signed short" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort -->
+    <primitive-type name="unsigned short" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort --> 
+    <primitive-type name="unsigned short int" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort --> 
 
     <primitive-type name="char" java-name="byte" jni-name="jbyte"/>
     <primitive-type name="signed char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>
@@ -380,9 +380,9 @@
             </insert-template>
         </inject-code>
 
+        <!-- TODO: Should this be removed like toUInt()/toULongLong() or is it valid use case -->
         <modify-function signature="toUShort(QString,bool*,int)const">
             <access modifier="private"/>
-            <rename to="toChar"/>
             <modify-argument index="2">
                 <remove-default-expression/>
             </modify-argument>
@@ -392,8 +392,8 @@
         </modify-function>
         <inject-code>
             <insert-template name="core.qlocale_to_type_integer">
-                <replace from="%TYPE" to="char"/>
-                <replace from="%FUNCTION_NAME" to="toChar"/>
+                <replace from="%TYPE" to="short"/>
+                <replace from="%FUNCTION_NAME" to="toUShort"/>
             </insert-template>
         </inject-code>
     </value-type>
@@ -472,8 +472,8 @@
             </template>
 
             <insert-template name="QByteArray::toType(base)">
-                <replace from="%NAME%" to="toChar"/>
-                <replace from="%TYPE%" to="char"/>
+                <replace from="%NAME%" to="toShort"/>
+                <replace from="%TYPE%" to="short"/>
             </insert-template>
 
             <insert-template name="QByteArray::toType(base)">
@@ -506,7 +506,7 @@
 
 
 
-   <modify-function signature="toUShort(bool*, int) const" rename="toChar_private" access="private">
+   <modify-function signature="toShort(bool*, int) const" rename="toShort_private" access="private">
         <modify-argument index="1">
             <remove-default-expression/>
         </modify-argument>
@@ -1486,8 +1486,7 @@
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
       <modify-function signature="operator&lt;&lt;(short)">
-          <rename to="writeShort_char"/>
-          <access modifier="private"/>
+          <rename to="writeShort"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
 
@@ -1517,12 +1516,6 @@
 
       <modify-function signature="operator&gt;&gt;(signed char&amp;)">
           <rename to="operator_shift_right_byte"/>
-          <modify-argument index="0" replace-value="this"/>
-          <access modifier="private"/>
-      </modify-function>
-
-      <modify-function signature="operator&gt;&gt;(unsigned short&amp;)">
-          <rename to="operator_shift_right_char"/>
           <modify-argument index="0" replace-value="this"/>
           <access modifier="private"/>
       </modify-function>
@@ -1694,9 +1687,8 @@
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
       <modify-function signature="operator&lt;&lt;(signed short)">
-          <rename to="writeShort_char"/>
+          <rename to="writeShort"/>
           <modify-argument index="0" replace-value="this"/>
-          <access modifier="private"/>
       </modify-function>
 
       <modify-function signature="operator&gt;&gt;(char&amp;)">
