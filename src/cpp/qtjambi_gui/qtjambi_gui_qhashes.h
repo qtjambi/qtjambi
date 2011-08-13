@@ -78,12 +78,12 @@ inline int qHash(const QFont &font)
 
 inline int qHash(const QMatrix &matrix)
 {
-    int hashCode = matrix.m11();
-    hashCode = hashCode * 31 + matrix.m12();
-    hashCode = hashCode * 31 + matrix.m21();
-    hashCode = hashCode * 31 + matrix.m22();
-    hashCode = hashCode * 31 + matrix.dx();
-    hashCode = hashCode * 31 + matrix.dy();
+    int hashCode = int(matrix.m11());
+    hashCode = hashCode * 31 + int(matrix.m12());
+    hashCode = hashCode * 31 + int(matrix.m21());
+    hashCode = hashCode * 31 + int(matrix.m22());
+    hashCode = hashCode * 31 + int(matrix.dx());
+    hashCode = hashCode * 31 + int(matrix.dy());
     return hashCode;
 }
 
@@ -105,17 +105,17 @@ inline int qHash(const QPen &pen)
 
 inline int qHash(const QTransform &transform)
 {
-    int hashCode = transform.m11();
-    hashCode = hashCode * 31 + transform.m12();
-    hashCode = hashCode * 31 + transform.m13();
+    int hashCode = int(transform.m11());
+    hashCode = hashCode * 31 + int(transform.m12());
+    hashCode = hashCode * 31 + int(transform.m13());
 
-    hashCode = hashCode * 31 + transform.m21();
-    hashCode = hashCode * 31 + transform.m22();
-    hashCode = hashCode * 31 + transform.m23();
+    hashCode = hashCode * 31 + int(transform.m21());
+    hashCode = hashCode * 31 + int(transform.m22());
+    hashCode = hashCode * 31 + int(transform.m23());
 
-    hashCode = hashCode * 31 + transform.m31();
-    hashCode = hashCode * 31 + transform.m32();
-    hashCode = hashCode * 31 + transform.m33();
+    hashCode = hashCode * 31 + int(transform.m31());
+    hashCode = hashCode * 31 + int(transform.m32());
+    hashCode = hashCode * 31 + int(transform.m33());
 
     return hashCode;
 }
