@@ -222,12 +222,11 @@ public class TestQScriptEngine {
 	 *		because it returns "SyntaxError: Parse error" when canEvaluate(java.lang.String program)
 	 *		should return false
 	 */
-
-	@org.junit.Ignore
 	@org.junit.Test
 	public void testCanEvaluate() {
 		assertTrue(testEngine.canEvaluate("foo = 3;"));
-		assertFalse(testEngine.canEvaluate("foo[\"bar\""));
+		// CHECKME Unable to make it ever return false in version: 4.7.3
+//		assertFalse(testEngine.canEvaluate("foo[\"bar\""));
 	}
 
 	@org.junit.Test
@@ -243,14 +242,15 @@ public class TestQScriptEngine {
 	}
 	
 	/*
-	 * The following test crashes the JVM
+	 * QtScriptEngine#objectById(long) exposes memory pointer dereference to QtJambi API.
+	 * It is also marked as <i>internal</i> Qt C++ API.
 	 */
-	@org.junit.Ignore
-	@org.junit.Test
-	public void testObjectById() {
-		val = testEngine.newQObject(button);
-		assertEquals(testEngine.objectById(val.nativeId()), val);
-	}
+//	@org.junit.Test
+//	public void testObjectById() {
+//		val = testEngine.newQObject(button);
+//		QScriptValue valFound = testEngine.objectById(val.objectId());
+//		assertEquals(val.objectId(), valFound.objectId());
+//	}
 	
 	@org.junit.Test
 	public void testProcessEventsInterval() {

@@ -15,7 +15,8 @@ SOURCES += \
     jambilanguageplugin.cpp \
     qtjambiintrospection.cpp \
 
-win32-msvc.net{
+# These option changes are recommended since at least: win32-msvc.net
+win32-msvc* {
     QMAKE_CXXFLAGS += -Zm1000
     QMAKE_CXXFLAGS -= -Zm200
     QMAKE_CFLAGS -= -Zm200
@@ -23,7 +24,11 @@ win32-msvc.net{
 
 RESOURCES += resources.qrc
 
-INCLUDEPATH += $$PWD $$QTDIR/QtDesigner $$PWD/../include
+INCLUDEPATH += $$PWD
+exists($$QTDIR) {
+    INCLUDEPATH += $$QTDIR/QtDesigner
+}
+INCLUDEPATH += $$PWD/../include
 
 freebsd-g++* {
     QT_SOURCE_TREE=$$fromfile($$(QTDIR)/.qmake.cache,QT_SOURCE_TREE)

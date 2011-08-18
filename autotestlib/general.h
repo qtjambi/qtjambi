@@ -45,7 +45,7 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
-#include <QtGui>
+#include <QtGui/QtGui>
 
 class CalendarWidgetAccessor: public QCalendarWidget {
 public:

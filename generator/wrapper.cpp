@@ -84,6 +84,9 @@ void Wrapper::handleArguments() {
         default_system = QDir(args.value("input-directory")).absoluteFilePath(default_system);
     }
 
+    if (args.contains("output-preprocess-file"))
+        pp_file = args.value("output-preprocess-file");
+
     if (args.contains("output-directory"))
         pp_file = QDir(args.value("output-directory")).absoluteFilePath(pp_file);
 
@@ -176,6 +179,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --output-directory=[dir]                  \n"
            "  --cpp-output-directory=[dir]              \n"
            "  --java-output-directory=[dir]             \n"
+           "  --output-preprocess-file=[file|path]      \n"
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n"
            "  --qt-include-directory=[dir]              \n"

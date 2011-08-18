@@ -50,7 +50,7 @@
 #include <QtCore/QMetaProperty>
 #include <QtCore/QStringList>
 
-#include <qtjambi_core.h>
+#include <qtjambi/qtjambi_core.h>
 
 #ifndef SIGNAL
 #  define SIGNAL(A) #A

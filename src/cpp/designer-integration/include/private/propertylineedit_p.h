@@ -1,1 +1,1 @@
-#include "../../../tools/designer/src/lib/shared/propertylineedit_p.h"
+#include "../../../../tools/designer/src/lib/shared/propertylineedit_p.h"

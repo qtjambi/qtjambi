@@ -45,7 +45,7 @@
 #ifndef MESSAGEHANDLER_H
 #define MESSAGEHANDLER_H
 
-#include <qstring.h>
+#include <QtCore/QString>
 
 class MessageHandler
 {

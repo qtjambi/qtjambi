@@ -300,8 +300,6 @@
         </inject-code>
     </value-type>
     
-    <value-type name="QGraphicsObject"/>
-
     <value-type name="QTextLine">
         <inject-code>
             <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTextLine___" quote-before-line="}// class"/>

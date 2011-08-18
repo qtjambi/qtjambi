@@ -336,7 +336,7 @@ public class MusicPlayer extends QMainWindow
         volumeLabel.setPixmap(new QPixmap("images/volume.png"));
 
         QPalette palette = new QPalette();
-        palette.setBrush(QPalette.ColorRole.Light, new QBrush(QColor.darkGray));
+        palette.setBrush(QPalette.ColorRole.Light, new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.darkGray)));
 
         timeLcd = new QLCDNumber();
         timeLcd.setPalette(palette);

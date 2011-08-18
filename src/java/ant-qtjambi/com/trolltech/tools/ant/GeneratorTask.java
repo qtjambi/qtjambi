@@ -59,6 +59,7 @@ public class GeneratorTask extends Task {
     private String outputDirectory = ".";
     private String cppOutputDirectory;
     private String javaOutputDirectory;
+    private String outputPreprocessFile;
     private String dir = ".";
     private String phononpath = "";
     private String kdephonon = "";
@@ -169,6 +170,9 @@ public class GeneratorTask extends Task {
             commandList.add("--java-output-directory=" + Util.escape(file.getAbsolutePath()));
         }
 
+        if(outputPreprocessFile != null)
+            commandList.add("--output-preprocess-file=" + Util.escape(outputPreprocessFile));
+
         if(debugTools)
             commandList.add("--qtjambi-debug-tools");
 
@@ -250,6 +254,10 @@ public class GeneratorTask extends Task {
 
     public void setJavaOutputDirectory(String javaOutputDirectory) {
         this.javaOutputDirectory = javaOutputDirectory;
+    }
+
+    public void setOutputPreprocessFile(String outputPreprocessFile) {
+        this.outputPreprocessFile = outputPreprocessFile;
     }
 
     public void setDir(String dir) {

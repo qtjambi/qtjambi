@@ -368,8 +368,8 @@ static void addRemoveFunctionToTemplates(TypeDatabase *db) {
     QByteArray code_two_indices =
         "\nif ($1 < 0 || $2 < 0 || $1 >= __qt_this->size() || $2 >= __qt_this->size()) {"
         "\n   __jni_env->ThrowNew(__jni_env->FindClass(\"java/lang/IndexOutOfBoundsException\"),"
-        "\n                       QString::fromLatin1(\"Accessing container of size %3 from %4 to %5\")"
-        "\n                       .arg(__qt_this->size()).arg($1).arg($1+$2).toLatin1());"
+        "\n                       QString::fromLatin1(\"Accessing container of size %3 at %4 and at %5\")"
+        "\n                       .arg(__qt_this->size()).arg($1).arg($2).toLatin1());"
         "\n   return;"
         "\n}";
 

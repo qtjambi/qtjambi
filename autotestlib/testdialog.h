@@ -45,7 +45,7 @@
 #ifndef TESTDIALOG_H
 #define TESTDIALOG_H
 
-#include <QDialog>
+#include <QtGui/QDialog>
 
  class QComboBox;
  class QDir;

@@ -1,1 +1,1 @@
-#include "../../../tools/designer/src/lib/shared/qtresourceview_p.h"
+#include "../../../../tools/designer/src/lib/shared/qtresourceview_p.h"

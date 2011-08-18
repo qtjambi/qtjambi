@@ -17,7 +17,9 @@ include($$GENERATORPATH/parser/rxx.pri)
 
 include($$GENERATORPATH/parser/rpp/rpp.pri)
 
-win32-msvc2005:{
+# These option changes are recommended since at least: win32-msvc.net
+#          We have checked they are still needed with: win32-msvc2010 
+win32-msvc* {   
         QMAKE_CXXFLAGS += -wd4996
         QMAKE_CFLAGS += -wd4996
 }
@@ -77,8 +79,9 @@ win32{
         CONFIG += precompile_header
 }
 
-win32-msvc.net {
-        QMAKE_CXXFLAGS += /Zm500
+# These option changes are recommended since at least: win32-msvc.net
+win32-msvc* {
+        QMAKE_CXXFLAGS += -Zm500
         QMAKE_CXXFLAGS -= -Zm200
         QMAKE_CFLAGS -= -Zm200
 }
