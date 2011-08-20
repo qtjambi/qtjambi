@@ -116,20 +116,6 @@ class QXmlNamespaceSupport___ extends QXmlNamespaceSupport {
 
 }// class
 
-class QXmlStreamWriter___ extends QXmlStreamWriter {
-
-        public QXmlStreamWriter(com.trolltech.qt.core.QByteArray array) {
-            this(array.nativePointer());
-            __rcDevice = array;
-        }
-
-        public final void setCodec(String codecName) {
-            setCodec(QNativePointer.createCharPointer(codecName));
-            __rcCodec = null;
-        }
-
-}// class
-
 interface QXmlEntityResolver___ extends QXmlEntityResolver {
 
     public static class ResolvedEntity {

@@ -651,6 +651,14 @@
         <reject-enum-value name="WA_MacMetalStyle"/>
     </enum-type>
 
+    <enum-type name="QXmlStreamReader::Error" />
+    <enum-type name="QXmlStreamReader::TokenType" />
+    <enum-type name="QXmlStreamReader::ReadElementTextBehaviour" />
+    <!-- On some platforms (MacOSX 32bit ppc/i386) the class is called QCoreXmlStreamReader -->
+    <enum-type name="QCoreXmlStreamReader::Error" />
+    <enum-type name="QCoreXmlStreamReader::TokenType" />
+    <enum-type name="QCoreXmlStreamReader::ReadElementTextBehaviour" />
+
     <value-type name="QProcessEnvironment" />
     <value-type name="QBasicTimer"/>
     <value-type name="QByteArrayMatcher">
@@ -982,6 +990,8 @@
     <!--     <modify-function signature="operator==(const QMargins &amp;)" remove="all" /> -->
     </value-type>
     <object-type name="QXmlStreamEntityResolver" />
+    <!-- On some platforms (MacOSX 32bit ppc/i386) the class is called QCoreXmlStreamReader -->
+    <object-type name="QCoreXmlStreamEntityResolver" />
     <object-type name="QAbstractEventDispatcher"/>
     <object-type name="QEventLoop"/>
     <object-type name="QFile">
@@ -1456,6 +1466,116 @@
     <object-type name="QtJambiFutureIterator" generic-class="yes" java-name="QFutureIterator" />
     <object-type name="QRunnable" />
 
+    <!-- QXmlStream* classes were moved from QtXml to QtCore between 4.3.x and 4.4.x -->
+    <value-type name="QXmlStreamAttribute">
+        <modify-function signature="operator=(QXmlStreamAttribute)" remove="all"/>
+    </value-type>
+
+    <value-type name="QXmlStreamAttributes">
+        <modify-function signature="operator+(QVector&lt;QXmlStreamAttribute>)const" remove="all"/>
+        <modify-function signature="operator&lt;&lt;(QVector&lt;QXmlStreamAttribute>)" remove="all"/>
+        <modify-function signature="operator&lt;&lt;(QXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="push_back(QXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="pop_back()" remove="all"/>
+        <modify-function signature="push_front(QXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="pop_front()" remove="all"/>
+
+        <modify-function signature="value(const QString &amp;, const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+        <modify-function signature="value(const QLatin1String &amp;, const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+        <modify-function signature="value(const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+        <modify-function signature="hasAttribute(const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+    </value-type>
+
+    <value-type name="QXmlStreamNamespaceDeclaration">
+        <modify-function signature="operator=(QXmlStreamNamespaceDeclaration)" remove="all"/>
+    </value-type>
+
+    <value-type name="QXmlStreamNotationDeclaration">
+        <modify-function signature="operator=(QXmlStreamNotationDeclaration)" remove="all"/>
+    </value-type>
+
+    <value-type name="QXmlStreamEntityDeclaration">
+        <modify-function signature="operator=(QXmlStreamEntityDeclaration)" remove="all"/>
+    </value-type>
+
+    <object-type name="QXmlStreamReader">
+      <modify-function signature="QXmlStreamReader(const char*)" remove="all" />
+      <modify-function signature="addData(const char*)" remove="all" />
+      <modify-function signature="setEntityResolver(QXmlStreamEntityResolver*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcEntityResolver" />
+        </modify-argument>
+      </modify-function>
+    </object-type>
+    <object-type name="QXmlStreamWriter">
+        <modify-function signature="QXmlStreamWriter(QString *)">
+            <remove />
+        </modify-function>
+    </object-type>
+
+    <!-- On some platforms (MacOSX 32bit ppc/i386) the class is called QCoreXmlStream* -->
+    <value-type name="QCoreXmlStreamAttribute">
+        <modify-function signature="operator=(QCoreXmlStreamAttribute)" remove="all"/>
+    </value-type>
+
+    <value-type name="QCoreXmlStreamAttributes">
+        <modify-function signature="operator+(QVector&lt;QCoreXmlStreamAttribute>)const" remove="all"/>
+        <modify-function signature="operator&lt;&lt;(QVector&lt;QCoreXmlStreamAttribute>)" remove="all"/>
+        <modify-function signature="operator&lt;&lt;(QCoreXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="push_back(QCoreXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="pop_back()" remove="all"/>
+        <modify-function signature="push_front(QCoreXmlStreamAttribute)" remove="all"/>
+        <modify-function signature="pop_front()" remove="all"/>
+
+        <modify-function signature="value(const QString &amp;, const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+        <modify-function signature="value(const QLatin1String &amp;, const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+        <modify-function signature="value(const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+        <modify-function signature="hasAttribute(const QLatin1String &amp;)const">
+            <remove />
+        </modify-function>
+    </value-type>
+
+    <value-type name="QCoreXmlStreamNamespaceDeclaration">
+        <modify-function signature="operator=(QCoreXmlStreamNamespaceDeclaration)" remove="all"/>
+    </value-type>
+
+    <value-type name="QCoreXmlStreamNotationDeclaration">
+        <modify-function signature="operator=(QCoreXmlStreamNotationDeclaration)" remove="all"/>
+    </value-type>
+
+    <value-type name="QCoreXmlStreamEntityDeclaration">
+        <modify-function signature="operator=(QCoreXmlStreamEntityDeclaration)" remove="all"/>
+    </value-type>
+
+    <object-type name="QCoreXmlStreamReader">
+      <modify-function signature="QCoreXmlStreamReader(const char*)" remove="all" />
+      <modify-function signature="addData(const char*)" remove="all" />
+      <modify-function signature="setEntityResolver(QCoreXmlStreamEntityResolver*)">
+        <modify-argument index="1">
+            <reference-count action="set" variable-name="__rcEntityResolver" />
+        </modify-argument>
+      </modify-function>
+    </object-type>
+    <object-type name="QCoreXmlStreamWriter">
+        <modify-function signature="QCoreXmlStreamWriter(QString *)">
+            <remove />
+        </modify-function>
+    </object-type>
+
     <!-- Inefficient hash codes -->
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUuid' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QLocale' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
@@ -1464,6 +1584,16 @@
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QFutureVoid' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QUrl' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QProcessEnvironment' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamNamespaceDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamNotationDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamAttribute' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamAttributes' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamEntityDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QCoreXmlStreamNamespaceDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QCoreXmlStreamNotationDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QCoreXmlStreamAttribute' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QCoreXmlStreamAttributes' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QCoreXmlStreamEntityDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QtConcurrent::selectIteration', unmatched parameter type 'T'" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QVariantAnimation::registerInterpolator', unmatched parameter type 'QVariantAnimation::Interpolator'" />
