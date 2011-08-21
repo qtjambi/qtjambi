@@ -65,14 +65,14 @@ public class LibraryEntry extends Task {
     public static final String LOAD_NEVER              = "never";
 
     public static final String SUBDIR_DEFAULT          = "";
-    
-    /**
+
+    /*
      *  set to specify where the plugin should be saved.
      *  Used to reduce redundancy of build.xml.
      *  TODO:
-     *  Other variables could use same kind of solutions, I think. 
-     *  Whole path system needs to be rewritten to correspond 
-     *  new libdir, includedir, plugindir properties.  
+     *  Other variables could use same kind of solutions, I think.
+     *  Whole path system needs to be rewritten to correspond
+     *  new libdir, includedir, plugindir properties.
      */
     public String output_directory        = "";
 
@@ -151,7 +151,7 @@ public class LibraryEntry extends Task {
 
     @Override
     public void execute() throws BuildException {
-        if (name == null || name.length() == 0)
+        if(name == null || name.length() == 0)
             throw new BuildException("Required attribute 'name' missing");
 
         PropertyHelper h = PropertyHelper.getPropertyHelper(getProject());
@@ -159,21 +159,21 @@ public class LibraryEntry extends Task {
         boolean debug = "debug".equals(h.getProperty((String) null, InitializeTask.CONFIGURATION));
 
         // Fix name
-        if (type.equals(TYPE_PLUGIN)) {
-        	name = formatPluginName(name, this.kdephonon, debug);
-        } else if (type.equals(TYPE_QT)){
-        	name = formatQtName(name, debug, version);
-        	//qt libraries are stored in "lib"
-        	// "/" is needed in the end
-        	output_directory = "lib/";
-        } else if (type.equals(TYPE_QTJAMBI)) {
-        	name = formatQtJambiName(name, debug);
-        	output_directory = "lib/";
-        } else if (type.equals(TYPE_UNVERSIONED_PLUGIN)) {
-        	name = formatUnversionedPluginName(name, debug);
+        if(type.equals(TYPE_PLUGIN)) {
+            name = formatPluginName(name, this.kdephonon, debug);
+        } else if(type.equals(TYPE_QT)){
+            name = formatQtName(name, debug, version);
+            //qt libraries are stored in "lib"
+            // "/" is needed in the end
+            output_directory = "lib/";
+        } else if(type.equals(TYPE_QTJAMBI)) {
+            name = formatQtJambiName(name, debug);
+            output_directory = "lib/";
+        } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
+            name = formatUnversionedPluginName(name, debug);
         }
 
-        if (!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
+        if(!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
             load = LOAD_DEFAULT;
     }
 
@@ -186,23 +186,27 @@ public class LibraryEntry extends Task {
     }
 
     public static String formatPluginName(String name, boolean kdephonon, boolean debug) {
-        if (debug) {
-            switch (OSInfo.os()) {
-            case Windows: return name + "d4.dll";
-            case MacOS: return "lib" + name + "_debug.dylib";
+        if(debug) {
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + "d4.dll";
+            case MacOS:
+                return "lib" + name + "_debug.dylib";
             case Solaris:
-            case Linux: 
+            case Linux:
             case FreeBSD:
-            	return formatLinuxPluginName(name, kdephonon);
+                return formatLinuxPluginName(name, kdephonon);
             }
         } else {
-            switch (OSInfo.os()) {
-            case Windows: return name + "4.dll";
-            case MacOS: return "lib" + name + ".dylib";
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + "4.dll";
+            case MacOS:
+                return "lib" + name + ".dylib";
             case Solaris:
-            case Linux: 
+            case Linux:
             case FreeBSD:
-            	return formatLinuxPluginName(name, kdephonon);
+                return formatLinuxPluginName(name, kdephonon);
             }
         }
         throw new BuildException("unhandled case...");
@@ -211,7 +215,7 @@ public class LibraryEntry extends Task {
     private static String formatLinuxPluginName(String name, boolean kdephonon) {
         String library = null;
         if(kdephonon == true) {
-            library = name + ".so"; 
+            library = name + ".so";
         } else {
             library = "lib" + name + ".so";
         }
@@ -223,63 +227,81 @@ public class LibraryEntry extends Task {
     }
 
     public static String formatQtName(String name, boolean debug, int version) {
-        if (debug) {
-            switch (OSInfo.os()) {
-            case Windows: return name + "d" + version + ".dll";
-            case MacOS: return "lib" + name + "_debug." + version + ".dylib";
+        if(debug) {
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + "d" + version + ".dll";
+            case MacOS:
+                return "lib" + name + "_debug." + version + ".dylib";
             case Solaris:
             case Linux:
-            case FreeBSD: return "lib" + name + ".so." + version;
+            case FreeBSD:
+                return "lib" + name + ".so." + version;
             }
         } else {
-            switch (OSInfo.os()) {
-            case Windows: return name + version + ".dll";
-            case MacOS: return "lib" + name + "." + version + ".dylib";
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + version + ".dll";
+            case MacOS:
+                return "lib" + name + "." + version + ".dylib";
             case Solaris:
             case Linux:
-            case FreeBSD: return "lib" + name + ".so." + version;
+            case FreeBSD:
+                return "lib" + name + ".so." + version;
             }
         }
         throw new BuildException("unhandled case...");
     }
 
     public static String formatUnversionedPluginName(String name, boolean debug) {
-        if (debug) {
-            switch (OSInfo.os()) {
-            case Windows: return name + "d.dll";
-            case MacOS: return "lib" + name + "_debug.dylib";
+        if(debug) {
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + "d.dll";
+            case MacOS:
+                return "lib" + name + "_debug.dylib";
             case Solaris:
             case Linux:
-            case FreeBSD: return "lib" + name + ".so";
+            case FreeBSD:
+                return "lib" + name + ".so";
             }
         } else {
-            switch (OSInfo.os()) {
-            case Windows: return name + ".dll";
-            case MacOS: return "lib" + name + ".dylib";
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + ".dll";
+            case MacOS:
+                return "lib" + name + ".dylib";
             case Solaris:
             case Linux:
-            case FreeBSD: return "lib" + name + ".so";
+            case FreeBSD:
+                return "lib" + name + ".so";
             }
         }
         throw new BuildException("unhandled case...");
     }
 
     public static String formatQtJambiName(String name, boolean debug) {
-        if (debug)  {
-            switch (OSInfo.os()) {
-            case Windows: return name + "_debuglib.dll";
-            case MacOS: return "lib" + name + "_debuglib.jnilib";
+        if(debug)  {
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + "_debuglib.dll";
+            case MacOS:
+                return "lib" + name + "_debuglib.jnilib";
             case Solaris:
             case Linux:
-            case FreeBSD: return "lib" + name + "_debuglib.so";
+            case FreeBSD:
+                return "lib" + name + "_debuglib.so";
             }
         } else {
-            switch (OSInfo.os()) {
-            case Windows: return name + ".dll";
-            case MacOS: return "lib" + name + ".jnilib";
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + ".dll";
+            case MacOS:
+                return "lib" + name + ".jnilib";
             case Solaris:
             case Linux:
-            case FreeBSD: return "lib" + name + ".so";
+            case FreeBSD:
+                return "lib" + name + ".so";
             }
         }
         throw new BuildException("unhandled case...");

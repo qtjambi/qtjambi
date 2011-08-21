@@ -49,9 +49,8 @@ import org.apache.tools.ant.*;
 public class PluginPath extends Task {
 
     public void execute() throws BuildException {
-        if (path == null) {
+        if(path == null)
             throw new BuildException("Missing required attribute 'path'...");
-        }
     }
 
     public void setPath(String p) {

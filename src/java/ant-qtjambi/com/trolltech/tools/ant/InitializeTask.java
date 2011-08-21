@@ -67,15 +67,15 @@ public class InitializeTask extends Task {
      * Or rather these binds shouldn’t exist, how much of this could be moved to
      * xml side?
      */
-    public static final String LIBDIR           	= "qtjambi.qt.libdir";
-    public static final String INCLUDEDIR       	= "qtjambi.qt.includedir";
-    public static final String PLUGINSDIR       	= "qtjambi.qt.pluginsdir";
-    public static final String PHONONLIBDIR     	= "qtjambi.phonon.libdir";
-    public static final String JAVALIBDIR		= "qtjambi.java.library.path";
-    public static final String JAMBILIBDIR		= "qtjambi.jambi.libdir";
-    public static final String VERSION          	= "qtjambi.version";
-    public static final String JAVA_HOME_TARGET		= "java.home.target";
-    public static final String JAVA_OSARCH_TARGET	= "java.osarch.target";
+    public static final String LIBDIR               = "qtjambi.qt.libdir";
+    public static final String INCLUDEDIR           = "qtjambi.qt.includedir";
+    public static final String PLUGINSDIR           = "qtjambi.qt.pluginsdir";
+    public static final String PHONONLIBDIR         = "qtjambi.phonon.libdir";
+    public static final String JAVALIBDIR           = "qtjambi.java.library.path";
+    public static final String JAMBILIBDIR          = "qtjambi.jambi.libdir";
+    public static final String VERSION              = "qtjambi.version";
+    public static final String JAVA_HOME_TARGET     = "java.home.target";
+    public static final String JAVA_OSARCH_TARGET   = "java.osarch.target";
 
     /*
      * These properties are set inside this task
@@ -152,76 +152,76 @@ public class InitializeTask extends Task {
         String webkit = decideWebkit();
         // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
         //  if you have headers and DSOs for WebKit then QtJambi should build the support.
-        if ("true".equals(webkit) && "true".equals(phonon) == false)
-            if (verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
-        if ("true".equals(webkit))
+        if("true".equals(webkit) && "true".equals(phonon) == false)
+            if(verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
+        if("true".equals(webkit))
             props.setNewProperty((String) null, WEBKIT, webkit);
 
         String script = decideScript();
-        if ("true".equals(script))
+        if("true".equals(script))
             props.setNewProperty((String) null, SCRIPT, script);
 
         String scripttools = decideScripttools();
-        if ("true".equals(scripttools))
+        if("true".equals(scripttools))
             props.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
 
         String helptool = decideHelp();
-        if ("true".equals(helptool))
+        if("true".equals(helptool))
             props.setNewProperty((String) null, HELP, helptool);
 
         String multimedia = decideMultimedia();
-        if ("true".equals(multimedia))
+        if("true".equals(multimedia))
             props.setNewProperty((String) null, MULTIMEDIA, multimedia);
 
         String patterns = decideXMLPatterns();
-        if ("true".equals(patterns))
+        if("true".equals(patterns))
             props.setNewProperty((String) null, XMLPATTERNS, patterns);
 
         String opengl = decideOpenGL();
-        if ("true".equals(opengl))
+        if("true".equals(opengl))
             props.setNewProperty((String) null, OPENGL, opengl);
     }
 
     private String decideJavaHomeTarget() {
         String s = (String) props.getProperty((String) null, JAVA_HOME_TARGET);
-        if (s == null)
+        if(s == null)
             s = System.getenv("JAVA_HOME_TARGET");
-        if (s == null)
+        if(s == null)
             s = System.getenv("JAVA_HOME");
         String result = s;
-        props.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);	// does this work?
-        props.setProperty("env", "JAVA_HOME_TARGET", result, false);	// does this work?
-        if (verbose) System.out.println(JAVA_HOME_TARGET + ": " + result);
+        props.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);    // does this work?
+        props.setProperty("env", "JAVA_HOME_TARGET", result, false);    // does this work?
+        if(verbose) System.out.println(JAVA_HOME_TARGET + ": " + result);
         return result;
     }
 
     private String decideJavaOsarchTarget() {
         String method = "";
         String s = (String) props.getProperty((String) null, JAVA_OSARCH_TARGET);
-        if (s == null)
+        if(s == null)
             s = System.getenv("JAVA_OSARCH_TARGET");
-        if (s == null) {	// auto-detect using what we find
+        if(s == null) {    // auto-detect using what we find
             // This is based on a token observation that the include direcory
             //  only had one sub-directory (this is needed for jni_md.h).
             File includeDir = new File((String)props.getProperty((String) null, JAVA_HOME_TARGET), "include");
             File found = null;
             int foundCount = 0;
-            if (includeDir.exists()) {
+            if(includeDir.exists()) {
                 File[] listFiles = includeDir.listFiles();
-                for (File f : listFiles) {
-                    if (f.isDirectory()) {
+                for(File f : listFiles) {
+                    if(f.isDirectory()) {
                         foundCount++;
                         found = f;
                     }
                 }
             }
-            if (foundCount == 1) {
+            if(foundCount == 1) {
                 s = found.getName();
                 method = " (auto-detected)";
             }
         }
         String result = s;
-        if (verbose) System.out.println(JAVA_OSARCH_TARGET + ": " + result + method);
+        if(verbose) System.out.println(JAVA_OSARCH_TARGET + ": " + result + method);
         return result;
     }
 
@@ -235,7 +235,7 @@ public class InitializeTask extends Task {
         debug = "debug".equals(configuration);
         result = debug ? "debug" : "release";
 
-        if (verbose) System.out.println(CONFIGURATION + ": " + result);
+        if(verbose) System.out.println(CONFIGURATION + ": " + result);
         return result;
     }
 
@@ -264,13 +264,13 @@ public class InitializeTask extends Task {
     }
 
     /**
-     * Decide whether we have phonon plugin and and 
-     * check correct phonon backend to use for this OS.
+     * Decide whether we have phonon plugin and check
+     * correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper props) {
         boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
         String phonon = String.valueOf(exists);
-        if (verbose) {
+        if(verbose) {
             System.out.println(PHONON + ": " + phonon);
         }
 
@@ -279,19 +279,19 @@ public class InitializeTask extends Task {
 
         props.setNewProperty((String) null, PHONON, phonon);
 
-        switch (OSInfo.os()) {
+        switch(OSInfo.os()) {
         case Windows:
             props.setNewProperty((String) null, PHONON_DS9, "true");
             break;
         case Linux:
         case FreeBSD:
             props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
-            if (doesQtLibExist("QtDBus", 4))
+            if(doesQtLibExist("QtDBus", 4))
                 props.setNewProperty((String) null, DBUS, "true");
             break;
         case MacOS:
             props.setNewProperty((String) null, PHONON_QT7, "true");
-            if (doesQtLibExist("QtDBus", 4))
+            if(doesQtLibExist("QtDBus", 4))
                 props.setNewProperty((String) null, DBUS, "true");
             break;
         }
@@ -301,7 +301,7 @@ public class InitializeTask extends Task {
 
     /**
      * Adds new library to qtjambi.qtconfig property, which is used
-     * to specify additional qt libraries compiled. 
+     * to specify additional qt libraries compiled.
      * @param config Library to add
      */
     private void addToQtConfig(String config) {
@@ -317,71 +317,71 @@ public class InitializeTask extends Task {
 
     private String decideSqlite() {
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
-        if (verbose) System.out.println(SQLITE + ": " + result);
+        if(verbose) System.out.println(SQLITE + ": " + result);
         return result;
     }
 
     private String decideSvg() {
         String result = String.valueOf(doesQtLibExist("QtSvg", 4));
-        if (verbose) System.out.println(SVG + ": " + result);
+        if(verbose) System.out.println(SVG + ": " + result);
         if("true".equals(result)) addToQtConfig("svg");
         return result;
     }
 
     private String decideMng(){
         String result = String.valueOf(doesQtPluginExist("qmng", "imageformats"));
-        if (verbose) System.out.println(MNG + ": " + result);
+        if(verbose) System.out.println(MNG + ": " + result);
         return result;
     }
 
     private String decideTiff() {
         String result = String.valueOf(doesQtPluginExist("qtiff", "imageformats"));
-        if (verbose) System.out.println(TIFF + ": " + result);
+        if(verbose) System.out.println(TIFF + ": " + result);
         return result;
     }
 
     private String decideHelp() {
         String result = String.valueOf(doesQtLibExist("QtHelp", 4));
-        if (verbose) System.out.println(HELP + ": " + result);
+        if(verbose) System.out.println(HELP + ": " + result);
         return result;
     }
 
     private String decideMultimedia() {
         String result = String.valueOf(doesQtLibExist("QtMultimedia", 4));
-        if (verbose) System.out.println(MULTIMEDIA + ": " + result);
+        if(verbose) System.out.println(MULTIMEDIA + ": " + result);
         if("true".equals(result)) addToQtConfig("multimedia");
         return result;
     }
 
     private String decideScript() {
         String result = String.valueOf(doesQtLibExist("QtScript", 4));
-        if (verbose) System.out.println(SCRIPT + ": " + result);
+        if(verbose) System.out.println(SCRIPT + ": " + result);
         if("true".equals(result)) addToQtConfig("script");
         return result;
     }
 
     private String decideScripttools() {
         String result = String.valueOf(doesQtLibExist("QtScriptTools", 4));
-        if (verbose) System.out.println(SCRIPTTOOLS + ": " + result);
+        if(verbose) System.out.println(SCRIPTTOOLS + ": " + result);
         if("true".equals(result)) addToQtConfig("scripttools");
         return result;
     }
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
-        if (verbose) System.out.println(WEBKIT + ": " + result);
+        if(verbose) System.out.println(WEBKIT + ": " + result);
         if("true".equals(result)) addToQtConfig("webkit");
         return result;
     }
 
     private String decideXMLPatterns() {
         String result = String.valueOf(doesQtLibExist("QtXmlPatterns", 4));
-        if (verbose) System.out.println(XMLPATTERNS + ": " + result);
+        if(verbose) System.out.println(XMLPATTERNS + ": " + result);
         return result;
     }
 
     private String decideOpenGL() {
         String result = String.valueOf(doesQtLibExist("QtOpenGL", 4));
-        if (verbose) System.out.println(OPENGL + ": " + result);
+        if(verbose) System.out.println(OPENGL + ": " + result);
         return result;
     }
 

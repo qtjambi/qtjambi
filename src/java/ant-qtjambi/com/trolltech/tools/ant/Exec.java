@@ -65,10 +65,10 @@ class Exec {
         try {
             Process process = Runtime.getRuntime().exec(command, null, dir);
             Util.redirectOutput(process);
-            if (process.exitValue() != 0) {
+            if(process.exitValue() != 0) {
                 throw new BuildException("Running: " + command + " failed with exit code: " + process.exitValue());
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new BuildException("Running: " + command + " failed with error message: " + e.getMessage(), e);
         }
     }
@@ -83,9 +83,9 @@ class Exec {
      * @throws BuildException Thrown if process exit value is not zero or IOException has been occurred.
      */
     public static void exec(String cmd[], File dir, Project project, boolean verbose) throws BuildException {
-        if (verbose) {
+        if(verbose) {
             StringBuilder b = new StringBuilder();
-            for (String s : cmd)
+            for(String s : cmd)
                 b.append(s).append(' ');
             System.out.println("Running : " + ((dir!=null)? "(" + Util.makeCanonical(dir) + ")" : "") + " " + b);
         }
@@ -93,10 +93,10 @@ class Exec {
         try {
             Process process = Runtime.getRuntime().exec(cmd, null, dir);
             Util.redirectOutput(process);
-            if (process.exitValue() != 0) {
+            if(process.exitValue() != 0) {
                 throw new BuildException("Running: '" + join(cmd) + "' failed.");
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new BuildException("Running: '" + join(cmd) + "' failed.", e);
         }
     }
@@ -164,10 +164,10 @@ class Exec {
         try {
             Process process = builder.start();
             Util.redirectOutput(process);
-            if (process.exitValue() != 0) {
+            if(process.exitValue() != 0) {
                 throw new BuildException("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue());
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new BuildException("Running: '" + command.toString() + "' failed.", e);
         }
     }
@@ -179,12 +179,11 @@ class Exec {
      */
     private static String join(String ar[]) {
         String s = "";
-        for (int i = 0; i<ar.length; ++i) {
+        for(int i = 0; i<ar.length; ++i) {
             s += ar[i];
-            if (i < ar.length - 1)
+            if(i < ar.length - 1)
                 s += " ";
         }
         return s;
     }
-
 }

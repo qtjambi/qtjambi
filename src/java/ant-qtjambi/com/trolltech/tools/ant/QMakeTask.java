@@ -55,7 +55,7 @@ public class QMakeTask extends Task {
     private String config = "";
     private String dir = ".";
     private String pro = "";
-    
+
     //parameters
     private String qtconfig = null;
     private String includepath = null;
@@ -63,64 +63,60 @@ public class QMakeTask extends Task {
 
     private boolean recursive = false;
     private boolean debugTools = false;
-    
+
     private List<String> parseArguments() {
-	List<String> arguments = new ArrayList<String>();
+        List<String> arguments = new ArrayList<String>();
 
         StringTokenizer tokenizer = new StringTokenizer(config, " ");
-        
-        while (tokenizer.hasMoreTokens()) {
+
+        while(tokenizer.hasMoreTokens()) {
             arguments.add("-config");
             arguments.add(tokenizer.nextToken());
         }
 
-        if (recursive) {
+        if(recursive)
             arguments.add("-r");
-        }
-        if (debugTools) {
+
+        if(debugTools)
             arguments.add("DEFINES+=QTJAMBI_DEBUG_TOOLS");
-        }
-        
+
         return arguments;
     }
-    
+
     private List<String> parseParameters() {
-	List<String> parameters = new ArrayList<String>();
+        List<String> parameters = new ArrayList<String>();
 
-	if (qtconfig != null) {
-	    parameters.add("QT_CONFIG+=" + qtconfig);
-	}
+        if(qtconfig != null)
+            parameters.add("QT_CONFIG+=" + qtconfig);
 
-	if (includepath != null) {
-	    parameters.add("INCLUDEPATH+=" + includepath);
-	}
+        if(includepath != null)
+            parameters.add("INCLUDEPATH+=" + includepath);
 
-	return parameters;
+        return parameters;
     }
 
     @Override
     public void execute() throws NullPointerException {
-	System.out.println(msg);
+        System.out.println(msg);
 
-	String proFile = "";
-	if (!pro.equals("")) {
-	    proFile = Util.makeCanonical(pro).getAbsolutePath();
-	}
-	
-	final List<String> command =  new ArrayList<String>();
-	
-	command.add(qmakebinary);
-	command.add(proFile);
+        String proFile = "";
+        if(!pro.equals(""))
+            proFile = Util.makeCanonical(pro).getAbsolutePath();
+
+        final List<String> command =  new ArrayList<String>();
+
+        command.add(qmakebinary);
+        command.add(proFile);
 
         List<String> arguments = parseArguments();
-        if (!arguments.isEmpty())
+        if(!arguments.isEmpty())
             command.addAll(arguments);
 
         List<String> parameters = parseParameters();
-        if (!parameters.isEmpty())
-	    command.addAll(parameters);
-	
-	Exec.execute(command, new File(dir), getProject());
+        if(!parameters.isEmpty())
+            command.addAll(parameters);
+
+        Exec.execute(command, new File(dir), getProject());
     }
 
     public void setMessage(String msg) {
@@ -130,21 +126,21 @@ public class QMakeTask extends Task {
     public void setConfig(String config) {
         this.config = config;
     }
-    
+
     public void setQtconfig(String config) {
-    	this.qtconfig = config;
+        this.qtconfig = config;
     }
 
     public void setDir(String dir) {
         this.dir = dir;
     }
-    
+
     public void setQmakebinary(String binary) {
         this.qmakebinary = binary;
     }
-    
+
     public void setIncludepath(String path) {
-    	this.includepath = path;
+        this.includepath = path;
     }
 
     public void setRecursive(boolean recursive) {
@@ -156,6 +152,6 @@ public class QMakeTask extends Task {
     }
 
     public void setDebugTools(boolean debugTools) {
-	this.debugTools = debugTools;
+        this.debugTools = debugTools;
     }
 }

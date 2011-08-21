@@ -12,17 +12,17 @@ public class StreamConsumer extends Thread {
         this.in = in;
         this.out = out;
     }
-                                        
+
     @Override
     public void run() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String line;
         try {
-            while ( (line = reader.readLine()) != null) {
-                if (out != null)
+            while((line = reader.readLine()) != null) {
+                if(out != null)
                     out.println(line);
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
