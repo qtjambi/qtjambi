@@ -90,6 +90,7 @@
         <copy todir="${java.outdir}/${module}" includeemptydirs="false">
             <fileset dir="${java.srcdir}/${module}">
                 <include name="**/*"/>
+                <exclude name="**/.*"/>
                 <exclude name="**/*.java"/>
                 <exclude name="**/*.jui"/>
             </fileset>
