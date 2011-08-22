@@ -50,11 +50,10 @@ import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.QIODevice.OpenMode;
 import com.trolltech.qt.core.QIODevice.OpenModeFlag;
+import com.trolltech.qt.core.QXmlStreamReader.TokenType;
 import com.trolltech.qt.core.Qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QKeySequence.StandardKey;
-import com.trolltech.qt.xml.*;
-import com.trolltech.qt.xml.QXmlStreamReader.TokenType;
 
 @QtJambiExample(name = "Spreadsheet")
 public class Spreadsheet extends QMainWindow {

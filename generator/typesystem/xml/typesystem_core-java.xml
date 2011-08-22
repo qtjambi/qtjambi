@@ -2038,4 +2038,41 @@
     </inject-code>
   </namespace-type>
 
+    <object-type name="QXmlStreamReader">
+        <modify-function signature="setDevice(QIODevice*)">
+            <modify-argument index="1">
+                <reference-count action="set" variable-name="__rcDevice"/>
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="clear()">
+            <inject-code class="java" position="end">
+                __rcDevice = null; // clear() call removes device from stream
+            </inject-code>
+        </modify-function>
+    </object-type>
+
+    <object-type name="QXmlStreamWriter">
+        <inject-code>
+            <import-file name="typesystem/java/typesystem_core-java.java" quote-after-line="class QXmlStreamWriter___" quote-before-line="}// class"/>
+        </inject-code>
+        <modify-function signature="QXmlStreamWriter(QByteArray *)">
+            <access modifier="private"/>
+        </modify-function>
+
+        <modify-function signature="setCodec(const char *)">
+            <access modifier="private"/>
+        </modify-function>
+
+        <modify-function signature="setCodec(QTextCodec*)">
+            <modify-argument index="1">
+                <reference-count action="set" variable-name="__rcCodec"/>
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="setDevice(QIODevice*)">
+            <modify-argument index="1">
+                <reference-count action="set" variable-name="__rcDevice"/>
+            </modify-argument>
+        </modify-function>
+    </object-type>
+
 </typesystem>

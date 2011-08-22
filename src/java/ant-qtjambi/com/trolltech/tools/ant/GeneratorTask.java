@@ -86,13 +86,13 @@ public class GeneratorTask extends Task {
     }
 
     private String generatorExecutable() {
-        switch (OSInfo.os()) {
-            case Windows:
-                return "\"" + Util.LOCATE_EXEC("generator.exe",
-                        searchPath(), null).getAbsolutePath() + "\"";
-            default:
-                return Util.LOCATE_EXEC("generator",
-                        searchPath(), null).getAbsolutePath();
+        switch(OSInfo.os()) {
+        case Windows:
+            return "\"" + Util.LOCATE_EXEC("generator.exe",
+                    searchPath(), null).getAbsolutePath() + "\"";
+        default:
+            return Util.LOCATE_EXEC("generator",
+                    searchPath(), null).getAbsolutePath();
         }
     }
 
@@ -101,7 +101,7 @@ public class GeneratorTask extends Task {
 
     private String parseArgumentFiles(List<String> commandList) {
         File typesystemFile = Util.makeCanonical(typesystem);
-        if (!typesystemFile.exists()) {
+        if(!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
         }
 
@@ -112,7 +112,7 @@ public class GeneratorTask extends Task {
             headerFile = Util.makeCanonical(kdephonon);
         }
 
-        if (!headerFile.exists()) {
+        if(!headerFile.exists()) {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
@@ -122,7 +122,7 @@ public class GeneratorTask extends Task {
     }
 
     private boolean parseArguments() {
-        if (options != null && !options.equals("")) {
+        if(options != null && !options.equals("")) {
             commandList.add(options);
         }
 
@@ -140,7 +140,7 @@ public class GeneratorTask extends Task {
 
         if(inputDirectory != null && !inputDirectory.equals("")){
             File file = Util.makeCanonical(inputDirectory);
-            if (!file.exists()) {
+            if(!file.exists()) {
                 throw new BuildException("Input directory '" + inputDirectory + "' does not exist.");
             }
             commandList.add("--input-directory=" + Util.escape(file.getAbsolutePath()));
@@ -148,7 +148,7 @@ public class GeneratorTask extends Task {
 
         if(!outputDirectory.equals("")){
             File file = Util.makeCanonical(outputDirectory);
-            if (!file.exists()) {
+            if(!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
             commandList.add("--output-directory=" + Util.escape(file.getAbsolutePath()));
@@ -156,7 +156,7 @@ public class GeneratorTask extends Task {
 
         if(cppOutputDirectory != null && !cppOutputDirectory.equals("")){
             File file = Util.makeCanonical(cppOutputDirectory);
-            if (!file.exists()) {
+            if(!file.exists()) {
                 throw new BuildException("CPP Output directory '" + cppOutputDirectory + "' does not exist.");
             }
             commandList.add("--cpp-output-directory=" + Util.escape(file.getAbsolutePath()));
@@ -164,7 +164,7 @@ public class GeneratorTask extends Task {
 
         if(javaOutputDirectory != null && !javaOutputDirectory.equals("")){
             File file = Util.makeCanonical(javaOutputDirectory);
-            if (!file.exists()) {
+            if(!file.exists()) {
                 throw new BuildException("Java Output directory '" + javaOutputDirectory + "' does not exist.");
             }
             commandList.add("--java-output-directory=" + Util.escape(file.getAbsolutePath()));
@@ -233,7 +233,7 @@ public class GeneratorTask extends Task {
         this.qtIncludeDirectory = dir;
     }
 
-    /**
+    /*
      * Used for LD_LIBRARY_PATH assurance only.
      */
     public void setQtLibDirectory(String dir) {
@@ -264,11 +264,11 @@ public class GeneratorTask extends Task {
         this.dir = dir;
     }
 
-    /**
+    /*
      * Enable code generation with additional debugging output, this
      *  output may inhibit runtime performance.
      */
     public void setDebugTools(boolean debugTools) {
-	this.debugTools = debugTools;
+        this.debugTools = debugTools;
     }
 }

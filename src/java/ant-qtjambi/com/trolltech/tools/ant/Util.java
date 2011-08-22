@@ -63,18 +63,18 @@ class Util {
     public static File LOCATE_EXEC(String name, String prepend, String append) {
         String searchPath = "";
 
-        if (prepend != null && !prepend.equals(""))
+        if(prepend != null && !prepend.equals(""))
             searchPath += prepend + File.pathSeparator;
 
         searchPath += System.getenv("PATH");
 
-        if (append != null && !append.equals(""))
+        if(append != null && !append.equals(""))
             searchPath += File.pathSeparator + append;
 
         StringTokenizer tokenizer = new StringTokenizer(searchPath, File.pathSeparator);
-        while (tokenizer.hasMoreTokens()) {
+        while(tokenizer.hasMoreTokens()) {
             File exec = new File(tokenizer.nextToken() + File.separator + name);
-            if (exec.isFile())
+            if(exec.isFile())
                 return makeCanonical(exec);
         }
 
@@ -90,7 +90,7 @@ class Util {
             proc.waitFor();
             std.join();
             err.join();
-        } catch (InterruptedException e) {
+        } catch(InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -98,7 +98,7 @@ class Util {
 
     public static void copy(File src, File dst) throws IOException {
         File destDir = dst.getParentFile();
-        if (!destDir.exists()) {
+        if(!destDir.exists()) {
             destDir.mkdirs();
         }
 
@@ -106,7 +106,7 @@ class Util {
         OutputStream out = new FileOutputStream(dst);
 
         byte buffer[] = new byte[1024 * 64];
-        while (in.available() > 0) {
+        while(in.available() > 0) {
             int read = in.read(buffer);
             out.write(buffer, 0, read);
         }
@@ -116,9 +116,9 @@ class Util {
 
 
     public static void copyRecursive(File src, File target) throws IOException {
-        if (src.isDirectory()) {
+        if(src.isDirectory()) {
             File entries[] = src.listFiles();
-            for (File e : entries) {
+            for(File e : entries) {
                 copyRecursive(e, new File(target, e.getName()));
             }
         } else {
@@ -136,16 +136,15 @@ class Util {
 
     public static File findInPath(String name) {
         String PATH[] = System.getenv("PATH").split(File.pathSeparator);
-        for (String p : PATH) {
+        for(String p : PATH) {
             File f = new File(p, name);
-            if (f.exists())
+            if(f.exists())
                 return f;
         }
         return null;
     }
 
     public static File findInLibraryPath(String name, String javaLibDir) {
-        
         String libraryPath;
         if(javaLibDir != null) {
                 libraryPath = javaLibDir;
@@ -155,13 +154,14 @@ class Util {
             //System.out.println("library path is: " + libraryPath);
 
         // Make /usr/lib an implicit part of library path
-        if (OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)
+        if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)
             libraryPath += File.pathSeparator + "/usr/lib";
+        // TODO: How about /usr/lib64 on linux ?
 
         String PATH[] = libraryPath.split(File.pathSeparator);
-        for (String p : PATH) {
+        for(String p : PATH) {
             File f = new File(p, name);
-            if (f.exists()) {
+            if(f.exists()) {
                 return f;
             }
         }
@@ -176,7 +176,7 @@ class Util {
     public static File makeCanonical(File file) throws BuildException {
         try {
             return file.getCanonicalFile();
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new BuildException("Path : " + file.getAbsolutePath() + " failed to create canonical form.", e);
         }
     }

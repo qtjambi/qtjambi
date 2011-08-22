@@ -63,9 +63,11 @@ public class JuicTask extends MatchingTask {
     private String qtLibDirectory = null;
 
     public String executableName() {
-        switch (OSInfo.os()) {
-            case Windows: return "juic.exe";
-            default: return "juic";
+        switch(OSInfo.os()) {
+        case Windows:
+            return "juic.exe";
+        default:
+            return "juic";
         }
     }
 
@@ -75,29 +77,29 @@ public class JuicTask extends MatchingTask {
 
         List<String> commandList = new ArrayList<String>();
         commandList.add(Util.escape(Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath()));
-        if (!outputDir.equals("")) {
+        if(!outputDir.equals("")) {
             commandList.add("-d");
             commandList.add(Util.escape(outputDir));
         }
-        if (!trFunction.equals("")) {
+        if(!trFunction.equals("")) {
             commandList.add("-tr");
             commandList.add(Util.escape(trFunction));
         }
-        if (!classNamePrefix.equals("")) {
+        if(!classNamePrefix.equals("")) {
             commandList.add("-pf");
             commandList.add(Util.escape(classNamePrefix));
         }
-        if (alwaysUpdate) {
+        if(alwaysUpdate) {
             commandList.add("-a");
         }
 
         StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
-        while (tokenizer.hasMoreTokens()) {
+        while(tokenizer.hasMoreTokens()) {
             File dirToScan = Util.makeCanonical(tokenizer.nextToken());
 
             DirectoryScanner ds = getDirectoryScanner(dirToScan);
             String[] files = ds.getIncludedFiles();
-            for (String file : files) {
+            for(String file : files) {
 
                 file = file.replaceAll("\\\\", "/");
 
@@ -139,10 +141,10 @@ public class JuicTask extends MatchingTask {
     }
 
     public void setDir(String dir) {
-    	this.dir  = dir;
+        this.dir  = dir;
     }
 
     public void setQtLibDirectory(String dir) {
-    	this.qtLibDirectory  = dir;
+        this.qtLibDirectory  = dir;
     }
 }

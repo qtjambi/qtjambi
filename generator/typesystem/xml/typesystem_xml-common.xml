@@ -6,9 +6,6 @@
     <enum-type name="QDomNode::NodeType" />
     <enum-type name="QDomNode::EncodingPolicy" />
     <enum-type name="QDomImplementation::InvalidDataPolicy" />
-    <enum-type name="QXmlStreamReader::Error" />
-    <enum-type name="QXmlStreamReader::TokenType" />
-    <enum-type name="QXmlStreamReader::ReadElementTextBehaviour" />
 
 
     <value-type name="QDomAttr">
@@ -116,45 +113,6 @@
 
     <value-type name="QXmlParseException" />
 
-    <value-type name="QXmlStreamAttribute">
-        <modify-function signature="operator=(QXmlStreamAttribute)" remove="all"/>
-    </value-type>
-
-    <value-type name="QXmlStreamAttributes">
-        <modify-function signature="operator+(QVector&lt;QXmlStreamAttribute>)const" remove="all"/>
-        <modify-function signature="operator&lt;&lt;(QVector&lt;QXmlStreamAttribute>)" remove="all"/>
-        <modify-function signature="operator&lt;&lt;(QXmlStreamAttribute)" remove="all"/>
-        <modify-function signature="push_back(QXmlStreamAttribute)" remove="all"/>
-        <modify-function signature="pop_back()" remove="all"/>
-        <modify-function signature="push_front(QXmlStreamAttribute)" remove="all"/>
-        <modify-function signature="pop_front()" remove="all"/>
-
-        <modify-function signature="value(const QString &amp;, const QLatin1String &amp;)const">
-            <remove />
-        </modify-function>
-        <modify-function signature="value(const QLatin1String &amp;, const QLatin1String &amp;)const">
-            <remove />
-        </modify-function>
-        <modify-function signature="value(const QLatin1String &amp;)const">
-            <remove />
-        </modify-function>
-        <modify-function signature="hasAttribute(const QLatin1String &amp;)const">
-            <remove />
-        </modify-function>
-    </value-type>
-
-    <value-type name="QXmlStreamNamespaceDeclaration">
-        <modify-function signature="operator=(QXmlStreamNamespaceDeclaration)" remove="all"/>
-    </value-type>
-
-    <value-type name="QXmlStreamNotationDeclaration">
-        <modify-function signature="operator=(QXmlStreamNotationDeclaration)" remove="all"/>
-    </value-type>
-
-    <value-type name="QXmlStreamEntityDeclaration">
-        <modify-function signature="operator=(QXmlStreamEntityDeclaration)" remove="all"/>
-    </value-type>
-
     <value-type name="QXmlAttributes">
       <modify-function signature="index(const QLatin1String&amp;) const">
         <remove/>
@@ -260,21 +218,6 @@
         </modify-function>
     </object-type>
 
-    <object-type name="QXmlStreamReader">
-      <modify-function signature="QXmlStreamReader(const char*)" remove="all" />
-      <modify-function signature="addData(const char*)" remove="all" />
-      <modify-function signature="setEntityResolver(QXmlStreamEntityResolver*)">
-        <modify-argument index="1">
-            <reference-count action="set" variable-name="__rcEntityResolver" />
-        </modify-argument>
-      </modify-function>
-    </object-type>
-    <object-type name="QXmlStreamWriter">
-        <modify-function signature="QXmlStreamWriter(QString *)">
-            <remove />
-        </modify-function>
-    </object-type>
-
     <object-type name="QXmlReader">
         <modify-function signature="parse(const QXmlInputSource*)">
             <modify-argument index="1" invalidate-after-use="yes" />
@@ -282,13 +225,8 @@
     </object-type>
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNodeList' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamNamespaceDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNamedNodeMap' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamNotationDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomNode' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QDomImplementation' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamAttribute' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamAttributes' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
-  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'QXmlStreamEntityDeclaration' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
 </typesystem>
