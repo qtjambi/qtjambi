@@ -1653,7 +1653,7 @@
         </inject-code>
         <modify-function signature="setModel(QAbstractItemModel*)">
             <modify-argument index="1">
-                <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcModel"/>
+                <reference-count declare-variable="QAbstractItemView" action="set" variable-name="__rcItemModel"/>
             </modify-argument>
         </modify-function>
     </object-type>
