@@ -202,6 +202,11 @@ FILE *rpp::pp::find_include_file(std::string const &p_input_filename, std::strin
         p_filepath->append(p_input_filename);
 
 #ifdef Q_OS_MAC
+        /* On MacOSX for those not familiar with the platform, it can group a collection of things
+         *  like libraries/header files as installable modules called a framework.  A framework has
+         *  a well defined layout, so <OpenGL/gl.h> would be transformed into a path
+         *  /.../OpenGL.framework/Headers/gl.h
+         */
         QString string = QString::fromStdString(p_input_filename);
         //QStringList list = string.split("/"); //could be used for error checks
         QString module = string.split("/")[0];

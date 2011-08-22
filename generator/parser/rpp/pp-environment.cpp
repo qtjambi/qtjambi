@@ -1,4 +1,7 @@
 
+#include <iostream>
+//#define DEBUG_DEFUNDEF
+
 #include "pp-environment.h"
 
 void rpp::pp_environment::bind(pp_fast_string const *__name, pp_macro const &__macro) {
@@ -13,11 +16,24 @@ void rpp::pp_environment::bind(pp_fast_string const *__name, pp_macro const &__m
 
     if (_M_macros.size() == _M_hash_size)
         rehash();
+#ifdef DEBUG_DEFUNDEF
+    std::string x__name = std::string();
+    std::string x__macro = std::string();
+    if(__macro.definition)
+        x__macro.assign(__macro.definition->begin(), __macro.definition->size());
+    else
+        x__macro = "<nul>";
+    std::cerr << "** DEFINE " << x__name.assign(__name->begin(), __name->size()) << " " << x__macro << std::endl;
+#endif
 }
 
 void rpp::pp_environment::unbind(pp_fast_string const *__name) {
     if (pp_macro *m = resolve(__name))
         m->hidden = true;
+#ifdef DEBUG_DEFUNDEF
+    std::string x__name = std::string((const char *)__name);
+    std::cerr << "** UNDEF " << x__name.assign(__name->begin(), __name->size()) << std::endl;
+#endif
 }
 
 void rpp::pp_environment::unbind(char const *__s, std::size_t __size) {
