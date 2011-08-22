@@ -253,7 +253,7 @@ QString findClassName(const QFileInfo &file)
     if (!f.open(QIODevice::ReadOnly)) {
         fprintf(stderr, "juic: failed to read file: %s\n",
                 qPrintable(file.absoluteFilePath()));
-        return false;
+        return QString();
     }
     QByteArray content = f.readAll();
 
@@ -264,7 +264,7 @@ QString findClassName(const QFileInfo &file)
         fprintf(stdout, content.constData());
         fprintf(stderr, "Invalid input: %s\n",
                 qPrintable(file.absoluteFilePath()));
-        return false;
+        return QString();
     }
 
     return content.mid(start, end - start).trimmed();
