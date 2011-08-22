@@ -52,7 +52,7 @@ import java.util.*;
 import java.io.*;
 
 //NOTE: remove this after removing support for 1.7
-@SuppressWarnings ( "deprecation" )
+@SuppressWarnings("deprecation")
 public class PlatformJarTask extends Task {
 
     public static final String SYSLIB_AUTO = "auto";
@@ -73,35 +73,35 @@ public class PlatformJarTask extends Task {
 
     private PropertyHelper props;
 
-    public void addConfiguredLibrary ( LibraryEntry task ) {
+    public void addConfiguredLibrary(LibraryEntry task) {
         try {
-            if ( !task.isIncluded() )
+            if(!task.isIncluded())
                 return;
             task.perform();
-            libs.add ( task );
-        } catch ( Exception e ) {
+            libs.add(task);
+        } catch(Exception e) {
             e.printStackTrace();
-            throw new BuildException ( "Failed to add library entry....." );
+            throw new BuildException("Failed to add library entry.....");
         }
     }
 
-    public void addConfiguredPlugin ( PluginPath path ) {
+    public void addConfiguredPlugin(PluginPath path) {
         try {
             path.perform();
-            pluginPaths.add ( path );
-        } catch ( Exception e ) {
+            pluginPaths.add(path);
+        } catch(Exception e) {
             e.printStackTrace();
-            throw new BuildException ( "Failed to add plugin path......." );
+            throw new BuildException("Failed to add plugin path.......");
         }
     }
 
-    public void setSyslibs ( String s ) {
-        if ( OSInfo.os() == OSInfo.OS.Solaris )
+    public void setSyslibs(String s) {
+        if(OSInfo.os() == OSInfo.OS.Solaris)
             return;
-        if ( s.equals ( SYSLIB_NONE ) || s.equals ( SYSLIB_AUTO ) )
+        if(s.equals(SYSLIB_NONE) || s.equals(SYSLIB_AUTO))
             systemLibs = s;
         else
-            throw new BuildException ( "Bad 'syslibs' parameter... Only 'auto' or 'none' available, was " + s );
+            throw new BuildException("Bad 'syslibs' parameter... Only 'auto' or 'none' available, was " + s);
     }
 
     public String getSyslibs() {
@@ -112,7 +112,7 @@ public class PlatformJarTask extends Task {
         return cacheKey;
     }
 
-    public void setCacheKey ( String cacheKey ) {
+    public void setCacheKey(String cacheKey) {
         this.cacheKey = cacheKey;
     }
 
@@ -121,11 +121,11 @@ public class PlatformJarTask extends Task {
     }
 
 
-    public void setOutdir ( File outdir ) {
+    public void setOutdir(File outdir) {
         this.outdir = outdir;
     }
 
-    public void setRpathenabled ( boolean iname ) {
+    public void setRpathenabled(boolean iname) {
         rpath = iname;
     }
 
@@ -136,160 +136,158 @@ public class PlatformJarTask extends Task {
     public void execute() throws BuildException {
         try {
             execute_internal();
-        } catch ( Exception e ) {
+        } catch(Exception e) {
             e.printStackTrace();
-            throw new BuildException ( "Failed to create native .jar", e );
+            throw new BuildException("Failed to create native .jar", e);
         }
     }
 
     public void execute_internal() throws BuildException {
-        props = PropertyHelper.getPropertyHelper ( getProject() );
+        props = PropertyHelper.getPropertyHelper(getProject());
 
-        javaLibDir = ( String ) props.getProperty ( ( String ) null, InitializeTask.JAVALIBDIR );
+        javaLibDir =(String) props.getProperty((String) null, InitializeTask.JAVALIBDIR);
 
-        debugConfiguration = "debug".equals ( props.getProperty ( ( String ) null, InitializeTask.CONFIGURATION ) );
+        debugConfiguration = "debug".equals(props.getProperty((String) null, InitializeTask.CONFIGURATION));
 
-        if ( outdir == null ) {
-            throw new BuildException ( "Missing required attribute 'outdir'. " +
-            		"This directory is used for building the .jar file..." );
+        if(outdir == null) {
+            throw new BuildException("Missing required attribute 'outdir'. " +
+                    "This directory is used for building the .jar file...");
         }
 
-        if ( outdir.exists() ) {
+        if(outdir.exists()) {
             outdir.delete();
         }
 
         outdir.mkdirs();
 
-    for ( LibraryEntry e : libs ) {
-            processLibraryEntry ( e );
+        for(LibraryEntry e : libs) {
+            processLibraryEntry(e);
         }
 
-        if ( systemLibs.equals ( SYSLIB_AUTO ) )
+        if(systemLibs.equals(SYSLIB_AUTO))
             processSystemLibs();
 
-        if ( rpath ) {
-            if ( OSInfo.os() == OSInfo.OS.MacOS ) {
+        if(rpath) {
+            if(OSInfo.os() == OSInfo.OS.MacOS) {
                 processOSXInstallName();
             }
         }
 
         writeQtJambiDeployment();
-
     }
 
     private void writeQtJambiDeployment() {
         PrintWriter writer;
         try {
-            writer = new PrintWriter ( new BufferedWriter (
-            		new FileWriter ( new File ( outdir, "qtjambi-deployment.xml" ) ) ) );
-        } catch ( IOException e ) {
+            writer = new PrintWriter(new BufferedWriter(
+                    new FileWriter(new File(outdir, "qtjambi-deployment.xml"))));
+        } catch(IOException e) {
             e.printStackTrace();
             throw new BuildException("Failed to open 'qtjambi-deployment.xml' for writing in '" + outdir + "'");
         }
 
-        writer.println ( "<qtjambi-deploy"
-                            + " system=\"" + props.getProperty ( ( String ) null,
-                            		InitializeTask.OSNAME ).toString()
-                            + "\">" );
-        writer.println ( "\n  <cache key=\"" + cacheKey + "\" />" );
+        writer.println("<qtjambi-deploy" + " system=\""
+                            + props.getProperty((String) null,
+                            InitializeTask.OSNAME).toString() + "\">");
+        writer.println("\n  <cache key=\"" + cacheKey + "\" />");
 
         // system libraries that must be loaded first of all...
-        if ( systemLibs.equals ( SYSLIB_AUTO ) ) {
-            if ( runtimeLibs.size() > 0 )
-                writer.println ( "\n  <!-- Runtime libraries, loaded automatically -->" );
-        for ( String rt : runtimeLibs ) {
-                writer.println ( "  <library name=\"" + rt + "\" load=\"yes\" />" );
+        if(systemLibs.equals(SYSLIB_AUTO)) {
+            if(runtimeLibs.size() > 0)
+                writer.println("\n  <!-- Runtime libraries, loaded automatically -->");
+        for(String rt : runtimeLibs) {
+                writer.println("  <library name=\"" + rt + "\" load=\"yes\" />");
             }
         }
 
-        writer.println ( "\n  <!-- Qt libraries -->" );
-    for ( LibraryEntry e : libs ) {
+        writer.println("\n  <!-- Qt libraries -->");
+        for(LibraryEntry e : libs) {
             String libraryName = e.getName();
             String subdir = e.getSubdir();
             String load = e.getLoad();
 
-            if ( !"".equals ( subdir ) ) {
+            if(!"".equals(subdir)) {
                 subdir = subdir + "/";
             } else {
                 subdir = "";
             }
 
-            writer.print ( "  <library name=\"" + e.output_directory + subdir + libraryName + "\"" );
-            if ( !load.equals ( LibraryEntry.LOAD_DEFAULT ) )
-                writer.print ( " load=\"" + load + "\"" );
-            writer.println ( "/>" );
+            writer.print("  <library name=\"" + e.output_directory + subdir + libraryName + "\"");
+            if(!load.equals(LibraryEntry.LOAD_DEFAULT))
+                writer.print(" load=\"" + load + "\"");
+            writer.println("/>");
         }
 
         // Manifests and the like...
-        if ( systemLibs.equals ( SYSLIB_AUTO ) ) {
-            if ( unpackLibs.size() > 0 )
-                writer.println ( "\n  <!-- Dependency libraries, not loaded... -->" );
-        for ( String unpack : unpackLibs ) {
-                writer.println ( "  <library name=\"" + unpack + "\" load=\"never\" />" );
+        if(systemLibs.equals(SYSLIB_AUTO)) {
+            if(unpackLibs.size() > 0)
+                writer.println("\n  <!-- Dependency libraries, not loaded... -->");
+        for(String unpack : unpackLibs) {
+                writer.println("  <library name=\"" + unpack + "\" load=\"never\" />");
             }
         }
 
         // plugins...
-        if ( pluginPaths.size() > 0 ) {
-            writer.println ( "\n  <!-- Plugins... -->" );
-        for ( PluginPath p : pluginPaths ) {
-                writer.println ( "  <plugin path=\"" + p.getPath() + "\" />" );
+        if(pluginPaths.size() > 0) {
+            writer.println("\n  <!-- Plugins... -->");
+        for(PluginPath p : pluginPaths) {
+                writer.println("  <plugin path=\"" + p.getPath() + "\" />");
             }
         }
 
-        writer.println ( "\n</qtjambi-deploy>" );
+        writer.println("\n</qtjambi-deploy>");
 
         writer.close();
     }
 
-    private void processLibraryEntry ( LibraryEntry e ) {
+    private void processLibraryEntry(LibraryEntry e) {
         File rootPath = e.getRootpath();
         String libraryName = e.getName();
         String subdir = e.getSubdir();
         //System.out.println("nyaa " + rootPath.toString() + " " + subdir + " " + libraryName);
 
-        if ( !"".equals ( subdir ) ) {
+        if(!"".equals(subdir)) {
             subdir = subdir + "/";
         } else {
             subdir = "";
         }
-        if ( !"".equals ( e.output_directory ) ) {
-            new File ( e.output_directory ).mkdir();
+        if(!"".equals(e.output_directory)) {
+            new File(e.output_directory).mkdir();
         }
-        File src = new File ( rootPath, subdir + libraryName );
-        File dest = new File ( outdir, e.output_directory + subdir + libraryName );
+        File src = new File(rootPath, subdir + libraryName);
+        File dest = new File(outdir, e.output_directory + subdir + libraryName);
         try {
             //System.out.println("Copying " + src + " to " + dest);
-            Util.copy ( src, dest );
-            libraryDir.add ( subdir );
-        } catch ( IOException ex ) {
+            Util.copy(src, dest);
+            libraryDir.add(subdir);
+        } catch(IOException ex) {
             ex.printStackTrace();
-            throw new BuildException ( "Failed to copy library '" + libraryName + "'" );
+            throw new BuildException("Failed to copy library '" + libraryName + "'");
         }
     }
 
     private void processSystemLibs() {
-        String compiler = String.valueOf ( props.getProperty ( ( String ) null, InitializeTask.COMPILER ) );
-        FindCompiler.Compiler c = FindCompiler.Compiler.resolve ( compiler );
+        String compiler = String.valueOf(props.getProperty((String) null, InitializeTask.COMPILER));
+        FindCompiler.Compiler c = FindCompiler.Compiler.resolve(compiler);
 
         String vcnumber = "80";
 
-        switch ( c ) {
+        switch(c) {
 
-            // The manifest based ones...
+        // The manifest based ones...
         case MSVC2008:
         case MSVC2008_64:
             vcnumber = "90";
 
         case MSVC2005:
         case MSVC2005_64:
-            if ( debugConfiguration ) {
+            if(debugConfiguration) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
 
-            File crt = new File ( props.getProperty ( ( String ) null, InitializeTask.VSREDISTDIR ).toString(),
-                                    "Microsoft.VC" + vcnumber + ".CRT" );
+            File crt = new File(props.getProperty((String) null, InitializeTask.VSREDISTDIR).toString(),
+                                    "Microsoft.VC" + vcnumber + ".CRT");
 
             String files[] = new String[] { "Microsoft.VC" + vcnumber + ".CRT.manifest",
                                             "msvcm" + vcnumber + ".dll",
@@ -297,68 +295,69 @@ public class PlatformJarTask extends Task {
                                             "msvcr" + vcnumber + ".dll"
                                             };
 
-        for ( String libDir : libraryDir ) {
-            for ( String name : files ) {
-            	String libdirstring;
-            	if("".equals(libDir)) {
-            		libdirstring = "lib/";
-            	} else {
+            for(String libDir : libraryDir) {
+                for(String name : files) {
+                    String libdirstring;
+                    if("".equals(libDir)) {
+                        libdirstring = "lib/";
+                    } else {
                         libdirstring = libDir;
                         if(!libdirstring.endsWith("/"))
                             libdirstring += "/";
+                    }
+                    String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
+                    unpackLibs.add(lib);
+
+                    try {
+                        Util.copy(new File(crt, name), new File(outdir, lib));
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        throw new BuildException("Failed to copy VS CRT libraries", e);
+                    }
                 }
-            	String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
-            	unpackLibs.add ( lib );
-
-            	try {
-            		Util.copy ( new File ( crt, name ), new File ( outdir, lib ) );
-            	} catch ( Exception e ) {
-            		e.printStackTrace();
-            		throw new BuildException ( "Failed to copy VS CRT libraries", e );
-            	}
             }
-        }
-
             break;
 
         case MSVC1998:
-            if ( debugConfiguration ) {
+            if(debugConfiguration) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            copyRuntime ( "msvcr60.dll" );
-            copyRuntime ( "msvcp60.dll" );
+            copyRuntime("msvcr60.dll");
+            copyRuntime("msvcp60.dll");
             break;
 
         case MSVC2002:
-            if ( debugConfiguration ) {
+            if(debugConfiguration) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            copyRuntime ( "msvcr70.dll" );
-            copyRuntime ( "msvcp70.dll" );
+            copyRuntime("msvcr70.dll");
+            copyRuntime("msvcp70.dll");
             break;
 
         case MSVC2003:
-            if ( debugConfiguration ) {
+            if(debugConfiguration) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            copyRuntime ( "msvcr71.dll" );
-            copyRuntime ( "msvcp71.dll" );
+            copyRuntime("msvcr71.dll");
+            copyRuntime("msvcp71.dll");
             break;
 
         case MinGW:
-            copyRuntime ( "mingwm10.dll" );
+            copyRuntime("mingwm10.dll");
             copyAdditionalMingwFiles();
             break;
 
         case GCC:
-            if ( OSInfo.os() == OSInfo.OS.Linux ) copyRuntime ( "libstdc++.so.6" );
+            if(OSInfo.os() == OSInfo.OS.Linux)
+                copyRuntime("libstdc++.so.6");
             break;
 
         case OldGCC:
-            if ( OSInfo.os() == OSInfo.OS.Linux ) copyRuntime ( "libstdc++.so.5" );
+            if(OSInfo.os() == OSInfo.OS.Linux)
+                copyRuntime("libstdc++.so.5");
             break;
         }
 
@@ -369,47 +368,47 @@ public class PlatformJarTask extends Task {
      * TODO: This whole class could be better factored...
      */
     private void copyAdditionalMingwFiles() {
-        copyRuntime ( "libgcc_s_dw2-1.dll" );
-        copyRuntime ( "libstdc++-6.dll" );
+        copyRuntime("libgcc_s_dw2-1.dll");
+        copyRuntime("libstdc++-6.dll");
     }
 
-    private void copyRuntime ( String name ) {
-        File rt = Util.findInLibraryPath ( name, javaLibDir );
-        if ( rt == null ) {
-            throw new BuildException ( "Runtime library '" + name + "' was not found in library path..." );
+    private void copyRuntime(String name) {
+        File rt = Util.findInLibraryPath(name, javaLibDir);
+        if(rt == null) {
+            throw new BuildException("Runtime library '" + name + "' was not found in library path...");
         }
 
         try {
             //System.out.println("Copying " + rt.toString() + " to " + "lib/" + outdir + ", " + name);
             /*
-                * "lib" is somewhat of a hack to specify where the files should be copied to.
-                */
-            Util.copy ( rt, new File ( outdir + "/lib",  name ) );
-            runtimeLibs.add ( "lib/" + name );
-        } catch ( IOException e ) {
+             * "lib" is somewhat of a hack to specify where the files should be copied to.
+             */
+            Util.copy(rt, new File(outdir + "/lib",  name));
+            runtimeLibs.add("lib/" + name);
+        } catch(IOException e) {
             e.printStackTrace();
-            throw new BuildException ( "Failed to copy runtime library...", e );
+            throw new BuildException("Failed to copy runtime library...", e);
         }
     }
 
     private void printVisualStudioDebugRuntimeWarning() {
         System.out.println();
-        System.out.println ( "************************************************************************" );
+        System.out.println("************************************************************************");
         System.out.println();
-        System.out.println ( "                              WARNING" );
+        System.out.println("                              WARNING");
         System.out.println();
-        System.out.println ( "The debug runtimes for Visual Studio are not available for" );
-        System.out.println ( "redistribution by Microsoft, so it is not possible to create a" );
-        System.out.println ( "platform archive that runs on other machines..." );
+        System.out.println("The debug runtimes for Visual Studio are not available for");
+        System.out.println("redistribution by Microsoft, so it is not possible to create a");
+        System.out.println("platform archive that runs on other machines...");
         System.out.println();
-        System.out.println ( "************************************************************************" );
+        System.out.println("************************************************************************");
         System.out.println();
         System.out.println();
 
     }
 
     private void processOSXInstallName() {
-        System.out.println ( "Processing Mac OS X install_name..." );
+        System.out.println("Processing Mac OS X install_name...");
 
         String cmd[] = new String[] {
             "install_name_tool",
@@ -419,20 +418,19 @@ public class PlatformJarTask extends Task {
             null        // library to update...
         };
 
-    for ( LibraryEntry with : libs ) {
-
-            if ( LibraryEntry.TYPE_PLUGIN.equals ( with.getType() ) )
+        for(LibraryEntry with : libs) {
+            if(LibraryEntry.TYPE_PLUGIN.equals(with.getType()))
                 continue;
 
-            System.out.println ( " - updating: " + with.getName() );
+            System.out.println(" - updating: " + with.getName());
 
-        for ( LibraryEntry change : libs ) {
-                StringBuilder builder = createDotDots ( change.getSubdir() );
-                builder.append ( with.output_directory);
-                builder.append ( with.getSubdir() );
-		builder.append ("/");
-                builder.append ( with.getName() );
-                builder.insert ( 0, "@loader_path/" );
+            for(LibraryEntry change : libs) {
+                StringBuilder builder = createDotDots(change.getSubdir());
+                builder.append(with.output_directory);
+                builder.append(with.getSubdir());
+                builder.append("/");
+                builder.append(with.getName());
+                builder.insert(0, "@loader_path/");
 
                 cmd[3] = builder.toString();
                 cmd[4] = change.output_directory + change.getSubdir() + "/" + change.getName();//change.relativePath();
@@ -440,29 +438,29 @@ public class PlatformJarTask extends Task {
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
 
-                Exec.exec ( cmd, outdir, getProject(), false );
+                Exec.exec(cmd, outdir, getProject(), false);
 
                 // full path, when Qt is configured with rpath
-                if ( "libqtjambi.jnilib".equals ( with.getName() ) )
+                if("libqtjambi.jnilib".equals(with.getName()))
                     cmd[2] = "libqtjambi.1.jnilib";
                 else
                     cmd[2] = with.absoluteSourcePath();
-                Exec.exec ( cmd, outdir, getProject(), false );
+                Exec.exec(cmd, outdir, getProject(), false);
             }
         }
     }
 
     /**
-        * Add ../ for every / in path to StringBuilder and return it.
-        * @param path Path path to parse
-        * @return StringBuilder to return
-        */
-    private static StringBuilder createDotDots ( String path ) {
-        int subdir = path.split ( "/" ).length;
+      * Add ../ for every / in path to StringBuilder and return it.
+      * @param path Path path to parse
+      * @return StringBuilder to return
+      */
+    private static StringBuilder createDotDots(String path) {
+        int subdir = path.split("/").length;
 
-        StringBuilder builder = new StringBuilder ( subdir * 3 );
-        for ( int i = 0; i < subdir; ++i )
-            builder.append ( "../" );
+        StringBuilder builder = new StringBuilder(subdir * 3);
+        for(int i = 0; i < subdir; ++i)
+            builder.append("../");
         return builder;
     }
 

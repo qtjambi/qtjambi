@@ -61,7 +61,7 @@ public class MakeTask extends Task {
     private String dir = ".";
     private boolean silent = false;
     @SuppressWarnings("unused") //used by ant
-	private String compilationType = null;
+    private String compilationType = null;
 
     private String compilerName() {
         switch(OSInfo.os()){
@@ -69,9 +69,8 @@ public class MakeTask extends Task {
             PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
             String compiler = (String) props.getProperty((String) null, InitializeTask.COMPILER);
 
-            if (FindCompiler.Compiler.MinGW.toString().equals(compiler)) {
+            if(FindCompiler.Compiler.MinGW.toString().equals(compiler))
                 return "mingw32-make";
-            }
             return "nmake";
         }
         return "make";
@@ -81,24 +80,23 @@ public class MakeTask extends Task {
     public void execute() throws BuildException {
         System.out.println(msg);
 
-        List<String> commandArray = new ArrayList<String>();                
+        List<String> commandArray = new ArrayList<String>();
         commandArray.add(compilerName());
 
-        if (silent && OSInfo.os() != OSInfo.OS.Windows) {
-        	commandArray.add("-s");
+        if(silent && OSInfo.os() != OSInfo.OS.Windows) {
+            commandArray.add("-s");
         }
 
         try {
             final String makeOptions = System.getenv("MAKEOPTS");
-            if (makeOptions != null) {
-            	commandArray.add(makeOptions);
-            }
-        } catch (SecurityException e) {
-        } catch (NullPointerException e) {
+            if(makeOptions != null)
+                commandArray.add(makeOptions);
+        } catch(SecurityException e) {
+        } catch(NullPointerException e) {
             // Cannot happen
         }
 
-        if (target != null)
+        if(target != null)
             commandArray.add(target);
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
