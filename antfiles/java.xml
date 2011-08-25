@@ -66,7 +66,7 @@
         </ant>
     </target>
 
-	<!-- This fileset looks unused/redundant -->
+    <!-- This fileset looks unused/redundant -->
     <fileset id="java.src.qtjambi-examples"
         dir="${java.srcdir}/qtjambi-examples">
         <include name="**/*.java"/>
@@ -113,7 +113,7 @@
             <isfalse value="${qtjambi.svg}"/>
         </condition>
         <condition property="javac.extra.excludes" value="com/trolltech/examples/Styles.java">
-            <isfalse value="${qtjambi.feature.QT_NO_STYLE_MOTIF}"/><!-- Styles.java needs QMotifStyle -->
+            <istrue value="${qtjambi.feature.QT_NO_STYLE_MOTIF}"/><!-- Styles.java needs QMotifStyle -->
         </condition>
         <property name="javac.excludes" value="${javac.opengl.excludes}
                                                ${javac.xmlpatterns.excludes}
