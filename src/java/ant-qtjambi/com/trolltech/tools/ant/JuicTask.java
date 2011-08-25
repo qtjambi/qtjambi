@@ -76,18 +76,18 @@ public class JuicTask extends MatchingTask {
         System.out.println(msg);
 
         List<String> commandList = new ArrayList<String>();
-        commandList.add(Util.escape(Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath()));
+        commandList.add(Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath());
         if(!outputDir.equals("")) {
             commandList.add("-d");
-            commandList.add(Util.escape(outputDir));
+            commandList.add(outputDir);
         }
         if(!trFunction.equals("")) {
             commandList.add("-tr");
-            commandList.add(Util.escape(trFunction));
+            commandList.add(trFunction);
         }
         if(!classNamePrefix.equals("")) {
             commandList.add("-pf");
-            commandList.add(Util.escape(classNamePrefix));
+            commandList.add(classNamePrefix);
         }
         if(alwaysUpdate) {
             commandList.add("-a");
@@ -105,8 +105,8 @@ public class JuicTask extends MatchingTask {
 
                 List<String> thisCommandList = new ArrayList<String>();
                 thisCommandList.addAll(commandList);
-                String packageString = Util.escape(file.substring(0, file.lastIndexOf('/')).replaceAll("/", "."));
-                String uicFileString = Util.escape(dirToScan.getAbsolutePath() + '/' + file);
+                String packageString = file.substring(0, file.lastIndexOf('/')).replaceAll("/", ".");
+                String uicFileString = dirToScan.getAbsolutePath() + '/' + file;
                 thisCommandList.add("-p");
                 thisCommandList.add(packageString);
                 thisCommandList.add(uicFileString);
