@@ -66,6 +66,7 @@
         </ant>
     </target>
 
+    <!-- This fileset looks unused/redundant -->
     <fileset id="java.src.qtjambi-examples"
         dir="${java.srcdir}/qtjambi-examples">
         <include name="**/*.java"/>
@@ -111,11 +112,15 @@
         <condition property="javac.svg.excludes" value="**/SvgCards.java">
             <isfalse value="${qtjambi.svg}"/>
         </condition>
+        <condition property="javac.extra.excludes" value="com/trolltech/examples/Styles.java">
+            <istrue value="${qtjambi.feature.QT_NO_STYLE_MOTIF}"/><!-- Styles.java needs QMotifStyle -->
+        </condition>
         <property name="javac.excludes" value="${javac.opengl.excludes}
                                                ${javac.xmlpatterns.excludes}
                                                ${javac.phonon.excludes}
                                                ${javac.webkit.excludes}
-                                               ${javac.svg.excludes}"/>
+                                               ${javac.svg.excludes}
+                                               ${javac.extra.excludes}"/>
         <echo message="processed excludes ${javac.excludes}"/>
         <ant antfile="antfiles/jar.xml" inheritrefs="true">
             <property name="module" value="qtjambi-examples"/>
