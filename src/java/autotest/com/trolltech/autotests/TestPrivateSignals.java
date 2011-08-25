@@ -44,15 +44,16 @@
 
 package com.trolltech.autotests;
 
-import java.util.*;
-import java.lang.reflect.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
+import java.lang.reflect.Field;
 
-import static org.junit.Assert.*;
-import org.junit.*;
+import org.junit.Test;
+
+import com.trolltech.qt.core.QAbstractItemModel;
+import com.trolltech.qt.core.QModelIndex;
 
 public class TestPrivateSignals extends QApplicationTest {
 

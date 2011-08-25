@@ -44,11 +44,15 @@
 
 package com.trolltech.autotests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
-import org.junit.*;
+import org.junit.Test;
 
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
@@ -57,9 +61,34 @@ import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSignalMapper;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt.KeyboardModifiers;
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QAbstractItemDelegate;
+import com.trolltech.qt.gui.QAbstractItemView;
+import com.trolltech.qt.gui.QAbstractProxyModel;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QButtonGroup;
+import com.trolltech.qt.gui.QComboBox;
+import com.trolltech.qt.gui.QCompleter;
+import com.trolltech.qt.gui.QDirModel;
+import com.trolltech.qt.gui.QGuiSignalMapper;
+import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QIcon.Mode;
+import com.trolltech.qt.gui.QIconEngineV2;
+import com.trolltech.qt.gui.QItemSelection;
+import com.trolltech.qt.gui.QItemSelectionModel;
 import com.trolltech.qt.gui.QItemSelectionModel.SelectionFlags;
+import com.trolltech.qt.gui.QLineEdit;
+import com.trolltech.qt.gui.QListWidget;
+import com.trolltech.qt.gui.QListWidgetItem;
+import com.trolltech.qt.gui.QPainter;
+import com.trolltech.qt.gui.QPushButton;
+import com.trolltech.qt.gui.QRegion;
+import com.trolltech.qt.gui.QSortFilterProxyModel;
+import com.trolltech.qt.gui.QStackedLayout;
+import com.trolltech.qt.gui.QStandardItemModel;
+import com.trolltech.qt.gui.QStyleOptionViewItem;
+import com.trolltech.qt.gui.QTableView;
+import com.trolltech.qt.gui.QValidator;
+import com.trolltech.qt.gui.QWidget;
 
 public class TestReferenceCounting extends QApplicationTest {
 

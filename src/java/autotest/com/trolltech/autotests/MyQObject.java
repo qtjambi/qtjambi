@@ -44,9 +44,11 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
 import java.util.List;
+
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.gui.QWidget;
 
 // ### Test overloads
 // ### Test mixed types

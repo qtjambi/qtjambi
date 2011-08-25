@@ -44,7 +44,8 @@
 
 package com.trolltech.autotests;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.gui.QApplication;

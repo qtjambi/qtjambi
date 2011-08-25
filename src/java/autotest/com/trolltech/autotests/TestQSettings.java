@@ -44,12 +44,15 @@
 
 package com.trolltech.autotests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Vector;
 
-import org.junit.*;
+import org.junit.Test;
 
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QSettings;

@@ -44,10 +44,9 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.QtJambiObject;
-import com.trolltech.autotests.generated.NonPolymorphicObjectType;
-import com.trolltech.autotests.generated.InvalidatorNonPolymorphicObjectType;
 import org.junit.Test;
+
+import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManagement {
     protected QtJambiObject createInstanceInJava() {

@@ -44,11 +44,15 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
-import org.junit.*;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QEventLoop;
+import com.trolltech.qt.core.QObject;
 
 public class TestThreads extends QApplicationTest{
 

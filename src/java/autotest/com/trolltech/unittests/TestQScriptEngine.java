@@ -7,7 +7,9 @@
 
 package com.trolltech.unittests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QDateTime;

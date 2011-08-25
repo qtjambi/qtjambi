@@ -44,15 +44,39 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.junit.Test;
+
+import com.trolltech.qt.QNoSuchSlotException;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QVariant;
+import com.trolltech.qt.QtBlockedSlot;
+import com.trolltech.qt.QtPropertyReader;
+import com.trolltech.qt.QtPropertyResetter;
+import com.trolltech.qt.QtPropertyWriter;
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QEventLoop;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QRectF;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.QUrl;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QDesktopServices;
+import com.trolltech.qt.gui.QGraphicsScene;
+import com.trolltech.qt.gui.QLineEdit;
+import com.trolltech.qt.gui.QPushButton;
+import com.trolltech.qt.gui.QWidget;
 
 class SignalsAndSlotsSubclass extends SignalsAndSlots
 {

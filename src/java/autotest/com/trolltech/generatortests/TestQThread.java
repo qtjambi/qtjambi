@@ -5,7 +5,9 @@
 
 package com.trolltech.generatortests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import com.trolltech.qt.QThread;
 import com.trolltech.qt.QtJambi_LibraryInitializer;

@@ -44,12 +44,11 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import com.trolltech.autotests.generated.OrdinaryDestroyed;
 import com.trolltech.qt.gui.QApplication;
-
-import static org.junit.Assert.*;
 
 class MyOrdinaryDestroyed extends OrdinaryDestroyed
 {

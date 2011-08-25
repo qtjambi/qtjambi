@@ -44,13 +44,14 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.core.*;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.gui.QApplication;
-
-import org.junit.*;
-
-import static org.junit.Assert.*;
 
 public class TestQMessageHandler extends QMessageHandler {
 

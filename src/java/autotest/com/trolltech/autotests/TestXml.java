@@ -44,16 +44,21 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.StringTokenizer;
 
-import com.trolltech.qt.core.*;
+import org.junit.Test;
+
+import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QIODevice.OpenModeFlag;
-import com.trolltech.qt.xml.*;
+import com.trolltech.qt.xml.QDomComment;
+import com.trolltech.qt.xml.QDomDocument;
 import com.trolltech.qt.xml.QDomDocument.Result;
-
-import static org.junit.Assert.*;
-
-import org.junit.*;
+import com.trolltech.qt.xml.QDomElement;
+import com.trolltech.qt.xml.QDomNodeList;
+import com.trolltech.qt.xml.QDomText;
 
 public class TestXml extends QApplicationTest {
 

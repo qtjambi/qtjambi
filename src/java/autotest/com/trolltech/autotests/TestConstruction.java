@@ -44,6 +44,8 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import com.trolltech.qt.core.QEvent;
@@ -51,8 +53,6 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QMdiArea;
 import com.trolltech.qt.gui.QMdiSubWindow;
 import com.trolltech.qt.gui.QWidget;
-
-import static org.junit.Assert.*;
 
 public class TestConstruction extends QApplicationTest {
 

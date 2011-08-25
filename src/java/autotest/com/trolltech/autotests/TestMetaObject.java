@@ -44,12 +44,15 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
-import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.*;
-import static org.junit.Assert.*;
-import org.junit.*;
+import org.junit.Test;
+
+import com.trolltech.qt.QtEnumerator;
 
 /**
  * Testing the fake meta object.

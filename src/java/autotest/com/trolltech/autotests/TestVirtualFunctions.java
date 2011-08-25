@@ -44,14 +44,36 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.gui.QIcon.Mode;
-import com.trolltech.autotests.generated.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.*;
+import org.junit.Test;
+
+import com.trolltech.qt.QNoImplementationException;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QIcon.Mode;
+import com.trolltech.qt.gui.QImage;
+import com.trolltech.qt.gui.QLayoutItemInterface;
+import com.trolltech.qt.gui.QPaintDeviceInterface;
+import com.trolltech.qt.gui.QPaintEngine;
+import com.trolltech.qt.gui.QPainter;
+import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QPlastiqueStyle;
+import com.trolltech.qt.gui.QPushButton;
+import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.gui.QSpacerItem;
+import com.trolltech.qt.gui.QStyle;
+import com.trolltech.qt.gui.QStyleFactory;
+import com.trolltech.qt.gui.QStyleHintReturn;
+import com.trolltech.qt.gui.QStyleOption;
+import com.trolltech.qt.gui.QStyleOptionComplex;
+import com.trolltech.qt.gui.QVBoxLayout;
+import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.gui.QWindowsStyle;
 
 class JavaNonAbstractSubclass extends AbstractClass {
 
