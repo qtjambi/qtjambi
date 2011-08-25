@@ -44,10 +44,10 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import com.trolltech.autotests.generated.CustomPaintEngine;
-import com.trolltech.autotests.generated.OtherCustomPaintEngine;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QPointF;
 import com.trolltech.qt.core.QRect;
@@ -59,7 +59,6 @@ import com.trolltech.qt.gui.QPaintDeviceInterface;
 import com.trolltech.qt.gui.QPaintEngine;
 import com.trolltech.qt.gui.QPaintEngineState;
 import com.trolltech.qt.gui.QPixmap;
-import static org.junit.Assert.*;
 
 public class TestQPaintEngine extends CustomPaintEngine
 {

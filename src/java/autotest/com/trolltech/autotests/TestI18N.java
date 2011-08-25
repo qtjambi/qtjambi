@@ -44,10 +44,14 @@
 
 package com.trolltech.autotests;
 
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import com.trolltech.qt.core.*;
+import org.junit.Test;
+
+import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QTranslator;
 import com.trolltech.qt.gui.QApplication;
 
 public class TestI18N extends QApplicationTest {

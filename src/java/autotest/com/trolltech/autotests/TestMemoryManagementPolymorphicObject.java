@@ -44,10 +44,9 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.autotests.generated.PolymorphicObjectType;
-import com.trolltech.autotests.generated.InvalidatorPolymorphicObjectType;
-import com.trolltech.qt.QtJambiObject;
 import org.junit.Test;
+
+import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement {
 

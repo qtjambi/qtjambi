@@ -44,14 +44,17 @@
 
 package com.trolltech.autotests;
 
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
-import com.trolltech.qt.QtJambiObject;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.QEventLoop;
 
 // Attempt at complete test for general memory leaks and crashes
 // Should test that all the general cases work as intended by default.

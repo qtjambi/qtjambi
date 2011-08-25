@@ -44,12 +44,21 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.util.Vector;
+
+import org.junit.Test;
+
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QPointF;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.gui.QMatrix;
+import com.trolltech.qt.gui.QPainterPath;
+import com.trolltech.qt.gui.QPolygon;
+import com.trolltech.qt.gui.QPolygonF;
+import com.trolltech.qt.gui.QTransform;
 
 public class TestQTransform extends QApplicationTest {
 

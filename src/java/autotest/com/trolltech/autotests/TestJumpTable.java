@@ -44,9 +44,19 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-import java.io.*;
-import org.junit.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QIODevice;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QTextStream;
 
 public class TestJumpTable {
 

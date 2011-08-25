@@ -44,6 +44,8 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import com.trolltech.qt.core.QRect;
@@ -53,8 +55,6 @@ import com.trolltech.qt.gui.QLayout;
 import com.trolltech.qt.gui.QLayoutItemInterface;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
-
-import static org.junit.Assert.*;
 public class TestNullPointers extends QApplicationTest {
 
     @Test

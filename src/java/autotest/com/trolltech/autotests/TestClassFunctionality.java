@@ -44,20 +44,61 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.internal.QtJambiInternal;
-import com.trolltech.qt.internal.QSignalEmitterInternal;
-import com.trolltech.qt.QtJambiObject;
-import com.trolltech.qt.QSignalEmitter;
-import com.trolltech.qt.QNoImplementationException;
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.trolltech.qt.QNoImplementationException;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QDate;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QFileInfo;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QRectF;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.QTime;
+import com.trolltech.qt.core.QTimer;
+import com.trolltech.qt.core.QUuid;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QCalendarWidget;
+import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QDoubleSpinBox;
+import com.trolltech.qt.gui.QFileDialog;
+import com.trolltech.qt.gui.QGraphicsEllipseItem;
+import com.trolltech.qt.gui.QGraphicsItemInterface;
+import com.trolltech.qt.gui.QGraphicsView;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QImage;
+import com.trolltech.qt.gui.QKeySequence;
+import com.trolltech.qt.gui.QPaintEvent;
+import com.trolltech.qt.gui.QPainter;
+import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QResizeEvent;
+import com.trolltech.qt.gui.QStyleOption;
+import com.trolltech.qt.gui.QStyleOptionButton;
+import com.trolltech.qt.gui.QStyleOptionGraphicsItem;
+import com.trolltech.qt.gui.QTableWidget;
+import com.trolltech.qt.gui.QValidator;
+import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.internal.QSignalEmitterInternal;
+import com.trolltech.qt.internal.QtJambiInternal;
+import com.trolltech.qt.network.QHostAddress;
 
 class OrdinarySubclass extends OrdinaryDestroyed {
     private TestClassFunctionality tc = null;

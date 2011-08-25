@@ -44,10 +44,9 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.QtJambiObject;
-import com.trolltech.autotests.generated.QObjectType;
-import com.trolltech.autotests.generated.InvalidatorQObjectType;
 import org.junit.Test;
+
+import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementQObjectType extends TestMemoryManagement {
 

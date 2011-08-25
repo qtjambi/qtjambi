@@ -44,14 +44,13 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.trolltech.autotests.generated.CustomEvent;
-import com.trolltech.autotests.generated.CustomStyleOption;
-import com.trolltech.autotests.generated.PolymorphicType;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPaintEvent;

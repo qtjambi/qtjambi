@@ -44,13 +44,18 @@
 
 package com.trolltech.autotests;
 
-import java.util.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import com.trolltech.qt.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Vector;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.junit.*;
+import com.trolltech.qt.QFlags;
+import com.trolltech.qt.QtEnumerator;
 
 public class TestQFlags extends QApplicationTest {
 

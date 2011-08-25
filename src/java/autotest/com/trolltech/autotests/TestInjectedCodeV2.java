@@ -44,16 +44,37 @@
 
 package com.trolltech.autotests;
 
-import org.junit.Test;
-import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.network.*;
-import com.trolltech.qt.xml.QXmlInputSource;
-import com.trolltech.qt.xml.QXmlEntityResolver.ResolvedEntity;
-import com.trolltech.qt.QtBlockedSlot;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.trolltech.qt.QtBlockedSlot;
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRectF;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.QSizeF;
+import com.trolltech.qt.gui.QAbstractTextDocumentLayout;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QGuiSignalMapper;
+import com.trolltech.qt.gui.QPainter;
+import com.trolltech.qt.gui.QPlainTextDocumentLayout;
+import com.trolltech.qt.gui.QStyleOption;
+import com.trolltech.qt.gui.QStyleOptionGroupBox;
+import com.trolltech.qt.gui.QStyleOptionViewItem;
+import com.trolltech.qt.gui.QTextDocument;
+import com.trolltech.qt.gui.QTextFormat;
+import com.trolltech.qt.gui.QTextObjectInterface;
+import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.network.QAbstractSocket;
+import com.trolltech.qt.network.QAuthenticator;
+import com.trolltech.qt.network.QHostInfo;
+import com.trolltech.qt.network.QNetworkProxy;
+import com.trolltech.qt.network.QTcpSocket;
+import com.trolltech.qt.network.QUdpSocket;
+import com.trolltech.qt.xml.QXmlEntityResolver.ResolvedEntity;
+import com.trolltech.qt.xml.QXmlInputSource;
 
 public class TestInjectedCodeV2 extends QApplicationTest {
     @Test

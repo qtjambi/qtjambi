@@ -44,11 +44,19 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.QPolygonF;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.trolltech.qt.core.QDataStream;
+import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QIODevice;
+import com.trolltech.qt.core.QPointF;
+import com.trolltech.qt.core.QTemporaryFile;
+import com.trolltech.qt.core.QTextStream;
+import com.trolltech.qt.gui.QPolygonF;
 
 public class TestQTextStream {
 

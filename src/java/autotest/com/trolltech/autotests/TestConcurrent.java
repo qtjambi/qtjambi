@@ -44,13 +44,18 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+import com.trolltech.qt.core.QFuture;
+import com.trolltech.qt.core.QFutureVoid;
+import com.trolltech.qt.core.QtConcurrent;
 
 public class TestConcurrent extends QApplicationTest {
 

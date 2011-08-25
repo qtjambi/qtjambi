@@ -8,12 +8,12 @@
 
 package com.trolltech.generatortests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
 import com.trolltech.qt.GeneratorUtilities;
 import com.trolltech.qt.QtJambi_LibraryInitializer;
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QImage;
 
 public class TestGeneratorUtilities {

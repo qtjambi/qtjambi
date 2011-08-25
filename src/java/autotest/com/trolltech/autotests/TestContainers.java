@@ -44,16 +44,28 @@
 
 package com.trolltech.autotests;
 
-import java.util.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import com.trolltech.autotests.generated.*;
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.Stack;
+import java.util.TreeMap;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.junit.*;
+import com.trolltech.qt.QPair;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QLinearGradient;
 
 public class TestContainers extends QApplicationTest {
 

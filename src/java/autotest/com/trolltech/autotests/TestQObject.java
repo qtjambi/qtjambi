@@ -44,13 +44,22 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
-import org.junit.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.trolltech.qt.QThread;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRegExp;
 
 public class TestQObject extends QApplicationTest{
 

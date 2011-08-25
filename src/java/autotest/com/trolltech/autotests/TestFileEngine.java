@@ -44,14 +44,22 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
-import org.junit.*;
+import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QDir;
+import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QFileInfo;
+import com.trolltech.qt.core.QIODevice;
+import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QPixmap;
 
 public class TestFileEngine extends QApplicationTest{
 

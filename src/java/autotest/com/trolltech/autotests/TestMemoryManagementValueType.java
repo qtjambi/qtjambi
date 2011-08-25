@@ -44,11 +44,10 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.QtJambiObject;
-import com.trolltech.qt.QNativePointer;
-import com.trolltech.autotests.generated.ValueType;
-import com.trolltech.autotests.generated.InvalidatorValueType;
 import org.junit.Test;
+
+import com.trolltech.qt.QNativePointer;
+import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementValueType extends TestMemoryManagement {
 

@@ -44,11 +44,15 @@
 
 package com.trolltech.autotests;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
+import org.junit.Test;
+
+import com.trolltech.qt.core.QEventLoop;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QSignalMapper;
+import com.trolltech.qt.gui.QGuiSignalMapper;
+import com.trolltech.qt.gui.QWidget;
 
 public class TestSignalMapper extends QApplicationTest{
 

@@ -45,10 +45,13 @@
 package com.trolltech.autotests;
 
 import java.io.FileNotFoundException;
-import java.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.QDir;
+import com.trolltech.qt.core.QFileInfo;
+import com.trolltech.qt.core.QProcess;
 
 public class RunTests {
     public static void main(String[] args) throws Exception {
