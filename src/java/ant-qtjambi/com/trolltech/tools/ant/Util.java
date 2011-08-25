@@ -126,14 +126,6 @@ class Util {
         }
     }
 
-    public static String escape(String param) {
-        OSInfo.os();
-        if(OSInfo.os() == OS.Windows) {
-            return "\"" + param + "\"";
-        }
-        return param;
-    }
-
     public static File findInPath(String name) {
         String PATH[] = System.getenv("PATH").split(File.pathSeparator);
         for(String p : PATH) {

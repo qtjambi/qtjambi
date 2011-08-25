@@ -99,7 +99,7 @@ public class GeneratorTask extends Task {
     public void setOptions(String options) { this.options = options; }
     public String getOptions() { return options; }
 
-    private String parseArgumentFiles(List<String> commandList) {
+    private void parseArgumentFiles(List<String> commandList) {
         File typesystemFile = Util.makeCanonical(typesystem);
         if(!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
@@ -116,9 +116,8 @@ public class GeneratorTask extends Task {
             throw new BuildException("Header file '" + header + "' does not exist.");
         }
 
-        commandList.add(Util.escape(headerFile.getAbsolutePath()));
-        commandList.add(Util.escape(typesystemFile.getAbsolutePath()));
-        return " " + Util.escape(headerFile.getAbsolutePath()) + " " + Util.escape(typesystemFile.getAbsolutePath());
+        commandList.add(headerFile.getAbsolutePath());
+        commandList.add(typesystemFile.getAbsolutePath());
     }
 
     private boolean parseArguments() {
@@ -127,15 +126,15 @@ public class GeneratorTask extends Task {
         }
 
         if(includePaths != null) {
-            commandList.add("--include-paths=" + Util.escape(includePaths));
+            commandList.add("--include-paths=" + includePaths);
         }
 
         if(!phononpath.equals("")) {
-            commandList.add("--phonon-include=" + Util.escape(phononpath));
+            commandList.add("--phonon-include=" + phononpath);
         }
 
         if(qtIncludeDirectory != null) {
-            commandList.add("--qt-include-directory=" + Util.escape(qtIncludeDirectory));
+            commandList.add("--qt-include-directory=" + qtIncludeDirectory);
         }
 
         if(inputDirectory != null && !inputDirectory.equals("")){
@@ -143,7 +142,7 @@ public class GeneratorTask extends Task {
             if(!file.exists()) {
                 throw new BuildException("Input directory '" + inputDirectory + "' does not exist.");
             }
-            commandList.add("--input-directory=" + Util.escape(file.getAbsolutePath()));
+            commandList.add("--input-directory=" + file.getAbsolutePath());
         }
 
         if(!outputDirectory.equals("")){
@@ -151,7 +150,7 @@ public class GeneratorTask extends Task {
             if(!file.exists()) {
                 throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
             }
-            commandList.add("--output-directory=" + Util.escape(file.getAbsolutePath()));
+            commandList.add("--output-directory=" + file.getAbsolutePath());
         }
 
         if(cppOutputDirectory != null && !cppOutputDirectory.equals("")){
@@ -159,7 +158,7 @@ public class GeneratorTask extends Task {
             if(!file.exists()) {
                 throw new BuildException("CPP Output directory '" + cppOutputDirectory + "' does not exist.");
             }
-            commandList.add("--cpp-output-directory=" + Util.escape(file.getAbsolutePath()));
+            commandList.add("--cpp-output-directory=" + file.getAbsolutePath());
         }
 
         if(javaOutputDirectory != null && !javaOutputDirectory.equals("")){
@@ -167,11 +166,11 @@ public class GeneratorTask extends Task {
             if(!file.exists()) {
                 throw new BuildException("Java Output directory '" + javaOutputDirectory + "' does not exist.");
             }
-            commandList.add("--java-output-directory=" + Util.escape(file.getAbsolutePath()));
+            commandList.add("--java-output-directory=" + file.getAbsolutePath());
         }
 
         if(outputPreprocessFile != null)
-            commandList.add("--output-preprocess-file=" + Util.escape(outputPreprocessFile));
+            commandList.add("--output-preprocess-file=" + outputPreprocessFile);
 
         if(debugTools)
             commandList.add("--qtjambi-debug-tools");

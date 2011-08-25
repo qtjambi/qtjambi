@@ -24,6 +24,8 @@ public class FindCompiler {
         MSVC2005_64("msvc2005x64"),
         MSVC2008("msvc2008"),
         MSVC2008_64("msvc2008_64"),
+        MSVC2010("msvc2010"),
+        MSVC2010_64("msvc2010_64"),
         MinGW("mingw"),
         OldGCC("gcc3.3"),
         GCC("gcc"),
@@ -46,6 +48,8 @@ public class FindCompiler {
             if(name.equals("msvc2005x64")) return MSVC2005_64;
             if(name.equals("msvc2008")) return MSVC2008;
             if(name.equals("msvc2008x64")) return MSVC2008_64;
+            if(name.equals("msvc2010")) return MSVC2010;
+            if(name.equals("msvc2010x64")) return MSVC2010_64;
             if(name.equals("mingw")) return MinGW;
             if(name.equals("gcc3.3")) return OldGCC;
             if(name.equals("gcc")) return GCC;
@@ -64,6 +68,8 @@ public class FindCompiler {
         case MSVC2005_64:
         case MSVC2008:
         case MSVC2008_64:
+        case MSVC2010:
+        case MSVC2010_64:
             String vcdir = System.getenv("VSINSTALLDIR");
             if(vcdir == null) {
                 throw new BuildException("missing required environment variable " +
@@ -72,7 +78,7 @@ public class FindCompiler {
             props.setNewProperty((String) null, InitializeTask.VSINSTALLDIR, vcdir);
 
             String redistDir;
-            if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64)
+            if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64)
                 redistDir = vcdir + "/vc/redist/amd64";
             else
                 redistDir = vcdir + "/vc/redist/x86";
@@ -93,7 +99,7 @@ public class FindCompiler {
     void checkCompilerBits() {
         if(OSInfo.os() == OSInfo.OS.Windows) {
             boolean vmx64 = decideOSName().contains("64");
-            boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64;
+            boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64;
             if(vmx64 != compiler64) {
                 if(vmx64)
                     throw new BuildException("Trying to mix 64-bit virtual machine with 32-bit MSVC compiler...");
@@ -216,6 +222,11 @@ public class FindCompiler {
                 if(output.contains("x64"))
                     return Compiler.MSVC2008_64;
                 return Compiler.MSVC2008;
+            }
+            if(output.contains("16.00")) {
+                if(output.contains("x64"))
+                    return Compiler.MSVC2010_64;
+                return Compiler.MSVC2010;
             }
             throw new BuildException("Failed to detect Visual Studio version\n  \"" + output + "\"");
         } catch(InterruptedException ex) {
