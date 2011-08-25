@@ -28,12 +28,20 @@ bool PreprocessHandler::handler() {
 
     QByteArray ba = file.readAll();
     file.close();
-    preprocess.operator()(ba.constData(), ba.constData() + ba.size(), null_out);
 
+// FIXME: Dump empty at start
+// FIXME: If any debug mode, enable showing DEFINE/UNDEF/INCLUDE(summary/verbose)
+// FIXME: If nothing set on cmdline enable #define Q_OS_OS2
+// PROCESS string of "#define name value"
+// FIXME: Replace "null_out" with stdout
+    preprocess.operator()(ba.constData(), ba.constData() + ba.size(), null_out);
+// FIXME: Dump defines set
+// FIXME: Restore normal debug mode, showing DEFINE/UNDEF/INCLUDE(summary/verbose)
     QStringList includes = setIncludes();
 
     foreach(QString include, includes)
-    preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
+        preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
+// FIXME: Dump defines set
 
     QString currentDir = QDir::current().absolutePath();
 

@@ -16,7 +16,8 @@ void ReportHandler_message_handler(const std::string &str) {
 Wrapper::Wrapper(int argc, char *argv[]) :
         default_file("targets/qtjambi_masterinclude.h"),
         default_system("targets/build_all.xml"),
-        pp_file("preprocessed.tmp") {
+        pp_file("preprocessed.tmp"),
+        defineUndefineStageCurrent(1) {
 
     gs = GeneratorSet::getInstance();
     args = parseArguments(argc, argv);
@@ -95,6 +96,62 @@ void Wrapper::handleArguments() {
 
     if (args.contains("java-output-directory"))
         gs->javaOutDir = args.value("java-output-directory");
+
+    if (args.contains("debug-cpp")) {
+        const QStringList list = args.value("debug-cpp").split(',');
+        for (int i = 0; i < list.size(); i++) {
+            QString s = list.at(i);
+            if (s.length() == 0)
+                continue;
+            int space_set_mark = 1;
+            int mod = 0;
+            if (s.at(0) == QChar('-')) {
+                s = s.mid(1);
+                space_set_mark = -1;    // space
+            } else if(s.at(0) == QChar('=')) {
+                s = s.mid(1);
+                space_set_mark = 0;     // set
+            } else if(s.at(0) == QChar('+')) {
+                s = s.mid(1);
+                space_set_mark = 1;	// mark
+            }
+            if (s.compare("all")) {
+               mod = ~0;
+            } else if (s.compare("off")) {
+               mod = 0;
+               space_set_mark = 0;	// force set
+            } else if (s.compare("include")) {
+               mod = Wrapper::INCLUDE_ERRORS|Wrapper::INCLUDE_FULL|Wrapper::INCLUDE_DIRECTIVE;
+            } else if (s.compare("include-errors")) {
+               mod = INCLUDE_ERRORS;
+            } else if (s.compare("include-full")) {
+               mod = Wrapper::INCLUDE_FULL;
+            } else if (s.compare("include-directive")) {
+               mod = Wrapper::INCLUDE_DIRECTIVE;
+            } else if (s.compare("def") || s.compare("define")) {
+               mod = Wrapper::DEFINE;
+            } else if (s.compare("undef") || s.compare("undefine")) {
+               mod = Wrapper::UNDEF;
+            } else if (s.compare("dump")) {
+               mod = Wrapper::DUMP_BEFORE|Wrapper::DUMP_MIDDLE|Wrapper::DUMP_AFTER;
+            } else if (s.compare("dump-before")) {
+               mod = Wrapper::DUMP_BEFORE;
+            } else if (s.compare("dump-middle")) {
+               mod = Wrapper::DUMP_MIDDLE;
+            } else if (s.compare("dump-after")) {
+               mod = Wrapper::DUMP_AFTER;
+            } else {
+               std::cerr << "Invalid debug-cpp value: " << s.toStdString() << " (ignored)" << std::endl;
+               continue;        // has the effect of not changing anything
+            }
+            if(space_set_mark > 0)
+                debugCppMode |= mod;
+            else if(space_set_mark < 0)
+                debugCppMode &= ~mod;
+            else
+                debugCppMode = mod;
+        }
+    }
 }
 
 void Wrapper::assignVariables() {
@@ -171,6 +228,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
     printf("Available options:\n\n");
     printf("General:\n");
     printf("  --debug-level=[types|sparse|medium|full]  \n"
+           "  --debug-cpp=[def|undef|include|dump|all]  \n"
            "  --dump-object-tree                        \n"
            "  --help, -h or -?                          \n"
            "  --no-suppress-warnings                    \n"
@@ -183,11 +241,41 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --include-paths=<path>[%c<path>%c...]     \n"
            "  --print-stdout                            \n"
            "  --qt-include-directory=[dir]              \n"
-           "  --qtjambi-debug-tools                     \n",
+           "  --qtjambi-debug-tools                     \n"
+           "  --preproc-stage1                          \n"
+           "  --preproc-stage2                          \n"
+           "  -Dname[=definition]                       \n"
+           "  -Uname                                    \n",
            path_splitter, path_splitter);
 
     printf("%s", qPrintable(generatorSet->usage()));
     exit(0);
+}
+
+void Wrapper::modifyCppDefine(const QString &arg, bool f_set) {
+qDebug() << "modifyCppDefine():" << arg << ((f_set) ? " define" : " undef");
+    QStringList list;
+    if (arg.length() > 0) {
+        const QChar ch = arg.at(0);
+        if (ch.isSpace()) {
+            list = arg.split(QRegExp("[\\s]+"), QString::SkipEmptyParts);
+        } else if (ch == QChar(',')) {
+            list = arg.split(ch, QString::SkipEmptyParts);
+        } else {
+            list = QStringList(arg);	// 1 item
+        }
+    }
+
+    for (int i = 0; i < list.size(); i++) {
+        const QString s = list.at(i);
+        int split = s.indexOf("=");
+        const QString name(s.left(split));
+        QString value("1");
+        if (split > 0)
+            value = s.mid(split + 1);
+qDebug() << "modifyCppDefine():" << name << " = " << value << ((f_set) ? " define" : " undef");
+        defineUndefineList.append(DefineUndefine(name, value, f_set));
+    }
 }
 
 QMap<QString, QString> Wrapper::parseArguments(int argc, char *argv[]) {
@@ -199,13 +287,22 @@ QMap<QString, QString> Wrapper::parseArguments(int argc, char *argv[]) {
         arg = arg.trimmed();
 
         if (arg.startsWith("--")) {
-            int split = arg.indexOf("=");
+            if(arg.compare("--preproc-stage1") == 0) {
+                setDefineUndefineStage(1);
+            } else if(arg.compare("--preproc-stage2") == 0) {
+                setDefineUndefineStage(2);
+            } else {
+                int split = arg.indexOf("=");
 
-            if (split > 0)
-                args[arg.mid(2).left(split-2)] = arg.mid(split + 1).trimmed();
-            else
-                args[arg.mid(2)] = QString();
-
+                if (split > 0)
+                    args[arg.mid(2).left(split-2)] = arg.mid(split + 1).trimmed();
+                else
+                    args[arg.mid(2)] = QString();
+            }
+        } else if (arg.startsWith("-D")) {
+            modifyCppDefine(arg.mid(2), true);
+        } else if (arg.startsWith("-U")) {
+            modifyCppDefine(arg.mid(2), false);
         } else if (arg.startsWith("-")) {
             args[arg.mid(1)] = QString();
         } else {
