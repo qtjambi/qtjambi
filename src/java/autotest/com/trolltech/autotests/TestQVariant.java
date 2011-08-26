@@ -55,6 +55,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.Variants;
+
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.QtBlockedSlot;
 import com.trolltech.qt.core.QBitArray;

@@ -50,6 +50,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.MessageHandler;
+
 import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.gui.QApplication;
 

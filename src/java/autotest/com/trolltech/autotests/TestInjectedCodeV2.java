@@ -49,6 +49,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.SenderQObject;
+import com.trolltech.autotests.generated.GraphicsWidgetSubclass;
+import com.trolltech.autotests.generated.XmlEntityResolverSubclass;
+import com.trolltech.autotests.generated.AbstractSocketSubclass;
+import com.trolltech.autotests.generated.StyledItemDelegateSubclass;
+
 import com.trolltech.qt.QtBlockedSlot;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;

@@ -53,6 +53,21 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.IODeviceSubclass;
+import com.trolltech.autotests.generated.TextCodecSubclass;
+import com.trolltech.autotests.generated.PictureSubclass;
+import com.trolltech.autotests.generated.GraphicsItemSubclass;
+import com.trolltech.autotests.generated.AccessibleInterfaceSubclass;
+import com.trolltech.autotests.generated.SqlTableModelSubclass;
+import com.trolltech.autotests.generated.SomeQObject;
+/*import com.trolltech.autotests.generated.Relation;
+import com.trolltech.autotests.generated.Role;
+import com.trolltech.autotests.generated.State;*/
+import com.trolltech.autotests.generated.ValidatorSubclass;
+import com.trolltech.autotests.generated.ImageIOHandlerSubclass;
+import com.trolltech.autotests.generated.XmlReaderSubclass;
+import com.trolltech.autotests.generated.AccessibleTableInterfaceSubclass;
+
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QAbstractFileEngine;

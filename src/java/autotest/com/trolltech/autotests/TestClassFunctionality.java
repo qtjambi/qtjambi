@@ -57,6 +57,16 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.OrdinaryDestroyed;
+import com.trolltech.autotests.generated.QObjectDestroyed;
+import com.trolltech.autotests.generated.GraphicsSceneSubclass;
+import com.trolltech.autotests.generated.SpinBoxHandler;
+import com.trolltech.autotests.generated.OrdinarySuperclass;
+import com.trolltech.autotests.generated.TestDialog;
+import com.trolltech.autotests.generated.SpinBoxSubclass;
+import com.trolltech.autotests.generated.General;
+
+
 import com.trolltech.qt.QNoImplementationException;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QtJambiObject;

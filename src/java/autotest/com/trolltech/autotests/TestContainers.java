@@ -61,6 +61,12 @@ import java.util.TreeMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.QVector_int;
+import com.trolltech.autotests.generated.QList_int;
+
+import com.trolltech.autotests.generated.Tulip;
+import com.trolltech.autotests.generated.OrdinaryDestroyed;
+
 import com.trolltech.qt.QPair;
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QObject;
