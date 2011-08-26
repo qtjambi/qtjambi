@@ -126,10 +126,39 @@ public class InitializeTask extends Task {
     public void execute() throws BuildException {
         props = PropertyHelper.getPropertyHelper(getProject());
 
+        String sep = (String) props.getProperty("sep");
+        if(sep == null) {
+            sep = File.separator;
+            props.setNewProperty((String) null, "sep", sep);
+            if(verbose)
+                System.out.println("sep is " + sep + " (auto-detect)");
+        } else {
+            if(verbose)
+                System.out.println("sep is " + sep);
+        }
+
+        String psep = (String) props.getProperty("psep");
+        if(psep == null) {
+            psep = File.pathSeparator;
+            props.setNewProperty((String) null, "psep", psep);
+            if(verbose)
+                System.out.println("psep is " + psep + " (auto-detect)");
+        } else {
+            if(verbose)
+                System.out.println("psep is " + psep);
+        }
+
         FindCompiler finder = new FindCompiler(props);
 
-        props.setNewProperty((String) null, OSNAME, finder.decideOSName());
-        props.setNewProperty((String) null, COMPILER, finder.decideCompiler());
+        String osname = finder.decideOSName();
+        props.setNewProperty((String) null, OSNAME, osname);
+        if(verbose)
+            System.out.println(OSNAME + " is " + osname);
+
+        String compiler = finder.decideCompiler();
+        props.setNewProperty((String) null, COMPILER, compiler);
+        if(verbose)
+            System.out.println(COMPILER + " is " + compiler);
 
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();
