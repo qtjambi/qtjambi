@@ -52,6 +52,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.SignalsAndSlots;
+
 import com.trolltech.qt.QtEnumerator;
 
 /**

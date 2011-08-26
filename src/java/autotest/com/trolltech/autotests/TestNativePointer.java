@@ -54,6 +54,8 @@ import java.util.Vector;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.NativePointerTester;
+
 import com.trolltech.qt.QNativePointer;
 
 public class TestNativePointer extends QApplicationTest {

@@ -49,6 +49,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.ObjectA;
+import com.trolltech.autotests.generated.ObjectB;
+import com.trolltech.autotests.generated.ValueA;
+import com.trolltech.autotests.generated.NameSpace_NameSpace2_NameSpace3_ObjectD;
+import com.trolltech.autotests.generated.NameSpace_NameSpace2_NameSpace3_ObjectC;
+
 public class TestNamespace extends QApplicationTest {
 
     @Test public void exists() throws ClassNotFoundException {

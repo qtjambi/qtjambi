@@ -48,6 +48,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.OrdinaryDestroyed;
+
 import com.trolltech.qt.gui.QApplication;
 
 class MyOrdinaryDestroyed extends OrdinaryDestroyed

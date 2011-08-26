@@ -49,6 +49,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.AbstractClass;
+import com.trolltech.autotests.generated.SetupLayout;
+import com.trolltech.autotests.generated.AnotherNonAbstractSubclass;
+
 import com.trolltech.qt.QNoImplementationException;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;

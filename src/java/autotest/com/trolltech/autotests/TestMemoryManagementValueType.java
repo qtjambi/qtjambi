@@ -46,6 +46,9 @@ package com.trolltech.autotests;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.ValueType;
+import com.trolltech.autotests.generated.InvalidatorValueType;
+
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.QtJambiObject;
 
