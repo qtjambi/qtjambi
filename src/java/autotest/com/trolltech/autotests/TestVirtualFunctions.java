@@ -66,12 +66,10 @@ import com.trolltech.qt.gui.QPaintDeviceInterface;
 import com.trolltech.qt.gui.QPaintEngine;
 import com.trolltech.qt.gui.QPainter;
 import com.trolltech.qt.gui.QPixmap;
-import com.trolltech.qt.gui.QPlastiqueStyle;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QSizePolicy;
 import com.trolltech.qt.gui.QSpacerItem;
 import com.trolltech.qt.gui.QStyle;
-import com.trolltech.qt.gui.QStyleFactory;
 import com.trolltech.qt.gui.QStyleHintReturn;
 import com.trolltech.qt.gui.QStyleOption;
 import com.trolltech.qt.gui.QStyleOptionComplex;
@@ -205,33 +203,6 @@ public class TestVirtualFunctions extends QApplicationTest {
         QWidget w = new QWidget();
         assertEquals(w2.sizeHint().width(), w.sizeHint().width());
         assertEquals(w2.sizeHint().height(), w.sizeHint().height());
-    }
-
-    /**
-     * The purpose of this test is to verify the correct virtual functions are
-     * being called for objects created in C++ and Java.
-     *
-     * This test relies on some hardcoded values in the styles so if those
-     * change the tests will break, but wth...
-     */
-    @Test
-    public void run_cppCreatedObjects() throws Exception {
-        QStyle java_plastique = new QPlastiqueStyle();
-        QStyle java_windowsstyle = new QWindowsStyle();
-
-        // Verify that the values are as expected...
-        assertEquals(java_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness), 15);
-        assertEquals(java_windowsstyle.pixelMetric(QStyle.PixelMetric.PM_SliderThickness), 16);
-
-        QStyle cpp_plastique = QStyleFactory.create("plastique");
-        assertTrue(cpp_plastique != null);
-        assertTrue(cpp_plastique instanceof QPlastiqueStyle);
-
-        // The actual test...
-        assertEquals(java_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness), cpp_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness));
-
-        QWindowsStyle windows_style = (QPlastiqueStyle) cpp_plastique;
-        assertEquals(windows_style.pixelMetric(QStyle.PixelMetric.PM_SliderThickness), java_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness));
     }
 
     // A QObject subclass to call super.paintEngine();
