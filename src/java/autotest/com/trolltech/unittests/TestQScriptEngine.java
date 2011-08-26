@@ -3,7 +3,6 @@
  * 
  * TODO write tests for memory, etc.
  * 
- * @author akoskm
  */
 
 package com.trolltech.unittests;

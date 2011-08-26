@@ -1,7 +1,6 @@
 /**
  * Unit Test implementations for QPair.java
  * 
- * @author akoskm
  */
 
 package com.trolltech.generatortests;

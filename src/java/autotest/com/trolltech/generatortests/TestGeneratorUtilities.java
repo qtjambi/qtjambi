@@ -3,7 +3,6 @@
  * 
  * TODO testCreateExtendedEnum()
  * 
- * @author akoskm
  */
 
 package com.trolltech.generatortests;
