@@ -58,7 +58,6 @@
     -->
 
     <target name="compile" depends="jar_init">
-        <echo message="Compiling java classes: ${java.srcdir}/${module}"/>
         <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
         <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
@@ -66,9 +65,24 @@
                 fork="true" memorymaximumsize="1024m" verbose="false"
                 includeantruntime="true"
                 excludes="${module.excludes}"
-                srcdir="${sourcedirs}"
                 destdir="${java.outdir}/${module}">
-                <!--<src path="${java.srcdir}/${module}"/>-->
+            <src path="${sourcedir}"/>
+            <classpath refid="java.compile.classpath"/>
+        </javac>
+    </target>
+
+    <!-- Same as "compile" target but with 2 sourcedirs -->
+    <target name="compile2" depends="jar_init">
+        <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
+        <mkdir dir="${jardir}"/>
+        <mkdir dir="${java.outdir}/${module}"/>
+        <javac source="1.5" target="1.5" debug="true" deprecation="true"
+                fork="true" memorymaximumsize="1024m" verbose="false"
+                includeantruntime="true"
+                excludes="${module.excludes}"
+                destdir="${java.outdir}/${module}">
+            <src path="${sourcedir}"/>
+            <src path="${sourcedir2}"/>
             <classpath refid="java.compile.classpath"/>
         </javac>
     </target>
@@ -114,6 +128,18 @@
     -->
 
     <target name="makejar" depends="compile, copy-resources">
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar basedir="${java.outdir}/${module}"
+            destfile="${destdir}/${module}.jar">
+            <manifest>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Same as "makejar" target but uses compile2 to process 2 sourcedirs -->
+    <target name="makejar2" depends="compile2, copy-resources">
         <property name="destdir" value="${jardir}"/>
         <mkdir dir="${destdir}"/>
         <jar basedir="${java.outdir}/${module}"

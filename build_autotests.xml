@@ -48,7 +48,7 @@
     <target name="compile.native" depends="init">
         <mkdir dir="${outputDir}/autotestlib"/>
         <generator dir="${basedir}/generator"
-                includepaths="${basedir}/autotestlib:${generator.includepaths}"
+                includepaths="${basedir}/autotestlib${psep}${generator.includepaths}"
                 outputDirectory="${outputDir}/autotestlib"
                 typesystem="${basedir}/autotestlib/build.txt"
                 header="${basedir}/autotestlib/global.h"
@@ -145,7 +145,7 @@
                 <pathelement path="src/java/qtjambi-examples" />
                 <pathelement path="src/java/autotest" />
             </classpath>
-            <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/:${jambiLib}"/>
+            <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/${psep}${jambiLib}"/>
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/junitxml">
                 <fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
