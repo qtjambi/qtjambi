@@ -57,7 +57,7 @@ import com.trolltech.qt.gui.QWindowsStyle;
 // This class used to be in TestVirtualFunctions.java but due to the requirement for
 //  #run_cppCreatedObjects() needing QPlastiqueStyle() which is not available by
 //  default Qt builds on windows.
-public class TestVirtualFunctions2 extends QApplicationTest {
+public class TestVirtualFunctionsQPlastiqueStyle extends QApplicationTest {
 
     /**
      * The purpose of this test is to verify the correct virtual functions are
