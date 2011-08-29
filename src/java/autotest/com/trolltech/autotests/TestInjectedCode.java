@@ -116,7 +116,6 @@ import com.trolltech.qt.gui.QPicture;
 import com.trolltech.qt.gui.QPictureIO;
 import com.trolltech.qt.gui.QPixmap;
 import com.trolltech.qt.gui.QPixmapCache;
-import com.trolltech.qt.gui.QPlastiqueStyle;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QRadialGradient;
 import com.trolltech.qt.gui.QRegion;
@@ -775,30 +774,6 @@ public class TestInjectedCode extends QApplicationTest {
     {
         MyAccessibleTableInterface m = new MyAccessibleTableInterface();
         AccessibleTableInterfaceSubclass.callCellAtIndex(m, 10, null, null, null, null, null);
-    }
-
-    private QPalette savedPalette = null;
-    @Test
-    public void testQApplicationSetStyleOverridePolish() {
-        savedPalette = null;
-
-        QApplication.setStyle(new QPlastiqueStyle() {
-            @Override
-            public void polish(QPalette palette) {
-                savedPalette = palette;
-                super.polish(palette);
-            }
-        });
-
-        // The palette is automatically invalidated after the virtual
-        // call to polish
-        assertEquals(0l, savedPalette.nativeId());
-    }
-
-    @Test
-    public void testQApplicationSetStyleNotOverridePolish() {
-        QApplication.setStyle(new QPlastiqueStyle());
-        // got here, didn't crash
     }
 
 
