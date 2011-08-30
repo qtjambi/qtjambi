@@ -114,7 +114,7 @@
             <isfalse value="${qtjambi.svg}"/>
         </condition>
         <condition property="javac.extra.excludes" value="com/trolltech/examples/Styles.java">
-            <istrue value="${qtjambi.feature.QT_NO_STYLE_MOTIF}"/><!-- Styles.java needs QMotifStyle -->
+            <istrue value="${qtsdk.feature.QT_NO_STYLE_MOTIF}"/><!-- Styles.java needs QMotifStyle -->
         </condition>
         <property name="javac.excludes" value="${javac.opengl.excludes}
                                                ${javac.xmlpatterns.excludes}

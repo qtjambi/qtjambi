@@ -89,8 +89,11 @@
                 <pathelement location="${outputDir}/autotests" />
                 <pathelement location="${basedir}/src/java/autotest" />
             </classpath>
-            <src path="src/java/autotest/com/trolltech/autotests"/>
-            <src path="src/java/autotest/com/trolltech/generatortests"/>
+            <src path="${basedir}/src/java/autotest"/>
+            <include name="com/trolltech/autotests/**/*.java"/>
+            <include name="com/trolltech/generatortests/**/*.java"/>
+            <exclude name="com/trolltech/unittests/**/*.java"/>
+            <exclude name="com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qtsdk.feature.QT_NO_STYLE_PLASTIQUE"/>
         </javac>
         <mkdir dir="${outputDir}/unit"/>
         <javac destdir="${outputDir}/unit" debug="true"
@@ -148,9 +151,12 @@
             <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/${psep}${jambiLib}"/>
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/junitxml">
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/unittests/Test*.java"/>
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/Test*.java"/>
+                <fileset dir="src/java/autotest">
+                    <include name="**/com/trolltech/autotests/**/Test*.java"/>
+                    <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qtsdk.feature.QT_NO_STYLE_PLASTIQUE"/>
+                </fileset>
+                <fileset dir="src/java/autotest" includes="**/com/trolltech/unittests/**/Test*.java"/>
+                <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/**/Test*.java"/>
             </batchtest>
         </junit>
     </target>
