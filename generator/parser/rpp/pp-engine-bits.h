@@ -712,10 +712,12 @@ namespace rpp {
                         __first = eval_constant_expression(__first, __last, result);
                         next_token(__first, __last, &token);
 
-                        if (token != ')')
-                            std::cerr << "** WARNING expected ``)'' = " << token << std::endl;
-                        else
+                        if (token != ')') {
+                            pp_fast_string const *snippet = pp_symbol::get(__first, __last);
+                            std::cerr << "** WARNING expected ``)'' = " << token << " " << std::string(snippet->begin(), snippet->end()) << std::endl;
+                        } else {
                             __first = next_token(__first, __last, &token);
+                        }
                         break;
 
                     default:
