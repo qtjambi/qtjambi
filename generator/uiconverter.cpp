@@ -150,7 +150,7 @@ void UiConverter::traverseCustomWidgets(const QString &customWidgetFiles) {
 
     QStringList customWidgets = customWidgetFiles.split(separator);
     foreach(QString customWidget, customWidgets)
-    traverseCustomWidgetFile(customWidget);
+        traverseCustomWidgetFile(customWidget);
 }
 
 void UiConverter::traverse(QDomNode node, QDomDocument *doc) {

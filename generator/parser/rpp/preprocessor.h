@@ -61,7 +61,7 @@ class PreprocessorPrivate {
 
         void initPP(rpp::pp &proc) {
             foreach(QString path, includePaths)
-            proc.push_include_path(path.toStdString());
+                proc.push_include_path(path.toStdString());
         }
 };
 

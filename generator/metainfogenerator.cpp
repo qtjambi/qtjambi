@@ -578,9 +578,10 @@ static void generateInitializer(QTextStream &s, const QString &package, CodeSnip
     QList<CodeSnip> snips =
         ((TypeSystemTypeEntry *) TypeDatabase::instance()->findType(package))->snips;
 
-    foreach(const CodeSnip &snip, snips)
-    if (snip.position == pos)
-        s << snip.code();
+    foreach(const CodeSnip &snip, snips) {
+        if (snip.position == pos)
+            s << snip.code();
+    }
 }
 
 void MetaInfoGenerator::writeLibraryInitializers() {

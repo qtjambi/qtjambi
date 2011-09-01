@@ -356,7 +356,7 @@ void Binder::declare_symbol(SimpleDeclarationAST *node, InitDeclaratorAST *init_
             typeInfo.setFunctionPointer(true);
             decl_cc.run(init_declarator->declarator);
             foreach(DeclaratorCompiler::Parameter p, decl_cc.parameters())
-            typeInfo.addArgument(p.type);
+                typeInfo.addArgument(p.type);
         }
 
         var->setType(qualifyType(typeInfo, _M_context));
@@ -561,7 +561,7 @@ void Binder::visitTypedef(TypedefAST *node) {
             typeInfo.setFunctionPointer(true);
             decl_cc.run(init_declarator->declarator);
             foreach(DeclaratorCompiler::Parameter p, decl_cc.parameters())
-            typeInfo.addArgument(p.type);
+                typeInfo.addArgument(p.type);
         }
 
         ScopeModelItem scope = currentScope();

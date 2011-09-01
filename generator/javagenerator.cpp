@@ -542,7 +542,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
                           i == 0 ? -1 : i);
 
         foreach(ReferenceCount refCount, referenceCounts)
-        writeReferenceCount(s, refCount, i == 0 ? "this" : arguments.at(i - 1)->argumentName());
+            writeReferenceCount(s, refCount, i == 0 ? "this" : arguments.at(i - 1)->argumentName());
     }
 
     referenceCounts = java_function->referenceCounts(java_function->implementingClass(), 0);
@@ -1621,7 +1621,7 @@ void JavaGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
     // Enums
     foreach(AbstractMetaEnum *java_enum, java_class->enums())
-    writeEnum(s, java_enum);
+        writeEnum(s, java_enum);
     if (!java_class->enums().isEmpty() && !java_class->functions().isEmpty())
         s << endl;
 

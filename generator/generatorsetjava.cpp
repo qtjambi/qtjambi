@@ -322,7 +322,7 @@ void dumpMetaJavaFunction(const AbstractMetaFunction *func) {
 
     printf("\n      arguments:\n");
     foreach(AbstractMetaArgument *arg, func->arguments())
-    dumpMetaJavaArgument(arg);
+        dumpMetaJavaArgument(arg);
 }
 
 void dumpMetaJavaClass(const AbstractMetaClass *cls) {
@@ -332,14 +332,14 @@ void dumpMetaJavaClass(const AbstractMetaClass *cls) {
     printf("  baseclass: %s %s\n", qPrintable(cls->baseClassName()), cls->isQObject() ? "'QObject-type'" : "'not a QObject-type'");
     printf("  interfaces:");
     foreach(AbstractMetaClass *iface, cls->interfaces())
-    printf(" %s", qPrintable(iface->name()));
+        printf(" %s", qPrintable(iface->name()));
     printf("\n");
     printf("  attributes:");
     dumpMetaJavaAttributes(cls);
 
     printf("\n  functions:\n");
     foreach(const AbstractMetaFunction *func, cls->functions())
-    dumpMetaJavaFunction(func);
+        dumpMetaJavaFunction(func);
 
     //     printf("\n  fields:\n");
     //     foreach (const AbstractMetaField *field, cls->fields())

@@ -557,7 +557,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     if (!java_class->isNamespace() && !java_class->isInterface()) {
         AbstractMetaClassList interfaces = java_class->interfaces();
         foreach(AbstractMetaClass *iface, interfaces)
-        writeInterfaceCastFunction(s, java_class, iface);
+            writeInterfaceCastFunction(s, java_class, iface);
     }
 
     writeSignalInitialization(s, java_class);
