@@ -74,6 +74,18 @@ public class OSInfo
         }
     }
 
+    public static final String K_SUNOS32 = "sunos32";
+    public static final String K_SUNOS64 = "sunos64";
+
+    public static final String K_WIN32 = "win32";
+    public static final String K_WIN64 = "win64";
+
+    public static final String K_LINUX32 = "linux32";
+    public static final String K_LINUX64 = "linux64";
+
+    public static final String K_FREEBSD32 = "freebsd32";
+    public static final String K_FREEBSD64 = "freebsd64";
+
     /**
      * Returns the operating system
      */
@@ -108,24 +120,27 @@ public class OSInfo
             switch (os()) {
             case Windows:
                 osArchName = System.getProperty("os.arch").equalsIgnoreCase("amd64")
-                             ? "win64"
-                             : "win32";
+                             ? K_WIN64
+                             : K_WIN32;
                 break;
             case Linux:
                 osArchName = System.getProperty("os.arch").equalsIgnoreCase("amd64")
-                             ? "linux64"
-                             : "linux32";
+                             ? K_LINUX64
+                             : K_LINUX32;
                 break;
             case FreeBSD:
                 osArchName = System.getProperty("os.arch").equalsIgnoreCase("amd64")
-                             ? "freebsd64"
-                             : "freebsd32";
+                             ? K_FREEBSD64
+                             : K_FREEBSD32;
                 break;
             case MacOS:
                 osArchName = "macosx";
                 break;
             case Solaris:
-                osArchName = "sunos";
+                // sparc || sparcv9
+                osArchName = System.getProperty("os.arch").equalsIgnoreCase("sparcv9")
+                             ? K_SUNOS32
+                             : K_SUNOS64;
                 break;
             case Unknown:
                 osArchName = "unknown";

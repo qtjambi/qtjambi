@@ -139,21 +139,36 @@ class Util {
     public static File findInLibraryPath(String name, String javaLibDir) {
         String libraryPath;
         if(javaLibDir != null) {
-                libraryPath = javaLibDir;
-            } else {
-                libraryPath = System.getProperty("java.library.path");
-            }
-            //System.out.println("library path is: " + libraryPath);
+            libraryPath = javaLibDir;
+        } else {
+            libraryPath = System.getProperty("java.library.path");
+        }
+        //System.out.println("library path is: " + libraryPath);
 
         // Make /usr/lib an implicit part of library path
-        if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)
-            libraryPath += File.pathSeparator + "/usr/lib";
-        // TODO: How about /usr/lib64 on linux ?
+        if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris) {
+            String archName = OSInfo.osArchName();
+            if(archName.equals(OSInfo.K_LINUX64)) {
+                // Linux 64bit
+                libraryPath += File.pathSeparator + "/usr/lib64";
+            } else if(archName.equals(OSInfo.K_SUNOS64)) {
+                // Solaris 64bit (often also a symlink from /usr/lib/64)
+                libraryPath += File.pathSeparator + "/usr/lib/sparcv9";
+            } else {
+                // Normal Unix
+                libraryPath += File.pathSeparator + "/usr/lib";
+            }
+        }
 
         String PATH[] = libraryPath.split(File.pathSeparator);
         for(String p : PATH) {
             File f = new File(p, name);
             if(f.exists()) {
+                // FIXME: We should check the path/file we pickup relates to the 32bit
+                //  or 64bit we are building for.  i.e. weed out invalid matches due
+                //  32/64 mismatch.
+                // We should emit warning if we skipped anything (out of order) to find
+                //  a match also if the only match is known to be wrong.
                 return f;
             }
         }
