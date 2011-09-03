@@ -100,6 +100,9 @@ public class InitializeTask extends Task {
     public static final String SCRIPT           = "qtjambi.script";
     public static final String SCRIPTTOOLS      = "qtjambi.scripttools";
     public static final String QTCONFIG         = "qtjambi.qtconfig";
+    public static final String CLUCENE            = "qtjambi.clucene";
+    public static final String DESIGNER           = "qtjambi.designer";
+    public static final String DESIGNERCOMPONENTS = "qtjambi.designercomponents";
 
     public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
 
@@ -193,6 +196,10 @@ public class InitializeTask extends Task {
 
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
+        String clucene = decideCLucene();
+        if("true".equals(clucene))
+            props.setNewProperty((String) null, CLUCENE, clucene);
+
         String dbus = decideDBus();
         if("true".equals(dbus))
             props.setNewProperty((String) null, DBUS, dbus);
@@ -200,6 +207,14 @@ public class InitializeTask extends Task {
         String declarative = decideDeclarative();
         if("true".equals(declarative))
             props.setNewProperty((String) null, DECLARATIVE, declarative);
+
+        String designer = decideDesigner();
+        if("true".equals(designer))
+            props.setNewProperty((String) null, DESIGNER, designer);
+
+        String designercomponents = decideDesignerComponents();
+        if("true".equals(designercomponents))
+            props.setNewProperty((String) null, DESIGNERCOMPONENTS, designercomponents);
 
         String helptool = decideHelp();
         if("true".equals(helptool))
@@ -514,6 +529,12 @@ public class InitializeTask extends Task {
         return result;
     }
 
+    private String decideCLucene() {
+        String result = String.valueOf(doesQtLibExist("QtCLucene", 4));
+        if(verbose) System.out.println(CLUCENE + ": " + result);
+        return result;
+    }
+
     private String decideDBus() {
         String result = String.valueOf(doesQtLibExist("QtDBus", 4));
         if(verbose) System.out.println(DBUS + ": " + result);
@@ -525,6 +546,19 @@ public class InitializeTask extends Task {
         String result = String.valueOf(doesQtLibExist("QtDeclarative", 4));
         if(verbose) System.out.println(DECLARATIVE + ": " + result);
         if("true".equals(result)) addToQtConfig("declarative");
+        return result;
+    }
+
+    private String decideDesigner() {
+        String result = String.valueOf(doesQtLibExist("QtDesigner", 4));
+        if(verbose) System.out.println(DESIGNER + ": " + result);
+        if("true".equals(result)) addToQtConfig("designer");
+        return result;
+    }
+
+    private String decideDesignerComponents() {
+        String result = String.valueOf(doesQtLibExist("QtDesignerComponents", 4));
+        if(verbose) System.out.println(DESIGNERCOMPONENTS + ": " + result);
         return result;
     }
 

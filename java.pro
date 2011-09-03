@@ -7,9 +7,7 @@ SUBDIRS =   src/cpp/qtjambi \
             src/cpp/qtjambi_sql \
             src/cpp/qtjambi_network \
             src/cpp/qtjambi_xml \
-            src/cpp/qtjambi_designer \
             src/cpp/qtjambi_help \
-            src/cpp/designer-integration
 
 contains(QT_CONFIG, script):            SUBDIRS += src/cpp/qtjambi_script
 contains(QT_CONFIG, scripttools):       SUBDIRS += src/cpp/qtjambi_scripttools
@@ -22,6 +20,8 @@ contains(QT_CONFIG, svg):               SUBDIRS += src/cpp/qtjambi_svg
 contains(QT_CONFIG, dbus):              SUBDIRS += src/cpp/qtjambi_dbus
 contains(QT_CONFIG, qtestlib):          SUBDIRS += src/cpp/qtjambi_test
 contains(QT_CONFIG, declarative):       SUBDIRS += src/cpp/qtjambi_declarative
+contains(QT_CONFIG, designer):          SUBDIRS += src/cpp/qtjambi_designer
+contains(QT_CONFIG, designer):          SUBDIRS += src/cpp/designer-integration
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
