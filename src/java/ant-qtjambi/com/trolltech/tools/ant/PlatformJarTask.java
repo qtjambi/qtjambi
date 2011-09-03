@@ -270,17 +270,25 @@ public class PlatformJarTask extends Task {
         String compiler = String.valueOf(props.getProperty((String) null, InitializeTask.COMPILER));
         FindCompiler.Compiler c = FindCompiler.Compiler.resolve(compiler);
 
-        String vcnumber = "80";
+        String vcnumber = null;
 
         switch(c) {
-
         // The manifest based ones...
+        case MSVC2010:
+        case MSVC2010_64:
+            if(vcnumber == null)
+                vcnumber = "100";
+            // fall-thru
         case MSVC2008:
         case MSVC2008_64:
-            vcnumber = "90";
-
+            if(vcnumber == null)
+                vcnumber = "90";
+            // fall-thru
         case MSVC2005:
         case MSVC2005_64:
+            if(vcnumber == null)
+                vcnumber = "80";
+
             if(debugConfiguration) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
