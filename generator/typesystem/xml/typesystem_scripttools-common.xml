@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <typesystem>
   <enum-type name="QScriptEngineDebugger::DebuggerAction"/>
   <enum-type name="QScriptEngineDebugger::DebuggerState"/>

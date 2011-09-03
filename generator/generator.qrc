@@ -33,8 +33,10 @@
 <file alias="typesystem_svg.java">typesystem/java/typesystem_svg-java.java</file>
 
 <file alias="typesystem_help.xml">typesystem/xml/typesystem_help-common.xml</file>
+<file alias="typesystem_help.java">typesystem/java/typesystem_help-java.java</file>
 
 <file alias="typesystem_multimedia.xml">typesystem/xml/typesystem_multimedia-common.xml</file>
+<file alias="typesystem_multimedia.java">typesystem/java/typesystem_multimedia-java.java</file>
 
 <file alias="typesystem_declarative.xml">typesystem/xml/typesystem_declarative-common.xml</file>
 <file alias="typesystem_declarative.java">typesystem/java/typesystem_declarative-java.java</file>

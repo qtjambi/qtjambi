@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <typesystem>
     <namespace-type name="QSsl">
         <include file-name="qssl.h" location="global" />

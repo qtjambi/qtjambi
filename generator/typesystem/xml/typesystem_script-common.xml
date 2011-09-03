@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <typesystem>
     <rejection class="QScriptEngine" function-name="fromScriptValue"/>
     <rejection class="QScriptEngine" function-name="toScriptValue"/>

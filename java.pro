@@ -6,20 +6,20 @@ SUBDIRS =   src/cpp/qtjambi \
             src/cpp/qtjambi_gui \
             src/cpp/qtjambi_sql \
             src/cpp/qtjambi_network \
-            src/cpp/qtjambi_xml \
-            src/cpp/qtjambi_help \
+            src/cpp/qtjambi_xml
 
+contains(QT_CONFIG, xmlpatterns):       SUBDIRS += src/cpp/qtjambi_xmlpatterns
 contains(QT_CONFIG, script):            SUBDIRS += src/cpp/qtjambi_script
 contains(QT_CONFIG, scripttools):       SUBDIRS += src/cpp/qtjambi_scripttools
-contains(QT_CONFIG, webkit):            SUBDIRS += src/cpp/qtjambi_webkit
-contains(QT_CONFIG, phonon):            SUBDIRS += src/cpp/qtjambi_phonon
-contains(QT_CONFIG, xmlpatterns):       SUBDIRS += src/cpp/qtjambi_xmlpatterns
-contains(QT_CONFIG, opengl):            SUBDIRS += src/cpp/qtjambi_opengl
 contains(QT_CONFIG, multimedia):        SUBDIRS += src/cpp/qtjambi_multimedia
+contains(QT_CONFIG, opengl):            SUBDIRS += src/cpp/qtjambi_opengl
 contains(QT_CONFIG, svg):               SUBDIRS += src/cpp/qtjambi_svg
 contains(QT_CONFIG, dbus):              SUBDIRS += src/cpp/qtjambi_dbus
 contains(QT_CONFIG, qtestlib):          SUBDIRS += src/cpp/qtjambi_test
 contains(QT_CONFIG, declarative):       SUBDIRS += src/cpp/qtjambi_declarative
+contains(QT_CONFIG, help):              SUBDIRS += src/cpp/qtjambi_help
+contains(QT_CONFIG, phonon):            SUBDIRS += src/cpp/qtjambi_phonon
+contains(QT_CONFIG, webkit):            SUBDIRS += src/cpp/qtjambi_webkit
 contains(QT_CONFIG, designer):          SUBDIRS += src/cpp/qtjambi_designer
 contains(QT_CONFIG, designer):          SUBDIRS += src/cpp/designer-integration
 

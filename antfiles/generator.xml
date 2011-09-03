@@ -59,22 +59,22 @@
         description="Merges the XML files used by the Qt Jambi generator.">
         <xmlmerge victim="core"/>
         <xmlmerge victim="gui"/>
-        <xmlmerge victim="xml"/>
-        <xmlmerge victim="network"/>
-        <xmlmerge victim="opengl"/>
         <xmlmerge victim="sql"/>
+        <xmlmerge victim="network"/>
+        <xmlmerge victim="xml"/>
+        <xmlmerge victim="xmlpatterns"/>
+        <xmlmerge victim="script"/>
+        <xmlmerge victim="scripttools"/>
+        <xmlmerge victim="multimedia"/>
+        <xmlmerge victim="opengl"/>
         <xmlmerge victim="svg"/>
         <xmlmerge victim="dbus"/>
         <xmlmerge victim="test"/>
         <xmlmerge victim="declarative"/>
         <xmlmerge victim="help"/>
-        <xmlmerge victim="multimedia"/>
-        <xmlmerge victim="webkit"/>
         <xmlmerge victim="phonon"/>
-        <xmlmerge victim="xmlpatterns"/>
+        <xmlmerge victim="webkit"/>
         <xmlmerge victim="designer"/>
-        <xmlmerge victim="script"/>
-        <xmlmerge victim="scripttools"/>
     </target>
 
 </project>

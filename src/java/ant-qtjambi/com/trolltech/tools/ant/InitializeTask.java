@@ -80,29 +80,30 @@ public class InitializeTask extends Task {
     /*
      * These properties are set inside this task
      */
-    public static final String COMPILER         = "qtjambi.compiler";
-    public static final String CONFIGURATION    = "qtjambi.configuration";
-    public static final String DECLARATIVE      = "qtjambi.declarative";
-    public static final String DBUS             = "qtjambi.dbus";
-    public static final String OPENGL           = "qtjambi.opengl";
-    public static final String OSNAME           = "qtjambi.osname";
-    public static final String PHONON           = "qtjambi.phonon";
-    public static final String PHONON_DS9       = "qtjambi.phonon_ds9";
-    public static final String PHONON_GSTREAMER = "qtjambi.phonon_gstreamer";
-    public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
-    public static final String QMAKESPEC        = "qtjambi.qmakespec";
-    public static final String SQL              = "qtjambi.sql";
-    public static final String SVG              = "qtjambi.svg";
-    public static final String WEBKIT           = "qtjambi.webkit";
-    public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
-    public static final String HELP             = "qtjambi.help";
-    public static final String MULTIMEDIA       = "qtjambi.multimedia";
-    public static final String SCRIPT           = "qtjambi.script";
-    public static final String SCRIPTTOOLS      = "qtjambi.scripttools";
-    public static final String QTCONFIG         = "qtjambi.qtconfig";
+    public static final String COMPILER           = "qtjambi.compiler";
+    public static final String CONFIGURATION      = "qtjambi.configuration";
     public static final String CLUCENE            = "qtjambi.clucene";
+    public static final String DBUS               = "qtjambi.dbus";
+    public static final String DECLARATIVE        = "qtjambi.declarative";
     public static final String DESIGNER           = "qtjambi.designer";
     public static final String DESIGNERCOMPONENTS = "qtjambi.designercomponents";
+    public static final String HELP               = "qtjambi.help";
+    public static final String MULTIMEDIA         = "qtjambi.multimedia";
+    public static final String OPENGL             = "qtjambi.opengl";
+    public static final String OSNAME             = "qtjambi.osname";
+    public static final String PHONON             = "qtjambi.phonon";
+    public static final String PHONON_DS9         = "qtjambi.phonon_ds9";
+    public static final String PHONON_GSTREAMER   = "qtjambi.phonon_gstreamer";
+    public static final String PHONON_QT7         = "qtjambi.phonon_qt7";
+    public static final String QMAKESPEC          = "qtjambi.qmakespec";
+    public static final String SCRIPT             = "qtjambi.script";
+    public static final String SCRIPTTOOLS        = "qtjambi.scripttools";
+    public static final String SQL                = "qtjambi.sql";
+    public static final String SVG                = "qtjambi.svg";
+    public static final String TEST               = "qtjambi.test";
+    public static final String WEBKIT             = "qtjambi.webkit";
+    public static final String XMLPATTERNS        = "qtjambi.xmlpatterns";
+    public static final String QTCONFIG           = "qtjambi.qtconfig";
 
     public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
 
