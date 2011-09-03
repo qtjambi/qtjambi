@@ -90,10 +90,8 @@ public class InitializeTask extends Task {
     public static final String PHONON_GSTREAMER = "qtjambi.phonon_gstreamer";
     public static final String PHONON_QT7       = "qtjambi.phonon_qt7";
     public static final String QMAKESPEC        = "qtjambi.qmakespec";
-    public static final String SQLITE           = "qtjambi.sqlite";
+    public static final String SQL              = "qtjambi.sql";
     public static final String SVG              = "qtjambi.svg";
-    public static final String MNG              = "qtjambi.mng";
-    public static final String TIFF             = "qtjambi.tiff";
     public static final String WEBKIT           = "qtjambi.webkit";
     public static final String XMLPATTERNS      = "qtjambi.xmlpatterns";
     public static final String HELP             = "qtjambi.help";
@@ -101,6 +99,27 @@ public class InitializeTask extends Task {
     public static final String SCRIPT           = "qtjambi.script";
     public static final String SCRIPTTOOLS      = "qtjambi.scripttools";
     public static final String QTCONFIG         = "qtjambi.qtconfig";
+
+    public static final String PLUGINS_IMAGEFORMATS_GIF     = "qtjambi.plugins.imageformats.gif";
+    public static final String PLUGINS_IMAGEFORMATS_ICO     = "qtjambi.plugins.imageformats.ico";
+    public static final String PLUGINS_IMAGEFORMATS_JPEG    = "qtjambi.plugins.imageformats.jpeg";
+    public static final String PLUGINS_IMAGEFORMATS_MNG     = "qtjambi.plugins.imageformats.mng";
+    // PNG not seen in wild due to being statically linked into Qt DSOs
+    public static final String PLUGINS_IMAGEFORMATS_PNG     = "qtjambi.plugins.imageformats.png";
+    public static final String PLUGINS_IMAGEFORMATS_SVG     = "qtjambi.plugins.imageformats.svg";
+    public static final String PLUGINS_IMAGEFORMATS_TIFF    = "qtjambi.plugins.imageformats.tiff";
+
+    public static final String PLUGINS_ICONENGINES_SVGICON  = "qtjambi.plugins.iconengines.svgicon";
+
+    public static final String PLUGINS_SQLDRIVERS_SQLITE    = "qtjambi.plugins.sqldrivers.sqlite";
+    public static final String PLUGINS_SQLDRIVERS_ODBC      = "qtjambi.plugins.sqldrivers.odbc";
+
+    public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
+
+    public static final String PACKAGING_DSO_ZLIB1    = "qtjambi.packaging.dso.zlib1";		// Windows
+    public static final String PACKAGING_DSO_LIBSSL32 = "qtjambi.packaging.dso.libssl32";	// Windows MinGW
+    public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";	// Windows MSVC
+    public static final String PACKAGING_DSO_LIBEAY32 = "qtjambi.packaging.dso.libeay32";	// Windows
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
@@ -170,13 +189,34 @@ public class InitializeTask extends Task {
 
         String phonon = decidePhonon(props);
 
-        props.setNewProperty((String) null, SQLITE, decideSqlite());
+        props.setNewProperty((String) null, SQL, decideSql());
+
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE, decidePluginsSqldriversSqlite());
+
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_ODBC, decidePluginsSqldriversOdbc());
 
         props.setNewProperty((String) null, SVG, decideSvg());
 
-        props.setNewProperty((String) null, MNG, decideMng());
+        // These are only detecting if the plugins exist for these modules,
+        // lack of a plugin does not necessarily mean Qt doesn't have support
+        // since the implementation might be statically linked in.
+        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_GIF, decidePluginsImageformatsGif());
 
-        props.setNewProperty((String) null, TIFF, decideTiff());
+        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_ICO, decidePluginsImageformatsIco());
+
+        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_JPEG, decidePluginsImageformatsJpeg());
+
+        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_MNG, decidePluginsImageformatsMng());
+
+        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_PNG, decidePluginsImageformatsPng());
+
+        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_SVG, decidePluginsImageformatsSvg());
+
+        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
+
+        props.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
+
+        props.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
 
         String webkit = decideWebkit();
         // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
@@ -209,6 +249,12 @@ public class InitializeTask extends Task {
         String opengl = decideOpenGL();
         if("true".equals(opengl))
             props.setNewProperty((String) null, OPENGL, opengl);
+
+        props.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1"));
+        props.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
+        props.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32"));
+        props.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32"));
+
     }
 
     private String decideJavaHomeTarget() {
@@ -281,6 +327,18 @@ public class InitializeTask extends Task {
         return doesQtLibExist(name, version, props.getProperty((String) null, LIBDIR).toString());
     }
 
+    private boolean doesQtLibExist(String name, String librarydir) {
+        StringBuilder path = new StringBuilder();
+        if(librarydir != null)
+            path.append(librarydir);
+        else
+            path.append(props.getProperty((String) null, LIBDIR).toString());
+        path.append("/");
+        path.append(LibraryEntry.formatQtJambiName(name, debug));
+        //System.out.println("Checking QtLib: " + path);
+        return new File(path.toString()).exists();
+    }
+
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
         path.append(props.getProperty((String) null, PLUGINSDIR));
@@ -299,12 +357,13 @@ public class InitializeTask extends Task {
     private String decidePhonon(PropertyHelper props) {
         boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
         String phonon = String.valueOf(exists);
-        if(verbose) {
+        if(verbose)
             System.out.println(PHONON + ": " + phonon);
-        }
 
-        if(!exists) return "false";
-        else addToQtConfig("phonon");
+        if(!exists)
+            return "false";
+        else
+            addToQtConfig("phonon");
 
         props.setNewProperty((String) null, PHONON, phonon);
 
@@ -314,6 +373,7 @@ public class InitializeTask extends Task {
             break;
         case Linux:
         case FreeBSD:
+            // FIXME: We should detect the name of this plugin here.
             props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
             if(doesQtLibExist("QtDBus", 4))
                 props.setNewProperty((String) null, DBUS, "true");
@@ -344,9 +404,24 @@ public class InitializeTask extends Task {
         props.setProperty((String) null, QTCONFIG, newConfig, false);
     }
 
-    private String decideSqlite() {
+    private String decideSql() {
+        String result = String.valueOf(doesQtLibExist("QtSql", 4));
+        if(verbose) System.out.println(SQL + ": " + result);
+        if("true".equals(result)) addToQtConfig("sql");
+        return result;
+    }
+
+    private String decidePluginsSqldriversSqlite() {
+        // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
-        if(verbose) System.out.println(SQLITE + ": " + result);
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLITE + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsSqldriversOdbc() {
+        // FIXME: Detect the case when this module was compiled into QtSql
+        String result = String.valueOf(doesQtPluginExist("qsqlodbc", "sqldrivers"));
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_ODBC + ": " + result);
         return result;
     }
 
@@ -357,21 +432,64 @@ public class InitializeTask extends Task {
         return result;
     }
 
-    private String decideMng(){
-        String result = String.valueOf(doesQtPluginExist("qmng", "imageformats"));
-        if(verbose) System.out.println(MNG + ": " + result);
+    private String decidePluginsImageformatsGif(){
+        String result = String.valueOf(doesQtPluginExist("qgif", "imageformats"));
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_GIF + ": " + result);
         return result;
     }
 
-    private String decideTiff() {
+    private String decidePluginsImageformatsIco(){
+        String result = String.valueOf(doesQtPluginExist("qico", "imageformats"));
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_ICO + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsImageformatsJpeg(){
+        String result = String.valueOf(doesQtPluginExist("qjpeg", "imageformats"));
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_JPEG + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsImageformatsMng(){
+        String result = String.valueOf(doesQtPluginExist("qmng", "imageformats"));
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_MNG + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsImageformatsPng(){
+        String result = String.valueOf(doesQtPluginExist("qpng", "imageformats"));
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_PNG + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsImageformatsSvg(){
+        String result = String.valueOf(doesQtPluginExist("qsvg", "imageformats"));
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_SVG + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsImageformatsTiff() {
         String result = String.valueOf(doesQtPluginExist("qtiff", "imageformats"));
-        if(verbose) System.out.println(TIFF + ": " + result);
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_TIFF + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsIconenginesSvgicon(){
+        String result = String.valueOf(doesQtPluginExist("qsvgicon", "iconengines"));
+        if(verbose) System.out.println(PLUGINS_ICONENGINES_SVGICON + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsAccessibleQtaccesswidgets() {
+        String result = String.valueOf(doesQtPluginExist("qtaccessiblewidgets", "accessible"));
+        if(verbose) System.out.println(PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS + ": " + result);
         return result;
     }
 
     private String decideHelp() {
         String result = String.valueOf(doesQtLibExist("QtHelp", 4));
         if(verbose) System.out.println(HELP + ": " + result);
+        if("true".equals(result)) addToQtConfig("help");
         return result;
     }
 
@@ -405,12 +523,21 @@ public class InitializeTask extends Task {
     private String decideXMLPatterns() {
         String result = String.valueOf(doesQtLibExist("QtXmlPatterns", 4));
         if(verbose) System.out.println(XMLPATTERNS + ": " + result);
+        if("true".equals(result)) addToQtConfig("xmlpatterns");
         return result;
     }
 
     private String decideOpenGL() {
         String result = String.valueOf(doesQtLibExist("QtOpenGL", 4));
         if(verbose) System.out.println(OPENGL + ": " + result);
+        if("true".equals(result)) addToQtConfig("opengl");
+        return result;
+    }
+
+    private String decideQtLibDso(String attrName, String name) {
+        boolean bf = doesQtLibExist(name, null);
+        String result = String.valueOf(bf);
+        if(verbose && bf) System.out.println(attrName + ": " + result);
         return result;
     }
 

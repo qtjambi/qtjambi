@@ -90,7 +90,7 @@
             <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="plugins/accessible"
                      load="never"/>
             <library name="qsqlite" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="plugins/sqldrivers" load="never"
-                     if="${qtjambi.sqlite}"/>
+                     if="${qtjambi.plugins.sqldrivers.sqlite}"/>
 
             <!-- Qt Jambi Libraries -->
             <library name="qtjambi" type="qtjambi" rootPath="${qtjambi.jambi.libdir}"/>
