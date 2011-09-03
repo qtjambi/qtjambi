@@ -193,6 +193,10 @@ public class InitializeTask extends Task {
 
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
+        String dbus = decideDBus();
+        if("true".equals(dbus))
+            props.setNewProperty((String) null, DBUS, dbus);
+
         String declarative = decideDeclarative();
         if("true".equals(declarative))
             props.setNewProperty((String) null, DECLARATIVE, declarative);
@@ -370,16 +374,15 @@ public class InitializeTask extends Task {
      */
     private String decidePhonon(PropertyHelper props) {
         boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
-        String phonon = String.valueOf(exists);
+        String result = String.valueOf(exists);
         if(verbose)
-            System.out.println(PHONON + ": " + phonon);
+            System.out.println(PHONON + ": " + result);
 
         if(!exists)
             return "false";
-        else
-            addToQtConfig("phonon");
 
-        props.setNewProperty((String) null, PHONON, phonon);
+        addToQtConfig("phonon");
+        props.setNewProperty((String) null, PHONON, result);
 
         switch(OSInfo.os()) {
         case Windows:
@@ -389,17 +392,13 @@ public class InitializeTask extends Task {
         case FreeBSD:
             // FIXME: We should detect the name of this plugin here.
             props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
-            if(doesQtLibExist("QtDBus", 4))
-                props.setNewProperty((String) null, DBUS, "true");
             break;
         case MacOS:
             props.setNewProperty((String) null, PHONON_QT7, "true");
-            if(doesQtLibExist("QtDBus", 4))
-                props.setNewProperty((String) null, DBUS, "true");
             break;
         }
 
-        return phonon;
+        return result;
     }
 
     /**
@@ -503,6 +502,13 @@ public class InitializeTask extends Task {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlodbc", "sqldrivers"));
         if(verbose) System.out.println(PLUGINS_SQLDRIVERS_ODBC + ": " + result);
+        return result;
+    }
+
+    private String decideDBus() {
+        String result = String.valueOf(doesQtLibExist("QtDBus", 4));
+        if(verbose) System.out.println(DBUS + ": " + result);
+        if("true".equals(result)) addToQtConfig("dbus");
         return result;
     }
 

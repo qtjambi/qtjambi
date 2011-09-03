@@ -73,13 +73,13 @@
             <library name="QtDeclarative"       type="qt"
                     rootPath="${qtjambi.qt.libdir}"
                     if="${qtjambi.declarative}"/>
+            <library name="QtDBus"              type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.dbus}"/>
 
             <library name="phonon"              type="qt"
                     rootPath="${qtjambi.phonon.libdir}"
                     if="${qtjambi.phonon}"/>
-            <library name="QtDBus"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.dbus}"/>
             <library name="phonon_ds9"          type="plugin"
                     rootPath="${qtjambi.phonon.pluginsdir}"
                     subdir="plugins/phonon_backend"
@@ -210,6 +210,9 @@
             <library name="com_trolltech_qt_declarative"  type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.declarative}"/>
+            <library name="com_trolltech_qt_dbus"    type="qtjambi"
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.dbus}"/>
 
             <!-- Win32/Win64 zlib1.dll -->
             <library name="zlib1"           type="dso"

@@ -14,5 +14,6 @@
   <load-typesystem name="../build/generator/typesystem_multimedia.xml" generate="yes" />
   <load-typesystem name="../build/generator/typesystem_script.xml" generate="yes" />
   <load-typesystem name="../build/generator/typesystem_scripttools.xml" generate="yes" />
+  <load-typesystem name="../build/generator/typesystem_dbus.xml" generate="yes" />
   <load-typesystem name="../build/generator/typesystem_declarative.xml" generate="yes" />
 </typesystem>
