@@ -517,6 +517,7 @@ public class InitializeTask extends Task {
         if("true".equals(result)) addToQtConfig("scripttools");
         return result;
     }
+
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
         if(verbose) System.out.println(WEBKIT + ": " + result);

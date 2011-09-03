@@ -195,7 +195,7 @@ public class PlatformJarTask extends Task {
         if(systemLibs.equals(SYSLIB_AUTO)) {
             if(runtimeLibs.size() > 0)
                 writer.println("\n  <!-- Runtime libraries, loaded automatically -->");
-        for(String rt : runtimeLibs) {
+            for(String rt : runtimeLibs) {
                 writer.println("  <library name=\"" + rt + "\" load=\"yes\" />");
             }
         }
@@ -222,7 +222,7 @@ public class PlatformJarTask extends Task {
         if(systemLibs.equals(SYSLIB_AUTO)) {
             if(unpackLibs.size() > 0)
                 writer.println("\n  <!-- Dependency libraries, not loaded... -->");
-        for(String unpack : unpackLibs) {
+            for(String unpack : unpackLibs) {
                 writer.println("  <library name=\"" + unpack + "\" load=\"never\" />");
             }
         }
@@ -230,7 +230,7 @@ public class PlatformJarTask extends Task {
         // plugins...
         if(pluginPaths.size() > 0) {
             writer.println("\n  <!-- Plugins... -->");
-        for(PluginPath p : pluginPaths) {
+            for(PluginPath p : pluginPaths) {
                 writer.println("  <plugin path=\"" + p.getPath() + "\" />");
             }
         }
