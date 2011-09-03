@@ -103,6 +103,11 @@ public class InitializeTask extends Task {
 
     public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
 
+    public static final String PLUGINS_CODECS_CNCODECS      = "qtjambi.plugins.codecs.cncodecs";
+    public static final String PLUGINS_CODECS_JPCODECS      = "qtjambi.plugins.codecs.jpcodecs";
+    public static final String PLUGINS_CODECS_KRCODECS      = "qtjambi.plugins.codecs.krcodecs";
+    public static final String PLUGINS_CODECS_TWCODECS      = "qtjambi.plugins.codecs.twcodecs";
+
     public static final String PLUGINS_ICONENGINES_SVGICON  = "qtjambi.plugins.iconengines.svgicon";
 
     public static final String PLUGINS_IMAGEFORMATS_GIF     = "qtjambi.plugins.imageformats.gif";
@@ -231,6 +236,11 @@ public class InitializeTask extends Task {
             props.setNewProperty((String) null, XMLPATTERNS, patterns);
 
         props.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
+
+        props.setNewProperty((String) null, PLUGINS_CODECS_CNCODECS, decidePluginsCodecs(PLUGINS_CODECS_CNCODECS, "cncodecs"));
+        props.setNewProperty((String) null, PLUGINS_CODECS_JPCODECS, decidePluginsCodecs(PLUGINS_CODECS_JPCODECS, "jpcodecs"));
+        props.setNewProperty((String) null, PLUGINS_CODECS_KRCODECS, decidePluginsCodecs(PLUGINS_CODECS_KRCODECS, "krcodecs"));
+        props.setNewProperty((String) null, PLUGINS_CODECS_TWCODECS, decidePluginsCodecs(PLUGINS_CODECS_TWCODECS, "twcodecs"));
 
         props.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
 
@@ -415,24 +425,28 @@ public class InitializeTask extends Task {
         return result;
     }
 
-    private String decidePluginsSqldriversSqlite() {
-        // FIXME: Detect the case when this module was compiled into QtSql
-        String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLITE + ": " + result);
-        return result;
-    }
-
-    private String decidePluginsSqldriversOdbc() {
-        // FIXME: Detect the case when this module was compiled into QtSql
-        String result = String.valueOf(doesQtPluginExist("qsqlodbc", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_ODBC + ": " + result);
-        return result;
-    }
-
     private String decideSvg() {
         String result = String.valueOf(doesQtLibExist("QtSvg", 4));
         if(verbose) System.out.println(SVG + ": " + result);
         if("true".equals(result)) addToQtConfig("svg");
+        return result;
+    }
+
+    private String decidePluginsAccessibleQtaccesswidgets() {
+        String result = String.valueOf(doesQtPluginExist("qtaccessiblewidgets", "accessible"));
+        if(verbose) System.out.println(PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsCodecs(String attrName, String name) {
+        String result = String.valueOf(doesQtPluginExist("q" + name, "codecs"));
+        if(verbose) System.out.println(attrName + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsIconenginesSvgicon(){
+        String result = String.valueOf(doesQtPluginExist("qsvgicon", "iconengines"));
+        if(verbose) System.out.println(PLUGINS_ICONENGINES_SVGICON + ": " + result);
         return result;
     }
 
@@ -478,15 +492,24 @@ public class InitializeTask extends Task {
         return result;
     }
 
-    private String decidePluginsIconenginesSvgicon(){
-        String result = String.valueOf(doesQtPluginExist("qsvgicon", "iconengines"));
-        if(verbose) System.out.println(PLUGINS_ICONENGINES_SVGICON + ": " + result);
+    private String decidePluginsSqldriversSqlite() {
+        // FIXME: Detect the case when this module was compiled into QtSql
+        String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLITE + ": " + result);
         return result;
     }
 
-    private String decidePluginsAccessibleQtaccesswidgets() {
-        String result = String.valueOf(doesQtPluginExist("qtaccessiblewidgets", "accessible"));
-        if(verbose) System.out.println(PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS + ": " + result);
+    private String decidePluginsSqldriversOdbc() {
+        // FIXME: Detect the case when this module was compiled into QtSql
+        String result = String.valueOf(doesQtPluginExist("qsqlodbc", "sqldrivers"));
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_ODBC + ": " + result);
+        return result;
+    }
+
+    private String decideDeclarative() {
+        String result = String.valueOf(doesQtLibExist("QtDeclarative", 4));
+        if(verbose) System.out.println(DECLARATIVE + ": " + result);
+        if("true".equals(result)) addToQtConfig("declarative");
         return result;
     }
 
@@ -501,6 +524,13 @@ public class InitializeTask extends Task {
         String result = String.valueOf(doesQtLibExist("QtMultimedia", 4));
         if(verbose) System.out.println(MULTIMEDIA + ": " + result);
         if("true".equals(result)) addToQtConfig("multimedia");
+        return result;
+    }
+
+    private String decideOpenGL() {
+        String result = String.valueOf(doesQtLibExist("QtOpenGL", 4));
+        if(verbose) System.out.println(OPENGL + ": " + result);
+        if("true".equals(result)) addToQtConfig("opengl");
         return result;
     }
 
@@ -529,20 +559,6 @@ public class InitializeTask extends Task {
         String result = String.valueOf(doesQtLibExist("QtXmlPatterns", 4));
         if(verbose) System.out.println(XMLPATTERNS + ": " + result);
         if("true".equals(result)) addToQtConfig("xmlpatterns");
-        return result;
-    }
-
-    private String decideOpenGL() {
-        String result = String.valueOf(doesQtLibExist("QtOpenGL", 4));
-        if(verbose) System.out.println(OPENGL + ": " + result);
-        if("true".equals(result)) addToQtConfig("opengl");
-        return result;
-    }
-
-    private String decideDeclarative() {
-        String result = String.valueOf(doesQtLibExist("QtDeclarative", 4));
-        if(verbose) System.out.println(DECLARATIVE + ": " + result);
-        if("true".equals(result)) addToQtConfig("declarative");
         return result;
     }
 

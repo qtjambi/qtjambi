@@ -55,6 +55,7 @@ public class LibraryEntry extends Task {
     public static final String TYPE_DEFAULT            = "user";
     public static final int VERSION_DEFAULT            = 4;
 
+    public static final String TYPE_DSO                = "dso";
     public static final String TYPE_PLUGIN             = "plugin";
     public static final String TYPE_QT                 = "qt";
     public static final String TYPE_QTJAMBI            = "qtjambi";
@@ -167,6 +168,9 @@ public class LibraryEntry extends Task {
             // "/" is needed in the end
             output_directory = "lib/";
         } else if(type.equals(TYPE_QTJAMBI)) {
+            name = formatQtJambiName(name, debug);
+            output_directory = "lib/";
+        } else if(type.equals(TYPE_DSO)) {
             name = formatQtJambiName(name, debug);
             output_directory = "lib/";
         } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
