@@ -46,7 +46,9 @@
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
 #include <QtSql/QtSql>
-#include <QtSvg/QtSvg>
+#ifndef QT_NO_SVG
+#  include <QtSvg/QtSvg>
+#endif
 #include <QtXml/QtXml>
 #include <QtHelp/QtHelp>
 #include <QtMultimedia/QtMultimedia>

@@ -30,6 +30,7 @@
 <file alias="typesystem_xmlpatterns.java">typesystem/java/typesystem_xmlpatterns-java.java</file>
 
 <file alias="typesystem_svg.xml">typesystem/xml/typesystem_svg-common.xml</file>
+<file alias="typesystem_svg.java">typesystem/java/typesystem_svg-java.java</file>
 
 <file alias="typesystem_help.xml">typesystem/xml/typesystem_help-common.xml</file>
 

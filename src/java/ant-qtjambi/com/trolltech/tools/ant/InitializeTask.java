@@ -215,10 +215,6 @@ public class InitializeTask extends Task {
 
         String phonon = decidePhonon(props);
 
-        props.setNewProperty((String) null, SQL, decideSql());
-
-        props.setNewProperty((String) null, SVG, decideSvg());
-
         String script = decideScript();
         if("true".equals(script))
             props.setNewProperty((String) null, SCRIPT, script);
@@ -226,6 +222,10 @@ public class InitializeTask extends Task {
         String scripttools = decideScripttools();
         if("true".equals(scripttools))
             props.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
+
+        props.setNewProperty((String) null, SQL, decideSql());
+
+        props.setNewProperty((String) null, SVG, decideSvg());
 
         props.setNewProperty((String) null, TEST, decideTest());
 

@@ -45,7 +45,6 @@
                     if="${qtjambi.sql}"/>
             <library name="QtSvg"               type="qt"
                     rootPath="${qtjambi.qt.libdir}"
-                    load="yes"
                     if="${qtjambi.svg}"/>
             <library name="QtNetwork"           type="qt"
                     rootPath="${qtjambi.qt.libdir}"/>
