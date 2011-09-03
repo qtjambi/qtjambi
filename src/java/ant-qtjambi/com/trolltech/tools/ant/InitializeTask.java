@@ -101,6 +101,10 @@ public class InitializeTask extends Task {
     public static final String SCRIPTTOOLS      = "qtjambi.scripttools";
     public static final String QTCONFIG         = "qtjambi.qtconfig";
 
+    public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
+
+    public static final String PLUGINS_ICONENGINES_SVGICON  = "qtjambi.plugins.iconengines.svgicon";
+
     public static final String PLUGINS_IMAGEFORMATS_GIF     = "qtjambi.plugins.imageformats.gif";
     public static final String PLUGINS_IMAGEFORMATS_ICO     = "qtjambi.plugins.imageformats.ico";
     public static final String PLUGINS_IMAGEFORMATS_JPEG    = "qtjambi.plugins.imageformats.jpeg";
@@ -110,12 +114,8 @@ public class InitializeTask extends Task {
     public static final String PLUGINS_IMAGEFORMATS_SVG     = "qtjambi.plugins.imageformats.svg";
     public static final String PLUGINS_IMAGEFORMATS_TIFF    = "qtjambi.plugins.imageformats.tiff";
 
-    public static final String PLUGINS_ICONENGINES_SVGICON  = "qtjambi.plugins.iconengines.svgicon";
-
     public static final String PLUGINS_SQLDRIVERS_SQLITE    = "qtjambi.plugins.sqldrivers.sqlite";
     public static final String PLUGINS_SQLDRIVERS_ODBC      = "qtjambi.plugins.sqldrivers.odbc";
-
-    public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
 
     public static final String PACKAGING_DSO_ZLIB1    = "qtjambi.packaging.dso.zlib1";		// Windows
     public static final String PACKAGING_DSO_LIBSSL32 = "qtjambi.packaging.dso.libssl32";	// Windows MinGW
@@ -188,15 +188,51 @@ public class InitializeTask extends Task {
 
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
+        String declarative = decideDeclarative();
+        if("true".equals(declarative))
+            props.setNewProperty((String) null, DECLARATIVE, declarative);
+
+        String helptool = decideHelp();
+        if("true".equals(helptool))
+            props.setNewProperty((String) null, HELP, helptool);
+
+        String multimedia = decideMultimedia();
+        if("true".equals(multimedia))
+            props.setNewProperty((String) null, MULTIMEDIA, multimedia);
+
+        String opengl = decideOpenGL();
+        if("true".equals(opengl))
+            props.setNewProperty((String) null, OPENGL, opengl);
+
         String phonon = decidePhonon(props);
 
         props.setNewProperty((String) null, SQL, decideSql());
 
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE, decidePluginsSqldriversSqlite());
-
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_ODBC, decidePluginsSqldriversOdbc());
-
         props.setNewProperty((String) null, SVG, decideSvg());
+
+        String script = decideScript();
+        if("true".equals(script))
+            props.setNewProperty((String) null, SCRIPT, script);
+
+        String scripttools = decideScripttools();
+        if("true".equals(scripttools))
+            props.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
+
+        String webkit = decideWebkit();
+        // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
+        //  if you have headers and DSOs for WebKit then QtJambi should build the support.
+        if("true".equals(webkit) && "true".equals(phonon) == false)
+            if(verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
+        if("true".equals(webkit))
+            props.setNewProperty((String) null, WEBKIT, webkit);
+
+        String patterns = decideXMLPatterns();
+        if("true".equals(patterns))
+            props.setNewProperty((String) null, XMLPATTERNS, patterns);
+
+        props.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
+
+        props.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
 
         // These are only detecting if the plugins exist for these modules,
         // lack of a plugin does not necessarily mean Qt doesn't have support
@@ -215,45 +251,9 @@ public class InitializeTask extends Task {
 
         props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
 
-        props.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE, decidePluginsSqldriversSqlite());
 
-        props.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
-
-        String webkit = decideWebkit();
-        // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
-        //  if you have headers and DSOs for WebKit then QtJambi should build the support.
-        if("true".equals(webkit) && "true".equals(phonon) == false)
-            if(verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
-        if("true".equals(webkit))
-            props.setNewProperty((String) null, WEBKIT, webkit);
-
-        String script = decideScript();
-        if("true".equals(script))
-            props.setNewProperty((String) null, SCRIPT, script);
-
-        String scripttools = decideScripttools();
-        if("true".equals(scripttools))
-            props.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
-
-        String helptool = decideHelp();
-        if("true".equals(helptool))
-            props.setNewProperty((String) null, HELP, helptool);
-
-        String multimedia = decideMultimedia();
-        if("true".equals(multimedia))
-            props.setNewProperty((String) null, MULTIMEDIA, multimedia);
-
-        String patterns = decideXMLPatterns();
-        if("true".equals(patterns))
-            props.setNewProperty((String) null, XMLPATTERNS, patterns);
-
-        String opengl = decideOpenGL();
-        if("true".equals(opengl))
-            props.setNewProperty((String) null, OPENGL, opengl);
-
-        String declarative = decideDeclarative();
-        if("true".equals(declarative))
-            props.setNewProperty((String) null, DECLARATIVE, declarative);
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_ODBC, decidePluginsSqldriversOdbc());
 
         props.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1"));
         props.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
