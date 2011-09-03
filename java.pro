@@ -20,6 +20,7 @@ contains(QT_CONFIG, opengl):            SUBDIRS += src/cpp/qtjambi_opengl
 contains(QT_CONFIG, multimedia):        SUBDIRS += src/cpp/qtjambi_multimedia
 contains(QT_CONFIG, svg):               SUBDIRS += src/cpp/qtjambi_svg
 contains(QT_CONFIG, dbus):              SUBDIRS += src/cpp/qtjambi_dbus
+contains(QT_CONFIG, qtestlib):          SUBDIRS += src/cpp/qtjambi_test
 contains(QT_CONFIG, declarative):       SUBDIRS += src/cpp/qtjambi_declarative
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {

@@ -227,6 +227,8 @@ public class InitializeTask extends Task {
         if("true".equals(scripttools))
             props.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
 
+        props.setNewProperty((String) null, TEST, decideTest());
+
         String webkit = decideWebkit();
         // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
         //  if you have headers and DSOs for WebKit then QtJambi should build the support.
@@ -428,6 +430,13 @@ public class InitializeTask extends Task {
         String result = String.valueOf(doesQtLibExist("QtSvg", 4));
         if(verbose) System.out.println(SVG + ": " + result);
         if("true".equals(result)) addToQtConfig("svg");
+        return result;
+    }
+
+    private String decideTest() {
+        String result = String.valueOf(doesQtLibExist("QtTest", 4));
+        if(verbose) System.out.println(TEST + ": " + result);
+        if("true".equals(result)) addToQtConfig("qtestlib");
         return result;
     }
 

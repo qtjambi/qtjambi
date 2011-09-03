@@ -76,6 +76,9 @@
             <library name="QtDBus"              type="qt"
                     rootPath="${qtjambi.qt.libdir}"
                     if="${qtjambi.dbus}"/>
+            <library name="QtTest"              type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.test}"/>
 
             <library name="phonon"              type="qt"
                     rootPath="${qtjambi.phonon.libdir}"
@@ -213,6 +216,9 @@
             <library name="com_trolltech_qt_dbus"    type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.dbus}"/>
+            <library name="com_trolltech_qt_test"    type="qtjambi"
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.test}"/>
 
             <!-- Win32/Win64 zlib1.dll -->
             <library name="zlib1"           type="dso"
