@@ -82,6 +82,7 @@ public class InitializeTask extends Task {
      */
     public static final String COMPILER         = "qtjambi.compiler";
     public static final String CONFIGURATION    = "qtjambi.configuration";
+    public static final String DECLARATIVE      = "qtjambi.declarative";
     public static final String DBUS             = "qtjambi.dbus";
     public static final String OPENGL           = "qtjambi.opengl";
     public static final String OSNAME           = "qtjambi.osname";
@@ -250,11 +251,14 @@ public class InitializeTask extends Task {
         if("true".equals(opengl))
             props.setNewProperty((String) null, OPENGL, opengl);
 
+        String declarative = decideDeclarative();
+        if("true".equals(declarative))
+            props.setNewProperty((String) null, DECLARATIVE, declarative);
+
         props.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1"));
         props.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
         props.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32"));
         props.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32"));
-
     }
 
     private String decideJavaHomeTarget() {
@@ -531,6 +535,13 @@ public class InitializeTask extends Task {
         String result = String.valueOf(doesQtLibExist("QtOpenGL", 4));
         if(verbose) System.out.println(OPENGL + ": " + result);
         if("true".equals(result)) addToQtConfig("opengl");
+        return result;
+    }
+
+    private String decideDeclarative() {
+        String result = String.valueOf(doesQtLibExist("QtDeclarative", 4));
+        if(verbose) System.out.println(DECLARATIVE + ": " + result);
+        if("true".equals(result)) addToQtConfig("declarative");
         return result;
     }
 

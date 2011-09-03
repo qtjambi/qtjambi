@@ -64,6 +64,9 @@
         <xmlmerge victim="opengl"/>
         <xmlmerge victim="sql"/>
         <xmlmerge victim="svg"/>
+        <xmlmerge victim="dbus"/>
+        <xmlmerge victim="test"/>
+        <xmlmerge victim="declarative"/>
         <xmlmerge victim="help"/>
         <xmlmerge victim="multimedia"/>
         <xmlmerge victim="webkit"/>

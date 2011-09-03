@@ -70,6 +70,10 @@
             <library name="QtXmlPatterns"       type="qt"
                     rootPath="${qtjambi.qt.libdir}"
                     if="${qtjambi.xmlpatterns}"/>
+            <library name="QtDeclarative"       type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.declarative}"/>
+
             <library name="phonon"              type="qt"
                     rootPath="${qtjambi.phonon.libdir}"
                     if="${qtjambi.phonon}"/>
@@ -203,6 +207,10 @@
             <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.xmlpatterns}"/>
+            <library name="com_trolltech_qt_declarative"  type="qtjambi"
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.declarative}"/>
+
             <!-- Win32/Win64 zlib1.dll -->
             <library name="zlib1"           type="dso"
                     rootPath="${qtjambi.qt.libdir}"
