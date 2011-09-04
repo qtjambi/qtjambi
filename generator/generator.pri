@@ -28,6 +28,8 @@ win32-msvc* {
 HEADERS += \
         $$GENERATORPATH/generator.h \
         $$GENERATORPATH/main.h \
+        $$GENERATORPATH/wrapper.h \
+        $$GENERATORPATH/preprocesshandler.h \
         $$GENERATORPATH/reporthandler.h \
         $$GENERATORPATH/typeparser.h \
         $$GENERATORPATH/typesystem/typesystem.h \
