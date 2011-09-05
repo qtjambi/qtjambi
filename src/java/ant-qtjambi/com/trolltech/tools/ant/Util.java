@@ -52,7 +52,7 @@ import com.trolltech.qt.internal.OSInfo.OS;
 import java.io.*;
 import java.util.*;
 
-class Util {
+abstract class Util {
 
     @Deprecated
     public static File LOCATE_EXEC(String name) {
@@ -96,22 +96,50 @@ class Util {
     }
 
 
-    public static void copy(File src, File dst) throws IOException {
+    public static boolean copy(File src, File dst) throws IOException {
+        boolean bf = false;
+
         File destDir = dst.getParentFile();
         if(!destDir.exists()) {
-            destDir.mkdirs();
+            if(!destDir.mkdirs())
+                throw new IOException("File#mkdirs(\"" + destDir.getAbsolutePath() + "\"): failed");
         }
 
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(src);
+            out = new FileOutputStream(dst);
 
-        byte buffer[] = new byte[1024 * 64];
-        while(in.available() > 0) {
-            int read = in.read(buffer);
-            out.write(buffer, 0, read);
+            byte buffer[] = new byte[1024 * 8];
+            int n;
+            while((n = in.read(buffer)) > 0) {
+                out.write(buffer, 0, n);
+            }
+
+            out.close();
+            out = null;
+            in.close();
+            in = null;
+
+            bf = true;
+        } finally {
+            if(out != null) {
+                try {
+                    out.close();
+                } catch(IOException eat) {
+                }
+                out = null;
+            }
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException eat) {
+                }
+                in = null;
+            }
         }
-        in.close();
-        out.close();
+        return bf;
     }
 
 

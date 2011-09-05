@@ -631,14 +631,39 @@ public class NativeLibraryManager {
      *
      * @throws IOException when there is a problem...
      */
-    private static void copy(InputStream in, OutputStream out) throws IOException {
-        byte buffer[] = new byte[1024 * 64];
-        while (in.available() > 0) {
-            int read = in.read(buffer);
-            out.write(buffer, 0, read);
+    private static boolean copy(InputStream in, OutputStream out) throws IOException {
+        boolean bf = false;
+
+        try {
+            byte buffer[] = new byte[1024 * 8];
+            int n;
+            while((n = in.read(buffer)) > 0) {
+                out.write(buffer, 0, n);
+            }
+
+            out.close();
+            out = null;
+            in.close();
+            in = null;
+
+            bf = true;
+        } finally {
+            if(out != null) {
+                try {
+                    out.close();
+                } catch(IOException eat) {
+                }
+                out = null;
+            }
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException eat) {
+                }
+                in = null;
+            }
         }
-        in.close();
-        out.close();
+        return bf;
     }
 
     public static boolean isUsingDeploymentSpec() {
