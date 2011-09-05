@@ -128,6 +128,11 @@ public class InitializeTask extends Task {
     public static final String PLUGINS_SQLDRIVERS_SQLITE    = "qtjambi.plugins.sqldrivers.sqlite";
     public static final String PLUGINS_SQLDRIVERS_ODBC      = "qtjambi.plugins.sqldrivers.odbc";
 
+    public static final String PACKAGING_DSO_LIBSTDC___6     = "qtjambi.packaging.dso.libstdc++-6";	// Windows MinGW runtime pre-req
+    public static final String PACKAGING_DSO_LIBGCC_S_DW2_1  = "qtjambi.packaging.dso.libgcc_s_dw2-1";	// Windows MinGW runtime pre-req
+    public static final String PACKAGING_DSO_LIBGCC_S_SJLJ_1 = "qtjambi.packaging.dso.libgcc_s_sjlj-1";	// Windows MinGW-W64 runtime pre-req
+    public static final String PACKAGING_DSO_MINGWM10        = "qtjambi.packaging.dso.mingwm10";	// Windows older MinGW runtime pre-req
+
     public static final String PACKAGING_DSO_ZLIB1    = "qtjambi.packaging.dso.zlib1";		// Windows
     public static final String PACKAGING_DSO_LIBSSL32 = "qtjambi.packaging.dso.libssl32";	// Windows MinGW
     public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";	// Windows MSVC
@@ -289,6 +294,11 @@ public class InitializeTask extends Task {
 
         props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_ODBC, decidePluginsSqldriversOdbc());
 
+        props.setNewProperty((String) null, PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
+        props.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
+        props.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1"));
+        props.setNewProperty((String) null, PACKAGING_DSO_MINGWM10,        decideQtBinDso(PACKAGING_DSO_MINGWM10,        "mingwm10"));
+
         props.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1"));
         props.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
         props.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32"));
@@ -374,6 +384,18 @@ public class InitializeTask extends Task {
         path.append("/");
         path.append(LibraryEntry.formatQtJambiName(name, debug));
         //System.out.println("Checking QtLib: " + path);
+        return new File(path.toString()).exists();
+    }
+
+    private boolean doesQtBinExist(String name, String librarydir) {
+        StringBuilder path = new StringBuilder();
+        if(librarydir != null)
+            path.append(librarydir);
+        else
+            path.append(props.getProperty((String) null, BINDIR).toString());
+        path.append("/");
+        path.append(LibraryEntry.formatQtJambiName(name, false));
+        //System.out.println("Checking QtBin: " + path);
         return new File(path.toString()).exists();
     }
 
@@ -616,6 +638,13 @@ public class InitializeTask extends Task {
 
     private String decideQtLibDso(String attrName, String name) {
         boolean bf = doesQtLibExist(name, null);
+        String result = String.valueOf(bf);
+        if(verbose && bf) System.out.println(attrName + ": " + result);
+        return result;
+    }
+
+    private String decideQtBinDso(String attrName, String name) {
+        boolean bf = doesQtBinExist(name, null);
         String result = String.valueOf(bf);
         if(verbose && bf) System.out.println(attrName + ": " + result);
         return result;

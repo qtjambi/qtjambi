@@ -243,6 +243,28 @@
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.designer}"/>
 
+            <!-- Win32/Win64 MinGW only -->
+            <library name="libstdc++-6"     type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libstdc++-6}"/>
+            <!-- Win32 MinGW only -->
+            <library name="libgcc_s_dw2-1"  type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libgcc_s_dw2-1}"/>
+            <!-- Win32/Win64 MinGW-W64 only -->
+            <library name="libgcc_s_sjlj-1"  type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libgcc_s_sjlj-1}"/>
+            <!-- Win32/Win64 MinGW related but unable to find it required at runtime
+                 by current toolchain versions (mingw gcc 4.5.2, mingw-w64 gcc 4.7.0) -->
+            <library name="mingwm10"  type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.mingwm10}"/>
+
             <!-- Win32/Win64 zlib1.dll -->
             <library name="zlib1"           type="dso"
                     rootPath="${qtjambi.qt.libdir}"
