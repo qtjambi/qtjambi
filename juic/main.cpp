@@ -261,7 +261,7 @@ QString findClassName(const QFileInfo &file)
     int end = content.indexOf("</class>");
 
     if (start == -1 || end == -1 || end < start) {
-        fprintf(stdout, content.constData());
+        fprintf(stdout, "%s", content.constData());
         fprintf(stderr, "Invalid input: %s\n",
                 qPrintable(file.absoluteFilePath()));
         return QString();

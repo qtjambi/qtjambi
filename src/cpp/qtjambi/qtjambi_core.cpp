@@ -1682,7 +1682,7 @@ static QString locate_vm()
     Link_map* lmap;
 
     if (dlinfo(RTLD_SELF, RTLD_DI_LINKMAP, (void **) &lmap) == -1) {
-        qWarning(dlerror());
+        qWarning("%s", dlerror());
         return QString();
     }
 
