@@ -126,7 +126,11 @@ public class InitializeTask extends Task {
     public static final String PLUGINS_IMAGEFORMATS_TIFF    = "qtjambi.plugins.imageformats.tiff";
 
     public static final String PLUGINS_SQLDRIVERS_SQLITE    = "qtjambi.plugins.sqldrivers.sqlite";
-    public static final String PLUGINS_SQLDRIVERS_ODBC      = "qtjambi.plugins.sqldrivers.odbc";
+    public static final String PLUGINS_SQLDRIVERS_SQLITE2   = "qtjambi.plugins.sqldrivers.sqlite2";
+    public static final String PLUGINS_SQLDRIVERS_SQLMYSQL  = "qtjambi.plugins.sqldrivers.sqlmysql";
+    public static final String PLUGINS_SQLDRIVERS_SQLODBC   = "qtjambi.plugins.sqldrivers.sqlodbc";
+    public static final String PLUGINS_SQLDRIVERS_SQLPSQL   = "qtjambi.plugins.sqldrivers.sqlpsql";
+    public static final String PLUGINS_SQLDRIVERS_SQLTDS    = "qtjambi.plugins.sqldrivers.sqltds";
 
     public static final String PACKAGING_DSO_LIBSTDC___6     = "qtjambi.packaging.dso.libstdc++-6";	// Windows MinGW runtime pre-req
     public static final String PACKAGING_DSO_LIBGCC_S_DW2_1  = "qtjambi.packaging.dso.libgcc_s_dw2-1";	// Windows MinGW runtime pre-req
@@ -293,8 +297,11 @@ public class InitializeTask extends Task {
         props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
 
         props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE, decidePluginsSqldriversSqlite());
-
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_ODBC, decidePluginsSqldriversOdbc());
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE2, decidePluginsSqldriversSqlite2());
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLMYSQL, decidePluginsSqldriversSqlmysql());
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLODBC, decidePluginsSqldriversSqlodbc());
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLPSQL, decidePluginsSqldriversSqlpsql());
+        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLTDS, decidePluginsSqldriversSqltds());
 
         props.setNewProperty((String) null, PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
         props.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
@@ -549,10 +556,38 @@ public class InitializeTask extends Task {
         return result;
     }
 
-    private String decidePluginsSqldriversOdbc() {
+    private String decidePluginsSqldriversSqlite2() {
+        // FIXME: Detect the case when this module was compiled into QtSql
+        String result = String.valueOf(doesQtPluginExist("qsqlite2", "sqldrivers"));
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLITE2 + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsSqldriversSqlmysql() {
+        // FIXME: Detect the case when this module was compiled into QtSql
+        String result = String.valueOf(doesQtPluginExist("qsqlmysql", "sqldrivers"));
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLMYSQL + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsSqldriversSqlodbc() {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlodbc", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_ODBC + ": " + result);
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLODBC + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsSqldriversSqlpsql() {
+        // FIXME: Detect the case when this module was compiled into QtSql
+        String result = String.valueOf(doesQtPluginExist("qsqlpsql", "sqldrivers"));
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLPSQL + ": " + result);
+        return result;
+    }
+
+    private String decidePluginsSqldriversSqltds() {
+        // FIXME: Detect the case when this module was compiled into QtSql
+        String result = String.valueOf(doesQtPluginExist("qsqltds", "sqldrivers"));
+        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLTDS + ": " + result);
         return result;
     }
 

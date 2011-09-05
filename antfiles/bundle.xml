@@ -171,11 +171,31 @@
                     subdir="plugins/sqldrivers"
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.sqlite}"/>
-            <library name="qodbc" type="plugin"
+            <library name="qsqlite2" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/sqldrivers"
                     load="never"
-                    if="${qtjambi.plugins.sqldrivers.odbc}"/>
+                    if="${qtjambi.plugins.sqldrivers.sqlite2}"/>
+            <library name="qsqlmysql" type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/sqldrivers"
+                    load="never"
+                    if="${qtjambi.plugins.sqldrivers.sqlmysql}"/>
+            <library name="qsqlodbc" type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/sqldrivers"
+                    load="never"
+                    if="${qtjambi.plugins.sqldrivers.sqlodbc}"/>
+            <library name="qsqlpsql" type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/sqldrivers"
+                    load="never"
+                    if="${qtjambi.plugins.sqldrivers.sqlpsql}"/>
+            <library name="qsqltds" type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/sqldrivers"
+                    load="never"
+                    if="${qtjambi.plugins.sqldrivers.sqltds}"/>
 
             <!-- Designer plugins -->
             <library name="JambiCustomWidget" type="plugin"
