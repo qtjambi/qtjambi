@@ -67,6 +67,7 @@
     <target name="compile.deps">
         <mkdir dir="${outputDir}/autotests" />
         <javac destdir="${outputDir}/autotests" debug="true"
+                includeantruntime="false"
                 source="1.5" target="1.5">
             <classpath>
                 <pathelement location="qtjambi-${qtjambi.version}.jar" />
@@ -134,7 +135,7 @@
         <copy todir="${outputDir}/auto/com/trolltech/unittests">
             <fileset dir="src/java/autotest/com/trolltech/unittests" excludes="**/*.java"/>
         </copy>
-        <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
+        <junit fork="yes" printsummary="true" haltonfailure="no" timeout="60000" showoutput="yes" logfailedtests="yes">
             <classpath>
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${tests.hamcrest}" />
@@ -145,7 +146,7 @@
                 <pathelement path="src/java/qtjambi-examples" />
                 <pathelement path="src/java/autotest" />
             </classpath>
-            <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib/${psep}${jambiLib}"/>
+            <jvmarg value="-Djava.library.path=${outputDir}/platform-output/lib${psep}${jambiLib}"/>
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/junitxml">
                 <fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
