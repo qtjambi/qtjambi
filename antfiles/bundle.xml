@@ -177,6 +177,18 @@
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.odbc}"/>
 
+            <!-- Designer plugins -->
+            <library name="JambiCustomWidget" type="plugin"
+                    rootPath="${qtjambi.jambi.pluginsdir}/.."
+                    subdir="plugins/designer"
+                    load="never"
+                    if="${qtjambi.designer}"/>
+            <library name="JambiLanguage"     type="plugin"
+                    rootPath="${qtjambi.jambi.pluginsdir}/.."
+                    subdir="plugins/designer"
+                    load="never"
+                    if="${qtjambi.designer}"/>
+
             <!-- Qt Jambi Libraries -->
             <library name="qtjambi"                  type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"/>
@@ -254,7 +266,7 @@
                     load="never"
                     if="${qtjambi.packaging.dso.libeay32}"/>
 
-        <plugin path="plugins"/>
+            <plugin path="plugins"/>
 
         </qtjambi-platform-jar>
 

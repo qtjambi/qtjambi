@@ -116,6 +116,7 @@
                         <property name="qt.lib.subdir" value="lib"/>
                     </else>
                 </if>
+                <property name="qt.bindir" value="${env.QTDIR}/bin"/>
                 <property name="qt.libdir" value="${env.QTDIR}/${qt.lib.subdir}"/>
                 <property name="qtjambi.libdir" value="${env.JAMBIDIR}/${qt.lib.subdir}"/>
 
@@ -164,14 +165,14 @@
                 </if>
                 <if>
                     <and>
-                    <isset property="tools.qt.bindir"/>
-                    <available file="${tools.qt.bindir}/${tools.qt.qmake}"/>
+                        <isset property="tools.qt.bindir"/>
+                        <available file="${tools.qt.bindir}/${tools.qt.qmake}"/>
                     </and>
                     <then>
-                    <property name="tools.qmake.binary" value="${tools.qt.bindir}/${tools.qt.qmake}"/>
+                        <property name="tools.qmake.binary" value="${tools.qt.bindir}/${tools.qt.qmake}"/>
                     </then>
                     <else>
-                    <property name="tools.qmake.binary" value="${qmake.binary}"/>
+                        <property name="tools.qmake.binary" value="${qmake.binary}"/>
                     </else>
                 </if>
                 <if>
@@ -224,10 +225,12 @@
                 </not>
             </condition>
         </fail>
+        <property name="qtjambi.qt.bindir" value="${qt.bindir}"/>
         <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
         <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
         <property name="qtjambi.jambi.libdir"       value="${jambi.directory}/build/src/cpp/lib"/>
+        <property name="qtjambi.jambi.pluginsdir"   value="${jambi.directory}/build/src/cpp/plugins"/>
 
         <!--
             dummy-set values to phonon properties, if they

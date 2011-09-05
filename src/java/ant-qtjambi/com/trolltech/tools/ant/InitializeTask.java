@@ -67,12 +67,14 @@ public class InitializeTask extends Task {
      * Or rather these binds shouldn’t exist, how much of this could be moved to
      * xml side?
      */
+    public static final String BINDIR               = "qtjambi.qt.bindir";
     public static final String LIBDIR               = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR           = "qtjambi.qt.includedir";
     public static final String PLUGINSDIR           = "qtjambi.qt.pluginsdir";
     public static final String PHONONLIBDIR         = "qtjambi.phonon.libdir";
     public static final String JAVALIBDIR           = "qtjambi.java.library.path";
     public static final String JAMBILIBDIR          = "qtjambi.jambi.libdir";
+    public static final String JAMBIPLUGINSDIR      = "qtjambi.jambi.pluginsdir";
     public static final String VERSION              = "qtjambi.version";
     public static final String JAVA_HOME_TARGET     = "java.home.target";
     public static final String JAVA_OSARCH_TARGET   = "java.osarch.target";
