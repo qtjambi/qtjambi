@@ -127,6 +127,6 @@
     COUNTER_IMPLEMENTATION(linkConstructedCount)
 
 #else // QTJAMBI_DEBUG_TOOLS
-#  error Don't include this file without QTJAMBI_DEBUG_TOOLS defined
+#  error "Don't include this file without QTJAMBI_DEBUG_TOOLS defined"
 #endif
 
