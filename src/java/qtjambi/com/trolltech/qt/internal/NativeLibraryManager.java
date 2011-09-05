@@ -465,7 +465,7 @@ public class NativeLibraryManager {
             boolean loaded = false;
             String libPaths = System.getProperty("com.trolltech.qt.library-path-override");
             if (libPaths != null && libPaths.length() > 0) {
-                reporter.report(" - using 'com.trolltech.qt.library-path-override");
+                reporter.report(" - using 'com.trolltech.qt.library-path-override'");
             } else {
                 reporter.report(" - using 'java.library.path'");
                 libPaths = System.getProperty("java.library.path");
@@ -484,8 +484,8 @@ public class NativeLibraryManager {
                 }
             }
             if (!loaded) {
-                throw new RuntimeException("Library '" + lib +"' was not found in 'java.library.path'="
-                                           + libPaths);
+                throw new RuntimeException("Library '" + lib +"' was not found in 'java.library.path="
+                                           + libPaths + "'");
             }
         }
     }
