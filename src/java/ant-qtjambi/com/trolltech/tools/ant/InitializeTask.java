@@ -138,6 +138,8 @@ public class InitializeTask extends Task {
     public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";	// Windows MSVC
     public static final String PACKAGING_DSO_LIBEAY32 = "qtjambi.packaging.dso.libeay32";	// Windows
 
+    public static final String PACKAGING_DSO_CPLUSPLUSRUNTIME = "qtjambi.packaging.dso.cplusplusruntime";
+
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
     public static final String VSREDISTDIR      = "qtjambi.vsredistdir";

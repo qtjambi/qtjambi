@@ -354,30 +354,25 @@ public class PlatformJarTask extends Task {
             break;
 
         case MinGW:
-            copyRuntime("mingwm10.dll");
-            copyAdditionalMingwFiles();
+            // This is auto-detected and emitted in the descriptor now
             break;
 
         case GCC:
-            if(OSInfo.os() == OSInfo.OS.Linux)
-                copyRuntime("libstdc++.so.6");
+            // This is auto-detected and emitted in the descriptor now
             break;
 
         case OldGCC:
-            if(OSInfo.os() == OSInfo.OS.Linux)
-                copyRuntime("libstdc++.so.5");
+            // This is auto-detected and emitted in the descriptor now
             break;
         }
 
-    }
+        // TODO: Make this an arbitrary list of files and provide helper options to
+        //  populate with Unix libstdc++.so.5/libstdc++.so.6 values.  Allow each value
+        //  to be a full-path to file, filename.
+        String cplusplusRuntime = (String) props.getProperty((String) null, InitializeTask.PACKAGING_DSO_CPLUSPLUSRUNTIME);
+        if(cplusplusRuntime != null)
+            copyRuntime(cplusplusRuntime);
 
-    /**
-     * Copy shared linking library for MinGW.
-     * TODO: This whole class could be better factored...
-     */
-    private void copyAdditionalMingwFiles() {
-        copyRuntime("libgcc_s_dw2-1.dll");
-        copyRuntime("libstdc++-6.dll");
     }
 
     private void copyRuntime(String name) {
