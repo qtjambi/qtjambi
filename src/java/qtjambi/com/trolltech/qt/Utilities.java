@@ -82,7 +82,8 @@ public class Utilities {
         Windows,
         MacOSX,
         Linux,
-        FreeBSD
+        FreeBSD,
+        SunOS
     }
 
     /** Defines whether Qt is build in Release or Debug. */
@@ -157,6 +158,7 @@ public class Utilities {
         if (osName.startsWith("windows")) return OperatingSystem.Windows;
         if (osName.startsWith("mac os x")) return OperatingSystem.MacOSX;
         if (osName.startsWith("freebsd")) return OperatingSystem.FreeBSD;
+        if (osName.equals("sunos")) return OperatingSystem.SunOS;	// SunOS
         return OperatingSystem.Linux;
     }
 

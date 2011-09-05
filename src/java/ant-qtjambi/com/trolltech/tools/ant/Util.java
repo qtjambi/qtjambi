@@ -148,13 +148,33 @@ class Util {
         // Make /usr/lib an implicit part of library path
         if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris) {
             String archName = OSInfo.osArchName();
-            if(archName.equals(OSInfo.K_LINUX64)) {
+            boolean match = false;
+            if(archName.equals(OSInfo.K_LINUX32)) {
+                // (some non-FHS) Linux 32bit might have lib32 directory most Linux
+                //  distros (FHS compliant) will not have a /usr/lib32.
+                File lib32Dir = new File("/usr/lib32");
+                if(lib32Dir.exists() && lib32Dir.isDirectory()) {
+                    libraryPath += File.pathSeparator + lib32Dir.getAbsolutePath();
+                    match = true;
+                }
+            } else if(archName.equals(OSInfo.K_LINUX64)) {
                 // Linux 64bit
                 libraryPath += File.pathSeparator + "/usr/lib64";
+                match = true;
+            } else if(archName.equals(OSInfo.K_FREEBSD32)) {
+                // FreeBSD 32bit target, this case is used in situations where the native
+                //  OS/system is 64bit but we are building for 32bit so we use /usr/lib32.
+                File lib32Dir = new File("/usr/lib32");
+                if(lib32Dir.exists() && lib32Dir.isDirectory()) {
+                    libraryPath += File.pathSeparator + lib32Dir.getAbsolutePath();
+                    match = true;
+                }
             } else if(archName.equals(OSInfo.K_SUNOS64)) {
                 // Solaris 64bit (often also a symlink from /usr/lib/64)
                 libraryPath += File.pathSeparator + "/usr/lib/sparcv9";
-            } else {
+                match = true;
+            }
+            if(!match) {
                 // Normal Unix
                 libraryPath += File.pathSeparator + "/usr/lib";
             }
