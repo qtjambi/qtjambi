@@ -51,7 +51,9 @@
 #endif
 #include <QtXml/QtXml>
 #include <QtHelp/QtHelp>
-#include <QtMultimedia/QtMultimedia>
+#ifndef QT_NO_MULTIMEDIA
+#  include <QtMultimedia/QtMultimedia>
+#endif
 #include <QtScript/QtScript>
 #include <QtScriptTools/QtScriptTools>
 #ifndef QT_NO_OPENVG

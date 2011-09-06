@@ -50,10 +50,10 @@
 class MessageHandler
 {
 public:
-    static void sendDebug(const QString &str) { qDebug("%s", str.toLocal8Bit()); }
-    static void sendWarning(const QString &str) { qWarning("%s", str.toLocal8Bit()); }
-    static void sendCritical(const QString &str) { qCritical("%s", str.toLocal8Bit()); }
-    static void sendFatal(const QString &str) { qFatal("%s", str.toLocal8Bit()); }
+    static void sendDebug(const QString &str) { qDebug("%s", str.toLocal8Bit().constData()); }
+    static void sendWarning(const QString &str) { qWarning("%s", str.toLocal8Bit().constData()); }
+    static void sendCritical(const QString &str) { qCritical("%s", str.toLocal8Bit().constData()); }
+    static void sendFatal(const QString &str) { qFatal("%s", str.toLocal8Bit().constData()); }
 };
 
 #endif // MESSAGEHANDLER_H
