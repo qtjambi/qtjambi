@@ -66,7 +66,8 @@ class Exec {
             Process process = Runtime.getRuntime().exec(command, null, dir);
             Util.redirectOutput(process);
             if(process.exitValue() != 0) {
-                throw new BuildException("Running: " + command + " failed with exit code: " + process.exitValue());
+                String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
+                throw new BuildException("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
             }
         } catch(IOException e) {
             throw new BuildException("Running: " + command + " failed with error message: " + e.getMessage(), e);
@@ -94,7 +95,8 @@ class Exec {
             Process process = Runtime.getRuntime().exec(cmd, null, dir);
             Util.redirectOutput(process);
             if(process.exitValue() != 0) {
-                throw new BuildException("Running: '" + join(cmd) + "' failed.");
+                String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
+                throw new BuildException("Running: '" + join(cmd) + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
             }
         } catch(IOException e) {
             throw new BuildException("Running: '" + join(cmd) + "' failed.", e);
@@ -165,7 +167,8 @@ class Exec {
             Process process = builder.start();
             Util.redirectOutput(process);
             if(process.exitValue() != 0) {
-                throw new BuildException("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue());
+                String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
+                throw new BuildException("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
             }
         } catch(IOException e) {
             throw new BuildException("Running: '" + command.toString() + "' failed.", e);

@@ -28,6 +28,8 @@ win32-msvc* {
 HEADERS += \
         $$GENERATORPATH/generator.h \
         $$GENERATORPATH/main.h \
+        $$GENERATORPATH/wrapper.h \
+        $$GENERATORPATH/preprocesshandler.h \
         $$GENERATORPATH/reporthandler.h \
         $$GENERATORPATH/typeparser.h \
         $$GENERATORPATH/typesystem/typesystem.h \
@@ -87,6 +89,9 @@ win32-msvc* {
 }
 
 mac {
-    contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
+    contains(QT_CONFIG, x86):CONFIG += x86
+    contains(QT_CONFIG, ppc):CONFIG += ppc
+    contains(QT_CONFIG, x86_64):CONFIG += x86_64
+    contains(QT_CONFIG, ppc64):CONFIG += ppc64
     CONFIG -= precompile_header
 }

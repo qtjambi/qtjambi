@@ -316,7 +316,7 @@ AbstractMetaFunction *AbstractMetaFunction::copy() const {
     cpy->setOriginalAttributes(originalAttributes());
 
     foreach(AbstractMetaArgument *arg, arguments())
-    cpy->addArgument(arg->copy());
+        cpy->addArgument(arg->copy());
 
     Q_ASSERT((!type() && !cpy->type())
              || (type()->instantiations() == cpy->type()->instantiations()));
@@ -1073,9 +1073,10 @@ QString AbstractMetaClass::name() const {
 }
 
 bool AbstractMetaClass::hasFunction(const QString &str) const {
-    foreach(const AbstractMetaFunction *f, functions())
-    if (f->name() == str)
-        return true;
+    foreach(const AbstractMetaFunction *f, functions()) {
+        if (f->name() == str)
+            return true;
+    }
     return false;
 }
 
@@ -1418,26 +1419,27 @@ void AbstractMetaClass::addInterface(AbstractMetaClass *interface) {
     if (m_extracted_interface != 0 && m_extracted_interface != interface)
         m_extracted_interface->addInterface(interface);
 
-    foreach(AbstractMetaFunction *function, interface->functions())
-    if (!hasFunction(function) && !function->isConstructor()) {
-        AbstractMetaFunction *cpy = function->copy();
-        cpy->setImplementingClass(this);
+    foreach(AbstractMetaFunction *function, interface->functions()) {
+        if (!hasFunction(function) && !function->isConstructor()) {
+            AbstractMetaFunction *cpy = function->copy();
+            cpy->setImplementingClass(this);
 
-        // Setup that this function is an interface class.
-        cpy->setInterfaceClass(interface);
-        *cpy += AbstractMetaAttributes::InterfaceFunction;
+            // Setup that this function is an interface class.
+            cpy->setInterfaceClass(interface);
+            *cpy += AbstractMetaAttributes::InterfaceFunction;
 
-        // Copy the modifications in interface into the implementing classes.
-        FunctionModificationList mods = function->modifications(interface);
-        foreach(const FunctionModification &mod, mods) {
-            m_type_entry->addFunctionModification(mod);
+            // Copy the modifications in interface into the implementing classes.
+            FunctionModificationList mods = function->modifications(interface);
+            foreach(const FunctionModification &mod, mods) {
+                m_type_entry->addFunctionModification(mod);
+            }
+
+            // It should be mostly safe to assume that when we implement an interface
+            // we don't "pass on" pure virtual functions to our sublcasses...
+//                 *cpy -= AbstractMetaAttributes::Abstract;
+
+            addFunction(cpy);
         }
-
-        // It should be mostly safe to assume that when we implement an interface
-        // we don't "pass on" pure virtual functions to our sublcasses...
-//             *cpy -= AbstractMetaAttributes::Abstract;
-
-        addFunction(cpy);
     }
 }
 
@@ -1527,7 +1529,7 @@ static void add_extra_include_for_type(AbstractMetaClass *meta_class, const Abst
     if (type->hasInstantiations()) {
         QList<AbstractMetaType *> instantiations = type->instantiations();
         foreach(AbstractMetaType *instantiation, instantiations)
-        add_extra_include_for_type(meta_class, instantiation);
+            add_extra_include_for_type(meta_class, instantiation);
     }
 }
 
@@ -1538,7 +1540,7 @@ static void add_extra_includes_for_function(AbstractMetaClass *meta_class, const
 
     AbstractMetaArgumentList arguments = meta_function->arguments();
     foreach(AbstractMetaArgument *argument, arguments)
-    add_extra_include_for_type(meta_class, argument->type());
+        add_extra_include_for_type(meta_class, argument->type());
 }
 
 void AbstractMetaClass::fixFunctions() {
@@ -1719,7 +1721,7 @@ void AbstractMetaClass::fixFunctions() {
         }
 
         foreach(AbstractMetaFunction *f, funcs_to_add)
-        funcs << f->copy();
+            funcs << f->copy();
 
         if (super_class)
             super_class = super_class->baseClass();

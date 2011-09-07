@@ -48,7 +48,7 @@
 // TODO: this doesn't seem to be case... 
 // someone should find out is this really the case when QTDIR is set
 #ifdef QT3_SUPPORT
-#  error Qt must be configured without Qt 3 support in order to build Qt Jambi
+#  error "Qt must be configured without Qt 3 support in order to build Qt Jambi"
 #endif
 
 #include "qtjambi_global.h"

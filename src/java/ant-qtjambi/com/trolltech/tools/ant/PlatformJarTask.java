@@ -195,7 +195,7 @@ public class PlatformJarTask extends Task {
         if(systemLibs.equals(SYSLIB_AUTO)) {
             if(runtimeLibs.size() > 0)
                 writer.println("\n  <!-- Runtime libraries, loaded automatically -->");
-        for(String rt : runtimeLibs) {
+            for(String rt : runtimeLibs) {
                 writer.println("  <library name=\"" + rt + "\" load=\"yes\" />");
             }
         }
@@ -222,7 +222,7 @@ public class PlatformJarTask extends Task {
         if(systemLibs.equals(SYSLIB_AUTO)) {
             if(unpackLibs.size() > 0)
                 writer.println("\n  <!-- Dependency libraries, not loaded... -->");
-        for(String unpack : unpackLibs) {
+            for(String unpack : unpackLibs) {
                 writer.println("  <library name=\"" + unpack + "\" load=\"never\" />");
             }
         }
@@ -230,7 +230,7 @@ public class PlatformJarTask extends Task {
         // plugins...
         if(pluginPaths.size() > 0) {
             writer.println("\n  <!-- Plugins... -->");
-        for(PluginPath p : pluginPaths) {
+            for(PluginPath p : pluginPaths) {
                 writer.println("  <plugin path=\"" + p.getPath() + "\" />");
             }
         }
@@ -270,17 +270,25 @@ public class PlatformJarTask extends Task {
         String compiler = String.valueOf(props.getProperty((String) null, InitializeTask.COMPILER));
         FindCompiler.Compiler c = FindCompiler.Compiler.resolve(compiler);
 
-        String vcnumber = "80";
+        String vcnumber = null;
 
         switch(c) {
-
         // The manifest based ones...
+        case MSVC2010:
+        case MSVC2010_64:
+            if(vcnumber == null)
+                vcnumber = "100";
+            // fall-thru
         case MSVC2008:
         case MSVC2008_64:
-            vcnumber = "90";
-
+            if(vcnumber == null)
+                vcnumber = "90";
+            // fall-thru
         case MSVC2005:
         case MSVC2005_64:
+            if(vcnumber == null)
+                vcnumber = "80";
+
             if(debugConfiguration) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
@@ -346,30 +354,25 @@ public class PlatformJarTask extends Task {
             break;
 
         case MinGW:
-            copyRuntime("mingwm10.dll");
-            copyAdditionalMingwFiles();
+            // This is auto-detected and emitted in the descriptor now
             break;
 
         case GCC:
-            if(OSInfo.os() == OSInfo.OS.Linux)
-                copyRuntime("libstdc++.so.6");
+            // This is auto-detected and emitted in the descriptor now
             break;
 
         case OldGCC:
-            if(OSInfo.os() == OSInfo.OS.Linux)
-                copyRuntime("libstdc++.so.5");
+            // This is auto-detected and emitted in the descriptor now
             break;
         }
 
-    }
+        // TODO: Make this an arbitrary list of files and provide helper options to
+        //  populate with Unix libstdc++.so.5/libstdc++.so.6 values.  Allow each value
+        //  to be a full-path to file, filename.
+        String cplusplusRuntime = (String) props.getProperty((String) null, InitializeTask.PACKAGING_DSO_CPLUSPLUSRUNTIME);
+        if(cplusplusRuntime != null)
+            copyRuntime(cplusplusRuntime);
 
-    /**
-     * Copy shared linking library for MinGW.
-     * TODO: This whole class could be better factored...
-     */
-    private void copyAdditionalMingwFiles() {
-        copyRuntime("libgcc_s_dw2-1.dll");
-        copyRuntime("libstdc++-6.dll");
     }
 
     private void copyRuntime(String name) {

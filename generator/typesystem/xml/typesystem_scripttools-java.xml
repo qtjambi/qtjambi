@@ -1,9 +1,10 @@
+<?xml version="1.0"?>
 <typesystem package="com.trolltech.qt.scripttools" default-superclass="com.trolltech.qt.QtJambiObject">
     <inject-code>
-        com.trolltech.qt.Utilities.loadQtLibrary("QtScriptTools");
-        com.trolltech.qt.Utilities.loadQtLibrary("QtScript");
-        com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
         com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtScript");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtScriptTools");
     </inject-code>
     <suppress-warning text="WARNING(CppImplGenerator) :: protected function '*' in final class '*'" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: visibility of function '*' modified in class '*'" />

@@ -1,11 +1,11 @@
+<?xml version="1.0"?>
 <typesystem package="com.trolltech.tools.designer" default-superclass="com.trolltech.qt.QtJambiObject">
 
     <inject-code>
         com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
         com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
         com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
-        com.trolltech.qt.Utilities.loadQtLibrary("QtSvg");
-        com.trolltech.qt.Utilities.loadQtLibrary("QtScript");
+        com.trolltech.qt.Utilities.loadQtLibrary("QtScript");    // load if exists
         com.trolltech.qt.Utilities.loadQtLibrary("QtDesigner");
         com.trolltech.qt.Utilities.loadQtLibrary("QtDesignerComponents");
     </inject-code>

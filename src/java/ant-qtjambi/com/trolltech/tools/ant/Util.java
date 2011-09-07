@@ -52,7 +52,7 @@ import com.trolltech.qt.internal.OSInfo.OS;
 import java.io.*;
 import java.util.*;
 
-class Util {
+abstract class Util {
 
     @Deprecated
     public static File LOCATE_EXEC(String name) {
@@ -96,22 +96,50 @@ class Util {
     }
 
 
-    public static void copy(File src, File dst) throws IOException {
+    public static boolean copy(File src, File dst) throws IOException {
+        boolean bf = false;
+
         File destDir = dst.getParentFile();
         if(!destDir.exists()) {
-            destDir.mkdirs();
+            if(!destDir.mkdirs())
+                throw new IOException("File#mkdirs(\"" + destDir.getAbsolutePath() + "\"): failed");
         }
 
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(src);
+            out = new FileOutputStream(dst);
 
-        byte buffer[] = new byte[1024 * 64];
-        while(in.available() > 0) {
-            int read = in.read(buffer);
-            out.write(buffer, 0, read);
+            byte buffer[] = new byte[1024 * 8];
+            int n;
+            while((n = in.read(buffer)) > 0) {
+                out.write(buffer, 0, n);
+            }
+
+            out.close();
+            out = null;
+            in.close();
+            in = null;
+
+            bf = true;
+        } finally {
+            if(out != null) {
+                try {
+                    out.close();
+                } catch(IOException eat) {
+                }
+                out = null;
+            }
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException eat) {
+                }
+                in = null;
+            }
         }
-        in.close();
-        out.close();
+        return bf;
     }
 
 
@@ -139,21 +167,56 @@ class Util {
     public static File findInLibraryPath(String name, String javaLibDir) {
         String libraryPath;
         if(javaLibDir != null) {
-                libraryPath = javaLibDir;
-            } else {
-                libraryPath = System.getProperty("java.library.path");
-            }
-            //System.out.println("library path is: " + libraryPath);
+            libraryPath = javaLibDir;
+        } else {
+            libraryPath = System.getProperty("java.library.path");
+        }
+        //System.out.println("library path is: " + libraryPath);
 
         // Make /usr/lib an implicit part of library path
-        if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris)
-            libraryPath += File.pathSeparator + "/usr/lib";
-        // TODO: How about /usr/lib64 on linux ?
+        if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris) {
+            String archName = OSInfo.osArchName();
+            boolean match = false;
+            if(archName.equals(OSInfo.K_LINUX32)) {
+                // (some non-FHS) Linux 32bit might have lib32 directory most Linux
+                //  distros (FHS compliant) will not have a /usr/lib32.
+                File lib32Dir = new File("/usr/lib32");
+                if(lib32Dir.exists() && lib32Dir.isDirectory()) {
+                    libraryPath += File.pathSeparator + lib32Dir.getAbsolutePath();
+                    match = true;
+                }
+            } else if(archName.equals(OSInfo.K_LINUX64)) {
+                // Linux 64bit
+                libraryPath += File.pathSeparator + "/usr/lib64";
+                match = true;
+            } else if(archName.equals(OSInfo.K_FREEBSD32)) {
+                // FreeBSD 32bit target, this case is used in situations where the native
+                //  OS/system is 64bit but we are building for 32bit so we use /usr/lib32.
+                File lib32Dir = new File("/usr/lib32");
+                if(lib32Dir.exists() && lib32Dir.isDirectory()) {
+                    libraryPath += File.pathSeparator + lib32Dir.getAbsolutePath();
+                    match = true;
+                }
+            } else if(archName.equals(OSInfo.K_SUNOS64)) {
+                // Solaris 64bit (often also a symlink from /usr/lib/64)
+                libraryPath += File.pathSeparator + "/usr/lib/sparcv9";
+                match = true;
+            }
+            if(!match) {
+                // Normal Unix
+                libraryPath += File.pathSeparator + "/usr/lib";
+            }
+        }
 
         String PATH[] = libraryPath.split(File.pathSeparator);
         for(String p : PATH) {
             File f = new File(p, name);
             if(f.exists()) {
+                // FIXME: We should check the path/file we pickup relates to the 32bit
+                //  or 64bit we are building for.  i.e. weed out invalid matches due
+                //  32/64 mismatch.
+                // We should emit warning if we skipped anything (out of order) to find
+                //  a match also if the only match is known to be wrong.
                 return f;
             }
         }

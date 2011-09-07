@@ -465,7 +465,7 @@ public class NativeLibraryManager {
             boolean loaded = false;
             String libPaths = System.getProperty("com.trolltech.qt.library-path-override");
             if (libPaths != null && libPaths.length() > 0) {
-                reporter.report(" - using 'com.trolltech.qt.library-path-override");
+                reporter.report(" - using 'com.trolltech.qt.library-path-override'");
             } else {
                 reporter.report(" - using 'java.library.path'");
                 libPaths = System.getProperty("java.library.path");
@@ -484,8 +484,8 @@ public class NativeLibraryManager {
                 }
             }
             if (!loaded) {
-                throw new RuntimeException("Library '" + lib +"' was not found in 'java.library.path'="
-                                           + libPaths);
+                throw new RuntimeException("Library '" + lib +"' was not found in 'java.library.path="
+                                           + libPaths + "'");
             }
         }
     }
@@ -631,14 +631,39 @@ public class NativeLibraryManager {
      *
      * @throws IOException when there is a problem...
      */
-    private static void copy(InputStream in, OutputStream out) throws IOException {
-        byte buffer[] = new byte[1024 * 64];
-        while (in.available() > 0) {
-            int read = in.read(buffer);
-            out.write(buffer, 0, read);
+    private static boolean copy(InputStream in, OutputStream out) throws IOException {
+        boolean bf = false;
+
+        try {
+            byte buffer[] = new byte[1024 * 8];
+            int n;
+            while((n = in.read(buffer)) > 0) {
+                out.write(buffer, 0, n);
+            }
+
+            out.close();
+            out = null;
+            in.close();
+            in = null;
+
+            bf = true;
+        } finally {
+            if(out != null) {
+                try {
+                    out.close();
+                } catch(IOException eat) {
+                }
+                out = null;
+            }
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException eat) {
+                }
+                in = null;
+            }
         }
-        in.close();
-        out.close();
+        return bf;
     }
 
     public static boolean isUsingDeploymentSpec() {

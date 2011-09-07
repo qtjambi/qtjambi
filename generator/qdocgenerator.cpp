@@ -303,8 +303,9 @@ void QDocGenerator::write(QTextStream &s, const AbstractMetaClass *java_class) {
 
     // Write signals
     AbstractMetaFunctionList sigs = java_class->queryFunctions(AbstractMetaClass::Signals);
-    foreach(AbstractMetaFunction *f, sigs)
-    writeSignal(s, f);
+    foreach(AbstractMetaFunction *f, sigs) {
+        writeSignal(s, f);
+    }
 
     // Write functions
     AbstractMetaFunctionList functions = java_class->functionsInTargetLang();

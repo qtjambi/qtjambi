@@ -890,7 +890,7 @@ void AbstractMetaBuilder::figureOutDefaultEnumArguments() {
 
                                 AbstractMetaClassList interfaces = classes.front()->interfaces();
                                 foreach(AbstractMetaClass *interface, interfaces)
-                                classes << interface->primaryInterfaceImplementor();
+                                    classes << interface->primaryInterfaceImplementor();
 
                                 e = classes.front()->findEnumForValue(expr);
                             }
@@ -1458,7 +1458,7 @@ bool AbstractMetaBuilder::setupInheritance(AbstractMetaClass *meta_class) {
 
             AbstractMetaClassList interfaces = iface->interfaces();
             foreach(AbstractMetaClass *iface, interfaces)
-            meta_class->addInterface(iface);
+                meta_class->addInterface(iface);
         }
     }
 
@@ -1642,9 +1642,10 @@ AbstractMetaFunction *AbstractMetaBuilder::traverseFunction(FunctionModelItem fu
     for (int i = 0; i < first_default_argument; ++i)
         meta_arguments[i]->setDefaultValueExpression(QString());
 
-    if (ReportHandler::debugLevel() == ReportHandler::FullDebug)
+    if (ReportHandler::debugLevel() == ReportHandler::FullDebug) {
         foreach(AbstractMetaArgument *arg, meta_arguments)
-        ReportHandler::debugFull("   - " + arg->toString());
+            ReportHandler::debugFull("   - " + arg->toString());
+    }
 
     return meta_function;
 }

@@ -104,7 +104,8 @@
             <library name="qkrcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
             <library name="qtwcodecs" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/codecs" load="never" />
             <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/accessible" load="never"/>
-            <library name="qsqlite" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/sqldrivers" load="never" if="${qtjambi.sqlite}" />
+            <library name="qsqlite" type="plugin" rootPath="${qtjambi.qtdir}" subdir="plugins/sqldrivers" load="never"
+                     if="${qtjambi.plugins.sqldrivers.sqlite}" />
 
             <!-- Qt Jambi Libraries -->
             <library name="qtjambi"                  type="qtjambi" rootPath="${jambiDir}" />

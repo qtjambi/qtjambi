@@ -14,14 +14,14 @@ HEADERS += javawritedeclaration.h \
     javawriteinitialization.h \
     javautils.h \
     uic/uic.h
-    
+
 SOURCES += javawritedeclaration.cpp \
     javawriteincludes.cpp \
     javawriteinitialization.cpp \
     javautils.cpp \
     main.cpp \
     uic/uic.cpp
-        
+
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
     CONFIG += debug_and_release build_all
@@ -34,7 +34,10 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
 }
 
 mac {
-    contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
+    contains(QT_CONFIG, x86):CONFIG += x86
+    contains(QT_CONFIG, ppc):CONFIG += ppc
+    contains(QT_CONFIG, x86_64):CONFIG += x86_64
+    contains(QT_CONFIG, ppc64):CONFIG += ppc64
     CONFIG -= precompile_header
 }
 

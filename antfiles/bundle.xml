@@ -41,10 +41,10 @@
             <library name="QtXml"               type="qt"
                     rootPath="${qtjambi.qt.libdir}"/>
             <library name="QtSql"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.sql}"/>
             <library name="QtSvg"               type="qt"
                     rootPath="${qtjambi.qt.libdir}"
-                    load="yes"
                     if="${qtjambi.svg}"/>
             <library name="QtNetwork"           type="qt"
                     rootPath="${qtjambi.qt.libdir}"/>
@@ -69,12 +69,28 @@
             <library name="QtXmlPatterns"       type="qt"
                     rootPath="${qtjambi.qt.libdir}"
                     if="${qtjambi.xmlpatterns}"/>
-            <library name="phonon"              type="qt"
-                    rootPath="${qtjambi.phonon.libdir}"
-                    if="${qtjambi.phonon}"/>
+            <library name="QtDeclarative"       type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.declarative}"/>
+            <library name="QtDesigner"          type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.designer}"/>
+            <library name="QtDesignerComponents" type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.designercomponents}"/>
+            <library name="QtCLucene"              type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.clucene}"/>
             <library name="QtDBus"              type="qt"
                     rootPath="${qtjambi.qt.libdir}"
                     if="${qtjambi.dbus}"/>
+            <library name="QtTest"              type="qt"
+                    rootPath="${qtjambi.qt.libdir}"
+                    if="${qtjambi.test}"/>
+
+            <library name="phonon"              type="qt"
+                    rootPath="${qtjambi.phonon.libdir}"
+                    if="${qtjambi.phonon}"/>
             <library name="phonon_ds9"          type="plugin"
                     rootPath="${qtjambi.phonon.pluginsdir}"
                     subdir="plugins/phonon_backend"
@@ -93,48 +109,85 @@
                     if="${qtjambi.phonon_qt7}"/>
 
             <!-- Qt Plugins -->
-            <library name="qjpeg"               type="plugin"
+            <library name="qtaccessiblewidgets" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
-            <library name="qgif"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"/>
-            <library name="qmng"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
-                    if="{qtjambi.mng}"/>
-            <library name="qtiff"               type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
-                    if="{qtjambi.tiff}"/>
-            <library name="qsvg"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
-                    if="{qtjambi.svg}"/>
+                    subdir="plugins/accessible" load="never"
+                    if="${qtjambi.plugins.accessible.qtaccessiblewidgets}"/>
+
             <library name="qsvgicon"            type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/iconengines" load="never"
-                    if="{qtjambi.svg}"/>
+                    if="${qtjambi.plugins.iconengines.svgicon}"/>
+
+            <library name="qgif"                type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/imageformats" load="never"
+                    if="${qtjambi.plugins.imageformats.gif}"/>
+            <library name="qico"                type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/imageformats" load="never"
+                    if="${qtjambi.plugins.imageformats.ico}"/>
+            <library name="qjpeg"               type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/imageformats" load="never"
+                    if="${qtjambi.plugins.imageformats.jpeg}"/>
+            <library name="qmng"                type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/imageformats" load="never"
+                    if="${qtjambi.plugins.imageformats.mng}"/>
+            <library name="qpng"               type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/imageformats" load="never"
+                    if="${qtjambi.plugins.imageformats.png}"/>
+            <library name="qsvg"                type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/imageformats" load="never"
+                    if="${qtjambi.plugins.imageformats.svg}"/>
+            <library name="qtiff"               type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/imageformats" load="never"
+                    if="${qtjambi.plugins.imageformats.tiff}"/>
+
+            <!-- Unicode codecs -->
             <library name="qcncodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
+                    subdir="plugins/codecs" load="never"
+                    if="${qtjambi.plugins.codecs.cncodecs}"/>
             <library name="qjpcodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
+                    subdir="plugins/codecs" load="never"
+                    if="${qtjambi.plugins.codecs.jpcodecs}"/>
             <library name="qkrcodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
+                    subdir="plugins/codecs" load="never"
+                    if="${qtjambi.plugins.codecs.krcodecs}"/>
             <library name="qtwcodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"/>
-            <library name="qtaccessiblewidgets" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/accessible" load="never"/>
+                    subdir="plugins/codecs" load="never"
+                    if="${qtjambi.plugins.codecs.twcodecs}"/>
+
             <library name="qsqlite" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="plugins/sqldrivers"
                     load="never"
-                    if="${qtjambi.sqlite}"/>
+                    if="${qtjambi.plugins.sqldrivers.sqlite}"/>
+            <library name="qodbc" type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="plugins/sqldrivers"
+                    load="never"
+                    if="${qtjambi.plugins.sqldrivers.odbc}"/>
+
+            <!-- Designer plugins -->
+            <library name="JambiCustomWidget" type="plugin"
+                    rootPath="${qtjambi.jambi.pluginsdir}/.."
+                    subdir="plugins/designer"
+                    load="never"
+                    if="${qtjambi.designer}"/>
+            <library name="JambiLanguage"     type="plugin"
+                    rootPath="${qtjambi.jambi.pluginsdir}/.."
+                    subdir="plugins/designer"
+                    load="never"
+                    if="${qtjambi.designer}"/>
 
             <!-- Qt Jambi Libraries -->
             <library name="qtjambi"                  type="qtjambi"
@@ -146,7 +199,8 @@
             <library name="com_trolltech_qt_xml"     type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"/>
             <library name="com_trolltech_qt_sql"     type="qtjambi"
-                    rootPath="${qtjambi.jambi.libdir}"/>
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.sql}"/>
             <library name="com_trolltech_qt_help"    type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.help}"/>
@@ -176,8 +230,65 @@
             <library name="com_trolltech_qt_xmlpatterns"  type="qtjambi"
                     rootPath="${qtjambi.jambi.libdir}"
                     if="${qtjambi.xmlpatterns}"/>
+            <library name="com_trolltech_qt_declarative"  type="qtjambi"
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.declarative}"/>
+            <library name="com_trolltech_qt_dbus"    type="qtjambi"
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.dbus}"/>
+            <library name="com_trolltech_qt_test"    type="qtjambi"
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.test}"/>
+            <library name="com_trolltech_tools_designer" type="qtjambi"
+                    rootPath="${qtjambi.jambi.libdir}"
+                    if="${qtjambi.designer}"/>
 
-        <plugin path="plugins"/>
+            <!-- Win32/Win64 MinGW only -->
+            <library name="libstdc++-6"     type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libstdc++-6}"/>
+            <!-- Win32 MinGW only -->
+            <library name="libgcc_s_dw2-1"  type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libgcc_s_dw2-1}"/>
+            <!-- Win32/Win64 MinGW-W64 only -->
+            <library name="libgcc_s_sjlj-1"  type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libgcc_s_sjlj-1}"/>
+            <!-- Win32/Win64 MinGW related but unable to find it required at runtime
+                 by current toolchain versions (mingw gcc 4.5.2, mingw-w64 gcc 4.7.0) -->
+            <library name="mingwm10"  type="system"
+                    rootPath="${qtjambi.qt.bindir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.mingwm10}"/>
+
+            <!-- Win32/Win64 zlib1.dll -->
+            <library name="zlib1"           type="dso"
+                    rootPath="${qtjambi.qt.libdir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.zlib1}"/>
+
+            <!-- Win32/Win64 libssl32.dll MinGW only -->
+            <library name="libssl32"        type="dso"
+                    rootPath="${qtjambi.qt.libdir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libssl32}"/>
+            <!-- Win32/Win64 ssleay32.dll MSVC only -->
+            <library name="ssleay32"        type="dso"
+                    rootPath="${qtjambi.qt.libdir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.ssleay32}"/>
+
+            <!-- Win32/Win64 libeay32.dll -->
+            <library name="libeay32"        type="dso"
+                    rootPath="${qtjambi.qt.libdir}"
+                    load="never"
+                    if="${qtjambi.packaging.dso.libeay32}"/>
+
+            <plugin path="plugins"/>
 
         </qtjambi-platform-jar>
 

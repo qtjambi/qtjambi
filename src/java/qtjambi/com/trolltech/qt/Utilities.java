@@ -58,6 +58,9 @@ related tasks.
 public class Utilities {
 
     public static final String VERSION_STRING;
+    private static final List<String> systemLibrariesList;
+
+    private static final String K_qtjambi_system_libraries = "qtjambi.system.libraries";
 
     static {
         final Properties props = new Properties();
@@ -75,6 +78,25 @@ public class Utilities {
         VERSION_STRING = props.getProperty("qtjambi.version");
         if (VERSION_STRING == null)
             throw new ExceptionInInitializerError("qtjambi.version is not set!");
+
+        SortedMap<String,String> tmpSystemLibrariesMap = new TreeMap<String,String>();
+        Enumeration e = props.propertyNames();
+        while (e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+            String value = props.getProperty(key);
+            if (key.equals(K_qtjambi_system_libraries) || key.startsWith(K_qtjambi_system_libraries + ".")) {
+                tmpSystemLibrariesMap.put(key, value);
+            }
+        }
+        // Sort the list { "", ".0", ".01", ".1", ".10", ".2", ".A", ".a" }
+        List<String> tmpSystemLibrariesList = new ArrayList<String>();
+        for (String v : tmpSystemLibrariesMap.values())
+            tmpSystemLibrariesList.add(v);
+
+        if (tmpSystemLibrariesList.size() > 0)
+            systemLibrariesList = Collections.unmodifiableList(tmpSystemLibrariesList);
+        else
+            systemLibrariesList = null;
     }
 
     /** Enum for defining the operation system. */
@@ -82,7 +104,8 @@ public class Utilities {
         Windows,
         MacOSX,
         Linux,
-        FreeBSD
+        FreeBSD,
+        SunOS
     }
 
     /** Defines whether Qt is build in Release or Debug. */
@@ -118,11 +141,12 @@ public class Utilities {
     }
 
     public static void loadSystemLibraries() {
-        String os = System.getProperty("os.name");
-        if(os.startsWith("Win")) {
-            loadLibrary("libgcc_s_dw2-1");
-            loadLibrary("libstdc++-6");
-            loadLibrary("mingwm10");
+        if (systemLibrariesList != null) {
+            for (String s : systemLibrariesList) {
+                // FIXME: We want only append the suffix (no prefix, no Qt version, no debug extra)
+                //  currently is does add a prefix (maybe also debug extra).
+                loadLibrary(s);
+            }
         }
     }
 
@@ -157,6 +181,7 @@ public class Utilities {
         if (osName.startsWith("windows")) return OperatingSystem.Windows;
         if (osName.startsWith("mac os x")) return OperatingSystem.MacOSX;
         if (osName.startsWith("freebsd")) return OperatingSystem.FreeBSD;
+        if (osName.equals("sunos")) return OperatingSystem.SunOS;	// SunOS
         return OperatingSystem.Linux;
     }
 

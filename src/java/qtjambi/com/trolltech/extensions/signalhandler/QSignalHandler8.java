@@ -69,7 +69,7 @@ public abstract class QSignalHandler8<A, B, C, D, E, F, G, H> {
      * @param arg5 The fifth signal argument.
      * @param arg6 The sixth signal argument.
      * @param arg7 The seventh signal argument.
-     * @param arg8 The eight signal argument.
+     * @param arg8 The eighth signal argument.
      */
     public abstract void handle(A arg1, B arg2, C arg3, D arg4, E arg5, F arg6, G arg7, H arg8);
 }

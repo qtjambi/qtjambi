@@ -46,7 +46,9 @@
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
 #include <QtSql/QtSql>
-#include <QtSvg/QtSvg>
+#ifndef QT_NO_SVG
+#  include <QtSvg/QtSvg>
+#endif
 #include <QtXml/QtXml>
 #include <QtHelp/QtHelp>
 #include <QtMultimedia/QtMultimedia>
@@ -68,6 +70,19 @@
 #  include <phonon/phonon>
 #endif
 
+#ifndef QT_NO_DECLARATIVE
+# if QT_VERSION >= 0x040700
+#  include <QtDeclarative/QtDeclarative>
+# endif
+#endif
+
+#ifndef QT_NO_DBUS
+# if QT_VERSION >= 0x040200
+#  include <QtDBus/QtDBus>
+# endif
+#endif
+
+#include <QtTest/QtTest>
 
 
 

@@ -62,8 +62,11 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
 
 win32:CONFIG += precompile_header
 
-macx{
-    contains(QT_CONFIG, x86):contains(QT_CONFIG, ppc):CONFIG += x86 ppc
+macx {
+    contains(QT_CONFIG, x86):CONFIG += x86
+    contains(QT_CONFIG, ppc):CONFIG += ppc
+    contains(QT_CONFIG, x86_64):CONFIG += x86_64
+    contains(QT_CONFIG, ppc64):CONFIG += ppc64
     CONFIG -= precompile_header
 }
 
