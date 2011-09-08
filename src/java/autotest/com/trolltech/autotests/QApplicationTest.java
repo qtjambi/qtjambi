@@ -59,6 +59,8 @@ public abstract class QApplicationTest extends QSignalEmitter {
 
     @AfterClass
     public static void testDispose() throws Exception {
+        System.err.flush();
+        System.out.flush();
         QApplication.quit();
         QApplication.instance().dispose();
     }
