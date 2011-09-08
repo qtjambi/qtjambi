@@ -148,9 +148,24 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
      * call of this function, it has been set as final. Reimplement disposed() instead,
      * which will be called either as the native resources are being removed
      * or just before the object is finalized, whichever happens first.
+     *
+     * If you decide to override this method in your subclass then please do it
+     * with the following Java idiom:
+     * <code>
+     *     protected void finalize() {
+     *         try {
+     *             // put your code here
+     *             doMyStuff();
+     *         } finally {
+     *             super.finalize();
+     *         }
+     *     }
+     * </code>
+     *
+     * NOTES: In QtJambi this method used to be marked 'final' before around 4.7.x.
      */
     @Override
-    protected final native void finalize();
+    protected native void finalize();
 
     /**
      * Explicitly removes the native resources held by the
