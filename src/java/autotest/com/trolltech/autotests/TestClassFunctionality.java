@@ -222,7 +222,7 @@ public class TestClassFunctionality extends QApplicationTest {
         test.run_settersAndGetters();
         test.run_testCallQtJambiInternalNativeFunctions();
         test.run_testDestruction();
-        test.run_testOwnershipTranfer();
+        test.run_testOwnershipTransfer();
         test.run_XPMConstructors();*/
     }
 
@@ -857,7 +857,7 @@ public class TestClassFunctionality extends QApplicationTest {
 
     // Tests the ownership transfer that we need to have objects like
     // QEvent stay alive after they are posted to the event queue...
-    // The verifecation here is basically that the vm doesn't crash.
+    // The verification here is basically that the vm doesn't crash.
     private static class OwnershipTransferReceiver extends QObject {
         public QEvent.Type event_id;
 
@@ -894,7 +894,7 @@ public class TestClassFunctionality extends QApplicationTest {
     }
 
     @Test
-    public void run_testOwnershipTranfer() {
+    public void run_testOwnershipTransfer() {
         OwnershipTransferReceiver receiver = new OwnershipTransferReceiver();
 
         for (int i = 0; i < 1; ++i) {
@@ -902,7 +902,7 @@ public class TestClassFunctionality extends QApplicationTest {
             QApplication.postEvent(receiver, new CustomPaintEvent(rect));
         }
 
-        // To attemt deletion of the QPaintEvent, should not happen at
+        // To attempt deletion of the QPaintEvent, should not happen at
         // this time...
         System.gc();
         assertEquals(CustomPaintEvent.finalized, false);
@@ -917,7 +917,6 @@ public class TestClassFunctionality extends QApplicationTest {
             Thread.sleep(600);
         } catch (Exception e) {
         }
-        ;
 
         assertEquals(CustomPaintEvent.finalized, true);
 
