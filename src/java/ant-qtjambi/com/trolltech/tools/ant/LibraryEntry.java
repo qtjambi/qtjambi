@@ -59,6 +59,7 @@ public class LibraryEntry extends Task {
     public static final String TYPE_PLUGIN             = "plugin";
     public static final String TYPE_QT                 = "qt";
     public static final String TYPE_QTJAMBI            = "qtjambi";
+    public static final String TYPE_QTJAMBI_PLUGIN     = "qtjambi-plugin";
     public static final String TYPE_UNVERSIONED_PLUGIN = "unversioned-plugin";
 
     public static final String LOAD_DEFAULT            = "default";
@@ -162,6 +163,9 @@ public class LibraryEntry extends Task {
         // Fix name
         if(type.equals(TYPE_PLUGIN)) {
             name = formatPluginName(name, this.kdephonon, debug);
+        } else if(type.equals(TYPE_QTJAMBI_PLUGIN)) {
+            // this may have _debuglib in the filename (unlike normal qt plugins)
+            name = formatQtJambiName(name, debug);
         } else if(type.equals(TYPE_QT)){
             name = formatQtName(name, debug, version);
             //qt libraries are stored in "lib"

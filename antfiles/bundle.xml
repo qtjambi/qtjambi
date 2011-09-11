@@ -198,12 +198,12 @@
                     if="${qtjambi.plugins.sqldrivers.sqltds}"/>
 
             <!-- Designer plugins -->
-            <library name="JambiCustomWidget" type="plugin"
+            <library name="JambiCustomWidget" type="qtjambi-plugin"
                     rootPath="${qtjambi.jambi.pluginsdir}/.."
                     subdir="plugins/designer"
                     load="never"
                     if="${qtjambi.designer}"/>
-            <library name="JambiLanguage"     type="plugin"
+            <library name="JambiLanguage"     type="qtjambi-plugin"
                     rootPath="${qtjambi.jambi.pluginsdir}/.."
                     subdir="plugins/designer"
                     load="never"
