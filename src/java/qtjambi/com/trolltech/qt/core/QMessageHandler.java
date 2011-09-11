@@ -44,7 +44,11 @@
 
 package com.trolltech.qt.core;
 
-import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The QMessageHandler class provides a means of receiving notifications when the C++ side
@@ -54,9 +58,12 @@ public abstract class QMessageHandler {
 
     static {
         try {
+            // This is implemented this way to kill a circular dependancy
+            // that would otherwise exist between these two classes and
+            // their static <init> code blocks.
             // Make sure we load dependent libraries...
             Class.forName("com.trolltech.qt.QtJambi_LibraryInitializer");
-        } catch (ClassNotFoundException e) { }
+        } catch(ClassNotFoundException e) { }
     }
 
     /**
@@ -84,40 +91,112 @@ public abstract class QMessageHandler {
      * Installs the specified message handler as a receiver for message notification.
      */
     public static void installMessageHandler(QMessageHandler handler) {
-        if (handlers == null) {
-            handlers = new ArrayList<QMessageHandler>();
-            installMessageHandlerProxy();
+        handlersLock.writeLock().lock();
+        try {
+            final int oldLength;
+            if(handlers != null)
+                oldLength = handlers.length;
+            else
+                oldLength = 0;
+
+            QMessageHandler[] newHandlers = new QMessageHandler[oldLength + 1];
+            if(handlers != null)
+                System.arraycopy(handlers, 0, newHandlers, 0, oldLength);
+            newHandlers[oldLength] = handler;
+
+            if(handlers == null)
+                installMessageHandlerProxy();
+            handlers = newHandlers;
+        } finally {
+            handlersLock.writeLock().unlock();
         }
-        handlers.add(handler);
     }
 
     /**
      * Removes the specified message handler as a receiver for message notification.
      */
     public static void removeMessageHandler(QMessageHandler handler) {
-        if (handlers != null){
-            handlers.remove(handler);
-            if(handlers.isEmpty()){
-                removeMessageHandlerProxy();
-                handlers = null;
+        handlersLock.writeLock().lock();
+        try {
+            if(handlers != null) {
+                // following java.util.List#remove() contract to remove only the first occurence
+                final int oldLength = handlers.length;
+                int index = 0;
+                for(QMessageHandler h : handlers) {
+                    if(h == handler)
+                        break;
+                    index++;
+                }
+                if(index < oldLength) {    // found
+                    QMessageHandler[] newHandlers = null;
+                    if(oldLength > 1) {
+                        newHandlers = new QMessageHandler[oldLength - 1];
+                        System.arraycopy(handlers, 0,         newHandlers, 0,     index);
+                        System.arraycopy(handlers, index + 1, newHandlers, index, oldLength - index - 1);
+                    }
+
+                    if(newHandlers == null)
+                        removeMessageHandlerProxy();
+                    handlers = newHandlers;
+                }
             }
+        } finally {
+            handlersLock.writeLock().unlock();
         }
     }
 
     private static boolean process(int id, String message) {
-        if (handlers == null)
-            return false;
-        switch (id) {
-            case 0: for (QMessageHandler h : handlers) h.debug(message); break;
-            case 1: for (QMessageHandler h : handlers) h.warning(message); break;
-            case 2: for (QMessageHandler h : handlers) h.critical(message); break;
-            case 3: for (QMessageHandler h : handlers) h.fatal(message); break;
+        boolean bf;
+        handlersLock.readLock().lock();
+        try {
+            if(handlers == null) {
+                bf = false;
+            } else {
+                switch(id) {
+                case 0:
+                    for(QMessageHandler h : handlers)
+                        h.debug(message);
+                    break;
+
+                case 1:
+                    for(QMessageHandler h : handlers)
+                        h.warning(message);
+                    break;
+
+                case 2:
+                    for(QMessageHandler h : handlers)
+                        h.critical(message);
+                    break;
+
+                //case 3:
+                default:        // fail-safe presume fatal
+                    for(QMessageHandler h : handlers)
+                        h.fatal(message);
+                    break;
+                }
+                bf = true;
+            }
+        } finally {
+            handlersLock.readLock().unlock();
         }
-        return true;
+        return bf;
     }
 
+    // These native methods need to be serialized to be thread-safe (since the
+    // native code implementation does things that need to be protected from
+    // concurrent execution), right now the handlersLock.writeLock() is
+    // providing this protection.
     private static native void installMessageHandlerProxy();
     private static native void removeMessageHandlerProxy();
 
-    private static List<QMessageHandler> handlers;
+    // I have chosen a ReadWriteLock to allow the removeMessageHandler side to
+    // have clearly defined behavior.  That is upon return from the method no
+    // QtJambi provided code will be in the middle of invoking that handler nor
+    // will find the handler to invoke in the future.  This is an important
+    // guarantee to make for an ordered shutdown of a handler.
+    private static ReadWriteLock handlersLock = new ReentrantReadWriteLock();
+    // We use a simple array as java.util.List does not provide any thread safety
+    // contract over concurrent readers, provides API we don't need and is a
+    // little more bloaty for our purposes.
+    private static QMessageHandler[] handlers;
 }
