@@ -1,6 +1,6 @@
 TARGET = com_trolltech_autotests_generated
 
-include(../../src/cpp/qtjambi/qtjambi_include.pri)
+include(../../../src/cpp/qtjambi/qtjambi_include.pri)
 include(./cpp/com_trolltech_autotests_generated/com_trolltech_autotests_generated.pri)
 
 INCLUDEPATH += ./cpp/com_trolltech_autotests_generated
@@ -36,3 +36,6 @@ win32 {
 }
 
 QT += sql xml network
+
+# Force debugging
+CONFIG += debug
