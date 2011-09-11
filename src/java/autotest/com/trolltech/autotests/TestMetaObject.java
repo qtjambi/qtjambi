@@ -166,6 +166,9 @@ public class TestMetaObject extends QApplicationTest {
             assertEquals((Integer)2, values.get(1));
             assertEquals((Integer)4, values.get(2));
         }
+    }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestMetaObject.class.getName());
     }
 }

@@ -121,9 +121,6 @@ public class TestNullPointers extends QApplicationTest {
     }
 
     public static void main(String args[]) {
-        QApplication.initialize(args);
-        TestNullPointers p = new TestNullPointers();
-        p.testBlah();
-
+        org.junit.runner.JUnitCore.main(TestNullPointers.class.getName());
     }
 }

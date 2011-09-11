@@ -452,4 +452,7 @@ public class TestConcurrent extends QApplicationTest {
 
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestConcurrent.class.getName());
+    }
 }

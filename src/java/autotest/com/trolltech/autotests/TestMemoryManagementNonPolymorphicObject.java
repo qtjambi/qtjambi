@@ -101,4 +101,7 @@ public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManageme
     @Test
     public void dummy() {}
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestMemoryManagementNonPolymorphicObject.class.getName());
+    }
 }

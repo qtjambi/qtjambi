@@ -373,4 +373,8 @@ public class TestNativePointer extends QApplicationTest {
             assertEquals(np_string.stringValue(), "Second");
         }
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestNativePointer.class.getName());
+    }
 }

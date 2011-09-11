@@ -412,4 +412,8 @@ public class TestInjectedCodeV2 extends QApplicationTest {
 
         assertTrue(caughtException);
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestInjectedCodeV2.class.getName());
+    }
 }

@@ -1708,4 +1708,7 @@ public class TestReferenceCounting extends QApplicationTest {
         assertFalse(caughtException);
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestReferenceCounting.class.getName());
+    }
 }

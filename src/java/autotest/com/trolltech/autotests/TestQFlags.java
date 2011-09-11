@@ -159,4 +159,8 @@ public class TestQFlags extends QApplicationTest {
             private static final long serialVersionUID = 1L;
         }));
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestQFlags.class.getName());
+    }
 }

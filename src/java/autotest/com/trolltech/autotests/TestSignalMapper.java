@@ -193,4 +193,8 @@ public class TestSignalMapper extends QApplicationTest {
             assertEquals(receiver.lastQWidget, widgets[i]);
         }
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestSignalMapper.class.getName());
+    }
 }

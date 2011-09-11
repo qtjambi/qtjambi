@@ -286,4 +286,7 @@ public class TestContainers extends QApplicationTest {
         got = false; try { list.takeAt(14); } catch (Exception e) { got =true; } assertTrue(got);
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestContainers.class.getName());
+    }
 }

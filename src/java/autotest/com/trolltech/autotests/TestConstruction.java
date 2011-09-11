@@ -70,4 +70,8 @@ public class TestConstruction extends QApplicationTest {
         // Although it seems unlikely, this may actually be false, trust me.
         assertTrue(subWindow instanceof QMdiSubWindow);
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestConstruction.class.getName());
+    }
 }

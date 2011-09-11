@@ -121,4 +121,8 @@ public class TestXml extends QApplicationTest {
         file.close();
 
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestXml.class.getName());
+    }
 }

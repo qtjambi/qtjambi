@@ -104,4 +104,7 @@ public class TestNamespace extends QApplicationTest {
         }
    }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestNamespace.class.getName());
+    }
 }

@@ -446,4 +446,7 @@ public abstract class TestMemoryManagement {
         test(className(), 0, 0, 0, 2, 1, 1, 0, 0);
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestMemoryManagement.class.getName());
+    }
 }

@@ -384,9 +384,7 @@ public class TestDestruction extends QApplicationTest {
                                 + dontBeDeleted);                    
     }
 
-    static public void main(String args[]) {
-        QApplication.initialize(args);
-        TestDestruction test = new TestDestruction();
-        test.testCppCreationCppOwnership();
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestDestruction.class.getName());
     }
 }

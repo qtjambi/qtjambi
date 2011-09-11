@@ -556,4 +556,8 @@ public class TestQVariant extends QApplicationTest {
         it2.setParentItem(null);
         assertTrue(itemChangeCalled);
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestQVariant.class.getName());
+    }
 }

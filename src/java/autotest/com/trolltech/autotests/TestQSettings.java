@@ -152,4 +152,8 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         assertEquals(custom.integer, 123);
         assertEquals(custom.object.getClass(), Custom.class);
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestQSettings.class.getName());
+    }
 }

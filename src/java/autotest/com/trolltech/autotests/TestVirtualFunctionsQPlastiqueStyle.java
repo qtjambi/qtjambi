@@ -85,4 +85,7 @@ public class TestVirtualFunctionsQPlastiqueStyle extends QApplicationTest {
         assertEquals(windows_style.pixelMetric(QStyle.PixelMetric.PM_SliderThickness), java_plastique.pixelMetric(QStyle.PixelMetric.PM_SliderThickness));
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestVirtualFunctionsQPlastiqueStyle.class.getName());
+    }
 }

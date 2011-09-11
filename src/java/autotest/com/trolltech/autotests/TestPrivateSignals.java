@@ -119,4 +119,7 @@ public class TestPrivateSignals extends QApplicationTest {
         assertEquals(signal.getType().getName(), "com.trolltech.qt.QSignalEmitter$PrivateSignal0");
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestPrivateSignals.class.getName());
+    }
 }

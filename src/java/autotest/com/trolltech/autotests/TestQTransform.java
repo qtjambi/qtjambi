@@ -305,4 +305,8 @@ public class TestQTransform extends QApplicationTest {
 
         assertTrue(ident.equals(polRes.toList()));
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestQTransform.class.getName());
+    }
 }

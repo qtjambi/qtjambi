@@ -80,4 +80,7 @@ public class TestInjectedCodeQPlastiqueStyle extends QApplicationTest {
         // got here, didn't crash
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestInjectedCodeQPlastiqueStyle.class.getName());
+    }
 }

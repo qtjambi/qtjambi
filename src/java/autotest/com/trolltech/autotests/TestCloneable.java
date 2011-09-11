@@ -857,4 +857,8 @@ public class TestCloneable extends QApplicationTest {
         QXmlStreamNotationDeclaration clone2 = clone.clone();
         assertEquals(clone, clone2);
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestCloneable.class.getName());
+    }
 }

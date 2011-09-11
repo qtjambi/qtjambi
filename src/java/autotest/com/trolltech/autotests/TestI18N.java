@@ -183,4 +183,8 @@ public class TestI18N extends QApplicationTest {
                     "b"), "cab");
 
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestI18N.class.getName());
+    }
 }

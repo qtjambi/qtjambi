@@ -550,11 +550,6 @@ public class TestQPaintEngine extends CustomPaintEngine {
     }
 
     public static void main(String args[]) {
-        QApplication.initialize(args);
-        TestQPaintEngine p = new TestQPaintEngine();
-        p.testDrawLines();
-        p.testDrawLinesNull();
-        p.testVirtualDrawLines();
-        p.testVirtualDrawLinesNull();
+        org.junit.runner.JUnitCore.main(TestQPaintEngine.class.getName());
     }
 }

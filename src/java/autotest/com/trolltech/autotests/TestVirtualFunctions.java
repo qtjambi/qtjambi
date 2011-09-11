@@ -425,4 +425,7 @@ public class TestVirtualFunctions extends QApplicationTest {
         assertEquals(123, k);
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestVirtualFunctions.class.getName());
+    }
 }

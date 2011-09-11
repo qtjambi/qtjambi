@@ -191,4 +191,8 @@ public class TestFileEngine extends QApplicationTest {
 
         QAbstractFileEngine.removeSearchPathForResourceEngine(search_path);
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestFileEngine.class.getName());
+    }
 }

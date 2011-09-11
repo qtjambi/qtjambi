@@ -200,31 +200,6 @@ class EventReceiver extends QWidget {
 }
 
 public class TestClassFunctionality extends QApplicationTest {
-
-    public static void main(String args[]) {
-        QApplication.initialize(args);
-
-        TestClassFunctionality test = new TestClassFunctionality();
-	test.run_cppAndJavaObjects();
-	test.testGraphicsSceneDrawItemsInjections();
-	/*
-        test.testVirtualCallToFixup();
-        test.testFinalCallToFixup();
-        test.testFinalCallToValidate();
-        test.testVirtualCallToValidate();
-        test.run_callPrivateVirtualFunction();
-        test.run_copyConstructor();
-        test.run_cppAndJavaObjects();
-        test.run_injectedCode();
-        test.run_invokeLater_mainThread();
-        test.run_senderNotNull();
-        test.run_settersAndGetters();
-        test.run_testCallQtJambiInternalNativeFunctions();
-        test.run_testDestruction();
-        test.run_testOwnershipTransfer();
-        test.run_XPMConstructors();*/
-    }
-
     @BeforeClass
     public static void testInitialize() throws Exception {
         String args[] = new String[3];
@@ -1074,5 +1049,9 @@ public class TestClassFunctionality extends QApplicationTest {
         Invokable i = new Invokable();
         QCoreApplication.invokeAndWait(i);
         assertTrue(i.wasRun());
+    }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestClassFunctionality.class.getName());
     }
 }

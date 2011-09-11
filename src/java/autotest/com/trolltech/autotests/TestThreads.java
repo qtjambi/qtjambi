@@ -440,4 +440,8 @@ public class TestThreads extends QApplicationTest {
         }
         */
     }
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestThreads.class.getName());
+    }
 }

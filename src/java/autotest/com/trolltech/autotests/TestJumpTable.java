@@ -94,4 +94,7 @@ public class TestJumpTable {
         Assert.assertEquals(content, "1234");
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestJumpTable.class.getName());
+    }
 }

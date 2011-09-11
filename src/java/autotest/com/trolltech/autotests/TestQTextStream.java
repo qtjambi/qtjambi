@@ -224,5 +224,8 @@ public class TestQTextStream extends QApplicationTest {
             stream.skipWhiteSpace();
         }
     }
-}
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestQTextStream.class.getName());
+    }
+}

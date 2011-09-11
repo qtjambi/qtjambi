@@ -1779,4 +1779,7 @@ public class TestConnections extends QApplicationTest implements Qt
         assertTrue(changeSignalReceived);
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestConnections.class.getName());
+    }
 }

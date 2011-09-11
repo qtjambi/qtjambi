@@ -1680,13 +1680,6 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals("asa", new String(tcss.receivedChar));
     }
 
-    public static void main(String args[]) {
-        QApplication.initialize(args);
-
-        TestInjectedCode test = new TestInjectedCode();
-        test.testQTextCursorSelectedTableCells();
-
-    }
 
     @Test
     public void testIODeviceWriteData() {
@@ -2107,6 +2100,9 @@ public class TestInjectedCode extends QApplicationTest {
 //        assertEquals(19, self.time().minute());
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestInjectedCode.class.getName());
+    }
 }
 
 // next line is part of test.. leav it

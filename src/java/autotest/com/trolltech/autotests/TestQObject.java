@@ -348,4 +348,8 @@ public class TestQObject extends QApplicationTest {
     private Runnable runnable_objectWithUnParent = new Runnable() {
         public void run() { objectWithUnParent(); }
     };
+
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestQObject.class.getName());
+    }
 }

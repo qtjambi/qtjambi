@@ -223,4 +223,7 @@ public class TestProperties extends QApplicationTest {
         assertEquals(true, property.isUser());
     }
 
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestProperties.class.getName());
+    }
 }
