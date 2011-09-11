@@ -63,40 +63,49 @@ public class Utilities {
     private static final String K_qtjambi_system_libraries = "qtjambi.system.libraries";
 
     static {
-        final Properties props = new Properties();
-        final ClassLoader loader = Utilities.class.getClassLoader();
-        if (loader == null)
-            throw new ExceptionInInitializerError("Could not get classloader!");
-        final InputStream in = loader.getResourceAsStream("version.properties");
-        if (in == null)
-            throw new ExceptionInInitializerError("version.properties not found!");
+        String tmpVERSION_STRING = null;
+        List<String> tmpSystemLibrariesList = null;
         try {
-            props.load(in);
-        } catch (Exception ex) {
-            throw new ExceptionInInitializerError("Cannot read properties!");
-        }
-        VERSION_STRING = props.getProperty("qtjambi.version");
-        if (VERSION_STRING == null)
-            throw new ExceptionInInitializerError("qtjambi.version is not set!");
-
-        SortedMap<String,String> tmpSystemLibrariesMap = new TreeMap<String,String>();
-        Enumeration e = props.propertyNames();
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
-            String value = props.getProperty(key);
-            if (key.equals(K_qtjambi_system_libraries) || key.startsWith(K_qtjambi_system_libraries + ".")) {
-                tmpSystemLibrariesMap.put(key, value);
+            final Properties props = new Properties();
+            final ClassLoader loader = Utilities.class.getClassLoader();
+            if (loader == null)
+                throw new ExceptionInInitializerError("Could not get classloader!");
+            final InputStream in = loader.getResourceAsStream("version.properties");
+            if (in == null)
+                throw new ExceptionInInitializerError("version.properties not found!");
+            try {
+                props.load(in);
+            } catch (Exception ex) {
+                throw new ExceptionInInitializerError("Cannot read properties!");
             }
-        }
-        // Sort the list { "", ".0", ".01", ".1", ".10", ".2", ".A", ".a" }
-        List<String> tmpSystemLibrariesList = new ArrayList<String>();
-        for (String v : tmpSystemLibrariesMap.values())
-            tmpSystemLibrariesList.add(v);
+            tmpVERSION_STRING = props.getProperty("qtjambi.version");
+            if (tmpVERSION_STRING == null)
+                throw new ExceptionInInitializerError("qtjambi.version is not set!");
 
-        if (tmpSystemLibrariesList.size() > 0)
-            systemLibrariesList = Collections.unmodifiableList(tmpSystemLibrariesList);
-        else
-            systemLibrariesList = null;
+            SortedMap<String,String> tmpSystemLibrariesMap = new TreeMap<String,String>();
+            Enumeration e = props.propertyNames();
+            while (e.hasMoreElements()) {
+                String key = (String) e.nextElement();
+                String value = props.getProperty(key);
+                if (key.equals(K_qtjambi_system_libraries) || key.startsWith(K_qtjambi_system_libraries + ".")) {
+                    tmpSystemLibrariesMap.put(key, value);
+                }
+            }
+            // Sort the list { "", ".0", ".01", ".1", ".10", ".2", ".A", ".a" }
+            tmpSystemLibrariesList = new ArrayList<String>();
+            for (String v : tmpSystemLibrariesMap.values())
+                tmpSystemLibrariesList.add(v);
+
+            if (tmpSystemLibrariesList.size() > 0)
+                tmpSystemLibrariesList = Collections.unmodifiableList(tmpSystemLibrariesList);
+            else
+                tmpSystemLibrariesList = null;
+        } catch(Throwable e) {
+            e.printStackTrace();
+        } finally {
+            VERSION_STRING = tmpVERSION_STRING;
+            systemLibrariesList = tmpSystemLibrariesList;
+        }
     }
 
     /** Enum for defining the operation system. */

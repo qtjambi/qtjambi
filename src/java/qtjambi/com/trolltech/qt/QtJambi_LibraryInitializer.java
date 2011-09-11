@@ -44,25 +44,36 @@
 
 package com.trolltech.qt;
 
+import java.lang.ref.WeakReference;
+
 import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.internal.QClassPathFileEngineHandler;
 
 public abstract class QtJambi_LibraryInitializer
 {
     static QMessageHandler messageHandler;
+    // It is upto the JVM to keep a hard reference to
+    static WeakReference<Thread> shutdownHookThread;
 
     static {
-        Utilities.loadSystemLibraries();
-        Utilities.loadQtLibrary("QtCore");
-        Utilities.loadJambiLibrary("qtjambi");
+        try {
+            Utilities.loadSystemLibraries();
+            Utilities.loadQtLibrary("QtCore");
+            Utilities.loadJambiLibrary("qtjambi");
 
-        QClassPathFileEngineHandler.initialize();
-        installMessageHandlerForExceptions(System.getProperty("com.trolltech.qt.exceptions-for-messages"));
+            QClassPathFileEngineHandler.initialize();
+            installMessageHandlerForExceptions(System.getProperty("com.trolltech.qt.exceptions-for-messages"));
 
-        initialize();
-        QThreadManager.initialize();
+            initialize();
+            QThreadManager.initialize();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new QtJambi_LibraryShutdown()));
+            Thread thread = new Thread(new QtJambi_LibraryShutdown());	// hard reference
+            thread.setName("qtjambi-" + QtJambi_LibraryShutdown.class.getName());
+            Runtime.getRuntime().addShutdownHook(thread);
+            shutdownHookThread = new WeakReference<Thread>(thread);	// weak reference
+        } catch(Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     private static void installMessageHandlerForExceptions(String config) {
