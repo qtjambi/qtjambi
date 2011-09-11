@@ -377,6 +377,9 @@ public class NativeLibraryManager {
         while (specs.hasMoreElements()) {
             URL url = specs.nextElement();
 
+            if (VERBOSE_LOADING)
+                reporter.report("Found ", url.toString());
+
             if (url.getProtocol().equals("jar")) {
                 String eform = url.toExternalForm();
 
@@ -589,7 +592,7 @@ public class NativeLibraryManager {
                 reporter.report(" - trying to load: ", e.name);
                 File f = new File(tmpDir, e.name);
                 rt.load(f.getAbsolutePath());
-                reporter.report(" - ok!");
+                reporter.report(" - ok!  load=\"true\"");
             }
         }
     }
