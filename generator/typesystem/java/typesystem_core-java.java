@@ -197,10 +197,10 @@ class QCoreApplication___ extends QCoreApplication {
         }
 
         public static void initialize(String applicationName, String args[]) {
-            com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
-
             if (m_instance != null)
                 throw new RuntimeException("QCoreApplication can only be initialized once");
+
+            com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
 
             String path = Utilities.unpackPlugins();
             if (path != null)
@@ -212,10 +212,10 @@ class QCoreApplication___ extends QCoreApplication {
         }
 
         public static void initialize(String args[]) {
-            com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
-
             if (m_instance != null)
                 throw new RuntimeException("QCoreApplication can only be initialized once");
+
+            com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
 
             String path = Utilities.unpackPlugins();
             if (path != null)
@@ -271,6 +271,12 @@ class QCoreApplication___ extends QCoreApplication {
             argv = null;
             m_instance = null;
             super.disposed();
+        }
+
+        public boolean isDisposed() {
+            if (m_instance == null)
+                return true;
+            return false;
         }
 
         public static void invokeLater(java.lang.Runnable runnable) {
