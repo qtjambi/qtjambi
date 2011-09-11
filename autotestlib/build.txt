@@ -62,7 +62,7 @@
     </modify-function>
     <modify-function signature="getObjectCppOwnership()">
         <modify-argument index="return">
-            <define-ownership class="java" owner="c++" />
+            <define-ownership class="java" owner="cplusplus" />
         </modify-argument>
     </modify-function>
     <modify-function signature="setDefaultOwnership(OrdinaryDestroyed *)">
@@ -77,7 +77,7 @@
     </modify-function>
     <modify-function signature="virtualGetObjectCppOwnership()">
         <modify-argument index="return">
-            <define-ownership class="shell" owner="c++" />
+            <define-ownership class="shell" owner="cplusplus" />
         </modify-argument>
     </modify-function>
     <modify-function signature="virtualSetDefaultOwnership(OrdinaryDestroyed *)">
@@ -105,7 +105,7 @@
   <object-type name="TextCodecSubclass">
     <modify-function signature="TextCodecSubclass()">
         <modify-argument index="-1">
-            <define-ownership class="java" owner="c++" />
+            <define-ownership class="java" owner="cplusplus" />
         </modify-argument>
     </modify-function>
   </object-type>
