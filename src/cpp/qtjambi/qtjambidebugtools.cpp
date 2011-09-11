@@ -49,10 +49,16 @@
 #include "qtjambi_global.h"
 #include "qtjambi_core.h"
 
+#include <QMutex>
 #include <QHash>
 
     // ---- TOOLS
     typedef QHash<QString, int> CountsForName;
+
+    // Looks like (at least from JDK5 build 1.5.0_22-b03) the JVM is allowed
+    // to run finalizers from two threads at once.  Maybe this is only when
+    // we call Runtime#runFinalization(); or maybe the matter is unspecified.
+    typedef QMutex CountsForNameLock;
 
     static int sum_of(const CountsForName &countsForName)
     {
@@ -83,19 +89,29 @@
     \
     Q_GLOBAL_STATIC(CountsForName, g_##NAME) \
     \
+    Q_GLOBAL_STATIC(CountsForNameLock, l_##NAME) \
+    \
     static void qtjambi_reset_##NAME(const QString &className) \
     { \
+        (*l_##NAME()).lock(); \
         reset(*g_##NAME(), className); \
+        (*l_##NAME()).unlock(); \
     } \
     \
     static int qtjambi_##NAME(const QString &className) \
     { \
-        return count(*g_##NAME(), className); \
+        int counter; \
+        (*l_##NAME()).lock(); \
+        counter = count(*g_##NAME(), className); \
+        (*l_##NAME()).unlock(); \
+        return counter; \
     } \
     \
     void qtjambi_increase_##NAME(const QString &className) \
     { \
+        (*l_##NAME()).lock(); \
         (*g_##NAME())[className] ++; \
+        (*l_##NAME()).unlock(); \
     } \
     \
     extern "C" Q_DECL_EXPORT void JNICALL \
