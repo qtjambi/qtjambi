@@ -58,6 +58,9 @@ public class InitializeTask extends Task {
     private PropertyHelper props;
     private String configuration;
     private boolean debug;
+    private boolean alreadyRun;
+
+    private int qtMajorVersion;
 
     /*
      * These properties are set outside of this task
@@ -79,18 +82,23 @@ public class InitializeTask extends Task {
     public static final String JAVA_HOME_TARGET     = "java.home.target";
     public static final String JAVA_OSARCH_TARGET   = "java.osarch.target";
 
+    public static final String QT_VERSION_MAJOR     = "qt.version.major";
+
     /*
      * These properties are set inside this task
      */
     public static final String COMPILER           = "qtjambi.compiler";
     public static final String CONFIGURATION      = "qtjambi.configuration";
+    public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x
     public static final String CLUCENE            = "qtjambi.clucene";
     public static final String DBUS               = "qtjambi.dbus";
     public static final String DECLARATIVE        = "qtjambi.declarative";
     public static final String DESIGNER           = "qtjambi.designer";
     public static final String DESIGNERCOMPONENTS = "qtjambi.designercomponents";
+    public static final String GUI                = "qtjambi.gui";		// mandatory with <= 4.7.x
     public static final String HELP               = "qtjambi.help";
     public static final String MULTIMEDIA         = "qtjambi.multimedia";
+    public static final String NETWORK            = "qtjambi.network";		// mandatory with <= 4.7.x
     public static final String OPENGL             = "qtjambi.opengl";
     public static final String OSNAME             = "qtjambi.osname";
     public static final String PHONON             = "qtjambi.phonon";
@@ -104,6 +112,7 @@ public class InitializeTask extends Task {
     public static final String SVG                = "qtjambi.svg";
     public static final String TEST               = "qtjambi.test";
     public static final String WEBKIT             = "qtjambi.webkit";
+    public static final String XML                = "qtjambi.xml";		// mandatory with <= 4.7.x
     public static final String XMLPATTERNS        = "qtjambi.xmlpatterns";
     public static final String QTCONFIG           = "qtjambi.qtconfig";
 
@@ -166,6 +175,9 @@ public class InitializeTask extends Task {
     }
 
     public void execute() throws BuildException {
+        if(alreadyRun)	// we should only run this once per ANT invocation
+            return;
+
         props = PropertyHelper.getPropertyHelper(getProject());
 
         String sep = (String) props.getProperty("sep");
@@ -210,6 +222,19 @@ public class InitializeTask extends Task {
 
         props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
+        String s;
+
+        //decideQtVersion();
+        qtMajorVersion = 4;
+        s = String.valueOf(qtMajorVersion);
+        if(verbose)
+            System.out.println(QT_VERSION_MAJOR + " is " + s);
+        props.setNewProperty((String) null, QT_VERSION_MAJOR, s);
+
+        String core = decideCore();
+        if("true".equals(core))
+            props.setNewProperty((String) null, CORE, core);
+
         String clucene = decideCLucene();
         if("true".equals(clucene))
             props.setNewProperty((String) null, CLUCENE, clucene);
@@ -230,6 +255,10 @@ public class InitializeTask extends Task {
         if("true".equals(designercomponents))
             props.setNewProperty((String) null, DESIGNERCOMPONENTS, designercomponents);
 
+        String gui = decideGui();
+        if("true".equals(gui))
+            props.setNewProperty((String) null, GUI, gui);
+
         String helptool = decideHelp();
         if("true".equals(helptool))
             props.setNewProperty((String) null, HELP, helptool);
@@ -237,6 +266,10 @@ public class InitializeTask extends Task {
         String multimedia = decideMultimedia();
         if("true".equals(multimedia))
             props.setNewProperty((String) null, MULTIMEDIA, multimedia);
+
+        String network = decideNetwork();
+        if("true".equals(network))
+            props.setNewProperty((String) null, NETWORK, network);
 
         String opengl = decideOpenGL();
         if("true".equals(opengl))
@@ -266,9 +299,14 @@ public class InitializeTask extends Task {
         if("true".equals(webkit))
             props.setNewProperty((String) null, WEBKIT, webkit);
 
-        String patterns = decideXMLPatterns();
-        if("true".equals(patterns))
-            props.setNewProperty((String) null, XMLPATTERNS, patterns);
+        String xml = decideXml();
+        if("true".equals(xml))
+            props.setNewProperty((String) null, XML, xml);
+
+        String xmlpatterns = decideXmlPatterns();
+        if("true".equals(xmlpatterns))
+            props.setNewProperty((String) null, XMLPATTERNS, xmlpatterns);
+
 
         props.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
 
@@ -312,6 +350,8 @@ public class InitializeTask extends Task {
         props.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
         props.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32"));
         props.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32"));
+
+        alreadyRun = true;
     }
 
     private String decideJavaHomeTarget() {
@@ -415,7 +455,7 @@ public class InitializeTask extends Task {
         path.append(subdir);
         path.append("/");
         //! TODO: useful?
-        path.append(LibraryEntry.formatPluginName(name, false, debug));
+        path.append(LibraryEntry.formatPluginName(name, false, debug, qtMajorVersion));
         return new File(path.toString()).exists();
     }
 
@@ -424,7 +464,7 @@ public class InitializeTask extends Task {
      * correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper props) {
-        boolean exists = doesQtLibExist("phonon", 4, (String) props.getProperty((String) null, PHONONLIBDIR));
+        boolean exists = doesQtLibExist("phonon", qtMajorVersion, (String) props.getProperty((String) null, PHONONLIBDIR));
         String result = String.valueOf(exists);
         if(verbose)
             System.out.println(PHONON + ": " + result);
@@ -452,6 +492,27 @@ public class InitializeTask extends Task {
         return result;
     }
 
+    public static boolean findInString(String haystack, String needle, char delimChar) {
+        final int nLen = needle.length();
+        final int hLen = haystack.length();
+        int o = 0;
+        boolean found = false;
+        while(o < hLen) {
+            int stringOffset = haystack.indexOf(needle, o);
+            if(stringOffset < 0)
+                break;
+            if(stringOffset == 0 || haystack.charAt(stringOffset - 1) == delimChar) {
+                if(hLen <= stringOffset + nLen || haystack.charAt(stringOffset + nLen) == delimChar) {
+                   // found
+                   found = true;
+                   break;
+                }
+            }
+            o = stringOffset + nLen;
+        }
+        return found;
+    }
+
     /**
      * Adds new library to qtjambi.qtconfig property, which is used
      * to specify additional qt libraries compiled.
@@ -459,31 +520,38 @@ public class InitializeTask extends Task {
      */
     private void addToQtConfig(String config) {
         String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
-        String newConfig;
+        String newConfig = null;
         if(oldConfig != null) {
-            newConfig = oldConfig + " " + config;
+            final char delimChar = ' ';
+            // Check it doesn't already exist (and don't add it again), this
+            //  happens when InitializeTask runs twice due to multiple ant
+            //  targets being set.
+            boolean found = findInString(oldConfig, config, delimChar);
+            if(!found)
+                newConfig = oldConfig + delimChar + config;
         } else {
             newConfig = config;
         }
-        props.setProperty((String) null, QTCONFIG, newConfig, false);
+        if(newConfig != null)
+            props.setProperty((String) null, QTCONFIG, newConfig, false);
     }
 
     private String decideSql() {
-        String result = String.valueOf(doesQtLibExist("QtSql", 4));
+        String result = String.valueOf(doesQtLibExist("QtSql", qtMajorVersion));
         if(verbose) System.out.println(SQL + ": " + result);
         if("true".equals(result)) addToQtConfig("sql");
         return result;
     }
 
     private String decideSvg() {
-        String result = String.valueOf(doesQtLibExist("QtSvg", 4));
+        String result = String.valueOf(doesQtLibExist("QtSvg", qtMajorVersion));
         if(verbose) System.out.println(SVG + ": " + result);
         if("true".equals(result)) addToQtConfig("svg");
         return result;
     }
 
     private String decideTest() {
-        String result = String.valueOf(doesQtLibExist("QtTest", 4));
+        String result = String.valueOf(doesQtLibExist("QtTest", qtMajorVersion));
         if(verbose) System.out.println(TEST + ": " + result);
         if("true".equals(result)) addToQtConfig("qtestlib");
         return result;
@@ -591,83 +659,111 @@ public class InitializeTask extends Task {
         return result;
     }
 
+    private String decideCore() {
+        String result = String.valueOf(doesQtLibExist("QtCore", qtMajorVersion));
+        if(verbose) System.out.println(CORE + ": " + result);
+        if("true".equals(result)) addToQtConfig("core");
+        return result;
+    }
+
     private String decideCLucene() {
-        String result = String.valueOf(doesQtLibExist("QtCLucene", 4));
+        String result = String.valueOf(doesQtLibExist("QtCLucene", qtMajorVersion));
         if(verbose) System.out.println(CLUCENE + ": " + result);
         return result;
     }
 
     private String decideDBus() {
-        String result = String.valueOf(doesQtLibExist("QtDBus", 4));
+        String result = String.valueOf(doesQtLibExist("QtDBus", qtMajorVersion));
         if(verbose) System.out.println(DBUS + ": " + result);
         if("true".equals(result)) addToQtConfig("dbus");
         return result;
     }
 
     private String decideDeclarative() {
-        String result = String.valueOf(doesQtLibExist("QtDeclarative", 4));
+        String result = String.valueOf(doesQtLibExist("QtDeclarative", qtMajorVersion));
         if(verbose) System.out.println(DECLARATIVE + ": " + result);
         if("true".equals(result)) addToQtConfig("declarative");
         return result;
     }
 
     private String decideDesigner() {
-        String result = String.valueOf(doesQtLibExist("QtDesigner", 4));
+        String result = String.valueOf(doesQtLibExist("QtDesigner", qtMajorVersion));
         if(verbose) System.out.println(DESIGNER + ": " + result);
         if("true".equals(result)) addToQtConfig("designer");
         return result;
     }
 
     private String decideDesignerComponents() {
-        String result = String.valueOf(doesQtLibExist("QtDesignerComponents", 4));
+        String result = String.valueOf(doesQtLibExist("QtDesignerComponents", qtMajorVersion));
         if(verbose) System.out.println(DESIGNERCOMPONENTS + ": " + result);
         return result;
     }
 
+    private String decideGui() {
+        String result = String.valueOf(doesQtLibExist("QtGui", qtMajorVersion));
+        if(verbose) System.out.println(GUI + ": " + result);
+        if("true".equals(result)) addToQtConfig("gui");
+        return result;
+    }
+
     private String decideHelp() {
-        String result = String.valueOf(doesQtLibExist("QtHelp", 4));
+        String result = String.valueOf(doesQtLibExist("QtHelp", qtMajorVersion));
         if(verbose) System.out.println(HELP + ": " + result);
         if("true".equals(result)) addToQtConfig("help");
         return result;
     }
 
     private String decideMultimedia() {
-        String result = String.valueOf(doesQtLibExist("QtMultimedia", 4));
+        String result = String.valueOf(doesQtLibExist("QtMultimedia", qtMajorVersion));
         if(verbose) System.out.println(MULTIMEDIA + ": " + result);
         if("true".equals(result)) addToQtConfig("multimedia");
         return result;
     }
 
+    private String decideNetwork() {
+        String result = String.valueOf(doesQtLibExist("QtNetwork", qtMajorVersion));
+        if(verbose) System.out.println(NETWORK + ": " + result);
+        if("true".equals(result)) addToQtConfig("network");
+        return result;
+    }
+
     private String decideOpenGL() {
-        String result = String.valueOf(doesQtLibExist("QtOpenGL", 4));
+        String result = String.valueOf(doesQtLibExist("QtOpenGL", qtMajorVersion));
         if(verbose) System.out.println(OPENGL + ": " + result);
         if("true".equals(result)) addToQtConfig("opengl");
         return result;
     }
 
     private String decideScript() {
-        String result = String.valueOf(doesQtLibExist("QtScript", 4));
+        String result = String.valueOf(doesQtLibExist("QtScript", qtMajorVersion));
         if(verbose) System.out.println(SCRIPT + ": " + result);
         if("true".equals(result)) addToQtConfig("script");
         return result;
     }
 
     private String decideScripttools() {
-        String result = String.valueOf(doesQtLibExist("QtScriptTools", 4));
+        String result = String.valueOf(doesQtLibExist("QtScriptTools", qtMajorVersion));
         if(verbose) System.out.println(SCRIPTTOOLS + ": " + result);
         if("true".equals(result)) addToQtConfig("scripttools");
         return result;
     }
 
     private String decideWebkit() {
-        String result = String.valueOf(doesQtLibExist("QtWebKit", 4));
+        String result = String.valueOf(doesQtLibExist("QtWebKit", qtMajorVersion));
         if(verbose) System.out.println(WEBKIT + ": " + result);
         if("true".equals(result)) addToQtConfig("webkit");
         return result;
     }
 
-    private String decideXMLPatterns() {
-        String result = String.valueOf(doesQtLibExist("QtXmlPatterns", 4));
+    private String decideXml() {
+        String result = String.valueOf(doesQtLibExist("QtXml", qtMajorVersion));
+        if(verbose) System.out.println(XML + ": " + result);
+        if("true".equals(result)) addToQtConfig("xml");
+        return result;
+    }
+
+    private String decideXmlPatterns() {
+        String result = String.valueOf(doesQtLibExist("QtXmlPatterns", qtMajorVersion));
         if(verbose) System.out.println(XMLPATTERNS + ": " + result);
         if("true".equals(result)) addToQtConfig("xmlpatterns");
         return result;

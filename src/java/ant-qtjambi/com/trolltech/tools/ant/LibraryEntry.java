@@ -80,6 +80,7 @@ public class LibraryEntry extends Task {
 
     private String type = TYPE_DEFAULT;
     private int version = VERSION_DEFAULT;
+    private String versionString = String.valueOf(version);
     private String name;
     private File rootpath;
     private boolean kdephonon = false;
@@ -93,6 +94,7 @@ public class LibraryEntry extends Task {
 
     public void setVersion(int version) {
         this.version = version;
+        this.versionString = String.valueOf(version);
     }
 
     public boolean getKdephonon() {
@@ -162,7 +164,7 @@ public class LibraryEntry extends Task {
 
         // Fix name
         if(type.equals(TYPE_PLUGIN)) {
-            name = formatPluginName(name, this.kdephonon, debug);
+            name = formatPluginName(name, this.kdephonon, debug, version);
         } else if(type.equals(TYPE_QTJAMBI_PLUGIN)) {
             // this may have _debuglib in the filename (unlike normal qt plugins)
             name = formatQtJambiName(name, debug);
@@ -193,11 +195,12 @@ public class LibraryEntry extends Task {
         return subdir + "/" + name;
     }
 
-    public static String formatPluginName(String name, boolean kdephonon, boolean debug) {
+    public static String formatPluginName(String name, boolean kdephonon, boolean debug, int version) {
+        String versionString = String.valueOf(version);
         if(debug) {
             switch(OSInfo.os()) {
             case Windows:
-                return name + "d4.dll";
+                return name + "d" + versionString + ".dll";
             case MacOS:
                 return "lib" + name + "_debug.dylib";
             case Solaris:
@@ -208,7 +211,7 @@ public class LibraryEntry extends Task {
         } else {
             switch(OSInfo.os()) {
             case Windows:
-                return name + "4.dll";
+                return name + versionString + ".dll";
             case MacOS:
                 return "lib" + name + ".dylib";
             case Solaris:
@@ -230,32 +233,29 @@ public class LibraryEntry extends Task {
         return library;
     }
 
-    public static String formatQtName(String name, boolean debug) {
-        return formatQtName(name, debug, 4);
-    }
-
     public static String formatQtName(String name, boolean debug, int version) {
+        String versionString = String.valueOf(version);
         if(debug) {
             switch(OSInfo.os()) {
             case Windows:
-                return name + "d" + version + ".dll";
+                return name + "d" + versionString + ".dll";
             case MacOS:
-                return "lib" + name + "_debug." + version + ".dylib";
+                return "lib" + name + "_debug." + versionString + ".dylib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                return "lib" + name + ".so." + version;
+                return "lib" + name + ".so." + versionString;
             }
         } else {
             switch(OSInfo.os()) {
             case Windows:
-                return name + version + ".dll";
+                return name + versionString + ".dll";
             case MacOS:
-                return "lib" + name + "." + version + ".dylib";
+                return "lib" + name + "." + versionString + ".dylib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                return "lib" + name + ".so." + version;
+                return "lib" + name + ".so." + versionString;
             }
         }
         throw new BuildException("unhandled case...");
