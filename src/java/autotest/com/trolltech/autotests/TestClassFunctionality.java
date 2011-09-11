@@ -66,7 +66,6 @@ import com.trolltech.autotests.generated.TestDialog;
 import com.trolltech.autotests.generated.SpinBoxSubclass;
 import com.trolltech.autotests.generated.General;
 
-
 import com.trolltech.qt.QNoImplementationException;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QtJambiObject;
@@ -665,7 +664,7 @@ public class TestClassFunctionality extends QApplicationTest {
     }
 
     @Test
-    public void testDialog(){
+    public void testDialog() {
         String[] childrenClassList = {"QGridLayout","QLabel","QComboBox","QLabel","QComboBox","QLabel","QComboBox","QPushButton","QTableWidget","QLabel", "QPushButton"};
 
         TestDialog dialog = new TestDialog();

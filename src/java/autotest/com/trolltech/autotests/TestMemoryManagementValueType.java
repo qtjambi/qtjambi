@@ -53,7 +53,6 @@ import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementValueType extends TestMemoryManagement {
-
     @Override
     protected QtJambiObject createInstanceInJava() {
         return new ValueType();
@@ -112,10 +111,11 @@ public class TestMemoryManagementValueType extends TestMemoryManagement {
         return false;
     }
 
-     /*
+    /*
         Required for IntelliJ to realize that the method is a junit test
         since it doesn't check super classes.
     */
     @Test
-    public void dummy() {}
+    public void dummy() {
+    }
 }

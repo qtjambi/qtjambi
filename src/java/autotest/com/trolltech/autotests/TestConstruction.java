@@ -55,7 +55,6 @@ import com.trolltech.qt.gui.QMdiSubWindow;
 import com.trolltech.qt.gui.QWidget;
 
 public class TestConstruction extends QApplicationTest {
-
     @Test
     public void testQObjectConversionInConstructor() {
         QMdiArea area = new QMdiArea() {

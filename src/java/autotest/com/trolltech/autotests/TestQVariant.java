@@ -77,7 +77,6 @@ import com.trolltech.qt.gui.QGraphicsItem;
 import com.trolltech.qt.gui.QGraphicsPixmapItem;
 
 public class TestQVariant extends QApplicationTest {
-
     @Test
     public void run_QVariantString() {
         Object variant = "this is my string";

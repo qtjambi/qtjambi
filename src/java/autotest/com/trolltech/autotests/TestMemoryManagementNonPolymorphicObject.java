@@ -76,7 +76,7 @@ public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManageme
             }
         }.invalidateObject((NonPolymorphicObjectType) obj);
 
-         QtJambiObject tmp = temporaryObject;
+        QtJambiObject tmp = temporaryObject;
         temporaryObject = null;
         return tmp;
     }

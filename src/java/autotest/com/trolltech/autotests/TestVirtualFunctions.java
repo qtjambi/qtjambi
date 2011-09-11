@@ -78,7 +78,6 @@ import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.gui.QWindowsStyle;
 
 class JavaNonAbstractSubclass extends AbstractClass {
-
     @Override
     public void abstractFunction(String something) {
         setS("Even more " + something);
@@ -88,7 +87,6 @@ class JavaNonAbstractSubclass extends AbstractClass {
     public AbstractClass getAbstractClass() {
         return new JavaNonAbstractSubclass();
     }
-
 }
 
 class MyLayout extends QVBoxLayout {
@@ -124,7 +122,6 @@ class MyLayout extends QVBoxLayout {
 }
 
 public class TestVirtualFunctions extends QApplicationTest {
-
     class WidgetClass1 extends QWidget {
         public void setJavaSizeHint(QSize size) {
             m_size = size;
@@ -410,7 +407,6 @@ public class TestVirtualFunctions extends QApplicationTest {
         assertTrue(myVirtualFunctionWasCalled);
         assertTrue(icon.isNull());
     }
-
 
     @Test
     //  Test whether slots are magically virtual as predicated by Qt

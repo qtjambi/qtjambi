@@ -61,7 +61,6 @@ import com.trolltech.qt.QtEnumerator;
  * @author eblomfel
  */
 public class TestMetaObject extends QApplicationTest {
-
     private static class SignalsAndSlotsSubclass extends SignalsAndSlots {
         enum YoYoYo {
             Yo,

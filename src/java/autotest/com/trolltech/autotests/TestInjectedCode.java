@@ -146,7 +146,6 @@ import com.trolltech.qt.xml.QXmlInputSource;
 import com.trolltech.qt.xml.QXmlLexicalHandlerInterface;
 
 public class TestInjectedCode extends QApplicationTest {
-
     static class IODeviceSubclassSubclass extends IODeviceSubclass {
         public byte buffer[];
         public int inputBufferSize;

@@ -56,9 +56,6 @@ import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.gui.QApplication;
 
 public class TestQMessageHandler extends QMessageHandler {
-
-
-
     @Override
     public void debug(String message) {
         lastDebug = message;

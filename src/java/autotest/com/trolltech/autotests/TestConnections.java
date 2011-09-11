@@ -157,7 +157,7 @@ public class TestConnections extends QApplicationTest implements Qt
         assertEquals(e.getMessage(), "Signals must be declared as members of QSignalEmitter subclasses");
     }
 
-    public void reciveSignal(String s){
+    public void reciveSignal(String s) {
 
     }
 
@@ -1430,13 +1430,13 @@ public class TestConnections extends QApplicationTest implements Qt
         Byte[] c = {1, 2, 3};
 
 
-        public void slot1(String[] str){
+        public void slot1(String[] str) {
             for (int i = 0; i < str.length; i++) {
                 assertEquals(a[i], str[i]);
             }
         }
 
-        public void slot2(String[][] str){
+        public void slot2(String[][] str) {
             for (int i = 0; i < str.length; i++) {
                 String[] strings = str[i];
                 for (int j = 0; j < strings.length; j++) {
@@ -1445,7 +1445,7 @@ public class TestConnections extends QApplicationTest implements Qt
             }
         }
 
-        public void slot3(Byte[] bb){
+        public void slot3(Byte[] bb) {
             for (int i = 0; i < bb.length; i++) {
                 assertEquals(c[i], bb[i]);
             }

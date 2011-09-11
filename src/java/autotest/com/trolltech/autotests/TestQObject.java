@@ -61,8 +61,7 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 
-public class TestQObject extends QApplicationTest{
-
+public class TestQObject extends QApplicationTest {
     private static final int TIMEOUT = 10000;
 
     private static class TestObject extends QObject {

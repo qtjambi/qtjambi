@@ -63,9 +63,7 @@ import com.trolltech.qt.gui.QAbstractButton;
 import com.trolltech.qt.gui.QCheckBox;
 
 public class TestProperties extends QApplicationTest {
-
-    private static class FullOfProperties extends QObject
-    {
+    private static class FullOfProperties extends QObject {
         private boolean isDesignableTest;
         private FullOfProperties(boolean isDesignableTest) {
             this.isDesignableTest = isDesignableTest;
@@ -143,8 +141,7 @@ public class TestProperties extends QApplicationTest {
         private boolean user;
         private String name;
 
-        private ExpectedValues(String name, boolean writable, boolean resettable, boolean designable, boolean user)
-        {
+        private ExpectedValues(String name, boolean writable, boolean resettable, boolean designable, boolean user) {
             this.name = name;
             this.writable = writable;
             this.resettable = resettable;
@@ -155,8 +152,7 @@ public class TestProperties extends QApplicationTest {
 
     @Test
     public void testProperties() {
-        ExpectedValues expectedValues[] =
-        {
+        ExpectedValues expectedValues[] = {
                 new ExpectedValues("ordinaryProperty", true, false, true, false),
                 new ExpectedValues("annotatedProperty", true, false, true, false),
                 new ExpectedValues("ordinaryReadOnlyProperty", false, false, true, false),

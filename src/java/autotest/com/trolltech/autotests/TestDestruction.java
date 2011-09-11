@@ -52,9 +52,7 @@ import com.trolltech.autotests.generated.OrdinaryDestroyed;
 
 import com.trolltech.qt.gui.QApplication;
 
-class MyOrdinaryDestroyed extends OrdinaryDestroyed
-{
-
+class MyOrdinaryDestroyed extends OrdinaryDestroyed {
     @Override
     public OrdinaryDestroyed virtualGetObjectCppOwnership() {
         return new MyOrdinaryDestroyed();
@@ -69,7 +67,6 @@ class MyOrdinaryDestroyed extends OrdinaryDestroyed
     public void virtualSetDefaultOwnership(OrdinaryDestroyed arg__1) {
         // nothing
     }
-
 }
 
 public class TestDestruction extends QApplicationTest {
@@ -344,7 +341,6 @@ public class TestDestruction extends QApplicationTest {
         assertEquals(1, MyOrdinaryDestroyed.disposedCount);
         assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
     }
-
 
     @Test
     public void testCppCreationDefaultOwnershipThroughNative()

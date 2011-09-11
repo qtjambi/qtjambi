@@ -64,19 +64,16 @@ import com.trolltech.qt.gui.QStyleOptionButton;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.gui.QWindowsStyle;
 
-class CustomStyle extends QWindowsStyle
-{
+class CustomStyle extends QWindowsStyle {
     public static QStyleOption m_option = null;
 
     @Override
     public void drawControl(ControlElement element, QStyleOption opt, QPainter p, QWidget w) {
         m_option = opt;
     }
-
 }
 
-public class TestPolymorphicTypes extends QWidget
-{
+public class TestPolymorphicTypes extends QWidget {
     @BeforeClass
     public static void testInitialize() throws Exception {
         QApplication.initialize(new String[] {});

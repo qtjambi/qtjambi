@@ -61,7 +61,6 @@ import com.trolltech.qt.gui.QPolygonF;
 import com.trolltech.qt.gui.QTransform;
 
 public class TestQTransform extends QApplicationTest {
-
     class Data {
         public Data(String name, QTransform matrix, QRect src, QPolygon res) {
             this.name = name;

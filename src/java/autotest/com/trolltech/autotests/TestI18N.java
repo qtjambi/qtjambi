@@ -159,7 +159,7 @@ public class TestI18N extends QApplicationTest {
 
     @Test
     public void TestReimplementQTranslator() {
-        QTranslator translator = new QTranslator(){
+        QTranslator translator = new QTranslator() {
 
             @Override
             public String translate(String context, String sourceText, String comment) {

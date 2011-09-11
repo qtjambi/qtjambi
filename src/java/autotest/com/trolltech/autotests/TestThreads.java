@@ -54,8 +54,7 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QObject;
 
-public class TestThreads extends QApplicationTest{
-
+public class TestThreads extends QApplicationTest {
     /**
      */
     private static class AffinityTester implements Runnable {
@@ -75,9 +74,6 @@ public class TestThreads extends QApplicationTest{
         thread.join(10000);
         assertTrue(tester.ok);
     }
-
-
-
 
     /*************************************************************************/
 
@@ -444,4 +440,4 @@ public class TestThreads extends QApplicationTest{
         }
         */
     }
-};
+}

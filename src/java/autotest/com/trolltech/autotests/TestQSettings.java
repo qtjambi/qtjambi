@@ -58,7 +58,6 @@ import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QSettings;
 
 public class TestQSettings extends QApplicationTest implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Test

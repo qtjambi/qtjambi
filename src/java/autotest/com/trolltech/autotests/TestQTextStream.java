@@ -58,8 +58,7 @@ import com.trolltech.qt.core.QTemporaryFile;
 import com.trolltech.qt.core.QTextStream;
 import com.trolltech.qt.gui.QPolygonF;
 
-public class TestQTextStream {
-
+public class TestQTextStream extends QApplicationTest {
     @Test public void testQPolygonF() {
         QPolygonF p = new QPolygonF();
         p.add(new QPointF(10, 11));

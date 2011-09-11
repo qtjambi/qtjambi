@@ -56,7 +56,6 @@ import com.trolltech.qt.gui.QPlastiqueStyle;
 //  #testQApplicationSetStyleOverridePolish() and #testQApplicationSetStyleNotOverridePolish()
 //  needing QPlastiqueStyle() which is not available by default Qt builds on windows.
 public class TestInjectedCodeQPlastiqueStyle extends QApplicationTest {
-
     private QPalette savedPalette = null;
     @Test
     public void testQApplicationSetStyleOverridePolish() {

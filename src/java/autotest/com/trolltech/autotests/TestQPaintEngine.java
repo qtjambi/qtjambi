@@ -63,8 +63,7 @@ import com.trolltech.qt.gui.QPaintEngine;
 import com.trolltech.qt.gui.QPaintEngineState;
 import com.trolltech.qt.gui.QPixmap;
 
-public class TestQPaintEngine extends CustomPaintEngine
-{
+public class TestQPaintEngine extends CustomPaintEngine {
 
     @Override
     public boolean begin(QPaintDeviceInterface pdev) {

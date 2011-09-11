@@ -55,8 +55,8 @@ import com.trolltech.qt.gui.QLayout;
 import com.trolltech.qt.gui.QLayoutItemInterface;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
-public class TestNullPointers extends QApplicationTest {
 
+public class TestNullPointers extends QApplicationTest {
     @Test
     public void testBoxLayoutAddWidget() {
         QVBoxLayout layout = new QVBoxLayout();
@@ -72,7 +72,6 @@ public class TestNullPointers extends QApplicationTest {
     }
 
     static class MyLayout extends QLayout {
-
         @Override
         public QLayoutItemInterface itemAt(int arg__1) {
             return null;
@@ -106,9 +105,7 @@ public class TestNullPointers extends QApplicationTest {
         public QLayoutItemInterface takeAt(int index) {
             return null;
         }
-
     }
-
 
     @Test
     public void testBlah() {
@@ -123,12 +120,10 @@ public class TestNullPointers extends QApplicationTest {
         QApplication.processEvents();
     }
 
-
     public static void main(String args[]) {
         QApplication.initialize(args);
         TestNullPointers p = new TestNullPointers();
         p.testBlah();
 
     }
-
 }

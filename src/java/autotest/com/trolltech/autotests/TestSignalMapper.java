@@ -54,9 +54,7 @@ import com.trolltech.qt.core.QSignalMapper;
 import com.trolltech.qt.gui.QGuiSignalMapper;
 import com.trolltech.qt.gui.QWidget;
 
-public class TestSignalMapper extends QApplicationTest{
-
-
+public class TestSignalMapper extends QApplicationTest {
     /**
      * Receiver class for the various mapped signals in this test.
      */
@@ -112,7 +110,7 @@ public class TestSignalMapper extends QApplicationTest{
             assertEquals(receiver.lastInteger, i);
         }
 
-        Thread thread = new Thread("Reciver Thread"){
+        Thread thread = new Thread("Reciver Thread") {
             @Override
             public void run() {
                 new QEventLoop().exec();

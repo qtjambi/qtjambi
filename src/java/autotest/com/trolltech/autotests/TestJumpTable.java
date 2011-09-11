@@ -59,8 +59,6 @@ import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QTextStream;
 
 public class TestJumpTable {
-
-
     @Test
     public void testMemberFunctions() {
         QRect r = new QRect(1, 2, 3, 4);
@@ -71,13 +69,11 @@ public class TestJumpTable {
         Assert.assertEquals(r.height(), 4);
     }
 
-
     @Test
     public void testStaticFunctions() {
         QCoreApplication.setApplicationName("TestApp");
         Assert.assertEquals(QCoreApplication.applicationName(), "TestApp");
     }
-
 
     @Test
     public void testReplaceValueFunctions() throws Exception {

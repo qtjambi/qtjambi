@@ -56,7 +56,6 @@ import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QModelIndex;
 
 public class TestPrivateSignals extends QApplicationTest {
-
     private static class DummyModel extends QAbstractItemModel {
         public int columnCount(QModelIndex parent) {
             return 1;
@@ -119,7 +118,5 @@ public class TestPrivateSignals extends QApplicationTest {
         assertTrue(signal != null);
         assertEquals(signal.getType().getName(), "com.trolltech.qt.QSignalEmitter$PrivateSignal0");
     }
-
-
 
 }

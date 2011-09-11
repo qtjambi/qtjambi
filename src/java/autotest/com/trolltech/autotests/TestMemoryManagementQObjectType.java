@@ -52,7 +52,6 @@ import com.trolltech.autotests.generated.InvalidatorQObjectType;
 import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementQObjectType extends TestMemoryManagement {
-
     @Override
     protected QtJambiObject createInstanceInJava() {
         return new QObjectType();
@@ -119,6 +118,5 @@ public class TestMemoryManagementQObjectType extends TestMemoryManagement {
 
     @Test
     public void dummy() {
-        
     }
 }

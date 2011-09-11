@@ -91,20 +91,18 @@ import com.trolltech.qt.gui.QValidator;
 import com.trolltech.qt.gui.QWidget;
 
 public class TestReferenceCounting extends QApplicationTest {
-
     public class AssertEquals {
-
-        protected boolean equals(){
+        protected boolean equals() {
             return false;
         }
 
-        public void test(){
+        public void test() {
             test(10000);
         }
-        public void test(int timeout){
+        public void test(int timeout) {
             long stop = System.currentTimeMillis() + timeout;
             Vector<Long> garbage = new Vector<Long>();
-            while(stop > System.currentTimeMillis() && !equals()){
+            while(stop > System.currentTimeMillis() && !equals()) {
 
                 garbage.add(System.currentTimeMillis());
 
@@ -170,8 +168,6 @@ public class TestReferenceCounting extends QApplicationTest {
             assertEquals("action" + i, w.actions().get(i).text());
         }
     }
-
-
 
     @Test public void testQWidgetAddActionDuplicate() {
         QWidget w = new QWidget();

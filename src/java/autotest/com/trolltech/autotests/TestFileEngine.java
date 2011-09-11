@@ -61,8 +61,7 @@ import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QPixmap;
 
-public class TestFileEngine extends QApplicationTest{
-
+public class TestFileEngine extends QApplicationTest {
     @Test
     public void run_classPathFileEngine() {
         QAbstractFileEngine.addSearchPathForResourceEngine(".");

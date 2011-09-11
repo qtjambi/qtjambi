@@ -59,7 +59,6 @@ import com.trolltech.qt.internal.QtJambiDebugTools;
 // Attempt at complete test for general memory leaks and crashes
 // Should test that all the general cases work as intended by default.
 public abstract class TestMemoryManagement {
-
     @BeforeClass
     public static void testInitialize() throws Exception {
         QApplication.initialize(new String[] {});
@@ -73,7 +72,6 @@ public abstract class TestMemoryManagement {
         QApplication.quit();
         QApplication.instance().dispose();
     }
-
 
     // Types: Normal object type with shell class
     //        Normal object type without shell class
