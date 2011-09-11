@@ -51,6 +51,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,6 +60,18 @@ import com.trolltech.autotests.generated.NativePointerTester;
 import com.trolltech.qt.QNativePointer;
 
 public class TestNativePointer extends QApplicationTest {
+    @Before
+    public void setUp() {
+        data = new Vector<String>();
+        data.add("simple");
+        data.add("A sort of long string that contains some numbers, (1....4) among other stuff...");
+    }
+
+    @After
+    public void tearDown() {
+        data = null;
+    }
+
     @Test
     public void run_createBooleanPointer() {
         {
@@ -272,13 +285,6 @@ public class TestNativePointer extends QApplicationTest {
     }
 
     private Collection<String> data;
-
-    @Before
-    public void setUp() {
-        data = new Vector<String>();
-        data.add("simple");
-        data.add("A sort of long string that contains some numbers, (1....4) among other stuff...");
-    }
 
     @Test
     public void run_testCreateCharPointer() {

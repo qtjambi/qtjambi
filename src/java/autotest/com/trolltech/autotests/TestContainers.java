@@ -58,6 +58,7 @@ import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,12 +75,16 @@ import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QLinearGradient;
 
 public class TestContainers extends QApplicationTest {
-
     private Tulip tulip;
 
     @Before
     public void setUp() throws Exception {
         tulip = new Tulip();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        tulip = null;
     }
 
     @Test

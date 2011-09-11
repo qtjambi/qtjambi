@@ -51,6 +51,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,6 +59,20 @@ import com.trolltech.qt.QFlags;
 import com.trolltech.qt.QtEnumerator;
 
 public class TestQFlags extends QApplicationTest {
+    private Collection<DataClear> data;
+
+    @Before
+    public void setUp() {
+        data = new Vector<DataClear>();
+        data.add(new DataClear(new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four }, new MyEnum[] { MyEnum.Three }, 4));
+        data.add(new DataClear(new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four }, new MyEnum[] { MyEnum.Four }, 3));
+        data.add(new DataClear(new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four }, new MyEnum[] { MyEnum.Four, MyEnum.One }, 2));
+    }
+
+    @After
+    public void tearDown() {
+        data = null;
+    }
 
     private enum MyEnum implements QtEnumerator {
         Zero, One, Two, Three, Four;
@@ -126,16 +141,6 @@ public class TestQFlags extends QApplicationTest {
         public MyEnum[] toSet;
         public MyEnum[] toClear;
         public int result;
-    }
-
-    private Collection<DataClear> data;
-
-    @Before
-    public void setUp() {
-        data = new Vector<DataClear>();
-        data.add(new DataClear(new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four }, new MyEnum[] { MyEnum.Three }, 4));
-        data.add(new DataClear(new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four }, new MyEnum[] { MyEnum.Four }, 3));
-        data.add(new DataClear(new MyEnum[] { MyEnum.One, MyEnum.Two, MyEnum.Four }, new MyEnum[] { MyEnum.Four, MyEnum.One }, 2));
     }
 
     @Test

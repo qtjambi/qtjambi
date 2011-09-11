@@ -51,6 +51,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -102,6 +103,19 @@ public class TestQObject extends QApplicationTest {
 
         child22 = new TestObject(test2);
         child22.setObjectName("child");
+    }
+
+    @After
+    public void tearDown() {
+        root = null;
+        file1 = null;
+        file2 = null;
+        test1 = null;
+        test2 = null;
+        child11 = null;
+        child12 = null;
+        child21 = null;
+        child22 = null;
     }
 
     @Test
