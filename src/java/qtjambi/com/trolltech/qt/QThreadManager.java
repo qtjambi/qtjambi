@@ -45,29 +45,126 @@
 package com.trolltech.qt;
 
 /**
+ * FIXME: This is priviledged API move to com.trolltech.qt.native.internal
  * @exclude
  */
 class QThreadManager {
 
+    private static NativeResourcesReleaseThread nativeResourcesReleaseThread;
+
+    static boolean postShutdownRequest() {
+        NativeResourcesReleaseThread tmpThread;
+        synchronized(QThreadManager.class) {
+            tmpThread = nativeResourcesReleaseThread;
+        }
+        if(tmpThread == null)
+            return false;
+        return tmpThread.postShutdownRequest();
+    }
+
+    static void interrupt() {
+        NativeResourcesReleaseThread tmpThread;
+        synchronized(QThreadManager.class) {
+            tmpThread = nativeResourcesReleaseThread;
+        }
+        if(tmpThread == null)
+            return;
+        tmpThread.interrupt();
+    }
+
+    static boolean shutdown(long millis) {
+        postShutdownRequest();
+        NativeResourcesReleaseThread tmpThread;
+        synchronized(QThreadManager.class) {
+            tmpThread = nativeResourcesReleaseThread;
+        }
+        if(tmpThread == null)
+            return true;
+        try {
+            tmpThread.join(millis);
+        } catch(InterruptedException e) {
+        }
+        return tmpThread.isAlive() == false;
+    }
+
+    // This is a debugging / unittest aid
+    public static boolean setSkipIt(boolean skipIt) {
+        NativeResourcesReleaseThread tmpThread;
+        synchronized(QThreadManager.class) {
+            tmpThread = nativeResourcesReleaseThread;
+        }
+        if(tmpThread == null)
+            return true;
+        return tmpThread.setSkipIt(skipIt);
+    }
+
     private static class NativeResourcesReleaseThread extends Thread {
-        private int m_sleepTime = 100;
+        private static final int DEFAULT_SLEEPTIME = 100;
+        private static final int MILLIS_PER_MINUTE = 60 * 1000;
+
+        private boolean skipIt;
+        private boolean shutdownFlag;
+        private int sleepTime = DEFAULT_SLEEPTIME;
 
         public NativeResourcesReleaseThread() {
+            setName("qtjambi-" + NativeResourcesReleaseThread.class.getName());
             setDaemon(true);
+        }
+
+        boolean postShutdownRequest() {
+            boolean bf;
+            synchronized(this) {
+                bf = shutdownFlag;
+                if(!bf)
+                    shutdownFlag = true;
+                interrupt();		// wake it up now
+            }
+            return bf;
+        }
+
+        boolean setSkipIt(boolean skipIt) {
+            boolean orig;
+            synchronized(this) {
+                orig = this.skipIt;
+                this.skipIt = skipIt;
+            }
+            return orig;
         }
 
         @Override
         public void run() {
-            while (true) {
-                try { sleep(m_sleepTime); } catch (Exception e) { };
-                boolean release = releaseNativeResources();
-                m_sleepTime = release ? 100 : Math.min(m_sleepTime * 2, 60 * 1000);
+            while(true) {
+                try {
+                    sleep(sleepTime);
+                } catch(InterruptedException e) {
+                    interrupted();        // clears the flag
+                }
+                boolean doIt = true;
+                synchronized(this) {
+                    if(shutdownFlag)
+                        break;
+                    if(skipIt)
+                        doIt = false;
+                }
+                if(doIt) {
+                    boolean release = releaseNativeResources();
+                    sleepTime = release ? DEFAULT_SLEEPTIME : Math.min(sleepTime * 2, MILLIS_PER_MINUTE);
+                } else {
+                }
+            }
+            synchronized(QThreadManager.class) {
+                nativeResourcesReleaseThread = null;
             }
         }
     }
 
     public static void initialize() {
-        new NativeResourcesReleaseThread().start();
+        synchronized(QThreadManager.class) {
+            if(nativeResourcesReleaseThread != null)
+                return;
+            nativeResourcesReleaseThread = new NativeResourcesReleaseThread();
+        }
+        nativeResourcesReleaseThread.start();
     }
 
     public synchronized static native boolean releaseNativeResources();
