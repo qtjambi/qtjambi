@@ -56,6 +56,9 @@ void writeOutNamespace(QXmlStreamWriter &s, NamespaceModelItem &item);
 void writeOutEnum(QXmlStreamWriter &s, EnumModelItem &item);
 void writeOutFunction(QXmlStreamWriter &s, FunctionModelItem &item);
 void writeOutClass(QXmlStreamWriter &s, ClassModelItem &item);
+void writeOutProperty(QXmlStreamWriter &, const QString &);
+void writeHelper(QXmlStreamWriter &, const QLatin1String&, const QString &);
+void writeType(QXmlStreamWriter &, const TypeInfo &);
 
 
 #endif // ASTTOXML
