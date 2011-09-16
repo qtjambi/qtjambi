@@ -1465,7 +1465,9 @@ public class TestConnections extends QApplicationTest implements Qt
             assertTrue(false);
         } catch (RuntimeException e) {}
 
+        System.out.println("We should print \"hello\" below this line.");
         test.test1.emit("hello");
+        System.out.println("We should print \"hello\" above this line.");
 
         test.test2.emit(test.a);
         test.test3.emit(test.b);
