@@ -50,7 +50,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trolltech.qt.internal.*;
+import com.trolltech.qt.osinfo.OSInfo;
 
 public class GeneratorTask extends Task {
     private String header = "";

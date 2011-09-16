@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
 
-import com.trolltech.qt.internal.OSInfo;
+import com.trolltech.qt.osinfo.OSInfo;
 
 //NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")

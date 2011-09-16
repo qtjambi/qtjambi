@@ -50,7 +50,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trolltech.qt.internal.*;
+import com.trolltech.qt.osinfo.OSInfo;
 
 //NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")

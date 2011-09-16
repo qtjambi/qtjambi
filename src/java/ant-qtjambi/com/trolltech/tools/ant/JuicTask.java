@@ -50,7 +50,7 @@ import org.apache.tools.ant.taskdefs.*;
 import java.io.*;
 import java.util.*;
 
-import com.trolltech.qt.internal.*;
+import com.trolltech.qt.osinfo.OSInfo;
 
 public class JuicTask extends MatchingTask {
     private String msg = "";

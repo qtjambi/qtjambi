@@ -56,6 +56,8 @@ import org.xml.sax.helpers.*;
 
 import com.trolltech.qt.Utilities;
 
+import com.trolltech.qt.osinfo.OSInfo;
+
 // !!NOTE!! This class can have no dependencies on Qt since
 // it is required for loading the libraries.
 

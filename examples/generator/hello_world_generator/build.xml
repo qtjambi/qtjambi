@@ -59,7 +59,7 @@
             <src path="${jambi.directory}/src/java/qtjambi-util"/>
             <src path="${basedir}/.."/>
             <include name="org/qtjambi/test/*.java"/>
-            <include name="com/trolltech/qt/internal/*.java"/>
+            <include name="com/trolltech/qt/osinfo/*.java"/>
         </javac>
     </target>
 

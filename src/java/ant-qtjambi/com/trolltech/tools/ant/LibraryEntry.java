@@ -44,9 +44,10 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
 import java.io.File;
-import com.trolltech.qt.internal.*;
+
+import org.apache.tools.ant.*;
+import com.trolltech.qt.osinfo.OSInfo;
 
 // NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")

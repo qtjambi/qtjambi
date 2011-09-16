@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.qt.internal;
+package com.trolltech.qt.osinfo;
 
 /**
  * The OSInfo class contains some basic information about the current
