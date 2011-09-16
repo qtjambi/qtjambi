@@ -49,6 +49,7 @@
     <target name="compile.native" depends="init">
         <mkdir dir="${outputDir}/tests/autotest-generator"/>
         <generator dir="${basedir}/generator"
+                debugTools="${qtjambi.debug-tools}"
                 includepaths="${basedir}/autotestlib${psep}${generator.includepaths}"
                 outputDirectory="${outputDir}/tests/autotest-generator"
                 typesystem="${basedir}/autotestlib/build.txt"
@@ -58,9 +59,12 @@
                 outputPreprocessFile="preprocessed_autotests.tmp"
             />
 
-        <qmake config="${qtjambi.configuration}"
-                dir="${outputDir}/tests/autotest-generator"
-                pro="${basedir}/autotestlib/autotestlib.pro" qmakebinary="${qmake.binary}"/>
+        <qmake  dir="${outputDir}/tests/autotest-generator"
+                pro="${basedir}/autotestlib/autotestlib.pro"
+                config="${qtjambi.configuration}"
+                qtconfig="${qtjambi.qtconfig}"
+                debugTools="${qtjambi.debug-tools}"
+                qmakebinary="${qmake.binary}"/>
 
         <make dir="${outputDir}/tests/autotest-generator" />
     </target>

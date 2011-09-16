@@ -1,5 +1,8 @@
 TARGET = com_trolltech_autotests_generated
 
+# Force debugging
+CONFIG += debug
+
 include(../../../src/cpp/qtjambi/qtjambi_include.pri)
 include(./cpp/com_trolltech_autotests_generated/com_trolltech_autotests_generated.pri)
 
@@ -20,7 +23,7 @@ HEADERS += \
     tulip.h \
     variants.h \
     general.h \
-    memorymanagement.h \
+    memorymanagement.h
 
 
 SOURCES += \
@@ -28,14 +31,12 @@ SOURCES += \
     global.cpp \
     injectedcode.cpp \
     testdialog.cpp \
-    memorymanagement.cpp \
+    qtjambiunittesttools.cpp \
+    memorymanagement.cpp
 
 win32 {
-   PRECOMPILED_HEADER = global.h
-   CONFIG += precompile_header
+    PRECOMPILED_HEADER = global.h
+    CONFIG += precompile_header
 }
 
 QT += sql xml network
-
-# Force debugging
-CONFIG += debug

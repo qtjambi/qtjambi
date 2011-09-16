@@ -24,9 +24,10 @@
             description="Run the generator on the autotests.">
         <mkdir dir="${outputDir}/autotestlib"/>
     <generator dir="${outputDir}/autotestlib"
+               debugTools="${qtjambi.debug-tools}"
                header="${sourceDir}/autotestlib/global.h"
-                   typesystem="${sourceDir}/autotestlib/build.txt"
-           outputDirectory="${outputDir}"/>
+               typesystem="${sourceDir}/autotestlib/build.txt"
+               outputDirectory="${outputDir}"/>
     </target>
 
     <target name="compile.autotests"
