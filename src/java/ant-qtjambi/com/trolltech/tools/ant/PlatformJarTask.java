@@ -293,36 +293,39 @@ public class PlatformJarTask extends Task {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
+            String vsredistdir = props.getProperty((String) null, InitializeTask.VSREDISTDIR).toString();
+            if(vsredistdir != null) {
+                File crt = new File(vsredistdir, "Microsoft.VC" + vcnumber + ".CRT");
 
-            File crt = new File(props.getProperty((String) null, InitializeTask.VSREDISTDIR).toString(),
-                                    "Microsoft.VC" + vcnumber + ".CRT");
-
-            String files[] = new String[] { "Microsoft.VC" + vcnumber + ".CRT.manifest",
+                String files[] = new String[] { "Microsoft.VC" + vcnumber + ".CRT.manifest",
                                             "msvcm" + vcnumber + ".dll",
                                             "msvcp" + vcnumber + ".dll",
                                             "msvcr" + vcnumber + ".dll"
                                             };
 
-            for(String libDir : libraryDir) {
-                for(String name : files) {
-                    String libdirstring;
-                    if("".equals(libDir)) {
-                        libdirstring = "lib/";
-                    } else {
-                        libdirstring = libDir;
-                        if(!libdirstring.endsWith("/"))
-                            libdirstring += "/";
-                    }
-                    String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
-                    unpackLibs.add(lib);
+                for(String libDir : libraryDir) {
+                    for(String name : files) {
+                        String libdirstring;
+                        if("".equals(libDir)) {
+                            libdirstring = "lib/";
+                        } else {
+                            libdirstring = libDir;
+                            if(!libdirstring.endsWith("/"))
+                                libdirstring += "/";
+                        }
+                        String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
+                        unpackLibs.add(lib);
 
-                    try {
-                        Util.copy(new File(crt, name), new File(outdir, lib));
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                        throw new BuildException("Failed to copy VS CRT libraries", e);
+                        try {
+                            Util.copy(new File(crt, name), new File(outdir, lib));
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                            throw new BuildException("Failed to copy VS CRT libraries", e);
+                        }
                     }
                 }
+            } else {
+                System.err.println("WARNING: " + InitializeTask.VSREDISTDIR + " property not set; skipping packaging of Visual C redistributable components.");
             }
             break;
 

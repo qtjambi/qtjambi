@@ -15,6 +15,7 @@ public class FindCompiler {
     private Compiler compiler;
     private boolean verbose = false;
     private PropertyHelper props;
+    private String compilerDetectionLine;
 
     public enum Compiler {
         MSVC1998("msvc98"),
@@ -72,22 +73,33 @@ public class FindCompiler {
         case MSVC2010_64:
             String vcdir = System.getenv("VSINSTALLDIR");
             if(vcdir == null) {
-                throw new BuildException("missing required environment variable " +
-                        "'VSINSTALLDIR' used to locate MSVC redistributables");
+                // It is not strictly _required_ to have VSINSTALLDIR set (i.e. if the user is using
+                //  Windows Platform SDK or VS Express editions to build qtjambi).  As the qtjambi can
+                //  still be built, used and deployed.   The target installed systems can manually
+                //  download and install vcredist.exe to provide the VS runtime needed.
+                System.err.println("WARNING: VSINSTALLDIR not set and building with MSVC toolchain; the resulting build output will not attempt to package Visual C redistributable components.");
+            } else {
+                File fileVcDir = new File(vcdir);
+                if(!fileVcDir.isDirectory()) {
+                    System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
+                    System.err.println("         VSINSTALLDIR=\"" + vcdir + "\"");
+                } else {
+                    props.setNewProperty((String) null, InitializeTask.VSINSTALLDIR, vcdir);
+
+                    String redistDir;
+                    if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64)
+                        redistDir = vcdir + "/vc/redist/amd64";
+                    else
+                        redistDir = vcdir + "/vc/redist/x86";
+                    File fileRedistDir = new File(redistDir);
+                    if(!fileRedistDir.isDirectory()) {
+                        System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
+                        System.err.println("         VSINSTALLDIR=\"" + vcdir + "\" checking for \"" + redistDir + "\"");
+                    } else {
+                        props.setNewProperty((String) null, InitializeTask.VSREDISTDIR, redistDir);
+                    }
+                }
             }
-            props.setNewProperty((String) null, InitializeTask.VSINSTALLDIR, vcdir);
-
-            String redistDir;
-            if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64)
-                redistDir = vcdir + "/vc/redist/amd64";
-            else
-                redistDir = vcdir + "/vc/redist/x86";
-
-            if(!new File(redistDir).exists()) {
-                throw new BuildException("MSVC redistributables not found in '" + redistDir + "'");
-            }
-
-            props.setNewProperty((String) null, InitializeTask.VSREDISTDIR, redistDir);
             break;
         }
         checkCompilerBits();
@@ -101,10 +113,13 @@ public class FindCompiler {
             boolean vmx64 = decideOSName().contains("64");
             boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64;
             if(vmx64 != compiler64) {
+                // This is allowed and is not an outright build failure, but warn the user.
                 if(vmx64)
-                    throw new BuildException("Trying to mix 64-bit virtual machine with 32-bit MSVC compiler...");
+                    System.err.println("WARNING: You are not building for 64-bit on a 64-bit operating system with MSVC compiler...");
                 else
-                    throw new BuildException("Trying to mix 32-bit virtual machine with 64-bit MSVC compiler...");
+                    System.err.println("WARNING: You are not building for 32-bit on a 32-bit operating system with MSVC compiler...");
+                if(compilerDetectionLine != null)
+                    System.err.println("         decideCompiler(): " + compilerDetectionLine);
             }
         }
     }
@@ -207,6 +222,7 @@ public class FindCompiler {
     private Compiler testForVisualStudio() {
         try {
             String output = Exec.execute("cl.exe")[1];
+            compilerDetectionLine = output;
             if(output.contains("12.0"))
                 return Compiler.MSVC1998;
             if(output.contains("13.00"))
