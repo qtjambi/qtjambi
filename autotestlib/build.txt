@@ -87,9 +87,22 @@
     </modify-function>
     <inject-code class="java">
     public static int disposedCount = 0;
+    public static int getDisposedCount() {
+        synchronized(OrdinaryDestroyed.class) {	// PARANOIA
+            return disposedCount;
+        }
+    }
+    public static void setDisposedCount(int disposedCount) {
+        synchronized(OrdinaryDestroyed.class) {	// PARANOIA
+            OrdinaryDestroyed.disposedCount = disposedCount;
+        }
+    }
+
     @Override
     protected void disposed() {
-        disposedCount++;
+        synchronized(OrdinaryDestroyed.class) {
+            disposedCount++;
+        }
 
         super.disposed();
     }
