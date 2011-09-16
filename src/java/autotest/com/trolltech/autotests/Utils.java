@@ -156,7 +156,7 @@ public abstract class Utils {
                 tmpDebugLevel = Integer.valueOf(s);
                 if(tmpDebugLevel < 0)
                     throw new NumberFormatException("number is negative");
-                if(tmpDebugLevel.invValue() > 1)
+                if(tmpDebugLevel.intValue() > 1)
                     System.out.println("-D" + PROP_NAME + "=" + tmpDebugLevel + "; is set");
             } catch(NumberFormatException e) {
                 e.printStackTrace();

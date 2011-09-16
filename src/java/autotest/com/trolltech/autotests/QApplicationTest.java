@@ -52,6 +52,7 @@ import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.gui.QApplication;
 
 public abstract class QApplicationTest extends QSignalEmitter {
+    private static boolean inhibitInit = false;
 
     @BeforeClass
     public static void testInitialize() throws Exception {

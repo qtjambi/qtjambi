@@ -94,6 +94,8 @@
                 <pathelement location="${basedir}/src/java/autotest" />
             </classpath>
             <src path="${basedir}/src/java/autotest"/>
+            <!-- pick up the generated code from compile.native -->
+            <src path="${outputDir}/tests/autotest-generator/java"/>
             <include name="com/trolltech/autotests/**/*.java"/>
             <include name="com/trolltech/generatortests/**/*.java"/>
             <exclude name="com/trolltech/unittests/**/*.java"/>
@@ -163,7 +165,7 @@
             <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
 <!--            <jvmarg value="-verbose"/> -->
             <formatter type="xml" usefile="yes" />
-            <batchtest fork="yes" todir="${outputDir}/junitxml">
+            <batchtest fork="yes" todir="${outputDir}/tests/junitxml">
                 <fileset dir="src/java/autotest">
                     <include name="**/com/trolltech/autotests/**/Test*.java"/>
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
