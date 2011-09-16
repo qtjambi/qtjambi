@@ -632,18 +632,24 @@ void MetaInfoGenerator::writeLibraryInitializers() {
             s << "package " << package << ";" << endl << endl
             << "class QtJambi_LibraryInitializer" << endl
             << "{" << endl
-            << "    static {" << endl;
+            << "    static {" << endl
+            << "        try {" << endl;
 
             generateInitializer(s, package, CodeSnip::Beginning);
 
-            s << "        com.trolltech.qt.Utilities.loadJambiLibrary(\""
+            s << "            com.trolltech.qt.Utilities.loadJambiLibrary(\""
             << QString(package).replace(".", "_") << "\");" << endl;
 
             if (generatedMetaInfo(package))
-                s << "        __qt_initLibrary();" << endl;
+                s << "            __qt_initLibrary();" << endl;
 
             generateInitializer(s, package, CodeSnip::End);
 
+            s << "        } catch(Throwable t) {" << endl;
+            // we encapsulate this in try/catch so every individual *.java doesn't have to
+            //  and the user gets some feedback about problems.
+            s << "            t.printStackTrace();" << endl;
+            s << "        }" << endl;
             s << "    }" << endl;
 
             if (generatedMetaInfo(package))
