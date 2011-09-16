@@ -58,7 +58,7 @@ import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QTextStream;
 
-public class TestJumpTable {
+public class TestJumpTable extends QApplicationTest {
     @Test
     public void testMemberFunctions() {
         QRect r = new QRect(1, 2, 3, 4);
