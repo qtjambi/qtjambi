@@ -74,7 +74,7 @@ public class TestQMessageHandler extends QMessageHandler {
 
     @Override
     public void fatal(String message) {
-
+        lastFatal = message;
     }
 
     @BeforeClass
@@ -101,7 +101,7 @@ public class TestQMessageHandler extends QMessageHandler {
     }
 
     @Test
-    public void test() {
+    public void testOneHandler() {
         QMessageHandler.installMessageHandler(this);
 
         MessageHandler.sendDebug("debug sent");
@@ -114,11 +114,56 @@ public class TestQMessageHandler extends QMessageHandler {
         assertEquals(lastCritical, "critical sent");
 
         // Want to send fatal, but that will shut down app...
+        //MessageHandler.sendFatal("fatal sent");
+        //assertEquals(lastFatal, "fatal sent");
+    }
+
+    @Test
+    public void testMultipleHandlers() {
+        QMessageHandler.installMessageHandler(this);
+        TestQMessageHandler handlerOne = new TestQMessageHandler();
+        QMessageHandler.installMessageHandler(handlerOne);
+        TestQMessageHandler handlerTwo = new TestQMessageHandler();
+        QMessageHandler.installMessageHandler(handlerTwo);
+
+        for(int i = 0; i < 5; i++) {
+            int j = i;
+            if(j == 4)
+                j = 3;	// No handlers so nothing got updated
+
+            MessageHandler.sendDebug("debug sent: " + j);
+            assertEquals(lastDebug, "debug sent: " + j);
+
+            MessageHandler.sendWarning("warning sent: " + j);
+            assertEquals(lastWarning, "warning sent: " + j);
+
+            MessageHandler.sendCritical("critical sent: " + j);
+            assertEquals(lastCritical, "critical sent: " + j);
+
+            // Want to send fatal, but that will shut down app...
+            //MessageHandler.sendFatal("fatal sent: " + j);
+            //assertEquals(lastFatal, "fatal sent: " + j);
+
+            if(i == 0) {
+                QMessageHandler.removeMessageHandler(handlerOne);
+            } else if(i == 1) {
+                QMessageHandler.removeMessageHandler(handlerTwo);
+            } else if(i == 2) {
+                QMessageHandler.installMessageHandler(handlerOne);
+                QMessageHandler.installMessageHandler(handlerTwo);
+            } else if(i == 3) {
+                QMessageHandler.removeMessageHandler(this);
+            } else if(i == 4) {
+                QMessageHandler.removeMessageHandler(handlerOne);
+                QMessageHandler.removeMessageHandler(handlerTwo);
+            }
+        }
     }
 
     private String lastDebug;
     private String lastWarning;
     private String lastCritical;
+    private String lastFatal;
 
     public static void main(String args[]) {
         org.junit.runner.JUnitCore.main(TestQMessageHandler.class.getName());
