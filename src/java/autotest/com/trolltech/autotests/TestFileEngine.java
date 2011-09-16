@@ -158,14 +158,27 @@ public class TestFileEngine extends QApplicationTest {
         assertTrue(info.exists());
         assertTrue(info.isDir());
 
+        QDir dirtwo = new QDir("classpath:TestClassFunctionality_dirtwo/");
+        assertTrue(dirtwo.exists());
+        assertEquals(dirtwo.entryList().size(), 1);
+        assertTrue(dirtwo.entryList().get(0).equals("TestClassFunctionality_dir22"));
+
+        List<QFileInfo> dirTwoEntryInfoList = dirtwo.entryInfoList();
+        assertEquals(dirTwoEntryInfoList.size(), 1);
+
         QDir dir = new QDir("classpath:TestClassFunctionality_dir/");
         assertTrue(dir.exists());
 
-        assertEquals(dir.entryList().size(), 1);
-        assertTrue(dir.entryList().get(0).equals("TestClassFunctionality_dir2"));
+        assertEquals(dir.entryList().size(), 2);
+        boolean found = false;
+        for(String oneName : dir.entryList()) {
+            if(oneName.equals("TestClassFunctionality_dir2"))
+                found = true;
+        }
+        assertTrue(found);
 
         List<QFileInfo> entryInfoList = dir.entryInfoList();
-        assertEquals(entryInfoList.size(), 1);
+        assertEquals(entryInfoList.size(), 2);
 
         info = entryInfoList.get(0);
         assertTrue(info.exists());
