@@ -91,8 +91,10 @@ class QTJAMBI_EXPORT QtJambiLink
 {
     inline QtJambiLink(jobject jobj)
         : m_java_object(jobj),
-          m_meta_type(QMetaType::Void),
+          m_pointer(0),
           m_wrapper(0),
+          m_meta_type(QMetaType::Void),
+          m_ownership(SplitOwnership), // Default to split, because it's safest
           m_has_been_finalized(false),
           m_qobject_deleted(false),
           m_created_by_java(false),
@@ -101,8 +103,29 @@ class QTJAMBI_EXPORT QtJambiLink
           m_connected_to_java(false),
           m_delete_in_main_thread(false),
           m_java_link_removed(false),
-          m_destructor_function(0),
-          m_ownership(SplitOwnership) // Default to split, because it's safest
+          m_link_cacheable(false),
+          m_destructor_function(0)
+    {
+    };
+
+    inline QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
+        : m_java_object(jobj),
+          m_pointer(pointer),
+          m_wrapper(0),
+          m_meta_type(QMetaType::Void),
+          m_ownership(SplitOwnership), // Default to split, because it's safest
+          m_global_ref(global_ref),
+          m_is_qobject(is_qobject),
+          m_has_been_finalized(false),
+          m_qobject_deleted(false),
+          m_created_by_java(false),
+          m_object_invalid(false),
+          m_in_cache(false),
+          m_connected_to_java(false),
+          m_delete_in_main_thread(false),
+          m_java_link_removed(false),
+          m_link_cacheable(false),
+          m_destructor_function(0)
     {
     };
 
@@ -231,10 +254,12 @@ private:
 
     jobject m_java_object;
     void *m_pointer;
-    int m_meta_type;
 
     QObject *m_wrapper;
 
+    int m_meta_type;
+
+    uint m_ownership : 2;
     uint m_global_ref : 1;
     uint m_is_qobject : 1;
     uint m_has_been_finalized : 1;
@@ -245,12 +270,10 @@ private:
     uint m_connected_to_java : 1;
     uint m_delete_in_main_thread : 1;
     uint m_java_link_removed : 1;
-    uint m_reserved1 : 22;
+    uint m_link_cacheable : 1;		// was this once upon a time: enter_in_cache==true
+    uint m_reserved1 : 19;
 
     PtrDestructorFunction m_destructor_function;
-
-    uint m_ownership : 2;
-    uint m_reserved2 : 30;
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
 public:
