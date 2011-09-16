@@ -107,6 +107,24 @@ public:
 // #define JOBJECT_REFCOUNT
 
 JavaVM *qtjambi_vm = 0;
+/*!
+ * This is set when we're shutting down.
+ * Use of volatile keyword to force compiler to already reload the value everytime
+ * it is referenced and to always store the value at the sequence point indicated
+ * by code path.
+ * 0 = Qt is operational, 1 = Qt is shutting down, 2 = Qt has not started (important it is non-zero)
+ */
+static volatile int qtjambi_vm_shutdown = 2;
+
+int qtjambi_vm_shutdown_get()
+{
+    return qtjambi_vm_shutdown;
+}
+
+void qtjambi_vm_shutdown_set(int new_value)
+{
+    qtjambi_vm_shutdown = new_value;
+}
 
 /*!
  * This function is called by Qt Jambi shutdown hook to indicate that

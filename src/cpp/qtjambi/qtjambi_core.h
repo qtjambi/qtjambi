@@ -647,6 +647,8 @@ QTJAMBI_EXPORT jobject qtjambi_invoke_method(JNIEnv *env, jobject receiver, jmet
 
 QTJAMBI_EXPORT QVarLengthArray<jvalue> qtjambi_from_jobjectArray(JNIEnv *env, jobjectArray args, jintArray _cnvTypes, bool globalRefs = false);
 
+QTJAMBI_EXPORT int qtjambi_vm_shutdown_get();
+QTJAMBI_EXPORT void qtjambi_vm_shutdown_set(int new_value);
 
 
 #endif // QTJAMBI_CORE_H
