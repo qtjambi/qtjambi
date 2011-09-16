@@ -8,5 +8,7 @@
         classname="com.trolltech.tools.ant.PlatformJarTask"/>
     <taskdef name="qtjambi-initialize"
         classname="com.trolltech.tools.ant.InitializeTask"/>
+    <taskdef name="qtjambi-resolve-path"
+        classname="com.trolltech.tools.ant.ResolvePathTask"/>
 </antlib>
 
