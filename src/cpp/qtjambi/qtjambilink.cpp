@@ -731,7 +731,7 @@ void QtJambiLink::setJavaOwnership(JNIEnv *env, jobject obj)
     if (isGlobalReference()) {
         jobject weak_ref = env->NewWeakGlobalRef(obj);
         if (m_java_object)
-            env->DeleteGlobalRef(m_java_object),
+            env->DeleteGlobalRef(m_java_object);
         m_java_object = weak_ref;
         m_global_ref = false;
     }
@@ -743,7 +743,7 @@ void QtJambiLink::setSplitOwnership(JNIEnv *env, jobject obj)
     if (isGlobalReference()) {
         jobject weak_ref = env->NewWeakGlobalRef(obj);
         if (m_java_object)
-            env->DeleteGlobalRef(m_java_object),
+            env->DeleteGlobalRef(m_java_object);
         m_java_object = weak_ref;
         m_global_ref = false;
     }
