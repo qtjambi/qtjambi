@@ -482,12 +482,33 @@ private:
     }
 };
 
-extern "C" QTJAMBI_EXPORT void JNICALL
+static QClassPathFileEngineHandler *qtjambiQClassPathFileEngineHandler;
+
+/* This is synchronized with initialize() by the caller in Java linkage */
+extern "C" QTJAMBI_EXPORT jboolean JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandler_uninitialize)
+(JNIEnv *,
+ jclass)
+{
+    if(qtjambiQClassPathFileEngineHandler != NULL) {
+        delete qtjambiQClassPathFileEngineHandler;
+        qtjambiQClassPathFileEngineHandler = NULL;
+        return true;
+    }
+    return false;
+}
+
+/* This is synchronized with uninitialize() by the caller in Java linkage */
+extern "C" QTJAMBI_EXPORT jboolean JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandler_initialize)
 (JNIEnv *,
  jclass)
 {
-    new QClassPathFileEngineHandler;
+    if(qtjambiQClassPathFileEngineHandler == NULL) {
+        qtjambiQClassPathFileEngineHandler = new QClassPathFileEngineHandler;
+        return true;
+    }
+    return false;
 }
 
 extern "C" Q_DECL_EXPORT jboolean JNICALL
