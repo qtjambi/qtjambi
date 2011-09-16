@@ -52,6 +52,7 @@ import org.junit.Test;
 
 import com.trolltech.autotests.generated.MessageHandler;
 
+import com.trolltech.qt.QNoNativeResourcesException; 
 import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.gui.QApplication;
 
@@ -78,16 +79,25 @@ public class TestQMessageHandler extends QMessageHandler {
 
     @BeforeClass
     public static void testInitialize() throws Exception {
-
+        Utils.println(2, "TestQMessageHandler.testInitialize(): begin");
         QApplication.initialize(new String[] {});
+
+        Utils.println(2, "TestQMessageHandler.testInitialize(): done");
     }
 
     @AfterClass
     public static void testDispose() throws Exception {
+        QApplication.quit();
         System.err.flush();
         System.out.flush();
-        QApplication.quit();
-        QApplication.instance().dispose();
+        QApplication app = QApplication.instance();
+        if(app != null)
+            app.dispose();
+        try {
+            Utils.println(3, "TestQMessageHandler.testDispose(): done  app="+app);
+        } catch(QNoNativeResourcesException e) {
+            Utils.println(3, "TestQMessageHandler.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage());
+        }
     }
 
     @Test

@@ -70,7 +70,7 @@
     </target>
 
     <target name="compile.deps">
-        <mkdir dir="${outputDir}/tests/autotests" />
+<!--        <mkdir dir="${outputDir}/tests/autotests" />
         <javac destdir="${outputDir}/tests/autotests" debug="true"
                 includeantruntime="false"
                 source="1.5" target="1.5">
@@ -78,9 +78,7 @@
                 <pathelement location="qtjambi-${qtjambi.version}.jar" />
                 <pathelement location="." />
             </classpath>
-            <!-- pick up the generated code from compile.native -->
-            <src path="${outputDir}/tests/autotest-generator/java/com/trolltech/autotests/generated"/>
-        </javac>
+        </javac> -->
     </target>
 
     <target name="compile.java" depends="compile.deps, check.junit">

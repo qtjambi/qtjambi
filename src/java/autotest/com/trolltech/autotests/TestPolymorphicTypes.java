@@ -55,6 +55,7 @@ import com.trolltech.autotests.generated.PolymorphicType;
 import com.trolltech.autotests.generated.CustomStyleOption;
 import com.trolltech.autotests.generated.CustomEvent;
 
+import com.trolltech.qt.QNoNativeResourcesException;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPaintEvent;
@@ -76,7 +77,25 @@ class CustomStyle extends QWindowsStyle {
 public class TestPolymorphicTypes extends QWidget {
     @BeforeClass
     public static void testInitialize() throws Exception {
+        Utils.println(2, "TestPolymorphicTypes.testInitialize(): begin");
         QApplication.initialize(new String[] {});
+        Utils.println(2 ,"TestPolymorphicTypes.testInitialize(): done");
+    }
+
+    @AfterClass
+    public static void testDispose() throws Exception {
+        Utils.println(2, "TestPolymorphicTypes.testDispose(): begin");
+        QApplication.quit();
+        System.err.flush();
+        System.out.flush();
+        QApplication app = QApplication.instance();
+        if(app != null)
+            app.dispose();
+        try {
+            Utils.println(3, "TestPolymorphicTypes.testDispose(): done  app="+app);
+        } catch(QNoNativeResourcesException e) {
+            Utils.println(3, "TestPolymorphicTypes.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage());
+        }
     }
 
     @Test
@@ -196,12 +215,7 @@ public class TestPolymorphicTypes extends QWidget {
         return super.event(arg__1);
     }
 
-    @AfterClass
-    public static void testDispose() throws Exception {
-        System.err.flush();
-        System.out.flush();
-        QApplication.quit();
-        QApplication.instance().dispose();
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main(TestPolymorphicTypes.class.getName());
     }
-
 }

@@ -46,11 +46,14 @@ package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.trolltech.autotests.generated.CustomPaintEngine;
 import com.trolltech.autotests.generated.OtherCustomPaintEngine;
 
+import com.trolltech.qt.QNoNativeResourcesException;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QPointF;
 import com.trolltech.qt.core.QRect;
@@ -64,6 +67,28 @@ import com.trolltech.qt.gui.QPaintEngineState;
 import com.trolltech.qt.gui.QPixmap;
 
 public class TestQPaintEngine extends CustomPaintEngine {
+    @BeforeClass
+    public static void testInitialize() throws Exception {
+        Utils.println(2, "TestQPaintEngine.testInitialize(): begin");
+        QApplication.initialize(new String[] {});
+
+        Utils.println(2, "TestQPaintEngine.testInitialize(): done");
+    }
+
+    @AfterClass
+    public static void testDispose() throws Exception {
+        QApplication.quit();
+        System.err.flush();
+        System.out.flush();
+        QApplication app = QApplication.instance();
+        if(app != null)
+            app.dispose();
+        try {
+            Utils.println(3, "TestQPaintEngine.testDispose(): done  app="+app);
+        } catch(QNoNativeResourcesException e) {
+            Utils.println(3, "TestQPaintEngine.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage());
+        }
+    }
 
     @Override
     public boolean begin(QPaintDeviceInterface pdev) {

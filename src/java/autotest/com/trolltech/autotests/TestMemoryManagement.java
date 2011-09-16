@@ -52,6 +52,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.QNoNativeResourcesException;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
@@ -61,16 +62,34 @@ import com.trolltech.qt.internal.QtJambiDebugTools;
 public abstract class TestMemoryManagement {
     @BeforeClass
     public static void testInitialize() throws Exception {
+        Utils.println(2, "TestMemoryManagement.testInitialize(): begin");
         QApplication.initialize(new String[] {});
-        if (!QtJambiDebugTools.hasDebugTools())
-            throw new RuntimeException("These tests can only be run when Qt Jambi is compiled with DEFINES += QTJAMBI_DEBUG_TOOLS");
+        // To fix this ensure that you set buildpath.properties: qtjambi.debug-tools = true
+        // then rebuild both QtJambi and the autotests with the C compiler define -D QTJAMBI_DEBUG_TOOLS
+        //
+        // This checks the QtJambi was compiled with -D QTJAMBI_DEBUG_TOOLS
+        if(!QtJambiDebugTools.hasDebugTools())
+            throw new RuntimeException("Prerequisite 1 of 2: These tests can only be run when \"Qt Jambi\" is compiled with DEFINES += QTJAMBI_DEBUG_TOOLS");
+        // This checks the autotests was compiled with -D QTJAMBI_DEBUG_TOOLS
+        if(!QtJambiUnittestTools.hasDebugTools())
+            throw new RuntimeException("Prerequisite 2 of 2: These tests can only be run when \"Qt Jambi autotests\" is compiled with DEFINES += QTJAMBI_DEBUG_TOOLS");
+        Utils.println(2, "TestMemoryManagement.testInitialize(): done");
     }
+
     @AfterClass
     public static void testDispose() throws Exception {
+        Utils.println(2, "TestMemoryManagement.testDispose(): begin"); 
+        QApplication.quit();
         System.err.flush();
         System.out.flush();
-        QApplication.quit();
-        QApplication.instance().dispose();
+        QApplication app = QApplication.instance();
+        if(app != null)
+            app.dispose();
+        try {
+            Utils.println(2, "TestMemoryManagement.testDispose(): done  app="+app); 
+        } catch(QNoNativeResourcesException e) {
+            Utils.println(3, "TestMemoryManagement.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage()); 
+        }
     }
 
     // Types: Normal object type with shell class

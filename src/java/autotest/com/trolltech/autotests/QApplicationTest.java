@@ -47,6 +47,7 @@ package com.trolltech.autotests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import com.trolltech.qt.QNoNativeResourcesException;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.gui.QApplication;
 
@@ -54,14 +55,28 @@ public abstract class QApplicationTest extends QSignalEmitter {
 
     @BeforeClass
     public static void testInitialize() throws Exception {
-        QApplication.initialize(new String[] {});
+        Utils.println(2, "QApplicationTest.testInitialize(): begin");
+        if(!inhibitInit) {
+            QApplication.initialize(new String[] {});
+        } else {
+            Utils.println(2, "QApplicationTest.testInitialize(): skipped QApplication.initialize()");
+        }
+
+        Utils.println(2, "QApplicationTest.testInitialize(): done");    
     }
 
     @AfterClass
     public static void testDispose() throws Exception {
+        QApplication.quit();
         System.err.flush();
         System.out.flush();
-        QApplication.quit();
-        QApplication.instance().dispose();
+        QApplication app = QApplication.instance();
+        if(app != null)
+            app.dispose();
+        try {
+            Utils.println(3, "QApplicationTest.testDispose(): done  app="+app); 
+        } catch(QNoNativeResourcesException e) {
+            Utils.println(3, "QApplicationTest.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage()); 
+        }
     }
 }

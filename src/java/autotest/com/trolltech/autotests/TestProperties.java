@@ -172,7 +172,8 @@ public class TestProperties extends QApplicationTest {
         List<QtProperty> properties = fop.properties();
 
         for (ExpectedValues e : expectedValues) {
-            System.err.println("Current property: " + e.name);
+            if (Utils.isDebugLevel(1))
+                System.out.println("Current property: " + e.name);
             boolean found = false;
             for (QtProperty property : properties) {
                 if (property.name().equals(e.name)) {
