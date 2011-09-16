@@ -70,4 +70,5 @@ class QtJambi_LibraryShutdown implements Runnable {
 
     private native void run_helper();
 
+    private native void unregister_helper();
 }

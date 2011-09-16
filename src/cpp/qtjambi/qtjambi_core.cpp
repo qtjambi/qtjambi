@@ -1465,8 +1465,8 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
             jstring className = qtjambi_from_qstring(env, qtClassName);
             returned = (jclass) env->CallObjectMethod(classLoader, sc->ClassLoader.loadClass, className);
         } else {
-      env->Throw(exception);
-    }
+            env->Throw(exception);
+        }
     }
 
     return returned;
@@ -2206,7 +2206,6 @@ static bool qtjambi_event_notify(void **data)
 
 void qtjambi_register_callbacks()
 {
-
     QInternal::registerCallback(QInternal::ConnectCallback,    qtjambi_connect_callback);
     QInternal::registerCallback(QInternal::DisconnectCallback, qtjambi_disconnect_callback);
     QInternal::registerCallback(QInternal::AdoptCurrentThread, qtjambi_adopt_current_thread);
@@ -2218,6 +2217,19 @@ void qtjambi_register_callbacks()
     QMetaType::registerStreamOperators(QMetaType::typeName(qMetaTypeId<JObjectWrapper>()),
                        reinterpret_cast<QMetaType::SaveOperator>(jobjectwrapper_save),
                        reinterpret_cast<QMetaType::LoadOperator>(jobjectwrapper_load));
+}
+
+void qtjambi_unregister_callbacks() 
+{
+    QMetaType::unregisterType(QMetaType::typeName(qMetaTypeId<JObjectWrapper>()));
+
+#if QT_VERSION >= 0x040300
+    QInternal::unregisterCallback(QInternal::EventNotifyCallback, qtjambi_event_notify);
+#endif
+
+    QInternal::unregisterCallback(QInternal::AdoptCurrentThread, qtjambi_adopt_current_thread);
+    QInternal::unregisterCallback(QInternal::DisconnectCallback, qtjambi_disconnect_callback);
+    QInternal::unregisterCallback(QInternal::ConnectCallback,    qtjambi_connect_callback);
 }
 
 
@@ -2235,7 +2247,6 @@ void qtjambi_debug_trace(const char *location, const char *file, int line)
     if (should) {
         fprintf(stderr, "%s; ( %s:%d )\n", location, file, line);
         fflush(stderr);
-
     }
 }
 

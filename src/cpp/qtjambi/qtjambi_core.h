@@ -209,6 +209,8 @@ QTJAMBI_EXPORT jobject qtjambi_from_jobjectwrapper(JNIEnv *env, const JObjectWra
 
 QTJAMBI_EXPORT void qtjambi_register_callbacks();
 
+QTJAMBI_EXPORT void qtjambi_unregister_callbacks();
+
 QTJAMBI_EXPORT void *qtjambi_to_interface(JNIEnv *env,
                                            QtJambiLink *link,
                                            const char *interface_name,

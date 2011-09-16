@@ -342,6 +342,14 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_run_1help
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_unregister_1helper)
+(JNIEnv *,
+ jobject)
+{
+    qtjambi_unregister_callbacks();
+}
+
+extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_installMessageHandlerProxy)
 (JNIEnv *, jclass)
 {
