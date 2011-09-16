@@ -41,7 +41,10 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
+// QT_NO_STL removes extra generator parser noise (that it doesn't understand anyway)
 #define QT_NO_STL
+
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>

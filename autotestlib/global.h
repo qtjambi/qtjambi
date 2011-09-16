@@ -45,6 +45,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+// QT_NO_STL removes extra generator parser noise (that it doesn't understand anyway)
+#define QT_NO_STL
 #include <QtCore/QString>
 
 #include "abstractclass.h"
