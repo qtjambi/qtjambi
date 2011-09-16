@@ -46,6 +46,7 @@ package com.trolltech.qt;
 
 /**
  * FIXME: This is priviledged API move to com.trolltech.qt.native.internal
+ * TODO: Rename this class since it relates to QtJambi not Qt API "QtJambiThreadManager"
  * @exclude
  */
 class QThreadManager {
@@ -88,7 +89,7 @@ class QThreadManager {
     }
 
     // This is a debugging / unittest aid
-    public static boolean setSkipIt(boolean skipIt) {
+    static boolean setSkipIt(boolean skipIt) {
         NativeResourcesReleaseThread tmpThread;
         synchronized(QThreadManager.class) {
             tmpThread = nativeResourcesReleaseThread;
