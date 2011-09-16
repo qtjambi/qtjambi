@@ -106,7 +106,9 @@ public:
 
 // #define JOBJECT_REFCOUNT
 
-JavaVM *qtjambi_vm = 0;
+Q_GLOBAL_STATIC_WITH_ARGS(QMutex, qtjambi_vm_lock, (QMutex::NonRecursive));
+static int qtjambi_vm_count = 0;
+static JavaVM *qtjambi_vm = 0;
 /*!
  * This is set when we're shutting down.
  * Use of volatile keyword to force compiler to already reload the value everytime
@@ -142,8 +144,22 @@ void qtjambi_shutdown()
  */
 extern "C" Q_DECL_EXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(JNI_OnLoad)(JavaVM *vm, void *)
 {
-    qtjambi_vm = vm;
+    qtjambi_vm_lock()->lock();
+    if(qtjambi_vm_count == 0)
+        qtjambi_vm = vm;
+    qtjambi_vm_count++;
+    qtjambi_vm_shutdown_set(0);		// Qt becomes operational
+    qtjambi_vm_lock()->unlock();
     return JNI_VERSION_1_4;
+}
+
+extern "C" Q_DECL_EXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(JNI_OnUnload)(JavaVM *vm, void *reserved)
+{
+    qtjambi_vm_lock()->lock();
+    if(qtjambi_vm_count <= 1)
+        qtjambi_shutdown();
+    qtjambi_vm_count--;
+    qtjambi_vm_lock()->unlock();
 }
 
 typedef QHash<QThread *, jobject> ThreadTable;
@@ -242,12 +258,16 @@ void qtjambi_resolve_polymorphic_id(const char *lookup, const void *object,
  */
 JNIEnv *qtjambi_current_environment()
 {
+    JavaVM *vm;
     JNIEnv *env;
-    if (qtjambi_vm == 0)
+
+    vm = qtjambi_vm;	// FIXME: Want this to be an atomic read
+    if (vm == 0) {
         return 0;
-    int result = qtjambi_vm->GetEnv( (void **) (void *) (&env), JNI_VERSION_1_4);
+    }
+    int result = vm->GetEnv( (void **) (void *) (&env), JNI_VERSION_1_4);
     if (result == JNI_EDETACHED) {
-      if (qtjambi_vm->AttachCurrentThreadAsDaemon((void **) (void *) (&env), 0) < 0) {
+        if (vm->AttachCurrentThreadAsDaemon((void **) (void *) (&env), 0) < 0) {
             qWarning("Failed attaching current thread");
             return 0;
         }
@@ -1492,10 +1512,13 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
 
 bool qtjambi_destroy_vm()
 {
-    if (!qtjambi_vm)
+    JavaVM *vm;
+
+    vm = qtjambi_vm;	// FIXME: Want this to be an atomic read
+    if (!vm)
         return false;
 
-    return qtjambi_vm->DestroyJavaVM() == 0;
+    return vm->DestroyJavaVM() == 0;
 }
 bool qtjambi_initialize_vm()
 {
