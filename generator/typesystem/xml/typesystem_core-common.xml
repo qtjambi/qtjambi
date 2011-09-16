@@ -1050,6 +1050,11 @@
         <remove/>
         </modify-function>
 
+        <!-- see generator source for "HACK method ownership of constructor return value" -->
+        <!-- this setting does not work, also we should probably do some equality
+        of java object tricks so the java object as same identity as
+        underlying cpp object.  Untested but I suspect multiple java objects
+        would end up sharing the same cpp object. -->
         <modify-function signature="QTextCodec()">
         <modify-argument index="-1">
             <define-ownership class="java" owner="cplusplus"/>

@@ -991,14 +991,51 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
             }
         }
 
-        if (!java_class->isQObject()) {
+        bool emit_check_qtjambi_vm_shutdown = false;
+        bool emit_nativeShellObjectDestroyed = false;
+        if (!java_class->isQObject())
+            emit_nativeShellObjectDestroyed = true;
+        // Has to be a non-QObject and no special cplusplus ownership rules
+#if 0
+        // FIXME: Lookup any special ownership details for the constructor in typesystem.
+        //  If cplusplus owns this object we never emit it here, for example QTextCodec
+        //  is fully managed by Qt 
+        // Lookup the constructor "QTextCodec()" of the "QTextCodec" class, get the method
+        //  signature's ownership setting.
+        shellClassName(java_class);	// QtJambiShell_QTextCodec
+        java_class->name();		// QTextCodec
+        const AbstractMetaClass *cls_ctor = 0;			// FIXME
+        TypeSystem::Language language = TypeSystem::TargetLangCode;	// java
+        int idx = -1;
+        TypeSystem::Ownership ownership = ownership(cls_ctor, language, idx);	// FIXME
+        if (TypeSystem::CppOwnership == ownership) {
+            emit_nativeShellObjectDestroyed = false;
+        }
+#else
+        // HACK method ownership of constructor return value, there is just one class with this rule
+        //  QTextCodec is part of Qt API.
+        //  TextCodecSubclass is part of the autotests suite, that subclasses QTextCodec.
+        if (java_class->name().compare("QTextCodec") == 0 || java_class->name().compare("TextCodecSubclass") == 0) {
+            emit_nativeShellObjectDestroyed = false;
+            emit_check_qtjambi_vm_shutdown = true;
+        }
+#endif
+        if (emit_nativeShellObjectDestroyed) {
             s << INDENT << "    JNIEnv *__jni_env = qtjambi_current_environment();" << endl
             << INDENT << "    if (__jni_env != 0) m_link->nativeShellObjectDestroyed(__jni_env);" << endl;
+        } else if(!java_class->isQObject()) {
+            // We only inhibited when we started out with emit_nativeShellObjectDestroyed==true
+            s << INDENT << "    // inhibited: m_link->nativeShellObjectDestroyed(__jni_env); cplusplus object ownership" << endl;
         }
 
         if (qtJambiDebugTools()) {
             s << "#if defined(QTJAMBI_DEBUG_TOOLS)" << endl;
+            // Check this global, this stops Qt GlobalStaticDeleter causing crashes on shutdown
+            if(emit_check_qtjambi_vm_shutdown)
+                s << INDENT << "    if(qtjambi_vm_shutdown_get() == 0) {"  << endl;
             s << INDENT << "    qtjambi_increase_shellDestructorCalledCount(QString::fromLatin1(\"" << java_class->name() << "\"));" << endl;
+            if(emit_check_qtjambi_vm_shutdown)
+                s << INDENT << "    }"  << endl;
             s << "#endif /* QTJAMBI_DEBUG_TOOLS */" << endl;
         }
 
