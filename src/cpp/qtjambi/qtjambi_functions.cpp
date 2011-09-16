@@ -331,14 +331,12 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_MetaObjectTools_emitNativ
     }
 }
 
-void qtjambi_shutdown();
-
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_run_1helper)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_shutdown_1mark)
 (JNIEnv *,
  jobject)
 {
-    qtjambi_shutdown();
+    qtjambi_vm_shutdown_set(1);		// Mark the global state
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
@@ -347,6 +345,15 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_unregiste
  jobject)
 {
     qtjambi_unregister_callbacks();
+}
+
+extern "C" Q_DECL_EXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_shutdown_1helper)
+(JNIEnv *,
+ jobject)
+{
+    extern void qtjambi_shutdown();
+    qtjambi_shutdown();		// NULL the JavaVM handle
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL

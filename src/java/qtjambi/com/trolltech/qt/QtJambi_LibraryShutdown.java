@@ -44,7 +44,9 @@
 
 package com.trolltech.qt;
 
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QMessageHandler;
+import com.trolltech.qt.internal.QClassPathFileEngineHandler;
 
 class QtJambi_LibraryShutdown implements Runnable {
     public void run() {
@@ -65,10 +67,12 @@ class QtJambi_LibraryShutdown implements Runnable {
             }
         }
 
-        run_helper();
     }
 
-    private native void run_helper();
 
+    // This flags in C++ the we are starting a phase change to shutdown
+    private native void shutdown_mark();
     private native void unregister_helper();
+    // This NULLs out the JavaVM handle.
+    private native void shutdown_helper();
 }
