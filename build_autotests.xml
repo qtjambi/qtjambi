@@ -161,7 +161,9 @@
 <!-- ${qtLib}${psep} -->
             <jvmarg value="-Djava.library.path=${qtLib}${psep}${jambiLib}"/>
             <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/>
-            <jvmarg value="-Dcom.trolltech.qt.debug=true=true"/>
+            <jvmarg value="-Dcom.trolltech.qt.debug=true"/>
+            <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
+            <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/>
             <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
 <!--            <jvmarg value="-verbose"/> -->
             <formatter type="xml" usefile="yes" />

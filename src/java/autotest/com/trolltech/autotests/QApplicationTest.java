@@ -52,17 +52,10 @@ import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.gui.QApplication;
 
 public abstract class QApplicationTest extends QSignalEmitter {
-    private static boolean inhibitInit = false;
-
     @BeforeClass
     public static void testInitialize() throws Exception {
         Utils.println(2, "QApplicationTest.testInitialize(): begin");
-        if(!inhibitInit) {
-            QApplication.initialize(new String[] {});
-        } else {
-            Utils.println(2, "QApplicationTest.testInitialize(): skipped QApplication.initialize()");
-        }
-
+        QApplication.initialize(new String[] {});
         Utils.setupNativeResourceThread();
         Utils.println(2, "QApplicationTest.testInitialize(): done");    
     }
