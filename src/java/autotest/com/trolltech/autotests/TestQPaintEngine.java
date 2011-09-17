@@ -71,7 +71,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
     public static void testInitialize() throws Exception {
         Utils.println(2, "TestQPaintEngine.testInitialize(): begin");
         QApplication.initialize(new String[] {});
-
+        Utils.setupNativeResourceThread();
         Utils.println(2, "TestQPaintEngine.testInitialize(): done");
     }
 

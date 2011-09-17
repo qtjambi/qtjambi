@@ -63,6 +63,7 @@ public abstract class QApplicationTest extends QSignalEmitter {
             Utils.println(2, "QApplicationTest.testInitialize(): skipped QApplication.initialize()");
         }
 
+        Utils.setupNativeResourceThread();
         Utils.println(2, "QApplicationTest.testInitialize(): done");    
     }
 

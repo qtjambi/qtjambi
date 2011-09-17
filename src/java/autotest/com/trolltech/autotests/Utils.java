@@ -44,6 +44,8 @@
 
 package com.trolltech.autotests;
 
+import com.trolltech.qt.QThreadManagerUtils;
+
 import java.util.List;
 import java.util.Map;
 
@@ -145,6 +147,7 @@ public abstract class Utils {
         Integer tmpDebugLevel = debugLevel;
         if(tmpDebugLevel != null)
             return tmpDebugLevel.intValue();
+
         synchronized(Utils.class) {
             tmpDebugLevel = debugLevel;
             if(tmpDebugLevel != null)
@@ -186,5 +189,43 @@ public abstract class Utils {
         }
         System.out.println(s);
         System.out.flush();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    private static Boolean inhibitNativeResourceThread;
+    private static Boolean DEFAULT_INHIBIT_NATIVE_RESOURCE_THREAD = Boolean.FALSE;
+
+    public static boolean getNativeResourceThread() {
+        Boolean tmpInhibitNativeResourceThread = inhibitNativeResourceThread;
+        if(tmpInhibitNativeResourceThread != null)
+            return tmpInhibitNativeResourceThread.booleanValue();
+
+        synchronized(Utils.class) {
+            tmpInhibitNativeResourceThread = inhibitNativeResourceThread;
+            if(tmpInhibitNativeResourceThread != null)
+                return tmpInhibitNativeResourceThread.booleanValue();
+
+            try {
+                final String PROP_NAME = "com.trolltech.qt.debug.inhibitNativeResourceThread";
+                String s = System.getProperty(PROP_NAME);
+                tmpInhibitNativeResourceThread = Boolean.valueOf(s);
+                System.out.println("-D" + PROP_NAME + "=" + tmpInhibitNativeResourceThread);
+            } catch(Exception e) {
+                e.printStackTrace();
+                tmpInhibitNativeResourceThread = DEFAULT_INHIBIT_NATIVE_RESOURCE_THREAD;
+            }
+            inhibitNativeResourceThread = tmpInhibitNativeResourceThread;
+        }
+        return tmpInhibitNativeResourceThread.booleanValue();
+    }
+
+    public static boolean setupNativeResourceThread() {
+        boolean tmpInhibitNativeResourceThread = getNativeResourceThread();
+        if(tmpInhibitNativeResourceThread) {
+            println(2, "QThreadManagerUtils.setSkipIt(true): is set");
+            QThreadManagerUtils.setSkipIt(true);
+        }
+        return tmpInhibitNativeResourceThread;
     }
 }

@@ -81,7 +81,7 @@ public class TestQMessageHandler extends QMessageHandler {
     public static void testInitialize() throws Exception {
         Utils.println(2, "TestQMessageHandler.testInitialize(): begin");
         QApplication.initialize(new String[] {});
-
+        Utils.setupNativeResourceThread();
         Utils.println(2, "TestQMessageHandler.testInitialize(): done");
     }
 
