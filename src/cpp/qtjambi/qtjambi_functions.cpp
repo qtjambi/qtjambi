@@ -352,7 +352,6 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_shutdown_
 (JNIEnv *,
  jobject)
 {
-    extern void qtjambi_shutdown();
     qtjambi_shutdown();		// NULL the JavaVM handle
 }
 
