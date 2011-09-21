@@ -28,6 +28,7 @@ public class FindCompiler {
         MSVC2010("msvc2010"),
         MSVC2010_64("msvc2010_64"),
         MinGW("mingw"),
+        MinGW_W64("mingw-w64"),
         OldGCC("gcc3.3"),
         GCC("gcc"),
         SUNCC("suncc"),
@@ -52,10 +53,37 @@ public class FindCompiler {
             if(name.equals("msvc2010")) return MSVC2010;
             if(name.equals("msvc2010x64")) return MSVC2010_64;
             if(name.equals("mingw")) return MinGW;
+            if(name.equals("mingw-w64")) return MinGW_W64;
             if(name.equals("gcc3.3")) return OldGCC;
             if(name.equals("gcc")) return GCC;
             if(name.equals("suncc")) return SUNCC;
             return Other;
+        }
+
+        public boolean is64Only() {
+            return is64Only(name);
+        }
+        public static boolean is64Only(String name) {
+            Compiler compiler = resolve(name);
+            if(compiler == MSVC2005_64)
+                return true;
+            if(compiler == MSVC2008_64)
+                return true;
+            if(compiler == MSVC2010_64)
+                return true;
+            return false;
+        }
+
+        public boolean isCompiler(Compiler compiler) {
+            return isCompiler(name, compiler);
+        }
+        public static boolean isCompiler(String name, Compiler ...compilerA) {
+            Compiler thisCompiler = resolve(name);
+            for(Compiler c : compilerA) {
+                if(thisCompiler == c)
+                    return true;
+            }
+            return false;
         }
     }
 
@@ -127,17 +155,38 @@ public class FindCompiler {
     private void checkWindowsCompilers() {
         Compiler msvc = testForVisualStudio();
         Compiler mingw = testForMinGW();
+        Compiler mingw_w64 = testForMinGW_W64();
 
-        if(msvc != null && mingw != null) {
-            System.out.println("Both Visual C++ and MinGW compilers are available\n"
+        StringBuffer sb = new StringBuffer();
+        if(msvc != null) {
+            if(sb.length() > 0)
+               sb.append(", ");
+            sb.append(msvc.toString());
+        }
+        if(mingw != null) {
+            if(sb.length() > 0)
+                sb.append(", ");
+            sb.append(mingw.toString());
+        }
+        if(mingw_w64 != null) {
+            if(sb.length() > 0)
+                sb.append(", ");
+            sb.append(mingw_w64.toString());
+        }
+
+        if(msvc != null && mingw != null && mingw_w64 != null) {
+            System.out.println("Multiple compilers are available (" + sb.toString() + ")\n"
                                + "Choosing based on environment variable QMAKESPEC");
             String spec = System.getenv("QMAKESPEC");
+            String crossCompile = System.getenv("CROSS_COMPILE");
             if(spec == null) {
                 throw new BuildException("Environment variable QMAKESPEC is not set...");
-            } else if(spec.contains("msvc")) {
+            } else if(msvc != null && spec.contains("msvc")) {
                 compiler = msvc;
-            } else if(spec.contains("g++")) {
+            } else if(mingw != null && spec.contains("g++") && crossCompile == null) {
                 compiler = mingw;
+            } else if(mingw_w64 != null && spec.contains("g++")) {
+                compiler = mingw_w64;
             } else {
                 throw new BuildException("Invalid QMAKESPEC variable...");
             }
@@ -145,9 +194,11 @@ public class FindCompiler {
             compiler = msvc;
         } else if(mingw != null) {
             compiler = mingw;
+        } else if(mingw_w64 != null) {
+            compiler = mingw_w64;
         } else {
             throw new BuildException("No compiler detected, please make sure " +
-                    "MinGW or VisualC++ binaries are available in PATH");
+                    "MinGW, MinGW-W64 or VisualC++ binaries are available in PATH");
         }
     }
 
@@ -213,6 +264,23 @@ public class FindCompiler {
         } catch(InterruptedException ex) {
             ex.printStackTrace();
             throw new BuildException("Failed to properly execute from 'gcc' command");
+        } catch(IOException ex) {
+            return null;
+        }
+        return null;
+    }
+
+    private Compiler testForMinGW_W64() {
+        // FIXME: Prepend $CROSS_COMPILE
+        String crossCompiler = System.getenv("CROSS_COMPILE");
+        String cmd = crossCompiler + "gcc";
+        try {
+            String output = Exec.execute(cmd, "-v")[1];
+            if(output.contains("mingw-w64"))
+                return Compiler.MinGW_W64;
+        } catch(InterruptedException ex) {
+            ex.printStackTrace();
+            throw new BuildException("Failed to properly execute from '" + cmd + "' command");
         } catch(IOException ex) {
             return null;
         }
