@@ -228,7 +228,14 @@
   <object-type name="QVector_int" />
   <object-type name="PolymorphicObjectType" />
   <object-type name="NonPolymorphicObjectType" />
-  <object-type name="QObjectType" />
+  <object-type name="QObjectType">
+      <extra-includes>
+          <include file-name="com.trolltech.autotests.Utils" location="java"/>
+      </extra-includes>
+      <inject-code>
+          <import-file name="../autotestlib/typesystem_autotests-java.java" quote-after-line="class QObjectType___" quote-before-line="}// class"/>
+      </inject-code>
+  </object-type>
   <value-type name="ValueType" />
 
   <object-type name="InvalidatorPolymorphicObjectType">
