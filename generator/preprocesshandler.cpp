@@ -63,7 +63,7 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
 
     QFile f(targetFile);
     if (!f.open(QIODevice::Append | QIODevice::Text)) {
-        fprintf(stderr, "Failed to write preprocessed file: %s\n", qPrintable(targetFile));
+        std::fprintf(stderr, "Failed to write preprocessed file: %s\n", qPrintable(targetFile));
     }
     f.write(result.c_str(), result.length());
 }
@@ -82,6 +82,8 @@ QStringList PreprocessHandler::setIncludes() {
     } else {
 #if defined(Q_OS_MAC)
         phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
+        if(!phonon_include_dir.isNull())
+            std::fprintf(stdout, "Appending built-in --phonon-include: %s\n", qPrintable(phonon_include_dir));
 #endif
     }
     if (!phonon_include_dir.isNull())
@@ -97,6 +99,8 @@ QStringList PreprocessHandler::setIncludes() {
 #else
         includedir = "/usr/include/qt4";
 #endif
+        if(!includedir.isNull())
+            std::fprintf(stdout, "Appending built-in --qt-include-directory: %s\n", qPrintable(includedir));
     }
     if (!includedir.isNull())
         includes << includedir;
