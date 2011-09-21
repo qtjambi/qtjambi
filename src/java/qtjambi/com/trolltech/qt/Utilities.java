@@ -70,7 +70,7 @@ public class Utilities {
             final ClassLoader loader = Utilities.class.getClassLoader();
             if (loader == null)
                 throw new ExceptionInInitializerError("Could not get classloader!");
-            final InputStream in = loader.getResourceAsStream("version.properties");
+            final InputStream in = loader.getResourceAsStream("com/trolltech/qt/version.properties");
             if (in == null)
                 throw new ExceptionInInitializerError("version.properties not found!");
             try {

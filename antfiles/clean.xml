@@ -76,7 +76,7 @@
                 <include name="*.jar"/>
             </fileset>
         </delete>
-        <delete file="${java.srcdir}/qtjambi/version.properties" quiet="true"/>
+        <delete file="${java.srcdir}/qtjambi/com/trolltech/qt/version.properties" quiet="true"/>
         <delete dir="${outputDir}/platform-output" quiet="true"/>
         <delete file="qtjambi-${qtjambi.version}-src.zip" quiet="true"/>
         <delete dir="build" quiet="true"/>

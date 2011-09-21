@@ -48,6 +48,8 @@
             <fileset dir="${java.outdir}/qtjambi-util">
                 <include name="**/*"/>
             </fileset>
+        </copy>
+        <copy todir="${java.outdir}/qtjambi/com/trolltech/qt">
             <fileset dir=".">
                 <include name="version.properties" />
             </fileset>
