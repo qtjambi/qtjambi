@@ -38,6 +38,7 @@
 
     <target name="jar.qtjambi"
         depends="init, jar.qtjambi-util">
+        <qtjambi-version-properties verbose="true"/>
         <!-- 1. This is a fix for adding the OsInfo class to the the main jar-->
         <!--
             2. Copy version.properties to generated dir for packaging.

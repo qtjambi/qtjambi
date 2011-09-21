@@ -44,23 +44,47 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.PropertyHelper;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 import com.trolltech.qt.osinfo.OSInfo;
+
+import com.trolltech.tools.ant.FindCompiler.Compiler;
 
 // NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")
 public class InitializeTask extends Task {
 
     private boolean verbose;
-    private PropertyHelper props;
+    private PropertyHelper propertyHelper;
     private String configuration;
     private boolean debug;
     private boolean alreadyRun;
 
+    private String qtVersion;
     private int qtMajorVersion;
+    private int qtMinorVersion;
+    private int qtPatchlevelVersion;
+    private String qtVersionSource = "";
+
+    private String pathVersionProperties		= "version.properties";
+    private String pathVersionPropertiesTemplate	= "version.properties.template";
+
+    private String[] generatorPreProcStageOneA;
+    private String[] generatorPreProcStageTwoA;
 
     /*
      * These properties are set outside of this task
@@ -70,27 +94,35 @@ public class InitializeTask extends Task {
      * Or rather these binds shouldn’t exist, how much of this could be moved to
      * xml side?
      */
-    public static final String BINDIR               = "qtjambi.qt.bindir";
-    public static final String LIBDIR               = "qtjambi.qt.libdir";
-    public static final String INCLUDEDIR           = "qtjambi.qt.includedir";
-    public static final String PLUGINSDIR           = "qtjambi.qt.pluginsdir";
-    public static final String PHONONLIBDIR         = "qtjambi.phonon.libdir";
-    public static final String JAVALIBDIR           = "qtjambi.java.library.path";
-    public static final String JAMBILIBDIR          = "qtjambi.jambi.libdir";
-    public static final String JAMBIPLUGINSDIR      = "qtjambi.jambi.pluginsdir";
-    public static final String VERSION              = "qtjambi.version";
-    public static final String JAVA_HOME_TARGET     = "java.home.target";
-    public static final String JAVA_OSARCH_TARGET   = "java.osarch.target";
+    public static final String BINDIR                   = "qtjambi.qt.bindir";
+    public static final String LIBDIR                   = "qtjambi.qt.libdir";
+    public static final String INCLUDEDIR               = "qtjambi.qt.includedir";
+    public static final String PLUGINSDIR               = "qtjambi.qt.pluginsdir";
+    public static final String GENERATOR_PREPROC_STAGE1 = "qtjambi.generator.preproc.stage1";
+    public static final String GENERATOR_PREPROC_STAGE2 = "qtjambi.generator.preproc.stage2";
+    public static final String PHONONLIBDIR             = "qtjambi.phonon.libdir";
+    public static final String JAVALIBDIR               = "qtjambi.java.library.path";
+    public static final String JAMBILIBDIR              = "qtjambi.jambi.libdir";
+    public static final String JAMBIPLUGINSDIR          = "qtjambi.jambi.pluginsdir";
+    public static final String VERSION                  = "qtjambi.version";
+    public static final String JAVA_HOME_TARGET         = "java.home.target";
+    public static final String JAVA_OSARCH_TARGET       = "java.osarch.target";
 
-    public static final String QT_VERSION_MAJOR     = "qt.version.major";
+    public static final String QT_VERSION_MAJOR         = "qt.version.major";
+    public static final String QT_VERSION_MINOR         = "qt.version.minor";
+    public static final String QT_VERSION_PATCHLEVEL    = "qt.version.patchlevel";
+    public static final String QT_VERSION               = "qt.version";
+
+    public static final String QT_VERSION_PROPERTIES          = "version.properties";
+    public static final String QT_VERSION_PROPERTIES_TEMPLATE = "version.properties.template";
 
     /*
      * These properties are set inside this task
      */
+    public static final String CLUCENE            = "qtjambi.clucene";
     public static final String COMPILER           = "qtjambi.compiler";
     public static final String CONFIGURATION      = "qtjambi.configuration";
     public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x
-    public static final String CLUCENE            = "qtjambi.clucene";
     public static final String DBUS               = "qtjambi.dbus";
     public static final String DECLARATIVE        = "qtjambi.declarative";
     public static final String DESIGNER           = "qtjambi.designer";
@@ -177,12 +209,12 @@ public class InitializeTask extends Task {
         if(alreadyRun)	// we should only run this once per ANT invocation
             return;
 
-        props = PropertyHelper.getPropertyHelper(getProject());
+        propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        String sep = (String) props.getProperty("sep");
+        String sep = (String) propertyHelper.getProperty("sep");
         if(sep == null) {
             sep = File.separator;
-            props.setNewProperty((String) null, "sep", sep);
+            propertyHelper.setNewProperty((String) null, "sep", sep);
             if(verbose)
                 System.out.println("sep is " + sep + " (auto-detect)");
         } else {
@@ -190,10 +222,10 @@ public class InitializeTask extends Task {
                 System.out.println("sep is " + sep);
         }
 
-        String psep = (String) props.getProperty("psep");
+        String psep = (String) propertyHelper.getProperty("psep");
         if(psep == null) {
             psep = File.pathSeparator;
-            props.setNewProperty((String) null, "psep", psep);
+            propertyHelper.setNewProperty((String) null, "psep", psep);
             if(verbose)
                 System.out.println("psep is " + psep + " (auto-detect)");
         } else {
@@ -201,94 +233,112 @@ public class InitializeTask extends Task {
                 System.out.println("psep is " + psep);
         }
 
-        FindCompiler finder = new FindCompiler(props);
+        FindCompiler finder = new FindCompiler(propertyHelper);
 
         String osname = finder.decideOSName();
-        props.setNewProperty((String) null, OSNAME, osname);
+        propertyHelper.setNewProperty((String) null, OSNAME, osname);
         if(verbose)
             System.out.println(OSNAME + " is " + osname);
 
         String compiler = finder.decideCompiler();
-        props.setNewProperty((String) null, COMPILER, compiler);
+        propertyHelper.setNewProperty((String) null, COMPILER, compiler);
         if(verbose)
             System.out.println(COMPILER + " is " + compiler);
 
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();
 
-        props.setNewProperty((String) null, JAVA_HOME_TARGET, decideJavaHomeTarget());
-        props.setNewProperty((String) null, JAVA_OSARCH_TARGET, decideJavaOsarchTarget());
+        propertyHelper.setNewProperty((String) null, JAVA_HOME_TARGET, decideJavaHomeTarget());
+        propertyHelper.setNewProperty((String) null, JAVA_OSARCH_TARGET, decideJavaOsarchTarget());
 
-        props.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
+        propertyHelper.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
 
         String s;
 
-        //decideQtVersion();
-        qtMajorVersion = 4;
+        if(!decideQtVersion())
+            throw new BuildException("Unable to determine Qt version, try editing: " + pathVersionPropertiesTemplate);
+        s = String.valueOf(qtVersion);
+        if(verbose)
+            System.out.println(QT_VERSION + " is " + s + qtVersionSource);
+        propertyHelper.setNewProperty((String) null, QT_VERSION, s);
+
         s = String.valueOf(qtMajorVersion);
         if(verbose)
             System.out.println(QT_VERSION_MAJOR + " is " + s);
-        props.setNewProperty((String) null, QT_VERSION_MAJOR, s);
+        propertyHelper.setNewProperty((String) null, QT_VERSION_MAJOR, s);
 
-        String core = decideCore();
-        if("true".equals(core))
-            props.setNewProperty((String) null, CORE, core);
+
+        if(!decideGeneratorPreProc())
+            throw new BuildException("Unable to determine generator pre-processor settings");
+        s = Util.safeArrayToString(generatorPreProcStageOneA);
+        if(verbose)
+            System.out.println(GENERATOR_PREPROC_STAGE1 + " is " + ((s != null) ? s : "<unset>"));
+        propertyHelper.setNewProperty((String) null, GENERATOR_PREPROC_STAGE1, Util.safeArrayJoinToString(generatorPreProcStageOneA, ","));
+        s = Util.safeArrayToString(generatorPreProcStageTwoA);
+        if(verbose)
+            System.out.println(GENERATOR_PREPROC_STAGE2 + " is " + ((s != null) ? s : "<unset>"));
+        propertyHelper.setNewProperty((String) null, GENERATOR_PREPROC_STAGE2, Util.safeArrayJoinToString(generatorPreProcStageTwoA, ","));
+
 
         String clucene = decideCLucene();
         if("true".equals(clucene))
-            props.setNewProperty((String) null, CLUCENE, clucene);
+            propertyHelper.setNewProperty((String) null, CLUCENE, clucene);
+
+        String core = decideCore();
+        if("true".equals(core))
+            propertyHelper.setNewProperty((String) null, CORE, core);
 
         String dbus = decideDBus();
         if("true".equals(dbus))
-            props.setNewProperty((String) null, DBUS, dbus);
+            propertyHelper.setNewProperty((String) null, DBUS, dbus);
 
         String declarative = decideDeclarative();
         if("true".equals(declarative))
-            props.setNewProperty((String) null, DECLARATIVE, declarative);
+            propertyHelper.setNewProperty((String) null, DECLARATIVE, declarative);
 
         String designer = decideDesigner();
         if("true".equals(designer))
-            props.setNewProperty((String) null, DESIGNER, designer);
+            propertyHelper.setNewProperty((String) null, DESIGNER, designer);
 
         String designercomponents = decideDesignerComponents();
         if("true".equals(designercomponents))
-            props.setNewProperty((String) null, DESIGNERCOMPONENTS, designercomponents);
+            propertyHelper.setNewProperty((String) null, DESIGNERCOMPONENTS, designercomponents);
 
         String gui = decideGui();
         if("true".equals(gui))
-            props.setNewProperty((String) null, GUI, gui);
+            propertyHelper.setNewProperty((String) null, GUI, gui);
 
         String helptool = decideHelp();
         if("true".equals(helptool))
-            props.setNewProperty((String) null, HELP, helptool);
+            propertyHelper.setNewProperty((String) null, HELP, helptool);
 
         String multimedia = decideMultimedia();
         if("true".equals(multimedia))
-            props.setNewProperty((String) null, MULTIMEDIA, multimedia);
+            propertyHelper.setNewProperty((String) null, MULTIMEDIA, multimedia);
 
         String network = decideNetwork();
         if("true".equals(network))
-            props.setNewProperty((String) null, NETWORK, network);
+            propertyHelper.setNewProperty((String) null, NETWORK, network);
 
         String opengl = decideOpenGL();
         if("true".equals(opengl))
-            props.setNewProperty((String) null, OPENGL, opengl);
+            propertyHelper.setNewProperty((String) null, OPENGL, opengl);
 
-        String phonon = decidePhonon(props);
+        String phonon = decidePhonon(propertyHelper);
 
         String script = decideScript();
         if("true".equals(script))
-            props.setNewProperty((String) null, SCRIPT, script);
+            propertyHelper.setNewProperty((String) null, SCRIPT, script);
 
         String scripttools = decideScripttools();
         if("true".equals(scripttools))
-            props.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
+            propertyHelper.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
 
-        props.setNewProperty((String) null, SQL, decideSql());
+        propertyHelper.setNewProperty((String) null, SQL, decideSql());
 
-        props.setNewProperty((String) null, SVG, decideSvg());
+        propertyHelper.setNewProperty((String) null, SVG, decideSvg());
 
-        props.setNewProperty((String) null, TEST, decideTest());
+        propertyHelper.setNewProperty((String) null, TEST, decideTest());
 
         String webkit = decideWebkit();
         // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
@@ -296,85 +346,291 @@ public class InitializeTask extends Task {
         if("true".equals(webkit) && "true".equals(phonon) == false)
             if(verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
         if("true".equals(webkit))
-            props.setNewProperty((String) null, WEBKIT, webkit);
+            propertyHelper.setNewProperty((String) null, WEBKIT, webkit);
 
         String xml = decideXml();
         if("true".equals(xml))
-            props.setNewProperty((String) null, XML, xml);
+            propertyHelper.setNewProperty((String) null, XML, xml);
 
         String xmlpatterns = decideXmlPatterns();
         if("true".equals(xmlpatterns))
-            props.setNewProperty((String) null, XMLPATTERNS, xmlpatterns);
+            propertyHelper.setNewProperty((String) null, XMLPATTERNS, xmlpatterns);
 
 
-        props.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
+        propertyHelper.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
 
-        props.setNewProperty((String) null, PLUGINS_CODECS_CNCODECS, decidePluginsCodecs(PLUGINS_CODECS_CNCODECS, "cncodecs"));
-        props.setNewProperty((String) null, PLUGINS_CODECS_JPCODECS, decidePluginsCodecs(PLUGINS_CODECS_JPCODECS, "jpcodecs"));
-        props.setNewProperty((String) null, PLUGINS_CODECS_KRCODECS, decidePluginsCodecs(PLUGINS_CODECS_KRCODECS, "krcodecs"));
-        props.setNewProperty((String) null, PLUGINS_CODECS_TWCODECS, decidePluginsCodecs(PLUGINS_CODECS_TWCODECS, "twcodecs"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_CNCODECS, decidePluginsCodecs(PLUGINS_CODECS_CNCODECS, "cncodecs"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_JPCODECS, decidePluginsCodecs(PLUGINS_CODECS_JPCODECS, "jpcodecs"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_KRCODECS, decidePluginsCodecs(PLUGINS_CODECS_KRCODECS, "krcodecs"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_TWCODECS, decidePluginsCodecs(PLUGINS_CODECS_TWCODECS, "twcodecs"));
 
-        props.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
+        propertyHelper.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
 
         // These are only detecting if the plugins exist for these modules,
         // lack of a plugin does not necessarily mean Qt doesn't have support
         // since the implementation might be statically linked in.
-        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_GIF, decidePluginsImageformatsGif());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_GIF, decidePluginsImageformatsGif());
 
-        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_ICO, decidePluginsImageformatsIco());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_ICO, decidePluginsImageformatsIco());
 
-        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_JPEG, decidePluginsImageformatsJpeg());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_JPEG, decidePluginsImageformatsJpeg());
 
-        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_MNG, decidePluginsImageformatsMng());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_MNG, decidePluginsImageformatsMng());
 
-        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_PNG, decidePluginsImageformatsPng());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_PNG, decidePluginsImageformatsPng());
 
-        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_SVG, decidePluginsImageformatsSvg());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_SVG, decidePluginsImageformatsSvg());
 
-        props.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
 
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE, decidePluginsSqldriversSqlite());
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE2, decidePluginsSqldriversSqlite2());
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLMYSQL, decidePluginsSqldriversSqlmysql());
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLODBC, decidePluginsSqldriversSqlodbc());
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLPSQL, decidePluginsSqldriversSqlpsql());
-        props.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLTDS, decidePluginsSqldriversSqltds());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE, decidePluginsSqldriversSqlite());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE2, decidePluginsSqldriversSqlite2());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLMYSQL, decidePluginsSqldriversSqlmysql());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLODBC, decidePluginsSqldriversSqlodbc());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLPSQL, decidePluginsSqldriversSqlpsql());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLTDS, decidePluginsSqldriversSqltds());
 
-        props.setNewProperty((String) null, PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
-        props.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
-        props.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1"));
-        props.setNewProperty((String) null, PACKAGING_DSO_MINGWM10,        decideQtBinDso(PACKAGING_DSO_MINGWM10,        "mingwm10"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_MINGWM10,        decideQtBinDso(PACKAGING_DSO_MINGWM10,        "mingwm10"));
 
-        props.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1"));
-        props.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
-        props.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32"));
-        props.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32"));
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32"));
 
         alreadyRun = true;
     }
 
+    private boolean parseQtVersion(String versionString) {
+        if(versionString == null)
+            return false;
+        // Remove leading, remove trailing whitespace
+        versionString = Util.stripLeadingAndTrailingWhitespace(versionString);
+        {
+            // Check for valid character set "[0-9\.]+"
+            final int len = versionString.length();
+            for(int i = 0; i < len; i++) {
+                char c = versionString.charAt(i);
+                if((c >= '0' && c <= '9') || c == '.')
+                    continue;
+                return false;
+            }
+        }
+        // Check for non-empty
+        final int len = versionString.length();
+        if(len == 0)
+            return false;
+        // Check for [0-9\.] and no double dots, no leading/trailing dots.
+        if(versionString.charAt(0) == '.' || versionString.charAt(len - 1) == '.')
+            return false;
+        if(versionString.indexOf("..") >= 0)
+            return false;
+
+        // Split
+        String[] versionParts = versionString.split("\\.");
+
+        String tmpQtVersion = null;
+        Integer tmpQtMajorVersion = null;
+        Integer tmpQtMinorVersion = null;
+        Integer tmpQtPatchlevelVersion = null;
+
+        try {
+            tmpQtVersion = versionString;
+            if(versionParts.length < 1)
+                return false;
+            tmpQtMajorVersion = Integer.valueOf(versionParts[0]);
+            if(versionParts.length < 2)
+                return false;
+            tmpQtMinorVersion = Integer.valueOf(versionParts[1]);
+            if(versionParts.length < 3)
+                tmpQtPatchlevelVersion = 0;
+            else
+                tmpQtPatchlevelVersion = Integer.valueOf(versionParts[2]);
+        } catch(NumberFormatException e) {
+            return false;
+        }
+
+        // Ok we happy
+        qtVersion = tmpQtVersion;
+        qtMajorVersion = tmpQtMajorVersion.intValue();
+        qtMinorVersion = tmpQtMinorVersion.intValue();
+        qtPatchlevelVersion = tmpQtPatchlevelVersion.intValue();
+        return true;
+    }
+
+    private boolean decideQtVersion() {
+        boolean versionFound = false;
+
+        String tmpQtVersion = null;
+
+        if(!versionFound) {
+            tmpQtVersion = (String) propertyHelper.getProperty(QT_VERSION);
+            if(parseQtVersion(tmpQtVersion)) {
+                versionFound = true;
+                qtVersionSource = " (${" + QT_VERSION + "})";
+            }
+        }
+
+        // If failure, open version.properties.template to get version
+        if(!versionFound) {
+            tmpQtVersion = null;
+            InputStream inStream = null;
+            Properties props = null;
+            try {
+                inStream = new FileInputStream(pathVersionPropertiesTemplate);
+                props = new Properties();
+                props.load(inStream);
+                tmpQtVersion = (String) props.get(VERSION);
+            } catch(IOException e) {
+                throw new BuildException(e);
+            } finally {
+                if(inStream != null) {
+                    try {
+                        inStream.close();
+                    } catch(IOException eat) {
+                    }
+                    inStream = null;
+                }
+            }
+
+            if(tmpQtVersion != null) {
+                if(parseQtVersion(tmpQtVersion)) {
+                    versionFound = true;
+                    qtVersionSource = " (" + pathVersionPropertiesTemplate + ")";
+                }
+            }
+        }
+
+        if(!versionFound) {
+            // Run "qmake -query"
+            String qmakeExe = (String) propertyHelper.getProperty("qmake.binary");
+            if(qmakeExe == null) {
+                if(OSInfo.isWindows())
+                    qmakeExe = "qmake.exe";
+                else
+                    qmakeExe = "qmake";
+            }
+
+            final String K_QT_VERSION = "QT_VERSION";
+
+            List<String> qmakeArgs = new ArrayList<String>();
+            qmakeArgs.add(qmakeExe);
+            qmakeArgs.add("-query");
+            qmakeArgs.add(K_QT_VERSION);
+
+            try {
+                File fileDir = new File(".");
+                String[] sA = Exec.executeCaptureOutput(qmakeArgs, fileDir, getProject(), null);
+                if(sA != null && sA.length == 2 && sA[0] != null)
+                   tmpQtVersion = sA[0];		// stdout
+                // Extract QT_VERSION:4.7.4
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+            if(tmpQtVersion != null) {
+                if(tmpQtVersion.startsWith(K_QT_VERSION + ":"))
+                    tmpQtVersion = tmpQtVersion.substring(K_QT_VERSION.length() + 1);
+                tmpQtVersion = Util.stripLeadingAndTrailingWhitespace(tmpQtVersion);
+
+                if(parseQtVersion(tmpQtVersion)) {
+                    versionFound = true;
+                    qtVersionSource = " (" + qmakeExe + " -query " + K_QT_VERSION + ")";
+                }
+            }
+        }
+
+        // This is last method as it is the target we are trying to set and also
+        // debatable if it should be here at all.  Maybe the only use is with maybe
+        // supporting really older Qt which does now allow: qmake -query
+        if(!versionFound) {
+            tmpQtVersion = (String) propertyHelper.getProperty(VERSION);
+            if(parseQtVersion(tmpQtVersion)) {
+                versionFound = true;
+                qtVersionSource = " (${" + VERSION + "})";
+            }
+        }
+
+        return versionFound;
+    }
+
+    private boolean decideGeneratorPreProc() {
+        List<String> generatorPreProcStageOneList = new ArrayList<String>();
+        List<String> generatorPreProcStageTwoList = new ArrayList<String>();
+
+        String compilerString = (String) propertyHelper.getProperty((String) null, COMPILER);
+        if(compilerString == null)
+            return false;
+
+        if(OSInfo.isWindows()) {
+            // 
+            if(Compiler.is64Only(compilerString))
+                generatorPreProcStageOneList.add("-DWIN64");
+            generatorPreProcStageOneList.add("-DWIN32");	// always set this
+
+            if(Compiler.isCompiler(compilerString, Compiler.MSVC2005, Compiler.MSVC2005_64))
+                generatorPreProcStageOneList.add("-D_MSC_VER=1400");
+            else if(Compiler.isCompiler(compilerString, Compiler.MSVC2008, Compiler.MSVC2008_64))
+                generatorPreProcStageOneList.add("-D_MSC_VER=1500");
+            else if(Compiler.isCompiler(compilerString, Compiler.MSVC2010, Compiler.MSVC2010_64))
+                generatorPreProcStageOneList.add("-D_MSC_VER=1600");
+            else if(Compiler.isCompiler(compilerString, Compiler.GCC, Compiler.OldGCC, Compiler.MinGW, Compiler.MinGW_W64))
+                generatorPreProcStageOneList.add("-D__GNUC__");
+        } else if(OSInfo.isLinux()) {
+            generatorPreProcStageOneList.add("-D__unix__");
+            generatorPreProcStageOneList.add("-D__linux__");
+            generatorPreProcStageOneList.add("-D__GNUC__");
+        } else if(OSInfo.isMacOS()) {
+            generatorPreProcStageOneList.add("-D__APPLE__");
+            // FIXME: When we detect an alternative compiler is in use (LLVM)
+            generatorPreProcStageOneList.add("-D__GNUC__");
+            // if(OSInfo.isMacOSX64())
+            //     generatorPreProcStageOneList.add("-D__LP64__");
+        } else if(OSInfo.isFreeBSD()) {
+            generatorPreProcStageOneList.add("-D__unix__");
+            generatorPreProcStageOneList.add("-D__FreeBSD__");
+            generatorPreProcStageOneList.add("-D__GNUC__");
+        } else if(OSInfo.isSolaris()) {
+            generatorPreProcStageOneList.add("-D__unix__");
+            generatorPreProcStageOneList.add("-Dsun");
+        }
+
+        if(generatorPreProcStageOneList.size() > 0)
+            generatorPreProcStageOneA = generatorPreProcStageOneList.toArray(new String[generatorPreProcStageOneList.size()]);
+        else
+            generatorPreProcStageOneA = null;
+        if(generatorPreProcStageTwoList.size() > 0)
+            generatorPreProcStageTwoA = generatorPreProcStageTwoList.toArray(new String[generatorPreProcStageTwoList.size()]);
+        else
+            generatorPreProcStageTwoA = null;
+        return true;
+    }
+
     private String decideJavaHomeTarget() {
-        String s = (String) props.getProperty((String) null, JAVA_HOME_TARGET);
+        String s = (String) propertyHelper.getProperty((String) null, JAVA_HOME_TARGET);
         if(s == null)
             s = System.getenv("JAVA_HOME_TARGET");
         if(s == null)
             s = System.getenv("JAVA_HOME");
         String result = s;
-        props.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);    // does this work?
-        props.setProperty("env", "JAVA_HOME_TARGET", result, false);    // does this work?
+        propertyHelper.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);    // does this work?
+        propertyHelper.setProperty("env", "JAVA_HOME_TARGET", result, false);    // does this work?
         if(verbose) System.out.println(JAVA_HOME_TARGET + ": " + result);
         return result;
     }
 
     private String decideJavaOsarchTarget() {
         String method = "";
-        String s = (String) props.getProperty((String) null, JAVA_OSARCH_TARGET);
+        String s = (String) propertyHelper.getProperty((String) null, JAVA_OSARCH_TARGET);
         if(s == null)
             s = System.getenv("JAVA_OSARCH_TARGET");
         if(s == null) {    // auto-detect using what we find
             // This is based on a token observation that the include direcory
             //  only had one sub-directory (this is needed for jni_md.h).
-            File includeDir = new File((String)props.getProperty((String) null, JAVA_HOME_TARGET), "include");
+            File includeDir = new File((String)propertyHelper.getProperty((String) null, JAVA_HOME_TARGET), "include");
             File found = null;
             int foundCount = 0;
             if(includeDir.exists()) {
@@ -420,7 +676,7 @@ public class InitializeTask extends Task {
     }
 
     private boolean doesQtLibExist(String name, int version) {
-        return doesQtLibExist(name, version, props.getProperty((String) null, LIBDIR).toString());
+        return doesQtLibExist(name, version, propertyHelper.getProperty((String) null, LIBDIR).toString());
     }
 
     private boolean doesQtLibExist(String name, String librarydir) {
@@ -428,7 +684,7 @@ public class InitializeTask extends Task {
         if(librarydir != null)
             path.append(librarydir);
         else
-            path.append(props.getProperty((String) null, LIBDIR).toString());
+            path.append(propertyHelper.getProperty((String) null, LIBDIR).toString());
         path.append("/");
         path.append(LibraryEntry.formatQtJambiName(name, debug));
         //System.out.println("Checking QtLib: " + path);
@@ -440,7 +696,7 @@ public class InitializeTask extends Task {
         if(librarydir != null)
             path.append(librarydir);
         else
-            path.append(props.getProperty((String) null, BINDIR).toString());
+            path.append(propertyHelper.getProperty((String) null, BINDIR).toString());
         path.append("/");
         path.append(LibraryEntry.formatQtJambiName(name, false));
         //System.out.println("Checking QtBin: " + path);
@@ -449,7 +705,7 @@ public class InitializeTask extends Task {
 
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
-        path.append(props.getProperty((String) null, PLUGINSDIR));
+        path.append(propertyHelper.getProperty((String) null, PLUGINSDIR));
         path.append("/plugins/");
         path.append(subdir);
         path.append("/");
@@ -462,8 +718,8 @@ public class InitializeTask extends Task {
      * Decide whether we have phonon plugin and check
      * correct phonon backend to use for this OS.
      */
-    private String decidePhonon(PropertyHelper props) {
-        boolean exists = doesQtLibExist("phonon", qtMajorVersion, (String) props.getProperty((String) null, PHONONLIBDIR));
+    private String decidePhonon(PropertyHelper propertyHelper) {
+        boolean exists = doesQtLibExist("phonon", qtMajorVersion, (String) propertyHelper.getProperty((String) null, PHONONLIBDIR));
         String result = String.valueOf(exists);
         if(verbose)
             System.out.println(PHONON + ": " + result);
@@ -472,19 +728,19 @@ public class InitializeTask extends Task {
             return "false";
 
         addToQtConfig("phonon");
-        props.setNewProperty((String) null, PHONON, result);
+        propertyHelper.setNewProperty((String) null, PHONON, result);
 
         switch(OSInfo.os()) {
         case Windows:
-            props.setNewProperty((String) null, PHONON_DS9, "true");
+            propertyHelper.setNewProperty((String) null, PHONON_DS9, "true");
             break;
         case Linux:
         case FreeBSD:
             // FIXME: We should detect the name of this plugin here.
-            props.setNewProperty((String) null, PHONON_GSTREAMER, "true");
+            propertyHelper.setNewProperty((String) null, PHONON_GSTREAMER, "true");
             break;
         case MacOS:
-            props.setNewProperty((String) null, PHONON_QT7, "true");
+            propertyHelper.setNewProperty((String) null, PHONON_QT7, "true");
             break;
         }
 
@@ -518,7 +774,7 @@ public class InitializeTask extends Task {
      * @param config Library to add
      */
     private void addToQtConfig(String config) {
-        String oldConfig = (String) props.getProperty((String) null, QTCONFIG);
+        String oldConfig = (String) propertyHelper.getProperty((String) null, QTCONFIG);
         String newConfig = null;
         if(oldConfig != null) {
             final char delimChar = ' ';
@@ -532,7 +788,7 @@ public class InitializeTask extends Task {
             newConfig = config;
         }
         if(newConfig != null)
-            props.setProperty((String) null, QTCONFIG, newConfig, false);
+            propertyHelper.setProperty((String) null, QTCONFIG, newConfig, false);
     }
 
     private String decideSql() {
@@ -600,7 +856,10 @@ public class InitializeTask extends Task {
 
     private String decidePluginsImageformatsPng(){
         String result = String.valueOf(doesQtPluginExist("qpng", "imageformats"));
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_PNG + ": " + result);
+        String extra = "";
+        if("false".equals(result))
+            extra = " (probably a built-in)";
+        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_PNG + ": " + result + extra);
         return result;
     }
 

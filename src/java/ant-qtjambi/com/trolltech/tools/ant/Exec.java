@@ -1,8 +1,13 @@
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.PropertyHelper;
+import org.apache.tools.ant.Project;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,37 +18,6 @@ import java.util.Map;
  * @todo Rewrite. This kind of API is PITA to use and maintain.
  */
 class Exec {
-
-    /**
-     * Executes the command specified by cmd and returns the printed output
-     * from the process' stdout and stderr in the array on position 0 and 1 respectivly.
-     * @param cmd The command to execute
-     * @return An array of length 2, containing the [stdout, stderr] output.
-     * @throws IOException If an error occurs
-     * @throws InterruptedException If an error occurs...
-     */
-    public static String[] execute(String ... cmd) throws IOException, InterruptedException {
-        Process p = Runtime.getRuntime().exec(cmd);
-
-        ByteArrayOutputStream outdata = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(outdata);
-
-        ByteArrayOutputStream errdata = new ByteArrayOutputStream();
-        PrintStream err = new PrintStream(errdata);
-
-        StreamConsumer stdoutReader = new StreamConsumer(p.getInputStream(), out);
-        StreamConsumer stderrReader = new StreamConsumer(p.getErrorStream(), err);
-        stdoutReader.start();
-        stderrReader.start();
-        p.waitFor();
-
-        stdoutReader.join();
-        stderrReader.join();
-        out.close();
-        err.close();
-
-        return new String[] { outdata.toString(), errdata.toString() };
-    }
 
     /**
      * Convenience method for exec(String, File).
@@ -107,20 +81,18 @@ class Exec {
         execute(command, directory, project, null);
     }
 
-    public static void execute(List<String> command, File directory, Project project, String ldpath) throws BuildException {
-        System.out.println("Executing: " + command.toString() + " in directory " + directory.toString());
-        ProcessBuilder builder = new ProcessBuilder(command);
+    private static void setupEnvironment(Map<String, String> env, PropertyHelper props, String ldpath) {
+        String s;
 
-        // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
-        // but it should not be needed there in first place... Only if you want to have same kind of building
-        // environment one can have for Linux.
-        // it shouldn't affect to Windows environment though.
-        Map<String, String> env = builder.environment();
-        if(ldpath != null)
-            env.put("LD_LIBRARY_PATH", ldpath);
+        if(ldpath != null) {
+            env.put("LD_LIBRARY_PATH", ldpath);	// FIXME: Should merge into existing value
+        } else {
+            s = (String) props.getProperty("qt.libdir");
+            if(s != null)
+                env.put("LD_LIBRARY_PATH", s);	// FIXME: Should merge into existing value
+        }
 
-        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
-        String s = (String) props.getProperty("java.home.target");
+        s = (String) props.getProperty("java.home.target");
         if(s != null)
             env.put("JAVA_HOME_TARGET", s);
         s = (String) props.getProperty("java.osarch.target");
@@ -135,8 +107,22 @@ class Exec {
         s = (String) props.getProperty("qtjambi.phonon.libdir");
         if(s != null && s.length() > 0)
             env.put("PHONON_LIBS", s);
+    }
 
-        builder.directory(directory);
+    public static void execute(List<String> command, File directory, Project project, String ldpath) throws BuildException {
+        System.out.println("Executing: " + command.toString() + " in directory " + ((directory != null) ? directory.toString() : "<notset>"));
+        ProcessBuilder builder = new ProcessBuilder(command);
+
+        // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
+        // but it should not be needed there in first place... Only if you want to have same kind of building
+        // environment one can have for Linux.
+        // it shouldn't affect to Windows environment though.
+        Map<String, String> env = builder.environment();
+        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+        setupEnvironment(env, props, ldpath);
+
+        if(directory != null)
+            builder.directory(directory);
         try {
             Process process = builder.start();
             Util.redirectOutput(process);
@@ -146,6 +132,68 @@ class Exec {
             }
         } catch(IOException e) {
             throw new BuildException("Running: '" + command.toString() + "' failed.", e);
+        }
+    }
+
+    public static String[] executeCaptureOutput(List<String> command, File directory, Project project, String ldpath) throws BuildException, InterruptedException, IOException {
+        ProcessBuilder builder = new ProcessBuilder(command);
+
+        // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
+        // but it should not be needed there in first place... Only if you want to have same kind of building
+        // environment one can have for Linux.
+        // it shouldn't affect to Windows environment though.
+        Map<String, String> env = builder.environment();
+        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+        setupEnvironment(env, props, ldpath);
+
+        if(directory != null)
+            builder.directory(directory);
+        PrintStream out = null;
+        PrintStream err = null;
+        try {
+            Process process = builder.start();
+            
+            ByteArrayOutputStream outdata = new ByteArrayOutputStream();
+            out = new PrintStream(outdata);
+
+            ByteArrayOutputStream errdata = new ByteArrayOutputStream();
+            err = new PrintStream(errdata);
+
+            StreamConsumer stdoutReader = new StreamConsumer(process.getInputStream(), out);
+            StreamConsumer stderrReader = new StreamConsumer(process.getErrorStream(), err);
+            stdoutReader.start();
+            stderrReader.start();
+            process.waitFor();
+
+            stdoutReader.join();
+            stderrReader.join();
+
+            err.close();
+            err = null;
+            out.close();
+            out = null;
+
+            if(process.exitValue() != 0) {
+                String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
+                System.err.println("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
+            }
+
+            return new String[] { outdata.toString(), errdata.toString() };
+        } finally {
+            if(err != null) {
+                try {
+                    err.close();
+                } catch(Exception eat) {
+                }
+                err = null;
+            }
+            if(out != null) {
+                try {
+                    out.close();
+                } catch(Exception eat) {
+                }
+                out = null;
+            }
         }
     }
 

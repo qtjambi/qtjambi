@@ -9,6 +9,8 @@ Makefile.Release
 *.kdev4
 buildlogs
 
+version.properties
+
 examples/generator/hello_world_generator/bin
 examples/generator/hello_world_generator/tmp
 

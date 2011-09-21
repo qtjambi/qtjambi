@@ -7,7 +7,7 @@
 
 <project name="qtjambi.setenv" default="setenv">
 
-    <property file="${jambi.directory}/version.properties"/>
+    <property file="${jambi.directory}/version.properties.template"/>
     <property file="${jambi.directory}/buildpath.properties"/>
     <property file="${jambi.directory}/antcontrib.properties"/>
 
@@ -214,15 +214,18 @@
     </target>
 
     <target name="setup-properties" depends="setenv.solve-path, handle-qtdir, check-kdephonon, lookup-libdir">
-        <exec executable="${qmake.binary}" outputproperty="qt.version">
+        <exec executable="${qmake.binary}" outputproperty="qt.version.tmp">
             <arg value="-query"/>
             <arg value="QT_VERSION"/>
         </exec>
-        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version})">
+        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version.tmp})">
             <condition>
-                <not>
-                    <equals arg1="${qtjambi.version}" arg2="${qt.version}"/>
-                </not>
+                <and>
+                    <isset property="qtjambi.version"/>
+                    <not>
+                        <equals arg1="${qtjambi.version}" arg2="${qt.version.tmp}"/>
+                    </not>
+                </and>
             </condition>
         </fail>
         <property name="qtjambi.qt.bindir" value="${qt.bindir}"/>

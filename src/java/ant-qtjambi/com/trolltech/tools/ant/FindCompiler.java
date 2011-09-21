@@ -2,6 +2,8 @@ package com.trolltech.tools.ant;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
@@ -239,16 +241,23 @@ public class FindCompiler {
 
     private Compiler testForGCC() {
         try {
-            String output = Exec.execute("gcc", "-dumpversion")[0];
-            if(output.contains("3.3."))
+            List<String> cmdAndArgs = new ArrayList<String>();
+            cmdAndArgs.add("gcc");
+            cmdAndArgs.add("-dumpversion");
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String stdout = null;
+            if(sA != null && sA.length == 2 && sA[0] != null)
+                stdout = sA[0];
+            if(stdout.contains("3.3."))
                 return Compiler.OldGCC;
             return Compiler.GCC;
         } catch(InterruptedException ex) {
             ex.printStackTrace();
             throw new BuildException("Failed to properly execute 'gcc' command");
         } catch(IOException ex) {
-            return null;
+            ex.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -258,14 +267,20 @@ public class FindCompiler {
      */
     private Compiler testForMinGW() {
         try {
-            String output = Exec.execute("gcc", "-v")[1];
-            if(output.contains("mingw"))
+            List<String> cmdAndArgs = new ArrayList<String>();
+            cmdAndArgs.add("gcc");
+            cmdAndArgs.add("-v");
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String stderr = null;
+            if(sA != null && sA.length == 2 && sA[1] != null)
+                stderr = sA[1];
+            if(stderr.contains("mingw"))
                 return Compiler.MinGW;
         } catch(InterruptedException ex) {
             ex.printStackTrace();
             throw new BuildException("Failed to properly execute from 'gcc' command");
         } catch(IOException ex) {
-            return null;
+            ex.printStackTrace();
         }
         return null;
     }
@@ -275,46 +290,59 @@ public class FindCompiler {
         String crossCompiler = System.getenv("CROSS_COMPILE");
         String cmd = crossCompiler + "gcc";
         try {
-            String output = Exec.execute(cmd, "-v")[1];
-            if(output.contains("mingw-w64"))
+            List<String> cmdAndArgs = new ArrayList<String>();
+            cmdAndArgs.add(cmd);
+            cmdAndArgs.add("-v");
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String stderr = null;
+            if(sA != null && sA.length == 2 && sA[1] != null)
+                stderr = sA[1];
+            if(stderr.contains("mingw-w64"))
                 return Compiler.MinGW_W64;
         } catch(InterruptedException ex) {
             ex.printStackTrace();
             throw new BuildException("Failed to properly execute from '" + cmd + "' command");
         } catch(IOException ex) {
-            return null;
+            ex.printStackTrace();
         }
         return null;
     }
 
     private Compiler testForVisualStudio() {
         try {
-            String output = Exec.execute("cl.exe")[1];
-            compilerDetectionLine = output;
-            if(output.contains("12.0"))
+            List<String> cmdAndArgs = new ArrayList<String>();
+            cmdAndArgs.add("cl.exe");	// /version ?
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String stderr = null;
+            if(sA != null && sA.length == 2 && sA[1] != null)
+                stderr = sA[1];
+            compilerDetectionLine = stderr;
+            if(stderr.contains("12.0"))
                 return Compiler.MSVC1998;
-            if(output.contains("13.00"))
+            if(stderr.contains("13.00"))
                 return Compiler.MSVC2002;
-            if(output.contains("13.10"))
+            if(stderr.contains("13.10"))
                 return Compiler.MSVC2003;
-            if(output.contains("14.00")) {
-                if(output.contains("x64"))
+            if(stderr.contains("14.00")) {
+                if(stderr.contains("x64"))
                     return Compiler.MSVC2005_64;
                 return Compiler.MSVC2005;
             }
-            if(output.contains("15.00")) {
-                if(output.contains("x64"))
+            if(stderr.contains("15.00")) {
+                if(stderr.contains("x64"))
                     return Compiler.MSVC2008_64;
                 return Compiler.MSVC2008;
             }
-            if(output.contains("16.00")) {
-                if(output.contains("x64"))
+            if(stderr.contains("16.00")) {
+                if(stderr.contains("x64"))
                     return Compiler.MSVC2010_64;
                 return Compiler.MSVC2010;
             }
-            throw new BuildException("Failed to detect Visual Studio version\n  \"" + output + "\"");
+            throw new BuildException("Failed to detect Visual Studio version\n  \"" + stderr + "\"");
         } catch(InterruptedException ex) {
+            ex.printStackTrace();
         } catch(IOException ex) {
+            ex.printStackTrace();
         }
         return null;
     }

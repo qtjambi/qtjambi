@@ -235,4 +235,82 @@ abstract class Util {
         }
     }
 
+    public static String arrayToString(Object[] array) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("[");
+        boolean first = true;
+        for(Object o : array) {
+            if(first)
+                first = false;
+            else
+                sb.append(", ");
+            sb.append("\"");
+            sb.append(o.toString());
+            sb.append("\"");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    public static String safeArrayToString(Object[] array) {
+        if(array == null)
+            return null;
+        return arrayToString(array);
+    }
+
+    public static String stripLeadingAndTrailingWhitespace(String s) {
+        final int len = s.length();
+        int lastContigiousWhitespaceIndex = -1;
+        int state = 0;
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+
+            boolean isSpace;
+            if(c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\013' || c == '\f')
+                isSpace = true;
+            else
+                isSpace = false;
+
+            if(state == 0) {	// leading
+                if(isSpace)
+                    continue;	// skip
+                else
+                    state = 1;	// next-state && emit
+            } else {
+                // always emit as we truncate accordingly at end
+                if(isSpace) {
+                    if(lastContigiousWhitespaceIndex < 0)
+                        lastContigiousWhitespaceIndex = i;
+                } else {
+                    lastContigiousWhitespaceIndex = -1;
+                }
+            }
+            sb.append(c);
+        }
+        if(lastContigiousWhitespaceIndex >= 0)
+            s = sb.substring(0, lastContigiousWhitespaceIndex);
+        else
+            s = sb.toString();
+        return s;
+    }
+
+    public static String arrayJoinToString(Object[] array, CharSequence delim) {
+        StringBuffer sb = new StringBuffer();
+        boolean first = true;
+        for(Object o : array) {
+            if(first)
+                first = false;
+            else
+                sb.append(delim);
+            sb.append(o.toString());
+        }
+        return sb.toString();
+    }
+
+    public static String safeArrayJoinToString(Object[] array, CharSequence delim) {
+        if(array == null)
+            return null;
+        return arrayJoinToString(array, delim);
+    }
 }

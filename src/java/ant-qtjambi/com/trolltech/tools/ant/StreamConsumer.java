@@ -15,15 +15,35 @@ public class StreamConsumer extends Thread {
 
     @Override
     public void run() {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        BufferedReader reader = null;
         String line;
         try {
+            reader = new BufferedReader(new InputStreamReader(in));
             while((line = reader.readLine()) != null) {
                 if(out != null)
                     out.println(line);
             }
+            reader.close();
+            reader = null;
+            in.close();
+            in = null;
         } catch(IOException e) {
             e.printStackTrace();
+        } finally {
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch(IOException eat) {
+                }
+                reader = null;
+            }
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException eat) {
+                }
+                in = null;
+            }
         }
     }
 
