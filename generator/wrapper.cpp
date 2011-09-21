@@ -274,7 +274,19 @@ qDebug() << "modifyCppDefine():" << arg << ((f_set) ? " define" : " undef");
         if (split > 0)
             value = s.mid(split + 1);
 qDebug() << "modifyCppDefine():" << name << " = " << value << ((f_set) ? " define" : " undef");
-        defineUndefineList.append(DefineUndefine(name, value, f_set));
+        if(name.compare("*") == 0) {	// "-U*" has the effect of clearing the list
+            if(f_set == false) {	// its invalid name so ignore on f_set==true
+                if(defineUndefineStageCurrent == 2)
+                    defineUndefineStageTwoList.clear();
+                else
+                    defineUndefineStageOneList.clear();
+            }
+        } else {
+            if(defineUndefineStageCurrent == 2)
+                defineUndefineStageTwoList.append(DefineUndefine(name, value, f_set));
+            else
+                defineUndefineStageOneList.append(DefineUndefine(name, value, f_set));
+        }
     }
 }
 

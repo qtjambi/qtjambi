@@ -44,11 +44,14 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.PropertyHelper;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
@@ -174,6 +177,39 @@ public class GeneratorTask extends Task {
 
         if(debugTools)
             commandList.add("--qtjambi-debug-tools");
+
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+        Object o;
+
+        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE1);
+        if(o != null) {
+            if(o instanceof String[]) {
+                String[] sA = (String[]) o;
+                commandList.add("--preproc-stage1");
+                for(String s : sA)
+                    commandList.add(s);
+            } else {
+                StringTokenizer st = new StringTokenizer(o.toString(), ",");
+                commandList.add("--preproc-stage1");
+                while(st.hasMoreTokens())
+                    commandList.add(st.nextToken());
+            }
+        }
+
+        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE2);
+        if(o != null) {
+            if(o instanceof String[]) {
+                String[] sA = (String[]) o;
+                commandList.add("--preproc-stage2");
+                for(String s : sA)
+                    commandList.add(s);
+            } else {
+                StringTokenizer st = new StringTokenizer(o.toString(), ",");
+                commandList.add("--preproc-stage2");
+                while(st.hasMoreTokens())
+                    commandList.add(st.nextToken());
+            }
+        }
 
         parseArgumentFiles(commandList);
 
