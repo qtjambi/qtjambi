@@ -53,7 +53,9 @@ import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManagement {
     protected QtJambiObject createInstanceInJava() {
-        return new NonPolymorphicObjectType();
+        QtJambiObject o = new NonPolymorphicObjectType();
+        accountingForObject(o);
+        return o;
     }
 
     protected QtJambiObject createInstanceInNative() {

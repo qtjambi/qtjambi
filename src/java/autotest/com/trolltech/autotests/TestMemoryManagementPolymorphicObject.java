@@ -53,7 +53,9 @@ import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement {
     protected QtJambiObject createInstanceInJava() {
-        return new PolymorphicObjectType();
+        QtJambiObject o = new PolymorphicObjectType();
+        accountingForObject(o);
+        return o;
     }
 
     protected QtJambiObject createInstanceInNative() {
@@ -66,7 +68,6 @@ public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement 
 
     QtJambiObject temporaryObject = null;
     protected QtJambiObject invalidateObject(QtJambiObject obj, final boolean returnReference) {
-
         new InvalidatorPolymorphicObjectType() {
             @Override
             public void overrideMe(PolymorphicObjectType t) {

@@ -46,20 +46,50 @@ package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.WeakReference;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.trolltech.qt.QtJambiObject;
 import com.trolltech.qt.QNoNativeResourcesException;
+import com.trolltech.qt.QThreadManagerUtils;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
 
 // Attempt at complete test for general memory leaks and crashes
 // Should test that all the general cases work as intended by default.
+//
+// We have extra methods in here to make sure that the stack frame which an
+// object under test has had a live strong reference in is ended before we
+// start to look/wait for text result condition to occur.  Since the
+// compiler is allowed to keep hold of references longer then the code
+// might indicate.  To defeat the compiler for sure we could use a Util
+// class and pass in the abstract type as interface or we could implement
+// the method call in that interface via reflection.
+@Ignore("abstract and base Java class")
 public abstract class TestMemoryManagement {
+    private ReferenceQueue weakReferenceQueue = new ReferenceQueue();
+    private ReferenceQueue phantomReferenceQueue = new ReferenceQueue();
+    private Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
+    private Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
+    private List<Integer> alive = new ArrayList<Integer>();
+    private List<Integer> aliveAndUnderTest = new ArrayList<Integer>();
+    private int counter = 0;
+
     @BeforeClass
     public static void testInitialize() throws Exception {
         Utils.println(2, "TestMemoryManagement.testInitialize(): begin");
@@ -86,9 +116,51 @@ public abstract class TestMemoryManagement {
         if(app != null)
             app.dispose();
         try {
-            Utils.println(2, "TestMemoryManagement.testDispose(): done  app="+app); 
+            Utils.println(3, "TestMemoryManagement.testDispose(): done  app="+app); 
         } catch(QNoNativeResourcesException e) {
             Utils.println(3, "TestMemoryManagement.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage()); 
+        }
+    }
+
+    public Integer getIdNext() {
+        int idNext;
+        synchronized(TestMemoryManagement.class) {
+            counter++;
+            idNext = counter;
+        }
+        return Integer.valueOf(idNext);
+    }
+    public void clearGcReferences() {
+        synchronized(TestMemoryManagement.class) {
+            aliveAndUnderTest.clear();
+        }
+    }
+    public int getSize() {
+        synchronized(TestMemoryManagement.class) {
+            return aliveAndUnderTest.size();
+        }
+    }
+
+    protected void accountingForObject(Object o) {
+        assertNotNull(o);
+
+        Integer id = getIdNext();
+
+        if(Utils.isDebugLevel(4)) {
+            String className = o.getClass().getName();
+            String shortClassName = className;
+            int i = shortClassName.lastIndexOf('.');
+            if(i > 0)
+                shortClassName = shortClassName.substring(i + 1);
+            Utils.println(4, shortClassName + ".ctor " + className + "@" + System.identityHashCode(o) + "; thread=" + Thread.currentThread().getId() + "; id=" + id);
+        }
+        WeakReference<Object> wr = new WeakReference<Object>(o, weakReferenceQueue);
+        PhantomReference<Object> pr = new PhantomReference<Object>(o, phantomReferenceQueue);
+        synchronized(TestMemoryManagement.class) {
+            weakReferenceMap.put(wr, id);
+            phantomReferenceMap.put(pr, id);
+            aliveAndUnderTest.add(id);
+            alive.add(id);
         }
     }
 
@@ -131,6 +203,14 @@ public abstract class TestMemoryManagement {
         QtJambiDebugTools.reset_objectInvalidatedCount();
         QtJambiDebugTools.reset_shellDestructorCalledCount();
         QtJambiDebugTools.reset_userDataDestroyedCount();
+        clearGcReferences();
+
+        QThreadManagerUtils.releaseNativeResources();
+        System.gc();
+        System.runFinalization();
+
+        QApplication.processEvents();
+        QThreadManagerUtils.releaseNativeResources();
     }
 
 
@@ -146,14 +226,14 @@ public abstract class TestMemoryManagement {
             int shellDestructorCalledCount,
             int userDataDestroyedCount) {
 
-        assertEquals(finalizedCount, QtJambiDebugTools.finalizedCount(className));
-        assertEquals(!isQObject() ? destructorFunctionCalledCount : 0, QtJambiDebugTools.destructorFunctionCalledCount(className));
-        assertEquals(disposeCalledCount, QtJambiDebugTools.disposeCalledCount(className));
-        assertEquals(linkConstructedCount, QtJambiDebugTools.linkConstructedCount(className));
-        assertEquals(linkDestroyedCount, QtJambiDebugTools.linkDestroyedCount(className));
-        assertEquals(objectInvalidatedCount, QtJambiDebugTools.objectInvalidatedCount(className));
-        assertEquals(hasShellDestructor() ? shellDestructorCalledCount : 0, QtJambiDebugTools.shellDestructorCalledCount(className));
-        assertEquals(isQObject() ? userDataDestroyedCount : 0, QtJambiDebugTools.userDataDestroyedCount(className));
+        assertEquals("finalizedCount",                finalizedCount,                                        QtJambiDebugTools.finalizedCount(className));
+        assertEquals("destructorFunctionCalledCount", !isQObject() ? destructorFunctionCalledCount : 0,      QtJambiDebugTools.destructorFunctionCalledCount(className));
+        assertEquals("disposeCalledCount",            disposeCalledCount,                                    QtJambiDebugTools.disposeCalledCount(className));
+        assertEquals("linkConstructedCount",          linkConstructedCount,                                  QtJambiDebugTools.linkConstructedCount(className));
+        assertEquals("linkDestroyedCount",            linkDestroyedCount,                                    QtJambiDebugTools.linkDestroyedCount(className));
+        assertEquals("objectInvalidatedCount",        objectInvalidatedCount,                                QtJambiDebugTools.objectInvalidatedCount(className));
+        assertEquals("shellDestructorCalledCount",    hasShellDestructor() ? shellDestructorCalledCount : 0, QtJambiDebugTools.shellDestructorCalledCount(className));
+        assertEquals("userDataDestroyedCount",        isQObject() ? userDataDestroyedCount : 0,              QtJambiDebugTools.userDataDestroyedCount(className));
 
     }
 
@@ -195,7 +275,7 @@ public abstract class TestMemoryManagement {
             createInstanceInJava();
         }
 
-        gcAndWait();
+        gcAndWait(TIME_LIMIT, null, 1, 1, 1, 1, 1);
 
         test(className(), 1, 1, 0, 1, 1, 1, 1, 1);
 
@@ -206,9 +286,11 @@ public abstract class TestMemoryManagement {
         if (supportsSplitOwnership()) {
             resetAll();
 
-            createInstanceInNativeWithSplitOwnership();
+            {
+                createInstanceInNativeWithSplitOwnership();
+            }
 
-            gcAndWait();
+            gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, null);
 
             test(className(), 1, 0, 0, 1, 1, 1, 0, 0);
         }
@@ -222,9 +304,11 @@ public abstract class TestMemoryManagement {
     public void finalize_NotCreatedInJava_JavaOwnership() {
         resetAll();
 
-        createInstanceInNativeWithJavaOwnership();
+        {
+            createInstanceInNativeWithJavaOwnership();
+        }
 
-        gcAndWait();
+        gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, 1);
 
         test(className(), 1, 1, 0, 1, 1, 1, 0, 1);
     }
@@ -238,16 +322,20 @@ public abstract class TestMemoryManagement {
     public void dispose_CreatedInJava_JavaOwnership() {
         resetAll();
 
-        createInstanceInJavaAndDisposeIt();
+        {
+            createInstanceInJavaAndDisposeIt();
+        }
 
-        gcAndWait();
+        gcAndWait(TIME_LIMIT, null, 1, 1, 1, 1, 1);
 
         test(className(), 1, 1, 1, 1, 1, 1, 1, 1);
     }
 
     private void createInstanceInJavaAndDisposeIt() {
-        QtJambiObject obj = createInstanceInJava();
-        obj.dispose();
+        {
+            QtJambiObject obj = createInstanceInJava();
+            obj.dispose();
+        }
 
         test(className(), 0, 1, 1, 1, 1, 1, 1, 1);
     }
@@ -256,17 +344,21 @@ public abstract class TestMemoryManagement {
     public void dispose_CreatedInJava_CppOwnership() {
         resetAll();
 
-        createInJavaDisableGCAndDispose();
+        {
+            createInJavaDisableGCAndDispose();
+        }
 
-        gcAndWait();
+        gcAndWait(TIME_LIMIT, null, 1, 1, 1, 1, 1);
 
         test(className(), 1, 1, 1, 1, 1, 1, 1, 1);
     }
 
     private void createInJavaDisableGCAndDispose() {
-        QtJambiObject obj = createInstanceInJava();
-        obj.disableGarbageCollection();
-        obj.dispose();
+        {
+            QtJambiObject obj = createInstanceInJava();
+            obj.disableGarbageCollection();
+            obj.dispose();
+        }
 
         test(className(), 0, 1, 1, 1, 1, 1, 1, 1);
     }
@@ -276,17 +368,21 @@ public abstract class TestMemoryManagement {
         if (supportsSplitOwnership()) {
             resetAll();
 
-            createInNativeAndDispose();
+            {
+                createInNativeAndDispose();
+            }
 
-            gcAndWait();
+            gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, null);
 
             test(className(), 1, 1, 1, 1, 1, 1, 0, 0);
         }
     }
 
     private void createInNativeAndDispose() {
-        QtJambiObject obj = createInstanceInNative();
-        obj.dispose();
+        {
+            QtJambiObject obj = createInstanceInNative();
+            obj.dispose();
+        }
 
         test(className(), 0, 1, 1, 1, 1, 1, 0, 0);
     }
@@ -295,17 +391,21 @@ public abstract class TestMemoryManagement {
     public void dispose_NotCreatedInJava_JavaOwnership() {
         resetAll();
 
-        createInNativeSetJavaOwnershipAndDispose();
+        {
+            createInNativeSetJavaOwnershipAndDispose();
+        }
 
-        gcAndWait();
+        gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, 1);
 
         test(className(), 1, 1, 1, 1, 1, 1, 0, 1);
     }
 
     private void createInNativeSetJavaOwnershipAndDispose() {
-        QtJambiObject obj = createInstanceInNative();
-        obj.setJavaOwnership();
-        obj.dispose();
+        {
+            QtJambiObject obj = createInstanceInNative();
+            obj.setJavaOwnership();
+            obj.dispose();
+        }
 
         test(className(), 0, 1, 1, 1, 1, 1, 0, 1);
     }
@@ -314,17 +414,21 @@ public abstract class TestMemoryManagement {
     public void dispose_NotCreatedInJava_CppOwnership() {
         resetAll();
 
-        createInNativeDisableGCAndDispose();
+        {
+            createInNativeDisableGCAndDispose();
+        }
 
-        gcAndWait();
+        gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, 1);
 
         test(className(), 1, 1, 1, 1, 1, 1, 0, 1);
     }
 
     private void createInNativeDisableGCAndDispose() {
-        QtJambiObject obj = createInstanceInNative();
-        obj.disableGarbageCollection();
-        obj.dispose();
+        {
+            QtJambiObject obj = createInstanceInNative();
+            obj.disableGarbageCollection();
+            obj.dispose();
+        }
 
         test(className(), 0, 1, 1, 1, 1, 1, 0, 1);
     }
@@ -333,72 +437,206 @@ public abstract class TestMemoryManagement {
     public void nativeDelete_CreatedInJava_CppOwnership() {
         resetAll();
 
-        createInJavaDisableGCAndDeleteInNative();
+        {
+            createInJavaDisableGCAndDeleteInNative();
+        }
 
-        gcAndWait();
 
-        if (hasVirtualDestructor())
+        if (hasVirtualDestructor()) {
+            gcAndWait(TIME_LIMIT, null, 1, 1, 1, 1, 1);
             test(className(), 1, 0, 0, 1, 1, 1, 1, 1);
-        else
+        } else {
+            gcAndWait(TIME_LIMIT, Long.valueOf(250), null, 1, null, null, null);	// FIXME nothing to test/wait for ?
             test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+        }
 
     }
 
     private void createInJavaDisableGCAndDeleteInNative() {
-        QtJambiObject obj = createInstanceInJava();
-        obj.disableGarbageCollection();
+        {
+            QtJambiObject obj = createInstanceInJava();
+            obj.disableGarbageCollection();
 
-        deleteLastInstance();
-        if (hasVirtualDestructor()) {
-            assertEquals(0L, obj.nativeId());
-            test(className(), 0, 0, 0, 1, 1, 1, 1, 1);
-        } else {
-            test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+            deleteLastInstance();
+            if (hasVirtualDestructor())
+                assertEquals(0L, obj.nativeId());
         }
+
+        if (hasVirtualDestructor())
+            test(className(), 0, 0, 0, 1, 1, 1, 1, 1);
+        else
+            test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
     }
 
     // Many objects leak in this test. Cases that lead to this scenario
     // must be specially handled to avoid memory leaks.
     @Test
     public void nativeDelete_NotCreatedInJava_CppOwnership() {
+Utils.println(15, "nativeDelete_NotCreatedInJava_CppOwnership(): MARK1");
         resetAll();
 
-        createInNativeDisableGCAndDeleteInNative();
-        gcAndWait();
+Utils.println(15, "nativeDelete_NotCreatedInJava_CppOwnership(): MARK2");
+        {
+            createInNativeDisableGCAndDeleteInNative();
+        }
+Utils.println(15, "nativeDelete_NotCreatedInJava_CppOwnership(): MARK3");
 
-        test(className(), isQObject() ? 1 : 0, 0, 0, 1, isQObject() ? 1 : 0, isQObject() ? 1 : 0, 0, 1);
+        if(isQObject()) {
+            gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, 1);
+            test(className(), 1, 0, 0, 1, 1, 1, 0, 1);
+        } else {
+            gcAndWait(TIME_LIMIT, null, null, 1, null, null, 1);	// userDataDestroyedCount
+            test(className(), 0, 0, 0, 1, 0, 0, 0, 1);
+        }
+    }
+
+    // method exists to ensure object reference created here is discarded for GC
+    private void createInNativeDisableGCAndDeleteInNative_internal() {
+        QtJambiObject obj = createInstanceInNative();
+        obj.disableGarbageCollection();
     }
 
     private void createInNativeDisableGCAndDeleteInNative() {
-        QtJambiObject obj = createInstanceInNative();
-
-        obj.disableGarbageCollection();
+Utils.println(15, "createInNativeDisableGCAndDeleteInNative() MARK1 class=" + getClass().getName());
+        createInNativeDisableGCAndDeleteInNative_internal();
+Utils.println(15, "createInNativeDisableGCAndDeleteInNative() MARK2");
         test(className(), 0, 0, 0, 1, 0, 0, 0, 0);
+Utils.println(15, "createInNativeDisableGCAndDeleteInNative() MARK3");
 
         deleteLastInstance();
         test(className(), 0, 0, 0, 1, isQObject() ? 1 : 0, isQObject() ? 1 : 0, 0, 1);
     }
 
+    private boolean gcAndWait(long timeLimitMillis, Long excessLimitMillis, Integer finalizedCount, Integer linkConstructedCount, Integer linkDestroyedCount, Integer shellDestructorCalledCount, Integer userDataDestroyedCount) {
+        boolean obtainGoal = false;	// did we meet conditions within timelimit?
 
-    protected final void gcAndWait() {
-        gcAndWait(1);
-    }
-
-    private void gcAndWait(int finalizedCount) {
         long startTime = System.currentTimeMillis();
+        long excessTime = 0;
         long elapsed = 0;
-        while (QtJambiDebugTools.finalizedCount(className()) < finalizedCount && elapsed < TIME_LIMIT) try {
-            System.gc();
-            Thread.sleep(10);
 
-            if (needsEventProcessing())
-                QApplication.processEvents(new QEventLoop.ProcessEventsFlags(QEventLoop.ProcessEventsFlag.DeferredDeletion));
+        int currentFinalizedCount;
+        int currentLinkConstructedCount;
+        int currentLinkDestroyedCount;
+        int currentShellDestructorCalledCount;
+        int currentUserDataDestroyedCount;
+        boolean loop = true;
+        String debugPrefix = " gcAndWait(" + timeLimitMillis +
+            ", " + Utils.toStringOrNull(excessLimitMillis) +
+            ", " + Utils.toStringOrNull(finalizedCount) +
+            ", " + Utils.toStringOrNull(linkConstructedCount) +
+            ", " + Utils.toStringOrNull(linkDestroyedCount) +
+            ", " + Utils.toStringOrNull(shellDestructorCalledCount) +
+            ", " + Utils.toStringOrNull(userDataDestroyedCount) + ")";
+        while(loop) {
+            try {
+                if (needsEventProcessing()) {
+                    Utils.println(5, debugPrefix + ": QApplication.processEvents()");
+                    QApplication.processEvents(new QEventLoop.ProcessEventsFlags(QEventLoop.ProcessEventsFlag.DeferredDeletion));
+//                    QApplication.processEvents();
+                }
 
-            elapsed = System.currentTimeMillis() - startTime;
+                QThreadManagerUtils.releaseNativeResources();
+                System.gc();
+                System.runFinalization();
 
-        } catch (Exception e) {
+                Reference<WeakReference> thisWr;
+                while((thisWr = weakReferenceQueue.poll()) != null) {
+                    Integer tmpId;
+                    synchronized(TestMemoryManagement.class) {
+                        tmpId = weakReferenceMap.remove(thisWr);
+                    }
+                    Utils.println(5, " weakReferenceQueue.remove(): dequeued id=" + tmpId);
+                }
+                Reference<PhantomReference> thisPr;
+                while((thisPr = phantomReferenceQueue.poll()) != null) {
+                    Integer tmpId;
+                    synchronized(TestMemoryManagement.class) {
+                        tmpId = phantomReferenceMap.remove(thisPr);
+                    }
+                    Utils.println(5, " phantomReferenceQueue.remove(): dequeued id=" + tmpId);
+                }
 
+                if(!obtainGoal) {	// Try to obtainGoal
+                    currentFinalizedCount = QtJambiDebugTools.finalizedCount(className());
+                    currentLinkConstructedCount = QtJambiDebugTools.linkConstructedCount(className());
+                    currentLinkDestroyedCount = QtJambiDebugTools.linkDestroyedCount(className());
+                    currentShellDestructorCalledCount = QtJambiDebugTools.shellDestructorCalledCount(className());
+                    currentUserDataDestroyedCount = QtJambiDebugTools.userDataDestroyedCount(className());
+
+                    boolean loopFinalizedCount = false;
+                    if(finalizedCount != null) {
+                        if(finalizedCount.intValue() > currentFinalizedCount)
+                            loopFinalizedCount = true;
+                    }
+                    boolean loopLinkConstructedCount = false;
+                    if(linkConstructedCount != null) {
+                        if(linkConstructedCount.intValue() > currentLinkConstructedCount)
+                            loopLinkConstructedCount = true;
+                    }
+                    boolean loopLinkDestroyedCount = false;
+                    if(linkDestroyedCount != null) {
+                        if(linkDestroyedCount.intValue() > currentLinkDestroyedCount)
+                            loopLinkDestroyedCount = true;
+                    }
+                    boolean loopShellDestructorCalledCount = false;
+                    if(shellDestructorCalledCount != null) {
+                        if(shellDestructorCalledCount.intValue() > currentShellDestructorCalledCount)
+                            loopShellDestructorCalledCount = true;
+                    }
+                    boolean loopUserDataDestroyedCount = false;
+                    if(userDataDestroyedCount != null) {
+                        if(userDataDestroyedCount.intValue() > currentUserDataDestroyedCount)
+                            loopUserDataDestroyedCount = true;
+                    }
+
+                    if(!loopFinalizedCount && !loopLinkConstructedCount && !loopLinkDestroyedCount && !loopShellDestructorCalledCount && !loopUserDataDestroyedCount) {
+                        obtainGoal = true;	// we have met the callers goals
+                        excessTime = System.currentTimeMillis(); // reset this for excessLimitMillis
+                    }
+
+                    Utils.println(5, debugPrefix + ": elapsed=" + elapsed + "; end loop" +
+                        "; currentFinalizedCount=" + currentFinalizedCount +
+                        "; currentLinkConstructedCount=" + currentLinkConstructedCount +
+                        "; currentLinkDestroyedCount=" + currentLinkDestroyedCount +
+                        "; currentShellDestructorCalledCount=" + currentShellDestructorCalledCount +
+                        "; currentUserDataDestroyedCount=" + currentUserDataDestroyedCount +
+                        "; obtainGoal=" + obtainGoal
+                        );
+                }
+
+                if(obtainGoal) {
+                    elapsed = System.currentTimeMillis() - excessTime;
+                    if(excessLimitMillis != null)
+                        loop = elapsed < excessLimitMillis.intValue();
+                    else
+                        loop = false;
+                } else {
+                    elapsed = System.currentTimeMillis() - startTime;
+                    loop = elapsed < timeLimitMillis;
+                }
+Utils.println(15, debugPrefix + ": elapsed=" + elapsed + "; loop="+loop+"; obtainGoal="+obtainGoal);
+
+                if(loop)
+                    Thread.sleep(10);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        // Report on status
+        if(Utils.isDebugLevel(4)) {
+            // Print array format [1, 2, 3]
+            synchronized(TestMemoryManagement.class) {
+                String aliveString = Utils.listToString(alive);
+                String aliveAndUnderTestString = Utils.listToString(aliveAndUnderTest);
+                String weakReferenceMapString = Utils.mapValueToString(weakReferenceMap);
+                String phantomReferenceMapString = Utils.mapValueToString(phantomReferenceMap);
+                Utils.println(4, "elapsed=" + elapsed + "; alive=" + aliveString + "; aliveAndUnderTest=" + aliveAndUnderTestString +
+                        "; weakReferenceMapSize=" + weakReferenceMapString + "; phantomReferenceMapSize=" + phantomReferenceMapString);
+            }
+        }
+
+        return obtainGoal;
     }
 
     @Test
@@ -406,16 +644,20 @@ public abstract class TestMemoryManagement {
         if (supportsSplitOwnership()) {
             resetAll();
 
-            createInNativeDeleteInNative();
+            {
+                createInNativeDeleteInNative();
+            }
 
-            gcAndWait();
+            gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, 1);
 
             test(className(), 1, 0, 0, 1, 1, 1, 0, 1);
         }
     }
 
     private void createInNativeDeleteInNative() {
-        QtJambiObject obj = createInstanceInNative();
+        {
+            QtJambiObject obj = createInstanceInNative();
+        }
 
         deleteLastInstance();
         test(className(), 0, 0, 0, 1, 0, 0, 0, 1);
@@ -425,19 +667,29 @@ public abstract class TestMemoryManagement {
     public void invalidate_NotCreatedInJava_JavaOwnership() {
         resetAll();
 
-        createInNativeSetJavaOwnershipAndInvalidate();
+        {
+            createInNativeSetJavaOwnershipAndInvalidate();
+        }
 
-        gcAndWait(isQObject() ? 1 : 2);
+        if(isQObject()) {
+            gcAndWait(TIME_LIMIT, null, 1, 1, 1, null, 1);
 
-        test(className(), isQObject() ? 1 : 2, isValueType() ? 2 : 1, 0, isQObject() ? 1 : 2, isQObject() ? 1 : 2, isQObject() ? 1 : 2, 0, 1);
+            test(className(), 1, isValueType() ? 2 : 1, 0, 1, 1, 1, 0, 1);
+        } else {
+            gcAndWait(TIME_LIMIT, null, 2, 2, 2, null, 1);
+
+            test(className(), 2, isValueType() ? 2 : 1, 0, 2, 2, 2, 0, 1);
+        }
     }
 
     private void createInNativeSetJavaOwnershipAndInvalidate() {
-        QtJambiObject obj = createInstanceInNative();
-        QtJambiObject obj2 = invalidateObject(obj, true);
+        {
+            QtJambiObject obj = createInstanceInNative();
+            QtJambiObject obj2 = invalidateObject(obj, true);
 
-        // Java owned objects are not invalidated
-        assertTrue(0L != obj2.nativeId());
+            // Java owned objects are not invalidated
+            assertTrue(0L != obj2.nativeId());
+        }
 
         test(className(), 0, 0, 0, isQObject() ? 1 : 2, 0, 0, 0, 0);
     }
@@ -450,22 +702,22 @@ public abstract class TestMemoryManagement {
         if (supportsSplitOwnership()) {
             resetAll();
 
-            createInNativeAndInvalidate();
+            {
+                createInNativeAndInvalidate();
+            }
 
-            gcAndWait(2);
+            gcAndWait(TIME_LIMIT, null, 2, 2, 2, null, null);
 
             test(className(), 2, 0, 0, 2, 2, 2, 0, 0);
         }
     }
 
     private void createInNativeAndInvalidate() {
-        QtJambiObject obj = createInstanceInNative();
-        invalidateObject(obj, false);
+        {
+            QtJambiObject obj = createInstanceInNative();
+            invalidateObject(obj, false);
+        }
 
         test(className(), 0, 0, 0, 2, 1, 1, 0, 0);
-    }
-
-    public static void main(String args[]) {
-        org.junit.runner.JUnitCore.main(TestMemoryManagement.class.getName());
     }
 }
