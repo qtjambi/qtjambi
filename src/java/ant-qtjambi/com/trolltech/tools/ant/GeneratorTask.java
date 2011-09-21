@@ -193,12 +193,7 @@ public class GeneratorTask extends Task {
         System.out.println(thisCommandList.toString());
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
-        String msyssupportStr = (String) props.getProperty((String) null, InitializeTask.MSYSBUILD);
-        boolean msyssupport = false;
-        if("true".equals(msyssupportStr)) {
-            msyssupport = true;
-        }
-        Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory, msyssupport);
+        Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory);
     }
 
     public void setHeader(String header) {
