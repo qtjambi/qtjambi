@@ -58,12 +58,14 @@ related tasks.
 public class Utilities {
 
     public static final String VERSION_STRING;
+    public static final String VERSION_MAJOR_STRING;
     private static final List<String> systemLibrariesList;
 
     private static final String K_qtjambi_system_libraries = "qtjambi.system.libraries";
 
     static {
         String tmpVERSION_STRING = null;
+        String tmpVERSION_MAJOR_STRING = null;
         List<String> tmpSystemLibrariesList = null;
         try {
             final Properties props = new Properties();
@@ -81,6 +83,12 @@ public class Utilities {
             tmpVERSION_STRING = props.getProperty("qtjambi.version");
             if (tmpVERSION_STRING == null)
                 throw new ExceptionInInitializerError("qtjambi.version is not set!");
+
+            int dotIndex = tmpVERSION_STRING.indexOf(".");	// "4.7.4" => "4"
+            if(dotIndex > 0)	// don't allow setting it be empty
+                tmpVERSION_MAJOR_STRING = tmpVERSION_STRING.substring(0, dotIndex);
+            else
+                tmpVERSION_MAJOR_STRING = tmpVERSION_STRING;
 
             SortedMap<String,String> tmpSystemLibrariesMap = new TreeMap<String,String>();
             Enumeration e = props.propertyNames();
@@ -104,6 +112,7 @@ public class Utilities {
             e.printStackTrace();
         } finally {
             VERSION_STRING = tmpVERSION_STRING;
+            VERSION_MAJOR_STRING = tmpVERSION_MAJOR_STRING;
             systemLibrariesList = tmpSystemLibrariesList;
         }
     }
@@ -160,7 +169,7 @@ public class Utilities {
     }
 
     public static void loadQtLibrary(String library) {
-        loadQtLibrary(library, "4");
+        loadQtLibrary(library, VERSION_MAJOR_STRING);
     }
 
     public static void loadQtLibrary(String library, String version) {
