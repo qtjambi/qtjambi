@@ -47,6 +47,6 @@ public class mdiareasnippets
         //mainWindowExample();
         //addingSubWindowsExample();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

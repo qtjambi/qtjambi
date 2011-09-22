@@ -35,7 +35,7 @@ public static void main(String args[])
     splitter.setWindowTitle("Two views onto the same directory model");
     splitter.show();
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 //! [1] //! [8]
 

@@ -28,7 +28,7 @@ public static void main(String args[])
     arguments.add(String.valueOf(container.winId()));
     process.start(executable, arguments);
 
-    QApplication.exec();
+    QApplication.execStatic();
 
     process.close();
 }

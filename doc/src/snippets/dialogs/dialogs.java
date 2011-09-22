@@ -245,6 +245,6 @@ public class dialogs extends QWidget
 
         new dialogs();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

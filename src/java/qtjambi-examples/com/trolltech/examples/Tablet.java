@@ -583,7 +583,7 @@ public class Tablet extends QMainWindow
         mainWindow.resize(500, 500);
         mainWindow.show();
 
-        Tablet.TabletApplication.exec();
+        Tablet.TabletApplication.execStatic();
     }
 //! [27]
 }

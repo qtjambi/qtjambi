@@ -212,6 +212,6 @@ public class CodeEditor extends QPlainTextEdit
 
         new CodeEditor().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

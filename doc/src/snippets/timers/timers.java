@@ -44,6 +44,6 @@ class timers extends QWidget
 
         new timers();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

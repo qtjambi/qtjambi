@@ -93,6 +93,6 @@ public class layouts
     //! [17]
         }
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -141,6 +141,6 @@ class MyButton (QPushButton):
 QApplication.initialize([])
 button = MyButton();
 button.show();
-QApplication.exec();
+QApplication.execStatic();
 
 */

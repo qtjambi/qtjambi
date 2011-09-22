@@ -33,6 +33,6 @@ class CustomScene extends QGraphicsScene
         QGraphicsView view = new QGraphicsView(scene);
         view.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -64,7 +64,7 @@ public class CollidingMice extends QWidget {
 
         CollidingMice collidingMice = new CollidingMice(null);
         collidingMice.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [1]
 

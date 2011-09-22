@@ -403,7 +403,7 @@ public class OrderForm extends QMainWindow
         OrderForm window = new OrderForm();
         window.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [27]
 }

@@ -81,6 +81,6 @@ public class main
         editor.resize(480, 480);
         editor.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

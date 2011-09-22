@@ -130,7 +130,7 @@ public class Chips extends QWidget {
         Chips w = new Chips(null);
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
     class Chip extends QGraphicsItem {

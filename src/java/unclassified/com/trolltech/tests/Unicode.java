@@ -84,7 +84,7 @@ public class Unicode extends QWidget {
         Unicode code = new Unicode();
         code.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

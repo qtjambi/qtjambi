@@ -11,7 +11,7 @@ public class src_gui_painting_qpen extends QWidget {
         QWidget w = new src_gui_painting_qpen();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
     protected void paintEvent(QPaintEvent e) {

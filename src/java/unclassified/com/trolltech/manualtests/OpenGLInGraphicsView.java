@@ -103,7 +103,7 @@ public class OpenGLInGraphicsView extends ZoomableGraphicsView {
         OpenGLInGraphicsView widget2 = new OpenGLInGraphicsView(false);
         widget2.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

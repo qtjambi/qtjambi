@@ -85,6 +85,6 @@ public class OnConnection extends QWidget
     OnConnection oc = new OnConnection();
     oc.show();
 
-    QApplication.exec();
+    QApplication.execStatic();
     }
 }

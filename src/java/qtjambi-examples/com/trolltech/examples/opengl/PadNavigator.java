@@ -381,6 +381,6 @@ public class PadNavigator extends QGraphicsView {
         PadNavigator pad = new PadNavigator(3, 3);
         pad.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

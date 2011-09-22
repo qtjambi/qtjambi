@@ -78,6 +78,6 @@ public class window extends QWidget
 
         new window().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

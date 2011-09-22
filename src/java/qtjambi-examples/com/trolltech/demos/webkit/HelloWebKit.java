@@ -146,6 +146,6 @@ public class HelloWebKit extends QMainWindow {
         HelloWebKit widget = new HelloWebKit();
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -1418,6 +1418,11 @@
               qtjambi_register_variant_handler();
           </inject-code>
       </modify-function>
+      <!-- We implement a custom Java wrapper to this -->
+      <modify-function signature="exec()">
+        <access modifier="private"/>
+        <rename to="exec_internal"/>
+      </modify-function>
       <modify-function signature="translate(const char*,const char*,const char*,QCoreApplication::Encoding)">
           <access modifier="private"/>
           <modify-argument index="3">

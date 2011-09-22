@@ -732,6 +732,6 @@ public class QUiLoader {
         file.dispose();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

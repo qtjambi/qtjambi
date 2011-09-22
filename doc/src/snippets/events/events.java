@@ -61,6 +61,6 @@ public class events extends QWidget
 
         new mainwindow().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

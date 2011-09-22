@@ -111,6 +111,6 @@ public class Radar extends QWidget {
         Radar r = new Radar();
         r.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

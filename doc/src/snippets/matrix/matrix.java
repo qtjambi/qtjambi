@@ -97,6 +97,6 @@ public class matrix
         widget.show();
         widget.resize(130, 350);
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

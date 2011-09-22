@@ -59,7 +59,7 @@ public class PathStrokeWidget extends QWidget {
         PathStrokeWidget pathStrokeWidget = new PathStrokeWidget();
         pathStrokeWidget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
     private PathStrokeRendrer m_renderer;

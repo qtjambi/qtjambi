@@ -25,7 +25,7 @@ public class main
         QMainWindow window = new QMainWindow();
         window.show();
         splash.finish(window);
-        QApplication.exec();
+        QApplication.execStatic();
     }
     //! [1]
 

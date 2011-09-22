@@ -23,6 +23,6 @@ public class gradientcreationsnippet
         widget.setPalette(palette);
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

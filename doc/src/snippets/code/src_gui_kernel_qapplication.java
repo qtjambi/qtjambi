@@ -45,7 +45,7 @@ public class src_gui_kernel_qapplication {
             QApplication.initialize(args);
 
             /* ... */
-            QApplication.exec();
+            QApplication.execStatic();
         }
 //! [2]
 
@@ -83,7 +83,7 @@ class FooBar extends QtJambiObject {
 
             /* ... */
 
-            QApplication.exec();
+            QApplication.execStatic();
         }
 //! [6]
 

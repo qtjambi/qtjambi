@@ -136,6 +136,6 @@ public class ExtensionDialog extends QDialog
 
         new ExtensionDialog().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

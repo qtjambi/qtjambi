@@ -42,6 +42,6 @@ public class main
 
         window.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

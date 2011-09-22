@@ -13,7 +13,7 @@ public class src_gui_graphicsview_qgraphicsproxywidget {
         QGraphicsView view = new QGraphicsView(scene);
         view.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [0]
 

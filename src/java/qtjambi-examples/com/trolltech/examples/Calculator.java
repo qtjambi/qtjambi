@@ -426,6 +426,6 @@ public class Calculator extends QWidget
 
         new Calculator().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

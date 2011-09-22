@@ -226,6 +226,24 @@ class QCoreApplication___ extends QCoreApplication {
             m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
         }
 
+        /**
+         *
+         * @see #execStatic()
+         */
+        public int exec() {
+            return exec_internal();
+        }
+
+        /**
+         *
+         * @see #exec()
+         */
+        public static int execStatic() {
+            if (m_instance == null)
+                throw new RuntimeException("QCoreApplication has not been initialized with QCoreApplication.initialize()");
+            return exec_internal();
+        }
+
         private void disposeOfMyself() {
             m_instance = null;
             System.gc();

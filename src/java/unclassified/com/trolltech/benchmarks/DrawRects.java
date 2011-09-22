@@ -191,7 +191,7 @@ public class DrawRects {
             QtGLWidget wgl = new QtGLWidget();
             wgl.show();
 
-            QApplication.exec();
+            QApplication.execStatic();
         }
 
 

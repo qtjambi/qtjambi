@@ -23,6 +23,6 @@ public class src_gui_painting_qbrush extends QWidget {
         QWidget w = new src_gui_painting_qbrush();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

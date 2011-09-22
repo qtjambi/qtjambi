@@ -160,7 +160,7 @@ public class Sliders extends QWidget
 
         new Sliders().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 

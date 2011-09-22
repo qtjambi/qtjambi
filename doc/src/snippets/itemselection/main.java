@@ -69,6 +69,6 @@ public class main
         table.setWindowTitle("Selected items in a table model");
         table.show();
         table.resize(460, 280);
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

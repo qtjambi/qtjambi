@@ -13,7 +13,7 @@ public class src_gui_painting_qpainterpath extends QWidget {
         QWidget w = new src_gui_painting_qpainterpath();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 

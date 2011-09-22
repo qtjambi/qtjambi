@@ -359,7 +359,7 @@ public class HelloGL extends QWidget
 
         HelloGL window = new HelloGL();
         window.show();
-        QApplication.exec();
+        QApplication.execStatic();
         window.dispose();
     }
 }

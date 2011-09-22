@@ -60,6 +60,6 @@ public class mainwindowsnippet extends QMainWindow
         mainwindowsnippet snipper = new mainwindowsnippet();
         snipper.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -175,7 +175,7 @@ public class DrawText {
         QtGLWidget wgl = new QtGLWidget();
         wgl.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 

@@ -59,7 +59,7 @@ public class Screenshot extends QWidget {
         QApplication.initialize(args);
         Screenshot screenshot = new Screenshot(null);
         screenshot.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [1]
 

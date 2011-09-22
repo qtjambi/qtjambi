@@ -193,7 +193,7 @@ public class DrawLines {
         QtGLWidget wgl = new QtGLWidget();
         wgl.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 

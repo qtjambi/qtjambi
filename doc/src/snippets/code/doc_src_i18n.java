@@ -115,7 +115,7 @@ public class doc_src_i18n {
             QApplication.instance().installTranslator(myappTranslator);
 //![1001]
             ...
-            QApplication.exec();
+            QApplication.execStatic();
         }
 //! [8]
 

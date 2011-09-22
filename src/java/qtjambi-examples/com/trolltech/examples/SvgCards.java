@@ -385,7 +385,7 @@ public class SvgCards extends QGraphicsView {
         SvgCards view = new SvgCards();
         view.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
     public static boolean notWebstart() {

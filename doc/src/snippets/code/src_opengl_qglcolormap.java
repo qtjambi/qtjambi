@@ -17,7 +17,7 @@ public class src_opengl_qglcolormap {
 
         widget.setColormap(colormap);
         widget.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [0]
 }

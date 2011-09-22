@@ -62,7 +62,7 @@ public class StyleSheet extends QMainWindow {
         StyleSheet styleSheet = new StyleSheet();
         styleSheet.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 

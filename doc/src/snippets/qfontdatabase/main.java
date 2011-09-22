@@ -40,6 +40,6 @@ public class main
         fontTree.resizeColumnToContents(0);
         fontTree.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

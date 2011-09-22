@@ -35,7 +35,7 @@ public class main
         editor.resize(320, 480);
         editor.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

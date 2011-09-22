@@ -236,7 +236,7 @@ public class CustomWidgetManager {
         for (CustomWidget w : list)
             w.createWidget(null).show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

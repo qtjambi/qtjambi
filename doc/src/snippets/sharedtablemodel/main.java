@@ -57,6 +57,6 @@ public class main
         firstTableView.show();
         secondTableView.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

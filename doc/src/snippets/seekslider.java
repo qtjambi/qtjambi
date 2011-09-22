@@ -26,7 +26,7 @@ public static void main(String args[])
     moo.play();
 //![0]
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

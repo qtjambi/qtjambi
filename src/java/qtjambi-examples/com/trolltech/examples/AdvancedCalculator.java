@@ -57,7 +57,7 @@ public class AdvancedCalculator extends QMainWindow {
         QApplication.initialize(args);
         AdvancedCalculator calculator = new AdvancedCalculator();
         calculator.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
     private QLineEdit lineEdit;

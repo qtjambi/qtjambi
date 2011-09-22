@@ -27,7 +27,7 @@ public static void main(String args[])
         mediaObject.outputPaths(); // outputPaths = [ audioOutput, videoWidget ]
 //![0]
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

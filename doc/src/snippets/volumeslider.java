@@ -29,7 +29,7 @@ public static void main(String args[])
     
     volumeSlider.show();
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

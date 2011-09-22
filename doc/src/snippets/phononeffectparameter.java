@@ -33,7 +33,7 @@ public static void main(String args[])
     
     effectWidget.show();
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

@@ -80,7 +80,7 @@ public class Mandelbrot extends QWidget {
         QApplication.initialize(args);
         Mandelbrot mainWindow = new Mandelbrot();
         mainWindow.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [1]
 

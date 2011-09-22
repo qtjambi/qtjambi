@@ -21,7 +21,7 @@ public class Main {
         HelloDialog d = new HelloDialog();
         d.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
 
 
     }

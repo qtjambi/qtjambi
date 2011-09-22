@@ -13,7 +13,7 @@ public class main extends QWidget
         Widget widget = new Widget();
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 

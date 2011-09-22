@@ -47,6 +47,6 @@ public class main
 
         textEdit.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -23,6 +23,6 @@ public class src_gui_widgets_qstatusbar extends QMainWindow{
         QApplication.initialize(args);
         src_gui_widgets_qstatusbar bar = new src_gui_widgets_qstatusbar();
         bar.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

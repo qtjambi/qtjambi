@@ -47,6 +47,6 @@ public class styles extends QWidget
 
         new styles().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
