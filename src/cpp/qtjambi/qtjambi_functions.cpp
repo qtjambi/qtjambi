@@ -522,6 +522,36 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiDebugTools_hasDebu
 #endif
 }
 
+extern "C" Q_DECL_EXPORT jint JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_getObjectCacheMode)
+(JNIEnv *,
+ jclass)
+{
+    return qtjambi_object_cache_mode_get();
+}
+
+extern "C" Q_DECL_EXPORT void JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_setObjectCacheMode)
+(JNIEnv *,
+ jclass,
+ jint object_cache_mode)
+{
+    qtjambi_object_cache_mode_set(object_cache_mode);
+}
+
+extern "C" Q_DECL_EXPORT jint JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_objectCacheOperation)
+(JNIEnv *,
+ jclass,
+ jint op)
+{
+    if(op == 1)
+        return qtjambi_object_cache_operation_flush();
+    else if(op == 2)
+        return qtjambi_object_cache_operation_count();
+    return -1;
+}
+
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
 {
     JNIEnv *env = qtjambi_current_environment();

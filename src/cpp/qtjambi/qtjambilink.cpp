@@ -93,6 +93,36 @@ int QtJambiLinkUserData::id()
     return user_data_id();
 }
 
+static volatile int qtjambi_object_cache_mode = 2;
+int qtjambi_object_cache_mode_get()
+{
+    return qtjambi_object_cache_mode;
+}
+
+void qtjambi_object_cache_mode_set(int object_cache_mode)
+{
+    qtjambi_object_cache_mode = object_cache_mode;
+}
+
+int qtjambi_object_cache_operation_flush()
+{
+    {
+        QWriteLocker lock(gStaticUserDataIdLock());
+        gUserObjectCache()->clear();
+    }
+    return 0;
+}
+
+int qtjambi_object_cache_operation_count()
+{
+    int count;
+    {
+        QWriteLocker lock(gStaticUserDataIdLock());
+        count = gUserObjectCache()->count();
+    }
+    return count;
+}
+
 inline static void deleteWeakObject(JNIEnv *env, jobject object)
 {
 #ifdef Q_CC_MINGW
@@ -191,10 +221,12 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     // we can cache the pointer. Otherwise, we do not have any control over when the memory
     // becomes free, so we cannot cache the pointer.
     if (enter_in_cache) {
-        QWriteLocker locker(gUserObjectCacheLock());
-        Q_ASSERT(gUserObjectCache());
-        gUserObjectCache()->insert(ptr, link);
-        link->m_in_cache = true;
+        if(qtjambi_object_cache_mode_get() != 0) {
+            QWriteLocker locker(gUserObjectCacheLock());
+            Q_ASSERT(gUserObjectCache());
+            gUserObjectCache()->insert(ptr, link);
+            link->m_in_cache = true;
+        }
     }
 
     // Set the native__id field of the java object
