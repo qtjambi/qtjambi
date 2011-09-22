@@ -62,6 +62,7 @@ public class MakeTask extends Task {
     private boolean silent = false;
     @SuppressWarnings("unused") //used by ant
     private String compilationType = null;
+    private boolean failOnError = true;
 
     private String compilerName() {
         switch(OSInfo.os()){
@@ -101,7 +102,14 @@ public class MakeTask extends Task {
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         String ldpath = (String) props.getProperty((String) null, InitializeTask.LIBDIR);
-        Exec.execute(commandArray, new File(dir), getProject(), ldpath);
+        try {
+            Exec.execute(commandArray, new File(dir), getProject(), ldpath);
+        } catch(BuildException e) {
+            if(failOnError)
+                throw e;
+            else
+                System.err.println(e.getMessage() + "; failOnError=" + failOnError + "; continuing");
+        }
     }
 
     public void setMessage(String msg) {
@@ -122,5 +130,9 @@ public class MakeTask extends Task {
 
     public void setCompilationType(String type) {
         this.compilationType = type;
+    }
+
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
     }
 }

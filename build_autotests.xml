@@ -48,14 +48,16 @@
 
     <target name="compile.native" depends="init">
         <mkdir dir="${outputDir}/tests/autotest-generator"/>
-        <generator dir="${basedir}/generator"
+        <generator dir="${generatorDir}"
                 debugTools="${qtjambi.debug-tools}"
-                includepaths="${basedir}/autotestlib${psep}${generator.includepaths}"
+                inputDirectory="${generatorDir}"
                 outputDirectory="${outputDir}/tests/autotest-generator"
+                generatorDirectory="${generator.builddir}"
                 typesystem="${basedir}/autotestlib/build.txt"
                 header="${basedir}/autotestlib/global.h"
                 qtincludedirectory="${qtjambi.qt.includedir}"
                 qtlibdirectory="${qtjambi.tools.qt.libdir}"
+                includepaths="${basedir}/autotestlib${psep}${generator.includepaths}"
                 outputPreprocessFile="preprocessed_autotests.tmp"
             />
 

@@ -44,21 +44,21 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import org.apache.tools.ant.BuildException;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
-import java.io.*;
-import java.util.*;
-
 abstract class Util {
 
-    @Deprecated
-    public static File LOCATE_EXEC(String name) {
-        return LOCATE_EXEC(name, "", "");
-    }
-
-    @Deprecated
     public static File LOCATE_EXEC(String name, String prepend, String append) {
         String searchPath = "";
 
@@ -78,6 +78,20 @@ abstract class Util {
         }
 
         throw new BuildException("Could not find executable: " + name);
+    }
+
+    public static File LOCATE_EXEC(String name, List<String> prependList, String append) {
+        String prependString = null;
+        if(prependList != null) {
+            StringBuffer sb = new StringBuffer();
+            for(String s : prependList) {
+                if(sb.length() > 0)
+                    sb.append(File.pathSeparator);
+                sb.append(s);
+            }
+            prependString = sb.toString();
+        }
+        return LOCATE_EXEC(name, prependString, append);
     }
 
     public static void redirectOutput(Process proc) {
