@@ -216,12 +216,12 @@ public class Utilities {
                     // FIXME: When we can unambigiously auto-detect this from the MANIFEST we don't need to
                     //  emit this, we'd only emit it when both non-debug and debug were found and we selected
                     //  the debug kind.
-                    System.err.println("Using: -D" + K_com_trolltech_qt_debug + "=" + Boolean.TRUE);
+                    System.err.println("-D" + K_com_trolltech_qt_debug + "=" + Boolean.TRUE + "; is set");
                 }
             }
         } catch(Exception e) {
             e.printStackTrace();
-            System.err.println("Using: -D" + K_com_trolltech_qt_debug + "=" + Boolean.FALSE);
+            System.err.println("-D" + K_com_trolltech_qt_debug + "=" + Boolean.FALSE + "; is assumed default");
         }
         return configuration;
     }
