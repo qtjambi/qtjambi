@@ -2,7 +2,6 @@
 QT = xml core
 CONFIG += console no_batch
 mac:CONFIG -= app_bundle
-DESTDIR = ../bin
 
 include(uic/uic.pri)
 

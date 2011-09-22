@@ -4,8 +4,7 @@
     -->
 
     <available file="Makefile" type="file" property="global.makefile.present"/>
-    <available file="juic/Makefile" type="file"
-        property="juic.makefile.present"/>
+    <available file="${juic.builddir}/Makefile"      type="file" property="juic.makefile.present"/>
     <available file="${generator.builddir}/Makefile" type="file" property="generator.makefile.present"/>
 
     <target name="make.clean.global.make" if="global.makefile.present"
@@ -26,17 +25,12 @@
 
     <target name="make.clean.juic.make" if="juic.makefile.present"
         depends="init">
-        <make dir="juic" target="clean"/>
+        <make dir="${juic.builddir}" target="mocclean" failonerror="false"/>
+        <make dir="${juic.builddir}" target="distclean"/>
     </target>
 
     <target name="make.clean.juic" depends="init, make.clean.juic.make">
-        <delete quiet="true">
-            <fileset dir="juic">
-                <include name="Makefile*"/>
-                <include name="*.o"/>
-                <include name="juic"/>
-            </fileset>
-        </delete>
+        <delete dir="${juic.builddir}" quiet="true"/>
     </target>
 
     <target name="make.clean.generator.make" if="generator.makefile.present"

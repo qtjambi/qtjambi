@@ -82,22 +82,25 @@
     -->
 
     <target name="tools.juic.qmake" depends="log, init">
-        <qmake dir="juic" pro="juic/juic.pro" config="${qtjambi.configuration}"
+        <mkdir dir="${juic.builddir}"/>
+        <qmake dir="${juic.builddir}" pro="juic/juic.pro"
+                config="${qtjambi.configuration}"
                 qmakebinary="${tools.qmake.binary}"/>
     </target>
 
     <target name="tools.juic.make" depends="log, tools.juic.qmake">
-        <make dir="juic"/>
+        <make dir="${juic.builddir}"/>
     </target>
 
     <macrodef name="dojuic">
         <attribute name="module"/>
         <sequential>
-            <mkdir dir="${java.generated.srcdir}/@{module}"/>
-            <juic message="Running juic for @{module}..." alwaysupdate="true"
-                classnameprefix="" trfunction="" qtlibdirectory="${qtjambi.tools.qt.libdir}"
+            <mkdir dir="${juic.outputdir}/@{module}"/>
+            <juic juicDirectory="${juic.builddir}"
+                message="Running juic for @{module}..." alwaysupdate="true"
+                qtlibdirectory="${qtjambi.tools.qt.libdir}"
                 classpath="${java.srcdir}/@{module}"
-                outputdir="${java.generated.srcdir}/@{module}">
+                outputdir="${juic.outputdir}/@{module}">
                 <include name="**/*.jui"/>
             </juic>
         </sequential>
