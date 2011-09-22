@@ -54,6 +54,10 @@ import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementValueType extends TestMemoryManagement {
     @Override
+    protected void initialize() {
+    }
+
+    @Override
     protected QtJambiObject createInstanceInJava() {
         QtJambiObject o = new ValueType();
         accountingForObject(o);

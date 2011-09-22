@@ -68,6 +68,7 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
+import com.trolltech.qt.internal.QtJambiRuntime;
 
 public class TestQObject extends QApplicationTest {
     private static final int TIMEOUT = 10000;
@@ -85,6 +86,8 @@ public class TestQObject extends QApplicationTest {
 
     @Before
     public void setUp() {
+        QtJambiRuntime.setObjectCacheMode(0);	// DISABLE
+
         root = new QObject();
         root.setObjectName("root");
 

@@ -195,6 +195,8 @@ public abstract class TestMemoryManagement {
     // get compiled-in invocation counts.
 
     protected final void resetAll() {
+        initialize();
+
         QtJambiDebugTools.reset_destructorFunctionCalledCount();
         QtJambiDebugTools.reset_disposeCalledCount();
         QtJambiDebugTools.reset_finalizedCount();
@@ -236,6 +238,8 @@ public abstract class TestMemoryManagement {
         assertEquals("userDataDestroyedCount",        isQObject() ? userDataDestroyedCount : 0,              QtJambiDebugTools.userDataDestroyedCount(className));
 
     }
+
+    protected abstract void initialize();
 
     protected abstract QtJambiObject createInstanceInJava();
 

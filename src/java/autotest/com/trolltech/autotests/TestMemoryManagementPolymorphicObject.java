@@ -52,6 +52,10 @@ import com.trolltech.autotests.generated.InvalidatorPolymorphicObjectType;
 import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement {
+    @Override
+    protected void initialize() {
+    }
+
     protected QtJambiObject createInstanceInJava() {
         QtJambiObject o = new PolymorphicObjectType();
         accountingForObject(o);
