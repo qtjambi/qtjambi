@@ -187,7 +187,7 @@ abstract class Util {
         //System.out.println("library path is: " + libraryPath);
 
         // Make /usr/lib an implicit part of library path
-        if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.Solaris) {
+        if(OSInfo.os() == OSInfo.OS.Linux || OSInfo.os() == OSInfo.OS.FreeBSD || OSInfo.os() == OSInfo.OS.Solaris) {
             String archName = OSInfo.osArchName();
             boolean match = false;
             if(archName.equals(OSInfo.K_LINUX32)) {
