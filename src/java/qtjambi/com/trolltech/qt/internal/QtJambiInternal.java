@@ -811,14 +811,22 @@ public class QtJambiInternal {
         return clazz;
     }
 
-    public static void writeSerializableJavaObject(QDataStream s, Object o) {
+    public static void writeSerializableJavaObject(QDataStream s, Object o) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = null;
         try {
-            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out = new ObjectOutputStream(bos);
             out.writeObject(o);
             out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            out = null;
+        } finally {
+            if(out != null) {
+                try {
+                    out.close();
+                } catch(IOException eat) {
+                }
+                out = null;
+            }
         }
         s.writeBytes(bos.toByteArray());
     }
@@ -861,24 +869,28 @@ public class QtJambiInternal {
         return -1;
     }
 
-    public static Object readSerializableJavaObject(final QDataStream s) {
+    public static Object readSerializableJavaObject(final QDataStream s) throws ClassNotFoundException, IOException {
         Object res = null;
+        ObjectInputStream in = null;
         try {
-            ObjectInputStream in = new ObjectInputStream(new InputStream(){
+            in = new ObjectInputStream(new InputStream(){
                 @Override
                 public int read() throws IOException {
                     return s.readByte();
                 }
             });
-            res  = in.readObject();
+            res = in.readObject();
             in.close();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            in = null;
+        } finally {
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException eat) {
+                }
+                in = null;
+            }
         }
-
         return res;
     }
-
 }
