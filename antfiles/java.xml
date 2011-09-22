@@ -130,7 +130,7 @@
             <property name="module" value="qtjambi-examples"/>
             <property name="module.excludes" value="${javac.excludes}"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi-examples"/>
-            <property name="sourcedir2" value="${java.generated.srcdir}/qtjambi-examples"/>
+            <property name="sourcedir2" value="${juic.outputdir}/qtjambi-examples"/>
         </ant>
     </target>
 </project>

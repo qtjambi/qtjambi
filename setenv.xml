@@ -232,8 +232,8 @@
         <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
         <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
         <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
-        <property name="qtjambi.jambi.libdir"       value="${jambi.directory}/build/src/cpp/lib"/>
-        <property name="qtjambi.jambi.pluginsdir"   value="${jambi.directory}/build/src/cpp/plugins"/>
+        <property name="qtjambi.jambi.libdir"       value="${jambi.directory}/build/qmake-qtjambi/lib"/>
+        <property name="qtjambi.jambi.pluginsdir"   value="${jambi.directory}/build/qmake-qtjambi/plugins"/>
 
         <!--
             dummy-set values to phonon properties, if they

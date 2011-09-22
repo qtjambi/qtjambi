@@ -11,8 +11,9 @@
     -->
     <target name="library.native.qmake" depends="init"
         description="Runs qmake on the Qt Jambi native library">
-        <qmake recursive="true" dir="${outputDir}"
-            pro="java.pro"
+        <mkdir dir="${qtjambi.builddir}"/>
+        <qmake recursive="true" dir="${qtjambi.builddir}"
+            pro="src/cpp/java.pro"
             config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
             qtconfig="${qtjambi.qtconfig}"
             debugTools="${qtjambi.debug-tools}"
@@ -24,7 +25,7 @@
     -->
     <target name="library.native.compile" depends="library.native.qmake"
         description="Compiles the C++ Qt Jambi library">
-        <make dir="${outputDir}"/>
+        <make dir="${qtjambi.builddir}"/>
     </target>
 
     <target name="library.native.bundle" depends="library.native.compile"

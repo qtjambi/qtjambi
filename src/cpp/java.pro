@@ -1,27 +1,27 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS =   src/cpp/qtjambi \
-            src/cpp/qtjambi_core \
-            src/cpp/qtjambi_gui \
-            src/cpp/qtjambi_sql \
-            src/cpp/qtjambi_network \
-            src/cpp/qtjambi_xml
+SUBDIRS =   qtjambi \
+            qtjambi_core \
+            qtjambi_gui \
+            qtjambi_sql \
+            qtjambi_network \
+            qtjambi_xml
 
-contains(QT_CONFIG, xmlpatterns):       SUBDIRS += src/cpp/qtjambi_xmlpatterns
-contains(QT_CONFIG, script):            SUBDIRS += src/cpp/qtjambi_script
-contains(QT_CONFIG, scripttools):       SUBDIRS += src/cpp/qtjambi_scripttools
-contains(QT_CONFIG, multimedia):        SUBDIRS += src/cpp/qtjambi_multimedia
-contains(QT_CONFIG, opengl):            SUBDIRS += src/cpp/qtjambi_opengl
-contains(QT_CONFIG, svg):               SUBDIRS += src/cpp/qtjambi_svg
-contains(QT_CONFIG, dbus):              SUBDIRS += src/cpp/qtjambi_dbus
-contains(QT_CONFIG, qtestlib):          SUBDIRS += src/cpp/qtjambi_test
-contains(QT_CONFIG, declarative):       SUBDIRS += src/cpp/qtjambi_declarative
-contains(QT_CONFIG, help):              SUBDIRS += src/cpp/qtjambi_help
-contains(QT_CONFIG, phonon):            SUBDIRS += src/cpp/qtjambi_phonon
-contains(QT_CONFIG, webkit):            SUBDIRS += src/cpp/qtjambi_webkit
-contains(QT_CONFIG, designer):          SUBDIRS += src/cpp/qtjambi_designer
-contains(QT_CONFIG, designer):          SUBDIRS += src/cpp/designer-integration
+contains(QT_CONFIG, xmlpatterns):       SUBDIRS += qtjambi_xmlpatterns
+contains(QT_CONFIG, script):            SUBDIRS += qtjambi_script
+contains(QT_CONFIG, scripttools):       SUBDIRS += qtjambi_scripttools
+contains(QT_CONFIG, multimedia):        SUBDIRS += qtjambi_multimedia
+contains(QT_CONFIG, opengl):            SUBDIRS += qtjambi_opengl
+contains(QT_CONFIG, svg):               SUBDIRS += qtjambi_svg
+contains(QT_CONFIG, dbus):              SUBDIRS += qtjambi_dbus
+contains(QT_CONFIG, qtestlib):          SUBDIRS += qtjambi_test
+contains(QT_CONFIG, declarative):       SUBDIRS += qtjambi_declarative
+contains(QT_CONFIG, help):              SUBDIRS += qtjambi_help
+contains(QT_CONFIG, phonon):            SUBDIRS += qtjambi_phonon
+contains(QT_CONFIG, webkit):            SUBDIRS += qtjambi_webkit
+contains(QT_CONFIG, designer):          SUBDIRS += qtjambi_designer
+contains(QT_CONFIG, designer):          SUBDIRS += designer-integration
 
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
