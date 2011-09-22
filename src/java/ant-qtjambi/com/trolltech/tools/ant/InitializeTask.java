@@ -51,6 +51,7 @@ import org.apache.tools.ant.PropertyHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
@@ -484,6 +485,9 @@ public class InitializeTask extends Task {
                 props = new Properties();
                 props.load(inStream);
                 tmpQtVersion = (String) props.get(VERSION);
+            } catch(FileNotFoundException e) {
+                // Acceptable failure
+                System.err.println(e.getMessage());
             } catch(IOException e) {
                 throw new BuildException(e);
             } finally {
