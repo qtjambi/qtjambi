@@ -1,0 +1,17 @@
+# Try to ensure we never commit anything that is compiled artifact
+#  or an archive (that might contain a compiled artifact)
+
+*.zip
+*.rar
+*.tar
+*.tar.*
+*.jar
+
+*.exe
+*.o
+*.lib
+*.a
+*.dll
+*.so
+*.so.*
+*.class
