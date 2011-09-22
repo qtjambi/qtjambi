@@ -62,6 +62,7 @@ public class Utilities {
     private static final List<String> systemLibrariesList;
 
     private static final String K_qtjambi_system_libraries = "qtjambi.system.libraries";
+    private static final Configuration DEFAULT_CONFIGURATION = Configuration.Release;
 
     static {
         String tmpVERSION_STRING = null;
@@ -204,9 +205,25 @@ public class Utilities {
     }
 
     private static Configuration decideConfiguration() {
-        if (System.getProperty("com.trolltech.qt.debug") != null)
-            return Configuration.Debug;
-        return Configuration.Release;
+        final String K_com_trolltech_qt_debug = "com.trolltech.qt.debug";
+        Configuration configuration = DEFAULT_CONFIGURATION;
+        String debugString = System.getProperty(K_com_trolltech_qt_debug);
+        try {
+            if(debugString != null) {
+                Boolean booleanValue = Boolean.valueOf(debugString);
+                if((booleanValue != null && booleanValue.booleanValue()) || debugString.length() == 0) {
+                    configuration = Configuration.Debug;
+                    // FIXME: When we can unambigiously auto-detect this from the MANIFEST we don't need to
+                    //  emit this, we'd only emit it when both non-debug and debug were found and we selected
+                    //  the debug kind.
+                    System.err.println("Using: -D" + K_com_trolltech_qt_debug + "=" + Boolean.TRUE);
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.err.println("Using: -D" + K_com_trolltech_qt_debug + "=" + Boolean.FALSE);
+        }
+        return configuration;
     }
 
     private static String decideLibSubPath() {
