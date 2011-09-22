@@ -5,6 +5,7 @@
 #include <QDebug>
 
 #include <qfile.h>
+#include <qfileinfo.h>
 #include <qxml.h>
 #include "handler.h"
 #include "../reporthandler.h"
@@ -164,6 +165,10 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name) {
 bool TypeDatabase::parseFile(const QString &filename, const QString &importInputDirectory, bool generate) {
     qDebug() << "Parsing file: " << filename;
     QFile file(filename);
+    if(!file.exists()) {
+        QFileInfo fileinfo(file);
+        qDebug() << "Absolute path: " << fileinfo.absoluteFilePath() << " in " << importInputDirectory;
+    }
     Q_ASSERT(file.exists());
     QXmlInputSource source(&file);
 
