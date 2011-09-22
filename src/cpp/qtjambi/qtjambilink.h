@@ -89,12 +89,14 @@ private:
  */
 class QTJAMBI_EXPORT QtJambiLink
 {
-    inline QtJambiLink(jobject jobj)
+    inline QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
         : m_java_object(jobj),
-          m_pointer(0),
+          m_pointer(pointer),
           m_wrapper(0),
           m_meta_type(QMetaType::Void),
           m_ownership(SplitOwnership), // Default to split, because it's safest
+          m_global_ref(global_ref),
+          m_is_qobject(is_qobject),
           m_has_been_finalized(false),
           m_qobject_deleted(false),
           m_created_by_java(false),
@@ -108,14 +110,13 @@ class QTJAMBI_EXPORT QtJambiLink
     {
     };
 
-    inline QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
+protected:
+    inline QtJambiLink(jobject jobj)
         : m_java_object(jobj),
-          m_pointer(pointer),
+          m_pointer(0),
           m_wrapper(0),
           m_meta_type(QMetaType::Void),
           m_ownership(SplitOwnership), // Default to split, because it's safest
-          m_global_ref(global_ref),
-          m_is_qobject(is_qobject),
           m_has_been_finalized(false),
           m_qobject_deleted(false),
           m_created_by_java(false),

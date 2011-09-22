@@ -150,10 +150,9 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     Q_ASSERT(object);
 
     // Initialize the link
-    QtJambiLink *link = new QtJambiLink(env->NewWeakGlobalRef(java));
-    link->m_is_qobject = true;
-    link->m_global_ref = false;
-    link->m_pointer = object;
+    jobject java_object = env->NewWeakGlobalRef(java);
+    // QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
+    QtJambiLink *link = new QtJambiLink(java_object, false, true, object);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
     link->m_className = QString::fromLatin1(object->metaObject()->className());
@@ -205,10 +204,9 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     Q_ASSERT(ptr);
 
     // Initialize the link
-    QtJambiLink *link = new QtJambiLink(env->NewWeakGlobalRef(java));
-    link->m_is_qobject = false;
-    link->m_global_ref = false;
-    link->m_pointer = ptr;
+    jobject java_object = env->NewWeakGlobalRef(java);
+    // QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
+    QtJambiLink *link = new QtJambiLink(java_object, false, false, ptr);
 
     link->m_destructor_function = java_name.isEmpty() ? 0 : destructor(java_name);
 
