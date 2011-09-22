@@ -13,4 +13,7 @@ macx:{
 
 QTJAMBI_CPP = ../../../build/generator/out/cpp/
 
-win32-msvc2005:CONFIG += embed_manifest_dll force_embed_manifest
+# These option changes are recommended since at least: win32-msvc2005
+win32-msvc* {
+    CONFIG += embed_manifest_dll force_embed_manifest
+}
