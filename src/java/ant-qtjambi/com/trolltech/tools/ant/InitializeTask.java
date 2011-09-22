@@ -261,6 +261,7 @@ public class InitializeTask extends Task {
         if(verbose)
             System.out.println(QT_VERSION + " is " + s + qtVersionSource);
         propertyHelper.setNewProperty((String) null, QT_VERSION, s);
+        propertyHelper.setNewProperty((String) null, VERSION, s);	// this won't overwrite existing value
 
         s = String.valueOf(qtMajorVersion);
         if(verbose)
