@@ -8,9 +8,10 @@ TARGET          = testGenerator
 MOC_DIR         = tmp
 OBJECTS_DIR     = tmp
 
-HEADERS         = src/*.h
-SOURCES        += src/*.cpp
+HEADERS        += *.h
+SOURCES        += *.cpp
 
-INCLUDEPATH    += src
+INCLUDEPATH    += $$PWD
 
-SUBDIRS         = src/org_qtjambi_test
+#SUBDIRS         = org_qtjambi_test
+
