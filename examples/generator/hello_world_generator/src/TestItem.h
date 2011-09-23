@@ -1,8 +1,8 @@
 #ifndef __TESTITEM_H__
 #define __TESTITEM_H__
 
-#include <QObject>
-#include <QGraphicsScene>
+#include <QtCore/QObject>
+#include <QtGui/QGraphicsScene>
 
 class TestItem : public QObject {
 

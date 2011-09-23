@@ -1,3 +1,5 @@
+package test;
+
 import org.qtjambi.test.TestItem;
 import org.qtjambi.test.TestView;
 import com.trolltech.qt.gui.QApplication;
@@ -22,7 +24,7 @@ public class TestJava {
 
         view.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
 
     }
 }

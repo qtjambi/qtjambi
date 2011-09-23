@@ -1,9 +1,9 @@
 #ifndef TESTVIEW_H
 #define TESTVIEW_H
 
-#include <QGraphicsView>
+#include <QtGui/QGraphicsView>
 #include "TestItem.h"
-#include <QWidget>
+#include <QtGui/QWidget>
 
 class TestView : public QGraphicsView {
 
