@@ -126,24 +126,33 @@ void writeOutNamespace(QXmlStreamWriter &s, NamespaceModelItem &item) {
 void writeOutEnum(QXmlStreamWriter &s, EnumModelItem &item) {
     QString qualified_name = item->qualifiedName().join("::");
     s.writeStartElement("enum");
-    if (item->isAnonymous())
+
+    if (item->isAnonymous()) {
         s.writeEmptyElement("anonymous");
-    else
+    } else {
         s.writeAttribute("name", qualified_name);
+    }
 
     s.writeStartElement("accessPolicy");
     switch (item->accessPolicy()) {
-        case CodeModel::Public: s.writeAttribute("value","public"); break;
-        case CodeModel::Private: s.writeAttribute("value","private"); break;
-        case CodeModel::Protected: s.writeAttribute("value","protected"); break;
+        case CodeModel::Public:
+            s.writeAttribute("value", "public");
+            break;
+        case CodeModel::Private:
+            s.writeAttribute("value", "private");
+            break;
+        case CodeModel::Protected:
+            s.writeAttribute("value", "protected");
+            break;
     }
     s.writeEndElement();
 
     EnumeratorList enumList = item->enumerators();
     for (int i = 0; i < enumList.size() ; i++) {
         s.writeStartElement("enumerator");
-        if (!enumList[i]->value().isEmpty())
+        if (!enumList[i]->value().isEmpty()) {
             s.writeAttribute("value", enumList[i]->value());
+        }
         s.writeCharacters(enumList[i]->name());
         s.writeEndElement();
     }
@@ -153,37 +162,49 @@ void writeOutEnum(QXmlStreamWriter &s, EnumModelItem &item) {
 void writeOutFunction(QXmlStreamWriter &s, const QString &classname, FunctionModelItem &item) {
     QString name = item.constData()->name();
     bool noPrintReturn = false;
-    if (item->functionType() == CodeModel::Signal)
+
+    if (item->functionType() == CodeModel::Signal) {
         s.writeStartElement("signal");
-    else if (item->functionType() == CodeModel::Slot)
+    } else if (item->functionType() == CodeModel::Slot) {
         s.writeStartElement("slot");
-    else if (name == QString("~%1").arg(classname) ) {
+    } else if (name == QString("~%1").arg(classname) ) {
         s.writeStartElement("destructor");
         noPrintReturn = true;
-    }
-    else if (name == classname) {
+    } else if (name == classname) {
         s.writeStartElement("constructor");
         noPrintReturn = true;
-    } else
+    } else {
         s.writeStartElement("function");
+    }
 
     s.writeAttribute("name", name);
 
     s.writeStartElement("accessPolicy");
     switch (item->accessPolicy()) {
-        case CodeModel::Public: s.writeAttribute("value","public"); break;
-        case CodeModel::Private: s.writeAttribute("value","private"); break;
-        case CodeModel::Protected: s.writeAttribute("value","protected"); break;
+        case CodeModel::Public:
+            s.writeAttribute("value","public");
+            break;
+        case CodeModel::Private:
+            s.writeAttribute("value","private");
+            break;
+        case CodeModel::Protected:
+            s.writeAttribute("value","protected");
+            break;
     }
     s.writeEndElement();
 
     s.writeStartElement("modifiers");
-    if (item->isAbstract())
+    if (item->isAbstract()) {
         s.writeEmptyElement("abstract");
-    if (item->isVirtual())
+    }
+
+    if (item->isVirtual()) {
         s.writeEmptyElement("virtual");
-    if (item->isStatic())
+    }
+
+    if (item->isStatic()) {
         s.writeEmptyElement("static");
+    }
 
     s.writeEndElement();
 
@@ -199,6 +220,7 @@ void writeOutFunction(QXmlStreamWriter &s, const QString &classname, FunctionMod
     }
 
     s.writeEndElement();
+
     if (!noPrintReturn) {
         s.writeStartElement("return");
         writeType(s, item->type());
@@ -231,7 +253,7 @@ void writeOutClass(QXmlStreamWriter &s, ClassModelItem &item) {
     s.writeStartElement("inherits");
     foreach (const QString &c, bases) {
         s.writeStartElement("class");
-        s.writeAttribute("name",c);
+        s.writeAttribute("name", c);
         s.writeEndElement();
     }
     s.writeEndElement();
@@ -263,7 +285,7 @@ void writeOutProperty(QXmlStreamWriter &s, const QString &p) {
     QStringList l = p.split(QLatin1String(" "));
 
     s.writeStartElement("property");
-    s.writeAttribute("name",l.at(1));
+    s.writeAttribute("name", l.at(1));
     int propCount = sizeof(propDecls) / sizeof(QLatin1String);
     for (int pos = 2; pos + 1 < l.size(); pos += 2) {
         for (int i=0; i<propCount; ++i) {
