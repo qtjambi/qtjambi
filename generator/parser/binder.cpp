@@ -704,8 +704,10 @@ void Binder::visitEnumSpecifier(EnumSpecifierAST *node) {
     name_cc.run(node->name);
     QString name = name_cc.name();
 
+    bool isAnonymous = false;
     if (name.isEmpty()) {
         // anonymous enum
+        isAnonymous = true;
         QString key = _M_context.join("::");
         int current = ++_M_anonymous_enums[key];
         name += QLatin1String("enum_");
@@ -714,6 +716,7 @@ void Binder::visitEnumSpecifier(EnumSpecifierAST *node) {
 
     _M_current_enum = model()->create<EnumModelItem>();
     _M_current_enum->setAccessPolicy(_M_current_access);
+    _M_current_enum->setAnonymous(isAnonymous);
     updateItemPosition(_M_current_enum->toItem(), node);
     _M_current_enum->setName(name);
     _M_current_enum->setScope(enumScope->qualifiedName());

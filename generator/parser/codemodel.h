@@ -628,6 +628,9 @@ class _EnumModelItem: public _CodeModelItem {
         static EnumModelItem create(CodeModel *model);
 
     public:
+        bool isAnonymous() { return _M_isAnonymous; }
+        void setAnonymous(bool b) { _M_isAnonymous = b; }
+
         CodeModel::AccessPolicy accessPolicy() const;
         void setAccessPolicy(CodeModel::AccessPolicy accessPolicy);
 
@@ -643,6 +646,7 @@ class _EnumModelItem: public _CodeModelItem {
     private:
         CodeModel::AccessPolicy _M_accessPolicy;
         EnumeratorList _M_enumerators;
+        bool _M_isAnonymous;
 
     private:
         _EnumModelItem(const _EnumModelItem &other);
