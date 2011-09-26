@@ -336,7 +336,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_shutdown_
 (JNIEnv *,
  jobject)
 {
-    qtjambi_vm_shutdown_set(1);		// Mark the global state
+    qtjambi_vm_shutdown_set(1); // Mark the global state
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
@@ -353,7 +353,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_shutdown_
  jobject)
 {
     extern void qtjambi_shutdown();
-    qtjambi_shutdown();		// NULL the JavaVM handle
+    qtjambi_shutdown(); // NULL the JavaVM handle
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
