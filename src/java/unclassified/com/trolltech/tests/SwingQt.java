@@ -104,7 +104,7 @@ public class SwingQt extends QPushButton{
         QtWindow w = new QtWindow();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

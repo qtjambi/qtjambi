@@ -59,7 +59,7 @@ public class DomBookmarks extends QMainWindow {
 
         DomBookmarks domBookmarks = new DomBookmarks();
         domBookmarks.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
     private QMenu fileMenu;

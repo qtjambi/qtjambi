@@ -38,6 +38,7 @@
 
     <target name="jar.qtjambi"
         depends="init, jar.qtjambi-util">
+        <qtjambi-version-properties verbose="true"/>
         <!-- 1. This is a fix for adding the OsInfo class to the the main jar-->
         <!--
             2. Copy version.properties to generated dir for packaging.
@@ -48,6 +49,8 @@
             <fileset dir="${java.outdir}/qtjambi-util">
                 <include name="**/*"/>
             </fileset>
+        </copy>
+        <copy todir="${java.outdir}/qtjambi/com/trolltech/qt">
             <fileset dir=".">
                 <include name="version.properties" />
             </fileset>
@@ -127,7 +130,7 @@
             <property name="module" value="qtjambi-examples"/>
             <property name="module.excludes" value="${javac.excludes}"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi-examples"/>
-            <property name="sourcedir2" value="${java.generated.srcdir}/qtjambi-examples"/>
+            <property name="sourcedir2" value="${juic.outputdir}/qtjambi-examples"/>
         </ant>
     </target>
 </project>

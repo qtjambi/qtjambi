@@ -257,6 +257,6 @@ public class FindFiles extends QDialog
 
         new FindFiles().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

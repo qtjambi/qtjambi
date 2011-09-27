@@ -536,16 +536,32 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
         }
     }
 
+    bool has_argument_referenceCounts = false;
     QList<ReferenceCount> referenceCounts;
     for (int i = 0; i < arguments.size() + 1; ++i) {
         referenceCounts = java_function->referenceCounts(java_function->implementingClass(),
                           i == 0 ? -1 : i);
+        if (referenceCounts.size() > 0) {
+            foreach(ReferenceCount refCount, referenceCounts) {
+                // We just want to know this to secure return value into local variable
+                // to hold over ReferenceCount management later on.
+                if (refCount.action != ReferenceCount::Ignore) {
+                    // Something active have been specified
+                    has_argument_referenceCounts = true;
+                    break;
+                }
+            }
+        }
 
-        foreach(ReferenceCount refCount, referenceCounts)
-            writeReferenceCount(s, refCount, i == 0 ? "this" : arguments.at(i - 1)->argumentName());
+        // This is too early to manage referenceCount, it causes us to potentially overwrite the
+        // last remaining GlobalReference to the object (before we have called the native method)
+        // so the GC might destroy/delete it too early.
+//        foreach(ReferenceCount refCount, referenceCounts)
+//            writeReferenceCount(s, refCount, i == 0 ? "this" : arguments.at(i - 1)->argumentName());
     }
 
-    referenceCounts = java_function->referenceCounts(java_function->implementingClass(), 0);
+    // Lookup if there is a reference-count action required on the return value.
+    QList<ReferenceCount> returnReferenceCounts = java_function->referenceCounts(java_function->implementingClass(), 0);
     AbstractMetaType *return_type = java_function->type();
     QString new_return_type = QString(java_function->typeReplaced(0)).replace('$', '.');
     bool has_return_type = new_return_type != "void"
@@ -564,7 +580,7 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
     }
 
     bool needs_return_variable = has_return_type
-                                 && (owner != TypeSystem::InvalidOwnership || referenceCounts.size() > 0 || has_code_injections_at_the_end);
+                                 && (owner != TypeSystem::InvalidOwnership || has_argument_referenceCounts || returnReferenceCounts.size() > 0 || has_code_injections_at_the_end);
 
     s << INDENT;
     if (has_return_type && java_function->argumentReplaced(0).isEmpty()) {
@@ -665,20 +681,34 @@ void JavaGenerator::writeJavaCallThroughContents(QTextStream &s, const AbstractM
 
     s << ")";
 
+    // This closed the ".resolve(" or the "new MyType(" fragments
+    if (return_type && (return_type->isTargetLangEnum() || return_type->isTargetLangFlags()))
+        s << ")";
+
+    s << ";" << endl;
+
+    // We must ensure we retain a Java hard-reference over the native method call
+    // so that the GC will not destroy the C++ object too early.  At this point we
+    // have called the native method call so can manage referenceCount issues.
+    // First the input arguments
+    for (int i = 0; i < arguments.size() + 1; ++i) {
+        referenceCounts = java_function->referenceCounts(java_function->implementingClass(),
+                          i == 0 ? -1 : i);
+
+        foreach(ReferenceCount refCount, referenceCounts)
+            writeReferenceCount(s, refCount, i == 0 ? "this" : arguments.at(i - 1)->argumentName());
+    }
+
     if (!java_function->argumentReplaced(0).isEmpty()) {
-        s << ";" << endl;
         s << INDENT << "return " << java_function->argumentReplaced(0) << ";" << endl;
         return;
     }
 
-    if (return_type && (return_type->isTargetLangEnum() || return_type->isTargetLangFlags()))
-        s << ")";
-
-    foreach(ReferenceCount referenceCount, referenceCounts) {
+    // Then the return value
+    foreach(ReferenceCount referenceCount, returnReferenceCounts) {
         writeReferenceCount(s, referenceCount, "__qt_return_value");
     }
 
-    s << ";" << endl;
     writeInjectedCode(s, java_function, CodeSnip::End);
 
     if (needs_return_variable) {

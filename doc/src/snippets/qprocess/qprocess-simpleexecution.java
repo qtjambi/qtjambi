@@ -28,6 +28,6 @@ class SimpleExecution
         myProcess.start(program, arguments);
 //! [2]
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

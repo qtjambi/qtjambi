@@ -12,7 +12,7 @@ public class src_gui_widgets_qvalidator extends QWidget {
     QApplication.initialize(args);
     src_gui_widgets_qvalidator wid = new src_gui_widgets_qvalidator();
     wid.show();
-    QApplication.exec();
+    QApplication.execStatic();
     }
     public src_gui_widgets_qvalidator() {
     {

@@ -481,7 +481,7 @@ public class MediaPlayer extends QWidget {
         MediaPlayer player = new MediaPlayer(fileString);
         player.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

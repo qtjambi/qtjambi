@@ -44,7 +44,7 @@ public class src_corelib_io_qabstractfileengine
         MainWindow window = new MainWindow(null);
         window.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [0]
 

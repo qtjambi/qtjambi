@@ -122,6 +122,6 @@ public class ThreadedSenderAccess extends QObject implements Runnable {
 
         }
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

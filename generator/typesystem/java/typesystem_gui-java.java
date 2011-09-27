@@ -1115,10 +1115,30 @@ class QApplication___ extends QApplication {
         public static void aboutQtJambi() {
             com.trolltech.qt.QtJambiGuiInternal.aboutQtJambi();
         }
+        
+        /**
+         *
+         * @see #execStatic()
+         */
+        public int exec() {
+            return exec_internal();
+        }
+
+        /**
+         *
+         * @see #exec()
+         */
+        public static int execStatic() {
+            if (m_instance == null)
+                throw new RuntimeException("QApplication has not been initialized with QApplication.initialize()");
+            return exec_internal();
+        }
 
         public static QApplication instance() {
             if (type() != Type.Tty)
                 return (QApplication) com.trolltech.qt.core.QCoreApplication.instance();
+            if (m_instance instanceof QApplication)
+                return (QApplication) m_instance;
             return null;
         }
 

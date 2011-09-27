@@ -48,8 +48,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.WeakReference;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -61,9 +68,11 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
+import com.trolltech.qt.internal.QtJambiRuntime;
 
 public class TestQObject extends QApplicationTest {
     private static final int TIMEOUT = 10000;
+    private static final Utils.GC_MODE gcMode = Utils.GC_MODE.AGGRESIVE;
 
     private static class TestObject extends QObject {
         public TestObject(QObject parent) {
@@ -77,6 +86,8 @@ public class TestQObject extends QApplicationTest {
 
     @Before
     public void setUp() {
+        QtJambiRuntime.setObjectCacheMode(0);	// DISABLE
+
         root = new QObject();
         root.setObjectName("root");
 
@@ -170,52 +181,177 @@ public class TestQObject extends QApplicationTest {
 
     public static class DyingObject extends QObject {
         public DyingObject() {
-            alive.add(id);
+            Utils.println(4, "DyingObject#ctor() thread=" + thread() + "; id=" + id);
+
+            WeakReference<DyingObject> wr = new WeakReference<DyingObject>(this, weakReferenceQueue);
+            PhantomReference pr = new PhantomReference<DyingObject>(this, phantomReferenceQueue);
+            synchronized(DyingObject.class) {
+                weakReferenceMap.put(wr, id);
+                phantomReferenceMap.put(pr, id);
+                aliveAndUnderTest.add(id);
+                alive.add(id);
+            }
         }
 
         @Override
         public void disposed() {
-            alive.remove((Integer)id);
-        }
-
-        static public void waitForEmpty(int timeout){
-            // we need to wait for gc to collect the parent.
-            while(timeout>0 && !alive.isEmpty()){
-                long time = System.currentTimeMillis();
-                System.gc();
-                try {
-                    Thread.sleep(10);
-                } catch (Exception e) {}
-                timeout-= (System.currentTimeMillis() - time);
+            synchronized(DyingObject.class) {
+                aliveAndUnderTest.remove((Integer)id);
+                alive.remove((Integer)id);
             }
         }
 
-        static List<Integer> alive = new ArrayList<Integer>();
-        static int counter = 0;
-        public int id = ++counter;
+        @Override
+        protected void finalize() {
+            try {
+                Utils.println(4, "DyingObject#dtor() thread=" + thread() + "; id=" + id);
+            } finally {
+                super.finalize();
+            }
+        }
+
+        static public void waitForEmpty(int timeout) {
+            // we need to wait for gc to collect the parent.
+            long expireTime = 0;
+            if(timeout >= 0)
+                expireTime = System.currentTimeMillis() + timeout;
+            Utils.println(5, " waitForEmpty(timeout=" + timeout + "; expireTime=" + expireTime + ")");
+
+            int aliveSize;
+            int aliveAndUnderTestSize;
+            int weakReferenceMapSize;
+            int phantomReferenceMapSize;
+            while(true) {
+//                QThreadManagerUtils.releaseNativeResources();
+                Utils.gc(gcMode, 3);
+//                System.runFinalization();
+
+                Reference<WeakReference> thisWr;
+                while((thisWr = weakReferenceQueue.poll()) != null) {
+                    Integer tmpId;
+                    synchronized(DyingObject.class) {
+                        tmpId = weakReferenceMap.remove(thisWr);
+                    }
+                    Utils.println(5, " weakReferenceQueue.remove(): dequeued id=" + tmpId);
+                }
+                Reference<PhantomReference> thisPr;
+                while((thisPr = phantomReferenceQueue.poll()) != null) {
+                    Integer tmpId;
+                    synchronized(DyingObject.class) {
+                        tmpId = phantomReferenceMap.remove(thisPr);
+                    }
+                    Utils.println(5, " phantomReferenceQueue.remove(): dequeued id=" + tmpId);
+                }
+
+                // Re-evaluate state
+                aliveSize = -1;
+                aliveAndUnderTestSize = -1;
+                weakReferenceMapSize = -1;
+                phantomReferenceMapSize = -1;
+                synchronized(DyingObject.class) {
+                    final int len = aliveAndUnderTest.size();
+//                    int i;
+//                    for(i = 0; i < len; i++) {
+//                        Integer integerObject = aliveAndUnderTest.get(i);
+//                    }
+                    aliveSize = alive.size();
+                    aliveAndUnderTestSize = len;
+                    weakReferenceMapSize = weakReferenceMap.size();
+                    phantomReferenceMapSize = phantomReferenceMap.size();
+                }
+                if(aliveAndUnderTestSize == 0)
+                    return;	// we're done
+
+                long left = 0;
+                long timeNow = System.currentTimeMillis();
+                if(expireTime > timeNow)
+                    left = expireTime - timeNow;
+                if(left <= 100)
+                    Utils.println(5, " timeout=" + timeout + "; expireTime=" + expireTime + "; left=" + left);
+                if(left <= 0)
+                    break;	// expireTime met or exceeded
+                try {
+                    if(left > 10)
+                        left = 10;	// clamp
+                    Thread.sleep(left);
+                } catch (Exception eat) {
+                }
+            }
+
+            // Report on status
+            if(Utils.isDebugLevel(4)) {
+                // Print array format [1, 2, 3]
+                synchronized(DyingObject.class) {
+                    String aliveString = Utils.listToString(alive);
+                    String aliveAndUnderTestString = Utils.listToString(aliveAndUnderTest);
+                    String weakReferenceMapString = Utils.mapValueToString(weakReferenceMap);
+                    String phantomReferenceMapString = Utils.mapValueToString(phantomReferenceMap);
+                    Utils.println(4, "alive=" + aliveString + "; aliveAndUnderTest=" + aliveAndUnderTestString +
+                            "; weakReferenceMapSize=" + weakReferenceMapString + "; phantomReferenceMapSize=" + phantomReferenceMapString);
+                }
+            }
+        }
+
+        // This should be WeakReference/SoftReference
+        private static ReferenceQueue weakReferenceQueue = new ReferenceQueue();
+        private static ReferenceQueue phantomReferenceQueue = new ReferenceQueue();
+        private static Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
+        private static Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
+        private static List<Integer> alive = new ArrayList<Integer>();
+        private static List<Integer> aliveAndUnderTest = new ArrayList<Integer>();
+        private static int counter = 0;
+
+        public final Integer id = getIdNext();
+
+        public static Integer getIdNext() {
+            int idNext;
+            synchronized(DyingObject.class) {
+                counter++;
+                idNext = counter;
+            }
+            return Integer.valueOf(idNext);
+        }
+        public static void clear() {
+            synchronized(DyingObject.class) {
+                aliveAndUnderTest.clear();
+            }
+        }
+        public static int getSize() {
+            synchronized(DyingObject.class) {
+                return aliveAndUnderTest.size();
+            }
+        }
+    }
+
+    private static void noop(Object o) {
+        if(o != null)
+            o.toString();
     }
 
     private static void oneObject() {
         oneObject_helper();
-        System.gc();
+        Utils.gc(gcMode);
     }
 
     private static void oneObject_helper() {
-        new DyingObject();
+        DyingObject tmp = new DyingObject();
+        noop(tmp);
     }
 
     private static void objectWithParent() {
         objectWithParent_helper();
-        System.gc();
+        Utils.gc(gcMode);
     }
 
     private static void objectWithParent_helper() {
-        new DyingObject().setParent(new DyingObject());
+        DyingObject tmp = new DyingObject();
+        tmp.setParent(new DyingObject());
+        noop(tmp);
     }
 
     private static void objectWithUnParent() {
         objectWithUnParent_helper();
-        System.gc();
+        Utils.gc(gcMode);
     }
 
     private static void objectWithUnParent_helper() {
@@ -235,94 +371,94 @@ public class TestQObject extends QApplicationTest {
 
     @Test
     public void disposal_oneObject() {
-        DyingObject.alive.clear();
+        DyingObject.clear();
         oneObject();
 
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(TIMEOUT);
 
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_objectWithParent() {
-        DyingObject.alive.clear();
+        DyingObject.clear();
         objectWithParent();
 
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(TIMEOUT);
 
         QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_objectWithUnParent() {
-        DyingObject.alive.clear();
+        DyingObject.clear();
         objectWithUnParent();
         QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
 
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(TIMEOUT);
 
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_disposeInThread() {
-        DyingObject.alive.clear();
+        DyingObject.clear();
         threadExecutor(runnable_disposeInThread, false);
         DyingObject.waitForEmpty(TIMEOUT);
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
 
         threadExecutor(runnable_disposeInThread, true);
         DyingObject.waitForEmpty(TIMEOUT);
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_gcInQThread_oneObject() {
-        DyingObject.alive.clear();
+        DyingObject.clear();
         threadExecutor(runnable_oneObject, true);
         DyingObject.waitForEmpty(TIMEOUT);
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_gcInQThread_objectWithParent() {
-        DyingObject.alive.clear();
+        DyingObject.clear();
         threadExecutor(runnable_objectWithParent, true);
 
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(TIMEOUT);
 
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_gcInQThread_objectWithUnParent() {
-        DyingObject.alive.clear();
+        DyingObject.clear();
         threadExecutor(runnable_objectWithUnParent, true);
 
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(TIMEOUT);
 
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_gcInThread_oneObject() {
         // Will warn about leaking the C++ object.
-        DyingObject.alive.clear();
+        DyingObject.clear();
         threadExecutor(runnable_oneObject, false);
         DyingObject.waitForEmpty(TIMEOUT);
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     @Test
     public void disposal_gcInThread_objectWithParent() {
         // Will warn once about leaking the C++ object. The child will not be collected
-        DyingObject.alive.clear();
+        DyingObject.clear();
         threadExecutor(runnable_objectWithParent, false);
 
 
@@ -332,19 +468,19 @@ public class TestQObject extends QApplicationTest {
             e.printStackTrace();
         }
 
-        assertEquals(1, DyingObject.alive.size());
+        assertEquals(1, DyingObject.getSize());
     }
 
     @Test
     public void disposal_gcInThread_objectWithUnParent() {
         // Will warn twice about leaking the C++ object, but both objects will be collected
-        DyingObject.alive.clear();
+        DyingObject.clear();
         threadExecutor(runnable_objectWithUnParent, false);
 
         // we need to wait for gc to collect the parent.
         DyingObject.waitForEmpty(TIMEOUT);
 
-        assertEquals(0, DyingObject.alive.size());
+        assertEquals(0, DyingObject.getSize());
     }
 
     private Runnable runnable_disposeInThread = new Runnable() {

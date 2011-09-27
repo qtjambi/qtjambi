@@ -16,6 +16,6 @@ public class main
     //! [0]
         topLevelLabel.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

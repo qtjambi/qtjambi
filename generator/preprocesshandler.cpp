@@ -28,12 +28,20 @@ bool PreprocessHandler::handler() {
 
     QByteArray ba = file.readAll();
     file.close();
-    preprocess.operator()(ba.constData(), ba.constData() + ba.size(), null_out);
 
+// FIXME: Dump empty at start
+// FIXME: If any debug mode, enable showing DEFINE/UNDEF/INCLUDE(summary/verbose)
+// FIXME: If nothing set on cmdline enable #define Q_OS_OS2
+// PROCESS string of "#define name value"
+// FIXME: Replace "null_out" with stdout
+    preprocess.operator()(ba.constData(), ba.constData() + ba.size(), null_out);
+// FIXME: Dump defines set
+// FIXME: Restore normal debug mode, showing DEFINE/UNDEF/INCLUDE(summary/verbose)
     QStringList includes = setIncludes();
 
     foreach(QString include, includes)
-    preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
+        preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
+// FIXME: Dump defines set
 
     QString currentDir = QDir::current().absolutePath();
 
@@ -63,7 +71,7 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
 
     QFile f(targetFile);
     if (!f.open(QIODevice::Append | QIODevice::Text)) {
-        fprintf(stderr, "Failed to write preprocessed file: %s\n", qPrintable(targetFile));
+        std::fprintf(stderr, "Failed to write preprocessed file: %s\n", qPrintable(targetFile));
     }
     f.write(result.c_str(), result.length());
 }
@@ -82,6 +90,8 @@ QStringList PreprocessHandler::setIncludes() {
     } else {
 #if defined(Q_OS_MAC)
         phonon_include_dir = "/Library/Frameworks/phonon.framework/Headers";
+        if(!phonon_include_dir.isNull())
+            std::fprintf(stdout, "Appending built-in --phonon-include: %s\n", qPrintable(phonon_include_dir));
 #endif
     }
     if (!phonon_include_dir.isNull())
@@ -97,6 +107,8 @@ QStringList PreprocessHandler::setIncludes() {
 #else
         includedir = "/usr/include/qt4";
 #endif
+        if(!includedir.isNull())
+            std::fprintf(stdout, "Appending built-in --qt-include-directory: %s\n", qPrintable(includedir));
     }
     if (!includedir.isNull())
         includes << includedir;

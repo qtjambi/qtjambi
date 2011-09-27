@@ -22,7 +22,7 @@ class whatsthis extends QMainWindow
 
         new whatsthis().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

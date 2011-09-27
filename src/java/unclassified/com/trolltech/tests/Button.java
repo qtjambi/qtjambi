@@ -95,7 +95,7 @@ public class Button extends QPushButton {
         b.setProperty("text", "Text was set dynamically...");
         System.out.println("text is: " + b.property("text"));
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

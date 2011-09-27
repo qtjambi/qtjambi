@@ -91,7 +91,7 @@ package com.trolltech.qt.sql;
         view2.setModel(model);
         view2.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
 
         db.close();
     }

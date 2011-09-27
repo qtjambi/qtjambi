@@ -42,7 +42,7 @@ public class main
 
         new Widget().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

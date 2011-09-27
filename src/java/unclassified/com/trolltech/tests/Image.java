@@ -413,6 +413,6 @@ public class Image extends QWidget
     Image im = new Image();
     im.show();
 
-    QApplication.exec();
+    QApplication.execStatic();
     }
 }

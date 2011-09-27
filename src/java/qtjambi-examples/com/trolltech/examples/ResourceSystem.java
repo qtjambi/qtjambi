@@ -272,7 +272,7 @@ public class ResourceSystem extends QWidget
         QApplication.initialize(args);
         ResourceSystem w = new ResourceSystem();
         w.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

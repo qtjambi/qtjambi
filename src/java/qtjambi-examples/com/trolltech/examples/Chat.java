@@ -59,7 +59,7 @@ public class Chat extends QDialog {
         QApplication.initialize(args);
         Chat chat = new Chat();
         chat.show();
-        QApplication.exec();
+        QApplication.execStatic();
 
     }
 

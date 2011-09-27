@@ -541,6 +541,6 @@ public class TextEdit extends QMainWindow {
         }
         mw.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

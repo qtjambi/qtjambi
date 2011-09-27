@@ -189,6 +189,6 @@ public class DraggableIcons extends QFrame
         mainWidget.setWindowTitle("Draggable Icons");
         mainWidget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

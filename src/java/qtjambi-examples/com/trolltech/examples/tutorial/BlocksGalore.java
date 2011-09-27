@@ -107,7 +107,7 @@ public class BlocksGalore extends QWidget
         BlocksGalore widget = new BlocksGalore();
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 //! [1]

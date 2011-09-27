@@ -19,7 +19,7 @@ public static void main(String args[])
     browser.resize(800, 600);
     browser.show();
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

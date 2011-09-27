@@ -91,7 +91,7 @@ public class Blocks extends QWidget
         Blocks widget = new Blocks();
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 //! [0]

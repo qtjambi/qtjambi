@@ -203,6 +203,6 @@ public class ScrollingHTMLView extends QWidget {
         ScrollingHTMLView view = new ScrollingHTMLView(null);
         view.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -59,6 +59,6 @@ public class ImageViewer extends MainWindow {
         QApplication.initialize(args);
         ImageViewer viewer = new ImageViewer();
         viewer.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

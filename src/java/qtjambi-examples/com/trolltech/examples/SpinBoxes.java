@@ -265,7 +265,7 @@ public class SpinBoxes extends QWidget {
         SpinBoxes spinBoxes = new SpinBoxes();
         spinBoxes.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [22] //! [23]
 }

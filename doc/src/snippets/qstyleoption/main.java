@@ -13,7 +13,7 @@ public class main
         MyPushButton button = new MyPushButton();
         button.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 

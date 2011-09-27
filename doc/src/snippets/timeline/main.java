@@ -31,6 +31,6 @@ public class main
         timer.start();
     //! [0]
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

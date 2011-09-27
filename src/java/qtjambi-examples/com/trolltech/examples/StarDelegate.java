@@ -368,6 +368,6 @@ public class StarDelegate extends QWidget {
         widget.show();
         widget.resize(470, 200);
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

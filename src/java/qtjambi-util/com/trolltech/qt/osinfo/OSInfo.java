@@ -150,6 +150,36 @@ public class OSInfo
         return osArchName;
     }
 
+    public static boolean isWindows() {
+        if(os() == OS.Windows)
+            return true;
+        return false;
+    }
+
+    public static boolean isLinux() {
+        if(os() == OS.Linux)
+            return true;
+        return false;
+    }
+
+    public static boolean isMacOS() {
+        if(os() == OS.MacOS)
+            return true;
+        return false;
+    }
+
+    public static boolean isFreeBSD() {
+        if(os() == OS.FreeBSD)
+            return true;
+        return false;
+    }
+
+    public static boolean isSolaris() {
+        if(os() == OS.Solaris)
+            return true;
+        return false;
+    }
+
     private static OS os;
     private static String osArchName;
 }

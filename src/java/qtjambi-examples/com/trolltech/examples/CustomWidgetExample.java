@@ -66,7 +66,7 @@ public class CustomWidgetExample extends QWidget {
         CustomWidgetExample widget = new CustomWidgetExample(null);
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

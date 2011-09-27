@@ -58,7 +58,7 @@ public class CustomFilter extends QWidget {
         QApplication.initialize(args);
         CustomFilter filter = new CustomFilter();
         filter.show();
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [1]
 

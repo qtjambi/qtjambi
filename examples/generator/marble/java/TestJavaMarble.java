@@ -19,7 +19,7 @@ public class TestJavaMarble extends MarbleWidget {
 //        javaMarble.setMapThemeId("earth/bluemarble/bluemarble.dgml");
 
         javaMarble.showGrid();
-        QApplication.exec();
+        QApplication.execStatic();
 
     }
 

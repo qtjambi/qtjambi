@@ -73,6 +73,6 @@ class myscrollarea extends QAbstractScrollArea
 
         area.setWidget(label);
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

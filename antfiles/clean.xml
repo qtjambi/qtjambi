@@ -3,59 +3,39 @@
         CLEAN TARGETS
     -->
 
-    <available file="Makefile" type="file" property="global.makefile.present"/>
-    <available file="juic/Makefile" type="file"
-        property="juic.makefile.present"/>
-    <available file="generator/Makefile" type="file"
-        property="generator.makefile.present"/>
+    <available file="${qtjambi.builddir}/Makefile"   type="file" property="global.makefile.present"/>
+    <available file="${juic.builddir}/Makefile"      type="file" property="juic.makefile.present"/>
+    <available file="${generator.builddir}/Makefile" type="file" property="generator.makefile.present"/>
 
     <target name="make.clean.global.make" if="global.makefile.present"
         depends="init">
-        <make target="clean"/>
+        <make dir="${qtjambi.builddir}" target="mocclean" failonerror="false"/>
+        <make dir="${qtjambi.builddir}" target="distclean"/>
     </target>
 
     <target name="make.clean.global" depends="init, make.clean.global.make">
-        <delete file="Makefile" quiet="true"/>
-        <delete quiet="true">
-            <fileset dir=".">
-                <include name="**/Makefile*"/>
-                <exclude name="juic/Makefile*"/>
-                <exclude name="generator/Makefile*"/>
-            </fileset>
-        </delete>
+        <delete file="version.properties" quiet="true"/>
+        <delete dir="${qtjambi.builddir}" quiet="true"/>
     </target>
 
     <target name="make.clean.juic.make" if="juic.makefile.present"
         depends="init">
-        <make dir="juic" target="clean"/>
+        <make dir="${juic.builddir}" target="mocclean" failonerror="false"/>
+        <make dir="${juic.builddir}" target="distclean"/>
     </target>
 
     <target name="make.clean.juic" depends="init, make.clean.juic.make">
-        <delete quiet="true">
-            <fileset dir="juic">
-                <include name="Makefile*"/>
-                <include name="*.o"/>
-                <include name="juic"/>
-            </fileset>
-        </delete>
+        <delete dir="${juic.builddir}" quiet="true"/>
     </target>
 
     <target name="make.clean.generator.make" if="generator.makefile.present"
         depends="init">
-        <make dir="generator" target="clean"/>
+        <make dir="${generator.builddir}" target="mocclean" failonerror="false"/>
+        <make dir="${generator.builddir}" target="distclean"/>
     </target>
 
     <target name="make.clean.generator" depends="init, make.clean.generator.make">
-        <delete quiet="true">
-            <fileset dir="generator">
-                <include name="Makefile*"/>
-                <include name="generator"/>
-                <include name="debug/***"/>
-                <include name="release/***"/>
-                <include name="mjb_*.log"/>
-                <include name=".preprocessed.tmp"/>
-            </fileset>
-        </delete>
+        <delete dir="${generator.builddir}" quiet="true"/>
     </target>
 
     <target name="clean" description="Cleans everything"
@@ -64,11 +44,7 @@
             <fileset dir="${generator.xmlmerge.outputdir}" includes="*.xml"/>
         </delete>
         <delete dir="${java.outdir}" quiet="true"/>
-        <delete dir="${java.generated.srcdir}" quiet="true"/>
         <delete dir="${generator.outputdir}" quiet="true"/>
-        <delete dir="bin" quiet="true"/>
-        <delete dir="lib" quiet="true"/>
-        <delete dir="cpp" quiet="true"/>
         <delete quiet="true">
             <fileset dir=".">
                 <include name="plugins/**/*"/>
@@ -76,17 +52,21 @@
                 <include name="*.jar"/>
             </fileset>
         </delete>
-        <delete file="${java.srcdir}/qtjambi/version.properties" quiet="true"/>
+        <delete file="${java.srcdir}/qtjambi/com/trolltech/qt/version.properties" quiet="true"/>
         <delete dir="${outputDir}/platform-output" quiet="true"/>
         <delete file="qtjambi-${qtjambi.version}-src.zip" quiet="true"/>
         <delete dir="build" quiet="true"/>
     </target>
 
-    <target name="distclean" description="Cleans really everything"
+    <target name="realclean" description="Cleans final outputs"
         depends="clean">
         <delete dir="${jardir}" quiet="true"/>
         <delete dir="${timestamp.dir}" quiet="true"/>
-        <delete dir="extjars" quiet="true"/>
+    </target>
+
+    <target name="distclean" description="Cleans really everything"
+        depends="realclean">
+        <delete dir="extjars" quiet="true"/><!-- Try not to download this too much -->
         <delete dir="buildlogs" quiet="true"/>
     </target>
 </project>

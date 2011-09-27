@@ -47,7 +47,7 @@ public class main
 
         new Widget(null).show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 

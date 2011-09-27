@@ -86,6 +86,6 @@ class MainWindowState extends QMainWindow {
         MainWindowState widget = new MainWindowState();
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

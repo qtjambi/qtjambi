@@ -85,7 +85,7 @@ public static void main(String args[])
     read_datastream_snippets();
     setBuffer_snippet();
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

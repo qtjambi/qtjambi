@@ -73,7 +73,7 @@ public class FamilyValues
 //! [5]
         window.show();
 //! [5]
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 //! [0]

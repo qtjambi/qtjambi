@@ -44,48 +44,96 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.taskdefs.MatchingTask;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
 public class JuicTask extends MatchingTask {
-    private String msg = "";
-    private String classpath = "";
-    private String outputDir = "";
-    private String trFunction = "";
-    private String classNamePrefix = "";
-    private boolean alwaysUpdate = false;
-    private String dir = ".";
-    private String qtLibDirectory = null;
+    private String msg;
+    private String classpath;
+    private String outputDir;
+    private String trFunction;
+    private String classNamePrefix;
+    private boolean alwaysUpdate;
+    private String qtLibDirectory;
+    private String jambiDirectory;
+    private String juicDirectory;
+    private String dir;
+
+    private List<String> searchPath() {
+        List<String> pathList = new ArrayList<String>();
+
+        if(juicDirectory != null) {
+            File dirJuicDirectory = new File(juicDirectory);
+            if(dirJuicDirectory.isDirectory()) {
+                pathList.add(dirJuicDirectory.getAbsolutePath());
+
+                File dirRelease = new File(juicDirectory, "release");
+                if(dirRelease.isDirectory())
+                    pathList.add(dirRelease.getAbsolutePath());
+
+                File dirDebug = new File(juicDirectory, "debug");
+                if(dirDebug.isDirectory())
+                    pathList.add(dirDebug.getAbsolutePath());
+            }
+        }
+
+        if(jambiDirectory != null) {
+            File dirJambiDirectory = new File(jambiDirectory);
+            if(dirJambiDirectory.isDirectory()) {
+                File dirJuicDirectory = new File(jambiDirectory, "juic");
+                if(dirJuicDirectory.isDirectory()) {
+                    pathList.add(dirJuicDirectory.getAbsolutePath());
+
+                    File dirRelease = new File(jambiDirectory, "release");
+                    if(dirRelease.isDirectory())
+                        pathList.add(dirRelease.getAbsolutePath());
+
+                    File dirDebug = new File(jambiDirectory, "debug");
+                    if(dirDebug.isDirectory())
+                        pathList.add(dirDebug.getAbsolutePath());
+                }
+            }
+        }
+
+        return pathList;
+    }
 
     public String executableName() {
+        String exe;
         switch(OSInfo.os()) {
         case Windows:
-            return "juic.exe";
+            exe = "juic.exe";
         default:
-            return "juic";
+            exe = "juic";
         }
+        return Util.LOCATE_EXEC(exe, searchPath(), null).getAbsolutePath();
     }
 
     @Override
     public void execute() throws BuildException {
-        System.out.println(msg);
+        if(msg != null)
+            System.out.println(msg);
 
         List<String> commandList = new ArrayList<String>();
-        commandList.add(Util.LOCATE_EXEC(executableName(), "./bin", null).getAbsolutePath());
-        if(!outputDir.equals("")) {
+        commandList.add(executableName());
+        if(outputDir != null) {
             commandList.add("-d");
             commandList.add(outputDir);
         }
-        if(!trFunction.equals("")) {
+        if(trFunction != null) {
             commandList.add("-tr");
             commandList.add(trFunction);
         }
-        if(!classNamePrefix.equals("")) {
+        if(classNamePrefix != null) {
             commandList.add("-pf");
             commandList.add(classNamePrefix);
         }
@@ -111,7 +159,10 @@ public class JuicTask extends MatchingTask {
                 thisCommandList.add(packageString);
                 thisCommandList.add(uicFileString);
 
-                Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory);
+                File dirExecute = null;
+                if(dir != null)
+                    dirExecute = new File(dir);
+                Exec.execute(thisCommandList, dirExecute, getProject(), qtLibDirectory);
             }
         }
     }
@@ -140,11 +191,19 @@ public class JuicTask extends MatchingTask {
         this.alwaysUpdate = alwaysUpdate;
     }
 
-    public void setDir(String dir) {
-        this.dir  = dir;
+    public void setQtLibDirectory(String qtLibDirectory) {
+        this.qtLibDirectory = qtLibDirectory;
     }
 
-    public void setQtLibDirectory(String dir) {
-        this.qtLibDirectory  = dir;
+    public void setJambiDirectory(String jambiDirectory) {
+        this.jambiDirectory = jambiDirectory;
+    }
+
+    public void setJuicDirectory(String juicDirectory) {
+        this.juicDirectory = juicDirectory;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
     }
 }

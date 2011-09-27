@@ -80,6 +80,12 @@ public abstract class Utils {
         return sb.toString();
     }
 
+    public static String toStringOrNull(Object o) {
+        if(o == null)
+            return "null";
+        return o.toString();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
 
     private static Object[] flipUseMemoryValue;

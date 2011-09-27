@@ -30,7 +30,7 @@ public class src_gui_painting_qcolor extends QWidget {
         QWidget w = new src_gui_painting_qcolor();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
 
     }
 }

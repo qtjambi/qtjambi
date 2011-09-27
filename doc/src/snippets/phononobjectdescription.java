@@ -33,7 +33,7 @@ public static void main(String args[])
     audioOutput.setOutputDevice(audioOutputDevices.get(0));
 //![0]
 
-    QApplication.exec();
+    QApplication.execStatic();
 
 }
 

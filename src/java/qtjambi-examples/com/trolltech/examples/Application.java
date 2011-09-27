@@ -414,7 +414,7 @@ public class Application extends QMainWindow {
         Application application = new Application();
         application.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [32]
 

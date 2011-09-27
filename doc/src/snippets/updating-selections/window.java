@@ -13,7 +13,7 @@ public class window extends QWidget
 
         new MainWindow().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 

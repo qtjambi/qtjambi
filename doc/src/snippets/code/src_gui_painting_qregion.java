@@ -10,7 +10,7 @@ public class src_gui_painting_qregion extends QWidget {
         QWidget w = new src_gui_painting_qregion();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 //! [0]

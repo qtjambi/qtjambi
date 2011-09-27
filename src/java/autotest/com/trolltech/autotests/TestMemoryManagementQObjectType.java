@@ -53,13 +53,21 @@ import com.trolltech.qt.QtJambiObject;
 
 public class TestMemoryManagementQObjectType extends TestMemoryManagement {
     @Override
+    protected void initialize() {
+    }
+
+    @Override
     protected QtJambiObject createInstanceInJava() {
-        return new QObjectType();
+        QtJambiObject o = new QObjectType();
+        accountingForObject(o);
+        return o;
     }
 
     @Override
     protected QtJambiObject createInstanceInNative() {
-        return QObjectType.newInstance();
+        QtJambiObject o = QObjectType.newInstance();
+        accountingForObject(o);
+        return o;
     }
 
     @Override
@@ -85,7 +93,6 @@ public class TestMemoryManagementQObjectType extends TestMemoryManagement {
     QtJambiObject temporaryObject = null;
     @Override
     protected QtJambiObject invalidateObject(QtJambiObject obj, final boolean returnReference) {
-
         new InvalidatorQObjectType() {
             @Override
             public void overrideMe(QObjectType t) {

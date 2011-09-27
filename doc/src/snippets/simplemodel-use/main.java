@@ -52,6 +52,6 @@ public class main
         window.setWindowTitle("A simple model example");
         window.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

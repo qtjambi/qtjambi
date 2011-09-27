@@ -146,6 +146,6 @@ public class screenwidget extends QFrame
 
         new ScreenWidget().show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

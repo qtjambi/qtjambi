@@ -405,7 +405,7 @@ public class MusicPlayer extends QMainWindow
 
             new MusicPlayer().show();
 
-            QApplication.exec();
+            QApplication.execStatic();
     }
 //![main]
 }

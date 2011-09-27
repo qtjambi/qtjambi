@@ -532,7 +532,7 @@ public class Deform extends QWidget
         Deform w = new Deform(null);
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 

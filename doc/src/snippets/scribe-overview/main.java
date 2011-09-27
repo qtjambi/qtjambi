@@ -37,6 +37,6 @@ public class main
         editor.show();
     //! [1]
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

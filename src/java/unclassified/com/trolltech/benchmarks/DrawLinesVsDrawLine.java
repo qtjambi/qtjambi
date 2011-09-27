@@ -180,7 +180,7 @@ public class DrawLinesVsDrawLine extends QWidget {
         QWidget w = new DrawLinesVsDrawLine();
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

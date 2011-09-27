@@ -144,6 +144,6 @@ public class ConnectedSliders extends QWidget
         ConnectedSliders widget = new ConnectedSliders();
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

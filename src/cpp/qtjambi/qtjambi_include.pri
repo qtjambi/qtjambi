@@ -6,11 +6,14 @@ CONFIG(debug, debug|release) {
 }
 
 macx:{
-    LIBS += $$PWD/../../../build/src/cpp/lib/lib$$member(QTJAMBI_LIB_NAME, 0).jnilib
+    LIBS += $$PWD/../../../build/qmake-qtjambi/lib/lib$$member(QTJAMBI_LIB_NAME, 0).jnilib
 } else {
-    LIBS += -L$$PWD/../../../build/src/cpp/lib -l$$QTJAMBI_LIB_NAME
+    LIBS += -L$$PWD/../../../build/qmake-qtjambi/lib -l$$QTJAMBI_LIB_NAME
 }
 
 QTJAMBI_CPP = ../../../build/generator/out/cpp/
 
-win32-msvc2005:CONFIG += embed_manifest_dll force_embed_manifest
+# These option changes are recommended since at least: win32-msvc2005
+win32-msvc* {
+    CONFIG += embed_manifest_dll force_embed_manifest
+}

@@ -10,6 +10,7 @@
                 debugTools="${qtjambi.debug-tools}"
                 inputDirectory="${generatorDir}"
                 outputDirectory="${generator.outputdir}"
+                generatorDirectory="${generator.builddir}"
                 typesystem="${generatorDir}/targets/build_all.xml"
                 header="${generatorDir}/targets/qtjambi_masterinclude.h"
                 phononpath="${qtjambi.phonon.includedir}"
@@ -30,13 +31,14 @@
       -->
 
     <target name="tools.generator.qmake" depends="init">
-        <qmake dir="generator" pro="generator/generator.pro"
+        <mkdir dir="${generator.builddir}"/>
+        <qmake dir="${generator.builddir}" pro="generator/generator.pro"
                 config="${qtjambi.configuration}"
                 qmakebinary="${tools.qmake.binary}"/>
     </target>
 
     <target name="tools.generator.make" depends="tools.generator.qmake">
-        <make dir="generator"/>
+        <make dir="${generator.builddir}"/>
     </target>
 
     <!--

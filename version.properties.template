@@ -1,4 +1,7 @@
-qtjambi.version = 4.7.3
+# It is no longer necessary to configure this variable, the QtJambi
+#  build will automatically base itself on: qmake -query QT_VERSION
+# However if this property is set it must match that found.
+#qtjambi.version = 4.7.4
 
 # We not longer hardwire this information into code and also make it
 #  platform independant (i.e. the mechanism works for all platforms).

@@ -3168,6 +3168,11 @@
                 qtjambi_register_variant_handler();
             </inject-code>
         </modify-function>
+        <!-- We implement a custom Java wrapper to this -->
+        <modify-function signature="exec()">
+            <access modifier="private"/>
+            <rename to="exec_internal"/>
+        </modify-function>
         <template name="gui.application_char_pointer_function">
         public static %RETURN_TYPE %FUNCTION_NAME(%PRE_ARGUMENTS %COMMA QByteArray className) {
             return %FUNCTION_NAME(%PRE_CALL_ARGUMENTS %COMMA className == null ? null : className.data());

@@ -61,6 +61,6 @@ public class SignalsSlotsExample extends QWidget
 
         new SignalsSlotsExample();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -45,343 +45,481 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.WeakReference;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.trolltech.autotests.generated.OrdinaryDestroyed;
 
+import com.trolltech.qt.QThreadManagerUtils;
 import com.trolltech.qt.gui.QApplication;
 
 class MyOrdinaryDestroyed extends OrdinaryDestroyed {
+    public final Integer id;
+
+    MyOrdinaryDestroyed(Integer id) {
+        this.id = id;
+        Utils.println(5, "MyOrdinaryDestroyed.ctor() " + getClass().getName() + "@" + System.identityHashCode(this) + "; thread=" + Thread.currentThread().getId() + "; id=" + id);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
     @Override
     public OrdinaryDestroyed virtualGetObjectCppOwnership() {
-        return new MyOrdinaryDestroyed();
+        MyOrdinaryDestroyed o = new MyOrdinaryDestroyed(TestDestruction.getIdNext());
+        TestDestruction.accountingForNewObject(o);
+        return o;
     }
 
     @Override
     public OrdinaryDestroyed virtualGetObjectJavaOwnership() {
-        return new MyOrdinaryDestroyed();
+        MyOrdinaryDestroyed o = new MyOrdinaryDestroyed(TestDestruction.getIdNext());
+        TestDestruction.accountingForNewObject(o);
+        return o;
     }
 
     @Override
     public void virtualSetDefaultOwnership(OrdinaryDestroyed arg__1) {
         // nothing
     }
+
+    @Override
+    protected void finalize() {
+        try {
+            Utils.println(5, "MyOrdinaryDestroyed.dtor() " + getClass().getName() + "@" + System.identityHashCode(this) + "; thread=" +  Thread.currentThread().getId() + "; id=" + id);
+        } finally {
+            super.finalize();
+        }
+    }
 }
 
 public class TestDestruction extends QApplicationTest {
-    @Test
-    public void testJavaCreationJavaOwnership()
-    {
-        for (int i=0; i<10; ++i) {
+    private static ReferenceQueue weakReferenceQueue = new ReferenceQueue();
+    private static ReferenceQueue phantomReferenceQueue = new ReferenceQueue();
+    private static Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
+    private static Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
+    private static List<Integer> alive = new ArrayList<Integer>();
+    private static List<Integer> aliveAndUnderTest = new ArrayList<Integer>();
+    private static int counter = 0;
+
+    @Before
+    public void setUp() {
+        QApplication.processEvents();
+        clearGcReferences();
+    }
+
+    @After
+    public void tearDown() {
+        QThreadManagerUtils.releaseNativeResources();
+        System.gc();
+        System.runFinalization();
+                           
+        QApplication.processEvents();
+    }
+
+    public static Integer getIdNext() {
+        int idNext;
+        synchronized(TestDestruction.class) {
+            counter++;
+            idNext = counter;
+        }
+        return Integer.valueOf(idNext);
+    }
+    public void clearGcReferences() {
+        synchronized(TestDestruction.class) {
+            aliveAndUnderTest.clear();
+        }
+    }
+    public int getSize() {
+        synchronized(TestDestruction.class) {
+            return aliveAndUnderTest.size();
+        }
+    }
+
+    protected static void accountingForNewObject(MyOrdinaryDestroyed o) {
+        assertNotNull(o);
+
+        Integer id = o.getId();
+
+        accountingForNewObject(o, id);
+    }
+
+    private static void accountingForNewObject(OrdinaryDestroyed o) {
+        assertNotNull(o);
+
+        accountingForNewObject(o, null);
+    }
+
+    // This does not have "id" field, so make one up for it
+    private static void accountingForNewObject(OrdinaryDestroyed o, Integer id) {
+        assertNotNull(o);
+
+        if(id == null)
+            id = getIdNext();
+
+        if(Utils.isDebugLevel(4)) {
+            String className = o.getClass().getName();
+            String shortClassName = className;
+            int i = shortClassName.lastIndexOf('.');
+            if(i > 0)
+                shortClassName = shortClassName.substring(i + 1);
+            Utils.println(4, shortClassName + ".ctor " + className + "@" + System.identityHashCode(o) + "; thread=" + Thread.currentThread().getId() + "; id=" + id);
+        }
+        WeakReference<Object> wr = new WeakReference<Object>(o, weakReferenceQueue);
+        PhantomReference<Object> pr = new PhantomReference<Object>(o, phantomReferenceQueue);
+        synchronized(TestDestruction.class) {
+            weakReferenceMap.put(wr, id);
+            phantomReferenceMap.put(pr, id);
+            aliveAndUnderTest.add(id);
+            alive.add(id);
+        }
+    }
+
+    private boolean gcAndWait(long timeLimitMillis) {
+        return gcAndWait(timeLimitMillis, null, null, null);
+    }
+
+    private boolean gcAndWait(long timeLimitMillis, Long excessLimitMillis, Integer disposedCount, Integer destroyedCount) {
+        boolean obtainGoal = false;	// did we meet conditions within timelimit?
+
+        long startTime = System.currentTimeMillis();
+        long excessTime = 0;
+        long elapsed = 0;
+
+        int currentDisposedCount;
+        int currentDestroyedCount;
+        boolean loop = true;
+        String debugPrefix = " gcAndWait(" + timeLimitMillis +
+            ", " + Utils.toStringOrNull(excessLimitMillis) +
+            ", " + Utils.toStringOrNull(disposedCount) +
+            ", " + Utils.toStringOrNull(destroyedCount) + ")";
+        while(loop) {
             try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
+//                if(needsEventProcessing()) {
+//                    Utils.println(5, debugPrefix + ": QApplication.processEvents()");
+//                    QApplication.processEvents(new QEventLoop.ProcessEventsFlags(QEventLoop.ProcessEventsFlag.DeferredDeletion));
+////                    QApplication.processEvents();
+//                }
+
+                QThreadManagerUtils.releaseNativeResources();
+                System.gc();
+                System.runFinalization();
+
+                Reference<WeakReference> thisWr;
+                while((thisWr = weakReferenceQueue.poll()) != null) {
+                    Integer tmpId;
+                    synchronized(TestDestruction.class) {
+                        tmpId = weakReferenceMap.remove(thisWr);
+                    }
+                    Utils.println(5, " weakReferenceQueue.remove(): dequeued id=" + tmpId);
+                }
+                Reference<PhantomReference> thisPr;
+                while((thisPr = phantomReferenceQueue.poll()) != null) {
+                    Integer tmpId;
+                    synchronized(TestDestruction.class) {
+                        tmpId = phantomReferenceMap.remove(thisPr);
+                    }
+                    Utils.println(5, " phantomReferenceQueue.remove(): dequeued id=" + tmpId);
+                }
+
+                if(!obtainGoal) {	// Try to obtainGoal
+                    currentDisposedCount = MyOrdinaryDestroyed.getDisposedCount();
+                    currentDestroyedCount = MyOrdinaryDestroyed.destroyedCount();
+
+                    boolean loopDisposedCount = false;
+                    if(disposedCount != null) {
+                        if(disposedCount.intValue() > currentDisposedCount)
+                            loopDisposedCount = true;
+                    }
+                    boolean loopDestroyedCount = false;
+                    if(destroyedCount != null) {
+                        if(destroyedCount.intValue() > currentDestroyedCount)
+                            loopDestroyedCount = true;
+                    }
+
+                    if(!loopDisposedCount && !loopDestroyedCount) {
+                        obtainGoal = true;	// we have met the callers goals
+                        excessTime = System.currentTimeMillis();	// reset this for excessLimitMillis
+                    }
+
+                    Utils.println(5, debugPrefix + ": elapsed=" + elapsed + "; end loop" +
+                        "; currentDisposedCount=" + currentDisposedCount +
+                        "; currentDestroyedCount=" + currentDestroyedCount +
+                        "; obtainGoal=" + obtainGoal
+                        );
+                }
+
+                if(obtainGoal) {
+                    elapsed = System.currentTimeMillis() - excessTime;
+                    if(excessLimitMillis != null)
+                        loop = elapsed < excessLimitMillis.intValue();
+                    else
+                        loop = false;
+                } else {
+                    elapsed = System.currentTimeMillis() - startTime;
+                    loop = elapsed < timeLimitMillis;
+                }
+Utils.println(15, debugPrefix + ": elapsed=" + elapsed + "; loop="+loop+"; obtainGoal="+obtainGoal);
+
+                if(loop)
+                    Thread.sleep(10);
+            } catch(Exception e) {	// exceptions are an idiotic concept; yeah in c++
+                e.printStackTrace();
             }
-            System.gc();
         }
 
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
-
-        {
-            MyOrdinaryDestroyed d = new MyOrdinaryDestroyed();
-        }
-
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
+        // Report on status
+        if(Utils.isDebugLevel(4)) {
+            // Print array format [1, 2, 3]
+            synchronized(TestDestruction.class) {
+                String aliveString = Utils.listToString(alive);
+                String aliveAndUnderTestString = Utils.listToString(aliveAndUnderTest);
+                String weakReferenceMapString = Utils.mapValueToString(weakReferenceMap);
+                String phantomReferenceMapString = Utils.mapValueToString(phantomReferenceMap);
+                Utils.println(4, "elapsed=" + elapsed + "; alive=" + aliveString + "; aliveAndUnderTest=" + aliveAndUnderTestString +
+                        "; weakReferenceMapSize=" + weakReferenceMapString + "; phantomReferenceMapSize=" + phantomReferenceMapString);
             }
-            System.gc();
         }
 
-        assertEquals(1, MyOrdinaryDestroyed.disposedCount);
-        assertEquals(1, MyOrdinaryDestroyed.destroyedCount());
+        return obtainGoal;
+    }
+
+    private void reset() {
+        synchronized(MyOrdinaryDestroyed.class) {
+            MyOrdinaryDestroyed.setDisposedCount(0);
+            MyOrdinaryDestroyed.setDestroyedCount(0);
+        }
+    }
+
+    // method exists to ensure object reference created here is discarded for GC
+    private void testJavaCreationJavaOwnership_internal() {
+        MyOrdinaryDestroyed d = new MyOrdinaryDestroyed(getIdNext());
+
+        accountingForNewObject(d);
     }
 
     @Test
-    public void testJavaCreationCppOwnership()
-    {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+    public void testJavaCreationJavaOwnership() {
+        reset();
 
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        testJavaCreationJavaOwnership_internal();
 
-        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed();
+        gcAndWait(5000, (long)250, 1, 1);
 
-        {
-            // Garbage collection has now been disabled on d
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.callGetObjectCppOwnership(dontBeDeleted);
-        }
+        assertEquals(1, MyOrdinaryDestroyed.getDisposedCount());
+        assertEquals(1, MyOrdinaryDestroyed.destroyedCount());
+    }
 
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+    // method exists to ensure object reference created here is discarded for GC
+    private void testJavaCreationCppOwnership_internal(MyOrdinaryDestroyed dontBeDeleted) {
+        // Garbage collection has now been disabled on d
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.callGetObjectCppOwnership(dontBeDeleted);
 
-        assertEquals(0, MyOrdinaryDestroyed.disposedCount);
+        accountingForNewObject(d);
+    }
+
+    @Test
+    public void testJavaCreationCppOwnership() {
+        reset();
+
+        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed(getIdNext());
+        accountingForNewObject(dontBeDeleted);
+
+        testJavaCreationCppOwnership_internal(dontBeDeleted);
+
+        gcAndWait(5000, (long)2500, 0, 0);		// Need to give it all the time
+
+        assertEquals(0, MyOrdinaryDestroyed.getDisposedCount());
         assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
+
+        // CHECKME: Can we undo that hold and test for release?
+    }
+
+    // method exists to ensure object reference created here is discarded for GC
+    private void testJavaCreationDefaultOwnershipThroughNative_internal(MyOrdinaryDestroyed dontBeDeleted) {
+        // Garbage collection has now been disabled on d
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.callGetObjectCppOwnership(dontBeDeleted);
+
+        // Set default ownership on d (should be "java")
+        MyOrdinaryDestroyed.setDefaultOwnership(d);
+
+        accountingForNewObject(d);
     }
 
     @Test
-    public void testJavaCreationDefaultOwnershipThroughNative()
-    {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+    public void testJavaCreationDefaultOwnershipThroughNative() {
+        reset();
 
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed(getIdNext());
+        accountingForNewObject(dontBeDeleted);
 
-        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed();
+        testJavaCreationDefaultOwnershipThroughNative_internal(dontBeDeleted);
 
-        {
-            // Garbage collection has now been disabled on d
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.callGetObjectCppOwnership(dontBeDeleted);
+        gcAndWait(5000, (long)250, 1, 1);
 
-            // Set default ownership on d (should be "java")
-            MyOrdinaryDestroyed.setDefaultOwnership(d);
-        }
-
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
-
-        assertEquals(1, MyOrdinaryDestroyed.disposedCount);
+        assertEquals(1, MyOrdinaryDestroyed.getDisposedCount());
         assertEquals(1, MyOrdinaryDestroyed.destroyedCount());
     }
 
+    // method exists to ensure object reference created here is discarded for GC
+    private void testJavaCreationDefaultOwnershipThroughShell_internal(MyOrdinaryDestroyed dontBeDeleted) {
+        // Garbage collection has now been disabled on d
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.callGetObjectCppOwnership(dontBeDeleted);
+
+        // Set default ownership on d (should be "java")
+        MyOrdinaryDestroyed.callSetDefaultOwnership(dontBeDeleted, d);
+
+        accountingForNewObject(d);
+    }
+
     @Test
-    public void testJavaCreationDefaultOwnershipThroughShell()
-    {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+    public void testJavaCreationDefaultOwnershipThroughShell() {
+        reset();
 
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed(getIdNext());
+        accountingForNewObject(dontBeDeleted);
 
-        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed();
+        testJavaCreationDefaultOwnershipThroughShell_internal(dontBeDeleted);
 
-        {
-            // Garbage collection has now been disabled on d
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.callGetObjectCppOwnership(dontBeDeleted);
+        gcAndWait(5000, (long)250, 1, 1);
 
-            // Set default ownership on d (should be "java")
-            MyOrdinaryDestroyed.callSetDefaultOwnership(dontBeDeleted, d);
-        }
-
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
-
-        assertEquals(1, MyOrdinaryDestroyed.disposedCount);
+        assertEquals(1, MyOrdinaryDestroyed.getDisposedCount());
         assertEquals(1, MyOrdinaryDestroyed.destroyedCount());
+    }
+
+    // method exists to ensure object reference created here is discarded for GC
+    private void testCppCreationSplitOwnership_internal() {
+        // Split ownership: Java object should be collected, but the c++ object should not be baleeted
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectSplitOwnership();
+
+        accountingForNewObject(d);
     }
 
     @Test
     public void testCppCreationSplitOwnership() {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        reset();
 
-        {
-            // Split ownership: Java object should be collected, but the c++ object should not be baleeted
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectSplitOwnership();
-        }
+        testCppCreationSplitOwnership_internal();
 
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+        gcAndWait(5000, (long)500, 1, 0);	// Need to give it time for destroy
 
-        assertEquals(1, MyOrdinaryDestroyed.disposedCount);
+        assertEquals(1, MyOrdinaryDestroyed.getDisposedCount());
         assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
+
+        // FIXME: Undo what we did above and ensure it does actually go then
+    }
+
+    // method exists to ensure object reference created here is discarded for GC
+    private void testCppCreationCppOwnership_internal() {
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectCppOwnership();
+
+        accountingForNewObject(d);
     }
 
     @Test
     public void testCppCreationCppOwnership() {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        reset();
 
-        {
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectCppOwnership();
-        }
+        testCppCreationCppOwnership_internal();
 
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+        gcAndWait(5000, (long)2500, 0, 0);		// Need to give it all the time
 
-        assertEquals(0, MyOrdinaryDestroyed.disposedCount);
+        assertEquals(0, MyOrdinaryDestroyed.getDisposedCount());
         assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
+
+        // FIXME: Undo what we did above and ensure it does actually go then
+    }
+
+    // method exists to ensure object reference created here is discarded for GC
+    private void testCppCreationJavaOwnership_internal() {
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectJavaOwnership();
+
+        accountingForNewObject(d);
     }
 
     @Test
     public void testCppCreationJavaOwnership() {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        reset();
 
-        {
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectJavaOwnership();
-        }
+        testCppCreationJavaOwnership_internal();
 
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+        gcAndWait(5000, (long)250, 1, 1);
 
-        assertEquals(1, MyOrdinaryDestroyed.disposedCount);
+        assertEquals(1, MyOrdinaryDestroyed.getDisposedCount());
         assertEquals(1, MyOrdinaryDestroyed.destroyedCount());
     }
 
-    @Test
-    public void testCppCreationDefaultOwnershipThroughShell()
-    {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+    // method exists to ensure object reference created here is discarded for GC
+    private void testCppCreationDefaultOwnershipThroughShell_internal(MyOrdinaryDestroyed dontBeDeleted) {
+        // Garbage collection has now been disabled on d
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectCppOwnership();
 
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        // Set default ownership on d (should be "split")
+        MyOrdinaryDestroyed.callSetDefaultOwnership(dontBeDeleted, d);
 
-        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed();
-
-        {
-            // Garbage collection has now been disabled on d
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectCppOwnership();
-
-            // Set default ownership on d (should be "split")
-            MyOrdinaryDestroyed.callSetDefaultOwnership(dontBeDeleted, d);
-        }
-
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
-
-        assertEquals(1, MyOrdinaryDestroyed.disposedCount);
-        assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
+        accountingForNewObject(d);
     }
 
     @Test
-    public void testCppCreationDefaultOwnershipThroughNative()
-    {
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
+    public void testCppCreationDefaultOwnershipThroughShell() {
+        reset();
 
-        MyOrdinaryDestroyed.disposedCount = 0;
-        MyOrdinaryDestroyed.setDestroyedCount(0);
+        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed(getIdNext());
+        accountingForNewObject(dontBeDeleted);
 
-        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed();
+        testCppCreationDefaultOwnershipThroughShell_internal(dontBeDeleted);
 
-        {
-            // Garbage collection has now been disabled on d
-            OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectCppOwnership();
+        gcAndWait(5000, (long)500, 1, 0);	// Need to give it time for destroy
 
-            // Set default ownership on d (should be "split")
-            MyOrdinaryDestroyed.setDefaultOwnership(d);
-        }
-
-        for (int i=0; i<10; ++i) {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-                // exceptions are an idiotic concept
-            }
-            System.gc();
-        }
-
-        assertEquals(1, MyOrdinaryDestroyed.disposedCount);
+        assertEquals(1, MyOrdinaryDestroyed.getDisposedCount());
         assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
 
-        if (MyOrdinaryDestroyed.disposedCount > 1) // PS. Expression never true here.
+        // FIXME: Undo what we did above and ensure it does actually go then
+    }
+
+    // method exists to ensure object reference created here is discarded for GC
+    private void testCppCreationDefaultOwnershipThroughNative_internal(MyOrdinaryDestroyed dontBeDeleted) {
+        // Garbage collection has now been disabled on d
+        OrdinaryDestroyed d = MyOrdinaryDestroyed.getObjectCppOwnership();
+
+        // Set default ownership on d (should be "split")
+        MyOrdinaryDestroyed.setDefaultOwnership(d);
+
+        accountingForNewObject(d);
+    }
+
+    @Test
+    public void testCppCreationDefaultOwnershipThroughNative() {
+        reset();
+
+        MyOrdinaryDestroyed dontBeDeleted = new MyOrdinaryDestroyed(getIdNext());
+        accountingForNewObject(dontBeDeleted);
+
+        testCppCreationDefaultOwnershipThroughNative_internal(dontBeDeleted);
+
+        gcAndWait(5000, (long)500, 1, 0);	// Need to give it time for destory
+
+        assertEquals(1, MyOrdinaryDestroyed.getDisposedCount());
+        assertEquals(0, MyOrdinaryDestroyed.destroyedCount());
+
+        if(MyOrdinaryDestroyed.getDisposedCount() > 1) {    // PS. Expression never true here.
             System.err.println("Avoid reordering of code which may cause dontBeDeleted to be deleted: "
-                                + dontBeDeleted);                    
+                                + dontBeDeleted);
+        }
     }
 
     public static void main(String args[]) {

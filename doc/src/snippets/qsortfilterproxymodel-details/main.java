@@ -57,7 +57,7 @@ public static void main(String args[])
     QApplication.initialize(args);
     Widget widget = new Widget(null);
     widget.show();
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

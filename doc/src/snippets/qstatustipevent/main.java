@@ -38,6 +38,6 @@ public class main extends QMainWindow
         MainWindow main = new main();
         main.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

@@ -169,7 +169,7 @@ public class AnalogClock
 
         w.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }
 //! [11]

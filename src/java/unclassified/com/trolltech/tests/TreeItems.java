@@ -104,6 +104,6 @@ public class TreeItems {
 
         view.setModel(setupModel());
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 }

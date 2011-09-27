@@ -44,11 +44,14 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.PropertyHelper;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
@@ -63,41 +66,85 @@ public class GeneratorTask extends Task {
     private String dir = ".";
     private String phononpath = "";
     private String kdephonon = "";
-    private String options = null;
-    private String qtIncludeDirectory = null;
-    private String qtLibDirectory = null;
-    private String jambiDirectory = null;
-    private String includePaths = null;
+    private String options;
+    private String qtIncludeDirectory;
+    private String qtLibDirectory;
+    private String jambiDirectory;
+    private String generatorDirectory;
+    private String generatorExe;
+    private String includePaths;
     private boolean debugTools = false;
     private List<String> commandList = new ArrayList<String>();
 
-    private String searchPath() {
-        String s = File.separator;
-        String prefix = "";
+    private List<String> searchPath() {
+        List<String> pathList = new ArrayList<String>();
+
+        if(generatorDirectory != null) {
+            File dirGeneratorDirectory = new File(generatorDirectory);
+            if(dirGeneratorDirectory.isDirectory()) {
+                pathList.add(dirGeneratorDirectory.getAbsolutePath());
+
+                File dirRelease = new File(generatorDirectory, "release");
+                if(dirRelease.isDirectory())
+                    pathList.add(dirRelease.getAbsolutePath());
+
+                File dirDebug = new File(generatorDirectory, "debug");
+                if(dirDebug.isDirectory())
+                    pathList.add(dirDebug.getAbsolutePath());
+            }
+        }
+
         if(jambiDirectory != null) {
-            prefix = jambiDirectory + s;
+            File dirJambiDirectory = new File(jambiDirectory);
+            if(dirJambiDirectory.isDirectory()) {
+                // FIXME: This is really build/qmake-qtjambi
+                File dirGeneratorDirectory = new File(jambiDirectory, "generator");
+                if(dirGeneratorDirectory.isDirectory()) {
+                    pathList.add(dirGeneratorDirectory.getAbsolutePath());
+
+                    File dirRelease = new File(jambiDirectory, "release");
+                    if(dirRelease.isDirectory())
+                        pathList.add(dirRelease.getAbsolutePath());
+
+                    File dirDebug = new File(jambiDirectory, "debug");
+                    if(dirDebug.isDirectory())
+                        pathList.add(dirDebug.getAbsolutePath());
+                }
+            }
         }
-        switch(OSInfo.os()) {
-        case Windows:
-            return prefix + "generator\\release;generator\\debug";
-        default:
-            return prefix + "." + s + "generator";
-        }
+
+        return pathList;
     }
 
     private String generatorExecutable() {
+        if(generatorExe != null) {
+            File fileExe = new File(generatorExe);
+            if(fileExe.isFile() /*&& fileExe.isExecutable()*/)
+                return fileExe.getAbsolutePath();
+            if(OSInfo.os() == OSInfo.OS.Windows) {
+                fileExe = new File(generatorExe + ".exe");
+                if(fileExe.isFile() /*&& fileExe.isExecutable()*/)
+                    return fileExe.getAbsolutePath();
+            }
+        }
+
+        String exe;
         switch(OSInfo.os()) {
         case Windows:
-            return "\"" + Util.LOCATE_EXEC("generator.exe",
-                    searchPath(), null).getAbsolutePath() + "\"";
+            exe = "generator.exe";
         default:
-            return Util.LOCATE_EXEC("generator",
-                    searchPath(), null).getAbsolutePath();
+            exe = "generator";
         }
+
+        return Util.LOCATE_EXEC(exe, searchPath(), null).getAbsolutePath();
     }
 
-    public void setOptions(String options) { this.options = options; }
-    public String getOptions() { return options; }
+    public void setOptions(String options) {
+        this.options = options;
+    }
+    public String getOptions() {
+        return options;
+    }
 
     private void parseArgumentFiles(List<String> commandList) {
         File typesystemFile = Util.makeCanonical(typesystem);
@@ -175,6 +222,39 @@ public class GeneratorTask extends Task {
         if(debugTools)
             commandList.add("--qtjambi-debug-tools");
 
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+        Object o;
+
+        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE1);
+        if(o != null) {
+            if(o instanceof String[]) {
+                String[] sA = (String[]) o;
+                commandList.add("--preproc-stage1");
+                for(String s : sA)
+                    commandList.add(s);
+            } else {
+                StringTokenizer st = new StringTokenizer(o.toString(), ",");
+                commandList.add("--preproc-stage1");
+                while(st.hasMoreTokens())
+                    commandList.add(st.nextToken());
+            }
+        }
+
+        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE2);
+        if(o != null) {
+            if(o instanceof String[]) {
+                String[] sA = (String[]) o;
+                commandList.add("--preproc-stage2");
+                for(String s : sA)
+                    commandList.add(s);
+            } else {
+                StringTokenizer st = new StringTokenizer(o.toString(), ",");
+                commandList.add("--preproc-stage2");
+                while(st.hasMoreTokens())
+                    commandList.add(st.nextToken());
+            }
+        }
+
         parseArgumentFiles(commandList);
 
         return true;
@@ -193,12 +273,7 @@ public class GeneratorTask extends Task {
         System.out.println(thisCommandList.toString());
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
-        String msyssupportStr = (String) props.getProperty((String) null, InitializeTask.MSYSBUILD);
-        boolean msyssupport = false;
-        if("true".equals(msyssupportStr)) {
-            msyssupport = true;
-        }
-        Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory, msyssupport);
+        Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory);
     }
 
     public void setHeader(String header) {
@@ -224,8 +299,12 @@ public class GeneratorTask extends Task {
         this.includePaths = x;
     }
 
-    public void setJambidirectory(String dir) {
-        this.jambiDirectory = dir;
+    public void setJambiDirectory(String jambiDirectory) {
+        this.jambiDirectory = jambiDirectory;
+    }
+
+    public void setGeneratorDirectory(String generatorDirectory) {
+        this.generatorDirectory = generatorDirectory;
     }
 
     public void setQtIncludeDirectory(String dir) {
@@ -261,6 +340,10 @@ public class GeneratorTask extends Task {
 
     public void setDir(String dir) {
         this.dir = dir;
+    }
+
+    public void setGeneratorExe(String generatorExe) {
+        this.generatorExe = generatorExe;
     }
 
     /*

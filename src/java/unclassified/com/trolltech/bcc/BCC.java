@@ -852,7 +852,7 @@ public class BCC extends QWidget {
         BCC bcc = new BCC();
         bcc.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }

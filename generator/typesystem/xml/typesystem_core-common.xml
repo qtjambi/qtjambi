@@ -1129,8 +1129,9 @@
     <object-type name="QAbstractFileEngine">
         <extra-includes>
         <include file-name="QDateTime" location="global"/>
+        <include file-name="QStringList" location="global"/>
         </extra-includes>
-        <modify-function signature="beginEntryList(QDir::Filters,const QStringList &amp;)">
+        <modify-function signature="beginEntryList(QFlags&lt;QDir::Filter&gt;,const QStringList&lt;QString&gt;)">
             <modify-argument index="return">
                 <!-- This is a factory method, caller owns the object returned (and might be a Java or a Cpp user) -->
                 <define-ownership owner="cplusplus" class="shell"/>

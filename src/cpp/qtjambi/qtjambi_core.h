@@ -649,6 +649,13 @@ QTJAMBI_EXPORT QVarLengthArray<jvalue> qtjambi_from_jobjectArray(JNIEnv *env, jo
 
 QTJAMBI_EXPORT int qtjambi_vm_shutdown_get();
 QTJAMBI_EXPORT void qtjambi_vm_shutdown_set(int new_value);
+QTJAMBI_EXPORT void qtjambi_shutdown();
+
+/* qtjambilink.cpp */
+QTJAMBI_EXPORT int qtjambi_object_cache_mode_get();
+QTJAMBI_EXPORT void qtjambi_object_cache_mode_set(int object_cache_mode);
+QTJAMBI_EXPORT int qtjambi_object_cache_operation_flush();
+QTJAMBI_EXPORT int qtjambi_object_cache_operation_count();
 
 
 #endif // QTJAMBI_CORE_H

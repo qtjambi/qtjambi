@@ -22,7 +22,7 @@ public static void main(String args[])
     painter.end();
     image.save("spheres.png", "PNG", 9);
 
-    QApplication.exec();
+    QApplication.execStatic();
 }
 
 }

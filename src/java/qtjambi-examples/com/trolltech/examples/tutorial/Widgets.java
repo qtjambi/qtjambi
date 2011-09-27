@@ -74,7 +74,7 @@ public class Widgets extends QWidget
         Widgets widget = new Widgets();
         widget.show();
 
-        QApplication.exec();
+        QApplication.execStatic();
     }
 //! [5]
 }

@@ -57,7 +57,7 @@ public class main
         view.load(new QUrl("http://www.trolltech.com/"));
         view.show();
 //! [Using QWebView]
-        QApplication.exec();
+        QApplication.execStatic();
     }
 
 }
