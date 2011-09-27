@@ -81,8 +81,8 @@ public class InitializeTask extends Task {
     private int qtPatchlevelVersion;
     private String qtVersionSource = "";
 
-    private String pathVersionProperties		= "version.properties";
-    private String pathVersionPropertiesTemplate	= "version.properties.template";
+    private String pathVersionProperties            = "version.properties";
+    private String pathVersionPropertiesTemplate    = "version.properties.template";
 
     private String[] generatorPreProcStageOneA;
     private String[] generatorPreProcStageTwoA;
@@ -123,15 +123,15 @@ public class InitializeTask extends Task {
     public static final String CLUCENE            = "qtjambi.clucene";
     public static final String COMPILER           = "qtjambi.compiler";
     public static final String CONFIGURATION      = "qtjambi.configuration";
-    public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x
+    public static final String CORE               = "qtjambi.core"; // mandatory with <= 4.7.x
     public static final String DBUS               = "qtjambi.dbus";
     public static final String DECLARATIVE        = "qtjambi.declarative";
     public static final String DESIGNER           = "qtjambi.designer";
     public static final String DESIGNERCOMPONENTS = "qtjambi.designercomponents";
-    public static final String GUI                = "qtjambi.gui";		// mandatory with <= 4.7.x
+    public static final String GUI                = "qtjambi.gui"; // mandatory with <= 4.7.x
     public static final String HELP               = "qtjambi.help";
     public static final String MULTIMEDIA         = "qtjambi.multimedia";
-    public static final String NETWORK            = "qtjambi.network";		// mandatory with <= 4.7.x
+    public static final String NETWORK            = "qtjambi.network"; // mandatory with <= 4.7.x
     public static final String OPENGL             = "qtjambi.opengl";
     public static final String OSNAME             = "qtjambi.osname";
     public static final String PHONON             = "qtjambi.phonon";
@@ -145,7 +145,7 @@ public class InitializeTask extends Task {
     public static final String SVG                = "qtjambi.svg";
     public static final String TEST               = "qtjambi.test";
     public static final String WEBKIT             = "qtjambi.webkit";
-    public static final String XML                = "qtjambi.xml";		// mandatory with <= 4.7.x
+    public static final String XML                = "qtjambi.xml"; // mandatory with <= 4.7.x
     public static final String XMLPATTERNS        = "qtjambi.xmlpatterns";
     public static final String QTCONFIG           = "qtjambi.qtconfig";
 
@@ -174,15 +174,15 @@ public class InitializeTask extends Task {
     public static final String PLUGINS_SQLDRIVERS_SQLPSQL   = "qtjambi.plugins.sqldrivers.sqlpsql";
     public static final String PLUGINS_SQLDRIVERS_SQLTDS    = "qtjambi.plugins.sqldrivers.sqltds";
 
-    public static final String PACKAGING_DSO_LIBSTDC___6     = "qtjambi.packaging.dso.libstdc++-6";	// Windows MinGW runtime pre-req
-    public static final String PACKAGING_DSO_LIBGCC_S_DW2_1  = "qtjambi.packaging.dso.libgcc_s_dw2-1";	// Windows MinGW runtime pre-req
-    public static final String PACKAGING_DSO_LIBGCC_S_SJLJ_1 = "qtjambi.packaging.dso.libgcc_s_sjlj-1";	// Windows MinGW-W64 runtime pre-req
-    public static final String PACKAGING_DSO_MINGWM10        = "qtjambi.packaging.dso.mingwm10";	// Windows older MinGW runtime pre-req
+    public static final String PACKAGING_DSO_LIBSTDC___6     = "qtjambi.packaging.dso.libstdc++-6";     // Windows MinGW runtime pre-req
+    public static final String PACKAGING_DSO_LIBGCC_S_DW2_1  = "qtjambi.packaging.dso.libgcc_s_dw2-1";  // Windows MinGW runtime pre-req
+    public static final String PACKAGING_DSO_LIBGCC_S_SJLJ_1 = "qtjambi.packaging.dso.libgcc_s_sjlj-1"; // Windows MinGW-W64 runtime pre-req
+    public static final String PACKAGING_DSO_MINGWM10        = "qtjambi.packaging.dso.mingwm10";        // Windows older MinGW runtime pre-req
 
-    public static final String PACKAGING_DSO_ZLIB1    = "qtjambi.packaging.dso.zlib1";		// Windows
-    public static final String PACKAGING_DSO_LIBSSL32 = "qtjambi.packaging.dso.libssl32";	// Windows MinGW
-    public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";	// Windows MSVC
-    public static final String PACKAGING_DSO_LIBEAY32 = "qtjambi.packaging.dso.libeay32";	// Windows
+    public static final String PACKAGING_DSO_ZLIB1    = "qtjambi.packaging.dso.zlib1";      // Windows
+    public static final String PACKAGING_DSO_LIBSSL32 = "qtjambi.packaging.dso.libssl32";   // Windows MinGW
+    public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";   // Windows MSVC
+    public static final String PACKAGING_DSO_LIBEAY32 = "qtjambi.packaging.dso.libeay32";   // Windows
 
     public static final String PACKAGING_DSO_CPLUSPLUSRUNTIME = "qtjambi.packaging.dso.cplusplusruntime";
 
@@ -207,7 +207,8 @@ public class InitializeTask extends Task {
     }
 
     public void execute() throws BuildException {
-        if(alreadyRun)	// we should only run this once per ANT invocation
+        // we should only run this once per ANT invocation
+        if(alreadyRun)
             return;
 
         propertyHelper = PropertyHelper.getPropertyHelper(getProject());
@@ -262,7 +263,7 @@ public class InitializeTask extends Task {
         if(verbose)
             System.out.println(QT_VERSION + " is " + s + qtVersionSource);
         propertyHelper.setNewProperty((String) null, QT_VERSION, s);
-        propertyHelper.setNewProperty((String) null, VERSION, s);	// this won't overwrite existing value
+        propertyHelper.setNewProperty((String) null, VERSION, s); // this won't overwrite existing value
 
         s = String.valueOf(qtMajorVersion);
         if(verbose)
@@ -371,26 +372,26 @@ public class InitializeTask extends Task {
         // These are only detecting if the plugins exist for these modules,
         // lack of a plugin does not necessarily mean Qt doesn't have support
         // since the implementation might be statically linked in.
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_GIF, decidePluginsImageformatsGif());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_GIF,  decidePluginsImageformatsGif());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_ICO, decidePluginsImageformatsIco());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_ICO,  decidePluginsImageformatsIco());
 
         propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_JPEG, decidePluginsImageformatsJpeg());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_MNG, decidePluginsImageformatsMng());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_MNG,  decidePluginsImageformatsMng());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_PNG, decidePluginsImageformatsPng());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_PNG,  decidePluginsImageformatsPng());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_SVG, decidePluginsImageformatsSvg());
+        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_SVG,  decidePluginsImageformatsSvg());
 
         propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE, decidePluginsSqldriversSqlite());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE2, decidePluginsSqldriversSqlite2());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLMYSQL, decidePluginsSqldriversSqlmysql());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLODBC, decidePluginsSqldriversSqlodbc());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLPSQL, decidePluginsSqldriversSqlpsql());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLTDS, decidePluginsSqldriversSqltds());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE,     decidePluginsSqldriversSqlite());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE2,    decidePluginsSqldriversSqlite2());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLMYSQL,   decidePluginsSqldriversSqlmysql());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLODBC,    decidePluginsSqldriversSqlodbc());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLPSQL,    decidePluginsSqldriversSqlpsql());
+        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLTDS,     decidePluginsSqldriversSqltds());
 
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
@@ -408,8 +409,10 @@ public class InitializeTask extends Task {
     private boolean parseQtVersion(String versionString) {
         if(versionString == null)
             return false;
+
         // Remove leading, remove trailing whitespace
         versionString = Util.stripLeadingAndTrailingWhitespace(versionString);
+
         {
             // Check for valid character set "[0-9\.]+"
             final int len = versionString.length();
@@ -420,13 +423,16 @@ public class InitializeTask extends Task {
                 return false;
             }
         }
+
         // Check for non-empty
         final int len = versionString.length();
         if(len == 0)
             return false;
+
         // Check for [0-9\.] and no double dots, no leading/trailing dots.
         if(versionString.charAt(0) == '.' || versionString.charAt(len - 1) == '.')
             return false;
+
         if(versionString.indexOf("..") >= 0)
             return false;
 
@@ -550,7 +556,7 @@ public class InitializeTask extends Task {
 
         // This is last method as it is the target we are trying to set and also
         // debatable if it should be here at all.  Maybe the only use is with maybe
-        // supporting really older Qt which does now allow: qmake -query
+        // supporting really older Qt which does not allow: qmake -query
         if(!versionFound) {
             tmpQtVersion = (String) propertyHelper.getProperty(VERSION);
             if(parseQtVersion(tmpQtVersion)) {
@@ -571,19 +577,21 @@ public class InitializeTask extends Task {
             return false;
 
         if(OSInfo.isWindows()) {
-            // 
+
             if(Compiler.is64Only(compilerString))
                 generatorPreProcStageOneList.add("-DWIN64");
             generatorPreProcStageOneList.add("-DWIN32");	// always set this
 
-            if(Compiler.isCompiler(compilerString, Compiler.MSVC2005, Compiler.MSVC2005_64))
+            if(Compiler.isCompiler(compilerString, Compiler.MSVC2005, Compiler.MSVC2005_64)) {
                 generatorPreProcStageOneList.add("-D_MSC_VER=1400");
-            else if(Compiler.isCompiler(compilerString, Compiler.MSVC2008, Compiler.MSVC2008_64))
+            } else if(Compiler.isCompiler(compilerString, Compiler.MSVC2008, Compiler.MSVC2008_64)) {
                 generatorPreProcStageOneList.add("-D_MSC_VER=1500");
-            else if(Compiler.isCompiler(compilerString, Compiler.MSVC2010, Compiler.MSVC2010_64))
+            } else if(Compiler.isCompiler(compilerString, Compiler.MSVC2010, Compiler.MSVC2010_64)) {
                 generatorPreProcStageOneList.add("-D_MSC_VER=1600");
-            else if(Compiler.isCompiler(compilerString, Compiler.GCC, Compiler.OldGCC, Compiler.MinGW, Compiler.MinGW_W64))
+            } else if(Compiler.isCompiler(compilerString, Compiler.GCC, Compiler.OldGCC, Compiler.MinGW, Compiler.MinGW_W64)) {
                 generatorPreProcStageOneList.add("-D__GNUC__");
+            }
+
         } else if(OSInfo.isLinux()) {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-D__linux__");
@@ -603,14 +611,18 @@ public class InitializeTask extends Task {
             generatorPreProcStageOneList.add("-Dsun");
         }
 
-        if(generatorPreProcStageOneList.size() > 0)
+        if(generatorPreProcStageOneList.size() > 0) {
             generatorPreProcStageOneA = generatorPreProcStageOneList.toArray(new String[generatorPreProcStageOneList.size()]);
-        else
+        } else {
             generatorPreProcStageOneA = null;
-        if(generatorPreProcStageTwoList.size() > 0)
+        }
+
+        if(generatorPreProcStageTwoList.size() > 0) {
             generatorPreProcStageTwoA = generatorPreProcStageTwoList.toArray(new String[generatorPreProcStageTwoList.size()]);
-        else
+        } else {
             generatorPreProcStageTwoA = null;
+        }
+
         return true;
     }
 
@@ -621,8 +633,8 @@ public class InitializeTask extends Task {
         if(s == null)
             s = System.getenv("JAVA_HOME");
         String result = s;
-        propertyHelper.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);    // does this work?
-        propertyHelper.setProperty("env", "JAVA_HOME_TARGET", result, false);    // does this work?
+        propertyHelper.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);    //TODO: does this work?
+        propertyHelper.setProperty("env", "JAVA_HOME_TARGET", result, false);    //TODO: does this work?
         if(verbose) System.out.println(JAVA_HOME_TARGET + ": " + result);
         return result;
     }
@@ -630,14 +642,19 @@ public class InitializeTask extends Task {
     private String decideJavaOsarchTarget() {
         String method = "";
         String s = (String) propertyHelper.getProperty((String) null, JAVA_OSARCH_TARGET);
-        if(s == null)
+
+        if(s == null) {
             s = System.getenv("JAVA_OSARCH_TARGET");
+        }
+
         if(s == null) {    // auto-detect using what we find
+
             // This is based on a token observation that the include direcory
             //  only had one sub-directory (this is needed for jni_md.h).
             File includeDir = new File((String)propertyHelper.getProperty((String) null, JAVA_HOME_TARGET), "include");
             File found = null;
             int foundCount = 0;
+
             if(includeDir.exists()) {
                 File[] listFiles = includeDir.listFiles();
                 for(File f : listFiles) {
@@ -647,11 +664,13 @@ public class InitializeTask extends Task {
                     }
                 }
             }
+
             if(foundCount == 1) {
                 s = found.getName();
                 method = " (auto-detected)";
             }
         }
+
         String result = s;
         if(verbose) System.out.println(JAVA_OSARCH_TARGET + ": " + result + method);
         return result;
@@ -659,7 +678,8 @@ public class InitializeTask extends Task {
 
     /**
      * Decides whether to use debug or release configuration
-     * @return
+     *
+     * @return string "debug" or "release" according config resolution
      */
     private String decideConfiguration() {
         String result = null;
@@ -686,10 +706,13 @@ public class InitializeTask extends Task {
 
     private boolean doesQtLibExist(String name, String librarydir) {
         StringBuilder path = new StringBuilder();
-        if(librarydir != null)
+
+        if(librarydir != null) {
             path.append(librarydir);
-        else
+        } else {
             path.append(propertyHelper.getProperty((String) null, LIBDIR).toString());
+        }
+
         path.append("/");
         path.append(LibraryEntry.formatQtJambiName(name, debug));
         //System.out.println("Checking QtLib: " + path);
@@ -698,10 +721,13 @@ public class InitializeTask extends Task {
 
     private boolean doesQtBinExist(String name, String librarydir) {
         StringBuilder path = new StringBuilder();
-        if(librarydir != null)
+
+        if(librarydir != null) {
             path.append(librarydir);
-        else
+        } else {
             path.append(propertyHelper.getProperty((String) null, BINDIR).toString());
+        }
+
         path.append("/");
         path.append(LibraryEntry.formatQtJambiName(name, false));
         //System.out.println("Checking QtBin: " + path);
@@ -714,6 +740,7 @@ public class InitializeTask extends Task {
         path.append("/plugins/");
         path.append(subdir);
         path.append("/");
+
         //! TODO: useful?
         path.append(LibraryEntry.formatPluginName(name, false, debug, qtMajorVersion));
         return new File(path.toString()).exists();
@@ -781,17 +808,20 @@ public class InitializeTask extends Task {
     private void addToQtConfig(String config) {
         String oldConfig = (String) propertyHelper.getProperty((String) null, QTCONFIG);
         String newConfig = null;
+
         if(oldConfig != null) {
             final char delimChar = ' ';
             // Check it doesn't already exist (and don't add it again), this
             //  happens when InitializeTask runs twice due to multiple ant
             //  targets being set.
             boolean found = findInString(oldConfig, config, delimChar);
-            if(!found)
+            if(!found) {
                 newConfig = oldConfig + delimChar + config;
+            }
         } else {
             newConfig = config;
         }
+
         if(newConfig != null)
             propertyHelper.setProperty((String) null, QTCONFIG, newConfig, false);
     }
