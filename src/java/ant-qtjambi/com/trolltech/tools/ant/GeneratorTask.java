@@ -10,7 +10,7 @@
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -18,12 +18,12 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
+**
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
@@ -31,7 +31,7 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
 ** $END_LICENSE$
@@ -56,6 +56,7 @@ import java.util.StringTokenizer;
 import com.trolltech.qt.osinfo.OSInfo;
 
 public class GeneratorTask extends Task {
+
     private String header = "";
     private String typesystem = "";
     private String inputDirectory;
@@ -73,7 +74,9 @@ public class GeneratorTask extends Task {
     private String generatorDirectory;
     private String generatorExe;
     private String includePaths;
+
     private boolean debugTools = false;
+
     private List<String> commandList = new ArrayList<String>();
 
     private List<String> searchPath() {
@@ -142,11 +145,13 @@ public class GeneratorTask extends Task {
     public void setOptions(String options) {
         this.options = options;
     }
+
     public String getOptions() {
         return options;
     }
 
     private void parseArgumentFiles(List<String> commandList) {
+
         File typesystemFile = Util.makeCanonical(typesystem);
         if(!typesystemFile.exists()) {
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
@@ -184,37 +189,10 @@ public class GeneratorTask extends Task {
             commandList.add("--qt-include-directory=" + qtIncludeDirectory);
         }
 
-        if(inputDirectory != null && !inputDirectory.equals("")){
-            File file = Util.makeCanonical(inputDirectory);
-            if(!file.exists()) {
-                throw new BuildException("Input directory '" + inputDirectory + "' does not exist.");
-            }
-            commandList.add("--input-directory=" + file.getAbsolutePath());
-        }
-
-        if(!outputDirectory.equals("")){
-            File file = Util.makeCanonical(outputDirectory);
-            if(!file.exists()) {
-                throw new BuildException("Output directory '" + outputDirectory + "' does not exist.");
-            }
-            commandList.add("--output-directory=" + file.getAbsolutePath());
-        }
-
-        if(cppOutputDirectory != null && !cppOutputDirectory.equals("")){
-            File file = Util.makeCanonical(cppOutputDirectory);
-            if(!file.exists()) {
-                throw new BuildException("CPP Output directory '" + cppOutputDirectory + "' does not exist.");
-            }
-            commandList.add("--cpp-output-directory=" + file.getAbsolutePath());
-        }
-
-        if(javaOutputDirectory != null && !javaOutputDirectory.equals("")){
-            File file = Util.makeCanonical(javaOutputDirectory);
-            if(!file.exists()) {
-                throw new BuildException("Java Output directory '" + javaOutputDirectory + "' does not exist.");
-            }
-            commandList.add("--java-output-directory=" + file.getAbsolutePath());
-        }
+        handleArgumentDirectory(outputDirectory, "--output-directory", "Output directory");
+        handleArgumentDirectory(cppOutputDirectory, "--cpp-output-directory", "CPP output directory");
+        handleArgumentDirectory(javaOutputDirectory, "--java-output-directory", "Java output directory");
+        handleArgumentDirectory(inputDirectory, "--input-directory", "input directory");
 
         if(outputPreprocessFile != null)
             commandList.add("--output-preprocess-file=" + outputPreprocessFile);
@@ -226,38 +204,54 @@ public class GeneratorTask extends Task {
         Object o;
 
         o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE1);
-        if(o != null) {
-            if(o instanceof String[]) {
-                String[] sA = (String[]) o;
-                commandList.add("--preproc-stage1");
-                for(String s : sA)
-                    commandList.add(s);
-            } else {
-                StringTokenizer st = new StringTokenizer(o.toString(), ",");
-                commandList.add("--preproc-stage1");
-                while(st.hasMoreTokens())
-                    commandList.add(st.nextToken());
-            }
-        }
+        handlePreprocArgument(o, "--preproc-stage1");
 
         o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE2);
-        if(o != null) {
-            if(o instanceof String[]) {
-                String[] sA = (String[]) o;
-                commandList.add("--preproc-stage2");
-                for(String s : sA)
-                    commandList.add(s);
-            } else {
-                StringTokenizer st = new StringTokenizer(o.toString(), ",");
-                commandList.add("--preproc-stage2");
-                while(st.hasMoreTokens())
-                    commandList.add(st.nextToken());
-            }
-        }
+        handlePreprocArgument(o, "--preproc-stage2");
 
         parseArgumentFiles(commandList);
 
         return true;
+    }
+
+
+    /**
+     * Helper for parseArguments().
+     *
+     * @see parseArguments()
+     */
+    private void handleArgumentDirectory(String directory, String argumentName, String name) {
+        if(directory == null || directory.equals("")) {
+            return;
+        }
+
+        File file = Util.makeCanonical(directory);
+        if(!file.exists()) {
+            throw new BuildException(name + " '" + javaOutputDirectory + "' does not exist.");
+        }
+
+        commandList.add(argumentName + "=" + file.getAbsolutePath());
+    }
+
+    /**
+     * Helper for parseArguments().
+     *
+     * @see parseArguments()
+     */
+    private void handlePreprocArgument(Object o, String argument) {
+        if(o != null) {
+            if(o instanceof String[]) {
+                String[] sA = (String[]) o;
+                commandList.add("--preproc-stage2");
+                for(String s : sA)
+                    commandList.add(s);
+            } else {
+                StringTokenizer st = new StringTokenizer(o.toString(), ",");
+                commandList.add("--preproc-stage2");
+                while(st.hasMoreTokens())
+                    commandList.add(st.nextToken());
+            }
+        }
     }
 
     //! TODO: remove when ant 1.7 is not anymore supported.
@@ -266,13 +260,14 @@ public class GeneratorTask extends Task {
     public void execute() throws BuildException {
 
         parseArguments();
+
         String generator = generatorExecutable();
+
         List<String> thisCommandList = new ArrayList<String>();
         thisCommandList.add(generator);
         thisCommandList.addAll(commandList);
-        System.out.println(thisCommandList.toString());
+        System.out.println("Arguments: " + thisCommandList.toString());
 
-        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory);
     }
 
@@ -311,7 +306,7 @@ public class GeneratorTask extends Task {
         this.qtIncludeDirectory = dir;
     }
 
-    /*
+    /**
      * Used for LD_LIBRARY_PATH assurance only.
      */
     public void setQtLibDirectory(String dir) {
@@ -346,7 +341,7 @@ public class GeneratorTask extends Task {
         this.generatorExe = generatorExe;
     }
 
-    /*
+    /**
      * Enable code generation with additional debugging output, this
      *  output may inhibit runtime performance.
      */
