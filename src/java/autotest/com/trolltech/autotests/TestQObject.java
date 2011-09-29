@@ -226,7 +226,7 @@ public class TestQObject extends QApplicationTest {
                 Utils.gc(gcMode, 3);
 //                System.runFinalization();
 
-                Reference<WeakReference> thisWr;
+                Reference<? extends DyingObject> thisWr;
                 while((thisWr = weakReferenceQueue.poll()) != null) {
                     Integer tmpId;
                     synchronized(DyingObject.class) {
@@ -234,7 +234,7 @@ public class TestQObject extends QApplicationTest {
                     }
                     Utils.println(5, " weakReferenceQueue.remove(): dequeued id=" + tmpId);
                 }
-                Reference<PhantomReference> thisPr;
+                Reference<? extends DyingObject> thisPr;
                 while((thisPr = phantomReferenceQueue.poll()) != null) {
                     Integer tmpId;
                     synchronized(DyingObject.class) {
@@ -293,8 +293,8 @@ public class TestQObject extends QApplicationTest {
         }
 
         // This should be WeakReference/SoftReference
-        private static ReferenceQueue weakReferenceQueue = new ReferenceQueue();
-        private static ReferenceQueue phantomReferenceQueue = new ReferenceQueue();
+        private static ReferenceQueue<DyingObject> weakReferenceQueue = new ReferenceQueue<DyingObject>();
+        private static ReferenceQueue<DyingObject> phantomReferenceQueue = new ReferenceQueue<DyingObject>();
         private static Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
         private static Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
         private static List<Integer> alive = new ArrayList<Integer>();

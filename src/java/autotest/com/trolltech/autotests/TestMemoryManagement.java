@@ -81,8 +81,8 @@ import com.trolltech.qt.internal.QtJambiDebugTools;
 // the method call in that interface via reflection.
 @Ignore("abstract and base Java class")
 public abstract class TestMemoryManagement {
-    private ReferenceQueue weakReferenceQueue = new ReferenceQueue();
-    private ReferenceQueue phantomReferenceQueue = new ReferenceQueue();
+    private ReferenceQueue<Object> weakReferenceQueue = new ReferenceQueue<Object>();
+    private ReferenceQueue<Object> phantomReferenceQueue = new ReferenceQueue<Object>();
     private Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
     private Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
     private List<Integer> alive = new ArrayList<Integer>();
@@ -553,7 +553,7 @@ Utils.println(15, "createInNativeDisableGCAndDeleteInNative() MARK3");
                 System.gc();
                 System.runFinalization();
 
-                Reference<WeakReference> thisWr;
+                Reference<? extends Object> thisWr;
                 while((thisWr = weakReferenceQueue.poll()) != null) {
                     Integer tmpId;
                     synchronized(TestMemoryManagement.class) {
@@ -561,7 +561,7 @@ Utils.println(15, "createInNativeDisableGCAndDeleteInNative() MARK3");
                     }
                     Utils.println(5, " weakReferenceQueue.remove(): dequeued id=" + tmpId);
                 }
-                Reference<PhantomReference> thisPr;
+                Reference<? extends Object> thisPr;
                 while((thisPr = phantomReferenceQueue.poll()) != null) {
                     Integer tmpId;
                     synchronized(TestMemoryManagement.class) {

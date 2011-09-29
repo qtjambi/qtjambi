@@ -107,8 +107,8 @@ class MyOrdinaryDestroyed extends OrdinaryDestroyed {
 }
 
 public class TestDestruction extends QApplicationTest {
-    private static ReferenceQueue weakReferenceQueue = new ReferenceQueue();
-    private static ReferenceQueue phantomReferenceQueue = new ReferenceQueue();
+    private static ReferenceQueue<Object> weakReferenceQueue = new ReferenceQueue<Object>();
+    private static ReferenceQueue<Object> phantomReferenceQueue = new ReferenceQueue<Object>();
     private static Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
     private static Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
     private static List<Integer> alive = new ArrayList<Integer>();
@@ -222,7 +222,7 @@ public class TestDestruction extends QApplicationTest {
                 System.gc();
                 System.runFinalization();
 
-                Reference<WeakReference> thisWr;
+                Reference<? extends Object> thisWr;
                 while((thisWr = weakReferenceQueue.poll()) != null) {
                     Integer tmpId;
                     synchronized(TestDestruction.class) {
@@ -230,7 +230,7 @@ public class TestDestruction extends QApplicationTest {
                     }
                     Utils.println(5, " weakReferenceQueue.remove(): dequeued id=" + tmpId);
                 }
-                Reference<PhantomReference> thisPr;
+                Reference<? extends Object> thisPr;
                 while((thisPr = phantomReferenceQueue.poll()) != null) {
                     Integer tmpId;
                     synchronized(TestDestruction.class) {
