@@ -35,63 +35,27 @@
                               outdir="${outputDir}/platform-output">
 
             <!-- Qt Libraries -->
-            <library name="QtCore"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtGui"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtXml"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtSql"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.sql}"/>
-            <library name="QtSvg"               type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.svg}"/>
-            <library name="QtNetwork"           type="qt"
-                    rootPath="${qtjambi.qt.libdir}"/>
-            <library name="QtHelp"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.help}"/>
-            <library name="QtScript"            type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.script}"/>
-            <library name="QtScriptTools"       type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.scripttools}"/>
-            <library name="QtMultimedia"        type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.multimedia}"/>
-            <library name="QtOpenGL"            type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.opengl}"/>
-            <library name="QtWebKit"            type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.webkit}"/>
-            <library name="QtXmlPatterns"       type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.xmlpatterns}"/>
-            <library name="QtDeclarative"       type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.declarative}"/>
-            <library name="QtDesigner"          type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.designer}"/>
-            <library name="QtDesignerComponents" type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.designercomponents}"/>
-            <library name="QtCLucene"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.clucene}"/>
-            <library name="QtDBus"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.dbus}"/>
-            <library name="QtTest"              type="qt"
-                    rootPath="${qtjambi.qt.libdir}"
-                    if="${qtjambi.test}"/>
+            <library name="QtCore"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtGui"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtXml"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtSql"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.sql}"/>
+            <library name="QtSvg"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.svg}"/>
+            <library name="QtNetwork"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"/>
+            <library name="QtHelp"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.help}"/>
+            <library name="QtScript"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.script}"/>
+            <library name="QtScriptTools"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.scripttools}"/>
+            <library name="QtMultimedia"         dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.multimedia}"/>
+            <library name="QtOpenGL"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.opengl}"/>
+            <library name="QtWebKit"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.webkit}"/>
+            <library name="QtXmlPatterns"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.xmlpatterns}"/>
+            <library name="QtDeclarative"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.declarative}"/>
+            <library name="QtDesigner"           dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.designer}"/>
+            <library name="QtDesignerComponents" dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.designercomponents}"/>
+            <library name="QtCLucene"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.clucene}"/>
+            <library name="QtDBus"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.dbus}"/>
+            <library name="QtTest"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     if="${qtjambi.test}"/>
+            <library name="phonon"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.phonon.libdir}" if="${qtjambi.phonon}"/>
 
-            <library name="phonon"              type="qt"
-                    rootPath="${qtjambi.phonon.libdir}"
-                    if="${qtjambi.phonon}"/>
             <library name="phonon_ds9"          type="plugin"
                     rootPath="${qtjambi.phonon.pluginsdir}"
                     subdir="plugins/phonon_backend"

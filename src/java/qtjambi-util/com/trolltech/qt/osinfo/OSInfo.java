@@ -86,6 +86,12 @@ public class OSInfo
     public static final String K_FREEBSD32 = "freebsd32";
     public static final String K_FREEBSD64 = "freebsd64";
 
+    public static final String K_SUNOS = "sunos";
+    public static final String K_WINDOWS = "windows";
+    public static final String K_LINUX = "linux";
+    public static final String K_FREEBSD = "freebsd";
+    public static final String K_MACOSX = "macosx";
+
     /**
      * Returns the operating system
      */

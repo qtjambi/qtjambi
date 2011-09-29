@@ -695,7 +695,7 @@ public class InitializeTask extends Task {
         StringBuilder path = new StringBuilder();
         path.append(librarydir);
         path.append("/");
-        path.append(LibraryEntry.formatQtName(name, debug, version));
+        path.append(LibraryEntry.formatQtName(name, debug, String.valueOf(version)));
         //System.out.println("Checking QtLib: " + path);
         return new File(path.toString()).exists();
     }
@@ -714,7 +714,7 @@ public class InitializeTask extends Task {
         }
 
         path.append("/");
-        path.append(LibraryEntry.formatQtJambiName(name, debug));
+        path.append(LibraryEntry.formatQtJambiName(name, debug, String.valueOf(qtMajorVersion)));
         //System.out.println("Checking QtLib: " + path);
         return new File(path.toString()).exists();
     }
@@ -729,7 +729,7 @@ public class InitializeTask extends Task {
         }
 
         path.append("/");
-        path.append(LibraryEntry.formatQtJambiName(name, false));
+        path.append(LibraryEntry.formatQtJambiName(name, false, null));  // unversioned
         //System.out.println("Checking QtBin: " + path);
         return new File(path.toString()).exists();
     }
@@ -742,7 +742,7 @@ public class InitializeTask extends Task {
         path.append("/");
 
         //! TODO: useful?
-        path.append(LibraryEntry.formatPluginName(name, false, debug, qtMajorVersion));
+        path.append(LibraryEntry.formatPluginName(name, false, debug, String.valueOf(qtMajorVersion)));
         return new File(path.toString()).exists();
     }
 

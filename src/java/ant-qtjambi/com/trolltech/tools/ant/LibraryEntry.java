@@ -54,7 +54,6 @@ import com.trolltech.qt.osinfo.OSInfo;
 public class LibraryEntry extends Task {
 
     public static final String TYPE_DEFAULT            = "user";
-    public static final int VERSION_DEFAULT            = 4;
 
     public static final String TYPE_DSO                = "dso";
     public static final String TYPE_PLUGIN             = "plugin";
@@ -80,23 +79,13 @@ public class LibraryEntry extends Task {
     public String output_directory        = "";
 
     private String type = TYPE_DEFAULT;
-    private int version = VERSION_DEFAULT;
-    private String versionString = String.valueOf(version);
     private String name;
     private File rootpath;
     private boolean kdephonon = false;
     private String subdir = SUBDIR_DEFAULT;
     private String load = LOAD_DEFAULT;
     private boolean included = true;
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-        this.versionString = String.valueOf(version);
-    }
+    private String dsoVersion;
 
     public boolean getKdephonon() {
         return kdephonon;
@@ -154,6 +143,13 @@ public class LibraryEntry extends Task {
         return included;
     }
 
+    public void setDsoVersion(String dsoVersion) {
+        this.dsoVersion = dsoVersion;
+    }
+    public String getDsoVersion() {
+        return dsoVersion;
+    }
+
     @Override
     public void execute() throws BuildException {
         if(name == null || name.length() == 0)
@@ -165,20 +161,20 @@ public class LibraryEntry extends Task {
 
         // Fix name
         if(type.equals(TYPE_PLUGIN)) {
-            name = formatPluginName(name, this.kdephonon, debug, version);
+            name = formatPluginName(name, this.kdephonon, debug, dsoVersion);
         } else if(type.equals(TYPE_QTJAMBI_PLUGIN)) {
             // this may have _debuglib in the filename (unlike normal qt plugins)
-            name = formatQtJambiName(name, debug);
-        } else if(type.equals(TYPE_QT)){
-            name = formatQtName(name, debug, version);
+            name = formatQtJambiName(name, debug, dsoVersion);
+        } else if(type.equals(TYPE_QT)) {
+            name = formatQtName(name, debug, dsoVersion);
             //qt libraries are stored in "lib"
             // "/" is needed in the end
             output_directory = "lib/";
         } else if(type.equals(TYPE_QTJAMBI)) {
-            name = formatQtJambiName(name, debug);
+            name = formatQtJambiName(name, debug, dsoVersion);
             output_directory = "lib/";
         } else if(type.equals(TYPE_DSO)) {
-            name = formatQtJambiName(name, debug);
+            name = formatQtJambiName(name, debug, null);
             output_directory = "lib/";
         } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
             name = formatUnversionedPluginName(name, debug);
@@ -196,8 +192,9 @@ public class LibraryEntry extends Task {
         return subdir + "/" + name;
     }
 
-    public static String formatPluginName(String name, boolean kdephonon, boolean debug, int version) {
-        String versionString = String.valueOf(version);
+    public static String formatPluginName(String name, boolean kdephonon, boolean debug, String versionString) {
+        if(versionString == null)
+            versionString = "";		// FIXME we expect to always have a version?
         if(debug) {
             switch(OSInfo.os()) {
             case Windows:
@@ -234,8 +231,7 @@ public class LibraryEntry extends Task {
         return library;
     }
 
-    public static String formatQtName(String name, boolean debug, int version) {
-        String versionString = String.valueOf(version);
+    public static String formatQtName(String name, boolean debug, String versionString) {
         if(debug) {
             switch(OSInfo.os()) {
             case Windows:
@@ -289,28 +285,35 @@ public class LibraryEntry extends Task {
         throw new BuildException("unhandled case...");
     }
 
-    public static String formatQtJambiName(String name, boolean debug) {
+    public static String formatQtJambiName(String name, boolean debug, String versionString) {
+        String tmpVersionString;
         if(debug)  {
             switch(OSInfo.os()) {
             case Windows:
-                return name + "_debuglib.dll";
+                tmpVersionString = (versionString != null) ? versionString : "";
+                return name + tmpVersionString + "_debuglib.dll";
             case MacOS:
-                return "lib" + name + "_debuglib.jnilib";
+                tmpVersionString = (versionString != null) ? "." + versionString : "";
+                return "lib" + name + tmpVersionString + "_debuglib.jnilib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                return "lib" + name + "_debuglib.so";
+                tmpVersionString = (versionString != null) ? "." + versionString : "";
+                return "lib" + name + "_debuglib.so" + tmpVersionString;
             }
         } else {
             switch(OSInfo.os()) {
             case Windows:
-                return name + ".dll";
+                tmpVersionString = (versionString != null) ? versionString : "";
+                return name + tmpVersionString + ".dll";
             case MacOS:
-                return "lib" + name + ".jnilib";
+                tmpVersionString = (versionString != null) ? "." + versionString : "";
+                return "lib" + name + tmpVersionString + ".jnilib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                return "lib" + name + ".so";
+                tmpVersionString = (versionString != null) ? "." + versionString : "";
+                return "lib" + name + ".so" + tmpVersionString;
             }
         }
         throw new BuildException("unhandled case...");
