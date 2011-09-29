@@ -1,7 +1,16 @@
 TARGET = com_trolltech_autotests_generated
 
-# Force debugging
-CONFIG += debug
+contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
+    # Qt was configued with both debug and release libs
+    CONFIG += debug_and_release
+} else {
+    contains(QT_CONFIG, debug) {
+        CONFIG += debug
+    }
+    contains(QT_CONFIG, release) {
+        CONFIG += release
+    }
+}
 
 include(../../../src/cpp/qtjambi/qtjambi_include.pri)
 include(./cpp/com_trolltech_autotests_generated/com_trolltech_autotests_generated.pri)
@@ -40,3 +49,4 @@ win32 {
 }
 
 QT += sql xml network
+CONFIG += warn_on
