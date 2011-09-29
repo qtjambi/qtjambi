@@ -81,7 +81,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initia
 }
 
 
-extern "C" Q_DECL_EXPORT jboolean JNICALL
+extern "C" Q_DECL_EXPORT jint JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QThreadManager_releaseNativeResources(JNIEnv *env, jclass))
 {
     return qtjambi_release_threads(env);

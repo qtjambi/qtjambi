@@ -371,7 +371,7 @@ bool qtjambi_adopt_current_thread(void **args);
 QTJAMBI_EXPORT QModelIndex qtjambi_to_QModelIndex(JNIEnv *env, jobject index);
 QTJAMBI_EXPORT jobject qtjambi_from_QModelIndex(JNIEnv *env, const QModelIndex &index);
 
-bool qtjambi_release_threads(JNIEnv *env);
+int qtjambi_release_threads(JNIEnv *env);
 
 QTJAMBI_EXPORT
 QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,

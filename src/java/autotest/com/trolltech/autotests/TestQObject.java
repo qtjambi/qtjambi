@@ -222,7 +222,7 @@ public class TestQObject extends QApplicationTest {
             int weakReferenceMapSize;
             int phantomReferenceMapSize;
             while(true) {
-//                QThreadManagerUtils.releaseNativeResources();
+//                Utils.releaseNativeResources();
                 Utils.gc(gcMode, 3);
 //                System.runFinalization();
 

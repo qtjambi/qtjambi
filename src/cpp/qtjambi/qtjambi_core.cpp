@@ -1242,7 +1242,7 @@ jobject qtjambi_from_thread(JNIEnv *, QThread *thread)
     return java_thread;
 }
 
-bool qtjambi_release_threads(JNIEnv *env)
+int qtjambi_release_threads(JNIEnv *env)
 {
     QWriteLocker locker(qtjambi_thread_table_lock());
     int releaseCount = 0;
@@ -1266,7 +1266,7 @@ bool qtjambi_release_threads(JNIEnv *env)
             ++it;
         }
     }
-    return releaseCount > 0;
+    return releaseCount;
 }
 
 bool qtjambi_adopt_current_thread(void **args)

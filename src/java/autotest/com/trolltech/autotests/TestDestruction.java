@@ -63,7 +63,6 @@ import java.util.Map;
 
 import com.trolltech.autotests.generated.OrdinaryDestroyed;
 
-import com.trolltech.qt.QThreadManagerUtils;
 import com.trolltech.qt.gui.QApplication;
 
 class MyOrdinaryDestroyed extends OrdinaryDestroyed {
@@ -124,11 +123,15 @@ public class TestDestruction extends QApplicationTest {
 
     @After
     public void tearDown() {
-        QThreadManagerUtils.releaseNativeResources();
+        QApplication.processEvents();
+        QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+
         System.gc();
         System.runFinalization();
-                           
-        QApplication.processEvents();
+        if(Utils.releaseNativeResources() > 0) {
+            System.gc();
+            System.runFinalization();
+        }
     }
 
     public static Integer getIdNext() {
@@ -215,7 +218,7 @@ public class TestDestruction extends QApplicationTest {
 ////                    QApplication.processEvents();
 //                }
 
-                QThreadManagerUtils.releaseNativeResources();
+                Utils.releaseNativeResources();
                 System.gc();
                 System.runFinalization();
 

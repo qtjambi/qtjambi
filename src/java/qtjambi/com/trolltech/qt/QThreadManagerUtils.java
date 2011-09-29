@@ -53,7 +53,7 @@ public class QThreadManagerUtils {
         return QThreadManager.setSkipIt(skipIt);
     }
 
-    public static boolean releaseNativeResources() {
+    public static int releaseNativeResources() {
         return QThreadManager.releaseNativeResources();
     }
 }

@@ -54,6 +54,7 @@ import com.trolltech.autotests.generated.CustomPaintEngine;
 import com.trolltech.autotests.generated.OtherCustomPaintEngine;
 
 import com.trolltech.qt.QNoNativeResourcesException;
+import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QPointF;
 import com.trolltech.qt.core.QRect;
@@ -77,6 +78,9 @@ public class TestQPaintEngine extends CustomPaintEngine {
 
     @AfterClass
     public static void testDispose() throws Exception {
+        Utils.println(2, "TestQPaintEngine.testDispose(): begin");
+        QApplication.processEvents();
+        QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
         QApplication.quit();
         System.err.flush();
         System.out.flush();
@@ -88,6 +92,9 @@ public class TestQPaintEngine extends CustomPaintEngine {
         } catch(QNoNativeResourcesException e) {
             Utils.println(3, "TestQPaintEngine.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage());
         }
+        app = null;		// kill hard-reference
+        Utils.println(3, "TestQPaintEngine.testDispose(): shutdown");
+        QApplication.shutdown();
     }
 
     @Override

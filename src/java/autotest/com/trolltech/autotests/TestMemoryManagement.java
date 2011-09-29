@@ -65,7 +65,6 @@ import java.util.Map;
 
 import com.trolltech.qt.QtJambiObject;
 import com.trolltech.qt.QNoNativeResourcesException;
-import com.trolltech.qt.QThreadManagerUtils;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
@@ -109,6 +108,8 @@ public abstract class TestMemoryManagement {
     @AfterClass
     public static void testDispose() throws Exception {
         Utils.println(2, "TestMemoryManagement.testDispose(): begin"); 
+        QApplication.processEvents();
+        QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
         QApplication.quit();
         System.err.flush();
         System.out.flush();
@@ -120,6 +121,9 @@ public abstract class TestMemoryManagement {
         } catch(QNoNativeResourcesException e) {
             Utils.println(3, "TestMemoryManagement.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage()); 
         }
+        app = null;		// kill hard-reference
+        Utils.println(3, "TestMemoryManagement.testDispose(): shutdown");
+        QApplication.shutdown();
     }
 
     public Integer getIdNext() {
@@ -207,12 +211,18 @@ public abstract class TestMemoryManagement {
         QtJambiDebugTools.reset_userDataDestroyedCount();
         clearGcReferences();
 
-        QThreadManagerUtils.releaseNativeResources();
         System.gc();
         System.runFinalization();
+        if(Utils.releaseNativeResources() > 0) {
+            System.gc();
+            System.runFinalization();
+        }
 
         QApplication.processEvents();
-        QThreadManagerUtils.releaseNativeResources();
+        if(Utils.releaseNativeResources() > 0) {
+            System.gc();
+            System.runFinalization();
+        }
     }
 
 
@@ -539,7 +549,7 @@ Utils.println(15, "createInNativeDisableGCAndDeleteInNative() MARK3");
 //                    QApplication.processEvents();
                 }
 
-                QThreadManagerUtils.releaseNativeResources();
+                Utils.releaseNativeResources();
                 System.gc();
                 System.runFinalization();
 

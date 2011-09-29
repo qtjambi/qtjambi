@@ -148,8 +148,8 @@ class QThreadManager {
                         doIt = false;
                 }
                 if(doIt) {
-                    boolean release = releaseNativeResources();
-                    sleepTime = release ? DEFAULT_SLEEPTIME : Math.min(sleepTime * 2, MILLIS_PER_MINUTE);
+                    int releaseCount = releaseNativeResources();
+                    sleepTime = (releaseCount > 0) ? DEFAULT_SLEEPTIME : Math.min(sleepTime * 2, MILLIS_PER_MINUTE);
                 } else {
                 }
             }
@@ -168,5 +168,5 @@ class QThreadManager {
         nativeResourcesReleaseThread.start();
     }
 
-    public synchronized static native boolean releaseNativeResources();
+    public synchronized static native int releaseNativeResources();
 }

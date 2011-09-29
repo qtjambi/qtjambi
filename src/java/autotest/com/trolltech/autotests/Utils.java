@@ -234,4 +234,13 @@ public abstract class Utils {
         }
         return tmpInhibitNativeResourceThread;
     }
+
+    public static int releaseNativeResources() {
+        int i = QThreadManagerUtils.releaseNativeResources();
+        if(i > 0)
+            println(3, "QThreadManagerUtils.releaseNativeResources()=" + i + "; released");
+        else
+            println(5, "QThreadManagerUtils.releaseNativeResources()=" + i);
+        return i;
+    }
 }

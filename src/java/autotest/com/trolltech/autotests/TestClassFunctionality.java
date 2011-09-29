@@ -54,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -74,6 +76,7 @@ import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QDate;
 import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QFileInfo;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRect;
@@ -209,6 +212,24 @@ public class TestClassFunctionality extends QApplicationTest {
         args[2] = "C";
         QApplication.initialize(new String[] {});
         Utils.println(2, "TestClassFunctionality.testInitialize(): done");
+    }
+
+    @Before
+    public void setUp() {
+        QApplication.processEvents();
+    }
+
+    @After
+    public void tearDown() {
+        QApplication.processEvents();
+        QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+
+        System.gc();
+        System.runFinalization();
+        if(Utils.releaseNativeResources() > 0) {
+            System.gc();
+            System.runFinalization();
+        }
     }
 
     static class GraphicsSceneSubclassSubclass extends GraphicsSceneSubclass {
