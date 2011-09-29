@@ -1586,6 +1586,9 @@ void CppImplGenerator::writeFinalFunction(QTextStream &s, const AbstractMetaFunc
 
         if (java_function->isConstructor()) {
             writeFinalConstructor(s, java_function, qt_object_name, java_object_name);
+
+            s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(native) -> leaving: "
+            << java_function_signature << "\");" << endl;
         } else {
 
             QString function_prefix = "";
