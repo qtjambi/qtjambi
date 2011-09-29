@@ -106,6 +106,7 @@ class QTJAMBI_EXPORT QtJambiLink
           m_delete_in_main_thread(false),
           m_java_link_removed(false),
           m_link_cacheable(false),
+          m_reserved1(0),
           m_destructor_function(0)
     {
     };
@@ -126,6 +127,7 @@ protected:
           m_delete_in_main_thread(false),
           m_java_link_removed(false),
           m_link_cacheable(false),
+          m_reserved1(0),
           m_destructor_function(0)
     {
     };
