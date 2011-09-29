@@ -23,5 +23,6 @@ System.gc();
         }.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

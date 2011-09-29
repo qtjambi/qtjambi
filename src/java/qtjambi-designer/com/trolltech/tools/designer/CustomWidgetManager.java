@@ -237,6 +237,7 @@ public class CustomWidgetManager {
             w.createWidget(null).show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

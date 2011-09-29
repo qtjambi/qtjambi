@@ -14,6 +14,7 @@ public class src_gui_painting_qpainterpath extends QWidget {
         w.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 

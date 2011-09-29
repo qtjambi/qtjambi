@@ -533,6 +533,7 @@ public class Deform extends QWidget
         w.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 

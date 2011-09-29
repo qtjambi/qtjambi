@@ -43,5 +43,6 @@ public class textedit extends QTextEdit
         new textedit(null).show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

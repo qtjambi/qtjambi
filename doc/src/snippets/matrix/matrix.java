@@ -98,5 +98,6 @@ public class matrix
         widget.resize(130, 350);
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

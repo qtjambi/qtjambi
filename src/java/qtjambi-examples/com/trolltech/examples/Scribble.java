@@ -426,5 +426,6 @@ public class Scribble extends QMainWindow
         new Scribble().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

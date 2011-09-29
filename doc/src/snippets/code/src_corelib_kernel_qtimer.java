@@ -16,6 +16,7 @@ public class src_corelib_kernel_qtimer {
         QTimer.singleShot(600000, pp, "quit()");
         // ...
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [0]
 

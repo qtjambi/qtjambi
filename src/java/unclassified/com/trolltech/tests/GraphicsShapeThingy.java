@@ -173,6 +173,7 @@ public class GraphicsShapeThingy extends QGraphicsView {
         view.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 

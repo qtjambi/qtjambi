@@ -23,6 +23,7 @@ public static void main(String args[])
     image.save("spheres.png", "PNG", 9);
 
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 
 }

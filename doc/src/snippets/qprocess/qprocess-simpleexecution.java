@@ -29,5 +29,6 @@ class SimpleExecution
 //! [2]
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

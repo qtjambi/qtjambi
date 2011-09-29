@@ -67,6 +67,7 @@ public class LineEdits extends QWidget {
         lineedits.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

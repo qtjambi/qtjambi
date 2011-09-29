@@ -85,6 +85,7 @@ public class StatusBarLabel extends QLabel {
         t.start();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
     
 }

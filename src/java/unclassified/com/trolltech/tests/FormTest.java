@@ -61,5 +61,6 @@ public class FormTest extends QDialog
     new FormTest().show();
 
     QApplication.execStatic();
+    QApplication.shutdown();
     }
 }

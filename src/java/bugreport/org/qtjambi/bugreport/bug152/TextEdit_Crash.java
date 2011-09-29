@@ -33,5 +33,6 @@ public class TextEdit_Crash extends QMainWindow {
         QApplication.initialize(args);
         new TextEdit_Crash();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

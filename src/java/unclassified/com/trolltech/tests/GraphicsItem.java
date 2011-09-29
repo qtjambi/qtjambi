@@ -137,5 +137,6 @@ public class GraphicsItem {
         scene.addItem(h);
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

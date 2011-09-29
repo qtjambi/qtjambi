@@ -14,6 +14,7 @@ public class window extends QWidget
         new MainWindow().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 

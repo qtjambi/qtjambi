@@ -66,5 +66,6 @@ public class Font extends QLabel
             font.show();
 
             QApplication.execStatic();
+            QApplication.shutdown();
         }
 }

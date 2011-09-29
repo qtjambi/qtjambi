@@ -376,5 +376,6 @@ public class TreeModelTester extends QTreeView {
         }
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

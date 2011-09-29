@@ -414,5 +414,6 @@ public class Image extends QWidget
     im.show();
 
     QApplication.execStatic();
+    QApplication.shutdown();
     }
 }

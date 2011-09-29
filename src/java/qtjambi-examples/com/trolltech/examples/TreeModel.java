@@ -150,5 +150,6 @@ public class TreeModel extends QTreeView
 
         // Spin the event loop
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

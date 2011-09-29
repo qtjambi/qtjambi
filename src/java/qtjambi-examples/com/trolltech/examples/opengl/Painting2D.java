@@ -218,5 +218,6 @@ public class  Painting2D extends QWidget
         painting2d.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

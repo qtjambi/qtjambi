@@ -58,6 +58,7 @@ public class Menus extends QMainWindow {
         Menus menus = new Menus();
         menus.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

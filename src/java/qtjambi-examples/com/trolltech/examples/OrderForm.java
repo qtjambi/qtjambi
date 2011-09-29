@@ -404,6 +404,7 @@ public class OrderForm extends QMainWindow
         window.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [27]
 }

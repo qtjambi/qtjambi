@@ -34,6 +34,7 @@ class Thumbnailer extends QObject
         thumbnail.finished.connect(QApplication.instance(), "quit()");
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     private static class Thumbnailer extends QObject

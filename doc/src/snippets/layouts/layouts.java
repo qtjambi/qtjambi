@@ -94,5 +94,6 @@ public class layouts
         }
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

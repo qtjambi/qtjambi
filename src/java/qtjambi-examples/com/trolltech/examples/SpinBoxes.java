@@ -266,6 +266,7 @@ public class SpinBoxes extends QWidget {
         spinBoxes.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [22] //! [23]
 }

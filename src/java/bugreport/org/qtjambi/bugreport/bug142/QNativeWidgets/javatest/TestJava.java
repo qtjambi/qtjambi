@@ -12,6 +12,7 @@ public class TestJava {
 		test.show();
 		
         QApplication.execStatic();
+        QApplication.shutdown();
 
     }
 }

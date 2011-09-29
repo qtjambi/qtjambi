@@ -115,6 +115,7 @@ public class doc_src_i18n {
 
             ...
             QApplication.execStatic();
+            QApplication.shutdown();
         }
 //! [8]
 

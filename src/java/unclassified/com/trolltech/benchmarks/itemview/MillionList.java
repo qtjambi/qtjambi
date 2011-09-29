@@ -157,6 +157,7 @@ public class MillionList {
         }
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

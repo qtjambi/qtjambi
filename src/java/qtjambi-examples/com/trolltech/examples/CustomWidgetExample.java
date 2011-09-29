@@ -67,6 +67,7 @@ public class CustomWidgetExample extends QWidget {
         widget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

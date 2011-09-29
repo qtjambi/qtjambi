@@ -26,6 +26,7 @@ public class HelloWorld extends QWidget
         timer.start();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     public HelloWorld()

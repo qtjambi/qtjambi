@@ -65,6 +65,7 @@ public class Spreadsheet extends QMainWindow {
         spread.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     private TableView view;

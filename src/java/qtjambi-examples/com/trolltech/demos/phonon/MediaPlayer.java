@@ -482,6 +482,7 @@ public class MediaPlayer extends QWidget {
         player.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

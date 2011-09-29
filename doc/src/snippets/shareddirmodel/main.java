@@ -36,6 +36,7 @@ public static void main(String args[])
     splitter.show();
 
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 //! [1] //! [8]
 

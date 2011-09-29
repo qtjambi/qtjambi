@@ -11,6 +11,7 @@ class main
         QApplication.initialize(args);
         MyStylePlugin plugin = new MyStylePlugin();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 

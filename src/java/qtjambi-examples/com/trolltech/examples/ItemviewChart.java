@@ -63,6 +63,7 @@ public class ItemviewChart extends QMainWindow {
         mainW.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 //! [1]

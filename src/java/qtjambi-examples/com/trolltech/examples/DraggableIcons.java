@@ -190,5 +190,6 @@ public class DraggableIcons extends QFrame
         mainWidget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

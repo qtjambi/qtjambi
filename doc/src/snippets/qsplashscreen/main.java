@@ -26,6 +26,7 @@ public class main
         window.show();
         splash.finish(window);
         QApplication.execStatic();
+        QApplication.shutdown();
     }
     //! [1]
 

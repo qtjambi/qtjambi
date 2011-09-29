@@ -538,6 +538,7 @@ public class Styles extends QDialog
         new Styles().setVisible(true);
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

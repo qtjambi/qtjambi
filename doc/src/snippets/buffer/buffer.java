@@ -86,6 +86,7 @@ public static void main(String args[])
     setBuffer_snippet();
 
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 
 }

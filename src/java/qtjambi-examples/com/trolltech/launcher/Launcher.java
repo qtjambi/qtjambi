@@ -496,6 +496,7 @@ public class Launcher extends QWidget {
             splashScreen.finish(l);
 
         QApplication.execStatic();
+        QApplication.shutdown();
 
 //        System.gc();
     }

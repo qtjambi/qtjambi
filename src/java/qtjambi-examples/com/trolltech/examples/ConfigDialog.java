@@ -63,6 +63,7 @@ public class ConfigDialog extends QDialog {
         dialog.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     public ConfigDialog(QWidget parent) {

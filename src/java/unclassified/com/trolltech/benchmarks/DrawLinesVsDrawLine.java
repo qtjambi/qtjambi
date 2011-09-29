@@ -181,6 +181,7 @@ public class DrawLinesVsDrawLine extends QWidget {
         w.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

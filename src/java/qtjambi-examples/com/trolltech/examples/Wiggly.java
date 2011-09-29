@@ -153,6 +153,7 @@ public class Wiggly extends QDialog {
         d.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [13] //! [14]
 }

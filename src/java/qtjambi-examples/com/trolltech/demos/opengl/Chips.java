@@ -131,6 +131,7 @@ public class Chips extends QWidget {
         w.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     class Chip extends QGraphicsItem {

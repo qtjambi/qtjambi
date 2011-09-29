@@ -176,6 +176,7 @@ public class DrawText {
         wgl.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 

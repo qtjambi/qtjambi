@@ -60,6 +60,7 @@ public class DomBookmarks extends QMainWindow {
         DomBookmarks domBookmarks = new DomBookmarks();
         domBookmarks.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     private QMenu fileMenu;

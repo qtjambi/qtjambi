@@ -45,5 +45,6 @@ class timers extends QWidget
         new timers();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

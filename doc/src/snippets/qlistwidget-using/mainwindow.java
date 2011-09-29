@@ -132,5 +132,6 @@ public class mainwindow extends QMainWindow
         new mainwindow().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

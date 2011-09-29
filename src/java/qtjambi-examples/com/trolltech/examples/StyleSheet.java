@@ -63,6 +63,7 @@ public class StyleSheet extends QMainWindow {
         styleSheet.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 

@@ -32,6 +32,7 @@ public class QMovieQThreadTest extends QMainWindow
 		new QMovieQThreadTest().show();
 
 		QApplication.execStatic();
+		QApplication.shutdown();
 	}
 
 	public QMovieQThreadTest()

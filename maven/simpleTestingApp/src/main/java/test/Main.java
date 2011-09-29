@@ -22,6 +22,7 @@ public class Main {
         d.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
 
 
     }

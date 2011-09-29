@@ -70,5 +70,6 @@ public class main
         table.show();
         table.resize(460, 280);
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

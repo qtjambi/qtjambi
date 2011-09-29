@@ -58,6 +58,7 @@ public class main
         view.show();
 //! [Using QWebView]
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

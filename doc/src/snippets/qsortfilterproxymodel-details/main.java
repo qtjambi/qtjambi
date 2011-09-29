@@ -58,6 +58,7 @@ public static void main(String args[])
     Widget widget = new Widget(null);
     widget.show();
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 
 }

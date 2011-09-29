@@ -32,5 +32,6 @@ public class main
     //! [0]
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

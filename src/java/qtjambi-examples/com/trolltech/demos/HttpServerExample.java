@@ -60,6 +60,7 @@ public class HttpServerExample extends QWidget {
         example.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     HttpServer server;

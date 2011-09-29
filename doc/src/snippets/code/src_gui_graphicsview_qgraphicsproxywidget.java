@@ -14,6 +14,7 @@ public class src_gui_graphicsview_qgraphicsproxywidget {
         view.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [0]
 

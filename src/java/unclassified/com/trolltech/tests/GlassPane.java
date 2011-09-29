@@ -296,5 +296,6 @@ public class GlassPane extends QWidget {
         pane.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

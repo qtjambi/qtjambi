@@ -92,6 +92,7 @@ public class Blocks extends QWidget
         widget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 //! [0]

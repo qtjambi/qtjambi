@@ -476,5 +476,6 @@ public class CalendarWidget extends QWidget {
         widget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

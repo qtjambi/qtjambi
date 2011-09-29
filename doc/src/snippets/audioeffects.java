@@ -42,6 +42,7 @@ public static void  main(String args[])
     effectWidget.setWindowTitle("Effect Name: " + effectDescription.name());
 
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 
 }

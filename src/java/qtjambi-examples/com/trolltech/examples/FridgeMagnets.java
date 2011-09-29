@@ -58,6 +58,7 @@ public class FridgeMagnets extends QWidget {
         FridgeMagnets fridgeMagnets = new FridgeMagnets(null);
         fridgeMagnets.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

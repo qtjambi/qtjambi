@@ -48,5 +48,6 @@ public class styles extends QWidget
         new styles().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

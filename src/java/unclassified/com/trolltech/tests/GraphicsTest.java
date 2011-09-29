@@ -131,5 +131,6 @@ public class GraphicsTest extends QWidget {
         f.setVisible(true);
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

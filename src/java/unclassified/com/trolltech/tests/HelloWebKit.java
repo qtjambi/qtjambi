@@ -102,5 +102,6 @@ class HelloWebKit extends QWidget {
         widget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

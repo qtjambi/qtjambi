@@ -20,6 +20,7 @@ public static void main(String args[])
     browser.show();
 
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 
 }

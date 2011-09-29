@@ -222,6 +222,7 @@ public class I18N extends QDialog {
         I18N i18n = new I18N();
         i18n.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 

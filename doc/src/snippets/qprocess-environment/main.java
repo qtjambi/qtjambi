@@ -26,5 +26,6 @@ public class main
         startProcess();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

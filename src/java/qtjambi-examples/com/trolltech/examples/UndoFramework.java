@@ -489,6 +489,7 @@ public class UndoFramework extends QMainWindow
         mainWindow.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [29]
 }

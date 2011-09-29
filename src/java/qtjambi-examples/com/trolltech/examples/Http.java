@@ -253,6 +253,7 @@ public class Http extends QDialog
         window.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

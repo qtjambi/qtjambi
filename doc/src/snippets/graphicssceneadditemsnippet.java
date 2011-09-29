@@ -34,5 +34,6 @@ class CustomScene extends QGraphicsScene
         view.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

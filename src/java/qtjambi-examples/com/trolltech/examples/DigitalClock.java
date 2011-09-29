@@ -80,5 +80,6 @@ public class DigitalClock extends QLCDNumber
         new DigitalClock().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

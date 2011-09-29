@@ -24,5 +24,6 @@ public class gradientcreationsnippet
         widget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

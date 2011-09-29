@@ -194,6 +194,7 @@ public class DrawLines {
         wgl.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 

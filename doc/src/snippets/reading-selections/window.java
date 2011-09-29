@@ -78,5 +78,6 @@ public class window extends QMainWindow
         new window().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

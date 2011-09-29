@@ -150,5 +150,6 @@ class PaintWidget extends QWidget {
         PaintWidget pw = new PaintWidget();
         pw.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

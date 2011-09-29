@@ -13,6 +13,7 @@ public class src_gui_widgets_qvalidator extends QWidget {
     src_gui_widgets_qvalidator wid = new src_gui_widgets_qvalidator();
     wid.show();
     QApplication.execStatic();
+    QApplication.shutdown();
     }
     public src_gui_widgets_qvalidator() {
     {

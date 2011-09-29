@@ -39,5 +39,6 @@ public class main extends QMainWindow
         main.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

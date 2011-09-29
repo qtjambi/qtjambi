@@ -41,5 +41,6 @@ public class main
         fontTree.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

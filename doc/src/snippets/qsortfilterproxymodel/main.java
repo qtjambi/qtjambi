@@ -43,5 +43,6 @@ public class main
         window.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

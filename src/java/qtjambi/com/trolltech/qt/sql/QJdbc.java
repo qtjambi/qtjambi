@@ -92,6 +92,7 @@ package com.trolltech.qt.sql;
         view2.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
 
         db.close();
     }

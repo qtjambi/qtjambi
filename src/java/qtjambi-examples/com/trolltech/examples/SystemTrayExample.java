@@ -89,6 +89,7 @@ public class SystemTrayExample extends QWidget {
         editor.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

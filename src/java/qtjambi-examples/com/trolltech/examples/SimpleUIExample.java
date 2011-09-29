@@ -56,6 +56,7 @@ public class SimpleUIExample extends QMainWindow {
         SimpleUIExample mainw = new SimpleUIExample();
         mainw.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

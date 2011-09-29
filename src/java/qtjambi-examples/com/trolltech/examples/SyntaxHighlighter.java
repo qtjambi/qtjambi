@@ -64,6 +64,7 @@ public class SyntaxHighlighter extends QMainWindow {
         syntaxHighlighter.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

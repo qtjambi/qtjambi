@@ -85,6 +85,7 @@ public class Unicode extends QWidget {
         code.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

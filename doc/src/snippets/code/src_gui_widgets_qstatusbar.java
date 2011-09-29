@@ -24,5 +24,6 @@ public class src_gui_widgets_qstatusbar extends QMainWindow{
         src_gui_widgets_qstatusbar bar = new src_gui_widgets_qstatusbar();
         bar.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

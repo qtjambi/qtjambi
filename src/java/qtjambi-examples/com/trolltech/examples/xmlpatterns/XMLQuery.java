@@ -134,5 +134,6 @@ public class XMLQuery extends QWidget {
         test.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

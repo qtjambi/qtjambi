@@ -14,6 +14,7 @@ public class main
         button.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 

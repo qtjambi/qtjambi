@@ -92,5 +92,6 @@ public class LcdNumberSignalAndSlots extends QWidget
         new LcdNumberSignalAndSlots().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

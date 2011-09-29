@@ -14,6 +14,7 @@ public class main extends QWidget
         widget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 

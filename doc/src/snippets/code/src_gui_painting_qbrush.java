@@ -24,5 +24,6 @@ public class src_gui_painting_qbrush extends QWidget {
         w.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

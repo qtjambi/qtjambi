@@ -86,5 +86,6 @@ public class OnConnection extends QWidget
     oc.show();
 
     QApplication.execStatic();
+    QApplication.shutdown();
     }
 }

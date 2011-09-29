@@ -68,6 +68,7 @@ public class Quit
         quit.setWindowTitle("Calling It Quits");
         quit.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }
 //! [0]

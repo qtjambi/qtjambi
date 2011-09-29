@@ -34,6 +34,7 @@ public static void main(String args[])
     effectWidget.show();
 
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 
 }

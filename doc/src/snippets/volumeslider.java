@@ -30,6 +30,7 @@ public static void main(String args[])
     volumeSlider.show();
 
     QApplication.execStatic();
+    QApplication.shutdown();
 }
 
 }

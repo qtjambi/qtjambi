@@ -226,6 +226,21 @@ class QCoreApplication___ extends QCoreApplication {
             m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
         }
 
+        public static void shutdown() {
+            QCoreApplication app = instance();
+            if(app != null) {
+                app = null;		// discard hard-reference
+                processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);	// allow deleteLater() to work some magic
+                quit();			// finish up cause an aboutToQuit() to fire
+                processEvents();	// process quit
+                processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);	// allow deleteLater() to work some magic
+            }
+            if (m_instance != null)	// this should be a QtJambi qWarning()
+                System.err.println("WARNING: QCoreApplication.shutdown() m_instance!=null");
+            System.gc();
+            System.runFinalization();
+        }
+
         /**
          *
          * @see #execStatic()
@@ -245,8 +260,12 @@ class QCoreApplication___ extends QCoreApplication {
         }
 
         private void disposeOfMyself() {
-            m_instance = null;
+            synchronized(this) {
+                // To force compiler/JVM not to move/optimized when
+                m_instance = null;
+            }
             System.gc();
+            System.runFinalization();
             this.disposeLater();
         }
 

@@ -733,5 +733,6 @@ public class QUiLoader {
         w.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

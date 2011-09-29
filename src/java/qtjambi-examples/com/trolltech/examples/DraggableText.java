@@ -178,6 +178,7 @@ public class DraggableText extends QWidget
         new DraggableText().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

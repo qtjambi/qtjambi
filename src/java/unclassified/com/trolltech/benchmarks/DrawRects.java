@@ -192,6 +192,7 @@ public class DrawRects {
             wgl.show();
 
             QApplication.execStatic();
+            QApplication.shutdown();
         }
 
 

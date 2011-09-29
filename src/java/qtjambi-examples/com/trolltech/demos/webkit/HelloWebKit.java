@@ -147,5 +147,6 @@ public class HelloWebKit extends QMainWindow {
         widget.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

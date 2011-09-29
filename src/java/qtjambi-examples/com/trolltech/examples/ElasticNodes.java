@@ -58,6 +58,7 @@ public class ElasticNodes extends QGraphicsView {
         ElasticNodes elasticNodes = new ElasticNodes();
         elasticNodes.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
     private int timerId;

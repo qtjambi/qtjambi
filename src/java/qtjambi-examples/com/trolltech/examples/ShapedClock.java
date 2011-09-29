@@ -60,6 +60,7 @@ public class ShapedClock extends QWidget {
         ShapedClock shapedClock = new ShapedClock(null);
         shapedClock.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

@@ -70,6 +70,7 @@ public class HelloWorld
 
 //! [8]
         QApplication.execStatic();
+        QApplication.shutdown();
 //! [8] //! [9]
     }
 //! [9]

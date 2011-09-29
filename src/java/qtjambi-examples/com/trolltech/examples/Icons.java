@@ -699,5 +699,6 @@ public class Icons extends QMainWindow
         new Icons().show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

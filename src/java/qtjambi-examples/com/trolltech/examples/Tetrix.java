@@ -804,6 +804,7 @@ public class Tetrix extends QWidget
         window.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [75] //! [76]
 }

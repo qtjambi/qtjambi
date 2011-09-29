@@ -59,7 +59,8 @@ public class ClipboardCrash //extends QMainWindow
                 };
                 mainWindow.show();
 
-		QApplication.execStatic();
+                QApplication.execStatic();
+                QApplication.shutdown();
 	}
 
         private void grabClipboard() throws Exception {

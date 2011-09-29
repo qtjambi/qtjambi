@@ -147,5 +147,6 @@ public class ColorEditorFactory extends QWidget {
         window.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

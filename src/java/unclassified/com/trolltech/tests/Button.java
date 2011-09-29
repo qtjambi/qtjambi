@@ -96,6 +96,7 @@ public class Button extends QPushButton {
         System.out.println("text is: " + b.property("text"));
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

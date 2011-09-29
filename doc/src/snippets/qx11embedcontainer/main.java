@@ -29,6 +29,7 @@ public static void main(String args[])
     process.start(executable, arguments);
 
     QApplication.execStatic();
+    QApplication.shutdown();
 
     process.close();
 }

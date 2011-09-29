@@ -59,6 +59,7 @@ public class CustomFilter extends QWidget {
         CustomFilter filter = new CustomFilter();
         filter.show();
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 //! [1]
 

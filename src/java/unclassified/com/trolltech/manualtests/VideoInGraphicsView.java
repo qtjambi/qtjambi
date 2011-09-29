@@ -132,6 +132,7 @@ public class VideoInGraphicsView extends ZoomableGraphicsView {
         view.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 }

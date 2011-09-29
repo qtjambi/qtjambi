@@ -371,6 +371,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
         rb.setCurrentPath("classpath:com/trolltech/images/copy.png");
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 
 

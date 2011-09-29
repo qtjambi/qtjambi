@@ -20,6 +20,7 @@ public class TestJavaMarble extends MarbleWidget {
 
         javaMarble.showGrid();
         QApplication.execStatic();
+        QApplication.shutdown();
 
     }
 

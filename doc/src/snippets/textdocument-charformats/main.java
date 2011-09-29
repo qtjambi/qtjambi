@@ -55,5 +55,6 @@ public class main
         editor.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

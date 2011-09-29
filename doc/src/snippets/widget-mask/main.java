@@ -17,5 +17,6 @@ public class main
         topLevelLabel.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

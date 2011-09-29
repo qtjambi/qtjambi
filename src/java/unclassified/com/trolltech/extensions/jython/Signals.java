@@ -142,5 +142,6 @@ QApplication.initialize([])
 button = MyButton();
 button.show();
 QApplication.execStatic();
+QApplication.shutdown();
 
 */

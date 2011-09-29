@@ -360,6 +360,7 @@ public class HelloGL extends QWidget
         HelloGL window = new HelloGL();
         window.show();
         QApplication.execStatic();
+        QApplication.shutdown();
         window.dispose();
     }
 }

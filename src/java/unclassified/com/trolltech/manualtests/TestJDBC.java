@@ -242,6 +242,7 @@ public class TestJDBC {
         topLevel.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
 
         db.close();
     }

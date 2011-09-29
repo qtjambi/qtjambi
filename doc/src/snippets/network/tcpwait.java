@@ -31,5 +31,6 @@ public class tcpwait
     //! [0]
 
         QApplication.execStatic();
+        QApplication.shutdown();
     }
 }

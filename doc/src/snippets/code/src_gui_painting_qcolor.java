@@ -31,6 +31,7 @@ public class src_gui_painting_qcolor extends QWidget {
         w.show();
 
         QApplication.execStatic();
+        QApplication.shutdown();
 
     }
 }

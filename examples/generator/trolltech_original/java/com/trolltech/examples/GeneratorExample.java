@@ -225,6 +225,7 @@ public class GeneratorExample extends GameScene {
         GeneratorExample ex = new GeneratorExample();
         ex.show();
         QApplication.execStatic();
+        QApplication.shutdown();
 
     }
 
