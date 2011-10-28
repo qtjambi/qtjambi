@@ -57,6 +57,7 @@ public class LibraryEntry extends Task {
 
     public static final String TYPE_DSO                = "dso";
     public static final String TYPE_PLUGIN             = "plugin";
+    public static final String TYPE_SYSTEM             = "system";
     public static final String TYPE_QT                 = "qt";
     public static final String TYPE_QTJAMBI            = "qtjambi";
     public static final String TYPE_QTJAMBI_PLUGIN     = "qtjambi-plugin";
@@ -155,9 +156,9 @@ public class LibraryEntry extends Task {
         if(name == null || name.length() == 0)
             throw new BuildException("Required attribute 'name' missing");
 
-        PropertyHelper h = PropertyHelper.getPropertyHelper(getProject());
+        PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        boolean debug = "debug".equals(h.getProperty((String) null, InitializeTask.CONFIGURATION));
+        boolean debug = "debug".equals(propertyHelper.getProperty((String) null, InitializeTask.CONFIGURATION));
 
         // Fix name
         if(type.equals(TYPE_PLUGIN)) {
@@ -173,7 +174,7 @@ public class LibraryEntry extends Task {
         } else if(type.equals(TYPE_QTJAMBI)) {
             name = formatQtJambiName(name, debug, dsoVersion);
             output_directory = "lib/";
-        } else if(type.equals(TYPE_DSO)) {
+        } else if(type.equals(TYPE_DSO) || type.equals(TYPE_SYSTEM)) {
             name = formatQtJambiName(name, debug, null);
             output_directory = "lib/";
         } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
