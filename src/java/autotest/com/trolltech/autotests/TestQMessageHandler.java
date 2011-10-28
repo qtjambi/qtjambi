@@ -53,6 +53,7 @@ import org.junit.Test;
 import com.trolltech.autotests.generated.MessageHandler;
 
 import com.trolltech.qt.QNoNativeResourcesException; 
+import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.gui.QApplication;
 
@@ -87,6 +88,9 @@ public class TestQMessageHandler extends QMessageHandler {
 
     @AfterClass
     public static void testDispose() throws Exception {
+        Utils.println(2, "TestQMessageHandler.testDispose(): begin");
+        QApplication.processEvents();
+        QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
         QApplication.quit();
         System.err.flush();
         System.out.flush();
@@ -98,65 +102,87 @@ public class TestQMessageHandler extends QMessageHandler {
         } catch(QNoNativeResourcesException e) {
             Utils.println(3, "TestQMessageHandler.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage());
         }
+        app = null;		// kill hard-reference
+        Utils.println(3, "TestQMessageHandler.testDispose(): shutdown PRE");
+        QApplication.shutdown();
+        Utils.println(3, "TestQMessageHandler.testDispose(): shutdown POST");
+
+        int objectCount = QtJambiUnittestTools.getObjectCount(1, 0);
+        Utils.println(3, "TestQMessageHandler.testDispose(): end objectCount="+objectCount);
     }
 
     @Test
     public void testOneHandler() {
-        QMessageHandler.installMessageHandler(this);
+        try {
+            QMessageHandler.installMessageHandler(this);
 
-        MessageHandler.sendDebug("debug sent");
-        assertEquals(lastDebug, "debug sent");
+            MessageHandler.sendDebug("debug sent");
+            assertEquals(lastDebug, "debug sent");
 
-        MessageHandler.sendWarning("warning sent");
-        assertEquals(lastWarning, "warning sent");
+            MessageHandler.sendWarning("warning sent");
+            assertEquals(lastWarning, "warning sent");
 
-        MessageHandler.sendCritical("critical sent");
-        assertEquals(lastCritical, "critical sent");
+            MessageHandler.sendCritical("critical sent");
+            assertEquals(lastCritical, "critical sent");
 
-        // Want to send fatal, but that will shut down app...
-        //MessageHandler.sendFatal("fatal sent");
-        //assertEquals(lastFatal, "fatal sent");
+            // Want to send fatal, but that will shut down app...
+            //MessageHandler.sendFatal("fatal sent");
+            //assertEquals(lastFatal, "fatal sent");
+        } finally {
+            QMessageHandler.removeMessageHandler(this);
+        }
     }
 
     @Test
     public void testMultipleHandlers() {
-        QMessageHandler.installMessageHandler(this);
-        TestQMessageHandler handlerOne = new TestQMessageHandler();
-        QMessageHandler.installMessageHandler(handlerOne);
-        TestQMessageHandler handlerTwo = new TestQMessageHandler();
-        QMessageHandler.installMessageHandler(handlerTwo);
+        TestQMessageHandler handlerOne = null;
+        TestQMessageHandler handlerTwo = null;
+        try {
+            QMessageHandler.installMessageHandler(this);
+            handlerOne = new TestQMessageHandler();
+            QMessageHandler.installMessageHandler(handlerOne);
+            handlerTwo = new TestQMessageHandler();
+            QMessageHandler.installMessageHandler(handlerTwo);
 
-        for(int i = 0; i < 5; i++) {
-            int j = i;
-            if(j == 4)
-                j = 3;	// No handlers so nothing got updated
+            for(int i = 0; i < 5; i++) {
+                int j = i;
+                if(j == 4)
+                    j = 3;	// No handlers so nothing got updated
 
-            MessageHandler.sendDebug("debug sent: " + j);
-            assertEquals(lastDebug, "debug sent: " + j);
+                MessageHandler.sendDebug("debug sent: " + j);
+                assertEquals(lastDebug, "debug sent: " + j);
 
-            MessageHandler.sendWarning("warning sent: " + j);
-            assertEquals(lastWarning, "warning sent: " + j);
+                MessageHandler.sendWarning("warning sent: " + j);
+                assertEquals(lastWarning, "warning sent: " + j);
 
-            MessageHandler.sendCritical("critical sent: " + j);
-            assertEquals(lastCritical, "critical sent: " + j);
+                MessageHandler.sendCritical("critical sent: " + j);
+                assertEquals(lastCritical, "critical sent: " + j);
 
-            // Want to send fatal, but that will shut down app...
-            //MessageHandler.sendFatal("fatal sent: " + j);
-            //assertEquals(lastFatal, "fatal sent: " + j);
+                // Want to send fatal, but that will shut down app...
+                //MessageHandler.sendFatal("fatal sent: " + j);
+                //assertEquals(lastFatal, "fatal sent: " + j);
 
-            if(i == 0) {
-                QMessageHandler.removeMessageHandler(handlerOne);
-            } else if(i == 1) {
-                QMessageHandler.removeMessageHandler(handlerTwo);
-            } else if(i == 2) {
-                QMessageHandler.installMessageHandler(handlerOne);
-                QMessageHandler.installMessageHandler(handlerTwo);
-            } else if(i == 3) {
-                QMessageHandler.removeMessageHandler(this);
-            } else if(i == 4) {
-                QMessageHandler.removeMessageHandler(handlerOne);
-                QMessageHandler.removeMessageHandler(handlerTwo);
+                if(i == 0) {
+                    QMessageHandler.removeMessageHandler(handlerOne);
+                } else if(i == 1) {
+                    QMessageHandler.removeMessageHandler(handlerTwo);
+                } else if(i == 2) {
+                    QMessageHandler.installMessageHandler(handlerOne);
+                    QMessageHandler.installMessageHandler(handlerTwo);
+                } else if(i == 3) {
+                    QMessageHandler.removeMessageHandler(this);
+                } else if(i == 4) {
+                    QMessageHandler.removeMessageHandler(handlerOne);
+                    QMessageHandler.removeMessageHandler(handlerTwo);
+                }
             }
+        } finally {
+            // Ensure they are removed
+           QMessageHandler.removeMessageHandler(this);
+           if(handlerOne != null)
+               QMessageHandler.removeMessageHandler(handlerOne);
+           if(handlerTwo != null)
+               QMessageHandler.removeMessageHandler(handlerTwo);
         }
     }
 
