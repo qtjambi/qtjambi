@@ -121,7 +121,9 @@ class OrdinarySubclass extends OrdinaryDestroyed {
 
     @Override
     protected void disposed() {
-        tc.disposed++;
+        synchronized(tc) {
+            tc.disposed++;
+        }
     }
 }
 
@@ -136,7 +138,9 @@ class QObjectSubclass extends QObjectDestroyed {
 
     @Override
     protected void disposed() {
-        tc.disposed++;
+        synchronized(tc) {
+            tc.disposed++;
+        }
     }
 }
 
@@ -399,6 +403,7 @@ public class TestClassFunctionality extends QApplicationTest {
         try {
             field = TestQObject.class.getDeclaredField("a");
         } catch (NoSuchFieldException e) {
+            e.printStackTrace();
             assertEquals(e, null);
         }
         assertTrue(field != null);
@@ -407,6 +412,7 @@ public class TestClassFunctionality extends QApplicationTest {
         try {
             method = QtJambiInternal.class.getDeclaredMethod("fetchSignal", QSignalEmitterInternal.class, Field.class);
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
             assertEquals(e, null);
         }
 
@@ -416,6 +422,7 @@ public class TestClassFunctionality extends QApplicationTest {
             QSignalEmitter.AbstractSignal signal = (QObject.AbstractSignal) method.invoke(null, test_qobject, field);
             assertTrue(test_qobject.signalIsEqualTo(signal));
         } catch (Exception e) {
+            e.printStackTrace();
             assertEquals(e, null);
         }
 
@@ -423,6 +430,7 @@ public class TestClassFunctionality extends QApplicationTest {
         try {
             method = QtJambiInternal.class.getDeclaredMethod("resolveSlot", Method.class);
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
             assertEquals(e, null);
         }
 
@@ -432,12 +440,14 @@ public class TestClassFunctionality extends QApplicationTest {
             method_long = (Long) method.invoke(null, slotMethod);
             assertTrue(method_long != 0);
         } catch (Exception e) {
+            e.printStackTrace();
             assertEquals(e, null);
         }
 
         try {
             method = QtJambiInternal.class.getDeclaredMethod("invokeSlot", Object.class, Long.TYPE, Byte.TYPE, Object[].class, int[].class);
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
             assertEquals(e, null);
         }
 
@@ -446,6 +456,7 @@ public class TestClassFunctionality extends QApplicationTest {
             method.setAccessible(true);
             method.invoke(null, test_qobject, method_long, (byte) 'V', new Object[] {}, new int[] {});
         } catch (Exception e) {
+            e.printStackTrace();
             assertEquals(e, null);
         }
 
@@ -463,11 +474,18 @@ public class TestClassFunctionality extends QApplicationTest {
                 new OrdinarySubclass(this);
             }
             System.gc();
+            System.runFinalization();
             try {
-                Thread.sleep(600);
-            } catch (Exception e) {
+                for(int i = 0; i < 60; i++) {  
+                    synchronized(this) {
+                        if(disposed != 0)
+                            break;
+                    }
+                    Thread.sleep(10);
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
             }
-            ;
 
             assertEquals(disposed, 1);
         }
@@ -551,6 +569,7 @@ public class TestClassFunctionality extends QApplicationTest {
         try {
             w.setModel(null);
         } catch (QNoImplementationException e) {
+            // This test checks that this exception is thrown (for a PASS)
             gotException = true;
         }
 
@@ -689,17 +708,21 @@ public class TestClassFunctionality extends QApplicationTest {
         QTimer.singleShot(1000, tester, "timeoutSlot()");
 
         System.gc();
+        System.runFinalization();
 
         try {
             while (tester.timeouted.elapsed() < 1500) {
                 QApplication.processEvents();
+                // We can sleep a bit here
+                Thread.sleep(50);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             assertTrue(false);
         }
 
-        assertTrue(tester.msec >= 1000);
-        assertTrue(tester.msec <= 1500);
+        assertTrue("tester.msec >= 1000 took " + tester.msec, tester.msec >= 1000);
+        assertTrue("tester.msec <= 1500 took " + tester.msec, tester.msec <= 1500);
     }
 
     @Test
@@ -759,6 +782,7 @@ public class TestClassFunctionality extends QApplicationTest {
             byte b[] = new byte[6];
             uuid.setData4(b);
         } catch (Exception e) {
+            // java.lang.IllegalArgumentException: Wrong number of elements in array. Found: 6, expected: 8
             fe = e;
         }
 
@@ -776,6 +800,7 @@ public class TestClassFunctionality extends QApplicationTest {
             byte b[] = new byte[100];
             uuid.setData4(b);
         } catch (Exception e) {
+            // java.lang.IllegalArgumentException: Wrong number of elements in array. Found: 100, expected: 8
             fe = e;
         }
 
@@ -885,8 +910,10 @@ public class TestClassFunctionality extends QApplicationTest {
 
         @Override
         protected void disposed() {
+            synchronized(CustomPaintEvent.class) {
+                finalized = true;
+            }
             super.disposed();
-            finalized = true;
         }
     }
 
@@ -902,7 +929,10 @@ public class TestClassFunctionality extends QApplicationTest {
         // To attempt deletion of the QPaintEvent, should not happen at
         // this time...
         System.gc();
-        assertEquals(CustomPaintEvent.finalized, false);
+        System.runFinalization();
+        synchronized(CustomPaintEvent.class) {
+            assertEquals(CustomPaintEvent.finalized, false);
+        }
 
         // Process the event, thus also deleting it...
         QApplication.processEvents();
@@ -910,12 +940,22 @@ public class TestClassFunctionality extends QApplicationTest {
         // To provoke collection of the java side of the object, now
         // that C++ has released its hold on it
         System.gc();
+        System.runFinalization();
         try {
-            Thread.sleep(600);
+            for(int i = 0; i < 60; i++) {
+                synchronized(CustomPaintEvent.class) {
+                    if(CustomPaintEvent.finalized)
+                        break;
+                }
+                Thread.sleep(10);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        assertEquals(CustomPaintEvent.finalized, true);
+        synchronized(CustomPaintEvent.class) {
+            assertEquals(CustomPaintEvent.finalized, true);
+        }
 
         // Sanity check the data...
         assertEquals(receiver.event_id, QEvent.Type.Paint);
@@ -1051,6 +1091,7 @@ public class TestClassFunctionality extends QApplicationTest {
                 try {
                     Thread.sleep(500);
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -1058,6 +1099,7 @@ public class TestClassFunctionality extends QApplicationTest {
         try {
             thread.join();
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         assertTrue(!invokable_in_otherThread.wasRun());
