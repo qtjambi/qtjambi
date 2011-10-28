@@ -178,6 +178,9 @@ public:
     inline void setSignalWrapper(QObject *ptr) { m_wrapper = ptr; }
 
     inline jobject javaObject(JNIEnv *env) const;
+    /* Obviously don't go changing it */
+    inline void javaObjectDeleteIfLocalRef(JNIEnv *env, jobject o) const;
+    inline void javaObjectDeleteIfLocalRef(JNIEnv *env, jobject o, bool global_ref) const;
 
     /* Returns the pointer value as a QObject, will assert if pointer
        is not a QObject */
@@ -330,7 +333,21 @@ inline jobject QtJambiLink::javaObject(JNIEnv *env) const
     if (m_global_ref)
         return m_java_object;
     else
-        return env->NewLocalRef(m_java_object);
+        return env->NewLocalRef(m_java_object);	// this is null-safe
+}
+
+inline void QtJambiLink::javaObjectDeleteIfLocalRef(JNIEnv *env, jobject o, bool global_ref) const
+{
+    if (!global_ref)
+        env->DeleteLocalRef(o);
+    return;      // noop for global_ref==true
+}
+
+inline void QtJambiLink::javaObjectDeleteIfLocalRef(JNIEnv *env, jobject o) const
+{
+    if (!m_global_ref)
+        env->DeleteLocalRef(o);
+    return;      // noop for m_global_ref==true
 }
 
 inline QtJambiLink *QtJambiLink::findQObjectLink(JNIEnv *env, jobject java)

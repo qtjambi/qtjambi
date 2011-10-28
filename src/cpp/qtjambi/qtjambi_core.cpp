@@ -1314,10 +1314,19 @@ void qtjambi_metacall(JNIEnv *env, QEvent *event)
     // Clear print out and clear any exceptions that occured during
     // the metacall...
     if (env->ExceptionCheck()) {
+        // FIXME: Allow this error channel to be intercepted  QtJambiMetacallException()
+        //  make the default interceptor print/clear exception, allow exception condx clearing
+        //  only, allow propagation upwards (if relevant to caller).  i.e. does it make
+        //  sense for this thread to receive exception ?
+        // Emit loads of info here, event field data, class types.
         fprintf(stderr, "QtJambi: metacall failed\n");
         env->ExceptionDescribe();
         env->ExceptionClear();
     }
+
+    env->DeleteLocalRef(cls);
+    link->javaObjectDeleteIfLocalRef(env, jEvent);
+    // FIXME: Better failure scenarios (emit our own kind of exception/qWarning())
 }
 
 
