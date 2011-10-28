@@ -537,31 +537,49 @@ QtJambiLink::~QtJambiLink()
 #if defined(QTJAMBI_DEBUG_TOOLS)
     acquireMagic();
 #endif
-    if (deleteInMainThread())
-        g_deleteLinkLock()->lockForWrite();
+    int disp = 0;
+    /* new block created to keep C++ goto usage happy */
+    {
+        JNIEnv *env = qtjambi_current_environment();   // moved from just before cleanUpAll(env) call to help debug messages
+        bool i_am_locked;
+        if (deleteInMainThread() || isDeleteLater() || isPointerZeroed()) {
+            g_deleteLinkLock()->lockForWrite();
+            i_am_locked = true;
+        } else {
+            i_am_locked = false;
+        }
 
+        disp = cleanUpAll(env);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        if((disp & 0x0001) != 0) {  // FIXME move up ?
+            m_qtJambiLinkUserData = 0;
+        }
+#endif
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
         qtjambi_increase_linkDestroyedCount(m_className);
 #endif
 
-    JNIEnv *env = qtjambi_current_environment();
-    cleanUpAll(env);
+        if (i_am_locked) {
+            g_deleteLinkLock()->unlock();
+        }
+    }
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
         QtJambiLinkList_remove();
 #endif
 #if defined(QTJAMBI_DEBUG_TOOLS)
+        // when (disp & 0x0001)!=0 then we used 'delete' synchronously to destroy m_pointer, when we did this
+        //  and it was a QObject it would have called QtJambiLinkUserData dtor.  Meaning we expect
+        //  the MAGIC of that to now be invalid.
         releaseMagic();
 #endif
     return;
 
-release:
 #if defined(QTJAMBI_DEBUG_TOOLS)
+release:
     releaseMagic();
 #endif
-    if (deleteInMainThread())
-        g_deleteLinkLock()->unlock();
 }
 
 
@@ -569,7 +587,13 @@ void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
 {
     Q_ASSERT(env);
     Q_ASSERT(!m_object_invalid);
-    if (env != 0 && m_pointer != 0 && m_java_object != 0 && !m_object_invalid) {
+    // FIXME: This is too many checks, the caller should be made responsible
+    //  for many of these.  Verify visibility and use outside the DSO qtjambi.so.
+    // FIXME: Consider renaming m_object_invalid => m_called_disposed
+    // This used to care about (env != 0)
+    // This used to care about (m_pointer != 0)
+    // This used to care about (!m_object_invalid) not its an Q_ASSERT and caller checks
+    if (m_java_object != 0) {
         StaticCache *sc = StaticCache::instance();
         sc->resolveQtJambiObject();
         env->CallVoidMethod(m_java_object, sc->QtJambiObject.disposed);
@@ -646,13 +670,25 @@ int QtJambiLink::deleteNativeObject(JNIEnv *env)
     Q_ASSERT(!m_delete_later);	// must be 0
     int rv;
 
+#if 0
+    // I can only guess we call this from here to give the disposed() callback a
+    // last chance to work with the native object before we destroy it.
+    // NOPE, this appears to be have the problem in blowing away the ability
+    //  to translate from m_pointer -> m_java_object when the Qt event system
+    //  is trying to delivery events after the object has been GCed by Java and
+    //  we use deleteLater() here.  In this case it is best to let the Qt system
+    //  use the C++ dtor to cause this logic to happen since at that point in
+    //  time we a guaranteed events will have been flushed.
+    if(!m_object_invalid)
+        aboutToMakeObjectInvalid(env);
 
-    aboutToMakeObjectInvalid(env);
-
+    // As the native object is about to be deleted then there is no need for the
+    // native object to pin the Java object in memory any longer.
     if (m_java_object && isGlobalReference()) {
         env->DeleteGlobalRef(m_java_object);
         m_java_object = 0;
     }
+#endif
 
     if (isQObject() && m_ownership == JavaOwnership) {
 
@@ -784,12 +820,19 @@ void QtJambiLink::javaObjectFinalized(JNIEnv *env)
 #if defined(QTJAMBI_DEBUG_TOOLS)
     acquireMagic();
 #endif
-    if (deleteInMainThread())
+    bool i_am_locked;
+    if (deleteInMainThread() || isDeleteLater() || isPointerZeroed()) {
         g_deleteLinkLock()->lockForWrite();
+        i_am_locked = true;
+    } else {
+        i_am_locked = false;
+    }
 
-    cleanUpAll(env);
+    int disp = cleanUpAll(env);
 #if defined(QTJAMBI_DEBUG_TOOLS)
+    if((disp & 0x0001) != 0) {  // FIXME move up ?
         m_qtJambiLinkUserData = 0;
+    }
 #endif
     setAsFinalized();
 
@@ -816,8 +859,9 @@ void QtJambiLink::javaObjectFinalized(JNIEnv *env)
     bool deleteInMainThread = this->deleteInMainThread();
     bool qobjectDeleted = this->qobjectDeleted();
 
-    if (deleteInMainThread)
+    if (i_am_locked) {
         g_deleteLinkLock()->unlock();
+    }
 
     // **** Link may be deleted at this point (QObjects and GUI objects that are Java owned)
 
@@ -834,14 +878,32 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 #if defined(QTJAMBI_DEBUG_TOOLS)
     acquireMagic();
 #endif
-    if (deleteInMainThread())
+    bool i_am_locked = false;
+    if (deleteInMainThread() || isDeleteLater() || isPointerZeroed()) {
         g_deleteLinkLock()->lockForWrite();
+        i_am_locked = true;
+    }
 
     if (m_pointer) {
+        // Not sure why we do this here ?  Why are we messing with ownership and therefore the
+        //  lifecycles.  And why is m_pointer!=0 important ?
+        // I have a hunch this is forced to Java ownership due to QtJambiLinkUserData reentrancy as it would
+        //  inhibit the 'delete m_link;'.  If this is the case I have understood and solved that matter a
+        //  different way and there is no risk of having QtJambiLink destroyed from under us.
+        // Alternatively this maybe to force a WeakReference back to Java from QtJambiLink because after
+        //  all we are disposed now.
         setJavaOwnership(env, m_java_object);
-        deleteNativeObject(env);
+        // We call this here to ensure it always gets called before we return from javaObjectDisposed()
+        if(!m_object_invalid)
+            aboutToMakeObjectInvalid(env);
+        // This must be called when m_pointer!=0 && !m_delete_later
         if(!m_delete_later) {
+            int disp = deleteNativeObject(env);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            if((disp & 0x0001) != 0) {  // FIXME move up ?
                 m_qtJambiLinkUserData = 0;
+            }
+#endif
         }
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
@@ -871,8 +933,9 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
     bool deleteInMainThread = this->deleteInMainThread();
     bool isGUIThread = QCoreApplication::instance() == 0 || QCoreApplication::instance()->thread() == QThread::currentThread();
 
-    if (deleteInMainThread)
+    if (i_am_locked) {
         g_deleteLinkLock()->unlock();
+    }
 
     // **** Link may be deleted at this point (QObjects and GUI objects that are Java owned)
 
@@ -916,8 +979,13 @@ void QtJambiLink::setMetaType(int metaType)
 
 
 void QtJambiLink::resetObject(JNIEnv *env) {
+// FIXME: We want to add this check if needed
+//    if (m_java_object != 0)
     releaseJavaObject(env);
-    aboutToMakeObjectInvalid(env);
+    // FIXME: releaseJavaObject() already calls aboutToMakeObjectInvalid(env) when m_java_object!=0
+    // redundant call to aboutToMakeObjectInvalid()
+    //if(!m_object_invalid)
+    //    aboutToMakeObjectInvalid(env);
 
     if(m_pointer) {
         // This flag means the object still exists in memory but its not our (QtJambi) responsbility anymore
@@ -928,6 +996,8 @@ void QtJambiLink::resetObject(JNIEnv *env) {
 
 void QtJambiLink::javaObjectInvalidated(JNIEnv *env)
 {
+// FIXME: We want to add this check if needed
+//    if (m_java_object != 0)  
     releaseJavaObject(env);
 
     // Link deletion policy
