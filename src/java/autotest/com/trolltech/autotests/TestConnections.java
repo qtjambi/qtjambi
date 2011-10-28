@@ -45,6 +45,7 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -1532,10 +1533,11 @@ public class TestConnections extends QApplicationTest implements Qt
             }
             t.join();
         } catch(Exception ex) {
-
+            ex.printStackTrace();
         }
 
         assertTrue(e.goodExit);
+        assertFalse(t.isAlive());  // make sure its dead
     }
 
     @Test public void standardReadWriteResetProperty() {
