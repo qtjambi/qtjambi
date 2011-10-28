@@ -135,8 +135,10 @@ public class GeneratorTask extends Task {
         switch(OSInfo.os()) {
         case Windows:
             exe = "generator.exe";
+            break;
         default:
             exe = "generator";
+            break;
         }
 
         return Util.LOCATE_EXEC(exe, searchPath(), null).getAbsolutePath();
@@ -242,12 +244,12 @@ public class GeneratorTask extends Task {
         if(o != null) {
             if(o instanceof String[]) {
                 String[] sA = (String[]) o;
-                commandList.add("--preproc-stage2");
+                commandList.add(argument);
                 for(String s : sA)
                     commandList.add(s);
             } else {
                 StringTokenizer st = new StringTokenizer(o.toString(), ",");
-                commandList.add("--preproc-stage2");
+                commandList.add(argument);
                 while(st.hasMoreTokens())
                     commandList.add(st.nextToken());
             }
