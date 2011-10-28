@@ -393,6 +393,15 @@ QtJambiLink *QtJambiLink::findLink(JNIEnv *env, jobject java)
 
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    // This is a hack around the testcase com.trolltech.autotests.TestMemoryManagementValueType
+    if(env->IsInstanceOf(java, sc->QtJambiObject.class_ref) == 0) {
+        fprintf(stderr, "QtJambiLink(static)::findLink(java=%p) WARNING the supplied argument fails (java instanceof QtJambiObject) test\n", java);
+        fflush(stderr);
+        return 0;
+    }
+    Q_ASSERT(env->IsInstanceOf(java, sc->QtJambiObject.class_ref));  // check the java object is right type
+#endif
     QtJambiLink *link = reinterpret_cast<QtJambiLink *>(env->GetLongField(java, sc->QtJambiObject.native_id));
 #if defined(QTJAMBI_DEBUG_TOOLS)
     Q_ASSERT(!link || QtJambiLink::QtJambiLinkList_check(link));  // check the C++ pointer is valid
@@ -555,6 +564,8 @@ release:
 
 void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
 {
+    Q_ASSERT(env);
+    Q_ASSERT(!m_object_invalid);
     if (env != 0 && m_pointer != 0 && m_java_object != 0 && !m_object_invalid) {
         StaticCache *sc = StaticCache::instance();
         sc->resolveQtJambiObject();

@@ -282,6 +282,10 @@ QString qtjambi_class_name(JNIEnv *env, jclass java_class)
     Q_ASSERT(java_class);
     StaticCache *sc = StaticCache::instance();
     sc->resolveClass();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    Q_ASSERT(java_class);
+    Q_ASSERT(env->IsInstanceOf(java_class, sc->Class.class_ref));  // check the java object is right type
+#endif
     jstring name = (jstring) env->CallObjectMethod(java_class, sc->Class.getName);
     return qtjambi_to_qstring(env, name);
 }
@@ -431,6 +435,7 @@ QObject *qtjambi_to_qobject(JNIEnv *env, jobject java_object)
 int qtjambi_to_enum(JNIEnv *env, jobject java_object)
 {
     int returned = 0;
+    Q_ASSERT(java_object);
     jclass clazz = env->GetObjectClass(java_object);
     if (clazz != 0) {
         jmethodID methodId = resolveMethod(env, "value", "()I", clazz);
@@ -546,12 +551,14 @@ void qtjambi_invalidate_object(JNIEnv *env, jobject java_object, bool checkJavaO
 
 void qtjambi_invalidate_collection(JNIEnv *env, jobject java_collection, bool checkJavaOwnership)
 {
+    Q_ASSERT(java_collection);
     jobjectArray java_array = qtjambi_collection_toArray(env, java_collection);
     qtjambi_invalidate_array(env, java_array, checkJavaOwnership);
 }
 
 void qtjambi_invalidate_array(JNIEnv *env, jobjectArray java_array, bool checkJavaOwnership)
 {
+    Q_ASSERT(java_array);
     jsize array_size = env->GetArrayLength(java_array);
     for (int i=0; i<array_size; ++i) {
         jobject java_element = env->GetObjectArrayElement(java_array, i);
@@ -703,6 +710,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
 
 jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className)
 {
+    Q_ASSERT(className);
     jclass cl = qtjambi_find_class(env, className);
     Q_ASSERT(cl);
 
@@ -714,6 +722,7 @@ jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className)
 
 jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char *className)
 {
+    Q_ASSERT(className);
     jclass cl = qtjambi_find_class(env, className);
     Q_ASSERT(cl);
 
@@ -727,6 +736,10 @@ int qtjambi_to_enumerator(JNIEnv *env, jobject value)
 {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtEnumerator();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    Q_ASSERT(value);
+    Q_ASSERT(env->IsInstanceOf(value, sc->QtEnumerator.class_ref));  // check the java object is right type
+#endif
     return env->CallIntMethod(value, sc->QtEnumerator.value);
 }
 
@@ -802,7 +815,11 @@ void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections)
 
     StaticCache *sc = StaticCache::instance();
     sc->resolveNativePointer();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    Q_ASSERT(env->IsInstanceOf(java_object, sc->NativePointer.class_ref));  // check the java object is right type
+#endif
     int object_indirections = env->GetIntField(java_object, sc->NativePointer.indirections);
+    // What is this != test doing ?
     if (object_indirections != indirections) {
         jclass exception_class = resolveClass(env, "IllegalArgumentException", "java/lang/");
         Q_ASSERT(exception_class);
@@ -834,6 +851,9 @@ void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *colum
 {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQTableArea();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    Q_ASSERT(env->IsInstanceOf(tableArea, sc->QTableArea.class_ref));  // check the java object is right type
+#endif
     if (row != 0)
         *row = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.row) : -1;
     if (column != 0)
@@ -858,6 +878,10 @@ bool qtjambi_from_resolvedentity(JNIEnv *env, void *&inputSource, jobject resolv
     StaticCache *sc = StaticCache::instance();
     sc->resolveResolvedEntity();
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    Q_ASSERT(resolvedEntity);
+    Q_ASSERT(env->IsInstanceOf(resolvedEntity, sc->ResolvedEntity.class_ref));  // check the java object is right type
+#endif
     jobject java_inputSource = env->GetObjectField(resolvedEntity, sc->ResolvedEntity.inputSource);
     inputSource = qtjambi_to_object(env, java_inputSource);
 
@@ -873,13 +897,16 @@ jobject qtjambi_to_cellatindex(JNIEnv *env, int row, int column, int rowCount, i
 
 void qtjambi_from_cellatindex(JNIEnv *env, jobject cellAtIndex, int *row, int *column, int *rowCount, int *columnCount, bool *isSelected)
 {
+    Q_ASSERT(cellAtIndex);
     qtjambi_from_tablearea(env, cellAtIndex, row, column, rowCount, columnCount);
 
     StaticCache *sc = StaticCache::instance();
     sc->resolveCellAtIndex();
 
-    if (isSelected != 0)
+    if (isSelected != 0) {
+        Q_ASSERT(env->IsInstanceOf(cellAtIndex, sc->CellAtIndex.class_ref));  // check the java object is right type
         *isSelected = cellAtIndex != 0 ? env->GetBooleanField(cellAtIndex, sc->CellAtIndex.isSelected) : false;
+    }
 }
 
 
@@ -923,6 +950,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                                          const char **signatures)
 {
     QTJAMBI_EXCEPTION_CHECK(env);
+    Q_ASSERT(object);
     jclass object_class = env->GetObjectClass(object);
 
 //     printf("vtable for: %s\n", qPrintable(qtjambi_class_name(env, object_class)));
@@ -934,7 +962,12 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     sc->resolveQtJambiInternal();
 
     QTJAMBI_EXCEPTION_CHECK(env);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    Q_ASSERT(object_class);
+    Q_ASSERT(env->IsInstanceOf(object_class, sc->Class.class_ref));  // check the java object is right type
+#endif
     jstring jclass_name = (jstring) env->CallObjectMethod(object_class, sc->Class.getName);
+    Q_ASSERT(jclass_name);
     QString qclass_name = qtjambi_to_qstring(env, jclass_name);
 
     QtJambiFunctionTable *table = findFunctionTable(qclass_name);
@@ -1174,6 +1207,7 @@ bool qtjambi_connect_cpp_to_java(JNIEnv *,
 
 jobject qtjambi_array_to_nativepointer(JNIEnv *env, jobjectArray array, int elementSize)
 {
+    Q_ASSERT(array);
     int len = env->GetArrayLength(array);
     if (len == 0)
         return 0;
@@ -1501,6 +1535,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
                 for (int i=0; i<urlList.size(); ++i) {
                     if (!oldUrlList.contains(urlList.at(i))) {
                         jobject url = env->NewObject(sc->URL.class_ref, sc->URL.constructor, qtjambi_from_qstring(env, urlList.at(i)));
+                        Q_ASSERT(url);
                         env->CallVoidMethod(classLoader, sc->URLClassLoader.addURL, url);
                     }
                 }
@@ -1510,6 +1545,7 @@ jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
 
             // Look up the class in our custom class loader
             jstring className = qtjambi_from_qstring(env, qtClassName);
+            Q_ASSERT(className);
             returned = (jclass) env->CallObjectMethod(classLoader, sc->ClassLoader.loadClass, className);
         } else {
             env->Throw(exception);
@@ -2143,6 +2179,7 @@ static bool qtjambi_disconnect_callback(void **raw_data)
 
         StaticCache *sc = StaticCache::instance();
         sc->resolveAbstractSignal();
+        Q_ASSERT(resolved_data.java_signal);
         jni_env->CallBooleanMethod(resolved_data.java_signal,
                                 sc->AbstractSignal.removeConnection,
                                 resolved_data.java_receiver,
@@ -2182,6 +2219,7 @@ static bool qtjambi_connect_callback(void **raw_data, bool slotMustBeGenerated)
 
     StaticCache *sc = StaticCache::instance();
     sc->resolveAbstractSignal();
+    Q_ASSERT(resolved_data.java_signal);
     bool result = jni_env->CallBooleanMethod(resolved_data.java_signal,
                                              sc->AbstractSignal.connectSignalMethod,
                                              resolved_data.java_method,
@@ -2375,6 +2413,7 @@ bool JObjectWrapper::operator==(const JObjectWrapper &other) const
         JNIEnv *env = qtjambi_current_environment();
         StaticCache *sc = StaticCache::instance();
         sc->resolveObject();
+        Q_ASSERT(env->IsInstanceOf(object, sc->Object.class_ref));  // check the java object is right type (objects on JVM don't have to inherit java.lang.Object)
         return env->CallBooleanMethod(object, sc->Object.equals, other.object);
     } else {
         return (object == other.object);
@@ -2435,9 +2474,11 @@ QVarLengthArray<jvalue> qtjambi_from_jobjectArray(JNIEnv *env,
                                                   jintArray _cnvTypes,
                                                   bool globalRefs)
 {
+    Q_ASSERT(_cnvTypes);
     int len = env->GetArrayLength(_cnvTypes);
     jint *cnvTypes = env->GetIntArrayElements(_cnvTypes, 0);
     QVarLengthArray<jvalue> argsArray(len);
+    Q_ASSERT(args);
     for (int i=0; i<len; ++i) {
         jobject arg_object = env->GetObjectArrayElement(args, i);
         switch (cnvTypes[i]) {
