@@ -2194,6 +2194,11 @@ static bool qtjambi_event_notify(void **data)
     QEvent *event = (QEvent *) data[1];
     bool *result = (bool *) data[2];
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    char tmpbuf[512];
+    const char *eventdesc = QtJambiDebugEvent::qtjambi_event_desc_to_string(tmpbuf, sizeof(tmpbuf), event);
+#endif
+
     switch (event->type()) {
     case 513:
         // this is a delete event that has to happen in the gui thread.

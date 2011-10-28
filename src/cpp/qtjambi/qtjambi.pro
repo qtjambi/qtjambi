@@ -32,8 +32,8 @@ HEADERS += \
     qtjambivariant_p.h \
 
 contains(DEFINES, QTJAMBI_DEBUG_TOOLS) {
-    SOURCES += qtjambidebugtools.cpp
-    HEADERS += qtjambidebugtools_p.h
+    SOURCES += qtjambidebugtools.cpp qtjambidebugevent.cpp
+    HEADERS += qtjambidebugtools_p.h qtjambidebugevent_p.h
 }
 
 DEFINES += QTJAMBI_EXPORT
