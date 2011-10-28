@@ -45,30 +45,126 @@
 package com.trolltech.qt;
 
 import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.internal.QClassPathFileEngineHandler;
 
 class QtJambi_LibraryShutdown implements Runnable {
-    public void run() {
-        QCoreApplication app = QCoreApplication.instance();
+    // At the time a shutdown hook is called it is possible to see a java.lang.NoClassDefFoundError
+    // as the ClassLoader might not be available to the JVM to find/resolve/load a new class (after
+    // all we are shutting down).  So we preload the classes we intend to use later.
+//    QtJambi_LibraryShutdown() {
+//    }
 
-        if (QtJambi_LibraryInitializer.messageHandler != null)
-            QMessageHandler.removeMessageHandler(QtJambi_LibraryInitializer.messageHandler);
-
-        if (app != null) {
-            Thread appThread = app.thread();
-            QCoreApplication.quit();
-
-            try {
-                if (appThread != null)
-                    appThread.join(500);
-            } catch (Exception e) {
-                e.printStackTrace();
+    protected void init() {
+        try {
+            final String[] classNameA = {
+                // QCoreApplication.instance() - this is native
+                // QCoreApplication.quit() - this is native
+                "com.trolltech.qt.core.QCoreApplication",
+                // QtJambi_LibraryInitializer - well we kind of know this should exist
+                //   already as QtJambi_LibraryShutdown was probably installed from it
+                "com.trolltech.qt.QtJambi_LibraryInitializer",
+                // QMessageHandler.removeMessageHandler()
+                "com.trolltech.qt.core.QMessageHandler",
+                // QEventLoop.ProcessEventsFlag.DeferredDeletion
+                "com.trolltech.qt.core.QEventLoop",
+                // QClassPathFileEngineHandler.uninitialize()
+                "com.trolltech.qt.internal.QClassPathFileEngineHandler"
+            };
+            ClassLoader classLoader = QtJambi_LibraryShutdown.class.getClassLoader();
+            for(String className : classNameA) {
+                try {
+                    if(className.length() > 100) {
+                    Class clazz = classLoader.loadClass(className);
+                    }
+                } catch(ClassNotFoundException eat) {
+                    // should never happen
+                }
             }
+        } catch(Throwable e) {
+            e.printStackTrace();
         }
-
     }
 
+    public void run() {
+        try {
+            QCoreApplication app = QCoreApplication.instance();
+
+            if(app != null) {
+                Thread appThread = app.thread();
+
+                // FIXME Run event queue ?
+                // We kind of want to place mark on the event queue and run to mark.
+                // QEventLoop.ProcessEventsFlag.DeferredDeletion - is marked as deprecated
+                // calling QCoreApplication.processEvents() will only process the events
+                // for this thread, since we're a temporary shutdown thread and not the main
+                // GUI thread there is no use calling it here.
+                QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);  // allow deleteLater() to work some magic
+
+                QCoreApplication.quit();
+
+                try {
+                    QCoreApplication.processEvents();
+                    QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);  // allow deleteLater() to work some magic
+                    // A fixed time of 500ms is not really ideal.  Better to allow some
+                    //  query/configuration include infinite timeout.  Also to warn to
+                    //  console when we know the main GUI thread did not terminate on time
+                    //  so the resulting errors/crashes can be explained on shutdown.
+                    if(appThread != null)
+                        appThread.join(500);
+                } catch(Throwable e) {
+                    e.printStackTrace();
+                } finally {
+                    if(appThread == null || appThread.isAlive() == false) {
+                        app.dispose();		// push the delete matter
+                    }
+                }
+                appThread = null;	 // kill hard-reference
+                app = null;		// kill hard-reference
+            }
+
+            Runtime runtime = Runtime.getRuntime();
+            runtime.gc();
+            runtime.runFinalization();
+
+            // FIXME: Try to enumerate plugins and unload
+            // FIXME: Try to enumerate modules and unload
+
+            shutdown_mark();
+
+            QClassPathFileEngineHandler.uninitialize();
+
+            // TODO: Understand (and document) why this _was_ run before QCoreApplication.quit().
+            //  Ideally we want all quit signal/slots to run with the messageHandler in place
+            //  only once we are in the final stages of shutdown do we unhook them.
+            QtJambi_LibraryInitializer.removeMessageHandlerForExceptions();
+
+            // Remove any handlers that are still installed, these would be one the app-dev setup
+            int c = QMessageHandler.shutdown(true);
+
+            try {
+                // this is synchronized access already so we can force it
+                QThreadManager.releaseNativeResources();
+                boolean bf = QThreadManager.shutdown(500);
+            } catch(Throwable e) {
+                e.printStackTrace();
+            }
+
+            unregister_helper();
+
+            // We attempt to do our best to purge the VM
+            runtime.gc();
+            runtime.runFinalization();
+
+            // FIXME: Unregister Qt callbacks
+
+            //shutdown_helper();
+            
+        } catch(Throwable e) {
+            e.printStackTrace();
+        }
+    }
 
     // This flags in C++ the we are starting a phase change to shutdown
     private native void shutdown_mark();
