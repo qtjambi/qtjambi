@@ -244,7 +244,14 @@ public class TestInjectedCodeV2 extends QApplicationTest {
         // access in the testLookupHostWithSignal function below.
         //
         // Bug ID: 6356636 on Bugparade
-        public Signal1 mySignal = new Signal1<QHostInfo>(); {
+        //
+        // These 2 test cases are written in this specific way so that
+        //  they do not trigger the Sun JDK 5 bug that still exists
+        //  today (Oct 2011).
+        public Signal1<QHostInfo> mySignal;
+
+        public LookupHostQObject() {
+            mySignal = new Signal1<QHostInfo>();
             mySignal.connect(this, "secondSlot(QHostInfo)");
         }
 
@@ -262,14 +269,29 @@ public class TestInjectedCodeV2 extends QApplicationTest {
     {
         LookupHostQObject helloObject = new LookupHostQObject();
 
-        QHostInfo.lookupHost("ftp.trolltech.com", helloObject, "firstSlot");
-        while (helloObject.fromFirstSlot.length() == 0) {
+        // This API does not need the extra argument only the method name
+        QHostInfo.lookupHost("ftp.trolltech.com", helloObject, "firstSlot" /*+"(QHostInfo)"*/);
+        int i = 0;
+        while (helloObject.fromFirstSlot.length() == 0 && i < 100) {
             QApplication.processEvents();
+            try {
+                Thread.sleep(100);
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+            i++;
         }
 
         // Was: 62.70.27.67 (pre 02-Aug-2011)
         // Now: 87.238.50.190 (since 02-Aug-2011)
         assertEquals("87.238.50.190", helloObject.fromFirstSlot);
+        Utils.println(2, "RESULT: " + helloObject.fromFirstSlot + " for " + "ftp.trolltech.com");
+    }
+
+    @SuppressWarnings("unchecked")
+    private void lookupHost(String host, Signal1 signal) {
+        // Put in a method on its own for @SuppressWarnings isolation
+        QHostInfo.lookupHost(host, signal);
     }
 
     @Test
@@ -277,14 +299,30 @@ public class TestInjectedCodeV2 extends QApplicationTest {
     {
         LookupHostQObject helloObject = new LookupHostQObject();
 
-        QHostInfo.lookupHost("ftp.trolltech.com", helloObject.mySignal);
-        while (helloObject.fromSecondSlot.length() == 0) {
+        // We can't let the Sun JDK5 compiler know the genericified type otherwise it triggers the bug.
+        // So this cast (to ensure it is a raw type) allows correct code to compiled and the results it
+        // correct code generated (correct enough to pass the testcase anyhow).
+        // Ideally this would be (or without cast if the type is already qualified) :
+        //   QHostInfo.lookupHost("ftp.trolltech.com", (Signal1<QHostInfo>)helloObject.mySignal);
+        // We could call it directly from here and eat the unchecked warning like this :
+        //   QHostInfo.lookupHost("ftp.trolltech.com", (Signal1/*<QHostInfo>*/)helloObject.mySignal);
+        // But we decided to use a separate method for it.
+        lookupHost("ftp.trolltech.com", (Signal1/*<QHostInfo>*/)helloObject.mySignal);
+        int i = 0;
+        while (helloObject.fromSecondSlot.length() == 0 && i < 100) {
             QApplication.processEvents();
+            try {
+                Thread.sleep(100);
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+            i++;
         }
 
         // Was: 62.70.27.67 (pre 02-Aug-2011)
         // Now: 87.238.50.190 (since 02-Aug-2011)
         assertEquals("87.238.50.190", helloObject.fromSecondSlot);
+        Utils.println(2, "RESULT: " + helloObject.fromSecondSlot + " for " + "ftp.trolltech.com");
     }
 
     @Test
