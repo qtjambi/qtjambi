@@ -204,10 +204,43 @@ bool qtjambi_exception_check(JNIEnv *env, const char *fileName, int lineNumber)
 {
     if (env->ExceptionCheck()) {
         if (fileName != 0)
-            fprintf(stderr, "QtJambi: Exception pending in native code in file '%s':%d\n", fileName, lineNumber);
+            fprintf(stderr, "QtJambi: Exception pending in native code in file %s:%d\n", fileName, lineNumber);
         else
             fprintf(stderr, "QtJambi: Exception pending in native code\n");
-        env->ExceptionDescribe();
+
+        jmethodID mid = 0;  // used as flag to indicate we managed to call Throwable#printStackTrace()
+        {
+            jthrowable throbj = env->ExceptionOccurred();
+            if(throbj) {
+                // Need to clear the exception to get FindClass() to work.
+                env->ExceptionClear();
+                // FIXME: Cacheable
+                // Can't call FindClass() with an exception pending (it will return 0)
+                jclass clazz = env->FindClass("java/lang/Throwable");
+                // IsInstanceOf might be PARANOIA ?
+                if(clazz && env->IsInstanceOf(throbj, clazz)) {
+                    mid = env->GetMethodID(clazz, "printStackTrace", "()V");
+                    if(mid)
+                        env->CallVoidMethod(throbj, mid);
+                }
+                // We cleanup all our local references here because:
+                //  * exception handling is not expected for a performance code path so we can
+                //    afford the performance due to extra code,
+                //  * we don't know if the caller is using is in a loop or other long running
+                //    code path,
+                //  * we expect to be used multiple times in many APIs
+                if(clazz)
+                    env->DeleteLocalRef(clazz);
+                env->DeleteLocalRef(throbj);
+            }
+        }
+        // This isn't very useful as its not where the exception really occured a nested
+        // exception however would be perfect (as long as we keep the original kind).
+        // FIXME: This should go via MessageHandler / allowed to be rethrown and bubble upwards
+        /*if(!mid)*/ {
+            fprintf(stderr, "QtJambi: Exception pending in native code (detected at)\n");
+            env->ExceptionDescribe();
+        }
         env->ExceptionClear();
         return true;
     }
