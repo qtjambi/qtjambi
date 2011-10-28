@@ -694,7 +694,7 @@ public class InitializeTask extends Task {
     private boolean doesQtLibExist(String name, int version, String librarydir) {
         StringBuilder path = new StringBuilder();
         path.append(librarydir);
-        path.append("/");
+        path.append(File.separator);
         path.append(LibraryEntry.formatQtName(name, debug, String.valueOf(version)));
         //System.out.println("Checking QtLib: " + path);
         return new File(path.toString()).exists();
@@ -713,7 +713,7 @@ public class InitializeTask extends Task {
             path.append(propertyHelper.getProperty((String) null, LIBDIR).toString());
         }
 
-        path.append("/");
+        path.append(File.separator);
         path.append(LibraryEntry.formatQtJambiName(name, debug, String.valueOf(qtMajorVersion)));
         //System.out.println("Checking QtLib: " + path);
         return new File(path.toString()).exists();
@@ -728,7 +728,7 @@ public class InitializeTask extends Task {
             path.append(propertyHelper.getProperty((String) null, BINDIR).toString());
         }
 
-        path.append("/");
+        path.append(File.separator);
         path.append(LibraryEntry.formatQtJambiName(name, false, null));  // unversioned
         //System.out.println("Checking QtBin: " + path);
         return new File(path.toString()).exists();
@@ -737,9 +737,11 @@ public class InitializeTask extends Task {
     private boolean doesQtPluginExist(String name, String subdir) {
         StringBuilder path = new StringBuilder();
         path.append(propertyHelper.getProperty((String) null, PLUGINSDIR));
-        path.append("/plugins/");
+        path.append(File.separator);
+        path.append("plugins");
+        path.append(File.separator);
         path.append(subdir);
-        path.append("/");
+        path.append(File.separator);
 
         //! TODO: useful?
         path.append(LibraryEntry.formatPluginName(name, false, debug, String.valueOf(qtMajorVersion)));
