@@ -373,6 +373,12 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFun
         AbstractMetaArgumentList arguments = signal->arguments();
         Indentation indent(INDENT);
 
+        s << INDENT << "  QTJAMBI_DEBUG_TRACE(\"(shell) entering: ";
+        writeFunctionSignature(s, signal, cls, signalWrapperPrefix(),
+                           Option(OriginalName | OriginalTypeDescription),
+                           "QtJambi_SignalWrapper_");
+        s << "\");" << endl;
+
         if (arguments.size() > 0)
             s << INDENT << "jvalue arguments[" << arguments.size() << "];" << endl;
         else
@@ -398,6 +404,12 @@ void CppImplGenerator::writeSignalFunction(QTextStream &s, const AbstractMetaFun
 
         writeCodeInjections(s, signal, cls, CodeSnip::End, TypeSystem::Signal);
         s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
+
+        s << INDENT << "  QTJAMBI_DEBUG_TRACE(\"(shell)  leaving: ";
+        writeFunctionSignature(s, signal, cls, signalWrapperPrefix(),
+                           Option(OriginalName | OriginalTypeDescription),
+                           "QtJambi_SignalWrapper_");
+        s << "\");" << endl;
 
         if (signal->type() != 0)
             s << INDENT << default_return_statement_qt(signal->type()) << ";" << endl;
@@ -963,8 +975,17 @@ void CppImplGenerator::writeShellConstructor(QTextStream &s, const AbstractMetaF
     s << "{" << endl;
     {
         Indentation indent(INDENT);
+
+        s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << shellClassName(cls) << "::";
+        writeFunctionSignature(s, java_function, cls);
+        s << "\");" << endl;
+
         writeCodeInjections(s, java_function, cls, CodeSnip::Beginning, TypeSystem::ShellCode);
         writeCodeInjections(s, java_function, cls, CodeSnip::End, TypeSystem::ShellCode);
+
+        s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) leaving: " << shellClassName(cls) << "::";
+        writeFunctionSignature(s, java_function, cls);
+        s << "\");" << endl;
     }
     s << "}" << endl << endl;
 }
@@ -975,6 +996,10 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
     << "{" << endl;
     {
         Indentation indent(INDENT);
+
+        s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << shellClassName(java_class) << "::~"
+        << shellClassName(java_class) << "()\");" << endl;
+
         s << "#ifdef QT_DEBUG" << endl
         << INDENT << "if (m_vtable)" << endl
         << INDENT << "    m_vtable->deref();" << endl
@@ -1040,6 +1065,9 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
         }
 
         s << INDENT << "}" << endl;
+
+        s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) leaving: "  << shellClassName(java_class) << "::~"
+        << shellClassName(java_class) << "()\");" << endl;
     }
     s << "}" << endl << endl;
 }
