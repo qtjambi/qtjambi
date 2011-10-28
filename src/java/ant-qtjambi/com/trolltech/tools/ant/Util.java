@@ -239,10 +239,14 @@ abstract class Util {
 
 
     public static File makeCanonical(String file) throws BuildException {
+        if(file == null)
+            return null;
         return makeCanonical(new File(file));
     }
 
     public static File makeCanonical(File file) throws BuildException {
+        if(file == null)
+            return null;
         try {
             return file.getCanonicalFile();
         } catch(IOException e) {

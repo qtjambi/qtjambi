@@ -92,7 +92,7 @@ public class InitializeTask extends Task {
      *
      * TODO: These flags should be documented here and if possibly, outside in
      * build documentation.
-     * Or rather these binds shouldn’t exist, how much of this could be moved to
+     * Or rather these binds shouldn't exist, how much of this could be moved to
      * xml side?
      */
     public static final String BINDIR                   = "qtjambi.qt.bindir";
@@ -114,6 +114,9 @@ public class InitializeTask extends Task {
     public static final String QT_VERSION_PATCHLEVEL    = "qt.version.patchlevel";
     public static final String QT_VERSION               = "qt.version";
 
+    public static final String QT_VERSION_MAJOR_NEXT    = "qt.version.major.next";
+    public static final String QT_VERSION_MINOR_NEXT    = "qt.version.minor.next";
+
     public static final String QT_VERSION_PROPERTIES          = "version.properties";
     public static final String QT_VERSION_PROPERTIES_TEMPLATE = "version.properties.template";
 
@@ -123,17 +126,20 @@ public class InitializeTask extends Task {
     public static final String CLUCENE            = "qtjambi.clucene";
     public static final String COMPILER           = "qtjambi.compiler";
     public static final String CONFIGURATION      = "qtjambi.configuration";
-    public static final String CORE               = "qtjambi.core"; // mandatory with <= 4.7.x
+    public static final String CONFIGURATION_OSGI = "qtjambi.configuration.osgi";
+    public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x
     public static final String DBUS               = "qtjambi.dbus";
     public static final String DECLARATIVE        = "qtjambi.declarative";
     public static final String DESIGNER           = "qtjambi.designer";
     public static final String DESIGNERCOMPONENTS = "qtjambi.designercomponents";
-    public static final String GUI                = "qtjambi.gui"; // mandatory with <= 4.7.x
+    public static final String GUI                = "qtjambi.gui";              // mandatory with <= 4.7.x
     public static final String HELP               = "qtjambi.help";
     public static final String MULTIMEDIA         = "qtjambi.multimedia";
-    public static final String NETWORK            = "qtjambi.network"; // mandatory with <= 4.7.x
+    public static final String NETWORK            = "qtjambi.network";          // mandatory with <= 4.7.x
     public static final String OPENGL             = "qtjambi.opengl";
     public static final String OSNAME             = "qtjambi.osname";
+    public static final String OSPLATFORM         = "qtjambi.osplatform";	// linux windows macosx
+    public static final String OSCPU              = "qtjambi.oscpu";		// i386 x86_64 x86 x32
     public static final String PHONON             = "qtjambi.phonon";
     public static final String PHONON_DS9         = "qtjambi.phonon_ds9";
     public static final String PHONON_GSTREAMER   = "qtjambi.phonon_gstreamer";
@@ -145,16 +151,34 @@ public class InitializeTask extends Task {
     public static final String SVG                = "qtjambi.svg";
     public static final String TEST               = "qtjambi.test";
     public static final String WEBKIT             = "qtjambi.webkit";
-    public static final String XML                = "qtjambi.xml"; // mandatory with <= 4.7.x
+    public static final String XML                = "qtjambi.xml";              // mandatory with <= 4.7.x
     public static final String XMLPATTERNS        = "qtjambi.xmlpatterns";
     public static final String QTCONFIG           = "qtjambi.qtconfig";
 
     public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
 
+    public static final String PLUGINS_BEARER_CONNMANBEARER       = "qtjambi.plugins.bearer.connmanbearer";
+    public static final String PLUGINS_BEARER_GENERICBEARER       = "qtjambi.plugins.bearer.genericbearer";
+    public static final String PLUGINS_BEARER_NATIVEWIFIBEARER    = "qtjambi.plugins.bearer.nativewifibearer";
+    public static final String PLUGINS_BEARER_NMBEARER            = "qtjambi.plugins.bearer.nmbearer";
+
     public static final String PLUGINS_CODECS_CNCODECS      = "qtjambi.plugins.codecs.cncodecs";
     public static final String PLUGINS_CODECS_JPCODECS      = "qtjambi.plugins.codecs.jpcodecs";
     public static final String PLUGINS_CODECS_KRCODECS      = "qtjambi.plugins.codecs.krcodecs";
     public static final String PLUGINS_CODECS_TWCODECS      = "qtjambi.plugins.codecs.twcodecs";
+
+    public static final String PLUGINS_DESIGNER_ARTHURPLUGIN         = "qtjambi.plugins.designer.arthurplugin";
+    public static final String PLUGINS_DESIGNER_CONTAINEREXTENSION   = "qtjambi.plugins.designer.containerextension";
+    public static final String PLUGINS_DESIGNER_CUSTOMWIDGETPLUGIN   = "qtjambi.plugins.designer.customwidgetplugin";
+    public static final String PLUGINS_DESIGNER_PHONONWIDGETS        = "qtjambi.plugins.designer.phononwidgets";
+    public static final String PLUGINS_DESIGNER_QAXWIDGET            = "qtjambi.plugins.designer.qaxwidget";
+    public static final String PLUGINS_DESIGNER_QDECLARATIVEVIEW     = "qtjambi.plugins.designer.qdeclarativeview";
+    public static final String PLUGINS_DESIGNER_QWEBVIEW             = "qtjambi.plugins.designer.qwebview";
+    public static final String PLUGINS_DESIGNER_TASKMENUEXTENSION    = "qtjambi.plugins.designer.taskmenuextension";
+    public static final String PLUGINS_DESIGNER_WORLDTIMECLOCKPLUGIN = "qtjambi.plugins.designer.worldtimeclockplugin";
+
+    public static final String PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM    = "qtjambi.plugins.graphicssystems.glgraphicssystem";
+    public static final String PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM = "qtjambi.plugins.graphicssystems.tracegraphicssystem";
 
     public static final String PLUGINS_ICONENGINES_SVGICON  = "qtjambi.plugins.iconengines.svgicon";
 
@@ -166,6 +190,12 @@ public class InitializeTask extends Task {
     public static final String PLUGINS_IMAGEFORMATS_PNG     = "qtjambi.plugins.imageformats.png";
     public static final String PLUGINS_IMAGEFORMATS_SVG     = "qtjambi.plugins.imageformats.svg";
     public static final String PLUGINS_IMAGEFORMATS_TIFF    = "qtjambi.plugins.imageformats.tiff";
+
+    public static final String PLUGINS_INPUTMETHODS_IMSW_MULTI    = "qtjambi.plugins.inputmethods.imsw-multi";
+
+    public static final String PLUGINS_QMLTOOLING_QMLDBG_TCP      = "qtjambi.plugins.qmltooling.qmldbg_tcp";
+
+    public static final String PLUGINS_SCRIPT_QMLDBG_QTSCRIPTDBUS = "qtjambi.plugins.script.qtscriptdbus";
 
     public static final String PLUGINS_SQLDRIVERS_SQLITE    = "qtjambi.plugins.sqldrivers.sqlite";
     public static final String PLUGINS_SQLDRIVERS_SQLITE2   = "qtjambi.plugins.sqldrivers.sqlite2";
@@ -247,15 +277,49 @@ public class InitializeTask extends Task {
         if(verbose)
             System.out.println(COMPILER + " is " + compiler.toString());
 
+        String s;
+
+        s = null;
+        if(OSInfo.isLinux())
+            s = OSInfo.K_LINUX;
+        else if(OSInfo.isWindows())
+            s = OSInfo.K_WINDOWS;
+        else if(OSInfo.isMacOS())
+            s = OSInfo.K_MACOSX;
+        else if(OSInfo.isFreeBSD())
+            s = OSInfo.K_FREEBSD;
+        else if(OSInfo.isSolaris())
+            s = OSInfo.K_SUNOS;
+        if(s != null)
+            propertyHelper.setNewProperty((String) null, OSPLATFORM, s);
+
+        s = null;
+        // FIXME incorrect for windows x86/x64, sunos
+        if(osname.endsWith("64"))
+            s = "x86_64";
+        else
+            s = "i386";
+        if(s != null)
+            propertyHelper.setNewProperty((String) null, OSCPU, s);
+
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();
 
         propertyHelper.setNewProperty((String) null, JAVA_HOME_TARGET, decideJavaHomeTarget());
         propertyHelper.setNewProperty((String) null, JAVA_OSARCH_TARGET, decideJavaOsarchTarget());
 
-        propertyHelper.setNewProperty((String) null, CONFIGURATION, decideConfiguration());
-
-        String s;
+        String configuration = decideConfiguration();
+        propertyHelper.setNewProperty((String) null, CONFIGURATION, configuration);
+        s = null;
+        if("release".equals(configuration))
+            s = "";	// empty
+        else if("debug".equals(configuration))
+            s = ".debug";
+        else
+            s = ".test";
+        if(s != null)
+            propertyHelper.setNewProperty((String) null, CONFIGURATION_OSGI, s);
+        
 
         if(!decideQtVersion())
             throw new BuildException("Unable to determine Qt version, try editing: " + pathVersionPropertiesTemplate);
@@ -269,6 +333,10 @@ public class InitializeTask extends Task {
         if(verbose)
             System.out.println(QT_VERSION_MAJOR + " is " + s);
         propertyHelper.setNewProperty((String) null, QT_VERSION_MAJOR, s);
+        propertyHelper.setNewProperty((String) null, QT_VERSION_MAJOR_NEXT, String.valueOf(qtMajorVersion + 1));
+        propertyHelper.setNewProperty((String) null, QT_VERSION_MINOR,      String.valueOf(qtMinorVersion));
+        propertyHelper.setNewProperty((String) null, QT_VERSION_MINOR_NEXT, String.valueOf(qtMinorVersion + 1));
+        propertyHelper.setNewProperty((String) null, QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
 
 
         if(!decideGeneratorPreProc())
@@ -398,10 +466,37 @@ public class InitializeTask extends Task {
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1"));
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_MINGWM10,        decideQtBinDso(PACKAGING_DSO_MINGWM10,        "mingwm10"));
 
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1"));
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32"));
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32"));
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32"));
+
+        String packagingDsoLibeay32 = decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32");
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, packagingDsoLibeay32);
+
+        String packagingDsoLibssl32 = decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32", false);
+        String packagingDsoSsleay32 = decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32", false);
+        // When building QtJambi against the offical Nokia Qt SDK they appear to provide duplicate
+        // DLLs for the two naming variants libssl32.dll ssleay32.dll so we need to resolve this and
+        // omit one.
+        String packagingDsoLibssl32Message = "";
+        String packagingDsoSsleay32Message = "";
+        if("true".equals(packagingDsoLibssl32) && "true".equals(packagingDsoSsleay32)) {
+            // FIXME: Compare the files are actually the same
+            if(compiler == Compiler.GCC || compiler == Compiler.OldGCC || compiler == Compiler.MinGW || compiler == Compiler.MinGW_W64) {
+                packagingDsoSsleay32 = "false";    // favour libssl32.dll
+                packagingDsoSsleay32Message = " (was true; auto-inhibited)";
+            } else {
+                packagingDsoLibssl32 = "false";    // favour ssleay32.dll
+                packagingDsoLibssl32Message = " (was true; auto-inhibited)";
+            }
+        }
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, packagingDsoLibssl32);
+        if(verbose && (packagingDsoLibssl32Message.length() > 0 || "true".equals(packagingDsoLibssl32)))
+            System.out.println(PACKAGING_DSO_LIBSSL32 + ": " + packagingDsoLibssl32 + packagingDsoLibssl32Message);
+
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, packagingDsoSsleay32);
+        if(verbose && (packagingDsoSsleay32Message.length() > 0 || "true".equals(packagingDsoSsleay32)))
+            System.out.println(PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message);
+
+        String packagingDsoZlib1    = decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1");
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    packagingDsoZlib1);
 
         alreadyRun = true;
     }
@@ -1064,11 +1159,15 @@ public class InitializeTask extends Task {
         return result;
     }
 
-    private String decideQtLibDso(String attrName, String name) {
+    private String decideQtLibDso(String attrName, String name, boolean verboseFlag) {
         boolean bf = doesQtLibExist(name, null);
         String result = String.valueOf(bf);
-        if(verbose && bf) System.out.println(attrName + ": " + result);
+        if(verboseFlag && bf) System.out.println(attrName + ": " + result);
         return result;
+    }
+
+    private String decideQtLibDso(String attrName, String name) {
+        return decideQtLibDso(attrName, name, verbose);
     }
 
     private String decideQtBinDso(String attrName, String name) {
