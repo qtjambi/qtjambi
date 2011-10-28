@@ -107,8 +107,20 @@ class QTJAMBI_EXPORT QtJambiLink
           m_java_link_removed(false),
           m_link_cacheable(false),
           m_reserved1(0),
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_in_qtjambilink_list(0),
+#else
+          m_reserved2(0),
+#endif
           m_destructor_function(0)
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          , next(0)
+          , prev(0)
+#endif
     {
+#if defined(QTJAMBI_DEBUG_TOOLS)  
+          QtJambiLinkList_add();
+#endif
     };
 
 protected:
@@ -128,8 +140,20 @@ protected:
           m_java_link_removed(false),
           m_link_cacheable(false),
           m_reserved1(0),
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_in_qtjambilink_list(0),
+#else
+          m_reserved2(0),
+#endif
           m_destructor_function(0)
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          , next(0)
+          , prev(0)
+#endif
     {
+#if defined(QTJAMBI_DEBUG_TOOLS)  
+          QtJambiLinkList_add();
+#endif
     };
 
 public:
@@ -274,13 +298,30 @@ private:
     uint m_delete_in_main_thread : 1;
     uint m_java_link_removed : 1;
     uint m_link_cacheable : 1;		// was this once upon a time: enter_in_cache==true
-    uint m_reserved1 : 19;
+    uint m_reserved1 : 12;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    uint m_in_qtjambilink_list : 1;
+#else
+    uint m_reserved2 : 1;
+#endif
 
     PtrDestructorFunction m_destructor_function;
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
+    static QtJambiLink *QtJambiLinkList_head;
+    static QtJambiLink *QtJambiLinkList_tail;
+
+    void QtJambiLinkList_add();
+    void QtJambiLinkList_remove();
+
 public:
+    static int QtJambiLinkList_count();
+    static int QtJambiLinkList_dump();
+    static bool QtJambiLinkList_check(QtJambiLink *find);
+
     QString m_className;
+    QtJambiLink *next;
+    QtJambiLink *prev;
 #endif
 };
 

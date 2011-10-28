@@ -63,6 +63,113 @@
 
 // #define DEBUG_REFCOUNTING
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+/* static */ QtJambiLink *QtJambiLink::QtJambiLinkList_head;
+/* static */ QtJambiLink *QtJambiLink::QtJambiLinkList_tail;
+Q_GLOBAL_STATIC(QReadWriteLock, gStaticQtJambiLinkListLock);
+
+void QtJambiLink::QtJambiLinkList_add()
+{
+    if(m_in_qtjambilink_list) {
+        fprintf(stderr, "QtJambiLink(%p)::QtJambiLinkList_add() ERROR m_in_qtjambilink_list=%d\n", this, m_in_qtjambilink_list);
+        return;
+    }
+
+    {
+        QWriteLocker lock(gStaticQtJambiLinkListLock());
+
+        next = 0;
+        prev = QtJambiLink::QtJambiLinkList_tail;
+        if(prev)
+            prev->next = this;
+        else
+            QtJambiLink::QtJambiLinkList_head = this;
+        QtJambiLink::QtJambiLinkList_tail = this;
+
+        m_in_qtjambilink_list = true;
+    }
+}
+
+void QtJambiLink::QtJambiLinkList_remove()
+{
+    if(!m_in_qtjambilink_list) {
+        fprintf(stderr, "QtJambiLink(%p)::QtJambiLinkList_remove() ERROR m_in_qtjambilink_list=%d\n", this, m_in_qtjambilink_list);
+        return;
+    }
+
+    {
+        QWriteLocker lock(gStaticQtJambiLinkListLock());
+
+        if(prev)
+            prev->next = next;
+        else
+            QtJambiLink::QtJambiLinkList_head = next;
+        if(next)
+            next->prev = prev;
+        else
+            QtJambiLink::QtJambiLinkList_tail = prev;
+        next = 0;
+        prev = 0;
+
+        m_in_qtjambilink_list = false;
+    }
+}
+
+/* static */
+int QtJambiLink::QtJambiLinkList_count()
+{
+    int count = 0;
+    {
+        QReadLocker lock(gStaticQtJambiLinkListLock());
+        QtJambiLink *link = QtJambiLink::QtJambiLinkList_head;
+        while(link) {
+            count++;
+            link = link->next;
+        }
+    }
+    return count;
+}
+
+/* static */
+int QtJambiLink::QtJambiLinkList_dump()
+{
+    int count = 0;
+    {
+        QReadLocker lock(gStaticQtJambiLinkListLock());
+        QtJambiLink *link = QtJambiLink::QtJambiLinkList_head;
+        while(link) {
+            fprintf(stderr, "QtJambiLink(%p) ALIVE: { java_object=%p, global_ref=%d, is_qobject=%d, pointer=%p, delete_later=%d, pointer_zeroed=%d (%s) }\n",
+                link, link->m_java_object, link->m_global_ref, link->m_is_qobject, link->m_pointer, link->m_delete_later, link->m_pointer_zeroed,
+                qPrintable(link->m_className.isNull() ? QString("<unknown>") : link->m_className));
+            count++;
+            link = link->next;
+        }
+    }
+    return count;
+}
+
+/* static */
+bool QtJambiLink::QtJambiLinkList_check(QtJambiLink *find)
+{
+    bool found = false;
+    if(find) {
+        QReadLocker lock(gStaticQtJambiLinkListLock());
+        QtJambiLink *link = QtJambiLink::QtJambiLinkList_head;
+        while(link) {
+            if(find == link) {
+                found = true;
+                break;
+            }
+            link = link->next;
+        }
+    }
+    if(found == false)
+        fprintf(stderr, "QtJambiLink::QtJambiLinkList_check(%p): FAILED\n", find);
+    return found;
+}
+
+#endif
+
 typedef QHash<const void *, QtJambiLink *> LinkHash;
 Q_GLOBAL_STATIC(QReadWriteLock, gStaticUserDataIdLock);
 Q_GLOBAL_STATIC(QReadWriteLock, gUserObjectCacheLock);
@@ -262,7 +369,11 @@ QtJambiLink *QtJambiLink::findLink(JNIEnv *env, jobject java)
 
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
-    return reinterpret_cast<QtJambiLink *>(env->GetLongField(java, sc->QtJambiObject.native_id));
+    QtJambiLink *link = reinterpret_cast<QtJambiLink *>(env->GetLongField(java, sc->QtJambiObject.native_id));
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    Q_ASSERT(!link || QtJambiLink::QtJambiLinkList_check(link));  // check the C++ pointer is valid
+#endif
+    return link;
 }
 
 
@@ -311,6 +422,7 @@ QtJambiLink::~QtJambiLink()
     cleanUpAll(env);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
+        QtJambiLinkList_remove();
     qtjambi_increase_linkDestroyedCount(m_className);
 #endif
 
