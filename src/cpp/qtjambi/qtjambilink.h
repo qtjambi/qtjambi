@@ -69,19 +69,43 @@ class QtJambiLink;
 #define QTPATHN PACKAGEPATH"qt/"
 #define QTPATH(CLASS) QTPATHN#CLASS
 
+// Allow useful truncation on 32bit
+#define QTJAMBI_LINK_USER_DATA_MAGIC ((long)0xf6f700fff5f42f03ll)
+#define QTJAMBI_LINK_MAGIC ((long)0xf6f700fff5f42f04ll)
+
 struct QtJambiLinkUserData : public QObjectUserData
 {
-    QtJambiLinkUserData(QtJambiLink *link) : m_link(link), m_metaObject(0) { }
+    QtJambiLinkUserData(QtJambiLink *link)
+      :
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        m_magic(QTJAMBI_LINK_USER_DATA_MAGIC),
+#endif
+        m_link(link),
+        m_metaObject(0)
+     { }
     virtual ~QtJambiLinkUserData();
 
     inline QtJambiLink *link() { return m_link; }
+    inline void invalidateLink() { m_link = 0; }
 
     inline void setMetaObject(const QMetaObject *mo) { m_metaObject = mo; }
     inline const QMetaObject *metaObject() const { return m_metaObject; }
 
     static int id();
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    void validateMagic_unlocked(const char *prefix, bool validate_children);
+    void validateMagic(bool validate_children = true);
+    int acquireMagic_unlocked();
+    void acquireMagic(bool validate_children = true);
+    int releaseMagic_unlocked();
+    void releaseMagic(bool validate_children = true);
+#endif
+
 private:
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    long m_magic;    // natural bit width
+#endif
     QtJambiLink *m_link;
     const QMetaObject *m_metaObject;
 #if defined(QTJAMBI_DEBUG_TOOLS)
@@ -98,10 +122,12 @@ private:
 class QTJAMBI_EXPORT QtJambiLink
 {
     inline QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
-        : m_java_object(jobj),
+        : 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_magic(QTJAMBI_LINK_MAGIC),
+#endif
+          m_java_object(jobj),
           m_pointer(pointer),
-          m_wrapper(0),
-          m_meta_type(QMetaType::Void),
           m_ownership(SplitOwnership), // Default to split, because it's safest
           m_global_ref(global_ref),
           m_is_qobject(is_qobject),
@@ -120,8 +146,11 @@ class QTJAMBI_EXPORT QtJambiLink
 #else
           m_reserved2(0),
 #endif
+          m_meta_type(QMetaType::Void),
+          m_wrapper(0),
           m_destructor_function(0)
 #if defined(QTJAMBI_DEBUG_TOOLS)
+          , m_qtJambiLinkUserData(0)
           , next(0)
           , prev(0)
 #endif
@@ -133,10 +162,12 @@ class QTJAMBI_EXPORT QtJambiLink
 
 protected:
     inline QtJambiLink(jobject jobj)
-        : m_java_object(jobj),
+        : 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_magic(QTJAMBI_LINK_MAGIC),
+#endif
+          m_java_object(jobj),
           m_pointer(0),
-          m_wrapper(0),
-          m_meta_type(QMetaType::Void),
           m_ownership(SplitOwnership), // Default to split, because it's safest
           m_has_been_finalized(false),
           m_qobject_deleted(false),
@@ -153,8 +184,11 @@ protected:
 #else
           m_reserved2(0),
 #endif
+          m_meta_type(QMetaType::Void),
+          m_wrapper(0),
           m_destructor_function(0)
 #if defined(QTJAMBI_DEBUG_TOOLS)
+          , m_qtJambiLinkUserData(0)
           , next(0)
           , prev(0)
 #endif
@@ -284,18 +318,28 @@ public:
     static bool stripQtPackageName(QString *className);
     static bool throwQtException(JNIEnv *env, const QString &extra, const QString &name);
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    void validateMagic_unlocked(const char *prefix, bool validate_children);
+    void validateMagic(bool validate_children = true);
+    int acquireMagic_unlocked();
+    void acquireMagic(bool validate_children = true);
+    int releaseMagic_unlocked();
+    void releaseMagic(bool validate_children = true);
+#endif
+
 private:
     void setNativeId();
     void cleanUpAll(JNIEnv *env);
     void removeFromCache(JNIEnv *env);
     void aboutToMakeObjectInvalid(JNIEnv *env);
 
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    long m_magic;   // natural bit width
+#endif
+
     jobject m_java_object;
     void *m_pointer;
-
-    QObject *m_wrapper;
-
-    int m_meta_type;
 
     uint m_ownership : 2;
     uint m_global_ref : 1;
@@ -315,6 +359,10 @@ private:
 #else
     uint m_reserved2 : 1;
 #endif
+
+    int m_meta_type;
+
+    QObject *m_wrapper;
 
     PtrDestructorFunction m_destructor_function;
 
@@ -339,6 +387,7 @@ public:
     static int QtJambiLinkList_dump();
     static bool QtJambiLinkList_check(QtJambiLink *find);
 
+    QtJambiLinkUserData *m_qtJambiLinkUserData;
     QString m_className;
     QtJambiLink *next;
     QtJambiLink *prev;

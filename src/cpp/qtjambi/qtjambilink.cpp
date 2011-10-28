@@ -168,6 +168,9 @@ bool QtJambiLink::QtJambiLinkList_check(QtJambiLink *find)
     return found;
 }
 
+// used for memory checking
+Q_GLOBAL_STATIC_WITH_ARGS(QMutex, g_magicLock, (QMutex::Recursive));
+
 #endif
 
 typedef QHash<const void *, QtJambiLink *> LinkHash;
@@ -283,7 +286,11 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
 #endif
 
     // Fetch the user data id
-    object->setUserData(user_data_id(), new QtJambiLinkUserData(link));
+    QtJambiLinkUserData *qjlud = new QtJambiLinkUserData(link);
+    object->setUserData(user_data_id(), qjlud);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    link->m_qtJambiLinkUserData = qjlud;
+#endif
 
     // Set the native__id field of the java object
     StaticCache *sc = StaticCache::instance();
@@ -427,21 +434,107 @@ Q_GLOBAL_STATIC(RefCountingHash, gRefCountHash);
 // up the link at any given time.
 Q_GLOBAL_STATIC(QReadWriteLock, g_deleteLinkLock);
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+void
+QtJambiLink::validateMagic_unlocked(const char *prefix, bool validate_children)
+{
+    if(m_magic != QTJAMBI_LINK_MAGIC) {
+        fprintf(stderr, "QtJambiLink(%p) INVALID MAGIC %s found:0x%lx expected:0x%lx qtJambiLinkUserData=%p\n", this, (prefix == 0 ? "" : prefix), m_magic, QTJAMBI_LINK_MAGIC, m_qtJambiLinkUserData);
+        fflush(stderr);
+    }
+    if(validate_children) {
+        if(m_qtJambiLinkUserData)
+            m_qtJambiLinkUserData->validateMagic_unlocked("child", false);
+    }
+}
+
+void
+QtJambiLink::validateMagic(bool validate_children)
+{
+    g_magicLock()->lock();
+    validateMagic_unlocked(0, validate_children);
+    g_magicLock()->unlock();
+}
+
+int
+QtJambiLink::acquireMagic_unlocked()
+{
+    int i = m_atomic_int.fetchAndAddAcquire(1);
+    if(i != 0) {   // was 0, now 1
+        // TID_SAME (usually means we reentered)
+        char tidbuf[256];
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
+        fprintf(stderr, "QtJambiLink(%p) INVALID ACQUIRE found:%d expected:%d%s\n", this, i, 0, tidbuf);
+        fflush(stderr);
+    }
+    return i;
+}
+
+void
+QtJambiLink::acquireMagic(bool validate_children)
+{
+    g_magicLock()->lock();
+    validateMagic_unlocked(0, validate_children);
+    if(acquireMagic_unlocked() == 0) {
+        m_pthread_id = (void*)pthread_self();
+    }
+    g_magicLock()->unlock();
+}
+
+int
+QtJambiLink::releaseMagic_unlocked()
+{
+    int i = m_atomic_int.fetchAndAddRelease(-1);
+    if(i != 1) {   // was 1, now 0
+        // TID_SAME (usually means we reentered)
+        char tidbuf[256];
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
+        fprintf(stderr, "QtJambiLink(%p) INVALID RELEASE found:%d expected:%d%s\n", this, i, 1, tidbuf);
+        fflush(stderr);
+    }
+    return i;
+}
+
+void
+QtJambiLink::releaseMagic(bool validate_children)
+{
+    g_magicLock()->lock();
+    validateMagic_unlocked(0, validate_children);
+    releaseMagic_unlocked();
+    if(m_pthread_id == (void*)pthread_self())
+        m_pthread_id = 0;
+    g_magicLock()->unlock();
+}
+#endif
+
 QtJambiLink::~QtJambiLink()
 {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    acquireMagic();
+#endif
     if (deleteInMainThread())
         g_deleteLinkLock()->lockForWrite();
 
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        qtjambi_increase_linkDestroyedCount(m_className);
+#endif
 
     JNIEnv *env = qtjambi_current_environment();
     cleanUpAll(env);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
         QtJambiLinkList_remove();
-    qtjambi_increase_linkDestroyedCount(m_className);
 #endif
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        releaseMagic();
+#endif
+    return;
 
+release:
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    releaseMagic();
+#endif
     if (deleteInMainThread())
         g_deleteLinkLock()->unlock();
 }
@@ -625,10 +718,16 @@ void QtJambiLink::cleanUpAll(JNIEnv *env)
 
 void QtJambiLink::javaObjectFinalized(JNIEnv *env)
 {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    acquireMagic();
+#endif
     if (deleteInMainThread())
         g_deleteLinkLock()->lockForWrite();
 
     cleanUpAll(env);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        m_qtJambiLinkUserData = 0;
+#endif
     setAsFinalized();
 
     // This is required for the user data destructor
@@ -659,18 +758,28 @@ void QtJambiLink::javaObjectFinalized(JNIEnv *env)
 
     // **** Link may be deleted at this point (QObjects and GUI objects that are Java owned)
 
-    if ((!isQObject || qobjectDeleted) && (!deleteInMainThread || !javaOwnership))
+    if ((!isQObject || qobjectDeleted) && (!deleteInMainThread || !javaOwnership)) {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        releaseMagic();
+#endif
         delete this;
+    }
 }
 
 void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    acquireMagic();
+#endif
     if (deleteInMainThread())
         g_deleteLinkLock()->lockForWrite();
 
     if (m_pointer) {
         setJavaOwnership(env, m_java_object);
         deleteNativeObject(env);
+        if(!m_delete_later) {
+                m_qtJambiLinkUserData = 0;
+        }
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
         qtjambi_increase_disposeCalledCount(m_className);
@@ -704,8 +813,12 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 
     // **** Link may be deleted at this point (QObjects and GUI objects that are Java owned)
 
-    if ((!isQObject || qobjectDeleted) && (!deleteInMainThread || isGUIThread))
+    if ((!isQObject || qobjectDeleted) && (!deleteInMainThread || isGUIThread)) {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        releaseMagic();
+#endif
         delete this;
+    }
 }
 
 void QtJambiLink::nativeShellObjectDestroyed(JNIEnv *env)
@@ -908,22 +1021,99 @@ void QtJambiLink::setSplitOwnership(JNIEnv *env, jobject obj)
     m_ownership = SplitOwnership;
 }
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+void
+QtJambiLinkUserData::validateMagic_unlocked(const char *prefix, bool validate_children)
+{
+    if(m_magic != QTJAMBI_LINK_USER_DATA_MAGIC) {
+        fprintf(stderr, "QtJambiLinkUserData(%p) INVALID MAGIC %s found:0x%lx expected:0x%lx m_link=%p\n", this, (prefix == 0 ? "" : prefix), m_magic, QTJAMBI_LINK_USER_DATA_MAGIC, m_link);
+        fflush(stderr);
+    }
+    if(validate_children) {
+        if(m_link)
+            m_link->validateMagic_unlocked("child", false);
+    }
+}
+
+void
+QtJambiLinkUserData::validateMagic(bool validate_children)
+{
+    g_magicLock()->lock();
+    validateMagic_unlocked(0, validate_children);
+    g_magicLock()->unlock();
+}
+
+int
+QtJambiLinkUserData::acquireMagic_unlocked()
+{
+    int i = m_atomic_int.fetchAndAddAcquire(1);
+    if(i != 0) {   // was 0, now 1
+        // TID_SAME (usually means we reentered)
+        char tidbuf[256];
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
+        fprintf(stderr, "QtJambiLinkUserData(%p) INVALID ACQUIRE found:%d expected:%d%s\n", this, i, 0, tidbuf);
+        fflush(stderr);
+    }
+    return i;
+}
+
+void
+QtJambiLinkUserData::acquireMagic(bool validate_children)
+{
+    g_magicLock()->lock();
+    validateMagic_unlocked(0, validate_children);
+    if(acquireMagic_unlocked() == 0) {
+        m_pthread_id = (void*)pthread_self();
+    }
+    g_magicLock()->unlock();
+}
+
+int
+QtJambiLinkUserData::releaseMagic_unlocked()
+{
+    int i = m_atomic_int.fetchAndAddRelease(-1);
+    if(i != 1) {   // was 1, now 0
+        // TID_SAME (usually means we reentered)
+        char tidbuf[256];
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
+        fprintf(stderr, "QtJambiLinkUserData(%p) INVALID RELEASE found:%d expected:%d%s\n", this, i, 1, tidbuf);
+        fflush(stderr);
+    }
+    return i;
+}
+
+void
+QtJambiLinkUserData::releaseMagic(bool validate_children)
+{
+    g_magicLock()->lock();
+    validateMagic_unlocked(0, validate_children);
+    releaseMagic_unlocked();
+    if(m_pthread_id == (void*)pthread_self())
+        m_pthread_id = 0;
+    g_magicLock()->unlock();
+}
+#endif
+
 QtJambiLinkUserData::~QtJambiLinkUserData()
 {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    acquireMagic();
+#endif
     if (m_link) {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        qtjambi_increase_userDataDestroyedCount(m_link->m_className);   // this derefs m_link
+#endif
         JNIEnv *env = qtjambi_current_environment();
         // This typically happens when a QObject is destroyed after the vm shuts down,
         // in which case there is no way for us to properly clean up...
         if (!env)
-            return;
+            goto release;	// FIXME do better than this
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        m_link->acquireMagic();  // if you move this up before isUserDataSkip() check you can observe the re-entering
+#endif
         m_link->setAsQObjectDeleted();
 
         m_link->resetObject(env);
-
-#if defined(QTJAMBI_DEBUG_TOOLS)
-        qtjambi_increase_userDataDestroyedCount(m_link->m_className);
-#endif
-
 
         // Link deletion policy
         //
@@ -931,7 +1121,20 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
         // 2. Java ownership, java link not removed: We are currently being deleted. Keep the link. (dispose() basically)
         // 3. Cpp/Split ownership: Java object has been invalidated, so there's no link back. We can kill the link.
 
-        if (m_link->ownership() != QtJambiLink::JavaOwnership || m_link->javaLinkRemoved())
+        if (m_link->ownership() != QtJambiLink::JavaOwnership || m_link->javaLinkRemoved()) {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            m_link->releaseMagic();
+#endif
             delete m_link;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            invalidateLink();   // inhibit releaseMagic() at the end of this function from checking it
+#endif
+        }
     }
+
+release:
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    releaseMagic();
+#endif
+    return;
 }
