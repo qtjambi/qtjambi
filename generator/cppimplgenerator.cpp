@@ -1410,18 +1410,23 @@ void CppImplGenerator::writeVirtualFunctionOverride(QTextStream &s,
 }
 
 
-void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
+bool CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
         const AbstractMetaFunction *java_function,
         const AbstractMetaClass *,
         Option options) {
+    bool rv = false;    // did we emit a "return"
     bool static_call = !(options & VirtualCall);
     if ((options & NoReturnStatement) == 0)
         s << INDENT;
     if (java_function->isAbstract() && static_call) {
         s << default_return_statement_qt(java_function->type(), options) << ";" << endl;
+        if ((options & NoReturnStatement) == 0)
+            rv = true;
     } else {
-        if (java_function->type() && (options & NoReturnStatement) == 0)
+        if (java_function->type() && (options & NoReturnStatement) == 0) {
             s << "return ";
+            rv = true;
+        }
         if (static_call) {
             const AbstractMetaClass *implementor = java_function->implementingClass();
             if (java_function->isInterfaceFunction())
@@ -1432,6 +1437,7 @@ void CppImplGenerator::writeBaseClassFunctionCall(QTextStream &s,
         writeFunctionCallArguments(s, java_function, QString(), Option(options | ForceEnumCast));
         s << ");" << endl;
     }
+    return rv;
 }
 
 

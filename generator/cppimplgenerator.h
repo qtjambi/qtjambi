@@ -103,7 +103,7 @@ class CppImplGenerator : public CppGenerator {
         void writeVirtualFunctionOverride(QTextStream &s,
                                           const AbstractMetaFunction *java_function,
                                           const AbstractMetaClass *java_class);
-        void writeBaseClassFunctionCall(QTextStream &s,
+        bool writeBaseClassFunctionCall(QTextStream &s,
                                         const AbstractMetaFunction *java_function,
                                         const AbstractMetaClass *java_class,
                                         Option options = NoOption);
