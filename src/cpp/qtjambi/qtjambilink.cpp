@@ -401,12 +401,22 @@ QtJambiLink *QtJambiLink::findLink(JNIEnv *env, jobject java)
 }
 
 
-void QtJambiLink::releaseJavaObject(JNIEnv *env)
+// This method will always cleanup QtJambiLink's m_java_object.  It will also fire the disposed() callback
+//  and set the native_id=0 and removeFromCache() via aboutToMakeObjectInvalid().
+int QtJambiLink::releaseJavaObject(JNIEnv *env)
 {
-    if (!m_java_object)
-        return;
+    if (!m_java_object) {
+        return 0;
+    }
+    int rv = 0;
 
-    aboutToMakeObjectInvalid(env);
+    // The name of the method below isn't well chosen.  It is possible we
+    // only want to relinquish the Java object but the C++ side will continue
+    // to live on.  In this sense the object isn't going to an invalidate state.
+    if(!m_object_invalid) {
+        aboutToMakeObjectInvalid(env);
+        rv |= 0x20000;    // invoked disposed() callback
+    }
 
     if (isGlobalReference()) {
         env->DeleteGlobalRef(m_java_object);
@@ -419,7 +429,9 @@ void QtJambiLink::releaseJavaObject(JNIEnv *env)
         }
     }
 
+    rv |= 0x10000;	// deleted java object reference
     m_java_object = 0;
+    return rv;
 }
 
 #ifdef DEBUG_REFCOUNTING
@@ -600,7 +612,13 @@ void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
     }
 }
 
-void QtJambiLink::deleteNativeObject(JNIEnv *env)
+// We now return a disposition explaining what we did, the values need moving to
+//  macros for better readibility.
+// What we can say about this method in entry is that (m_pointer!=0 && m_delete_later==0)
+//  or its a bug.
+// What we can say about this method on exit is that (m_pointer==0 || m_delete_later!=0)
+//  or its a bug.  Sometimes when m_pointer==0 then m_pointer_zeroed!=0.
+int QtJambiLink::deleteNativeObject(JNIEnv *env)
 {
 #ifdef DEBUG_REFCOUNTING
     {
@@ -612,6 +630,8 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 #endif
     Q_ASSERT(m_pointer);	// must be non-null
     Q_ASSERT(!m_delete_later);	// must be 0
+    int rv;
+
 
     aboutToMakeObjectInvalid(env);
 
@@ -632,6 +652,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 //                    qPrintable(qobj->objectName()),
 //                    qobj->metaObject()->className());
             delete qobj;
+            rv = 0x0001;    // called delete
 
         // We're in the main thread and we'll have an event loop
         // running, so its safe to call delete later.
@@ -642,6 +663,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 //                    qobj->metaObject()->className());
             m_delete_later = 1;
             qobj->deleteLater();
+            rv = 0x0002;    // called deleteLater()
 
         // If the QObject is in a non-main thread, check if that
         // thread is a QThread, in which case it will run an eventloop
@@ -662,11 +684,13 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
     //                        qobj->metaObject()->className());
                     m_delete_later = 1;
                     qobj->deleteLater();
+                    rv = 0x0002;    // called deleteLater()
                 } else if (QCoreApplication::instance()) {
                     qWarning("QObjects can only be implicitly garbage collected when owned"
                             " by a QThread, native resource ('%s' [%s]) is leaked",
                             qPrintable(qobj->objectName()),
                             qobj->metaObject()->className());
+                    rv = 0x1000;    // error? or not?
                 }
 
     //             StaticCache *sc = StaticCache::instance();
@@ -681,6 +705,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
     //             }
             } else {
                 delete qobj;
+                rv = 0x0001;    // called delete
             }
             env->DeleteLocalRef(t);
         }
@@ -697,34 +722,43 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
                 m_pointer_zeroed = 1;    // qobject still exists at the time we cut it away (and we have shoved dtor to event system)
                 QtJambiDestructorEvent *qtde = new QtJambiDestructorEvent(this, m_pointer, m_meta_type, m_ownership, m_destructor_function);
                 QCoreApplication::postEvent(QCoreApplication::instance(), qtde);
+                rv = 0x0003;    // queued QtJambiDestructorEvent
             }
 
         } else if (m_ownership == JavaOwnership && m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0
                    || (m_meta_type < QMetaType::FirstGuiType || m_meta_type > QMetaType::LastGuiType))) {
 
            QMetaType::destroy(m_meta_type, m_pointer);
+           rv = 0x0004;    // used QMetaType::destroy
 
         } else if (m_ownership == JavaOwnership && m_destructor_function) {
             m_destructor_function(m_pointer);
+            rv = 0x0005;    // used m_destructor_function
         }
 
         m_pointer = 0;
     }
+    return rv;
 }
 
-void QtJambiLink::cleanUpAll(JNIEnv *env)
+// This is called from QtJambiLink dtor
+int QtJambiLink::cleanUpAll(JNIEnv *env)
 {
+    int rv = 0;
 
     if (m_java_object != 0)
-        releaseJavaObject(env);
+        rv |= releaseJavaObject(env);
 
-    if (m_pointer)
-        deleteNativeObject(env);
+    if (m_pointer && !m_delete_later)
+        rv |= deleteNativeObject(env);
 
     if (m_wrapper) {
         delete m_wrapper;
         m_wrapper = 0;
+        rv |= 0x0100;
     }
+
+    return rv;
 }
 
 void QtJambiLink::javaObjectFinalized(JNIEnv *env)

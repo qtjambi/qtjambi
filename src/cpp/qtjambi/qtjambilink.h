@@ -256,11 +256,13 @@ public:
     inline bool isQObject() const { return m_is_qobject; }
 
     /* Deletes any global references to the java object so that it can
-       be finalized by the virtual machine */
-    void releaseJavaObject(JNIEnv *env);
+       be finalized by the virtual machine.
+       Returns disposition bitmask. */
+    int releaseJavaObject(JNIEnv *env);
 
-    /* Deletes the native object */
-    void deleteNativeObject(JNIEnv *env);
+    /* Deletes the native object.
+       Returns disposition bitmask. */
+    int deleteNativeObject(JNIEnv *env);
 
     /* Triggered by native jni functions when a java object has been
        finalized. */
@@ -340,7 +342,7 @@ public:
 
 private:
     void setNativeId();
-    void cleanUpAll(JNIEnv *env);
+    int cleanUpAll(JNIEnv *env);
     void removeFromCache(JNIEnv *env);
     void aboutToMakeObjectInvalid(JNIEnv *env);
 
