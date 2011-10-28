@@ -6,6 +6,7 @@
 #include <QMap>
 
 #include "generatorset.h"
+#include "debuglog.h"
 
 class DefineUndefine {
 
@@ -49,16 +50,6 @@ class Wrapper {
 
         int runJambiGenerator();
 
-        enum DebugCppMode {
-           DEFINE,
-           UNDEF,
-           DUMP_BEFORE,
-           DUMP_MIDDLE,
-           DUMP_AFTER,
-           INCLUDE_FULL,
-           INCLUDE_DIRECTIVE,
-           INCLUDE_ERRORS
-        };
 
     private:
         void displayHelp(GeneratorSet* arg1);
@@ -77,6 +68,7 @@ class Wrapper {
         GeneratorSet *gs;
         QMap< QString, QString > args;
         QStringList includePathsList;
+        QStringList inputDirectoryList;
         int defineUndefineStageCurrent;
         QList< DefineUndefine > defineUndefineStageOneList;
         QList< DefineUndefine > defineUndefineStageTwoList;

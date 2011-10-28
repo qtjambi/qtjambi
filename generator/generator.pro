@@ -9,6 +9,7 @@ HEADERS += \
         cppgenerator.h \
         cppheadergenerator.h \
         cppimplgenerator.h \
+        debuglog.h \
         docparser.h \
         generatorsetjava.h \
         javagenerator.h \

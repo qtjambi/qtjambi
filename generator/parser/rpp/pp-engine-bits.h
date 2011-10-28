@@ -55,6 +55,7 @@
 
 #include <sys/stat.h>
 
+#include "debuglog.h"
 #include "pp-internal.h"
 #include "pp-symbol.h"
 #include "pp-cctype.h"
@@ -366,6 +367,7 @@ namespace rpp {
             int _M_skipping[MAX_LEVEL];
             int _M_true_test[MAX_LEVEL];
             int iflevel;
+            int verbose;
 
         private:
             pp_environment &env;
@@ -524,13 +526,12 @@ namespace rpp {
 
                     // sync the buffer
                     _PP_internal::output_line(env.current_file, env.current_line, result);
-                }
-//#ifndef RPP_JAMBI
-                else {
-                    std::cerr << "*** WARNING " << env.current_file << ":" << env.current_line << "  " <<
+                } else {
+                    if((verbose & DEBUGLOG_INCLUDE_ERRORS) != 0) {
+                        std::cerr << "*** WARNING " << env.current_file << ":" << env.current_line << "  " <<
                             (quote != '>' ? '"' : '<') << filename << (quote != '>' ? '"' : '>') << ": No such file or directory" << std::endl;
+                    }
                 }
-//#endif
 
                 return first;
             }
@@ -609,6 +610,10 @@ namespace rpp {
                 }
 
                 macro.definition = pp_symbol::get(definition);
+                if((verbose & DEBUGLOG_DEFINE) != 0) {
+                    std::cout << "#define " << std::string(macro_name->begin(), macro_name->end()) <<
+                        " " << std::string(macro.definition->begin(), macro.definition->end()) << std::endl;
+                }
                 env.bind(macro_name, macro);
 
                 return __first;
@@ -714,7 +719,8 @@ namespace rpp {
 
                         if (token != ')') {
                             pp_fast_string const *snippet = pp_symbol::get(__first, __last);
-                            std::cerr << "** WARNING expected ``)'' = " << token << " " << std::string(snippet->begin(), snippet->end()) << std::endl;
+                            std::cerr << "** WARNING expected ``)'' = " << token << " " << std::string(snippet->begin(), snippet->end()) <<
+                                         " at " << env.current_file << ":" << env.current_line << std::endl;
                         } else {
                             __first = next_token(__first, __last, &token);
                         }
@@ -1093,6 +1099,8 @@ namespace rpp {
                 std::copy(__first, end_macro_name, __buffer);
 
                 pp_fast_string const __tmp(__buffer, __size);
+                if((verbose & DEBUGLOG_UNDEF) != 0)
+                    std::cout << "#undef " << std::string(__tmp.begin(), __tmp.end()) << std::endl;
                 env.unbind(&__tmp);
 
                 __first = end_macro_name;

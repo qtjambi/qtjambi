@@ -9,15 +9,46 @@
 #include "preprocesshandler.h"
 #include "wrapper.h"
 
-PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, const QString &phononInclude, const QStringList &includePathList) :
+PreprocessHandler::PreprocessHandler(QString sourceFile, QString targetFile, const QString &phononInclude,
+    const QStringList &includePathList, const QStringList &inputDirectoryList, int verbose) :
         preprocess(env),
+        verbose(verbose),
         ppconfig(":/trolltech/generator/parser/rpp/pp-qt-configuration"),
         sourceFile(sourceFile),
         targetFile(targetFile),
         phononInclude(phononInclude),
-        includePathList(includePathList) {
+        includePathList(includePathList),
+        inputDirectoryList(inputDirectoryList) {
     //empty space for useless comments
+    preprocess.verbose = verbose;
 }
+
+bool PreprocessHandler::checkDefineUndefine(const QString &name, int check) const {
+    return false;
+}
+
+bool PreprocessHandler::dumpCheck(int kind) const {
+    if((verbose & kind) == kind)
+        return true;
+    return false;
+}
+
+void PreprocessHandler::dump(int kind) const {
+    std::string stage;
+    if(kind == DEBUGLOG_DUMP_BEFORE)
+        stage = "STAGE1";
+    else if(kind == DEBUGLOG_DUMP_MIDDLE)
+        stage = "STAGE2";
+    else if(kind == DEBUGLOG_DUMP_AFTER)
+        stage = "AFTER";
+    else
+        return;
+
+    std::cout << "DUMP " << stage << " (begin)" << std::endl;
+
+    std::cout << "DUMP " << stage << " (end)" << std::endl;
+}
+        
 
 bool PreprocessHandler::handler() {
     QFile file(ppconfig);

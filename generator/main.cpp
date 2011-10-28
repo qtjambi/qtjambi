@@ -46,12 +46,36 @@
 #include "wrapper.h"
 #include "preprocesshandler.h"
 
-bool Preprocess::preprocess(const QString& sourceFile, const QString& targetFile, const QString& phononinclude, const QStringList& includePathList) {
-    PreprocessHandler handler(sourceFile, targetFile, phononinclude, includePathList);
+bool Preprocess::preprocess(const QString& sourceFile, const QString& targetFile, const QString& phononinclude,
+ const QStringList& includePathList, const QStringList& inputDirectoryList, int verbose) {
+    PreprocessHandler handler(sourceFile, targetFile, phononinclude, includePathList, inputDirectoryList, verbose);
     return handler.handler();
 }
 
 int main(int argc, char *argv[]) {
     Wrapper wrapper(argc, argv);
     return wrapper.runJambiGenerator();
+}
+
+QString resolveFilePath(const QString &fileName, int opts, const QStringList &list) {
+    QFileInfo fileinfoAbs(fileName);
+    if(fileinfoAbs.isAbsolute()) {
+qDebug() << "isAbsolute path: " << fileName;;
+        return QString(fileName);
+    }
+
+    foreach(const QString &s, list) {
+        QDir dir(s);
+        if(!dir.exists()) {
+            if(opts)
+                qDebug() << "Absolute path: " << fileName << " in " << dir << ": No such directory";
+            continue;
+        }
+        QFileInfo fileinfo(dir, fileName);
+        if(fileinfo.isFile())
+            return QString(fileinfo.absoluteFilePath());
+        if(opts)
+            qDebug() << "Absolute path: " << fileName << " in " << dir << ": No such file";
+    }
+    return QString();
 }

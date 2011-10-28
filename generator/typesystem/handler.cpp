@@ -6,6 +6,7 @@
 #include "handler.h"
 #include "typedatabase.h"
 #include "../reporthandler.h"
+#include "../main.h"
 
 bool Handler::error(const QXmlParseException &e) {
     qWarning("Error: line=%d, column=%d, message=%s\n",
@@ -159,14 +160,26 @@ bool Handler::importFileElement(const QXmlAttributes &atts) {
 
     QFile file(fileName);
     QFileInfo fileinfo(file);
-    if (fileinfo.isRelative() && !m_importInputDirectory.isNull())	// prepend
-        file.setFileName(QDir(m_importInputDirectory).absoluteFilePath(fileName));
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        file.setFileName(":/trolltech/generator/" + fileName);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (fileinfo.isRelative() && !m_importInputDirectoryList.isEmpty()) {
+        // Resolve
+        QString filepath = resolveFilePath(fileName, 0, m_importInputDirectoryList);
+        if(filepath.isNull()) {
             m_error = QString("Could not open file: '%1'").arg(fileName);
             return false;
         }
+        file.setFileName(filepath);
+    }
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+#if 0
+        // This feature is disabled, better to use actual files
+        file.setFileName(":/trolltech/generator/" + fileName);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+#endif
+            m_error = QString("Could not open file: '%1'").arg(fileName);
+            return false;
+#if 0
+        }
+#endif
     }
 
     QString quoteFrom = atts.value("quote-after-line");
@@ -626,7 +639,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                if (!m_database->parseFile(name, m_importInputDirectory, convertBoolean(attributes["generate"], "generate", true))) {
+                if (!m_database->parseFile(name, m_importInputDirectoryList, convertBoolean(attributes["generate"], "generate", true))) {
                     m_error = QString("Failed to parse: '%1'").arg(name);
                     return false;
                 }

@@ -17,7 +17,8 @@ Wrapper::Wrapper(int argc, char *argv[]) :
         default_file("targets/qtjambi_masterinclude.h"),
         default_system("targets/build_all.xml"),
         pp_file("preprocessed.tmp"),
-        defineUndefineStageCurrent(1) {
+        defineUndefineStageCurrent(1),
+        debugCppMode(DEBUGLOG_DEFAULTS) {
 
     gs = GeneratorSet::getInstance();
     args = parseArguments(argc, argv);
@@ -81,8 +82,30 @@ void Wrapper::handleArguments() {
     }
 
     if (args.contains("input-directory")) {
-        default_file = QDir(args.value("input-directory")).absoluteFilePath(default_file);
-        default_system = QDir(args.value("input-directory")).absoluteFilePath(default_system);
+        QString arg = args.value("input-directory");
+#if defined(Q_OS_WIN32)
+        QChar pathSeparator(';');
+#else
+        QChar pathSeparator(':');
+#endif
+        if(arg.length() > 0) {
+            const QChar firstChar = arg.at(0);
+            if(firstChar == QChar(':') || firstChar == QChar(';'))
+                pathSeparator = firstChar;	// this allows override default trick
+        }
+        inputDirectoryList = arg.split(pathSeparator, QString::SkipEmptyParts);
+        QString first;
+        if(!inputDirectoryList.isEmpty())
+            first = inputDirectoryList.first();
+
+        // Resolve process, resolveAbsoluteFilePath(filepath, flags, inputList, inputList2?);
+        //  flags = try relative, keep/strip filepath dir, return orig on no match
+//        resolve(default_file, 0, inputDirectoryList);
+//        resolve(default_system, 0, inputDirectoryList);
+        if(!first.isNull()) {
+            default_file = QDir(first).absoluteFilePath(default_file);
+            default_system = QDir(first).absoluteFilePath(default_system);
+        }
     }
 
     if (args.contains("output-preprocess-file"))
@@ -115,31 +138,31 @@ void Wrapper::handleArguments() {
                 s = s.mid(1);
                 space_set_mark = 1;	// mark
             }
-            if (s.compare("all")) {
+            if (s.compare("all") == 0) {
                mod = ~0;
-            } else if (s.compare("off")) {
+            } else if (s.compare("off") == 0) {
                mod = 0;
                space_set_mark = 0;	// force set
-            } else if (s.compare("include")) {
-               mod = Wrapper::INCLUDE_ERRORS|Wrapper::INCLUDE_FULL|Wrapper::INCLUDE_DIRECTIVE;
-            } else if (s.compare("include-errors")) {
-               mod = INCLUDE_ERRORS;
-            } else if (s.compare("include-full")) {
-               mod = Wrapper::INCLUDE_FULL;
-            } else if (s.compare("include-directive")) {
-               mod = Wrapper::INCLUDE_DIRECTIVE;
-            } else if (s.compare("def") || s.compare("define")) {
-               mod = Wrapper::DEFINE;
-            } else if (s.compare("undef") || s.compare("undefine")) {
-               mod = Wrapper::UNDEF;
-            } else if (s.compare("dump")) {
-               mod = Wrapper::DUMP_BEFORE|Wrapper::DUMP_MIDDLE|Wrapper::DUMP_AFTER;
-            } else if (s.compare("dump-before")) {
-               mod = Wrapper::DUMP_BEFORE;
-            } else if (s.compare("dump-middle")) {
-               mod = Wrapper::DUMP_MIDDLE;
-            } else if (s.compare("dump-after")) {
-               mod = Wrapper::DUMP_AFTER;
+            } else if (s.compare("include") == 0) {
+               mod = DEBUGLOG_INCLUDE_ERRORS|DEBUGLOG_INCLUDE_FULL|DEBUGLOG_INCLUDE_DIRECTIVE;
+            } else if (s.compare("include-errors") == 0) {
+               mod = DEBUGLOG_INCLUDE_ERRORS;
+            } else if (s.compare("include-full") == 0) {
+               mod = DEBUGLOG_INCLUDE_FULL;
+            } else if (s.compare("include-directive") == 0) {
+               mod = DEBUGLOG_INCLUDE_DIRECTIVE;
+            } else if (s.compare("def") == 0 || s.compare("define") == 0) {
+               mod = DEBUGLOG_DEFINE;
+            } else if (s.compare("undef") == 0 || s.compare("undefine") == 0) {
+               mod = DEBUGLOG_UNDEF;
+            } else if (s.compare("dump") == 0) {
+               mod = DEBUGLOG_DUMP_BEFORE|DEBUGLOG_DUMP_MIDDLE|DEBUGLOG_DUMP_AFTER;
+            } else if (s.compare("dump-before") == 0) {
+               mod = DEBUGLOG_DUMP_BEFORE;
+            } else if (s.compare("dump-middle") == 0) {
+               mod = DEBUGLOG_DUMP_MIDDLE;
+            } else if (s.compare("dump-after") == 0) {
+               mod = DEBUGLOG_DUMP_AFTER;
             } else {
                std::cerr << "Invalid debug-cpp value: " << s.toStdString() << " (ignored)" << std::endl;
                continue;        // has the effect of not changing anything
@@ -184,13 +207,13 @@ int Wrapper::runJambiGenerator() {
     printf("Running the Qt Jambi Generator. Please wait while source files are being generated...\n");
 
     //parse the type system file
-    if (!TypeDatabase::instance()->parseFile(typesystemFileName, args.value("input-directory")))
+    if (!TypeDatabase::instance()->parseFile(typesystemFileName, inputDirectoryList))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 
     //removing file here for theoretical case of wanting to parse two master include files here
     QFile::remove(pp_file);
     //preprocess using master include, preprocessed file and command line given include paths, if any
-    if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"), includePathsList)) {
+    if (!Preprocess::preprocess(fileName, pp_file, args.value("phonon-include"), includePathsList, inputDirectoryList, debugCppMode)) {
         fprintf(stderr, "Preprocessor failed on file: '%s'\n", qPrintable(fileName));
         return 1;
     }

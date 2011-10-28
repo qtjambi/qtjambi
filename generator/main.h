@@ -47,10 +47,15 @@
 
 #include <QFile>
 #include <QDir>
+#include <QString>
+#include <QStringList>
 #include <QDebug>
 
 struct Preprocess {
-    static bool preprocess(const QString &sourceFile, const QString &targetFile, const QString &phononinclude = QString(), const QStringList &includePathList = QStringList());
+    static bool preprocess(const QString &sourceFile, const QString &targetFile, const QString &phononinclude = QString(),
+        const QStringList &includePathList = QStringList(), const QStringList &inputDirectoryList = QStringList(), int verbose = 0);
 };
+
+extern QString resolveFilePath(const QString &fileName, int opts, const QStringList &list);
 
 #endif // MAIN_H

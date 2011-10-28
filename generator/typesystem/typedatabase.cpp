@@ -9,6 +9,7 @@
 #include <qxml.h>
 #include "handler.h"
 #include "../reporthandler.h"
+#include "../main.h"
 
 static void addRemoveFunctionToTemplates(TypeDatabase *db);
 
@@ -162,22 +163,20 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name) {
         return 0;
 }
 
-bool TypeDatabase::parseFile(const QString &filename, const QString &importInputDirectory, bool generate) {
-    qDebug() << "Parsing file: " << filename;
-    QFile file(filename);
-    if(!file.exists()) {
-        QFileInfo fileinfo(file);
-        qDebug() << "Absolute path: " << fileinfo.absoluteFilePath() << " in " << importInputDirectory;
-    }
+bool TypeDatabase::parseFile(const QString &filename, const QStringList &importInputDirectoryList, bool generate) {
+    const QString &filepath = resolveFilePath(filename, 1, importInputDirectoryList);
+    qDebug() << "Resolving file: " << filename << " => " << filepath;
+    Q_ASSERT(!filepath.isNull());
+    QFile file(filepath);
     Q_ASSERT(file.exists());
+    qDebug() << "Parsing file: " << filename;
     QXmlInputSource source(&file);
 
     int count = m_entries.size();
 
     QXmlSimpleReader reader;
     Handler handler(this, generate);
-    if (!importInputDirectory.isNull())
-        handler.setImportInputDirectory(importInputDirectory);
+    handler.setImportInputDirectoryList(importInputDirectoryList);
 
     reader.setContentHandler(&handler);
     reader.setErrorHandler(&handler);

@@ -9,11 +9,9 @@
 #include <QStringList>
 #include <QDir>
 
-// Enable stderr output of the include file resolution process.
-//#define DEBUG_FIND_INCLUDE
-
 rpp::pp::pp(pp_environment &__env) :
         env(__env), expand_macro(env) {
+    verbose = 0;
     iflevel = 0;
     _M_skipping[iflevel] = 0;
     _M_true_test[iflevel] = 0;
@@ -175,9 +173,8 @@ FILE *rpp::pp::find_include_file(std::string const &p_input_filename, std::strin
 
         if(file_exists(__tmp) && !file_isdir(__tmp)) {
             p_filepath->append(p_input_filename);
-#ifdef DEBUG_FIND_INCLUDE
-            std::cerr << "** INCLUDE local  " << *p_filepath << ": found" << std::endl;
-#endif
+            if((verbose & DEBUGLOG_INCLUDE_DIRECTIVE) != 0)
+                std::cout << "** INCLUDE local  " << *p_filepath << ": found" << std::endl;
             return std::fopen(p_filepath->c_str(), "r");
         }
     }
@@ -217,23 +214,21 @@ FILE *rpp::pp::find_include_file(std::string const &p_input_filename, std::strin
             if(file.exists() && file.isFile()) {
                 QString path = QString::fromStdString(*it) + module + ".framework/Headers";
                 push_include_path(path.toStdString());
- #ifdef DEBUG_FIND_INCLUDE
-                std::cerr << "** INCLUDE system " << string.toStdString() << ": found" << std::endl;
- #endif
+                if((verbose & DEBUGLOG_INCLUDE_DIRECTIVE) != 0)
+                    std::cout << "** INCLUDE system " << string.toStdString() << ": found" << std::endl;
                 return std::fopen(string.toLatin1().data(), "r");
             }
         }
 #endif
         if(file_exists(*p_filepath) && !file_isdir(*p_filepath)) {
-#ifdef DEBUG_FIND_INCLUDE
-            std::cerr << "** INCLUDE system " << *p_filepath << ": found" << std::endl;
-#endif
+            if((verbose & DEBUGLOG_INCLUDE_DIRECTIVE) != 0)
+                std::cout << "** INCLUDE system " << *p_filepath << ": found" << std::endl;
             return std::fopen(p_filepath->c_str(), "r");
         }
 
-#ifdef DEBUG_FIND_INCLUDE
-        std::cerr << "** INCLUDE system " << *p_filepath << ": " << strerror(errno) << std::endl;
-#endif
+        // Log all search attempts
+        if((verbose & DEBUGLOG_INCLUDE_FULL) != 0)
+            std::cout << "** INCLUDE system " << *p_filepath << ": " << strerror(errno) << std::endl;
     }
 
     return 0;
