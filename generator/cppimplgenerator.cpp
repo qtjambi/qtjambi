@@ -177,7 +177,7 @@ QString default_return_statement_qt(const AbstractMetaType *java_type,
         table["short"] = "0";
         table["int"] = "0";
         table["long"] = "0";
-        table["float"] = "0f";
+        table["float"] = "0.0f";
         table["double"] = "0.0";
         table["java.lang.Object"] = "0";
     }
@@ -223,7 +223,7 @@ QString default_return_statement_java(const AbstractMetaType *java_type) {
         table["short"] = "0";
         table["int"] = "0";
         table["long"] = "0";
-        table["float"] = "0f";
+        table["float"] = "0.0f";
         table["double"] = "0.0";
         table["java.lang.Object"] = "0";
     }
