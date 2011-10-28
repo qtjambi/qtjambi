@@ -349,7 +349,9 @@ public class TestConcurrent extends QApplicationTest {
         Method m = null;
         try {
             m = TestConcurrent.class.getMethod("method", MutableInteger.class);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assertTrue(m != null);
 
@@ -365,7 +367,9 @@ public class TestConcurrent extends QApplicationTest {
         Method m = null;
         try {
             m = TestConcurrent.class.getMethod("method2", Integer.class);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assertTrue(m != null);
 
@@ -384,11 +388,22 @@ public class TestConcurrent extends QApplicationTest {
         Method m = null;
         try {
             m = TestConcurrent.class.getMethod("method3", Integer.TYPE, Byte.TYPE, Short.TYPE, Float.TYPE);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assertTrue(m != null);
 
-        QFuture<Integer> future = QtConcurrent.run(this, m, 1, 2, 3, 4);
+        // FIXME: -Xcheck:jni this causes a JVM crash, due to incorrect types
+        // I guess because they are all treated as Integer.TYPE which is a mismatch for the method.
+        // [junit] FATAL ERROR in native method: Wrong object class or methodID passed to JNI call
+        // [junit]     at com.trolltech.qt.core.QtConcurrent.runPrivate(Native Method)
+        // [junit]     at com.trolltech.qt.core.QtConcurrent.run(QtConcurrent.java:276)
+        // [junit]     at com.trolltech.autotests.TestConcurrent.testRunWithPrimitiveTypes(TestConcurrent.java:400)
+        ///QFuture<Integer> future = QtConcurrent.run(this, m, 1, 2, 3, 4);
+        // so to fix we use:
+        QFuture<Integer> future = QtConcurrent.run(this, m, 1, (byte)2, (short)3, 4f);
+        // However we should implement and write a test case to make InvalidArgumentException occur.
 
         future.waitForFinished();
         assertEquals(10, (int) future.result());
@@ -403,7 +418,9 @@ public class TestConcurrent extends QApplicationTest {
         Method m = null;
         try {
             m = TestConcurrent.class.getMethod("method4", MutableInteger.class, Integer.TYPE, Integer.TYPE);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assertTrue(m != null);
 
