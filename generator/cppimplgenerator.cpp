@@ -2441,6 +2441,29 @@ static int nativePointerType(const AbstractMetaType *java_type) {
     return types[targetLangName];
 }
 
+static const QString nativePointerTypeString(const AbstractMetaType *java_type) {
+    int type = nativePointerType(java_type);
+
+    static QHash<int, QString> macrodef;
+    if (macrodef.isEmpty()) {
+        macrodef[BooleanType] = QString("QTJAMBI_NATIVEPOINTER_TYPEID__BOOLEAN_0");
+        macrodef[ByteType]    = QString("QTJAMBI_NATIVEPOINTER_TYPEID__BYTE_1");
+        macrodef[CharType]    = QString("QTJAMBI_NATIVEPOINTER_TYPEID__CHAR_2");
+        macrodef[ShortType]   = QString("QTJAMBI_NATIVEPOINTER_TYPEID__SHORT_3");
+        macrodef[IntType]     = QString("QTJAMBI_NATIVEPOINTER_TYPEID__INT_4");
+        macrodef[LongType]    = QString("QTJAMBI_NATIVEPOINTER_TYPEID__LONG_5");
+        macrodef[FloatType]   = QString("QTJAMBI_NATIVEPOINTER_TYPEID__FLOAT_6");
+        macrodef[DoubleType]  = QString("QTJAMBI_NATIVEPOINTER_TYPEID__DOUBLE_7");
+        macrodef[PointerType] = QString("QTJAMBI_NATIVEPOINTER_TYPEID__POINTER_8");
+        macrodef[StringType]  = QString("QTJAMBI_NATIVEPOINTER_TYPEID__STRING_9");
+    }
+
+    if(macrodef.contains(type))
+        return macrodef[type];
+    
+    return QString("%1").arg(type);
+}
+
 void CppImplGenerator::writeQtToJava(QTextStream &s,
                                      const AbstractMetaType *java_type,
                                      const QString &qt_name,
@@ -2588,7 +2611,7 @@ void CppImplGenerator::writeQtToJava(QTextStream &s,
             s << "qtjambi_from_cpointer(__jni_env, ";
             if (java_type->isReference())
                 s << "&";
-            s << qt_name << ", " << nativePointerType(java_type) << ", "
+            s << qt_name << ", " << nativePointerTypeString(java_type) << ", "
             << java_type->actualIndirections() << ");" << endl;
         } else if (java_type->isValue()) {
             s << fromObject(java_type->typeEntry(), "&" + qt_name) << endl;

@@ -358,6 +358,17 @@ bool qtjambi_from_resolvedentity(JNIEnv *env, void *&inputSource, jobject resolv
 QTJAMBI_EXPORT
 void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections);
 
+// These must be kept in sync with src/java/qtjambi/com/trolltech/qt/QNativePointer.java  enum Type {}
+#define QTJAMBI_NATIVEPOINTER_TYPEID__BOOLEAN_0		0
+#define QTJAMBI_NATIVEPOINTER_TYPEID__BYTE_1		1
+#define QTJAMBI_NATIVEPOINTER_TYPEID__CHAR_2		2
+#define QTJAMBI_NATIVEPOINTER_TYPEID__SHORT_3		3
+#define QTJAMBI_NATIVEPOINTER_TYPEID__INT_4		4
+#define QTJAMBI_NATIVEPOINTER_TYPEID__LONG_5		5
+#define QTJAMBI_NATIVEPOINTER_TYPEID__FLOAT_6		6
+#define QTJAMBI_NATIVEPOINTER_TYPEID__DOUBLE_7		7
+#define QTJAMBI_NATIVEPOINTER_TYPEID__POINTER_8		8
+#define QTJAMBI_NATIVEPOINTER_TYPEID__STRING_9		9
 QTJAMBI_EXPORT
 jobject qtjambi_from_cpointer(JNIEnv *env, const void *qt_pointer, int type_id, int indirections);
 
