@@ -68,12 +68,19 @@
 
 #ifdef QT_NO_DEBUG
 #  define QTJAMBI_EXCEPTION_CHECK(env)
+#  define QTJAMBI_EXCEPTION_CHECK_CLEAR(env)
 #  define QTJAMBI_DEBUG_TRACE(location)
 #else
 #  define QTJAMBI_EXCEPTION_CHECK(env) \
       if (env->ExceptionCheck()) { \
           printf("QtJambi: exception pending at %s, %d\n", __FILE__, __LINE__); \
           env->ExceptionDescribe(); \
+      }
+#  define QTJAMBI_EXCEPTION_CHECK_CLEAR(env) \
+      if (env->ExceptionCheck()) { \
+          printf("QtJambi: exception pending at %s, %d (will clear now)\n", __FILE__, __LINE__); \
+          env->ExceptionDescribe(); \
+          env->ExceptionClear(); \
       }
 #  define QTJAMBI_DEBUG_TRACE(location) qtjambi_debug_trace(location, __FILE__, __LINE__);
 #endif
