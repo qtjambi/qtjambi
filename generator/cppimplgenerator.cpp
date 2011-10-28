@@ -1200,43 +1200,6 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
 
         {
             Indentation indent(INDENT);
-            s << INDENT << "JNIEnv *__jni_env = qtjambi_current_environment();" << endl;
-
-            // This nasty case comes up when we're shutting down while receiving virtual
-            // calls.. With these checks we safly abort...
-            s << INDENT << "if (!__jni_env) {" << endl
-            << "    ";
-            writeBaseClassFunctionCall(s, java_function, implementor);
-            if (!java_function->type()) {
-                s << INDENT << "    return;" << endl;
-            }
-            s << INDENT << "}" << endl;
-
-            // otherwise, continue with the function call...
-            s << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
-
-            AbstractMetaArgumentList arguments = java_function->arguments();
-            AbstractMetaArgumentList argumentsToReset;
-            foreach(AbstractMetaArgument *argument, arguments) {
-                if (!java_function->argumentRemoved(argument->argumentIndex() + 1)) {
-                    if (!argument->type()->isPrimitive()
-                            || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex() + 1).isEmpty()) {
-                        writeQtToJava(s,
-                                      argument->type(),
-                                      argument->indexedName(),
-                                      "__java_" + argument->indexedName(),
-                                      java_function,
-                                      argument->argumentIndex() + 1);
-                    }
-
-                    if (java_function->resetObjectAfterUse(argument->argumentIndex() + 1))
-                        argumentsToReset.append(argument);
-                }
-            }
-
-            for (int i = 0; i < arguments.size(); ++i)
-                writeOwnership(s, java_function, "__java_" + arguments.at(i)->indexedName(), i + 1, implementor);
-
 
             AbstractMetaType *function_type = java_function->type();
             QString new_return_type = java_function->typeReplaced(0);
@@ -1244,73 +1207,150 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
                                        || !new_return_type.isEmpty())
                                       && new_return_type != "void");
 
-            s << INDENT;
-            if (has_function_type) {
-                if (new_return_type.isEmpty()) {
-                    s << translateType(function_type);
-                } else {
-                    s << jniName(new_return_type);
-                }
-                s << " " << "__java_return_value = ";
+            s << INDENT << "JNIEnv *__jni_env = qtjambi_current_environment();" << endl;
+
+            // This nasty case comes up when we're shutting down while receiving virtual
+            // calls.. With these checks we safely abort...
+            s << INDENT << "if (!__jni_env) {" << endl;
+            {
+                Indentation indent(INDENT);
+                bool emittedReturnKeyword = writeBaseClassFunctionCall(s, java_function, implementor);
+                if (!emittedReturnKeyword)
+                    s << INDENT << "return;" << endl;
+            }
+            s << INDENT << "}" << endl;
+
+            // otherwise, continue with the function call...
+            s << INDENT << "__jni_env->PushLocalFrame(100);" << endl;
+
+            if (function_type) {
+                s << INDENT;
+                writeTypeInfo(s, function_type);
+                s << " " << "__qt_return_value;" << endl;	// declaration only
             }
 
-            s << "__jni_env->";
-            if (new_return_type.isEmpty()) {
-                s << callXxxMethod(java_function->type());
-            } else if (!has_function_type) {
-                s << "CallVoidMethod";
-            } else {
-                s << callXxxMethod(new_return_type);
-            }
+            // It is possible for QEvent to be attempted for delivery to eventFilter() when the GC is deleted
+            //  the object.  This makes m_link->javaObject(__jni_env)==0 and we are not allows to call any
+            //  __jni_env->CallXxxMethod() with this null.
+            s << INDENT << "jobject __java_return_value_object = m_link->javaObject(__jni_env);" << endl;
+            // This may also be a WeakGlobalRef so we need to check it is valid (before calling any
+            //  invocation methods CallXxxMethod).
+            s << INDENT << "if(__jni_env->IsSameObject(__java_return_value_object, 0) == JNI_FALSE) {" << endl;
+            {
+                Indentation indent(INDENT);
 
-            s << "(m_link->javaObject(__jni_env), method_id";
-            if (arguments.size() > 0)
-                s << ", ";
-            writeFunctionCallArguments(s, java_function, "__java_", Option(NoCasts | SkipRemovedArguments));
-            s << ");" << endl
-            << INDENT << "qtjambi_exception_check(__jni_env);" << endl;
+                AbstractMetaArgumentList arguments = java_function->arguments();
+                AbstractMetaArgumentList argumentsToReset;
+                foreach(AbstractMetaArgument *argument, arguments) {
+                    if (!java_function->argumentRemoved(argument->argumentIndex() + 1)) {
+                        if (!argument->type()->isPrimitive()
+                                || !java_function->conversionRule(TypeSystem::NativeCode, argument->argumentIndex() + 1).isEmpty()) {
+                            writeQtToJava(s,
+                                          argument->type(),
+                                          argument->indexedName(),
+                                          "__java_" + argument->indexedName(),
+                                          java_function,
+                                          argument->argumentIndex() + 1);
+                        }
 
-            if (has_function_type) {
-                writeJavaToQt(s, function_type, "__qt_return_value", "__java_return_value",
-                              java_function, 0, GlobalRefJObject);
-
-                if (java_function->nullPointersDisabled()) {
-                    s << INDENT << "if (__java_return_value == 0) {" << endl;
-                    {
-                        Indentation indent(INDENT);
-                        s << INDENT << "fprintf(stderr, \"QtJambi: Unexpected null pointer returned from override of '" << java_function->name() << "' in class '%s'\\n\"," << endl
-                        << INDENT << "        qPrintable(qtjambi_object_class_name(__jni_env, m_link->javaObject(__jni_env))));" << endl;
-                        s << INDENT << "__qt_return_value = ";
-                        QString defaultValue = java_function->nullPointerDefaultValue();
-                        if (!defaultValue.isEmpty())
-                            s << defaultValue << ";";
-                        else
-                            writeBaseClassFunctionCall(s, java_function, implementor, NoReturnStatement);
-                        s << endl;
+                        if (java_function->resetObjectAfterUse(argument->argumentIndex() + 1))
+                            argumentsToReset.append(argument);
                     }
-
-                    s << INDENT << "}" << endl;
                 }
-            } else if (!java_function->conversionRule(TypeSystem::ShellCode, 0).isEmpty()) {
-                writeConversionRule(s, TypeSystem::ShellCode, java_function, 0, "<invalid>", "<invalid>");
-            }
 
-            writeOwnership(s, java_function, "this", -1, implementor);
-            writeOwnership(s, java_function, "__java_return_value", 0, implementor);
-
-            foreach(AbstractMetaArgument *argumentToReset, argumentsToReset) {
-
-                QString argumentName = "__java_" + argumentToReset->indexedName();
+                for (int i = 0; i < arguments.size(); ++i)
+                    writeOwnership(s, java_function, "__java_" + arguments.at(i)->indexedName(), i + 1, implementor);
 
                 s << INDENT;
-                if (argumentToReset->type()->isContainer())
-                    s << "qtjambi_invalidate_collection(";
-                else
-                    s << "qtjambi_invalidate_object(";
+                if (has_function_type) {
+                    if (new_return_type.isEmpty()) {
+                        s << translateType(function_type);
+                    } else {
+                        s << jniName(new_return_type);
+                    }
+                    s << " " << "__java_return_value = ";	// declaration only
+                }
 
-                s << "__jni_env, " << argumentName << ");" << endl;
+                s << "__jni_env->";
+                if (new_return_type.isEmpty()) {
+                    s << callXxxMethod(java_function->type());
+                } else if (!has_function_type) {
+                    s << "CallVoidMethod";
+                } else {
+                    s << callXxxMethod(new_return_type);
+                }
+
+                s << "(__java_return_value_object, method_id";
+                if (arguments.size() > 0)
+                    s << ", ";
+                writeFunctionCallArguments(s, java_function, "__java_", Option(NoCasts | SkipRemovedArguments));
+                s << ");" << endl;
+                // We'd like to not emit this line below, if the one just outside the
+                //  generated brace section is next.
+                s << INDENT << "qtjambi_exception_check(__jni_env);" << endl;
+
+                if (has_function_type) {
+                    writeJavaToQt(s, function_type, "__qt_return_value_tmp", "__java_return_value",
+                                  java_function, 0, GlobalRefJObject);
+                    // This line below i sonly needed because we can't instruction writeJavaToQt
+                    //  to omit the emitting the function type, so then we could assign
+                    //  __qt_return_value directly.
+                    // This is not very efficient for complex types as it may cause extra copying.
+                    if(function_type)
+                        s << INDENT << "__qt_return_value = __qt_return_value_tmp;" << endl;
+
+                    if (java_function->nullPointersDisabled()) {
+                        s << INDENT << "if (__java_return_value == 0) {" << endl;
+                        {
+                            Indentation indent(INDENT);
+                            s << INDENT << "fprintf(stderr, \"QtJambi: Unexpected null pointer returned from override of '" << java_function->name() << "' in class '%s'\\n\"," << endl
+                            << INDENT << "        qPrintable(qtjambi_object_class_name(__jni_env, m_link->javaObject(__jni_env))));" << endl;
+                            s << INDENT << "__qt_return_value = ";
+                            QString defaultValue = java_function->nullPointerDefaultValue();
+                            if (!defaultValue.isEmpty())
+                                s << defaultValue << ";";
+                            else
+                                writeBaseClassFunctionCall(s, java_function, implementor, NoReturnStatement);
+                            s << endl;
+                        }
+
+                        s << INDENT << "}" << endl;
+                    }
+                } else if (!java_function->conversionRule(TypeSystem::ShellCode, 0).isEmpty()) {
+                    writeConversionRule(s, TypeSystem::ShellCode, java_function, 0, "<invalid>", "<invalid>");
+                }
+
+                writeOwnership(s, java_function, "this", -1, implementor);
+                writeOwnership(s, java_function, "__java_return_value", 0, implementor);
+
+                foreach(AbstractMetaArgument *argumentToReset, argumentsToReset) {
+
+                    QString argumentName = "__java_" + argumentToReset->indexedName();
+
+                    s << INDENT;
+                    if (argumentToReset->type()->isContainer())
+                        s << "qtjambi_invalidate_collection(";
+                    else
+                        s << "qtjambi_invalidate_object(";
+
+                    s << "__jni_env, " << argumentName << ");" << endl;
+                }
             }
+            s << INDENT << "} else {" << endl;  // if(__java_return_value_object)
+            {
+                Indentation indent(INDENT);
 
+                // FIXME: Use helper method
+                // Raise exception ?  Maybe this should be QtJambiNoNativeException
+                s << INDENT << "StaticCache *sc = StaticCache::instance();" << endl;
+                s << INDENT << "sc->resolveNullPointerException();" << endl;
+                s << INDENT << "__jni_env->ThrowNew(sc->NullPointerException.class_ref, \"" << implementor->name() << "::" << java_function_signature << "\");" << endl;
+                if(function_type)
+                    s << INDENT << "__qt_return_value = " << default_return_statement_qt(function_type, Generator::NoReturnStatement) << ";" << endl;
+            }                
+            s << INDENT << "}" << endl;         // if(__java_return_value_object)
+
+            s << INDENT << "qtjambi_exception_check(__jni_env);" << endl;
             s << INDENT << "__jni_env->PopLocalFrame(0);" << endl;
 
             s << INDENT << "QTJAMBI_DEBUG_TRACE(\"(shell) -> leaving: "  << implementor->name()
