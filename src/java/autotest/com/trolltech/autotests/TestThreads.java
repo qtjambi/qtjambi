@@ -86,9 +86,13 @@ public class TestThreads extends QApplicationTest {
         @Override
         public boolean event(QEvent e) {
             if (e.type() == ID_PING) {
-                numPings++;
+                int thisNumPings;
+                synchronized (this) {
+                    numPings++;
+                    thisNumPings = numPings;
+                }
                 QCoreApplication.postEvent(other, new QEvent(ID_PING));
-                if (numPings == 100) {
+                if (thisNumPings == 100) {
                     done.emit();
                 }
             }
@@ -147,8 +151,8 @@ public class TestThreads extends QApplicationTest {
             ping.setOtherObject(pong.object);
             pong.setOtherObject(ping.object);
 
-            ping.join();
-            pong.join();
+            ping.join(1000);
+            pong.join(1000);
 
             assertEquals(ping.object.numPings, 100);
             assertEquals(pong.object.numPings, 100);
@@ -169,9 +173,13 @@ public class TestThreads extends QApplicationTest {
         Signal0 ping = new Signal0();
 
         public void pong() {
-            numPings++;
+            int thisNumPings;
+            synchronized (this) {
+                numPings++;
+                thisNumPings = numPings;
+            }
             ping.emit();
-            if (numPings == 100)
+            if (thisNumPings == 100)
                 done.emit();
             affinityOk &= thread() == Thread.currentThread();
         }
