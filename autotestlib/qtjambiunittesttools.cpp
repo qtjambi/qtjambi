@@ -46,6 +46,7 @@
 #define QTJAMBI_QTJAMBIUNITTESTTOOLS_H
 
 #include <qtjambi/qtjambi_global.h>
+#include <qtjambi/qtjambi_core.h>	/* qtjambi_object_count_get */
 
 extern "C" Q_DECL_EXPORT jboolean JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_autotests_QtJambiUnittestTools_hasDebugTools)
@@ -57,6 +58,16 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_autotests_QtJambiUnittestTools_hasDeb
 #else
     return false;
 #endif
+}
+
+extern "C" Q_DECL_EXPORT jint JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_autotests_QtJambiUnittestTools_getObjectCount)
+(JNIEnv *,
+ jclass,
+ jint arg0,
+ jint arg1)
+{
+    return qtjambi_object_count_get((int)arg0, (int)arg1);
 }
 
 #endif // QTJAMBI_QTJAMBIUNITTESTTOOLS_H

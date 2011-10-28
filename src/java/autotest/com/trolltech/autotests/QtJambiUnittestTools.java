@@ -64,4 +64,10 @@ public class QtJambiUnittestTools {
      * false if not.
      */
     public static native boolean hasDebugTools();
+
+    /**
+     * Returns values for memory object counts of internal parts of
+     * QtJambi.  The main use is in trying to find memory leaks.
+     */
+    public static native int getObjectCount(int arg0, int arg2);
 }

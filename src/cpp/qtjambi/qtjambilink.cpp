@@ -220,6 +220,22 @@ int qtjambi_object_cache_operation_flush()
     return 0;
 }
 
+int qtjambi_object_count_get(int arg0, int arg1)
+{
+    Q_UNUSED(arg0);
+    Q_UNUSED(arg1);
+    // QObject
+    // QtJambiLink
+    // QtJambiLinkUserData
+    // QtJambiDestructorEvent
+    // JObject
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    if(arg0 == 1)  // FIXME: Throw NotImplemented exception
+        return QtJambiLink::QtJambiLinkList_dump();
+#endif
+    return -1;
+}
+
 int qtjambi_object_cache_operation_count()
 {
     int count;
