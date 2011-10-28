@@ -96,10 +96,10 @@
                               outdir="${basedir}/build/platform-output">
 
             <!-- Qt Libraries... -->
-            <library name="QtCore"              type="qt"     rootPath="${qtjambi.qt.libdir}" if="${qtjambi.core}" />
-            <library name="QtGui"               type="qt"     rootPath="${qtjambi.qt.libdir}" if="${qtjambi.gui}" />
-            <library name="QtOpenGL"            type="qt"     rootPath="${qtjambi.qt.libdir}" if="${qtjambi.opengl}" />
-            <library name="QtXml"               type="qt"     rootPath="${qtjambi.qt.libdir}" if="${qtjambi.xml}" />
+            <library name="QtCore"    dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}" if="${qtjambi.core}"   />
+            <library name="QtGui"     dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}" if="${qtjambi.gui}"    />
+            <library name="QtOpenGL"  dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}" if="${qtjambi.opengl}" />
+            <library name="QtXml"     dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}" if="${qtjambi.xml}"    />
 
             <!-- Qt Plugins... -->
             <library name="qtaccessiblewidgets" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="plugins/accessible"   load="never" if="${qtjambi.plugins.accessible.qtaccessiblewidgets}" />
@@ -178,10 +178,20 @@
 
             <plugin path="plugins"/>
 
-            <!-- Finally the generated library  -->
-            <library name="org_qtjambi_test"        type="qtjambi"  rootPath="build/qmake/lib"/>
+            <!-- Finally the generated libraries  -->
+            
+            <!-- This is the implementation of our custom code -->
+            <library name="testGenImpl"            type="qtjambi"  rootPath="build/qmake/cpp"  dsoVersion="1"  load="yes" />
+            <!-- This is the QtJambi generated shell code to bridge between
+                 the implementation DLL and Java -->
+<!--            <library name="org_qtjambi_test"       type="qtjambi"  rootPath="build/qmake/lib"  dsoVersion="1"/>
+                 -->
+            <library name="org_qtjambi_test"       type="qtjambi"  rootPath="build/qmake/lib"  />
 
         </qtjambi-platform-jar>
+
+        <mkdir dir="${basedir}/build/platform-output/META-INF/com.trolltech.qt.deployment"/>
+        <copy file="${basedir}/build/platform-output/qtjambi-deployment.xml"  tofile="${basedir}/build/platform-output/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}.${qtjambi.configuration}.${qtjambi.version}.xml"/>
 
         <delete file="${basedir}/test-*.jar"/>
         <jar destfile="test-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar">
@@ -189,8 +199,11 @@
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
                 <!-- Should of course put TestMapBorealis here.... attribute name="Main-Class" value="com.trolltech.examples.GeneratorExample"/ -->
-                <attribute name="Class-Path" value="qtjambi-${qtjambi.version}.jar"/>
                 <attribute name="Main-Class" value="test.TestJava"/>
+                <attribute name="X-QtJambi-Version"      value="${qtjambi.version}"/>
+                <attribute name="X-QtJambi-Arch"         value="${qtjambi.osname}"/>
+                <attribute name="X-QtJambi-Build"        value="${qtjambi.configuration}"/><!-- debug test -->
+                <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.${qtjambi.configuration}.${qtjambi.version}.xml"/>
             </manifest>
         </jar>
     </target>

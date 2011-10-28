@@ -3,8 +3,9 @@
 
 #include <QtCore/QObject>
 #include <QtGui/QGraphicsScene>
+#include "TestSuper.h"
 
-class TestItem : public QObject {
+class TestItem : public TestSuper {
 
     Q_OBJECT
 

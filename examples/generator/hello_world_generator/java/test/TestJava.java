@@ -11,10 +11,7 @@ import com.trolltech.qt.gui.QGraphicsView;
  * @version 1.0 Dec 9, 2009 3:12:08 PM
  */
 public class TestJava {
-
-    public static void main(String[] args) {
-
-        QApplication.initialize(args);
+    private static void setupAndRunEventLoop() {
         QGraphicsScene scene = new QGraphicsScene();
 
         TestView view = new TestView(scene);
@@ -25,6 +22,13 @@ public class TestJava {
         view.show();
 
         QApplication.execStatic();
+    }
 
+    public static void main(String[] args) {
+        QApplication.initialize(args);
+
+        setupAndRunEventLoop();
+
+        QApplication.shutdown();
     }
 }

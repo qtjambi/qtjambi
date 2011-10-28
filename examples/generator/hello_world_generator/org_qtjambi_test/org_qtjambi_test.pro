@@ -1,3 +1,6 @@
+#
+#
+
 TARGET = org_qtjambi_test
 
 # This must set be before includes and must match the build type used with qtjambi itself
@@ -6,19 +9,33 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
     CONFIG += debug_and_release
 } else {
-    # Manually modify this
     contains(QT_CONFIG, debug) {
+        # Qt was configued with both debug and release libs
         CONFIG += debug
-    } else {
+    }
+    contains(QT_CONFIG, release) {
+        # Qt was configued with both debug and release libs
         CONFIG += release
     }
 }
+
 
 include(../../../../src/cpp/qtjambi/qtjambi_include.pri)
 include(../build/generator/cpp/org_qtjambi_test/org_qtjambi_test.pri)
 
 INCLUDEPATH += $$PWD $$PWD/../src
 
+# File are included from org_qtjambi_test.pri
 HEADERS +=
 SOURCES +=
 
+# Add the linkage to the implementation
+QTJAMBI_IMPL_NAME = testGenImpl
+CONFIG(debug, debug|release) {
+    QTJAMBI_IMPL_NAME = $$member(QTJAMBI_IMPL_NAME, 0)_debuglib
+}
+macx: {
+    LIBS += $$PWD/../build/qmake/cpp/lib$$member(QTJAMBI_IMPL_NAME, 0).jnilib
+} else {
+    LIBS += -L$$PWD/../build/qmake/cpp -l$$QTJAMBI_IMPL_NAME
+}
