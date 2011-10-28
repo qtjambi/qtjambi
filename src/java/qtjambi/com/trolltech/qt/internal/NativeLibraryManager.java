@@ -362,10 +362,12 @@ public class NativeLibraryManager {
         if (unpacked)
             return;
         try {
-            unpack_helper();
-            if (VERBOSE_LOADING)
-                System.out.println(reporter.recentReports());
-            unpacked = true;
+            synchronized(NativeLibraryManager.class) {
+                if (unpacked)
+                    return;
+                unpack_helper();
+                unpacked = true;
+            }
         } catch (Throwable t) {
             throw new RuntimeException("Failed to unpack native libraries, progress so far:\n"
                                        + reporter, t);
