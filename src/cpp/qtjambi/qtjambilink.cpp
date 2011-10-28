@@ -355,6 +355,7 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
             gUserObjectCache()->insert(ptr, link);
             link->m_in_cache = true;
         }
+        link->m_link_cacheable = true;
     }
 
     // Set the native__id field of the java object
@@ -609,7 +610,8 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         qDebug("Deleting '%s' [count after: %d]", QMetaType::typeName(m_meta_type), currentCount);
     }
 #endif
-    Q_ASSERT(m_pointer);
+    Q_ASSERT(m_pointer);	// must be non-null
+    Q_ASSERT(!m_delete_later);	// must be 0
 
     aboutToMakeObjectInvalid(env);
 
@@ -623,8 +625,9 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
         QObject *qobj = qobject();
         QThread *objectThread = qobj->thread();
 
+        QThread *currentThread = QThread::currentThread();
         // Explicit dispose from current thread, delete object
-        if (QThread::currentThread() == objectThread) {
+        if (currentThread == objectThread) {
 //             printf(" - straight up delete %s [%s]\n",
 //                    qPrintable(qobj->objectName()),
 //                    qobj->metaObject()->className());
@@ -637,6 +640,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
 //             printf(" - deleteLater in main thread %s [%s]\n",
 //                    qPrintable(qobj->objectName()),
 //                    qobj->metaObject()->className());
+            m_delete_later = 1;
             qobj->deleteLater();
 
         // If the QObject is in a non-main thread, check if that
@@ -656,6 +660,7 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
     //                        objectThread,
     //                        qPrintable(qobj->objectName()),
     //                        qobj->metaObject()->className());
+                    m_delete_later = 1;
                     qobj->deleteLater();
                 } else if (QCoreApplication::instance()) {
                     qWarning("QObjects can only be implicitly garbage collected when owned"
@@ -679,13 +684,19 @@ void QtJambiLink::deleteNativeObject(JNIEnv *env)
             }
             env->DeleteLocalRef(t);
         }
-        m_pointer = 0;
+
+        // If flagged that this object is now pending deleteLater() but we don't zap the m_pointer
+        // as there maybe other events to process on the C++ object ahead of the deletion action.
+        if(!m_delete_later)
+            m_pointer = 0;
 
     } else {
         if (m_ownership == JavaOwnership && deleteInMainThread() && (QCoreApplication::instance() == 0 || QCoreApplication::instance()->thread() != QThread::currentThread())) {
 
             if (QCoreApplication::instance()) {
-                QCoreApplication::postEvent(QCoreApplication::instance(), new QtJambiDestructorEvent(this, m_pointer, m_meta_type, m_ownership, m_destructor_function));
+                m_pointer_zeroed = 1;    // qobject still exists at the time we cut it away (and we have shoved dtor to event system)
+                QtJambiDestructorEvent *qtde = new QtJambiDestructorEvent(this, m_pointer, m_meta_type, m_ownership, m_destructor_function);
+                QCoreApplication::postEvent(QCoreApplication::instance(), qtde);
             }
 
         } else if (m_ownership == JavaOwnership && m_pointer != 0 && m_meta_type != QMetaType::Void && (QCoreApplication::instance() != 0
@@ -856,7 +867,11 @@ void QtJambiLink::resetObject(JNIEnv *env) {
     releaseJavaObject(env);
     aboutToMakeObjectInvalid(env);
 
-    m_pointer = 0;
+    if(m_pointer) {
+        // This flag means the object still exists in memory but its not our (QtJambi) responsbility anymore
+        m_pointer_zapped = 1;
+        m_pointer = 0;
+    }
 }
 
 void QtJambiLink::javaObjectInvalidated(JNIEnv *env)

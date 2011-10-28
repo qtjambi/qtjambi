@@ -129,6 +129,7 @@ class QTJAMBI_EXPORT QtJambiLink
           m_java_object(jobj),
           m_pointer(pointer),
           m_ownership(SplitOwnership), // Default to split, because it's safest
+          m_last_ownership(InvalidOwnership),
           m_global_ref(global_ref),
           m_is_qobject(is_qobject),
           m_has_been_finalized(false),
@@ -140,6 +141,9 @@ class QTJAMBI_EXPORT QtJambiLink
           m_delete_in_main_thread(false),
           m_java_link_removed(false),
           m_link_cacheable(false),
+          m_delete_later(false),
+          m_pointer_zeroed(false),
+          m_pointer_zapped(false),
           m_reserved1(0),
 #if defined(QTJAMBI_DEBUG_TOOLS)
           m_in_qtjambilink_list(0),
@@ -169,6 +173,7 @@ protected:
           m_java_object(jobj),
           m_pointer(0),
           m_ownership(SplitOwnership), // Default to split, because it's safest
+          m_last_ownership(InvalidOwnership),
           m_has_been_finalized(false),
           m_qobject_deleted(false),
           m_created_by_java(false),
@@ -178,6 +183,9 @@ protected:
           m_delete_in_main_thread(false),
           m_java_link_removed(false),
           m_link_cacheable(false),
+          m_delete_later(false),
+          m_pointer_zeroed(false),
+          m_pointer_zapped(false),
           m_reserved1(0),
 #if defined(QTJAMBI_DEBUG_TOOLS)
           m_in_qtjambilink_list(0),
@@ -200,9 +208,10 @@ protected:
 
 public:
     enum Ownership {
-        JavaOwnership, // Weak ref to java object, deleteNativeObject deletes c++ object
-        CppOwnership,  // Strong ref to java object until c++ object is deleted, deleteNativeObject does *not* delete c++ obj.
-        SplitOwnership // Weak ref to java object, deleteNativeObject does *not* delete c++ object. Only for objects not created by Java.
+        JavaOwnership,   // Weak ref to java object, deleteNativeObject deletes c++ object
+        CppOwnership,    // Strong ref to java object until c++ object is deleted, deleteNativeObject does *not* delete c++ obj.
+        SplitOwnership,  // Weak ref to java object, deleteNativeObject does *not* delete c++ object. Only for objects not created by Java.
+        InvalidOwnership // Only meaningful for m_last_ownership as null/not-set placeholder
     };
 
     ~QtJambiLink();
@@ -300,6 +309,8 @@ public:
 
     void setGlobalRef(JNIEnv *env, bool global);
 
+    bool isDeleteLater() const { return m_delete_later; }
+    bool isPointerZeroed() const { return m_pointer_zeroed; }
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
         bool enter_in_cache);
     static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object);
@@ -342,6 +353,7 @@ private:
     void *m_pointer;
 
     uint m_ownership : 2;
+    uint m_last_ownership : 2;         // used to track
     uint m_global_ref : 1;
     uint m_is_qobject : 1;
     uint m_has_been_finalized : 1;
@@ -352,7 +364,10 @@ private:
     uint m_connected_to_java : 1;
     uint m_delete_in_main_thread : 1;
     uint m_java_link_removed : 1;
-    uint m_link_cacheable : 1;		// was this once upon a time: enter_in_cache==true
+    uint m_link_cacheable : 1;         // was this once upon a time: enter_in_cache==true
+    uint m_delete_later : 1;           // used to track that QtJambiLink called deleteLater() so can expect event loop dtor to work on 'this'
+    uint m_pointer_zeroed : 1;         // used to indicate that we have set m_pointer=0 but the original pointer may still be active and out there
+    uint m_pointer_zapped : 1;         // used to indicate we set m_pointer=0 but have no clear idea how the C++ object will be freed
     uint m_reserved1 : 12;
 #if defined(QTJAMBI_DEBUG_TOOLS)
     uint m_in_qtjambilink_list : 1;
