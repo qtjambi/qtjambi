@@ -125,8 +125,16 @@ class Generator : public QObject {
 class Indentor {
     public:
         Indentor():
-                indent(0) {}
+                indent(0),
+                m_string("    ")
+        {
+        }
         int indent;
+        const QString &string() const {
+            return m_string;
+        }
+    private:
+        QString m_string;
 };
 
 class Indentation {
@@ -138,6 +146,9 @@ class Indentation {
         ~Indentation() {
             indentor.indent--;
         }
+        const QString &string() const {
+            return indentor.string();
+        }
 
     private:
         Indentor &indentor;
@@ -145,7 +156,7 @@ class Indentation {
 
 inline QTextStream &operator <<(QTextStream &s, const Indentor &indentor) {
     for (int i = 0; i < indentor.indent; ++i)
-        s << "    ";
+        s << indentor.string();
     return s;
 }
 
