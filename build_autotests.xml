@@ -50,7 +50,7 @@
         <mkdir dir="${outputDir}/tests/autotest-generator"/>
         <generator dir="${generatorDir}"
                 debugTools="${qtjambi.debug-tools}"
-                inputDirectory="${generatorDir}"
+                inputDirectory="${generatorDir}${psep}${basedir}/autotestlib"
                 outputDirectory="${outputDir}/tests/autotest-generator"
                 generatorDirectory="${generator.builddir}"
                 typesystem="${basedir}/autotestlib/build.txt"
@@ -77,20 +77,21 @@
                 includeantruntime="false"
                 source="1.5" target="1.5">
             <classpath>
-                <pathelement location="qtjambi-${qtjambi.version}.jar" />
+                <pathelement location="${basedir}/jars/qtjambi.jar" />
                 <pathelement location="." />
             </classpath>
         </javac> -->
     </target>
 
-    <target name="compile.java" depends="compile.deps, check.junit">
+    <target name="compile.java" depends="init, compile.deps, check.junit">
         <mkdir dir="${outputDir}/tests/auto"/>
         <javac destdir="${outputDir}/tests/auto" debug="true"
                 includeantruntime="false"
                 source="1.5" target="1.5">
             <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
             <classpath>
-                <pathelement location="${basedir}/qtjambi-${qtjambi.version}.jar" />
+                <pathelement location="${basedir}/jars/qtjambi.jar" />
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${outputDir}/tests/autotests" />
                 <pathelement location="${basedir}/src/java/autotest" />
@@ -108,8 +109,9 @@
                 includeantruntime="false"
                 source="1.5" target="1.5">
             <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
             <classpath>
-                <pathelement location="${basedir}/qtjambi-${qtjambi.version}.jar" />
+                <pathelement location="${basedir}/jars/qtjambi.jar" />
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${outputDir}/tests/unittests" />
                 <pathelement location="${basedir}/src/java/autotest" />
@@ -118,7 +120,7 @@
         </javac>
     </target>
 
-    <target name="run.osx" if="qtjambi.osx">
+    <target name="run.osx" if="qtjambi.osx" depends="init">
         <delete dir="${outputDir}/tests/junitxml" />
         <delete dir="${outputDir}/tests/TestResults" />
         <mkdir dir="${outputDir}/tests/junitxml"/>
@@ -133,7 +135,10 @@
         </junit>
     </target>
 
-    <target name="run.other" unless="qtjambi.osx" depends="check.junit">
+    <target name="run.other" unless="qtjambi.osx" depends="init, check.junit">
+        <qtjambi-resolve-path var="absOutputDir" path="${outputDir}" />
+        <qtjambi-resolve-path var="absQtLib"     path="${qtLib}" />
+        <qtjambi-resolve-path var="absJambiLib"  path="${jambiLib}" />
         <delete dir="${outputDir}/tests/junitxml" />
         <delete dir="${outputDir}/tests/TestResults" />
         <mkdir dir="${outputDir}/tests/junitxml"/>
@@ -145,27 +150,33 @@
         <copy todir="${outputDir}/tests/auto/com/trolltech/unittests">
             <fileset dir="src/java/autotest/com/trolltech/unittests" excludes="**/*.java"/>
         </copy>
-        <junit fork="yes" printsummary="true" haltonfailure="no" timeout="140000" showoutput="yes" logfailedtests="yes">
+        <junit fork="yes" printsummary="true" haltonfailure="no" timeout="600000" showoutput="yes" logfailedtests="yes">
             <classpath>
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${tests.hamcrest}" />
-                <pathelement location="qtjambi-${qtjambi.version}.jar" />
+                <pathelement location="${basedir}/jars/qtjambi.jar" />
 <!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar" />                -->
-                <pathelement path="${outputDir}/tests/auto" />
-                <pathelement path="${outputDir}/tests/unit" />
-                <pathelement path="${outputDir}/tests/autotests" />
                 <pathelement path="src/java/qtjambi-examples" />
+                <pathelement path="${absOutputDir}/tests/auto" />
+                <pathelement path="${absOutputDir}/tests/unit" />
+                <pathelement path="${absOutputDir}/tests/autotests" />
+                <pathelement path="${basedir}/src/java/qtjambi-examples" />
                 <!-- examples: is needed to pickup some images and non-code resource files to work with  -->
-<!--                <pathelement path="qtjambi-examples-${qtjambi.version}.jar" />                -->
                 <!-- this is needed by 2 tests in com/trolltech/autotests/TestInjectedCode.java#testIODevicePeek() -->
                 <pathelement path="src/java/autotest" />
             </classpath>
 <!-- ${qtLib}${psep} -->
-            <jvmarg value="-Djava.library.path=${qtLib}${psep}${jambiLib}"/>
+            <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
             <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/>
             <jvmarg value="-Dcom.trolltech.qt.debug=true"/>
             <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
             <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/>
+            <jvmarg value="-Dcom.trolltech.qt.exceptions-for-messages=none"/>
+            <jvmarg value="-Xrs"/><!-- This stops JVM intercepting SIGSEGV
+            from native code (so we can see where/why it crashed) otherwise
+            the JVM may promote SIGSEGV to NullPointerException, which is
+            not that useful for debugging. -->
+            <jvmarg value="-Xcheck:jni"/>
             <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
 <!--            <jvmarg value="-verbose"/> -->
             <formatter type="xml" usefile="yes" />
