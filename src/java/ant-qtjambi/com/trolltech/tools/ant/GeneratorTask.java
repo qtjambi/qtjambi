@@ -56,17 +56,17 @@ import java.util.StringTokenizer;
 import com.trolltech.qt.osinfo.OSInfo;
 
 public class GeneratorTask extends Task {
-
-    private String header = "";
-    private String typesystem = "";
+    private String header;
+    private String typesystem;
     private String inputDirectory;
-    private String outputDirectory = ".";
+    private String outputDirectory;
     private String cppOutputDirectory;
     private String javaOutputDirectory;
+    private String inputPreprocessFile;
     private String outputPreprocessFile;
-    private String dir = ".";
-    private String phononpath = "";
-    private String kdephonon = "";
+    private String dir;
+    private String phononpath;
+    private String kdephonon;
     private String options;
     private String qtIncludeDirectory;
     private String qtLibDirectory;
@@ -74,9 +74,7 @@ public class GeneratorTask extends Task {
     private String generatorDirectory;
     private String generatorExe;
     private String includePaths;
-
-    private boolean debugTools = false;
-
+    private boolean debugTools;
     private List<String> commandList = new ArrayList<String>();
 
     private List<String> searchPath() {
@@ -152,22 +150,18 @@ public class GeneratorTask extends Task {
     }
 
     private void parseArgumentFiles(List<String> commandList) {
-
         File typesystemFile = Util.makeCanonical(typesystem);
-        if(!typesystemFile.exists()) {
+        if(typesystemFile == null || !typesystemFile.exists())
             throw new BuildException("Typesystem file '" + typesystem + "' does not exist.");
-        }
 
         File headerFile;
-        if("".equals(kdephonon)) {
+        if(kdephonon == null || kdephonon.length() == 0)
             headerFile = Util.makeCanonical(header);
-        } else {
+        else
             headerFile = Util.makeCanonical(kdephonon);
-        }
 
-        if(!headerFile.exists()) {
-            throw new BuildException("Header file '" + header + "' does not exist.");
-        }
+        if(headerFile == null || !headerFile.exists())
+            throw new BuildException("Header file '" + headerFile.getAbsolutePath() + "' does not exist.");
 
         commandList.add(headerFile.getAbsolutePath());
         commandList.add(typesystemFile.getAbsolutePath());
@@ -182,22 +176,24 @@ public class GeneratorTask extends Task {
             }
         }
 
-        if(includePaths != null) {
+        if(includePaths != null)
             commandList.add("--include-paths=" + includePaths);
-        }
 
-        if(!phononpath.equals("")) {
+        if(phononpath != null && phononpath.length() > 0)
             commandList.add("--phonon-include=" + phononpath);
-        }
 
-        if(qtIncludeDirectory != null) {
+        if(qtIncludeDirectory != null)
             commandList.add("--qt-include-directory=" + qtIncludeDirectory);
-        }
 
-        handleArgumentDirectory(outputDirectory, "--output-directory", "Output directory");
-        handleArgumentDirectory(cppOutputDirectory, "--cpp-output-directory", "CPP output directory");
-        handleArgumentDirectory(javaOutputDirectory, "--java-output-directory", "Java output directory");
-        handleArgumentDirectory(inputDirectory, "--input-directory", "input directory");
+        // --input-directory: Don't test the value exists, since it might be a pathSeparator
+        // spec, or just test each part and warn (not fail) when something does not exist
+        handleArgumentDirectory(inputDirectory, "--input-directory", "Input directory", false);
+        handleArgumentDirectory(outputDirectory, "--output-directory", "Output directory", true);
+        handleArgumentDirectory(cppOutputDirectory, "--cpp-output-directory", "CPP output directory", true);
+        handleArgumentDirectory(javaOutputDirectory, "--java-output-directory", "Java output directory", true);
+
+        if(inputPreprocessFile != null)
+            commandList.add("--input-preprocess-file=" + inputPreprocessFile);
 
         if(outputPreprocessFile != null)
             commandList.add("--output-preprocess-file=" + outputPreprocessFile);
@@ -225,15 +221,13 @@ public class GeneratorTask extends Task {
      *
      * @see parseArguments()
      */
-    private void handleArgumentDirectory(String directory, String argumentName, String name) {
-        if(directory == null || directory.equals("")) {
+    private void handleArgumentDirectory(String directory, String argumentName, String name, boolean mustExistIfSpecified) {
+        if(directory == null || directory.length() <= 0)
             return;
-        }
 
         File file = Util.makeCanonical(directory);
-        if(!file.exists()) {
-            throw new BuildException(name + " '" + javaOutputDirectory + "' does not exist.");
-        }
+        if(mustExistIfSpecified && !file.exists())
+            throw new BuildException(name + " '" + directory + "' does not exist.");
 
         commandList.add(argumentName + "=" + file.getAbsolutePath());
     }
@@ -263,7 +257,6 @@ public class GeneratorTask extends Task {
     @SuppressWarnings("deprecation")
     @Override
     public void execute() throws BuildException {
-
         parseArguments();
 
         String generator = generatorExecutable();
@@ -273,7 +266,10 @@ public class GeneratorTask extends Task {
         thisCommandList.addAll(commandList);
         System.out.println("Arguments: " + thisCommandList.toString());
 
-        Exec.execute(thisCommandList, new File(dir), getProject(), qtLibDirectory);
+        File dirExecute = null;
+        if(dir != null)
+            dirExecute = new File(dir);
+        Exec.execute(thisCommandList, dirExecute, getProject(), qtLibDirectory);
     }
 
     public void setHeader(String header) {
@@ -284,8 +280,8 @@ public class GeneratorTask extends Task {
         this.typesystem = typesystem;
     }
 
-    public void setPhononpath(String path) {
-        this.phononpath = path;
+    public void setPhononpath(String phononpath) {
+        this.phononpath = phononpath;
     }
 
     public void setKdephonon(String kdephonon) {
@@ -332,6 +328,10 @@ public class GeneratorTask extends Task {
 
     public void setJavaOutputDirectory(String javaOutputDirectory) {
         this.javaOutputDirectory = javaOutputDirectory;
+    }
+
+    public void setInputPreprocessFile(String inputPreprocessFile) {
+        this.inputPreprocessFile = inputPreprocessFile;
     }
 
     public void setOutputPreprocessFile(String outputPreprocessFile) {
