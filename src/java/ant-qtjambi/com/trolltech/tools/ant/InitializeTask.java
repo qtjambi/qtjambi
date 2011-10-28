@@ -242,10 +242,10 @@ public class InitializeTask extends Task {
         if(verbose)
             System.out.println(OSNAME + " is " + osname);
 
-        String compiler = finder.decideCompiler();
-        propertyHelper.setNewProperty((String) null, COMPILER, compiler);
+        Compiler compiler = finder.decideCompiler();
+        propertyHelper.setNewProperty((String) null, COMPILER, compiler.toString());
         if(verbose)
-            System.out.println(COMPILER + " is " + compiler);
+            System.out.println(COMPILER + " is " + compiler.toString());
 
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();

@@ -26,9 +26,9 @@ public class FindCompiler {
         MSVC2005("msvc2005"),
         MSVC2005_64("msvc2005x64"),
         MSVC2008("msvc2008"),
-        MSVC2008_64("msvc2008_64"),
+        MSVC2008_64("msvc2008x64"),
         MSVC2010("msvc2010"),
-        MSVC2010_64("msvc2010_64"),
+        MSVC2010_64("msvc2010x64"),
         MinGW("mingw"),
         MinGW_W64("mingw-w64"),
         OldGCC("gcc3.3"),
@@ -218,7 +218,7 @@ public class FindCompiler {
         }
     }
 
-    String decideCompiler() {
+    Compiler decideCompiler() {
         switch(OSInfo.os()) {
         case Windows:
             checkWindowsCompilers();
@@ -236,7 +236,7 @@ public class FindCompiler {
         }
 
         if(verbose) System.out.println("qtjambi.compiler: " + compiler.toString());
-        return compiler.toString();
+        return compiler;
     }
 
     private Compiler testForGCC() {
@@ -252,10 +252,12 @@ public class FindCompiler {
                 return Compiler.OldGCC;
             return Compiler.GCC;
         } catch(InterruptedException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
             throw new BuildException("Failed to properly execute 'gcc' command");
         } catch(IOException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
         }
         return null;
     }
@@ -277,10 +279,12 @@ public class FindCompiler {
             if(stderr.contains("mingw"))
                 return Compiler.MinGW;
         } catch(InterruptedException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
             throw new BuildException("Failed to properly execute from 'gcc' command");
         } catch(IOException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
         }
         return null;
     }
@@ -288,7 +292,11 @@ public class FindCompiler {
     private Compiler testForMinGW_W64() {
         // FIXME: Prepend $CROSS_COMPILE
         String crossCompiler = System.getenv("CROSS_COMPILE");
-        String cmd = crossCompiler + "gcc";
+        String cmd;
+        if(crossCompiler != null)
+            cmd = crossCompiler + "gcc";
+        else
+            cmd = "gcc";
         try {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add(cmd);
@@ -300,10 +308,12 @@ public class FindCompiler {
             if(stderr.contains("mingw-w64"))
                 return Compiler.MinGW_W64;
         } catch(InterruptedException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
             throw new BuildException("Failed to properly execute from '" + cmd + "' command");
         } catch(IOException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
         }
         return null;
     }
@@ -317,32 +327,36 @@ public class FindCompiler {
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
             compilerDetectionLine = stderr;
-            if(stderr.contains("12.0"))
-                return Compiler.MSVC1998;
-            if(stderr.contains("13.00"))
-                return Compiler.MSVC2002;
-            if(stderr.contains("13.10"))
-                return Compiler.MSVC2003;
-            if(stderr.contains("14.00")) {
-                if(stderr.contains("x64"))
-                    return Compiler.MSVC2005_64;
-                return Compiler.MSVC2005;
+            if(stderr != null) {
+                if(stderr.contains("12.0"))
+                    return Compiler.MSVC1998;
+                if(stderr.contains("13.00"))
+                    return Compiler.MSVC2002;
+                if(stderr.contains("13.10"))
+                    return Compiler.MSVC2003;
+                if(stderr.contains("14.00")) {
+                    if(stderr.contains("x64"))
+                        return Compiler.MSVC2005_64;
+                    return Compiler.MSVC2005;
+                }
+                if(stderr.contains("15.00")) {
+                    if(stderr.contains("x64"))
+                        return Compiler.MSVC2008_64;
+                    return Compiler.MSVC2008;
+                }
+                if(stderr.contains("16.00")) {
+                    if(stderr.contains("x64"))
+                        return Compiler.MSVC2010_64;
+                    return Compiler.MSVC2010;
+                }
+                throw new BuildException("Failed to detect Visual Studio version\n  \"" + stderr + "\"");
             }
-            if(stderr.contains("15.00")) {
-                if(stderr.contains("x64"))
-                    return Compiler.MSVC2008_64;
-                return Compiler.MSVC2008;
-            }
-            if(stderr.contains("16.00")) {
-                if(stderr.contains("x64"))
-                    return Compiler.MSVC2010_64;
-                return Compiler.MSVC2010;
-            }
-            throw new BuildException("Failed to detect Visual Studio version\n  \"" + stderr + "\"");
         } catch(InterruptedException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
         } catch(IOException ex) {
-            ex.printStackTrace();
+            if(verbose)
+                ex.printStackTrace();
         }
         return null;
     }
