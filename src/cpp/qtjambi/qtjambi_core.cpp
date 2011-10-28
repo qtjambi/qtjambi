@@ -801,9 +801,10 @@ QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *ob
         );
 
     } else {
-        jclass ex = env->FindClass("java/lang/Exception");
-        env->ThrowNew(ex, QString::fromLatin1("Qt Jambi failed to construct native instance"
+        jclass cls_exc = env->FindClass("java/lang/Exception");
+        env->ThrowNew(cls_exc, QString::fromLatin1("Qt Jambi failed to construct native instance"
                                               " of type %1").arg(className).toLatin1());
+        env->DeleteLocalRef(cls_exc);  // non-performance path; be correct
         return 0;
     }
 }
@@ -824,6 +825,7 @@ void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections)
         jclass exception_class = resolveClass(env, "IllegalArgumentException", "java/lang/");
         Q_ASSERT(exception_class);
         env->ThrowNew(exception_class, "Illegal number of indirections");
+        env->DeleteLocalRef(exception_class);  // non-performance path; be correct
         return 0;
     }
     void *ptr = reinterpret_cast<void *>(env->GetLongField(java_object, sc->NativePointer.ptr));
@@ -1923,6 +1925,7 @@ struct BasicConnectionData
     char *method;
 };
 
+/* If we return 'true' we always populate 'resolved_data' */
 static bool qtjambi_resolve_connection_data(JNIEnv *jni_env, const BasicConnectionData *data,
                                             ResolvedConnectionData *resolved_data,
                                             bool fail_on_cpp_resolve,
@@ -2151,6 +2154,7 @@ static void qtjambi_disconnect_all(JNIEnv *jni_env, QObject *sender, QObject *re
 
         StaticCache *sc = StaticCache::instance();
         sc->resolveQSignalEmitter();
+        // It is allowed for the argument java_receiver==0
         jni_env->CallVoidMethod(java_sender, sc->QSignalEmitter.disconnect, java_receiver);
     }
 }
@@ -2275,16 +2279,16 @@ static bool qtjambi_event_notify(void **data)
             if (link) {
                 if (link->qobject()) {
                     JNIEnv *env = qtjambi_current_environment();
-            if (!env) // VM has shut down...
-                return false;
+                    if (!env) // VM has shut down...
+                        return false;
                     if (e->added())
                        link->setCppOwnership(env, link->javaObject(env));
-            else
-               link->setDefaultOwnership(env, link->javaObject(env));
+                    else
+                       link->setDefaultOwnership(env, link->javaObject(env));
                 } else if (event->type() == QEvent::ChildAdded) {
-            qWarning("%s [%s] was garbage collected before it was reparented to %s [%s]",
-                 qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
-                 qPrintable(parent->objectName()), parent->metaObject()->className());
+                    qWarning("%s [%s] was garbage collected before it was reparented to %s [%s]",
+                         qPrintable(e->child()->objectName()), e->child()->metaObject()->className(),
+                         qPrintable(parent->objectName()), parent->metaObject()->className());
                 }
             }
         }

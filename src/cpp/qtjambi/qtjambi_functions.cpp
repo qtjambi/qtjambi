@@ -352,7 +352,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_shutdown_
 (JNIEnv *,
  jobject)
 {
-    qtjambi_shutdown();		// NULL the JavaVM handle
+    qtjambi_shutdown();	// NULL the JavaVM handle
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
@@ -492,9 +492,9 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandl
 (JNIEnv *,
  jclass)
 {
-    if(qtjambiQClassPathFileEngineHandler != NULL) {
+    if(qtjambiQClassPathFileEngineHandler) {
         delete qtjambiQClassPathFileEngineHandler;
-        qtjambiQClassPathFileEngineHandler = NULL;
+        qtjambiQClassPathFileEngineHandler = 0;
         return true;
     }
     return false;
@@ -506,7 +506,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandl
 (JNIEnv *,
  jclass)
 {
-    if(qtjambiQClassPathFileEngineHandler == NULL) {
+    if(qtjambiQClassPathFileEngineHandler == 0) {
         qtjambiQClassPathFileEngineHandler = new QClassPathFileEngineHandler;
         return true;
     }
