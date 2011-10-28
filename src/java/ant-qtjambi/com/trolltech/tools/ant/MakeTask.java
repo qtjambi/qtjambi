@@ -51,7 +51,6 @@ import org.apache.tools.ant.PropertyHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
@@ -80,16 +79,6 @@ public class MakeTask extends Task {
         return "make";
     }
 
-    private List<String> safeSplit(String s) {
-        if(s == null)
-            return null;
-        List<String> list = new ArrayList<String>();
-        StringTokenizer tokenizer = new StringTokenizer(s);
-        while(tokenizer.hasMoreTokens())
-            list.add(tokenizer.nextToken());
-        return list;
-    }
-
     @Override
     public void execute() throws BuildException {
         System.out.println(msg);
@@ -103,7 +92,7 @@ public class MakeTask extends Task {
 
         try {
             final String makeOptions = System.getenv("MAKEOPTS");
-            List<String> list = safeSplit(makeOptions);
+            List<String> list = Util.safeSplitStringTokenizer(makeOptions);
             if(list != null)
                 commandArray.addAll(list);
         } catch(SecurityException e) {

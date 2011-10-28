@@ -147,7 +147,6 @@ public class GeneratorTask extends Task {
     public void setOptions(String options) {
         this.options = options;
     }
-
     public String getOptions() {
         return options;
     }
@@ -175,8 +174,12 @@ public class GeneratorTask extends Task {
     }
 
     private boolean parseArguments() {
-        if(options != null && !options.equals("")) {
-            commandList.add(options);
+        if(options != null && options.length() > 0) {
+            List<String> optionArgsList = Util.safeSplitStringTokenizer(options);
+            for(String s : optionArgsList) {
+                if(s != null && s.length() > 0)
+                    commandList.add(s);
+            }
         }
 
         if(includePaths != null) {

@@ -50,6 +50,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -326,5 +327,19 @@ abstract class Util {
         if(array == null)
             return null;
         return arrayJoinToString(array, delim);
+    }
+
+    public static List<String> splitStringTokenizer(String s) {
+        List<String> list = new ArrayList<String>();
+        StringTokenizer tokenizer = new StringTokenizer(s);
+        while(tokenizer.hasMoreTokens())
+            list.add(tokenizer.nextToken());
+        return list;
+    }
+
+    public static List<String> safeSplitStringTokenizer(String s) {
+        if(s == null)
+            return null;
+        return splitStringTokenizer(s);
     }
 }
