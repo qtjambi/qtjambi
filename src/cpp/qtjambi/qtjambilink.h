@@ -54,6 +54,10 @@
 #include <QtCore/QVector>
 #include <QtCore/QMetaType>
 #include <QtCore/QEvent>
+#if defined(QTJAMBI_DEBUG_TOOLS)
+ #include <QtCore/QMutex>
+ #include <QtCore/QAtomicInt>
+#endif
 
 class QtJambiLink;
 
@@ -80,7 +84,11 @@ struct QtJambiLinkUserData : public QObjectUserData
 private:
     QtJambiLink *m_link;
     const QMetaObject *m_metaObject;
-
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    QMutex m_mutex;
+    QAtomicInt m_atomic_int;
+    void *m_pthread_id;
+#endif
 };
 
 /*
@@ -309,6 +317,15 @@ private:
 #endif
 
     PtrDestructorFunction m_destructor_function;
+
+#if defined(QTJAMBI_DEBUG_TOOLS)  
+    // This is a temporary fix and the fallback solution to fine grained locking.
+    // On Intel platforms we can use a 8bit atomic spinlock which will not increase
+    //  the size of QtJambiLink and still protect the flags.
+    QMutex m_mutex;
+    QAtomicInt m_atomic_int;
+    void *m_pthread_id;
+#endif
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
     static QtJambiLink *QtJambiLinkList_head;
