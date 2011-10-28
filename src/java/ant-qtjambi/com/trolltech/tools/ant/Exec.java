@@ -33,15 +33,19 @@ class Exec {
      * @param dir Directory where command should be executed.
      * @throws BuildException Thrown if process exit value is not zero or IOException has been occurred.
      */
-    public static void exec(String command, File dir, Project project) throws BuildException {
-        String directory = ((dir != null) ? "(" + Util.makeCanonical(dir) + ")" : "");
-        System.out.println("Running : " + directory + " " + command);
+    public static void exec(String command, File directory, Project project) throws BuildException {
+        String directoryString = ((directory != null) ? "(" + Util.makeCanonical(directory) + ")" : "");
+        System.out.println("Running : " + directoryString + " " + command);
         try {
-            Process process = Runtime.getRuntime().exec(command, null, dir);
+            ProcessBuilder builder = new ProcessBuilder(command);
+            if(directory != null)
+                builder.directory(directory);
+            Process process = builder.start();
             Util.redirectOutput(process);
             if(process.exitValue() != 0) {
                 String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
-                throw new BuildException("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
+                String inDirectory = (directory != null) ? " in " + directory.getAbsolutePath() : "";
+                throw new BuildException("Running: '" + command.toString() + "'" + inDirectory + " failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
             }
         } catch(IOException e) {
             throw new BuildException("Running: " + command + " failed with error message: " + e.getMessage(), e);
@@ -57,20 +61,21 @@ class Exec {
      * @param verbose Whether to be verbose.
      * @throws BuildException Thrown if process exit value is not zero or IOException has been occurred.
      */
-    public static void exec(String cmd[], File dir, Project project, boolean verbose) throws BuildException {
+    public static void exec(String cmd[], File directory, Project project, boolean verbose) throws BuildException {
         if(verbose) {
             StringBuilder b = new StringBuilder();
             for(String s : cmd)
                 b.append(s).append(' ');
-            System.out.println("Running : " + ((dir!=null)? "(" + Util.makeCanonical(dir) + ")" : "") + " " + b);
+            System.out.println("Running : " + ((directory != null)? "(" + Util.makeCanonical(directory) + ")" : "") + " " + b);
         }
 
         try {
-            Process process = Runtime.getRuntime().exec(cmd, null, dir);
+            Process process = Runtime.getRuntime().exec(cmd, null, directory);
             Util.redirectOutput(process);
             if(process.exitValue() != 0) {
                 String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
-                throw new BuildException("Running: '" + join(cmd) + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
+                String inDirectory = (directory != null) ? " in " + directory.getAbsolutePath() : "";
+                throw new BuildException("Running: '" + join(cmd) + "'" + inDirectory + " failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
             }
         } catch(IOException e) {
             throw new BuildException("Running: '" + join(cmd) + "' failed.", e);
@@ -128,7 +133,8 @@ class Exec {
             Util.redirectOutput(process);
             if(process.exitValue() != 0) {
                 String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
-                throw new BuildException("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
+                String inDirectory = (directory != null) ? " in " + directory.getAbsolutePath() : "";
+                throw new BuildException("Running: '" + command.toString() + "'" + inDirectory + " failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
             }
         } catch(IOException e) {
             throw new BuildException("Running: '" + command.toString() + "' failed.", e);
@@ -175,7 +181,8 @@ class Exec {
 
             if(process.exitValue() != 0) {
                 String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
-                System.err.println("Running: '" + command.toString() + "' failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
+                String inDirectory = (directory != null) ? " in " + directory.getAbsolutePath() : "";
+                System.err.println("Running: '" + command.toString() + "'" + inDirectory + " failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
             }
 
             return new String[] { outdata.toString(), errdata.toString() };
