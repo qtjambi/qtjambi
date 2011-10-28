@@ -55,6 +55,16 @@ import java.util.List;
  * of Qt Jambi enters a state where it produces warnings and debug messages and similar.
  */
 public abstract class QMessageHandler {
+    // I have chosen a ReadWriteLock to allow the removeMessageHandler side to
+    // have clearly defined behavior.  That is upon return from the method no
+    // QtJambi provided code will be in the middle of invoking that handler nor
+    // will find the handler to invoke in the future.  This is an important
+    // guarantee to make for an ordered shutdown of a handler.
+    private static ReadWriteLock handlersLock = new ReentrantReadWriteLock();
+    // We use a simple array as java.util.List does not provide any thread safety
+    // contract over concurrent readers, provides API we don't need and is a
+    // little more bloaty for our purposes.
+    private static QMessageHandler[] handlers;
 
     static {
         try {
@@ -63,7 +73,11 @@ public abstract class QMessageHandler {
             // their static <init> code blocks.
             // Make sure we load dependent libraries...
             Class.forName("com.trolltech.qt.QtJambi_LibraryInitializer");
-        } catch(ClassNotFoundException e) { }
+        } catch(ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch(Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -90,59 +104,103 @@ public abstract class QMessageHandler {
     /**
      * Installs the specified message handler as a receiver for message notification.
      */
-    public static void installMessageHandler(QMessageHandler handler) {
+    public static void installMessageHandler(QMessageHandler addHandler) {
+        replaceMessageHandler(null, addHandler);
+    }
+
+    /**
+     * Removes the specified message handler as a receiver for message notification.
+     */
+    public static void removeMessageHandler(QMessageHandler removeHandler) {
+        replaceMessageHandler(removeHandler, null);
+    }
+
+    /**
+     * Can atomically install and/or remove a handler.
+     * @param removeHandler  Maybe null
+     * @param addHandler     Maybe null
+     */
+    public static void replaceMessageHandler(QMessageHandler removeHandler, QMessageHandler addHandler) {
         handlersLock.writeLock().lock();
         try {
-            final int oldLength;
-            if(handlers != null)
-                oldLength = handlers.length;
-            else
-                oldLength = 0;
+            QMessageHandler[] newHandlers = handlers;
+            boolean didRemove = false;
+            boolean didAppend = false;
 
-            QMessageHandler[] newHandlers = new QMessageHandler[oldLength + 1];
-            if(handlers != null)
-                System.arraycopy(handlers, 0, newHandlers, 0, oldLength);
-            newHandlers[oldLength] = handler;
+            if(removeHandler != null && handlers != null) {
+                // following java.util.List#remove() contract to remove only the first occurence
+                final int oldLength = handlers.length;
+                int index = 0;
+                for(QMessageHandler h : handlers) {
+                    if(h == removeHandler)
+                        break;
+                    index++;
+                }
+                if(index < oldLength) {    // found
+                    QMessageHandler[] tmpHandlers = null;
+                    if(oldLength > 1) {
+                        tmpHandlers = new QMessageHandler[oldLength - 1];
+                        System.arraycopy(handlers, 0,         tmpHandlers, 0,     index);
+                        System.arraycopy(handlers, index + 1, tmpHandlers, index, oldLength - index - 1);
+                    }
+                    didRemove = true;
+                    newHandlers = tmpHandlers;
+                }
+            }
 
-            if(handlers == null)
-                installMessageHandlerProxy();
+            if(addHandler != null) {
+                final int oldLength;
+                final QMessageHandler[] useHandlers;
+
+                if(newHandlers != null)
+                    useHandlers = newHandlers;
+                else
+                    useHandlers = handlers;
+                if(useHandlers != null)
+                    oldLength = useHandlers.length;
+                else
+                    oldLength = 0;
+
+                QMessageHandler[] tmpHandlers = new QMessageHandler[oldLength + 1];
+                if(useHandlers != null)
+                    System.arraycopy(useHandlers, 0, tmpHandlers, 0, oldLength);
+                tmpHandlers[oldLength] = addHandler;
+
+                didAppend = true;
+                newHandlers = tmpHandlers;
+            }
+
+            if(didRemove != didAppend) {
+                // One of the goals of a joint install/remove handler is to reduce the traffic to manage the proxy.
+                // and so that message don't get lost and more features and minimal added lines of code.
+                if(didRemove && newHandlers == null)  // new is empty
+                    removeMessageHandlerProxy();
+                else if(didAppend && handlers == null)	// old was empty
+                    installMessageHandlerProxy();
+            }
             handlers = newHandlers;
         } finally {
             handlersLock.writeLock().unlock();
         }
     }
 
-    /**
-     * Removes the specified message handler as a receiver for message notification.
-     */
-    public static void removeMessageHandler(QMessageHandler handler) {
-        handlersLock.writeLock().lock();
-        try {
-            if(handlers != null) {
-                // following java.util.List#remove() contract to remove only the first occurence
-                final int oldLength = handlers.length;
-                int index = 0;
-                for(QMessageHandler h : handlers) {
-                    if(h == handler)
-                        break;
-                    index++;
-                }
-                if(index < oldLength) {    // found
-                    QMessageHandler[] newHandlers = null;
-                    if(oldLength > 1) {
-                        newHandlers = new QMessageHandler[oldLength - 1];
-                        System.arraycopy(handlers, 0,         newHandlers, 0,     index);
-                        System.arraycopy(handlers, index + 1, newHandlers, index, oldLength - index - 1);
-                    }
+    // FIXME: Decrease visibility, this is internal API
+    public static int shutdown(boolean verbose) {
+        int count = 0;
+        while(count < 999) {	// anti-infinite
+            QMessageHandler[] hA = handlers;	// don't use locking
+            if(hA == null)
+                break;
+            if(hA.length == 0)
+                break;
 
-                    if(newHandlers == null)
-                        removeMessageHandlerProxy();
-                    handlers = newHandlers;
-                }
-            }
-        } finally {
-            handlersLock.writeLock().unlock();
+            QMessageHandler h = hA[0];
+            if(verbose)  // be a bit annoying on shutdown, bully app-dev into submission
+                System.err.println("QMessageHandler.shutdown(): removing handler " + h + "; remove your handler(s) before shutdown");
+            removeMessageHandler(h);
+            count++;
         }
+        return count;
     }
 
     private static boolean process(int id, String message) {
@@ -152,6 +210,7 @@ public abstract class QMessageHandler {
             if(handlers == null) {
                 bf = false;
             } else {
+                // Exceptions can be thrown by handlers
                 switch(id) {
                 case 0:
                     for(QMessageHandler h : handlers)
@@ -188,15 +247,4 @@ public abstract class QMessageHandler {
     // providing this protection.
     private static native void installMessageHandlerProxy();
     private static native void removeMessageHandlerProxy();
-
-    // I have chosen a ReadWriteLock to allow the removeMessageHandler side to
-    // have clearly defined behavior.  That is upon return from the method no
-    // QtJambi provided code will be in the middle of invoking that handler nor
-    // will find the handler to invoke in the future.  This is an important
-    // guarantee to make for an ordered shutdown of a handler.
-    private static ReadWriteLock handlersLock = new ReentrantReadWriteLock();
-    // We use a simple array as java.util.List does not provide any thread safety
-    // contract over concurrent readers, provides API we don't need and is a
-    // little more bloaty for our purposes.
-    private static QMessageHandler[] handlers;
 }

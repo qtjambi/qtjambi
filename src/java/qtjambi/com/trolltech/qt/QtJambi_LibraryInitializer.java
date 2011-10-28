@@ -51,7 +51,7 @@ import com.trolltech.qt.internal.QClassPathFileEngineHandler;
 
 public abstract class QtJambi_LibraryInitializer
 {
-    static QMessageHandler messageHandler;
+    private static QMessageHandler messageHandler;
     // It is upto the JVM to keep a hard reference to
     static WeakReference<Thread> shutdownHookThread;
 
@@ -61,8 +61,10 @@ public abstract class QtJambi_LibraryInitializer
             Utilities.loadQtLibrary("QtCore");
             Utilities.loadJambiLibrary("qtjambi");
 
+            String s = System.getProperty("com.trolltech.qt.exceptions-for-messages");
+            installMessageHandlerForExceptions(s);
+
             QClassPathFileEngineHandler.initialize();
-            installMessageHandlerForExceptions(System.getProperty("com.trolltech.qt.exceptions-for-messages"));
 
             initialize();
             QThreadManager.initialize();
@@ -76,18 +78,30 @@ public abstract class QtJambi_LibraryInitializer
         }
     }
 
-    private static void installMessageHandlerForExceptions(String config) {
+    /**
+     *  This is called from QtJambi_LibraryShutdown.java
+     */
+    static void removeMessageHandlerForExceptions() {
+        if (messageHandler != null) {
+            QMessageHandler.removeMessageHandler(messageHandler);
+            messageHandler = null;
+        }
+    }
 
+    private static void installMessageHandlerForExceptions(String config) {
         if (config != null) {
             config = config.trim().toUpperCase();
+            // which things throw RuntimeException ?
             final boolean all = config.equals("") || config.equals("ALL") || config.equals("TRUE");
             final boolean critical = config.contains("CRITICAL");
             final boolean debug = config.contains("DEBUG");
             final boolean fatal = config.contains("FATAL");
             final boolean warning = config.contains("WARNING");
+            // this option is for System.err for all
+            final boolean none = config.contains("NONE");
 
-            if (all || critical || debug || fatal || warning) {
-                messageHandler = new QMessageHandler() {
+            if (all || critical || debug || fatal || warning || none) {
+                QMessageHandler newMessageHandler = new QMessageHandler() {
 
                     @Override
                     public void critical(String message) {
@@ -121,7 +135,8 @@ public abstract class QtJambi_LibraryInitializer
                             System.err.println("Warning: " + message);
                     }
                 };
-                QMessageHandler.installMessageHandler(messageHandler);
+                QMessageHandler.replaceMessageHandler(messageHandler, newMessageHandler);
+                messageHandler = newMessageHandler;
             }
         }
     }

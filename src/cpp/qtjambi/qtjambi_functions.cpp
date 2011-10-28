@@ -360,6 +360,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_installMessag
 (JNIEnv *, jclass)
 {
     if (!qt_message_handler_installed) {
+        // returns old handler, which we save
         qt_message_handler = qInstallMsgHandler(qtjambi_messagehandler_proxy);
         qt_message_handler_installed = true;
     }
@@ -370,7 +371,9 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_core_QMessageHandler_removeMessage
 (JNIEnv *, jclass)
 {
     if (qt_message_handler_installed) {
-        qInstallMsgHandler(0);
+        // restore original handler
+        qInstallMsgHandler(qt_message_handler);
+        qt_message_handler = 0;
         qt_message_handler_installed = false;
     }
 }
@@ -552,21 +555,45 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_objectCach
     return -1;
 }
 
+
+
+static jboolean qtjambi_messagehandler_proxy_cached(JNIEnv *env, jclass cls, jmethodID mid, QtMsgType type, const char *message)
+{
+    jstring str = qtjambi_from_qstring(env, QString::fromLocal8Bit(message));
+
+    jboolean eaten = env->CallStaticBooleanMethod(cls, mid, (jint) type, str);
+    qtjambi_exception_check(env);
+
+    if (eaten == JNI_FALSE && qt_message_handler)
+        qt_message_handler(type, message);
+
+    return eaten;
+}
+
+// FIXME: Cache the cls/mid, try to look them up when we install the handler, if found use
+//  an implementation of this method that uses cached values.  If not use this version.
 void qtjambi_messagehandler_proxy(QtMsgType type, const char *message)
 {
     JNIEnv *env = qtjambi_current_environment();
-    jclass cls = env->FindClass("com/trolltech/qt/core/QMessageHandler");
-    QTJAMBI_EXCEPTION_CHECK(env);
+    if(env) {
+        QTJAMBI_EXCEPTION_CHECK_CLEAR(env);	// Can't have pending before FindClass()
+        // FIXME: Cache ?  Ensure we clear exceptions at least ?
+        jclass cls = env->FindClass("com/trolltech/qt/core/QMessageHandler");
+        QTJAMBI_EXCEPTION_CHECK(env);
+        if(cls) {
+            jmethodID mid = env->GetStaticMethodID(cls, "process", "(ILjava/lang/String;)Z");
+            QTJAMBI_EXCEPTION_CHECK(env);
 
-    jmethodID id = env->GetStaticMethodID(cls, "process", "(ILjava/lang/String;)Z");
-    QTJAMBI_EXCEPTION_CHECK(env);
+            if(mid) {
+                qtjambi_messagehandler_proxy_cached(env, cls, mid, type, message);
+                env->DeleteLocalRef(cls);
+                return;       // need to return here otherwise qt_message_handler is called twice
+            }
+            env->DeleteLocalRef(cls);
+        }
+    }
 
-    jstring str = qtjambi_from_qstring(env, QString::fromLocal8Bit(message));
-
-    jboolean eaten = env->CallStaticBooleanMethod(cls, id, (jint) type, str);
-    qtjambi_exception_check(env);
-
-    if (!eaten && qt_message_handler)
+    if (qt_message_handler)
         qt_message_handler(type, message);
 }
 
