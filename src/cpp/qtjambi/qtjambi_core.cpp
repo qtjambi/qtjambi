@@ -265,6 +265,8 @@ JNIEnv *qtjambi_current_environment()
     if (vm == 0) {
         return 0;
     }
+    // FIXME: We at least need to do an atomic read of qtjambi_vm and then test and
+    //  reuse that value in this method.  Not keep accessing the global directly.
     int result = vm->GetEnv( (void **) (void *) (&env), JNI_VERSION_1_4);
     if (result == JNI_EDETACHED) {
         if (vm->AttachCurrentThreadAsDaemon((void **) (void *) (&env), 0) < 0) {

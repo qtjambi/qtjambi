@@ -178,6 +178,9 @@ Q_GLOBAL_STATIC(QReadWriteLock, gStaticUserDataIdLock);
 Q_GLOBAL_STATIC(QReadWriteLock, gUserObjectCacheLock);
 Q_GLOBAL_STATIC(LinkHash, gUserObjectCache);
 
+// FIXME: Make this atomicly read from memory, assist startup
+//  by providing callbacks for each module loading and call
+//  QtJambiLinkUserData::id() to cause initialization.
 int qtjambi_user_data_id = -1;
 
 
@@ -738,6 +741,7 @@ int QtJambiLink::deleteNativeObject(JNIEnv *env)
                     qobj->deleteLater();
                     rv = 0x0002;    // called deleteLater()
                 } else if (QCoreApplication::instance()) {
+                    // Make we should explain to use moveToThread()
                     qWarning("QObjects can only be implicitly garbage collected when owned"
                             " by a QThread, native resource ('%s' [%s]) is leaked",
                             qPrintable(qobj->objectName()),
@@ -815,6 +819,7 @@ int QtJambiLink::cleanUpAll(JNIEnv *env)
     return rv;
 }
 
+// Entry point for JVM finalization QtJambiObject#finalize()
 void QtJambiLink::javaObjectFinalized(JNIEnv *env)
 {
 #if defined(QTJAMBI_DEBUG_TOOLS)
@@ -873,6 +878,10 @@ void QtJambiLink::javaObjectFinalized(JNIEnv *env)
     }
 }
 
+// This allows the Java language to attempt to expedite the disposal of the C++ object
+//  (when that this possible), however its possible the C++ object will not be destroyed
+//  as the Java side does not own it.
+// Entry point for QtJambiObject#dispose() method
 void QtJambiLink::javaObjectDisposed(JNIEnv *env)
 {
 #if defined(QTJAMBI_DEBUG_TOOLS)
@@ -947,6 +956,8 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
     }
 }
 
+// Entry point for generated shell C++ destructor (must understand this better and what
+//  the purpose of this extra method is for)
 void QtJambiLink::nativeShellObjectDestroyed(JNIEnv *env)
 {
     resetObject(env);
@@ -994,6 +1005,15 @@ void QtJambiLink::resetObject(JNIEnv *env) {
     }
 }
 
+// This gets called when we hand a C++ object to C++ API and that API takes ownership of it,
+// this puts the lifecycle out of QtJambi's (and Java's) control.  So we reliquish lifecycle
+// management from the Java side of the object and then consider if we need to destroy the
+// QtJambiLink instance itself.  Posting QEvent's is a common example of this pattern.
+//
+// Entry point for Java to disown its association with C++ (events, painters and other
+//  temporarly valid objects presenting API to Java to use for callback)  This method
+//  ensures that if the Java code was silly enough to hold onto a reference to the
+//  temporary data then trying to access it later will fail gracefully (exceptions or no-op).
 void QtJambiLink::javaObjectInvalidated(JNIEnv *env)
 {
 // FIXME: We want to add this check if needed
@@ -1106,6 +1126,7 @@ int QtJambiLink::indexQtSlot(const QByteArray &slot) const
     return mo->indexOfSlot(normalized.data() + 1);
 }
 
+// FIXME: We should use the save/restore of the original ownership here
 
 void QtJambiLink::disableGarbageCollection(JNIEnv *env, jobject obj)
 {
@@ -1115,6 +1136,13 @@ void QtJambiLink::disableGarbageCollection(JNIEnv *env, jobject obj)
 void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
 {
     if (!isGlobalReference()) {
+        // The autotests case com.trolltech.autotests.TestMemoryManagementNonPolymorphicObject#nativeDelete_NotCreatedInJava_CppOwnership()
+        //  consistently fails, because the test before it #nativeDelete_CreatedInJava_CppOwnership() puts a reference in the cache
+        //  that does not appear to get removed (even upon destruction).  Then by change the next test causes a new native QObject
+        //  to be created that happens to have the same memory address as an item in the cache, this results in a unittest failure
+        //  for: junit.framework.AssertionFailedError: linkConstructedCount expected:<1> but was:<0>
+        // Reading the notes in QtJambiLink::createLinkForObject(...) around use of enter_in_cache==true it would appear that
+        //  caching is only valid when Java has ownership.
         jobject global_ref = env->NewGlobalRef(obj);
 
         if (m_java_object)
