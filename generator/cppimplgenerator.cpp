@@ -867,15 +867,26 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
     // QObject::qt_metacast()
     s << "void *" << shellClassName(java_class) << "::qt_metacast(const char *_clname)" << endl
     << "{" << endl
-    << "  if (!_clname) return 0;" << endl
+    << "  void *rv;" << endl
+    << "  QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << shellClassName(java_class) << "::qt_metacast(const char *_clname)\");" << endl
+    << "  if (!_clname) {" << endl
+    << "    rv = 0;" << endl
+    << "    goto done;" << endl
+    << "  }" << endl
     << "  if (!strcmp(_clname, \"" << shellClassName(java_class) << "\"))" << endl
-    << "     return static_cast<void*>(const_cast<" << shellClassName(java_class) << "*>(this));" << endl
-    << "  return " << java_class->qualifiedCppName() << "::qt_metacast(_clname);" << endl
+    << "    rv = static_cast<void*>(const_cast<" << shellClassName(java_class) << "*>(this));" << endl
+    << "  else" << endl
+    << "    rv = " << java_class->qualifiedCppName() << "::qt_metacast(_clname);" << endl
+    << "done:" << endl
+    << "  QTJAMBI_DEBUG_TRACE(\"(shell)  leaving: " << shellClassName(java_class) << "::qt_metacast(const char *_clname)\");" << endl
+    << "  return rv;" << endl
     << "}" << endl << endl;
 
     // QObject::qt_metacall()
     s << "int " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)" << endl
     << "{" << endl;
+
+    s << "  QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)\");" << endl;
 
     if (java_class->hasVirtualSlots()) {
         s << "  int virtual_idx = m_map.value(_id, -1);" << endl
@@ -914,7 +925,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
                     << "*reinterpret_cast<";
                     writeTypeInfo(s, virtualFunction->type());
                     s << " *>(_a[0]) = _r;" << endl
-                    << "          return -1;" << endl;
+                    << "          _id = -1; goto done;" << endl;
                 }
                 s << "      }";
             }
@@ -925,9 +936,10 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
     }
 
     s << "  _id = " << java_class->qualifiedCppName() << "::qt_metacall(_c, _id, _a);" << endl
-    << "  if (_id < 0) return _id;" << endl
-    << "  const QMetaObject *meta_object = metaObject();" << endl
-    << "  if (m_link != 0 && qtjambi_metaobject_is_dynamic(meta_object)) {" << endl
+    << "  if (_id < 0) goto done;" << endl
+    << "  {" << endl
+    << "    const QMetaObject *meta_object = metaObject();" << endl
+    << "    if (m_link != 0 && qtjambi_metaobject_is_dynamic(meta_object)) {" << endl
     << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
     << "      __jni_env->PushLocalFrame(100);" << endl
     << "      const QtDynamicMetaObject *dynamic_meta_object = static_cast<const QtDynamicMetaObject *>(meta_object);" << endl
@@ -945,7 +957,10 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
     << "      default: break;" << endl
     << "      };" << endl
     << "      __jni_env->PopLocalFrame(0);" << endl
+    << "    }" << endl
     << "  }" << endl
+    << "done:" << endl
+    << "  QTJAMBI_DEBUG_TRACE(\"(shell)  leaving: " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)\");" << endl
     << "  return _id;" << endl
     << "}" << endl << endl;
 }
