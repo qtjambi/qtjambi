@@ -555,7 +555,77 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_objectCach
     return -1;
 }
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+static qint64 qtjambi_debug_marker_id;
+Q_GLOBAL_STATIC(QMutex, gStaticQtJambiRuntimeDebugMarker);
+Q_GLOBAL_STATIC(QList<qint64>, gStaticQtJambiRuntimeDebugMarkerList);
 
+static jboolean qtjambi_debug_marker_push(qint64 id) {
+    gStaticQtJambiRuntimeDebugMarker()->lock();
+    gStaticQtJambiRuntimeDebugMarkerList()->append((qint64)id);
+    qtjambi_debug_marker_id = id;
+    gStaticQtJambiRuntimeDebugMarker()->unlock();
+    return true;
+}
+static qint64 qtjambi_debug_marker_pop() {
+    qint64 rv;
+    gStaticQtJambiRuntimeDebugMarker()->lock();
+    if(gStaticQtJambiRuntimeDebugMarkerList()->isEmpty() == false) {
+        gStaticQtJambiRuntimeDebugMarkerList()->removeLast();
+        if(gStaticQtJambiRuntimeDebugMarkerList()->isEmpty() == false)
+            qtjambi_debug_marker_id = gStaticQtJambiRuntimeDebugMarkerList()->last();
+        else
+            qtjambi_debug_marker_id = 0;
+    }
+    rv = qtjambi_debug_marker_id;
+    gStaticQtJambiRuntimeDebugMarker()->unlock();
+    return rv;
+}
+static qint64 qtjambi_debug_marker_get() {
+    qint64 rv;
+    gStaticQtJambiRuntimeDebugMarker()->lock();
+    rv = qtjambi_debug_marker_id;
+    gStaticQtJambiRuntimeDebugMarker()->unlock();
+    return rv;
+}
+#endif
+
+extern "C" Q_DECL_EXPORT jboolean JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_pushDebugMarker)
+(JNIEnv *,
+ jclass,
+ jlong id)
+ {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    return qtjambi_debug_marker_push((qint64)id);
+#else
+    return JNI_FALSE;
+#endif
+}
+
+extern "C" Q_DECL_EXPORT jlong JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_popDebugMarker)
+(JNIEnv *,
+ jclass)
+ {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    return (jlong)qtjambi_debug_marker_pop();
+#else
+    return -1;
+#endif
+}
+
+extern "C" Q_DECL_EXPORT jlong JNICALL
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_getDebugMarker)
+(JNIEnv *,
+ jclass)
+ {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    return (jlong)qtjambi_debug_marker_get();
+#else
+    return -1;
+#endif
+}
 
 static jboolean qtjambi_messagehandler_proxy_cached(JNIEnv *env, jclass cls, jmethodID mid, QtMsgType type, const char *message)
 {

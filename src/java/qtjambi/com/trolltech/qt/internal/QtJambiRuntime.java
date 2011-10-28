@@ -66,4 +66,8 @@ public class QtJambiRuntime {
      * 2 = Count
      */
     public static native int objectCacheOperation(int operation);
+
+    public static native boolean pushDebugMarker(long id);
+    public static native long popDebugMarker();
+    public static native long getDebugMarker();
 }
