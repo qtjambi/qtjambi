@@ -63,6 +63,7 @@ import java.util.Map;
 
 import com.trolltech.autotests.generated.OrdinaryDestroyed;
 
+import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.gui.QApplication;
 
 class MyOrdinaryDestroyed extends OrdinaryDestroyed {
