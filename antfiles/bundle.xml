@@ -277,11 +277,41 @@
 
         </qtjambi-platform-jar>
 
+        <mkdir dir="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment"/>
+        <copy file="${outputDir}/platform-output/qtjambi-deployment.xml" tofile="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}.${qtjambi.configuration}-${qtjambi.version}.xml"/>
+
         <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar"/>
         <jar destfile="${destination-file}">
             <fileset dir="${outputDir}/platform-output"/>
             <manifest>
-                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+                <!-- <attribute name="Created-By"              value="${user.name} - ${TODAY}"/>  -->
+                <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
+                <attribute name="Bundle-ActivationPolicy" value="lazy"/>
+                <!-- <attribute name="Bundle-Activator"        value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
+                <attribute name="Bundle-Classpath"        value="."/>
+                <attribute name="Bundle-Description"      value="QtJambi Native Bundle (${qtjambi.osname} ${qtjambi.configuration})"/>
+                <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL?n=com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi}&amp;v=${qtjambi.version}"/>
+                <!-- TODO: qtjambi.png -->
+                <!-- <attribute name="Bundle-Icon"             value="qtjambi.png"/> -->
+                <attribute name="Bundle-License"          value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
+                <!-- <attribute name="Bundle-Localization"     value=""/> -->
+                <attribute name="Bundle-ManifestVersion"  value="2"/>
+                <attribute name="Bundle-Name"             value="QtJambi Native Bundle (${qtjambi.osname} ${qtjambi.configuration})"/>
+                <!-- Need to format Bundle-NativeCode correctly with selectors -->
+                <!-- <attribute name="Bundle-NativeCode"       value="lib/**"/> -->
+                <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
+                <attribute name="Bundle-SymbolicName"     value="com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};singleton:=true"/>
+                <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation?n=com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi}&amp;v=${qtjambi.version}"/>
+                <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
+                <!-- <attribute name="DynamicImport-Package"           value=""/> -->
+                <attribute name="Bundle-Version"          value="${qtjambi.version}"/><!-- FIXME: Need YYYYMMDDbeta4 -->
+                <attribute name="Export-Package"          value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi}"/>
+                <attribute name="Import-Package"          value="com.trolltech.qt;version=&quot;(${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next}]&quot;"/>
+                <attribute name="X-QtJambi-Version"       value="${qtjambi.version}"/>
+                <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
+                <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- debug test -->
+                <attribute name="X-QtJambi-Deployment"    value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.${qtjambi.configuration}-${qtjambi.version}.xml"/>
+                <attribute name="X-QtJambi-CacheKey"      value="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}" />
             </manifest>
         </jar>
         <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>
