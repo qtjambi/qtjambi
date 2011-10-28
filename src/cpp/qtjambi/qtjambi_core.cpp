@@ -627,6 +627,15 @@ static void qtjambi_setup_connections(JNIEnv *, QtJambiLink *link)
     link->setConnectedToJava(true);
 
     const QObject *qobject = link->qobject();
+    if(qobject == 0) {
+        fprintf(stderr, "qtjambi_setup_connections() ASSERT(qobject=%p)  link=%p  java_object=%p\n", qobject, link, link->getJavaObject());
+        // This return fixes the testcase com.trolltech.autotests.TestClassFunctionality#run_callPrivateVirtualFunction()
+        // there is some interaction between having the object finalized, the QObject marked deleteLater() and then
+        // the qtjambi_disconnect_callback() and then qtjambi_connect_callback() which gets us here.
+        // But the object is marked deleteLater().
+        return;
+    }
+
     Q_ASSERT(qobject);
 
     const QMetaObject *mo = qtjambi_find_first_static_metaobject(qobject->metaObject());
@@ -1117,22 +1126,29 @@ void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue
 
     // Check if signal has since been collected
     jobject object = env->NewLocalRef(signal_info.object);
-    if (object == 0)
-        return ;
+    if (env->IsSameObject(object, 0) != JNI_FALSE) {    // it can be non-null (in C++) but null (in Java)
+        goto done;     // Checks for non-null and for lost weak-reference
+    }
 
+    Q_ASSERT(env->IsInstanceOf(object, sc->AbstractSignal.class_ref));  // check the java object is right type
     // Don't recurse
-    if (env->GetBooleanField(object, sc->AbstractSignal.inJavaEmission))
-        return;
+    if (env->GetBooleanField(object, sc->AbstractSignal.inJavaEmission)) {
+        goto done;
+    }
 
     env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, true);
-    if (args == 0) {
-        Q_ASSERT(object);
-        Q_ASSERT(signal_info.methodId);
+    Q_ASSERT(object);	// redundant?
+    Q_ASSERT(signal_info.methodId);
+    if (args == 0)
         env->CallVoidMethod(object, signal_info.methodId);
-    } else {
+    else
         env->CallVoidMethodA(object, signal_info.methodId, args);
-    }
     env->SetBooleanField(object, sc->AbstractSignal.inCppEmission, false);
+
+done:
+    if(object)
+        env->DeleteLocalRef(object);
+    return;
 }
 
 

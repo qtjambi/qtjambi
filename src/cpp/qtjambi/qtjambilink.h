@@ -317,6 +317,10 @@ public:
     bool isPointerZeroed() const { return m_pointer_zeroed; }
     bool isUserDataSkip() const { return m_user_data_skip; }
 
+    // For debug messages
+    jobject getJavaObject() const { return m_java_object; }
+    bool isPointerZapped() const { return m_pointer_zapped; }
+
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
         bool enter_in_cache);
     static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object);
