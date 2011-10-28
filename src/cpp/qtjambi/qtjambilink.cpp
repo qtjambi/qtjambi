@@ -651,7 +651,9 @@ int QtJambiLink::deleteNativeObject(JNIEnv *env)
 //             printf(" - straight up delete %s [%s]\n",
 //                    qPrintable(qobj->objectName()),
 //                    qobj->metaObject()->className());
+            m_user_data_skip = 1;  // inhibit UserData
             delete qobj;
+            setAsQObjectDeleted();  // put here due to m_user_data_skip=1
             rv = 0x0001;    // called delete
 
         // We're in the main thread and we'll have an event loop
@@ -704,7 +706,9 @@ int QtJambiLink::deleteNativeObject(JNIEnv *env)
     //                 qWarning("something really bad happened...");
     //             }
             } else {
+                m_user_data_skip = 1;  // inhibit UserData
                 delete qobj;
+                setAsQObjectDeleted();  // put here due to m_user_data_skip=1
                 rv = 0x0001;    // called delete
             }
             env->DeleteLocalRef(t);
@@ -1153,6 +1157,16 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
         qtjambi_increase_userDataDestroyedCount(m_link->m_className);   // this derefs m_link
 #endif
         JNIEnv *env = qtjambi_current_environment();
+        if(m_link->isUserDataSkip()) {
+            // This is set when QtJambiLink is calling the 'delete m_pointer;' and it doesn't want
+            //  QtJambiLinkUserData to manage the QtJambiLink destruction.  This is in effect
+            //  a reentrant barrier for a known scenario.
+            // QtJambiLink::deleteNativeObject()  invokes "delete qobj;" and we end up here
+            //  re-entering the QtJambi infrastructure code (we already have acquired the
+            //  m_link->acquireMagic().  So we short circuit ~QtJambiLinkUserData() dtor.
+            fprintf(stderr, "QtJambiLinkUserData(%p)::~QtJambiLinkUserData()  SKIP env=%p tid=%p;  m_link=%p, user_data_skip=%d\n", this, env, (void *)pthread_self(), m_link, m_link->isUserDataSkip());
+            goto release;
+        }
         // This typically happens when a QObject is destroyed after the vm shuts down,
         // in which case there is no way for us to properly clean up...
         if (!env)

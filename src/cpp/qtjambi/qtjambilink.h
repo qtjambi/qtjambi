@@ -144,6 +144,7 @@ class QTJAMBI_EXPORT QtJambiLink
           m_delete_later(false),
           m_pointer_zeroed(false),
           m_pointer_zapped(false),
+          m_user_data_skip(false),
           m_reserved1(0),
 #if defined(QTJAMBI_DEBUG_TOOLS)
           m_in_qtjambilink_list(0),
@@ -186,6 +187,7 @@ protected:
           m_delete_later(false),
           m_pointer_zeroed(false),
           m_pointer_zapped(false),
+          m_user_data_skip(false),
           m_reserved1(0),
 #if defined(QTJAMBI_DEBUG_TOOLS)
           m_in_qtjambilink_list(0),
@@ -313,6 +315,8 @@ public:
 
     bool isDeleteLater() const { return m_delete_later; }
     bool isPointerZeroed() const { return m_pointer_zeroed; }
+    bool isUserDataSkip() const { return m_user_data_skip; }
+
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
         bool enter_in_cache);
     static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object);
@@ -370,6 +374,7 @@ private:
     uint m_delete_later : 1;           // used to track that QtJambiLink called deleteLater() so can expect event loop dtor to work on 'this'
     uint m_pointer_zeroed : 1;         // used to indicate that we have set m_pointer=0 but the original pointer may still be active and out there
     uint m_pointer_zapped : 1;         // used to indicate we set m_pointer=0 but have no clear idea how the C++ object will be freed
+    uint m_user_data_skip : 1;         // used to make QtJambiLinkUserData skip m_link destruction
     uint m_reserved1 : 12;
 #if defined(QTJAMBI_DEBUG_TOOLS)
     uint m_in_qtjambilink_list : 1;
