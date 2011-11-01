@@ -265,7 +265,7 @@ public class InitializeTask extends Task {
                 System.out.println("psep is " + psep);
         }
 
-        FindCompiler finder = new FindCompiler(propertyHelper);
+        FindCompiler finder = new FindCompiler(getProject(), propertyHelper);
 
         String osname = finder.decideOSName();
         propertyHelper.setNewProperty((String) null, OSNAME, osname);

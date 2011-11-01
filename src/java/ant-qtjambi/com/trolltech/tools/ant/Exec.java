@@ -123,8 +123,10 @@ class Exec {
         // environment one can have for Linux.
         // it shouldn't affect to Windows environment though.
         Map<String, String> env = builder.environment();
-        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
-        setupEnvironment(env, props, ldpath);
+        if(project != null) {
+            PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+            setupEnvironment(env, props, ldpath);
+        }
 
         if(directory != null)
             builder.directory(directory);
@@ -149,8 +151,10 @@ class Exec {
         // environment one can have for Linux.
         // it shouldn't affect to Windows environment though.
         Map<String, String> env = builder.environment();
-        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
-        setupEnvironment(env, props, ldpath);
+        if(project != null) {
+            PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+            setupEnvironment(env, props, ldpath);
+        }
 
         if(directory != null)
             builder.directory(directory);

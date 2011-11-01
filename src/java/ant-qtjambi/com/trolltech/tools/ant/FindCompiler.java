@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
+import org.apache.tools.ant.Project;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
@@ -16,6 +17,7 @@ public class FindCompiler {
 
     private Compiler compiler;
     private boolean verbose = false;
+    private Project project;
     private PropertyHelper props;
     private String compilerDetectionLine;
 
@@ -89,7 +91,8 @@ public class FindCompiler {
         }
     }
 
-    public FindCompiler(PropertyHelper props) {
+    public FindCompiler(Project project, PropertyHelper props) {
+        this.project = project;
         this.props = props;
     }
 
@@ -244,7 +247,7 @@ public class FindCompiler {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add("gcc");
             cmdAndArgs.add("-dumpversion");
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
             String stdout = null;
             if(sA != null && sA.length == 2 && sA[0] != null)
                 stdout = sA[0];
@@ -272,7 +275,7 @@ public class FindCompiler {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add("gcc");
             cmdAndArgs.add("-v");
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
             String stderr = null;
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
@@ -301,7 +304,7 @@ public class FindCompiler {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add(cmd);
             cmdAndArgs.add("-v");
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
             String stderr = null;
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
@@ -322,7 +325,7 @@ public class FindCompiler {
         try {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add("cl.exe");	// /version ?
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), null, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
             String stderr = null;
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
