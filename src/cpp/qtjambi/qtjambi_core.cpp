@@ -320,10 +320,8 @@ QString qtjambi_class_name(JNIEnv *env, jclass java_class)
     Q_ASSERT(java_class);
     StaticCache *sc = StaticCache::instance();
     sc->resolveClass();
-#if defined(QTJAMBI_DEBUG_TOOLS)
     Q_ASSERT(java_class);
     Q_ASSERT(env->IsInstanceOf(java_class, sc->Class.class_ref));  // check the java object is right type
-#endif
     jstring name = (jstring) env->CallObjectMethod(java_class, sc->Class.getName);
     return qtjambi_to_qstring(env, name);
 }
@@ -783,10 +781,8 @@ int qtjambi_to_enumerator(JNIEnv *env, jobject value)
 {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtEnumerator();
-#if defined(QTJAMBI_DEBUG_TOOLS)
     Q_ASSERT(value);
     Q_ASSERT(env->IsInstanceOf(value, sc->QtEnumerator.class_ref));  // check the java object is right type
-#endif
     return env->CallIntMethod(value, sc->QtEnumerator.value);
 }
 
@@ -863,9 +859,7 @@ void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections)
 
     StaticCache *sc = StaticCache::instance();
     sc->resolveNativePointer();
-#if defined(QTJAMBI_DEBUG_TOOLS)
     Q_ASSERT(env->IsInstanceOf(java_object, sc->NativePointer.class_ref));  // check the java object is right type
-#endif
     int object_indirections = env->GetIntField(java_object, sc->NativePointer.indirections);
     // What is this != test doing ?
     if (object_indirections != indirections) {
@@ -900,9 +894,7 @@ void qtjambi_from_tablearea(JNIEnv *env, jobject tableArea, int *row, int *colum
 {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQTableArea();
-#if defined(QTJAMBI_DEBUG_TOOLS)
     Q_ASSERT(env->IsInstanceOf(tableArea, sc->QTableArea.class_ref));  // check the java object is right type
-#endif
     if (row != 0)
         *row = tableArea != 0 ? env->GetIntField(tableArea, sc->QTableArea.row) : -1;
     if (column != 0)
@@ -927,10 +919,8 @@ bool qtjambi_from_resolvedentity(JNIEnv *env, void *&inputSource, jobject resolv
     StaticCache *sc = StaticCache::instance();
     sc->resolveResolvedEntity();
 
-#if defined(QTJAMBI_DEBUG_TOOLS)
     Q_ASSERT(resolvedEntity);
     Q_ASSERT(env->IsInstanceOf(resolvedEntity, sc->ResolvedEntity.class_ref));  // check the java object is right type
-#endif
     jobject java_inputSource = env->GetObjectField(resolvedEntity, sc->ResolvedEntity.inputSource);
     inputSource = qtjambi_to_object(env, java_inputSource);
 
@@ -1011,10 +1001,8 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     sc->resolveQtJambiInternal();
 
     QTJAMBI_EXCEPTION_CHECK(env);
-#if defined(QTJAMBI_DEBUG_TOOLS)
     Q_ASSERT(object_class);
     Q_ASSERT(env->IsInstanceOf(object_class, sc->Class.class_ref));  // check the java object is right type
-#endif
     jstring jclass_name = (jstring) env->CallObjectMethod(object_class, sc->Class.getName);
     Q_ASSERT(jclass_name);
     QString qclass_name = qtjambi_to_qstring(env, jclass_name);
