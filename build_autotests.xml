@@ -184,6 +184,7 @@
                 <fileset dir="src/java/autotest">
                     <include name="**/com/trolltech/autotests/**/Test*.java"/>
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
                 </fileset>
                 <fileset dir="src/java/autotest" includes="**/com/trolltech/unittests/**/Test*.java"/>
                 <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/**/Test*.java"/>
