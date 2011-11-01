@@ -74,7 +74,10 @@
 
 #include <stdio.h>
 
-
+#if defined(QTJAMBI_DEBUG_TOOLS)
+ #include "qtjambidebugevent_p.h"
+#endif
+            
 #ifndef Q_OS_DARWIN
 static QString locate_vm();
 #endif
