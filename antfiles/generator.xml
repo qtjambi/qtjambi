@@ -6,7 +6,7 @@
     <target name="generator.run" depends="init, generator.xmlmerge"
         description="Runs the Qt Jambi generator on the Qt headers">
         <mkdir dir="${generator.outputdir}"/>
-        <generator dir="${generatorDir}"
+        <generator dir="${generator.builddir}"
                 debugTools="${qtjambi.debug-tools}"
                 inputDirectory="${generatorDir}"
                 outputDirectory="${generator.outputdir}"
