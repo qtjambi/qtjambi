@@ -10,3 +10,7 @@
 #qtjambi.system.libraries.1 = libgcc_s_dw2-1
 #qtjambi.system.libraries.2 = libstdc++-6
 #qtjambi.system.libraries.3 = mingwm10
+
+# .1 to .9 is before 
+# .10+ is after
+#qtjambi.jni.libdir.1 = /usr/lib/jni

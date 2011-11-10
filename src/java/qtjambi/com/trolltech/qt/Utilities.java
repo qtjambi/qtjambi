@@ -59,15 +59,22 @@ public class Utilities {
 
     public static final String VERSION_STRING;
     public static final String VERSION_MAJOR_STRING;
+    // We use a List<> to make the collection read-only an array would not be suitable
     private static final List<String> systemLibrariesList;
+    private static final List<String> jniLibdirBeforeList;
+    private static final List<String> jniLibdirList;
 
-    private static final String K_qtjambi_system_libraries = "qtjambi.system.libraries";
+    private static final String K_qtjambi_system_libraries  = "qtjambi.system.libraries";
+    private static final String K_qtjambi_jni_libdir_before = "qtjambi.jni.libdir.before";
+    private static final String K_qtjambi_jni_libdir        = "qtjambi.jni.libdir";  // implicit meaning of "after"
     private static final Configuration DEFAULT_CONFIGURATION = Configuration.Release;
 
     static {
         String tmpVERSION_STRING = null;
         String tmpVERSION_MAJOR_STRING = null;
         List<String> tmpSystemLibrariesList = null;
+        List<String> tmpJniLibdirBeforeList = null;
+        List<String> tmpJniLibdirList = null;
         try {
             final Properties props = new Properties();
             final ClassLoader loader = Utilities.class.getClassLoader();
@@ -92,15 +99,21 @@ public class Utilities {
                 tmpVERSION_MAJOR_STRING = tmpVERSION_STRING;
 
             SortedMap<String,String> tmpSystemLibrariesMap = new TreeMap<String,String>();
-            Enumeration e = props.propertyNames();
+            SortedMap<String,String> tmpJniLibdirBeforeMap = new TreeMap<String,String>();
+            SortedMap<String,String> tmpJniLibdirMap = new TreeMap<String,String>();
+            Enumeration<? extends Object> e = props.propertyNames();
             while (e.hasMoreElements()) {
                 String key = (String) e.nextElement();
                 String value = props.getProperty(key);
                 if (key.equals(K_qtjambi_system_libraries) || key.startsWith(K_qtjambi_system_libraries + ".")) {
                     tmpSystemLibrariesMap.put(key, value);
+                } else if(key.equals(K_qtjambi_jni_libdir_before) || key.startsWith(K_qtjambi_jni_libdir_before + ".")) {
+                    tmpJniLibdirBeforeMap.put(key, value);
+                } else if(key.equals(K_qtjambi_jni_libdir) || key.startsWith(K_qtjambi_jni_libdir + ".")) {
+                   tmpJniLibdirMap.put(key, value);
                 }
             }
-            // Sort the list { "", ".0", ".01", ".1", ".10", ".2", ".A", ".a" }
+            // Map will automatically sort the lists { "", ".0", ".01", ".1", ".10", ".2", ".A", ".a" }
             tmpSystemLibrariesList = new ArrayList<String>();
             for (String v : tmpSystemLibrariesMap.values())
                 tmpSystemLibrariesList.add(v);
@@ -109,12 +122,32 @@ public class Utilities {
                 tmpSystemLibrariesList = Collections.unmodifiableList(tmpSystemLibrariesList);
             else
                 tmpSystemLibrariesList = null;
+
+            tmpJniLibdirBeforeList = new ArrayList<String>();
+            for (String v : tmpJniLibdirBeforeMap.values())
+                tmpJniLibdirBeforeList.add(v);
+
+            if (tmpJniLibdirBeforeList.size() > 0)
+                tmpJniLibdirBeforeList = Collections.unmodifiableList(tmpJniLibdirBeforeList);
+            else
+                tmpJniLibdirBeforeList = null;
+
+            tmpJniLibdirList = new ArrayList<String>();
+            for (String v : tmpJniLibdirMap.values())
+                tmpJniLibdirList.add(v);
+
+            if (tmpJniLibdirList.size() > 0)
+                tmpJniLibdirList = Collections.unmodifiableList(tmpJniLibdirList);
+            else
+                tmpJniLibdirList = null;
         } catch(Throwable e) {
             e.printStackTrace();
         } finally {
             VERSION_STRING = tmpVERSION_STRING;
             VERSION_MAJOR_STRING = tmpVERSION_MAJOR_STRING;
             systemLibrariesList = tmpSystemLibrariesList;
+            jniLibdirBeforeList = tmpJniLibdirBeforeList;
+            jniLibdirList = tmpJniLibdirList;
         }
     }
 
@@ -167,6 +200,23 @@ public class Utilities {
                 loadLibrary(s);
             }
         }
+    }
+
+    public static String[] mergeJniLibdir(String[] middle) {
+        List<String> newList = new ArrayList<String>();
+
+        if(jniLibdirBeforeList != null)
+            newList.addAll(jniLibdirBeforeList);
+        if(middle != null) {
+            for(String s : middle)
+                newList.add(s);
+        }
+        if(jniLibdirList != null)
+            newList.addAll(jniLibdirList);
+
+        if(newList.size() == 0)
+            return middle;   // maybe null or empty
+        return newList.toArray(new String[newList.size()]);
     }
 
     public static void loadQtLibrary(String library) {

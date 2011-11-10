@@ -478,8 +478,11 @@ public class NativeLibraryManager {
                 libPaths = System.getProperty("java.library.path");
             }
 
-            if (libPaths != null) {
-                String paths[] = RetroTranslatorHelper.split(libPaths, File.pathSeparator);
+            String[] paths = null;
+            if (libPaths != null)
+                paths = RetroTranslatorHelper.split(libPaths, File.pathSeparator);
+            paths = Utilities.mergeJniLibdir(paths);
+            if(paths != null) {
                 for (String path : paths) {
                     File f = new File(path, lib);
                     if (f.exists()) {
