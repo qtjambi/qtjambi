@@ -58,9 +58,15 @@
 #  include <QtMultimedia/QtMultimedia>
 #endif
 #include <QtScript/QtScript>
-#include <QtScriptTools/QtScriptTools>
+#ifndef QT_NO_SCRIPTTOOLS
+# if QT_VERSION >= 0x040600
+#  include <QtScriptTools/QtScriptTools>
+# endif
+#endif
 #ifndef QT_NO_OPENVG
+# if QT_VERSION >= 0x040600
 #  include <QtOpenVG/QtOpenVG>
+# endif
 #endif
 
 #ifndef QT_NO_XMLPATTERNS
@@ -72,7 +78,9 @@
 #endif
 
 #ifndef QT_NO_PHONON
+# if QT_VERSION >= 0x040600
 #  include <phonon/phonon>
+# endif
 #endif
 
 #ifndef QT_NO_DECLARATIVE
