@@ -209,6 +209,7 @@ void QtJambiMetaEnumerator::initialize()
     QString className = scopeInJvmSyntax();
     jclass clazz = qtjambi_find_class(env, className.toLatin1().constData());
     if (clazz == 0) {
+        qtjambi_exception_check(env);
         qWarning("Couldn't find enum class '%s'", qPrintable(className));
         return ;
     }

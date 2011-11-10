@@ -69,7 +69,10 @@ static void resolve(JNIEnv *env) {
     if (class_CustomWidget)
         return;
 
-    class_CustomWidget = (jclass) env->NewGlobalRef(qtjambi_find_class(env, "com/trolltech/tools/designer/CustomWidget"));
+    jclass cls = qtjambi_find_class(env, "com/trolltech/tools/designer/CustomWidget");
+    if (qtjambi_exception_check(env))
+        return;
+    class_CustomWidget = (jclass) env->NewGlobalRef(cls);
     Q_ASSERT(class_CustomWidget);
     if (qtjambi_exception_check(env))
         return;
