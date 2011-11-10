@@ -1766,7 +1766,7 @@ public class TestConnections extends QApplicationTest implements Qt
     }
 
     private boolean changeSignalReceived = false;
-    public void receiveChangedSignal(List list) {
+    public void receiveChangedSignal(List<? extends Object> list) {
         changeSignalReceived = true;
     }
 

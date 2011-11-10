@@ -76,7 +76,7 @@ class QtJambi_LibraryShutdown implements Runnable {
             for(String className : classNameA) {
                 try {
                     if(className.length() > 100) {
-                    Class clazz = classLoader.loadClass(className);
+                    Class<? extends Object> clazz = classLoader.loadClass(className);
                     }
                 } catch(ClassNotFoundException eat) {
                     // should never happen

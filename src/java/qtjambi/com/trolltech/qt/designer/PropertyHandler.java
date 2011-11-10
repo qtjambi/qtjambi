@@ -155,7 +155,7 @@ class EnumPropertyHandler extends PropertyHandler {
             String enumName = name.substring(enumPos+1, valuePos);
             String enumValue = name.substring(valuePos + 1);
             try {
-                Class cl = Class.forName(className + '$' + enumName);
+                Class<? extends Enum> cl = (Class<? extends Enum>) Class.forName(className + '$' + enumName);
                 return Enum.valueOf(cl, enumValue);
             } catch (Exception ex) {
                 throw new QUiLoaderException("Converting enum '" + name + "' failed...", ex);

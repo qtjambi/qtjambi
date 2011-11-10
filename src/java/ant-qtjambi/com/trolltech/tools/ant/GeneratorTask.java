@@ -254,7 +254,6 @@ public class GeneratorTask extends Task {
     }
 
     //! TODO: remove when ant 1.7 is not anymore supported.
-    @SuppressWarnings("deprecation")
     @Override
     public void execute() throws BuildException {
         parseArguments();

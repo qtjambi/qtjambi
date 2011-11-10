@@ -234,7 +234,7 @@ public class Http extends QDialog
     private void slotAuthenticationRequired(String hostName, int i, QAuthenticator authenticator)
     {
         QDialog dlg = new QDialog();
-        Ui_Dialog ui = null;
+        Ui_Dialog ui = null;	// FIXME: This is must be an error?  test this code sometime
         ui.setupUi(dlg);
         dlg.adjustSize();
         ui.siteDescription.setText(authenticator.realm() + tr(" at ") + hostName);

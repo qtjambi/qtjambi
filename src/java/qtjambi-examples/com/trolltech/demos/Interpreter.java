@@ -173,7 +173,7 @@ public class Interpreter {
     @SuppressWarnings("unchecked")
     public Object evaluate(Object o) throws ParseException {
         if (o instanceof Vector) {
-            Vector<Object> vector = (Vector) o;
+            Vector<Object> vector = (Vector<Object>) o;
             if (vector.isEmpty())
                 return 0;
             if (vector.size() > 1)
@@ -190,12 +190,12 @@ public class Interpreter {
     }
 
     @SuppressWarnings("unchecked")
-    public Vector parse(String expression) throws ParseException {
-        Stack<Vector> stack = new Stack<Vector>();
-        stack.push(new Vector());
+    public Vector<Object> parse(String expression) throws ParseException {
+        Stack<Vector<Object>> stack = new Stack<Vector<Object>>();
+        stack.push(new Vector<Object>());
 
         String delimiter = "()";
-        for (Iterator iterator = infixFunctions.iterator(); iterator.hasNext();) {
+        for (Iterator<Function> iterator = infixFunctions.iterator(); iterator.hasNext();) {
             Function function = (Function) iterator.next();
             delimiter += function.name;
 
@@ -206,8 +206,8 @@ public class Interpreter {
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             if (token.equals("(")) {
-                stack.peek().add(new Vector());
-                stack.push((Vector) stack.peek().lastElement());
+                stack.peek().add(new Vector<Object>());
+                stack.push((Vector<Object>) stack.peek().lastElement());
             } else if (token.equals(")")) {
                 if (stack.isEmpty())
                     throw new ParseException("Missing starting parenthesis");
@@ -233,7 +233,7 @@ public class Interpreter {
     }
 
     @SuppressWarnings("unchecked")
-    private void prioritize(Vector vector) throws ParseException {
+    private void prioritize(Vector<Object> vector) throws ParseException {
 
         Function unaryMinusProt = new Function("unaryMinus") {
             @Override
@@ -252,14 +252,14 @@ public class Interpreter {
                 if ((i - r + 1) >= vectorArray.length)
                     throw new ParseException("Could not find parameters for function: " + function.name);
                 if (vectorArray[i + 1] instanceof Vector)
-                    function.arguments.addAll((Vector) vectorArray[i + 1]);
+                    function.arguments.addAll((Vector<Object>) vectorArray[i + 1]);
                 vector.remove(i - r + 1);
                 vector.set(i - r, function);
                 r += 1;
             }
         }
 
-        for (Iterator iterator = infixFunctions.iterator(); iterator.hasNext();) {
+        for (Iterator<Function> iterator = infixFunctions.iterator(); iterator.hasNext();) {
             Function function = (Function) iterator.next();
 
             vectorArray = vector.toArray();

@@ -83,8 +83,8 @@ import com.trolltech.qt.internal.QtJambiDebugTools;
 public abstract class TestMemoryManagement {
     private ReferenceQueue<Object> weakReferenceQueue = new ReferenceQueue<Object>();
     private ReferenceQueue<Object> phantomReferenceQueue = new ReferenceQueue<Object>();
-    private Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
-    private Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
+    private Map<WeakReference<Object>,Integer> weakReferenceMap = new HashMap<WeakReference<Object>,Integer>();
+    private Map<PhantomReference<Object>,Integer> phantomReferenceMap = new HashMap<PhantomReference<Object>,Integer>();
     private List<Integer> alive = new ArrayList<Integer>();
     private List<Integer> aliveAndUnderTest = new ArrayList<Integer>();
     private int counter = 0;

@@ -442,20 +442,20 @@ public class MetaObjectTools {
         }
     }
     
-    public static String internalTypeNameOfClass(Class cls, int varContext) {
+    public static String internalTypeNameOfClass(Class<? extends Object> cls, int varContext) {
         try {
-        	String returnType = cls.getName();
-        	if(!cls.isPrimitive()){
-        		try{
-					MetaObjectTools.class.getClassLoader().loadClass(returnType);
-				}catch(Exception e){
-					if(QObject.class.isAssignableFrom(cls)){
-						returnType = QObject.class.getName();
-					}else{
-						returnType = Object.class.getName();
-					}
-				}
-        	}
+            String returnType = cls.getName();
+            if(!cls.isPrimitive()) {
+                try {
+                    MetaObjectTools.class.getClassLoader().loadClass(returnType);
+                } catch(Exception e) {
+                    if(QObject.class.isAssignableFrom(cls)) {
+                        returnType = QObject.class.getName();
+                    } else {
+                        returnType = Object.class.getName();
+                    }
+                }
+            }
             return internalTypeName(returnType, varContext);
         } catch (Throwable t) {
             return "";

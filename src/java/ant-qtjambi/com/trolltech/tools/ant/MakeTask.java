@@ -62,8 +62,6 @@ public class MakeTask extends Task {
     private String target;
     private String dir = ".";
     private boolean silent = false;
-    @SuppressWarnings("unused") //used by ant
-    private String compilationType = null;
     private boolean failOnError = true;
 
     private String compilerName() {
@@ -127,10 +125,6 @@ public class MakeTask extends Task {
 
     public void setDir(String dir) {
         this.dir = dir;
-    }
-
-    public void setCompilationType(String type) {
-        this.compilationType = type;
     }
 
     public void setFailOnError(boolean failOnError) {

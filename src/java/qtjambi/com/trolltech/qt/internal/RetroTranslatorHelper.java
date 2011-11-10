@@ -83,6 +83,7 @@ public class RetroTranslatorHelper {
      * If the given object is an enum, returns the result of
      * calling ordinal() on the enum.
      */
+    @SuppressWarnings("rawtypes")
     public static int enumOrdinal(Object _enum) {
         return ((Enum) _enum).ordinal();
     }

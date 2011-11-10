@@ -982,10 +982,7 @@ public class Spreadsheet extends QMainWindow {
                 return null;
 
             case Qt.ItemDataRole.BackgroundRole:
-                if (cell != null) {
-                    return cell.backgroundColor;
-                }
-                return null;
+                return cell.backgroundColor;  // we're already checked that cell != null
 
             case Qt.ItemDataRole.TextAlignmentRole:
                 if (!empty)

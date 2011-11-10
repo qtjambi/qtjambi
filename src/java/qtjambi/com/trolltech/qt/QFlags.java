@@ -49,6 +49,7 @@ package com.trolltech.qt;
  * is treated as a flag that is either set or unset. You can set and
  * clear flags, and query which flags are set.
  */
+@SuppressWarnings("serial")
 public abstract class QFlags<T extends QtEnumerator>
     implements QtEnumerator,
                java.io.Serializable,

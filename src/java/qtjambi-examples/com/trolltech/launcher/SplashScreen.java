@@ -234,7 +234,7 @@ class SplashScreen extends QSplashScreen {
         p.end();
 
         setPixmap(pm);
-        QApplication.instance().processEvents();
+        QCoreApplication.processEvents();
     }
 
 

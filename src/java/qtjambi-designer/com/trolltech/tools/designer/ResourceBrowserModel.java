@@ -68,7 +68,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         }
     }
 
-    private static class NamedItem implements Comparable {
+    private static class NamedItem implements Comparable<Object> {
         public NamedItem(String name) {
             this.name = name;
         }
@@ -78,7 +78,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         String name;
     }
 
-    private static class Path extends NamedItem implements Comparable {
+    private static class Path extends NamedItem implements Comparable<Object> {
         List<Resource> images;
 
         public Path(String name) {
@@ -123,7 +123,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         }
     }
 
-    public static class Resource extends NamedItem implements Comparable {
+    public static class Resource extends NamedItem implements Comparable<Object> {
         public Resource(String name) {
             super(name);
         }

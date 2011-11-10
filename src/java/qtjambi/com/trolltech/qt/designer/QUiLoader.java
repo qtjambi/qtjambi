@@ -428,7 +428,7 @@ public class QUiLoader {
                 }
             } else if (QLayout.class.isAssignableFrom(cl)) {
                 if (parent instanceof QWidget) {
-                    Constructor ctor = cl.getConstructor(QWidget.class);
+                    Constructor<QObject> ctor = (Constructor<QObject>) cl.getConstructor(QWidget.class);
                     return (QObject) ctor.newInstance(parent);
                 } else {
                     return (QLayout) cl.getConstructor().newInstance();

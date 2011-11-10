@@ -118,7 +118,7 @@ public class CustomWidget {
         this.name = name;
     }
 
-    public Class pluginClass() {
+    public Class<?> pluginClass() {
         return pluginClass;
     }
 
@@ -155,7 +155,7 @@ public class CustomWidget {
         return s.toString();
     }
 
-    private Class pluginClass;
+    private Class<?> pluginClass;
     private String name;
     private boolean container;
     private String group;

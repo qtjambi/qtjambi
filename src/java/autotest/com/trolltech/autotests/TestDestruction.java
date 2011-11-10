@@ -110,8 +110,8 @@ class MyOrdinaryDestroyed extends OrdinaryDestroyed {
 public class TestDestruction extends QApplicationTest {
     private static ReferenceQueue<Object> weakReferenceQueue = new ReferenceQueue<Object>();
     private static ReferenceQueue<Object> phantomReferenceQueue = new ReferenceQueue<Object>();
-    private static Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
-    private static Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
+    private static Map<WeakReference<Object>,Integer> weakReferenceMap = new HashMap<WeakReference<Object>,Integer>();
+    private static Map<PhantomReference<Object>,Integer> phantomReferenceMap = new HashMap<PhantomReference<Object>,Integer>();
     private static List<Integer> alive = new ArrayList<Integer>();
     private static List<Integer> aliveAndUnderTest = new ArrayList<Integer>();
     private static int counter = 0;

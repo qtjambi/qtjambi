@@ -184,7 +184,7 @@ public class TestQObject extends QApplicationTest {
             Utils.println(4, "DyingObject#ctor() thread=" + thread() + "; id=" + id);
 
             WeakReference<DyingObject> wr = new WeakReference<DyingObject>(this, weakReferenceQueue);
-            PhantomReference pr = new PhantomReference<DyingObject>(this, phantomReferenceQueue);
+            PhantomReference<DyingObject> pr = new PhantomReference<DyingObject>(this, phantomReferenceQueue);
             synchronized(DyingObject.class) {
                 weakReferenceMap.put(wr, id);
                 phantomReferenceMap.put(pr, id);
@@ -295,8 +295,8 @@ public class TestQObject extends QApplicationTest {
         // This should be WeakReference/SoftReference
         private static ReferenceQueue<DyingObject> weakReferenceQueue = new ReferenceQueue<DyingObject>();
         private static ReferenceQueue<DyingObject> phantomReferenceQueue = new ReferenceQueue<DyingObject>();
-        private static Map<WeakReference,Integer> weakReferenceMap = new HashMap<WeakReference,Integer>();
-        private static Map<PhantomReference,Integer> phantomReferenceMap = new HashMap<PhantomReference,Integer>();
+        private static Map<WeakReference<DyingObject>,Integer> weakReferenceMap = new HashMap<WeakReference<DyingObject>,Integer>();
+        private static Map<PhantomReference<DyingObject>,Integer> phantomReferenceMap = new HashMap<PhantomReference<DyingObject>,Integer>();
         private static List<Integer> alive = new ArrayList<Integer>();
         private static List<Integer> aliveAndUnderTest = new ArrayList<Integer>();
         private static int counter = 0;
