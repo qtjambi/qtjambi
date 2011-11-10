@@ -72,7 +72,7 @@ public class TestThreads extends QApplicationTest {
         Thread thread = new Thread(tester);
         thread.start();
         thread.join(10000);
-        assertTrue(tester.ok);
+        assertTrue("tester.ok", tester.ok);
     }
 
     /*************************************************************************/
@@ -157,8 +157,8 @@ public class TestThreads extends QApplicationTest {
             assertEquals(ping.object.numPings, 100);
             assertEquals(pong.object.numPings, 100);
 
-            assertTrue(ping.object.affinityOk);
-            assertTrue(ping.object.affinityOk);
+            assertTrue("ping.object.affinityOk", ping.object.affinityOk);
+            assertTrue("ping.object.affinityOk", ping.object.affinityOk);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -227,11 +227,11 @@ public class TestThreads extends QApplicationTest {
         ping.join(1000);
         pong.join(1000);
 
-        assertEquals(ping.object.numPings, 100);
-        assertEquals(pong.object.numPings, 100);
+        assertEquals("ping.object.numPings", 100, ping.object.numPings);
+        assertEquals("pong.object.numPings", 100, pong.object.numPings);
 
-        assertTrue(ping.object.affinityOk);
-        assertTrue(ping.object.affinityOk);
+        assertTrue("ping.object.affinityOk", ping.object.affinityOk);
+        assertTrue("ping.object.affinityOk", ping.object.affinityOk);
     }
 
 
@@ -427,7 +427,7 @@ public class TestThreads extends QApplicationTest {
 
             server.waitForNewConnection();
             QTcpSocket *serverSocket = server.nextPendingConnection();
-            assertTrue(serverSocket);
+            assertTrue("serverSocket", serverSocket);
 
             socket.waitForConnected();
 

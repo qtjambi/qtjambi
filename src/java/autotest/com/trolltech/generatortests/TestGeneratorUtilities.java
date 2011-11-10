@@ -65,19 +65,19 @@ public class TestGeneratorUtilities {
 		 * GeneratorUtilities.fetchfield(QObject, Class, String); Compare the
 		 * references.
 		 */
-		assertTrue(ftc.getFakeVar1().equals(GeneratorUtilities.fetchField(ftc, FetchableTestClass.class, "fakeVar1")));
+		assertTrue("fakeVar1", ftc.getFakeVar1().equals(GeneratorUtilities.fetchField(ftc, FetchableTestClass.class, "fakeVar1")));
 	}
 
 	@org.junit.Test
 	public void testSetField() {
 		GeneratorUtilities.setField(ftc, FetchableTestClass.class, "str1", "some text");
-		assertEquals(ftc.getStr1(), "some text");
+		assertEquals("ftc.getStr1()", "some text", ftc.getStr1());
 	}
 
 	@org.junit.Test
 	public void testCountExpense() {
 		image.load("./src/java/qtjambi/com/trolltech/images/qt-logo.png");
-		assertEquals(image.height() * image.bytesPerLine(), 4096);
+		assertEquals("height*bytesPerLine", 4096, image.height() * image.bytesPerLine());
 	}
 
 	// TODO implement testCreateExtendedEnum(), example from

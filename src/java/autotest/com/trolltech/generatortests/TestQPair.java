@@ -37,23 +37,23 @@ public class TestQPair<T, S> {
 
 	@org.junit.Test
 	public void testEquals() {
-		assertTrue(qp1.equals(qp1));
-		assertFalse(qp1.equals(qp2));
-		assertFalse(qp1.equals(qp3));
-		assertFalse(qp1.equals(someObject));
+		assertTrue("qp1", qp1.equals(qp1));
+		assertFalse("qp2", qp1.equals(qp2));
+		assertFalse("qp3", qp1.equals(qp3));
+		assertFalse("someObject", qp1.equals(someObject));
 	}
 
 	@org.junit.Test
 	public void testToString() {
-		assertEquals(qp1.toString(), "Pair(3,5)");
-		assertEquals(qp3.toString(), "Pair(1,null)");
-		assertEquals(qp4.toString(), "Pair(null,true)");
+		assertEquals("qp1", "Pair(3,5)",       qp1.toString());
+		assertEquals("qp3", "Pair(1,null)",    qp3.toString());
+		assertEquals("qp4", "Pair(null,true)", qp4.toString());
 	}
 
 	@org.junit.Test
 	public void testClone() {
 		qp1 = qp2.clone();
-		assertEquals(qp1, qp2);
+		assertEquals("qp1==qp2", qp1, qp2);
 	}
 
 }

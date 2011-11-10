@@ -66,50 +66,50 @@ public class TestUtilities {
 	@org.junit.Test
 	public void testMatchProperty() {
 		System.setProperty(singleString, strings);
-		assertTrue(Utilities.matchProperty(singleString, strings));
-		assertFalse(Utilities.matchProperty(failString, strings));
-		assertTrue(Utilities.matchProperty(singleString, emptyStrings));
-		assertFalse(Utilities.matchProperty(failString, emptyStrings));
-		assertTrue(Utilities.matchProperty(singleString, (String[]) null));
-		assertFalse(Utilities.matchProperty(failString, (String[]) null));
-		assertFalse(Utilities.matchProperty(singleString, failString));
+		assertTrue("singleString strings", Utilities.matchProperty(singleString, strings));
+		assertFalse("failString strings", Utilities.matchProperty(failString, strings));
+		assertTrue("singleString emptyStrings", Utilities.matchProperty(singleString, emptyStrings));
+		assertFalse("failString emptyStrings", Utilities.matchProperty(failString, emptyStrings));
+		assertTrue("singleString null", Utilities.matchProperty(singleString, (String[]) null));
+		assertFalse("failString null", Utilities.matchProperty(failString, (String[]) null));
+		assertFalse("singleString failString", Utilities.matchProperty(singleString, failString));
 	}
 
 	@org.junit.Test
 	public void testJambiTempDir() {
 		tmpDir = Utilities.jambiTempDir();
-		assertTrue(tmpDir.getName().startsWith("QtJambi_" + user + "_" + arch + "_" + Utilities.VERSION_STRING));
+		assertTrue("tmpDir", tmpDir.getName().startsWith("QtJambi_" + user + "_" + arch + "_" + Utilities.VERSION_STRING));
 	}
 
 	@org.junit.Test
 	public void testLoadLibrary() {
-		assertTrue(Utilities.loadLibrary(validLibrary));
-		assertFalse(Utilities.loadLibrary(falseLibrary));
+		assertTrue("validLibrary", Utilities.loadLibrary(validLibrary));
+		assertFalse("falseLibrary", Utilities.loadLibrary(falseLibrary));
 	}
 
 	@org.junit.Test
-	public void testUncpackPlugins() {
-		assertNull(Utilities.unpackPlugins());
+	public void testUnpackPlugins() {
+		assertNull("unpackPlugins()", Utilities.unpackPlugins());
 	}
 
 	@org.junit.Test
 	public void testDecideOperatingSystem() {
 		if (thisOs.startsWith("linux"))
-			assertTrue(Utilities.operatingSystem.equals(OperatingSystem.Linux));
+			assertTrue("OperatingSystem.Linux", Utilities.operatingSystem.equals(OperatingSystem.Linux));
 		else if (thisOs.startsWith("mac os x"))
-			assertTrue(Utilities.operatingSystem.equals(OperatingSystem.MacOSX));
+			assertTrue("OperatingSystem.MacOSX", Utilities.operatingSystem.equals(OperatingSystem.MacOSX));
 		else if (thisOs.startsWith("windows"))
-			assertTrue(Utilities.operatingSystem.equals(OperatingSystem.Windows));
+			assertTrue("OperatingSystem.Windows", Utilities.operatingSystem.equals(OperatingSystem.Windows));
 		else
-			assertFalse(true);
+			assertFalse("true", true);
 	}
 
 	@org.junit.Test
 	public void testDecideConfiguration() {
 		if (configuration != null)
-			assertTrue(Utilities.configuration.equals(Configuration.Debug));
+			assertTrue("Configuration.Debug", Utilities.configuration.equals(Configuration.Debug));
 		else
-			assertTrue(Utilities.configuration.equals(Configuration.Release));
+			assertTrue("Configuration.Release", Utilities.configuration.equals(Configuration.Release));
 	}
 
 }

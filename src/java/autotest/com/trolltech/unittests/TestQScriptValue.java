@@ -44,13 +44,13 @@ public class TestQScriptValue {
 	@org.junit.Test
 	public void testToObject() {
 		val = scriptButton.toObject();
-		assertTrue(val.isObject());
+		assertTrue("val.isObject()", val.isObject());
 	}
 	
 	@org.junit.Test
 	public void testToNumber() {
 		val = testEngine.evaluate("5 - 2");
-		assertTrue(val.isNumber());
+		assertTrue("val.isNumber()", val.isNumber());
 	}
 	
 }

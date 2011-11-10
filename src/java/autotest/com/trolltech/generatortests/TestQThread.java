@@ -46,18 +46,18 @@ public class TestQThread {
 
 	@org.junit.Test
 	public void testGroupConstructor() {
-		assertEquals(qthread2.getThreadGroup(), threads);
+		assertEquals("qthread2.getThreadGroup()", qthread2.getThreadGroup(), threads);
 	}
 
 	@org.junit.Test
 	public void testNameConstructor() {
-		assertEquals(qthread3.getName(), threadName);
+		assertEquals("qthread3.getName()", qthread3.getName(), threadName);
 	}
 
 	@org.junit.Test
 	public void testNameGroupConstructor() {
-		assertEquals(qthread4.getThreadGroup(), threads);
-		assertEquals(qthread4.getName(), threadName);
+		assertEquals("qthread4.getThreadGroup()", qthread4.getThreadGroup(), threads);
+		assertEquals("qthread4.getName()", qthread4.getName(), threadName);
 	}
 
 	/*
@@ -67,13 +67,13 @@ public class TestQThread {
 	@org.junit.Test
 	public void testRun() {
 		qthread1.run();
-		assertFalse(qthread1.isAlive());
+		assertFalse("qthread1.isAlive()", qthread1.isAlive());
 	}
 
 	@org.junit.Test
 	public void testInit() {
-		assertNotNull(qthread1.starting);
-		assertNotNull(qthread1.finished);
+		assertNotNull("qthread1.starting", qthread1.starting);
+		assertNotNull("qthread1.finished", qthread1.finished);
 	}
 
 }
