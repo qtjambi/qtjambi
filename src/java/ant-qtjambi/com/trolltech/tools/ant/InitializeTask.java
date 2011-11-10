@@ -414,8 +414,9 @@ public class InitializeTask extends Task {
         String webkit = decideWebkit();
         // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
         //  if you have headers and DSOs for WebKit then QtJambi should build the support.
-        if("true".equals(webkit) && "true".equals(phonon) == false)
+        if("true".equals(webkit) && "true".equals(phonon) == false) {
             if(verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
+        }
         if("true".equals(webkit))
             propertyHelper.setNewProperty((String) null, WEBKIT, webkit);
 
@@ -850,8 +851,21 @@ public class InitializeTask extends Task {
     private String decidePhonon(PropertyHelper propertyHelper) {
         boolean exists = doesQtLibExist("phonon", qtMajorVersion, (String) propertyHelper.getProperty((String) null, PHONONLIBDIR));
         String result = String.valueOf(exists);
+
+        String sourceValue = "";
+        String currentValue = (String) propertyHelper.getProperty((String) null, PHONON);
+        if(currentValue != null) {
+            boolean oldExists = exists;
+            if("true".equals(currentValue))
+                exists = true;
+            else
+                exists = false;  // force off
+            result = String.valueOf(exists);
+            sourceValue = " (already set; detected as: " + Boolean.valueOf(oldExists).toString() + ")";
+        }
+
         if(verbose)
-            System.out.println(PHONON + ": " + result);
+            System.out.println(PHONON + ": " + result + sourceValue);
 
         if(!exists)
             return "false";
