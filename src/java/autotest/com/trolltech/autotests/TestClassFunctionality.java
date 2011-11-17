@@ -96,7 +96,6 @@ import com.trolltech.qt.gui.QGraphicsEllipseItem;
 import com.trolltech.qt.gui.QGraphicsItemInterface;
 import com.trolltech.qt.gui.QGraphicsView;
 import com.trolltech.qt.gui.QIcon;
-import com.trolltech.qt.gui.QImage;
 import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QPainter;
@@ -875,113 +874,6 @@ public class TestClassFunctionality extends QApplicationTest {
         assertEquals(14, sbs.my_received_pos());
         assertEquals("The silence of that dreamless sleep", data.string);
         assertEquals(27, data.position);
-    }
-
-    // Tests the ownership transfer that we need to have objects like
-    // QEvent stay alive after they are posted to the event queue...
-    // The verification here is basically that the vm doesn't crash.
-    private static class OwnershipTransferReceiver extends QObject {
-        public QEvent.Type event_id;
-
-        public QRect rect;
-
-        @Override
-        public boolean event(QEvent e) {
-            event_id = e.type();
-
-            QPaintEvent pe = null;
-            try {
-                pe = (QPaintEvent) e;
-                rect = pe.rect();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            return super.event(e);
-        }
-    }
-
-    private static class CustomPaintEvent extends QPaintEvent {
-        public static boolean finalized = false;
-
-        public CustomPaintEvent(QRect rect) {
-            super(rect);
-        }
-
-        @Override
-        protected void disposed() {
-            synchronized(CustomPaintEvent.class) {
-                finalized = true;
-            }
-            super.disposed();
-        }
-    }
-
-    @Test
-    public void run_testOwnershipTransfer() {
-        OwnershipTransferReceiver receiver = new OwnershipTransferReceiver();
-
-        for (int i = 0; i < 1; ++i) {
-            QRect rect = new QRect(1, 2, 3, 4);
-            QApplication.postEvent(receiver, new CustomPaintEvent(rect));
-        }
-
-        // To attempt deletion of the QPaintEvent, should not happen at
-        // this time...
-        System.gc();
-        System.runFinalization();
-        synchronized(CustomPaintEvent.class) {
-            assertEquals(CustomPaintEvent.finalized, false);
-        }
-
-        // Process the event, thus also deleting it...
-        QApplication.processEvents();
-
-        // To provoke collection of the java side of the object, now
-        // that C++ has released its hold on it
-        System.gc();
-        System.runFinalization();
-        try {
-            for(int i = 0; i < 60; i++) {
-                synchronized(CustomPaintEvent.class) {
-                    if(CustomPaintEvent.finalized)
-                        break;
-                }
-                Thread.sleep(10);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        synchronized(CustomPaintEvent.class) {
-            assertEquals(CustomPaintEvent.finalized, true);
-        }
-
-        // Sanity check the data...
-        assertEquals(receiver.event_id, QEvent.Type.Paint);
-        assertEquals(1, receiver.rect.x());
-        assertEquals(2, receiver.rect.y());
-        assertEquals(3, receiver.rect.width());
-        assertEquals(4, receiver.rect.height());
-    }
-
-    // Check that const char *[] is handled properly by the generated code
-    @Test
-    public void run_XPMConstructors() {
-        String qt_plastique_radio[] = { "13 13 2 1", "X c #000000", ". c #ffffff", "....XXXXX....", "..XX.....XX..", ".X.........X.", ".X.........X.", "X...........X", "X...........X",
-                "X...........X", "X...........X", "X...........X", ".X.........X.", ".X.........X.", "..XX.....XX..", "....XXXXX...." };
-
-        QImage img = new QImage(qt_plastique_radio);
-        assertEquals(img.width(), 13);
-        assertEquals(img.height(), 13);
-
-        assertEquals(img.pixel(2, 1), 0xff000000);
-        assertEquals(img.pixel(0, 0), 0xffffffff);
-
-        QPixmap pm = new QPixmap(qt_plastique_radio);
-        QImage img2 = pm.toImage();
-        assertEquals(img2.pixel(2, 1), 0xff000000);
-        assertEquals(img2.pixel(12, 12), 0xffffffff);
     }
 
     /*
