@@ -215,7 +215,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
     }
 
 
-    @SuppressWarnings("unchecked")
+    //@SuppressWarnings("unchecked")  // FIXME: ECJ says this is no needed
     private int resolvePath(String name) {
         name = name.intern();
         for (int i=0; i<roots.size(); ++i) {

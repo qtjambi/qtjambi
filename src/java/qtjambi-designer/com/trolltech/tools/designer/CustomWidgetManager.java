@@ -110,6 +110,7 @@ public class CustomWidgetManager {
     private void loadPluginsFromPath(String path) {
         QDir dir = new QDir(path);
         if (!new QFileInfo(dir.absolutePath()).exists()) {
+            // This warning is annoying, we should reduce it to a single warning when not qtjambi/*.xml was found on startup
             warn("CustomWidgetManager: plugin path doesn't exist: " + path);
             return;
         }
@@ -143,10 +144,13 @@ public class CustomWidgetManager {
             }
 
             try {
-                Class type = null;
+                Class<? extends QWidget> type = null;
                 boolean failure = false;
                 try {
-                    type = Class.forName(e.attribute("class"));
+                    Class<?> tmpClazz = Class.forName(e.attribute("class"));
+                    type = tmpClazz.asSubclass(QWidget.class);
+                } catch (ClassCastException f) {
+                    failure = true;
                 } catch (ClassNotFoundException f) {
                     failure = true;
                 } catch (ExceptionInInitializerError error) {
@@ -164,9 +168,11 @@ public class CustomWidgetManager {
                                 urls[j] = new URL(classpaths[j]);
 
                             URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
-                            type = loader.loadClass(e.attribute("class"));
+                            Class<?> tmpClazz = loader.loadClass(e.attribute("class"));
+                            type = tmpClazz.asSubclass(QWidget.class);
                         }
                     } catch (ExceptionInInitializerError error) {
+                    } catch (ClassCastException g) {
                     } catch (ClassNotFoundException g) {
                         // Never mind. Some classes, like QWebView are not present in
                         // all configurations, so we have to silently ignore these exceptions

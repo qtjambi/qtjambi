@@ -50,9 +50,9 @@ import com.trolltech.qt.gui.*;
 
 public class CustomWidget {
 
-    public CustomWidget(Class<?> pluginClass) throws NoSuchMethodException {
+    public CustomWidget(Class<? extends QWidget> pluginClass) throws NoSuchMethodException {
         this.pluginClass = pluginClass;
-        constructor = pluginClass.getConstructor(QWidget.class);
+        constructor = (Constructor<? extends QWidget>) pluginClass.getConstructor(QWidget.class);
     }
 
     public QWidget createWidget(QWidget parent) {
@@ -60,7 +60,7 @@ public class CustomWidget {
 
         // Try the parent constructor first...
         try {
-            widget = (QWidget) constructor.newInstance(parent);
+            widget = constructor.newInstance(parent);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,7 +118,7 @@ public class CustomWidget {
         this.name = name;
     }
 
-    public Class<?> pluginClass() {
+    public Class<? extends QWidget> pluginClass() {
         return pluginClass;
     }
 
@@ -155,7 +155,7 @@ public class CustomWidget {
         return s.toString();
     }
 
-    private Class<?> pluginClass;
+    private Class<? extends QWidget> pluginClass;
     private String name;
     private boolean container;
     private String group;
@@ -163,6 +163,6 @@ public class CustomWidget {
     private String whatsThis;
     private String includeFile;
     private QIcon icon;
-    private Constructor constructor;
+    private Constructor<? extends QWidget> constructor;
 }
 
