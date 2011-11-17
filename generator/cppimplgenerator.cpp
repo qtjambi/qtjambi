@@ -485,16 +485,21 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         writeFinalDestructor(s, java_class);
 
     if (shellClass) {
+        s << "// emitting (writeShellConstructor)" << endl;
         foreach(AbstractMetaFunction *function, java_class->functions()) {
             if (function->isConstructor() && !function->isPrivate())
                 writeShellConstructor(s, function);
         }
+        s << "// emitting (writeShellDestructor)" << endl;
         writeShellDestructor(s, java_class);
 
-        if (java_class->isQObject())
+        if (java_class->isQObject()) {
+            s << "// emitting (writeQObjectFunctions)" << endl;
             writeQObjectFunctions(s, java_class);
+        }
 
         // Virtual overrides
+        s << "// emitting Virtual overrides (virtualFunctions)" << endl;
         AbstractMetaFunctionList virtualFunctions = java_class->virtualFunctions();
         for (int pos = 0; pos < virtualFunctions.size(); ++pos) {
             const AbstractMetaFunction *function = virtualFunctions.at(pos);
@@ -502,6 +507,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         }
 
         // Functions in shell class
+        s << "// emitting Functions in shell class (nonVirtualShellFunctions)" << endl;
         AbstractMetaFunctionList shellFunctions = java_class->nonVirtualShellFunctions();
         for (int i = 0; i < shellFunctions.size(); ++i) {
             const AbstractMetaFunction *function = shellFunctions.at(i);
@@ -510,38 +516,46 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
 
         // Write public overrides for functions that are protected in the base class
         // so they can be accessed from the native callback
+        s << "// emitting Public Override Functions (publicOverrideFunctions)" << endl;
         AbstractMetaFunctionList public_override_functions = java_class->publicOverrideFunctions();
         foreach(AbstractMetaFunction *function, public_override_functions) {
             writePublicFunctionOverride(s, function, java_class);
         }
 
         // Write virtual function overries used to decide on static/virtual calls
+        s << "// emitting Virtual Override Functions (virtualOverrideFunctions)" << endl;
         AbstractMetaFunctionList virtual_functions = java_class->virtualOverrideFunctions();
         foreach(const AbstractMetaFunction *function, virtual_functions) {
             writeVirtualFunctionOverride(s, function, java_class);
         }
 
     }
+    s << "// emitting (writeExtraFunctions)" << endl;
     writeExtraFunctions(s, java_class);
 
+    s << "// emitting (writeToStringFunction)" << endl;
     writeToStringFunction(s, java_class);
 
     if (java_class->hasCloneOperator()) {
+        s << "// emitting (writeCloneFunction)" << endl;
         writeCloneFunction(s, java_class);
     }
 
     // Signals
+    s << "// emitting (writeSignalFunction)" << endl;
     AbstractMetaFunctionList signal_functions = signalFunctions(java_class);
     for (int i = 0; i < signal_functions.size(); ++i)
         writeSignalFunction(s, signal_functions.at(i), java_class, i);
 
     // Native callbacks (all java functions require native callbacks)
+    s << "// emitting  (functionsInTargetLang writeFinalFunction)" << endl;
     AbstractMetaFunctionList class_funcs = java_class->functionsInTargetLang();
     foreach(AbstractMetaFunction *function, class_funcs) {
         if (!function->isEmptyFunction())
             writeFinalFunction(s, function, java_class);
     }
 
+    s << "// emitting (AbstractMetaClass::NormalFunctions|AbstractMetaClass::AbstractFunctions writeFinalFunction)" << endl;
     class_funcs = java_class->queryFunctions(AbstractMetaClass::NormalFunctions
                   | AbstractMetaClass::AbstractFunctions
                   | AbstractMetaClass::NotRemovedFromTargetLang);
@@ -552,28 +566,37 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
     }
 
     // Field accessors
+    s << "// emitting Field accessors (writeFieldAccessors)" << endl;
     foreach(AbstractMetaField *field, java_class->fields()) {
         if (field->wasPublic() || (field->wasProtected() && !java_class->isFinal()))
             writeFieldAccessors(s, field);
     }
 
+    s << "// emitting (writeFromNativeFunction)" << endl;
     writeFromNativeFunction(s, java_class);
 
-    if (java_class->isQObject())
+    if (java_class->isQObject()) {
+        s << "// emitting (writeOriginalMetaObjectFunction)" << endl;
         writeOriginalMetaObjectFunction(s, java_class);
+    }
 
-    if (java_class->typeEntry()->isValue())
+    if (java_class->typeEntry()->isValue()) {
+        s << "// emitting (writeFromArrayFunction)" << endl;
         writeFromArrayFunction(s, java_class);
+    }
 
     // generate the __qt_cast_to_Xxx functions
     if (!java_class->isNamespace() && !java_class->isInterface()) {
+        s << "// emitting (writeInterfaceCastFunction)" << endl;
         AbstractMetaClassList interfaces = java_class->interfaces();
         foreach(AbstractMetaClass *iface, interfaces)
             writeInterfaceCastFunction(s, java_class, iface);
     }
 
+    s << "// emitting (writeSignalInitialization)" << endl;
     writeSignalInitialization(s, java_class);
 
+    s << "// emitting (writeJavaLangObjectOverrideFunctions)" << endl;
     writeJavaLangObjectOverrideFunctions(s, java_class);
 
     s << endl << endl;
@@ -2050,7 +2073,7 @@ void CppImplGenerator::writeSignalInitialization(QTextStream &s, const AbstractM
     << "                                      qt_wrapper," << endl
     << "                                      QLatin1String(\"" << java_class->fullName() << "\")," << endl
     << "                                      QLatin1String(\"" << signalWrapperPrefix() << "\"));" << endl
-    << "}";
+    << "}" << endl;
 }
 
 QString CppImplGenerator::fromObject(const TypeEntry *entry,
