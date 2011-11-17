@@ -44,6 +44,9 @@
 
 package com.trolltech.qt;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QMessageHandler;
@@ -87,6 +90,96 @@ class QtJambi_LibraryShutdown implements Runnable {
         }
     }
 
+    private static final String K_com_trolltech_qt_gui_QPen   = "com.trolltech.qt.gui.QPen";
+    private static final String[] K_com_trolltech_qt_gui_QPen_FIELDNAMES = {
+        "NoPen"
+    };
+    private static final String K_com_trolltech_qt_gui_QColor = "com.trolltech.qt.gui.QColor";
+    private static final String[] K_com_trolltech_qt_gui_QColor_FIELDNAMES = {
+        "white",
+        "black",
+        "red",
+        "darkRed",
+        "green",
+        "darkGreen",
+        "blue",
+        "darkBlue",
+        "cyan",
+        "darkCyan",
+        "magenta",
+        "darkMagenta",
+        "yellow",
+        "darkYellow",
+        "gray",
+        "darkGray",
+        "lightGray",
+        "transparent",
+        "color0",
+        "color1"
+    };
+    private static final String K_com_trolltech_qt_gui_QBrush = "com.trolltech.qt.gui.QBrush";
+    private static final String[] K_com_trolltech_qt_gui_QBrush_FIELDNAMES = {
+        "NoBrush"
+    };
+
+    private static void clearStaticReferences() {
+        clearStaticReferences(K_com_trolltech_qt_gui_QPen,   K_com_trolltech_qt_gui_QPen_FIELDNAMES);
+        clearStaticReferences(K_com_trolltech_qt_gui_QColor, K_com_trolltech_qt_gui_QColor_FIELDNAMES);
+        clearStaticReferences(K_com_trolltech_qt_gui_QBrush, K_com_trolltech_qt_gui_QBrush_FIELDNAMES);
+    }
+
+    private static void clearStaticReferences(String className, String[] fieldNameA) {
+        Class<? extends Object> clazz;
+        try {
+            ClassLoader classLoader = QtJambi_LibraryShutdown.class.getClassLoader();
+            clazz = Class.forName(className, /*false*/true, classLoader); // try not to initialize it, if we load it
+            //clazz = classLoader.loadClass(className);
+        } catch(ClassNotFoundException eat) {
+            // nop (if not loaded/exists, there is nothing to clear)
+            eat.printStackTrace();
+            return;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        for(String fieldName : fieldNameA) {
+            try {
+                Field field = clazz.getDeclaredField(fieldName);
+                boolean accessible = field.isAccessible();
+                if(accessible == false)
+                    field.setAccessible(true);	// can possibly throw security exception
+                if(Modifier.isStatic(field.getModifiers())) {
+                    if(Modifier.isFinal(field.getModifiers())) {
+                        // Remove final
+                        Boolean tmpModifiersFieldAccessible = null;
+                        Integer tmpModifiers = null;
+                        Field modifiersField = Field.class.getDeclaredField("modifiers");
+                        try {
+                            tmpModifiersFieldAccessible = Boolean.valueOf(modifiersField.isAccessible());
+                            tmpModifiers = Integer.valueOf(field.getModifiers());
+
+                            modifiersField.setAccessible(true);
+                            modifiersField.setInt(field, tmpModifiers.intValue() & ~Modifier.FINAL);
+
+                            field.set(clazz, null);
+                        } finally {
+                            if(tmpModifiers != null)
+                                modifiersField.setInt(field, tmpModifiers.intValue());
+                            if(tmpModifiersFieldAccessible != null)
+                                modifiersField.setAccessible(tmpModifiersFieldAccessible.booleanValue());
+                        }                        
+                    } else {
+                        field.set(clazz, null);
+                    }
+                }
+                if(accessible == false)
+                    field.setAccessible(accessible);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void run() {
         try {
             QCoreApplication app = QCoreApplication.instance();
@@ -123,6 +216,8 @@ class QtJambi_LibraryShutdown implements Runnable {
                 appThread = null;	 // kill hard-reference
                 app = null;		// kill hard-reference
             }
+
+            clearStaticReferences();
 
             Runtime runtime = Runtime.getRuntime();
             runtime.gc();
