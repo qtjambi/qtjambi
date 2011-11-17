@@ -240,7 +240,11 @@ int qtjambi_object_count_get(int arg0, int arg1)
     // QtJambiDestructorEvent
     // JObject
 #if defined(QTJAMBI_DEBUG_TOOLS)
-    if(arg0 == 1)  // FIXME: Throw NotImplemented exception
+    if(arg0 == 1)
+        fflush(stdout);
+    else if(arg0 == 2)
+        fflush(stderr);
+    else if(arg0 == 3)  // FIXME: Throw NotImplemented exception
         return QtJambiLink::QtJambiLinkList_dump();
 #endif
     return -1;
