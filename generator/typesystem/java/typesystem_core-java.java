@@ -817,7 +817,7 @@ class QAbstractFileEngine___ extends QAbstractFileEngine {
          * can be accessed using the "classpath:" scheme.
          */
         public static void addSearchPathForResourceEngine(String path) {
-            com.trolltech.qt.internal.QClassPathEngine.addSearchPath(path);
+            com.trolltech.qt.internal.QClassPathEngine.addSearchPath(path, false);
         }
 
         /**

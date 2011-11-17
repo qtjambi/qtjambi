@@ -46,8 +46,11 @@ package com.trolltech.qt.internal;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.IOException;
 import java.net.JarURLConnection;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -55,6 +58,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipException;
 
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.core.QAbstractFileEngine;
@@ -77,49 +81,141 @@ public class QClassPathEngine extends QAbstractFileEngine
     private String m_selectedSource = "*";
     private List<QAbstractFileEngine> m_engines = new LinkedList<QAbstractFileEngine>();
 
-    public QClassPathEngine(String fileName)
-    {
+    private static String currentDirectory;
+
+    public QClassPathEngine(String fileName) {
         setFileName(fileName);
     }
 
-    private static String makeUrl(String path) {
-        boolean hasProtocol = false;
-        try {
-            URL url = new URL(path);
-            if (url.getProtocol().length() > 0) {
-                hasProtocol = true;
+    private static String resolveCurrentDirectory() {
+        String tmpCurrentDirectory = currentDirectory;
+        if(tmpCurrentDirectory != null)
+            return tmpCurrentDirectory;
+
+        synchronized(QClassPathEngine.class) {
+            tmpCurrentDirectory = currentDirectory;
+            // retest
+            if(tmpCurrentDirectory != null)
+                return tmpCurrentDirectory;
+
+            File fileCurDir = new File(".");
+            if(fileCurDir.isDirectory()) {
+                tmpCurrentDirectory = fileCurDir.getAbsolutePath();
+            } else {
+                tmpCurrentDirectory = System.getProperty("user.dir");
             }
-        } catch (Exception e) {
+
+            currentDirectory = tmpCurrentDirectory;
         }
-
-        if (!hasProtocol)
-            path = "file:" + path;
-
-        return path;
+        return tmpCurrentDirectory;
     }
 
-    public static void addSearchPath(String path)
-    {
-        synchronized(QClassPathEngine.class){
-            if (classpaths == null)
-                findClassPaths();
-
-            String url = makeUrl(path);
-            classpaths.remove(url); // make sure it isn't added twice
-            classpaths.add(makeUrl(path));
-
-            JarCache.reset(classpaths);
+    static void setCurrentDirectory(String newCurrentDirectory) {
+        synchronized(QClassPathEngine.class) {
+            currentDirectory = newCurrentDirectory;
         }
     }
 
-    public static void removeSearchPath(String path)
-    {
+    private static String makeUrl(String path) {
+        String goodPath = null;
+
+        // FIXME: Need special handling of "." to mean current directory.  But when
+        //  conversion process should be controlled.  Cwd at app startup?
+
+        if(path == null)
+            return goodPath;
+        final int pathLength = path.length();
+
+        boolean skipTryAsis = false;	// attempt to not use exceptions for common situations
+        if(pathLength > 0) {
+            char firstChar = path.charAt(0);
+            // Both a "/" and "\\" are illegal characters in the scheme/protocol.
+            if(firstChar == File.separatorChar) {
+                skipTryAsis = true;
+            } else if(firstChar == '.') {
+                // Special case for current directory
+                String tmpPath = resolveCurrentDirectory();
+                if(tmpPath != null) {
+                    path = tmpPath;
+                    skipTryAsis = true;
+                }
+            } else if(pathLength > 2) {
+                // Windows "C:\\..." for which "\\" is incorrect for URLs
+                char secondChar = path.charAt(1);
+                char thirdChar = path.charAt(2);
+                if((firstChar >= 'A' && firstChar <= 'Z') || (firstChar >= 'a' && firstChar <= 'z')) {
+                    // We don't check for '/' since that might be a real URL "a://host:port/path?qs"
+                    // and would be invalid for windows using java.io.File API anyway.
+                    if(secondChar == ':' && thirdChar == '\\')
+                        skipTryAsis = true;
+                }
+            }
+        }
+
+        if(goodPath == null && skipTryAsis == false) {
+            try {
+                // See if the data passed is a well-forked URL
+                URL url = new URL(path);
+                if(url.getProtocol().length() > 0)
+                    goodPath = path;
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(goodPath == null) {
+            try {
+                // Validate the URL we build is well-formed
+                // FIXME: file://
+                String tmpPath = "file:" + path;
+                URL url = new URL(tmpPath);
+                if(url.getProtocol().length() > 0)
+                    goodPath = tmpPath;
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return goodPath;
+    }
+
+    public static boolean addSearchPath(String path, boolean allowDuplicate) {
+        boolean bf = false;
+        String urlString = makeUrl(path);
         synchronized(QClassPathEngine.class){
-            if (classpaths == null)
+            // FIXME: This should not be here, it should execute once by default
+            // and once each time the user explicitly request such.  The user should
+            // be allowed to add
+            if(classpaths == null)
                 findClassPaths();
-            classpaths.remove(makeUrl(path));
+
+            // Do not disurb the order of the existing classpaths, such
+            // things are sensitive matters.
+            if(urlString != null) {
+                // FWIW this is a Set so we can't duplicate, but we probably should be a list
+                if(allowDuplicate || classpaths.contains(urlString) == false) {
+                    classpaths.add(urlString);
+                    bf = true;
+                }
+            }
+
             JarCache.reset(classpaths);
         }
+        return bf;
+    }
+
+    public static boolean removeSearchPath(String path) {
+        boolean bf = false;
+        synchronized(QClassPathEngine.class){
+            if(classpaths != null) {
+                String urlString = makeUrl(path);
+                if(urlString != null) {
+                    bf = classpaths.remove(urlString);
+                    JarCache.reset(classpaths);
+                }
+            }
+        }
+        return bf;
     }
 
     @Override
@@ -185,19 +281,27 @@ public class QClassPathEngine extends QAbstractFileEngine
 
                 for (String path : JarCache.classPathDirs()) try {
                     addFromPath(new URL(makeUrl(path)), m_baseName);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } else
             try {
-                String url = makeUrl(m_selectedSource);
+                String urlString = makeUrl(m_selectedSource);
 
-                // If it's a file (it should be), strip away the scheme and check whether the
+                // If it's a file (it should be), strip away the getProtocol() and check whether the
                 // file is a directory. Otherwise it's assumed to be a .jar file
-                if (url.startsWith("file:") && new File(url.substring(5)).isDirectory())
-                    addFromPath(new URL(url), m_baseName);
+                URL url = new URL(urlString);
+                File file;
+                if(url.getProtocol().equals("file")) {
+                    file = new File(url.getFile());
+                    if(file.isDirectory()) {
+                    }
+                }
+                if (urlString.startsWith("file:") && new File(urlString.substring(5)).isDirectory())
+                    addFromPath(url, m_baseName);
                 else
-                    addJarFileFromPath(new URL("jar:" + url + "!/"), m_baseName);
-
+                    addJarFileFromPath(new URL("jar:" + urlString + "!/"), m_baseName);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -502,7 +606,6 @@ public class QClassPathEngine extends QAbstractFileEngine
                 addEngine(new QFSEntryEngine(qtified_path + "/" + fileName, url.toExternalForm()));
                 return ;
             }
-
         }
     }
 
@@ -520,21 +623,43 @@ public class QClassPathEngine extends QAbstractFileEngine
      * to trigger an exception when the entry is a directory.
      */
     static boolean checkIsDirectory(JarFile jarFile, JarEntry fileInJar) {
+        InputStream inStream = null;
         try {
-
-            InputStream s = jarFile.getInputStream(fileInJar);
-            s.read();
-
-        } catch (Exception e) {
+            inStream = jarFile.getInputStream(fileInJar);
+            if(inStream == null)
+                return true;	// avoid NPE
+            inStream.read();
+        } catch(IOException e) {
             return true;
+        } catch(Exception e) {	// NPE
+            return true;
+        } finally {
+            if(inStream != null) {
+                try {
+                    inStream.close();
+                } catch(IOException eat) {
+                }
+                inStream = null;
+            }
         }
 
         return false;
     }
 
     private void addJarFileFromPath(URL jarFileURL, String fileName) {
+        URLConnection urlConnection = null;
+        JarFile jarFile = null;
         try {
-            JarFile jarFile = ((JarURLConnection)jarFileURL.openConnection()).getJarFile();
+            urlConnection = jarFileURL.openConnection();
+            if((urlConnection instanceof JarURLConnection) == false)
+                throw new RuntimeException("not a JarURLConnection type: " + urlConnection.getClass().getName());
+            JarURLConnection jarUrlConnection = (JarURLConnection) urlConnection;
+            try {
+                jarFile = jarUrlConnection.getJarFile();
+            } catch(ZipException e) {
+                // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
+                throw new ZipException(e.getMessage() + ": " + jarFileURL);
+            }
 
             boolean isDirectory = false;
             JarEntry fileInJar = jarFile.getJarEntry(fileName);
@@ -543,8 +668,11 @@ public class QClassPathEngine extends QAbstractFileEngine
             // check if its a dir or not
             if (fileInJar != null) {
                 isDirectory = fileInJar.isDirectory();
-                if (!isDirectory)
-                    isDirectory = checkIsDirectory(jarFile, fileInJar);
+                if (!isDirectory) {
+                    boolean tmpIsDirectory = checkIsDirectory(jarFile, fileInJar);
+                    isDirectory = tmpIsDirectory;
+                } else {
+                }
             }
 
             if (!isDirectory) {
@@ -579,11 +707,30 @@ public class QClassPathEngine extends QAbstractFileEngine
             }
 
             addJarFileFromPath(jarFile, fileName, isDirectory);
+            jarFile = null;	// CHECKME invalidate close!
 
-        } catch (Exception e) {
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(jarFile != null) {
+                jarFile = null;
+            }
+            if(urlConnection != null) {
+                urlConnection = null;
+            }
         }
+    }
 
-
+    private static void urlConnectionCloser(URLConnection conn) {
+        if(conn instanceof HttpURLConnection) {
+            HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
+            httpURLConnection.disconnect();
+            return;
+        }
+        if(conn instanceof JarURLConnection) {
+            JarURLConnection jarURLConnection = (JarURLConnection) conn;
+            return;
+        }
     }
 
     private void addEngine(QAbstractFileEngine engine)
@@ -639,17 +786,60 @@ public class QClassPathEngine extends QAbstractFileEngine
 
                     String url = makeUrl(p);
                     boolean match = false;
-                    try {
-                        JarFile jarFile2 = ((JarURLConnection) new URL("jar:" + url + "!/").openConnection()).getJarFile();
-                        for (URL otherURL : cpUrls) {
-                            JarFile jarFile1 = ((JarURLConnection) new URL("jar:" + otherURL.toString() + "!/").openConnection()).getJarFile();
 
-                            if (new File(jarFile1.getName()).getCanonicalPath().equals(new File(jarFile2.getName()).getCanonicalPath())) {
+                    URLConnection urlConnection2 = null;
+                    JarFile jarFile2 = null;
+                    URLConnection urlConnection1 = null;
+                    JarFile jarFile1 = null;
+                    try {
+                        URL url2 = new URL("jar:" + url.toString() + "!/");
+                        urlConnection2 = url2.openConnection();
+                        if(!(urlConnection2 instanceof JarURLConnection))
+                            throw new RuntimeException("not a JarURLConnection type: " + urlConnection2.getClass().getName());
+                        JarURLConnection jarUrlConnection2 = (JarURLConnection) urlConnection2;
+                        try {
+                            jarFile2 = jarUrlConnection2.getJarFile();
+                        } catch(ZipException e) {
+                            // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
+                            throw new ZipException(e.getMessage() + ": " + url2);
+                        }
+
+                        for (URL otherURL : cpUrls) {
+                            URL url1 = new URL("jar:" + otherURL.toString() + "!/");
+                            urlConnection1 = url1.openConnection();
+                            if(!(urlConnection1 instanceof JarURLConnection))
+                                throw new RuntimeException("not a JarURLConnection type: " + urlConnection1.getClass().getName());
+                            JarURLConnection jarUrlConnection1 = (JarURLConnection) urlConnection1;
+                            try {
+                                jarFile1 = jarUrlConnection1.getJarFile();
+                            } catch(ZipException e) {
+                                // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
+                                throw new ZipException(e.getMessage() + ": " + url1);
+                            }
+
+                            File file1 = new File(jarFile1.getName());
+                            File file2 = new File(jarFile2.getName());
+                            if (file1.getCanonicalPath().equals(file2.getCanonicalPath())) {
                                 match = true;
                                 break;
                             }
                         }
-                    } catch (Exception e) { }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if(jarFile2 != null) {
+                            jarFile2 = null;
+                        }
+                        if(urlConnection2 != null) {
+                            urlConnection2 = null;
+                        }
+                        if(jarFile1 != null) {
+                            jarFile1 = null;
+                        }
+                        if(urlConnection2 != null) {
+                            urlConnection2 = null;
+                        }
+                    }
 
                     if (!match)
                         classpaths.add(url);
@@ -657,22 +847,25 @@ public class QClassPathEngine extends QAbstractFileEngine
             }
 
             // If there are no paths set in java.class.path, we do what Java does and
-            // add the current directory
-            if (k == 0)
-                classpaths.add("file:" + QDir.currentPath());
+            // add the current directory; at least ask Java what the current directory
+            // is not Qt.
+            if (k == 0) {
+                // FIXME: Use JVM cwd notion
+                classpaths.add("file:" + QDir.currentPath());	// CHECKME "file://" ?
+            }
         }
         JarCache.reset(classpaths);
     }
     
     @Override
-    public QAbstractFileEngineIterator beginEntryList(QDir.Filters filters, java.util.List<String> nameFilters)
-    {
+    public QAbstractFileEngineIterator beginEntryList(QDir.Filters filters, java.util.List<String> nameFilters) {
     	String path = "";
-    	if (m_baseName.startsWith("classpath"))
+    	// CHECKME: Doesn't this have to check for "classpath:" ?
+    	if(m_baseName.startsWith("classpath"))
     		path = m_baseName;
     	else
     		path = "classpath:" + m_baseName;
-    	System.out.println("Begin: " + path);
+        System.out.println("QClassPathEngine.beginEntryList(...) path=" + path);
     	return new QClassPathFileEngineIterator(path, filters, nameFilters);
     }
     
@@ -680,6 +873,4 @@ public class QClassPathEngine extends QAbstractFileEngine
     public QAbstractFileEngineIterator endEntryList() {
     	return null;
     }
-    
-
 }

@@ -44,41 +44,44 @@
 
 package com.trolltech.qt.internal;
 
+import java.util.Collections;
 import java.util.List;
+
 import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QAbstractFileEngineIterator;
 import com.trolltech.qt.core.QDir.Filters;
 
-
 public class QClassPathFileEngineIterator extends QAbstractFileEngineIterator {
-	
-	private List<String> entries = null;
+    private List<String> entries = null;
     private int index;
 
-	public QClassPathFileEngineIterator(String path, Filters filters, List<String> nameFilters) {
-		super(filters, nameFilters);
-		
-		index = 0;
-		QAbstractFileEngine engine = QAbstractFileEngine.create(path);
-		entries = engine.entryList(filters, nameFilters);
-	}
+    public QClassPathFileEngineIterator(String path, Filters filters, List<String> nameFilters) {
+        super(filters, nameFilters);
 
-	@Override
-	public String currentFileName() {
-		return entries.get(index);
+        System.out.println("QClassPathFileEngineIterator().ctor(\"" + path + "\", ...)");
+        index = 0;
+        QAbstractFileEngine engine = QAbstractFileEngine.create(path);
+            entries = engine.entryList(filters, nameFilters);
+        System.out.println("QClassPathFileEngineIterator().ctor(\"" + path + "\", ...) entries.size()="+entries.size());
+    }
 
-	}
+    // FIXME: Implement #currentFileInfo()
 
-	@Override
-	public boolean hasNext() {
-		return index < entries.size() - 1;
-	}
+    @Override
+    public String currentFileName() {
+        return entries.get(index);
+    }
 
-	@Override
-	public String next() {
-		if (!hasNext())
+    @Override
+    public boolean hasNext() {
+        return index < entries.size() - 1;
+    }
+
+    @Override
+    public String next() {
+        if(!hasNext())
             return "";
-        ++index;
+        index++;
         return currentFilePath();
-	}
+    }
 }

@@ -65,6 +65,7 @@ public abstract class QtJambi_LibraryInitializer
             installMessageHandlerForExceptions(s);
 
             QClassPathFileEngineHandler.initialize();
+            QClassPathFileEngineHandler.start();
 
             initialize();
             QThreadManager.initialize();

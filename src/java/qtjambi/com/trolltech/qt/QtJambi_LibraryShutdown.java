@@ -133,6 +133,7 @@ class QtJambi_LibraryShutdown implements Runnable {
 
             shutdown_mark();
 
+            QClassPathFileEngineHandler.stop();
             QClassPathFileEngineHandler.uninitialize();
 
             // TODO: Understand (and document) why this _was_ run before QCoreApplication.quit().

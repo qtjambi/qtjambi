@@ -76,7 +76,7 @@ public class QtJambiInternal {
     @Deprecated
     public static void addSearchPathForResourceEngine(String path)
     {
-        com.trolltech.qt.internal.QClassPathEngine.addSearchPath(path);
+        com.trolltech.qt.internal.QClassPathEngine.addSearchPath(path, false);
     }
 
     /**

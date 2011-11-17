@@ -51,6 +51,10 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 interface QClassPathEntry {
     public String classPathEntryName();
 }
@@ -60,6 +64,7 @@ class QFSEntryEngine extends QFSFileEngine implements QClassPathEntry {
 
     public QFSEntryEngine(String file, String classPathEntryFileName) {
         super(file);
+        System.out.println("QFSEntryEngine().ctor(\"" + file + "\", \"" + classPathEntryFileName + "\")");
         m_classPathEntryFileName = classPathEntryFileName;
     }
 
@@ -69,77 +74,94 @@ class QFSEntryEngine extends QFSFileEngine implements QClassPathEntry {
 }
 
 class JarCache {
-
-    private static void add(String dirName, JarFile jarFile) {
-        List<JarFile> files = cache.get(dirName);
+    // Must only be called with lock.writeLock() held.
+    private static void add(HashMap<String, List<JarFile>> lookupCache, String dirName, JarFile jarFile) {
+        List<JarFile> files = lookupCache.get(dirName);
         if (files == null) {
             files = new ArrayList<JarFile>();
             files.add(jarFile);
-            cache.put(dirName, files);
-
+            lookupCache.put(dirName, files);
         } else {
+            // CHECKME: Why are we checking for the instance ?  not the the file/path ?
             if (!files.contains(jarFile))
                 files.add(jarFile);
         }
     }
 
-
     public static void reset(Set<String> jarFileList) {
-        lock.lockForWrite();
+        Lock thisLock = lock.writeLock();
+        thisLock.lock();
+        try {
+            // FIXME: Argh... we can't invalidate the previous list since there are an unknown
+            //   number of random users out there with references to the JarFile's we've provided
+            //   and they don't expect us to close their file handle from underneth them use.
+            // We need a reference counter and all users must obtain/release their handle.
+            // This means we need to perform a kind of merge operation to add new entries found here
+            //   but keep that reference counting intact for old entries.
+            //invalidateLocked();
 
-        cache = new HashMap<String, List<JarFile>>();
-        classPathDirs = new ArrayList<String>();
+            HashMap<String, List<JarFile>> tmpCache = new HashMap<String, List<JarFile>>();
+            classPathDirs = new ArrayList<String>();
 
-        for (String jarFileName : jarFileList) {
-            try {
-                URL url = new URL("jar:" + jarFileName + "!/");
-                JarFile file = ((JarURLConnection) url.openConnection()).getJarFile();
+            for (String jarFileName : jarFileList) {
+                JarURLConnection jarUrlConnection = null;
+                JarFile file = null;
+                try {
+                    URL url = new URL("jar:" + jarFileName + "!/");
+                    URLConnection urlConnection = url.openConnection();
+                    if((urlConnection instanceof JarURLConnection) == false)
+                        throw new RuntimeException("no a JarURLConnection: " + urlConnection.getClass().getName());
+                    jarUrlConnection = (JarURLConnection) urlConnection;
+                    file = jarUrlConnection.getJarFile();
 
-                // Add root dir for all jar files (event empty ones)
-                add("", file);
+                    // Add root dir for all jar files (event empty ones)
+                    add(tmpCache, "", file);
 
-                Enumeration<JarEntry> entries = file.entries();
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
+                    Enumeration<JarEntry> entries = file.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
 
-                    String dirName = "";
+                        String dirName = "";
 
-                    String entryName = entry.getName();
-                    if (entry.isDirectory()) {
-                        if (entryName.endsWith("/"))
-                            dirName = entryName.substring(0, entryName.length() - 1);
-                        else
-                            dirName = entryName;
-                    } else {
-                        int slashPos = entryName.lastIndexOf("/");
-                        if (slashPos > 0)
-                            dirName = entryName.substring(0, slashPos);
+                        String entryName = entry.getName();
+                        if (entry.isDirectory()) {
+                            if (entryName.endsWith("/"))
+                                dirName = entryName.substring(0, entryName.length() - 1);
+                            else
+                                dirName = entryName;
+                        } else {
+                            int slashPos = entryName.lastIndexOf("/");
+                            if (slashPos > 0)
+                                dirName = entryName.substring(0, slashPos);
+                        }
+
+                        // Remove potentially initial '/'
+                        if (dirName.startsWith("/"))
+                            dirName = dirName.substring(1);
+
+                        while (dirName != null) {
+                            add(tmpCache, dirName, file);
+                            int slashPos = dirName.lastIndexOf("/");
+                            if (slashPos > 0)
+                                dirName = dirName.substring(0, slashPos);
+                            else
+                                dirName = null;
+                        }
                     }
 
-                    // Remove potentially initial '/'
-                    if (dirName.startsWith("/"))
-                        dirName = dirName.substring(1);
-
-                    while (dirName != null) {
-                        add(dirName, file);
-                        int slashPos = dirName.lastIndexOf("/");
-                        if (slashPos > 0)
-                            dirName = dirName.substring(0, slashPos);
-                        else
-                            dirName = null;
-                    }
+                    // Make sure all files are registered under the empty
+                    // since all have roots
+                    add(tmpCache, "", file);
+                } catch (Exception e) {
+                    // Expected as directories will fail when doing openConnection.getJarFile()
+                    // Note that ZipFile throws different types of run time exceptions on different
+                    // platforms (ZipException on Linux and FileNotFoundException on Windows)
+                    classPathDirs.add(jarFileName);
+                } finally {
                 }
-
-                // Make sure all files are registered under the empty
-                // since all have roots
-                add("", file);
-            } catch (Exception e) {
-                // Expected as directories will fail when doing openConnection.getJarFile()
-                // Note that ZipFile throws different types of run time exceptions on different
-                // platforms (ZipException on Linux and FileNotFoundException on Windows)
-                classPathDirs.add(jarFileName);
             }
-        }
+
+            cache = tmpCache;
 
 //         for (String s : cache.keySet()) {
 //             System.out.println(s);
@@ -147,22 +169,57 @@ class JarCache {
 //                 System.out.println(" - '" + f.getName() + "'");
 //             }
 //         }
-
-        lock.unlock();
+        } finally {
+            thisLock.unlock();
+        }
     }
 
     public static List<JarFile> jarFiles(String entry) {
-        lock.lockForRead();
-        List<JarFile> files = cache.get(entry);
-        lock.unlock();
+        List<JarFile> files = null;
+        Lock thisLock = lock.readLock();
+        thisLock.lock();
+        try {
+            if(cache != null)
+                files = cache.get(entry);
+        } finally {
+            thisLock.unlock();
+        }
         return files;
+    }
+
+    private static void invalidateLocked() {
+        if(cache == null)
+            return;
+        for(Map.Entry<String, List<JarFile>> entry : cache.entrySet()) {
+            String key = entry.getKey();
+            List<JarFile> value = entry.getValue();
+            for(JarFile jarFile : value) {
+                try {
+                    jarFile.close();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        cache.clear();
+        cache = null;
+    }
+
+    public static void invalidate() {
+        Lock thisLock = lock.writeLock();
+        thisLock.lock();
+        try {
+            invalidateLocked();
+        } finally {
+            thisLock.unlock();
+        }
     }
 
     public static List<String> classPathDirs() {
         return classPathDirs;
     }
 
-    private static QReadWriteLock lock = new QReadWriteLock();
+    private static ReadWriteLock lock = new ReentrantReadWriteLock();
     private static HashMap<String, List<JarFile>> cache;
     private static List<String> classPathDirs;
 }
@@ -290,12 +347,11 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     @Override
-    public boolean close()
-    {
-        if (m_stream != null) {
+    public boolean close() {
+        if(m_stream != null) {
             try {
                 m_stream.close();
-            } catch (IOException e) {
+            } catch(IOException e) {
                 return false;
             }
 
@@ -592,6 +648,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
             while (m_pos < offset) {
                 int skip = (int)Math.min(offset - m_pos, Integer.MAX_VALUE);
 
+                // FIXME: We just closed above! ??? eclEmma?
                 m_stream.skip(skip);
                 m_pos += skip;
             }
@@ -648,6 +705,13 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 // FIXME: This should be protected API (candiate to move com/trolltech/qt/native/internal).
 public class QClassPathFileEngineHandler
 {
+    public synchronized static void start() {
+    }
+
+    public synchronized static void stop() {
+        JarCache.invalidate();
+    }
+
     public native synchronized static boolean initialize();
     // FIXME This is only public so com/trolltech/qt/QtJambi_LibraryShutdown.java can see it
     //  MUST hide it when we refactor, only qtjambi internal code should be able to run it.
