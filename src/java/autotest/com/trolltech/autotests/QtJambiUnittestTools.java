@@ -44,6 +44,8 @@
 
 package com.trolltech.autotests;
 
+import java.lang.reflect.Method;
+
 /**
  * Special debugging methods used by autotests which are only available
  * if Qt Jambi is compiled with QTJAMBI_DEBUG_TOOLS defined.
@@ -69,5 +71,29 @@ public class QtJambiUnittestTools {
      * Returns values for memory object counts of internal parts of
      * QtJambi.  The main use is in trying to find memory leaks.
      */
-    public static native int getObjectCount(int arg0, int arg2);
+    public static native int getObjectCount(int arg0, int arg1);
+
+    public static void clearStaticReferences() {
+        // Use reflection to get at the static method QtJambi_LibraryShutdown#clearStaticReferences()
+        // QtJambi_LibraryShutdown.class.getName(); can not use due to package visibility
+        final String K_com_trolltech_qt_QtJambi_LibraryShutdown = "com.trolltech.qt.QtJambi_LibraryShutdown";
+        final String K_clearStaticReferences = "clearStaticReferences";
+        Boolean accessible = null;
+        Method method = null;
+        try {
+            ClassLoader classLoader = QtJambiUnittestTools.class.getClassLoader();
+            Class<?> clazz = Class.forName(K_com_trolltech_qt_QtJambi_LibraryShutdown, true, classLoader);
+            method = clazz.getDeclaredMethod(K_clearStaticReferences, (Class[]) null);
+            if(method.isAccessible() == false) {
+                accessible = Boolean.valueOf(method.isAccessible());
+                method.setAccessible(true);
+            }
+            method.invoke(clazz);
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(accessible != null)
+                method.setAccessible(accessible.booleanValue());
+        }
+    }
 }

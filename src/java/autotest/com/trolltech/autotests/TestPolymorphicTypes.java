@@ -86,6 +86,10 @@ public class TestPolymorphicTypes extends QWidget {
     @AfterClass
     public static void testDispose() throws Exception {
         Utils.println(2, "TestPolymorphicTypes.testDispose(): begin");
+        if(Utils.releaseNativeResources() > 0) {
+            System.gc();
+            System.runFinalization();
+        }
         QApplication.processEvents();
         QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
         QApplication.quit();
@@ -100,8 +104,30 @@ public class TestPolymorphicTypes extends QWidget {
             Utils.println(3, "TestPolymorphicTypes.testDispose(): done  com.trolltech.qt.QNoNativeResourcesException: app="+e.getMessage());
         }
         app = null;		// kill hard-reference
-        Utils.println(3, "TestPolymorphicTypes.testDispose(): shutdown");
+        Utils.println(3, "TestPolymorphicTypes.testDispose(): shutdown PRE");
         QApplication.shutdown();
+        Utils.println(3, "TestPolymorphicTypes.testDispose(): shutdown POST");
+
+        QtJambiUnittestTools.getObjectCount(1, 0);  // fflush(stdout)
+        QtJambiUnittestTools.getObjectCount(2, 0);  // fflush(stderr)
+        int objectCount = QtJambiUnittestTools.getObjectCount(3, 0);  // QtJambiLink::QtJambiLink_dump()
+        QtJambiUnittestTools.getObjectCount(2, 0);  // fflush(stderr)
+        Utils.println(3, "TestPolymorphicTypes.testDispose(): end objectCount="+objectCount);
+
+        if(objectCount == 0)
+            return;  // optimization due to class loading causing some references to be set
+
+        QtJambiUnittestTools.clearStaticReferences();
+        System.gc();
+        System.runFinalization();
+        System.gc();
+        System.runFinalization();
+
+        QtJambiUnittestTools.getObjectCount(1, 0);  // fflush(stdout)
+        QtJambiUnittestTools.getObjectCount(2, 0);  // fflush(stderr)
+        objectCount = QtJambiUnittestTools.getObjectCount(3, 0);  // QtJambiLink::QtJambiLink_dump()
+        QtJambiUnittestTools.getObjectCount(2, 0);  // fflush(stderr)
+        Utils.println(3, "TestPolymorphicTypes.testDispose(): end objectCount="+objectCount);
     }
 
     @Test
