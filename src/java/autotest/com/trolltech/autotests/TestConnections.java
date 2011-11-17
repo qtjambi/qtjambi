@@ -962,11 +962,13 @@ public class TestConnections extends QApplicationTest implements Qt
         sz = new QSize(40, 60);
         assertEquals(sz.width(), 40);
         assertEquals(sz.height(), 60);
+        // CHECKME: This maybe leaking the QSize object ?
         obj.javaSignalQSize(sz);
 
         QSize sz3 = b2.iconSize();
         assertEquals(sz3.width(), sz.width());
         assertEquals(sz3.height(), sz.height());
+        assertEquals(sz, sz3); // should this be exactly the same instance ?
 
         {
             obj = new MyQObject();
@@ -1520,6 +1522,9 @@ public class TestConnections extends QApplicationTest implements Qt
         public void slot2() { }
     }
 
+    // FIXME: This takes 52 seconds (could be just the volume) but should be moved into a
+    //  test on its own so it can be excluded and/or does not negative impact the other
+    //  tests.
     @Test public void concurrentEmitConnect() {
         Emitter e = new Emitter();
         Thread t = new Thread(e);

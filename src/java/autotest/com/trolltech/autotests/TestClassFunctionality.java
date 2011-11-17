@@ -247,6 +247,11 @@ public class TestClassFunctionality extends QApplicationTest {
             options[1].setLevelOfDetail(3.0);
             super.drawItems(painter, items, options, widget);
         }
+
+        public static void tearDown() {
+            items = null;
+            options = null;
+        }
     }
 
     @Test
@@ -266,8 +271,15 @@ public class TestClassFunctionality extends QApplicationTest {
         view.show();
 
 	long t = System.currentTimeMillis();
-	while (t + 1000 > System.currentTimeMillis() && GraphicsSceneSubclassSubclass.items == null) 
+	while (t + 2500 > System.currentTimeMillis()) {
+	    // For some reason when we compile with ECJ this loop times out and then
+	    //  fails the: assertTrue(GraphicsSceneSubclassSubclass.items != null);
+//	    synchronized(GraphicsSceneSubclassSubclass.class) {
+                if(GraphicsSceneSubclassSubclass.items != null)
+	            break;
+//            }
 	    QApplication.processEvents();
+        }
 
         assertTrue(GraphicsSceneSubclassSubclass.items != null);
         assertTrue(GraphicsSceneSubclassSubclass.options != null);
@@ -318,6 +330,7 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(option instanceof QStyleOptionGraphicsItem);
         assertEquals(((QStyleOptionGraphicsItem) option).levelOfDetail(), 3.0, 0.0001);
 
+        GraphicsSceneSubclassSubclass.tearDown();
     }
 
     static class TestQObject extends QObject {
@@ -644,9 +657,15 @@ public class TestClassFunctionality extends QApplicationTest {
         parentWidget.show();
 
 	long t = System.currentTimeMillis();
-	while (t + 1000 > System.currentTimeMillis() && !receiver.paintEventCastWorked)
+	while (t + 2500 > System.currentTimeMillis()) {
+	    // For some reason when we compile with ECJ this loop times out and then
+	    //  fails the: assertTrue(receiver.paintEventCastWorked);
+//            synchronized(receiver.class) {
+                if(receiver.paintEventCastWorked)
+                    break;
+//            }
 	    QApplication.processEvents();
-
+        }
         assertEquals(receiver.customEventString, "this is my stuff");
         assertEquals(receiver.customEventType, QEvent.Type.resolve(QEvent.Type.User.value() + 16));
         assertEquals(receiver.resizeEventType, QEvent.Type.Resize);
@@ -999,6 +1018,7 @@ public class TestClassFunctionality extends QApplicationTest {
         assertTrue(invokable_in_otherThread.wasRun());
         assertEquals(invokable_in_otherThread.thread, QCoreApplication.instance().thread());
 
+        invokable_in_otherThread = null;  // tearDown() static
     }*/
 
     @Test

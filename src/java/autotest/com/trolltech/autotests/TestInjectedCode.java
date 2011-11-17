@@ -817,6 +817,8 @@ public class TestInjectedCode extends QApplicationTest {
         QTcpServer.Result result = server.waitForNewConnection(100);
 
         assertEquals(QTcpServer.Result.TimedOut, result);
+
+        // QTcpServer seems to be pinned/leaked ?
     }
 
     @Test
@@ -838,6 +840,8 @@ public class TestInjectedCode extends QApplicationTest {
         http.read(bytes);
 
         assertEquals("<!DOCTYPE", new QByteArray(bytes).left(9).toString());
+        
+        // QHttp seems to be pinned/leaked ?
     }
 
     @Test
@@ -925,6 +929,7 @@ public class TestInjectedCode extends QApplicationTest {
 
         text = clipboard.text("plain");
         assertEquals("plain", text.subtype);
+        // FIXME: This is probably due to the QClipboard bug
         //assertEquals("", text.text); // unstable when doing something on the clipboard while the test is running
 
         clipboard.setMimeData(data);

@@ -72,6 +72,8 @@ public class TestI18N extends QApplicationTest {
 
         SimpleNotTranslated test = new SimpleNotTranslated();
         test.testNotTranslated();
+
+        QApplication.removeTranslator(translator);  // tearDown() static cleanup
     }
 
     public class SimpleNotTranslated extends QObject {
@@ -96,6 +98,8 @@ public class TestI18N extends QApplicationTest {
 
         SimpleTranslated test = new SimpleTranslated();
         test.testTranslated();
+
+        QApplication.removeTranslator(translator);  // tearDown() static cleanup
     }
 
     @Test
@@ -108,6 +112,8 @@ public class TestI18N extends QApplicationTest {
 
         SimpleTranslated test = new SimpleTranslated();
         test.testTranslated();
+
+        QApplication.removeTranslator(translator);  // tearDown() static cleanup
     }
 
     public class SimpleTranslated extends QObject {
