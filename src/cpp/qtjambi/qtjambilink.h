@@ -320,6 +320,7 @@ public:
     // For debug messages
     jobject getJavaObject() const { return m_java_object; }
     bool isPointerZapped() const { return m_pointer_zapped; }
+    const char *debugFlagsToString(char *buf) const;
 
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
         bool enter_in_cache);

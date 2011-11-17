@@ -71,7 +71,8 @@ Q_GLOBAL_STATIC(QReadWriteLock, gStaticQtJambiLinkListLock);
 void QtJambiLink::QtJambiLinkList_add()
 {
     if(m_in_qtjambilink_list) {
-        fprintf(stderr, "QtJambiLink(%p)::QtJambiLinkList_add() ERROR m_in_qtjambilink_list=%d\n", this, m_in_qtjambilink_list);
+        char xb[24];
+        fprintf(stderr, "QtJambiLink(%p %s)::QtJambiLinkList_add() ERROR m_in_qtjambilink_list=%d\n", this, debugFlagsToString(xb), m_in_qtjambilink_list);
         return;
     }
 
@@ -93,7 +94,8 @@ void QtJambiLink::QtJambiLinkList_add()
 void QtJambiLink::QtJambiLinkList_remove()
 {
     if(!m_in_qtjambilink_list) {
-        fprintf(stderr, "QtJambiLink(%p)::QtJambiLinkList_remove() ERROR m_in_qtjambilink_list=%d\n", this, m_in_qtjambilink_list);
+        char xb[24];
+        fprintf(stderr, "QtJambiLink(%p %s)::QtJambiLinkList_remove() ERROR m_in_qtjambilink_list=%d\n", this, debugFlagsToString(xb), m_in_qtjambilink_list);
         return;
     }
 
@@ -133,17 +135,19 @@ int QtJambiLink::QtJambiLinkList_count()
 /* static */
 int QtJambiLink::QtJambiLinkList_dump()
 {
+    char xb[24];
     int count = 0;
     {
         QReadLocker lock(gStaticQtJambiLinkListLock());
         QtJambiLink *link = QtJambiLink::QtJambiLinkList_head;
         while(link) {
-            fprintf(stderr, "QtJambiLink(%p) ALIVE: { java_object=%p, global_ref=%d, is_qobject=%d, pointer=%p, delete_later=%d, pointer_zeroed=%d (%s) }\n",
-                link, link->m_java_object, link->m_global_ref, link->m_is_qobject, link->m_pointer, link->m_delete_later, link->m_pointer_zeroed,
+            fprintf(stderr, "QtJambiLink(%p %s) ALIVE: { java_object=%p, global_ref=%d, is_qobject=%d, pointer=%p, delete_later=%d, pointer_zeroed=%d (%s) }\n",
+                link, link->debugFlagsToString(xb), link->m_java_object, link->m_global_ref, link->m_is_qobject, link->m_pointer, link->m_delete_later, link->m_pointer_zeroed,
                 qPrintable(link->m_className.isNull() ? QString("<unknown>") : link->m_className));
             count++;
             link = link->next;
         }
+        fflush(stderr);
     }
     return count;
 }
@@ -270,6 +274,31 @@ void QtJambiLink::registerSubObject(void *ptr) {
 void QtJambiLink::unregisterSubObject(void *ptr) {
     QWriteLocker locker(gUserObjectCacheLock());
     gUserObjectCache()->remove(ptr);
+}
+
+const char *QtJambiLink::debugFlagsToString(char *buf) const {
+    char *s = buf;
+    *s++ = ((m_java_object)            ? 'J' : '.');
+    *s++ = ((m_pointer)                ? 'P' : '.');
+    *s++ = ((char)((int)m_ownership + '0'));
+    *s++ = ((char)((int)m_last_ownership + '0'));
+    *s++ = ((m_global_ref)             ? 'G' : '.');
+    *s++ = ((m_is_qobject)             ? 'Q' : '.');
+    *s++ = ((m_has_been_finalized)     ? 'F' : '.');
+    *s++ = ((m_qobject_deleted)        ? 'D' : '.');
+    *s++ = ((m_created_by_java)        ? 'C' : '.');
+    *s++ = ((m_object_invalid)         ? 'I' : '.');
+    *s++ = ((m_in_cache)               ? 'c' : '.');
+    *s++ = ((m_connected_to_java)      ? 'j' : '.');
+    *s++ = ((m_delete_in_main_thread)  ? 'd' : '.');
+    *s++ = ((m_java_link_removed)      ? 'r' : '.');
+    *s++ = ((m_link_cacheable)         ? 'c' : '.');
+    *s++ = ((m_delete_later)           ? 'L' : '.');
+    *s++ = ((m_pointer_zeroed)         ? '0' : '.');
+    *s++ = ((m_pointer_zapped)         ? 'Z' : '.');
+    *s++ = ((m_user_data_skip)         ? 'U' : '.');
+    *s = 0;
+    return buf;
 }
 
 QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object)
@@ -467,7 +496,8 @@ void
 QtJambiLink::validateMagic_unlocked(const char *prefix, bool validate_children)
 {
     if(m_magic != QTJAMBI_LINK_MAGIC) {
-        fprintf(stderr, "QtJambiLink(%p) INVALID MAGIC %s found:0x%lx expected:0x%lx qtJambiLinkUserData=%p\n", this, (prefix == 0 ? "" : prefix), m_magic, QTJAMBI_LINK_MAGIC, m_qtJambiLinkUserData);
+        char xb[24];
+        fprintf(stderr, "QtJambiLink(%p %s) INVALID MAGIC %s found:0x%lx expected:0x%lx qtJambiLinkUserData=%p\n", this, debugFlagsToString(xb), (prefix == 0 ? "" : prefix), m_magic, QTJAMBI_LINK_MAGIC, m_qtJambiLinkUserData);
         fflush(stderr);
     }
     if(validate_children) {
@@ -491,8 +521,9 @@ QtJambiLink::acquireMagic_unlocked()
     if(i != 0) {   // was 0, now 1
         // TID_SAME (usually means we reentered)
         char tidbuf[256];
-        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
-        fprintf(stderr, "QtJambiLink(%p) INVALID ACQUIRE found:%d expected:%d%s\n", this, i, 0, tidbuf);
+        char xb[24];
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, THREAD_ID(), ((m_pthread_id == THREAD_ID()) ? "TID_SAME" : "TID_DIFF"));
+        fprintf(stderr, "QtJambiLink(%p %s) INVALID ACQUIRE found:%d expected:%d%s\n", this, debugFlagsToString(xb), i, 0, tidbuf);
         fflush(stderr);
     }
     return i;
@@ -504,7 +535,7 @@ QtJambiLink::acquireMagic(bool validate_children)
     g_magicLock()->lock();
     validateMagic_unlocked(0, validate_children);
     if(acquireMagic_unlocked() == 0) {
-        m_pthread_id = (void*)pthread_self();
+        m_pthread_id = THREAD_ID();
     }
     g_magicLock()->unlock();
 }
@@ -516,8 +547,9 @@ QtJambiLink::releaseMagic_unlocked()
     if(i != 1) {   // was 1, now 0
         // TID_SAME (usually means we reentered)
         char tidbuf[256];
-        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
-        fprintf(stderr, "QtJambiLink(%p) INVALID RELEASE found:%d expected:%d%s\n", this, i, 1, tidbuf);
+        char xb[24];
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, THREAD_ID(), ((m_pthread_id == THREAD_ID()) ? "TID_SAME" : "TID_DIFF"));
+        fprintf(stderr, "QtJambiLink(%p %s) INVALID RELEASE found:%d expected:%d%s\n", this, debugFlagsToString(xb), i, 1, tidbuf);
         fflush(stderr);
     }
     return i;
@@ -529,7 +561,7 @@ QtJambiLink::releaseMagic(bool validate_children)
     g_magicLock()->lock();
     validateMagic_unlocked(0, validate_children);
     releaseMagic_unlocked();
-    if(m_pthread_id == (void*)pthread_self())
+    if(m_pthread_id == THREAD_ID())
         m_pthread_id = 0;
     g_magicLock()->unlock();
 }
@@ -1215,7 +1247,7 @@ QtJambiLinkUserData::acquireMagic_unlocked()
     if(i != 0) {   // was 0, now 1
         // TID_SAME (usually means we reentered)
         char tidbuf[256];
-        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, THREAD_ID(), ((m_pthread_id == THREAD_ID()) ? "TID_SAME" : "TID_DIFF"));
         fprintf(stderr, "QtJambiLinkUserData(%p) INVALID ACQUIRE found:%d expected:%d%s\n", this, i, 0, tidbuf);
         fflush(stderr);
     }
@@ -1228,7 +1260,7 @@ QtJambiLinkUserData::acquireMagic(bool validate_children)
     g_magicLock()->lock();
     validateMagic_unlocked(0, validate_children);
     if(acquireMagic_unlocked() == 0) {
-        m_pthread_id = (void*)pthread_self();
+        m_pthread_id = THREAD_ID();
     }
     g_magicLock()->unlock();
 }
@@ -1240,7 +1272,7 @@ QtJambiLinkUserData::releaseMagic_unlocked()
     if(i != 1) {   // was 1, now 0
         // TID_SAME (usually means we reentered)
         char tidbuf[256];
-        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, (void*)pthread_self(), ((m_pthread_id == (void*)pthread_self()) ? "TID_SAME" : "TID_DIFF"));
+        snprintf(tidbuf, sizeof(tidbuf), " tid=%p mytid=%p %s", m_pthread_id, THREAD_ID(), ((m_pthread_id == THREAD_ID()) ? "TID_SAME" : "TID_DIFF"));
         fprintf(stderr, "QtJambiLinkUserData(%p) INVALID RELEASE found:%d expected:%d%s\n", this, i, 1, tidbuf);
         fflush(stderr);
     }
@@ -1253,7 +1285,7 @@ QtJambiLinkUserData::releaseMagic(bool validate_children)
     g_magicLock()->lock();
     validateMagic_unlocked(0, validate_children);
     releaseMagic_unlocked();
-    if(m_pthread_id == (void*)pthread_self())
+    if(m_pthread_id == THREAD_ID())
         m_pthread_id = 0;
     g_magicLock()->unlock();
 }
@@ -1276,7 +1308,7 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
             // QtJambiLink::deleteNativeObject()  invokes "delete qobj;" and we end up here
             //  re-entering the QtJambi infrastructure code (we already have acquired the
             //  m_link->acquireMagic().  So we short circuit ~QtJambiLinkUserData() dtor.
-            fprintf(stderr, "QtJambiLinkUserData(%p)::~QtJambiLinkUserData()  SKIP env=%p tid=%p;  m_link=%p, user_data_skip=%d\n", this, env, (void *)pthread_self(), m_link, m_link->isUserDataSkip());
+            fprintf(stderr, "QtJambiLinkUserData(%p)::~QtJambiLinkUserData()  SKIP env=%p tid=%p;  m_link=%p, user_data_skip=%d\n", this, env, THREAD_ID(), m_link, m_link->isUserDataSkip());
             goto release;
         }
         // This typically happens when a QObject is destroyed after the vm shuts down,

@@ -95,4 +95,12 @@
 
 typedef void (*PtrDestructorFunction)(void *);
 
+#ifdef __unix__
+    #include <pthread.h>
+    #define THREAD_ID() ((void*)pthread_self())
+#endif
+#ifdef WIN32
+    #define THREAD_ID() ((void*)GetCurrentThreadId())
+#endif
+
 #endif
