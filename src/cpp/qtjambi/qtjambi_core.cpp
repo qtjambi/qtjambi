@@ -762,7 +762,11 @@ jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className)
     jmethodID method = env->GetStaticMethodID(cl, "resolve_internal", "(I)Ljava/lang/Object;");
     Q_ASSERT(method);
 
-    return env->CallStaticObjectMethod(cl, method, qt_enum);
+    jobject obj = env->CallStaticObjectMethod(cl, method, qt_enum);
+
+    env->DeleteLocalRef(cl);
+
+    return obj;
 }
 
 jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char *className)
@@ -774,7 +778,11 @@ jobject qtjambi_from_flags(JNIEnv *env, int qt_flags, const char *className)
     jmethodID method = env->GetMethodID(cl, "<init>", "(I)V");
     Q_ASSERT(method);
 
-    return env->NewObject(cl, method, qt_flags);
+    jobject obj = env->NewObject(cl, method, qt_flags);
+
+    env->DeleteLocalRef(cl);
+
+    return obj;
 }
 
 int qtjambi_to_enumerator(JNIEnv *env, jobject value)
@@ -1027,6 +1035,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
             fprintf(stderr, "vtable setup failed: %s::%s %s\n",
                     qPrintable(qclass_name), names[i], signatures[i]);
             qtjambi_exception_check(env);
+            continue;
         }
 
         jobject method_object = env->ToReflectedMethod(object_class, method_id, false);
@@ -1035,6 +1044,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                     "vtable setup conversion to reflected method failed: %s::%s %s\n",
                     qPrintable(qclass_name), names[i], signatures[i]);
             qtjambi_exception_check(env);
+            continue;
         }
 
         if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref,
@@ -1045,6 +1055,8 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
 //                    qPrintable(qtjambi_class_name(env, object_class)),
 //                    names[i]);
         }
+
+        env->DeleteLocalRef(method_object);
     }
 
     QTJAMBI_EXCEPTION_CHECK(env);
@@ -1060,6 +1072,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                     inconsistentNames[i],
                     inconsistentSignatures[i]);
             qtjambi_exception_check(env);
+            continue;
         }
 
         QTJAMBI_EXCEPTION_CHECK(env);
@@ -1072,6 +1085,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                     inconsistentNames[i],
                     inconsistentSignatures[i]);
             qtjambi_exception_check(env);
+            continue;
         }
 
         QTJAMBI_EXCEPTION_CHECK(env);
@@ -1082,8 +1096,11 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
                                    .arg(inconsistentNames[i]).arg(qclass_name);
             QtJambiLink::throwQtException(env, errorMessage,
                                          QLatin1String("QNonVirtualOverridingException"));
+            env->DeleteLocalRef(method_object);
             return 0;
         }
+
+        env->DeleteLocalRef(method_object);
     }
 
     QTJAMBI_EXCEPTION_CHECK(env);
@@ -1198,14 +1215,40 @@ void qtjambi_resolve_signals(JNIEnv *env,
             jobject signal = env->GetObjectField(java_object, fieldId);
             QTJAMBI_EXCEPTION_CHECK(env);
             Q_ASSERT(signal);
-
-            infos[i].object = env->NewWeakGlobalRef(signal);
+            if (env->ExceptionCheck()) {
+                env->ExceptionClear();
+                continue;
+            }
 
             jclass cls = env->FindClass(class_name);
             Q_ASSERT(cls);
+            if (env->ExceptionCheck()) {
+                env->ExceptionClear();
+                continue;
+            }
 
-            infos[i].methodId = env->GetMethodID(cls, "emit", signature);
-            Q_ASSERT(infos[i].methodId);
+            jmethodID emitMethodID = env->GetMethodID(cls, "emit", signature);
+            Q_ASSERT(emitMethodID);
+            if (env->ExceptionCheck()) {
+                env->ExceptionClear();
+                continue;
+            }
+
+            jobject signalWeakRef = env->NewWeakGlobalRef(signal);
+
+            if (signalWeakRef && emitMethodID) {  // everything went well
+                if(infos[i].object)  // restartable
+                    env->DeleteWeakGlobalRef(infos[i].object);
+                infos[i].object = signalWeakRef;
+                infos[i].methodId = emitMethodID;
+            } else {  // something went bad
+                env->DeleteWeakGlobalRef(signalWeakRef);
+                infos[i].object   = 0;
+                infos[i].methodId = 0;
+            }
+
+            env->DeleteLocalRef(cls);
+            env->DeleteLocalRef(signal);
         }
     }
 #ifndef QT_NO_DEBUG
