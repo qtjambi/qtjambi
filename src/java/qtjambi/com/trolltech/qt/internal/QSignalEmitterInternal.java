@@ -193,8 +193,11 @@ public abstract class QSignalEmitterInternal {
         protected void connectSignalMethod(Method slotMethod,
                                             Object receiver,
                                             int connectionType) {
+            // FIXME: We need to find out if it is save to override methods and call super.method()
+            //  when one of the supers might have @QtBlockedSlot set.  First we need to understand the
+            //  reason it is blocked, what breaksdown.
             if (slotMethod.getAnnotation(QtBlockedSlot.class) != null)
-                throw new QNoSuchSlotException(slotMethod.toString());
+                throw new QBlockedSlotException(slotMethod.toString());
 
             if (!matchSlot(slotMethod))
                 throw new RuntimeException("Signature of signal '" + fullName() + "' does not match slot '" + slotMethod.toString() + "'");
