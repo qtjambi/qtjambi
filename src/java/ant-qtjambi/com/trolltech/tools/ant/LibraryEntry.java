@@ -46,7 +46,10 @@ package com.trolltech.tools.ant;
 
 import java.io.File;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;  
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.PropertyHelper;
+
 import com.trolltech.qt.osinfo.OSInfo;
 
 // NOTE: remove this after removing support for 1.7
@@ -67,8 +70,6 @@ public class LibraryEntry extends Task {
     public static final String LOAD_YES                = "yes";
     public static final String LOAD_NEVER              = "never";
 
-    public static final String SUBDIR_DEFAULT          = "";
-
     /*
      *  set to specify where the plugin should be saved.
      *  Used to reduce redundancy of build.xml.
@@ -76,14 +77,15 @@ public class LibraryEntry extends Task {
      *  Other variables could use same kind of solutions, I think.
      *  Whole path system needs to be rewritten to correspond
      *  new libdir, includedir, plugindir properties.
+     *  Well I'm partially there for now with new destSubdir
+     *  setting.
      */
-    public String output_directory        = "";
-
     private String type = TYPE_DEFAULT;
     private String name;
     private File rootpath;
     private boolean kdephonon = false;
-    private String subdir = SUBDIR_DEFAULT;
+    private String subdir;
+    private String destSubdir;
     private String load = LOAD_DEFAULT;
     private boolean included = true;
     private String dsoVersion;
@@ -128,6 +130,14 @@ public class LibraryEntry extends Task {
         this.subdir = subdir;
     }
 
+    public String getDestSubdir() {
+        return destSubdir;
+    }
+
+    public void setDestSubdir(String destSubdir) {
+        this.destSubdir = destSubdir;
+    }
+
     public String getLoad() {
         return load;
     }
@@ -145,6 +155,9 @@ public class LibraryEntry extends Task {
     }
 
     public void setDsoVersion(String dsoVersion) {
+        // canonicalize empty string to null, due to usage pattern in Ant XML
+        if(dsoVersion != null && dsoVersion.length() == 0)
+            dsoVersion = null;
         this.dsoVersion = dsoVersion;
     }
     public String getDsoVersion() {
@@ -168,15 +181,10 @@ public class LibraryEntry extends Task {
             name = formatQtJambiName(name, debug, dsoVersion);
         } else if(type.equals(TYPE_QT)) {
             name = formatQtName(name, debug, dsoVersion);
-            //qt libraries are stored in "lib"
-            // "/" is needed in the end
-            output_directory = "lib/";
         } else if(type.equals(TYPE_QTJAMBI)) {
             name = formatQtJambiName(name, debug, dsoVersion);
-            output_directory = "lib/";
         } else if(type.equals(TYPE_DSO) || type.equals(TYPE_SYSTEM)) {
             name = formatQtJambiName(name, debug, null);
-            output_directory = "lib/";
         } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
             name = formatUnversionedPluginName(name, debug);
         }

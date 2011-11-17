@@ -44,7 +44,8 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 
 public class PluginPath extends Task {
 
@@ -56,7 +57,6 @@ public class PluginPath extends Task {
     public void setPath(String p) {
         path = p;
     }
-
 
     public String getPath() {
         return path;

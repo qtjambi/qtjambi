@@ -110,10 +110,12 @@ public class VersionPropertiesTask extends Task {
         if(qtVersion == null)
             throw new BuildException("Unable to determine Qt version, try editing: " + fileTemplate.getAbsolutePath());
 
-        buildNewVersionProperties(fileVersion, fileTemplate, qtVersion);
+        String qtjambiSonameVersionMajor = (String) propertyHelper.getProperty(InitializeTask.QTJAMBI_SONAME_VERSION_MAJOR);
+
+        buildNewVersionProperties(fileVersion, fileTemplate, qtVersion, qtjambiSonameVersionMajor);
     }
 
-    private boolean buildNewVersionProperties(File fileVersion, File fileTemplate, String qtVersion) {
+    private boolean buildNewVersionProperties(File fileVersion, File fileTemplate, String qtVersion, String qtjambiSonameVersionMajor) {
         boolean allOk = false;
         // FIXME: This part below should really be a sub-operation / new Ant Task that
         //  modifies the version.properties file
@@ -138,6 +140,8 @@ public class VersionPropertiesTask extends Task {
                 props = new Properties();
                 props.load(inStream);		// read in
                 props.put(InitializeTask.VERSION, qtVersion);	// set version
+                if(qtjambiSonameVersionMajor != null)
+                    props.put(InitializeTask.QTJAMBI_SONAME_VERSION_MAJOR, qtjambiSonameVersionMajor);  // set version
 
                 inStream.close();
                 inStream = null;

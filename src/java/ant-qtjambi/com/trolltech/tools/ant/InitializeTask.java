@@ -69,6 +69,8 @@ import com.trolltech.tools.ant.FindCompiler.Compiler;
 @SuppressWarnings("deprecation")
 public class InitializeTask extends Task {
 
+    public static final String DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR = "1";
+
     private boolean verbose;
     private PropertyHelper propertyHelper;
     private String configuration;
@@ -121,6 +123,13 @@ public class InitializeTask extends Task {
     public static final String QT_VERSION_PROPERTIES_TEMPLATE = "version.properties.template";
 
     /*
+     * This is needed for Linux/Unix/MacOSX so that the bundled item filename matches the
+     *  one referenced by the dynamic linker.
+     * This is not needed on Windows.
+     */
+    public static final String QTJAMBI_SONAME_VERSION_MAJOR   = "qtjambi.soname.version.major";
+
+    /*
      * These properties are set inside this task
      */
     public static final String CLUCENE            = "qtjambi.clucene";
@@ -156,6 +165,9 @@ public class InitializeTask extends Task {
     public static final String QTCONFIG           = "qtjambi.qtconfig";
 
     public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
+
+    public static final String QTJAMBI_PHONON_KDEPHONON           = "qtjambi.phonon.kdephonon";
+    public static final String QTJAMBI_PHONON_PLUGINSDIR          = "qtjambi.phonon.pluginsdir";
 
     public static final String PLUGINS_BEARER_CONNMANBEARER       = "qtjambi.plugins.bearer.connmanbearer";
     public static final String PLUGINS_BEARER_GENERICBEARER       = "qtjambi.plugins.bearer.genericbearer";
@@ -337,6 +349,9 @@ public class InitializeTask extends Task {
         propertyHelper.setNewProperty((String) null, QT_VERSION_MINOR,      String.valueOf(qtMinorVersion));
         propertyHelper.setNewProperty((String) null, QT_VERSION_MINOR_NEXT, String.valueOf(qtMinorVersion + 1));
         propertyHelper.setNewProperty((String) null, QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
+
+        if(OSInfo.isWindows() == false)   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
+            mySetProperty(propertyHelper, -1, QTJAMBI_SONAME_VERSION_MAJOR, " (set by init)", DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR);
 
 
         if(!decideGeneratorPreProc())
@@ -830,7 +845,7 @@ public class InitializeTask extends Task {
         return new File(path.toString()).exists();
     }
 
-    private boolean doesQtPluginExist(String name, String subdir) {
+    private boolean doesQtPluginExist(String name, String subdir, boolean noLibPrefix) {
         StringBuilder path = new StringBuilder();
         path.append(propertyHelper.getProperty((String) null, PLUGINSDIR));
         path.append(File.separator);
@@ -840,8 +855,30 @@ public class InitializeTask extends Task {
         path.append(File.separator);
 
         //! TODO: useful?
-        path.append(LibraryEntry.formatPluginName(name, false, debug, String.valueOf(qtMajorVersion)));
+        path.append(LibraryEntry.formatPluginName(name, noLibPrefix, debug, String.valueOf(qtMajorVersion)));
         return new File(path.toString()).exists();
+    }
+
+    private boolean doesQtPluginExist(String name, String subdir) {
+        return doesQtPluginExist(name, subdir, false);
+    }
+
+    private String mySetProperty(PropertyHelper propertyHelper, int verboseMode, String attrName, String sourceValue, String newValue) {
+        String currentValue = (String) propertyHelper.getProperty((String) null, attrName);
+        if(currentValue != null) {
+            sourceValue = " (already set; detected as: " + newValue + ")";
+        } else {
+            propertyHelper.setNewProperty((String) null, attrName, newValue);
+            currentValue = newValue;
+        }
+
+        if(sourceValue == null)
+            sourceValue = "";
+
+        if((verboseMode == -1 && verbose) || (verboseMode > 0))
+            System.out.println(attrName + ": " + currentValue + sourceValue);
+
+        return currentValue;
     }
 
     /**
@@ -852,41 +889,94 @@ public class InitializeTask extends Task {
         boolean exists = doesQtLibExist("phonon", qtMajorVersion, (String) propertyHelper.getProperty((String) null, PHONONLIBDIR));
         String result = String.valueOf(exists);
 
-        String sourceValue = "";
-        String currentValue = (String) propertyHelper.getProperty((String) null, PHONON);
-        if(currentValue != null) {
-            boolean oldExists = exists;
-            if("true".equals(currentValue))
-                exists = true;
-            else
-                exists = false;  // force off
-            result = String.valueOf(exists);
-            sourceValue = " (already set; detected as: " + Boolean.valueOf(oldExists).toString() + ")";
-        }
-
-        if(verbose)
-            System.out.println(PHONON + ": " + result + sourceValue);
-
-        if(!exists)
-            return "false";
+        result = mySetProperty(propertyHelper, -1, PHONON, " (auto-detected)", result);
+        if("false".equals(result))
+            return result;
 
         addToQtConfig("phonon");
-        propertyHelper.setNewProperty((String) null, PHONON, result);
 
-        switch(OSInfo.os()) {
-        case Windows:
-            propertyHelper.setNewProperty((String) null, PHONON_DS9, "true");
-            break;
-        case Linux:
-        case FreeBSD:
-            // FIXME: We should detect the name of this plugin here.
-            propertyHelper.setNewProperty((String) null, PHONON_GSTREAMER, "true");
-            break;
-        case MacOS:
-            propertyHelper.setNewProperty((String) null, PHONON_QT7, "true");
-            break;
+        // We now just do plugin detection and emit what we see, regardless of platform
+        decidePluginsPhononBackendPhononDs9();
+
+        decidePluginsPhononBackendPhononGstreamer();
+
+        decidePluginsPhononBackendPhononQt7();
+
+        return result;
+    }
+
+    private String decidePluginsPhononBackendPhononDs9() {
+        boolean exists = doesQtPluginExist("phonon_ds9", "phonon_backend");;
+        String result = String.valueOf(exists);
+        String sourceValue = null;
+        if(exists)
+            sourceValue = " (auto-detected)";
+        else if(OSInfo.isWindows() == false)
+            sourceValue = " (expected for non-Windows platform)";
+        mySetProperty(propertyHelper, -1, PHONON_DS9, sourceValue, result);
+        return result;
+    }
+
+    private String decidePluginsPhononBackendPhononGstreamer() {
+        boolean exists;
+        String result;
+        String sourceValue = null;
+        Boolean autodetectKdePhonon = null;
+
+        String kdephonon = (String) propertyHelper.getProperty((String) null, QTJAMBI_PHONON_KDEPHONON);
+        if(kdephonon != null && "true".equals(kdephonon)) {
+            // build configuration states use KDE phonon
+            exists = doesQtPluginExist("phonon_gstreamer", "phonon_backend", true);  // auto-detect Kde phonon
+            result = String.valueOf(exists);
+            if(exists == false) {  // not found
+                exists = doesQtPluginExist("phonon_gstreamer", "phonon_backend");  // try for Qt phonon anyway?
+                result = String.valueOf(exists);
+                if(exists)  // found
+                    sourceValue = " (WARNING auto-detected qt phonon; but " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon +"\"; so turning this off)";
+                autodetectKdePhonon = Boolean.FALSE;
+            }
+        } else {
+            // build configuration states use Qt phonon
+            exists = doesQtPluginExist("phonon_gstreamer", "phonon_backend");   // auto-detect Qt phonon
+            result = String.valueOf(exists);
+            if(exists) {
+                if(kdephonon != null && "true".equals(kdephonon))  // but user has setup kde phonon as well?
+                    sourceValue = " (auto-detected; WARNING " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon + "\"; so \"lib\" prefix removed)";
+            } else {
+                exists = doesQtPluginExist("phonon_gstreamer", "phonon_backend", true);  // try for KDE phonon anyway?
+                result = String.valueOf(exists);
+                if(exists) {
+                    if(kdephonon == null)
+                        sourceValue = " (auto-detected kde phonon)";
+                    else
+                        sourceValue = " (auto-detected kde phonon; but " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon + "\"; so \"lib\" prefix removed)";
+                    autodetectKdePhonon = Boolean.TRUE;
+                } else {
+                    autodetectKdePhonon = Boolean.FALSE;  // FWIW
+                }
+            }
         }
+        if(sourceValue == null) {
+            if(exists)
+                sourceValue = " (auto-detected)";
+            else if(OSInfo.isWindows() || OSInfo.isMacOS())
+                sourceValue = " (expected for non-Unix platform)";
+        }
+        mySetProperty(propertyHelper, -1, PHONON_GSTREAMER, sourceValue, result);
+        if(autodetectKdePhonon != null && autodetectKdePhonon.booleanValue())
+            mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true");
+        return result;
+    }
 
+    private String decidePluginsPhononBackendPhononQt7() {
+        boolean exists = doesQtPluginExist("phonon_qt7", "phonon_backend");;
+        String result = String.valueOf(exists);
+        String sourceValue = null;
+        if(exists)
+            sourceValue = " (auto-detected)";
+        else if(OSInfo.isWindows() == false)
+            sourceValue = " (expected for non-MacOSX platform)";
+        mySetProperty(propertyHelper, -1, PHONON_QT7, sourceValue, result);
         return result;
     }
 

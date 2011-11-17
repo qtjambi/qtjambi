@@ -44,12 +44,21 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.PropertyHelper;
+import org.apache.tools.ant.Task;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
-import java.util.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 //NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")
@@ -66,12 +75,13 @@ public class PlatformJarTask extends Task {
     private List<String> runtimeLibs        = new ArrayList<String>();
     private String systemLibs               = OSInfo.os() == OSInfo.OS.Solaris ? SYSLIB_NONE : SYSLIB_AUTO;
     private List<PluginPath> pluginPaths    = new ArrayList<PluginPath>();
+    private List<PluginDesignerPath> pluginDesignerPaths = new ArrayList<PluginDesignerPath>();
     private boolean debugConfiguration      = false;
     private String javaLibDir               = "";
 
     private boolean rpath = true;
 
-    private PropertyHelper props;
+    private PropertyHelper propertyHelper;
 
     public void addConfiguredLibrary(LibraryEntry task) {
         try {
@@ -93,6 +103,32 @@ public class PlatformJarTask extends Task {
             e.printStackTrace();
             throw new BuildException("Failed to add plugin path.......");
         }
+    }
+
+    public void addConfiguredPluginDesigner(PluginDesignerPath path) {
+        System.out.println("addConfiguredPluginDesigner() path="+path);
+        try {
+            path.perform();
+            pluginDesignerPaths.add(path);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new BuildException("Failed to add plugin-designer path.......");
+        }
+    }
+
+    public void addConfiguredPlugin_Designer(PluginDesignerPath path) {
+        System.out.println("addConfiguredPlugin_Designer() path="+path);
+        addConfiguredPluginDesigner(path);
+    }
+
+    public void addConfigured(PluginDesignerPath path) {
+        System.out.println("addConfigured() path="+path);
+        addConfiguredPluginDesigner(path);
+    }
+
+    public void add(PluginDesignerPath path) {
+        System.out.println("add() path="+path);
+        addConfiguredPluginDesigner(path);
     }
 
     public void setSyslibs(String s) {
@@ -143,11 +179,11 @@ public class PlatformJarTask extends Task {
     }
 
     public void execute_internal() throws BuildException {
-        props = PropertyHelper.getPropertyHelper(getProject());
+        propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        javaLibDir =(String) props.getProperty((String) null, InitializeTask.JAVALIBDIR);
+        javaLibDir =(String) propertyHelper.getProperty((String) null, InitializeTask.JAVALIBDIR);
 
-        debugConfiguration = "debug".equals(props.getProperty((String) null, InitializeTask.CONFIGURATION));
+        debugConfiguration = "debug".equals(propertyHelper.getProperty((String) null, InitializeTask.CONFIGURATION));
 
         if(outdir == null) {
             throw new BuildException("Missing required attribute 'outdir'. " +
@@ -187,7 +223,7 @@ public class PlatformJarTask extends Task {
         }
 
         writer.println("<qtjambi-deploy" + " system=\""
-                            + props.getProperty((String) null,
+                            + propertyHelper.getProperty((String) null,
                             InitializeTask.OSNAME).toString() + "\">");
         writer.println("\n  <cache key=\"" + cacheKey + "\" />");
 
@@ -204,15 +240,10 @@ public class PlatformJarTask extends Task {
         for(LibraryEntry e : libs) {
             String libraryName = e.getName();
             String subdir = e.getSubdir();
+            String destSubDir = e.getDestSubdir();
             String load = e.getLoad();
 
-            if(!"".equals(subdir)) {
-                subdir = subdir + "/";
-            } else {
-                subdir = "";
-            }
-
-            writer.print("  <library name=\"" + e.output_directory + subdir + libraryName + "\"");
+            writer.print("  <library name=\"" + pathCanon(new String[] { destSubDir, subdir, libraryName }) + "\"");
             if(!load.equals(LibraryEntry.LOAD_DEFAULT))
                 writer.print(" load=\"" + load + "\"");
             writer.println("/>");
@@ -234,40 +265,112 @@ public class PlatformJarTask extends Task {
                 writer.println("  <plugin path=\"" + p.getPath() + "\" />");
             }
         }
+        // designer plugins...
+        if(pluginDesignerPaths.size() > 0) {
+            writer.println("\n  <!-- Designer Plugins... -->");
+            for(PluginDesignerPath p : pluginDesignerPaths) {
+                writer.println("  <plugin-designer path=\"" + p.getPath() + "\" />");
+            }
+        }
 
         writer.println("\n</qtjambi-deploy>");
 
         writer.close();
     }
 
-    private void processLibraryEntry(LibraryEntry e) {
-        File rootPath = e.getRootpath();
-        String libraryName = e.getName();
-        String subdir = e.getSubdir();
-        //System.out.println("nyaa " + rootPath.toString() + " " + subdir + " " + libraryName);
+    private String pathCanon(String[] sA) {
+        if(sA == null)
+            return null;
+        StringBuffer sb = new StringBuffer();
+        for(String s : sA) {
+            if(s == null)
+                continue;
+            // Split by "/" since this is a path expressed in XML
+            String[] ssA = s.split("/");
+            for(String ss : ssA) {
+                if(ss.length() == 0)
+                    continue;
+                if(sb.length() > 0)
+                    sb.append("/");
+                sb.append(ss);
+            }
+        }
+        return sb.toString();
+    }
 
-        if(!"".equals(subdir)) {
-            subdir = subdir + "/";
-        } else {
-            subdir = "";
-        }
-        if(!"".equals(e.output_directory)) {
-            new File(e.output_directory).mkdir();
-        }
-        File src = new File(rootPath, subdir + libraryName);
-        File dest = new File(outdir, e.output_directory + subdir + libraryName);
+    private void processLibraryEntry(LibraryEntry e) {
+        File rootPath = null;
+        String libraryName = null;
+        String subdir = null;
+        String destSubdir = null;
+        String outputPath = null;
+        File srcDir = null;
+        File destDir = null;
+        File srcFile = null;
+        File destFile = null;
         try {
-            //System.out.println("Copying " + src + " to " + dest);
-            Util.copy(src, dest);
-            libraryDir.add(subdir);
-        } catch(IOException ex) {
-            ex.printStackTrace();
-            throw new BuildException("Failed to copy library '" + libraryName + "'");
+            rootPath = e.getRootpath();
+            if(rootPath == null)
+                rootPath = new File(".");
+            libraryName = e.getName();
+            subdir = e.getSubdir();
+            destSubdir = e.getDestSubdir();
+
+            if(destSubdir != null) {
+                if(destSubdir.startsWith("/")) {   // no subdir
+                    outputPath = pathCanon(new String[] { destSubdir });
+                } else {
+                   outputPath = pathCanon(new String[] { destSubdir, subdir });
+                }
+            } else {
+                outputPath = pathCanon(new String[] { subdir });
+            }
+            if(subdir != null)
+                srcDir = new File(rootPath, subdir);
+            else
+                srcDir = rootPath;
+            destDir = new File(outdir, outputPath);
+            if(!destDir.exists()) {
+                System.out.println("   mkdir " + destDir.getAbsolutePath());
+                destDir.mkdir();
+            }
+            srcFile = new File(srcDir, libraryName);
+            destFile = new File(destDir, libraryName);
+            try {
+                //System.out.println("Copying " + src + " to " + dest);
+                Util.copy(srcFile, destFile);
+                libraryDir.add(outputPath);
+           } catch(IOException ex) {
+                ex.printStackTrace();
+                throw new BuildException("Failed to copy library '" + libraryName + "'");
+            }
+        } catch(Exception ex) {
+            StringBuffer sb = new StringBuffer("DIAGNOSTIC");
+            if(rootPath != null)
+                sb.append("; rootPath=" + rootPath.getAbsolutePath());
+            if(libraryName != null)
+                sb.append("; libraryName=" + libraryName);
+            if(subdir != null)
+                sb.append("; subdir=" + subdir);
+            if(destSubdir != null)
+                sb.append("; destSubdir=" + destSubdir);
+            if(outputPath != null)
+                sb.append("; outputPath=" + outputPath);
+            if(srcDir != null)
+                sb.append("; srcDir=" + srcDir.getAbsolutePath());
+            if(destDir != null)
+                sb.append("; destDir=" + destDir.getAbsolutePath());
+            if(srcFile != null)
+                sb.append("; srcFile=" + srcFile.getAbsolutePath());
+            if(destFile != null)
+                sb.append("; destFile=" + destFile.getAbsolutePath());
+             ex.printStackTrace();
+            throw new BuildException(ex);
         }
     }
 
     private void processSystemLibs() {
-        String compiler = String.valueOf(props.getProperty((String) null, InitializeTask.COMPILER));
+        String compiler = String.valueOf(propertyHelper.getProperty((String) null, InitializeTask.COMPILER));
         FindCompiler.Compiler c = FindCompiler.Compiler.resolve(compiler);
 
         String vcnumber = null;
@@ -293,7 +396,7 @@ public class PlatformJarTask extends Task {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            String vsredistdir = props.getProperty((String) null, InitializeTask.VSREDISTDIR).toString();
+            String vsredistdir = propertyHelper.getProperty((String) null, InitializeTask.VSREDISTDIR).toString();
             if(vsredistdir != null) {
                 File crt = new File(vsredistdir, "Microsoft.VC" + vcnumber + ".CRT");
 
@@ -372,7 +475,7 @@ public class PlatformJarTask extends Task {
         // TODO: Make this an arbitrary list of files and provide helper options to
         //  populate with Unix libstdc++.so.5/libstdc++.so.6 values.  Allow each value
         //  to be a full-path to file, filename.
-        String cplusplusRuntime = (String) props.getProperty((String) null, InitializeTask.PACKAGING_DSO_CPLUSPLUSRUNTIME);
+        String cplusplusRuntime = (String) propertyHelper.getProperty((String) null, InitializeTask.PACKAGING_DSO_CPLUSPLUSRUNTIME);
         if(cplusplusRuntime != null)
             copyRuntime(cplusplusRuntime);
 
@@ -431,21 +534,28 @@ public class PlatformJarTask extends Task {
             System.out.println(" - updating: " + with.getName());
 
             for(LibraryEntry change : libs) {
-                StringBuilder builder = createDotDots(change.getSubdir());
-                builder.append(with.output_directory);
-                builder.append(with.getSubdir());
+                String changeSubdir = change.getSubdir();
+                StringBuilder builder = createDotDots(changeSubdir);
+                String destSubdir = with.getDestSubdir();
+                if(destSubdir != null)
+                    builder.append(destSubdir);
+                String withSubdir = with.getSubdir();
+                if(withSubdir == null)
+                    withSubdir = "";
+                builder.append(withSubdir);
                 builder.append("/");
                 builder.append(with.getName());
                 builder.insert(0, "@loader_path/");
 
                 cmd[3] = builder.toString();
-                cmd[4] = change.output_directory + change.getSubdir() + "/" + change.getName();//change.relativePath();
+                cmd[4] = pathCanon(new String[] { destSubdir, changeSubdir, change.getName() }); //change.relativePath();
 
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
 
                 Exec.exec(cmd, outdir, getProject(), false);
 
+                // CHECKME: Is this needed since we started to use soname.major when deploying ?
                 // full path, when Qt is configured with rpath
                 if("libqtjambi.jnilib".equals(with.getName()))
                     cmd[2] = "libqtjambi.1.jnilib";
@@ -462,6 +572,8 @@ public class PlatformJarTask extends Task {
       * @return StringBuilder to return
       */
     private static StringBuilder createDotDots(String path) {
+        if(path == null)
+            path = "";
         int subdir = path.split("/").length;
 
         StringBuilder builder = new StringBuilder(subdir * 3);
@@ -469,6 +581,4 @@ public class PlatformJarTask extends Task {
             builder.append("../");
         return builder;
     }
-
 }
-

@@ -12,5 +12,9 @@
         classname="com.trolltech.tools.ant.ResolvePathTask"/>
     <taskdef name="qtjambi-version-properties"
         classname="com.trolltech.tools.ant.VersionPropertiesTask"/>
+
+    <!-- Added due to dash in name -->
+    <typedef name="plugin-designer"
+         classname="com.trolltech.tools.ant.PluginDesignerPath"/>
 </antlib>
 

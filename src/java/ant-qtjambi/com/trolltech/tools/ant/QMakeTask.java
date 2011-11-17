@@ -46,8 +46,10 @@ package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class QMakeTask extends Task {
 
