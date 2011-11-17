@@ -324,7 +324,8 @@ public class NativeLibraryManager {
     public static void loadLibrary(String library) {
         if (Utilities.configuration == Utilities.Configuration.Debug)
             library += DEBUG_SUFFIX;
-        String lib = jniLibraryName(library);
+        String version = Utilities.QTJAMBI_SONAME_VERSION_MAJOR;
+        String lib = jniLibraryName(library, version);
         loadNativeLibrary(lib);
     }
 
@@ -605,12 +606,19 @@ public class NativeLibraryManager {
     }
 
 
-    private static String jniLibraryName(String lib) {
+    private static String jniLibraryName(String lib, String version) {
+        String dotVersion;
+        if(version != null) {
+            dotVersion = "." + version;
+        } else {
+            version = "";
+            dotVersion = "";
+        }
         switch (Utilities.operatingSystem) {
-        case Windows: return lib + ".dll";
-        case MacOSX: return "lib" + lib + ".jnilib";
+        case Windows: return lib + version + ".dll";  // "foobar1.dll"
+        case MacOSX: return "lib" + lib + dotVersion + ".jnilib";  // "libfoobar.1.jnilib"
         case Linux:
-        case FreeBSD: return "lib" + lib + ".so";
+        case FreeBSD: return "lib" + lib + ".so" + dotVersion;  // "libfoobar.so.1"
         }
         throw new RuntimeException("Unreachable statement");
     }

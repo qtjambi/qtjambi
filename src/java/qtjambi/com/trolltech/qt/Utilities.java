@@ -59,19 +59,23 @@ public class Utilities {
 
     public static final String VERSION_STRING;
     public static final String VERSION_MAJOR_STRING;
+    public static final String QTJAMBI_SONAME_VERSION_MAJOR;
     // We use a List<> to make the collection read-only an array would not be suitable
     private static final List<String> systemLibrariesList;
     private static final List<String> jniLibdirBeforeList;
     private static final List<String> jniLibdirList;
 
-    private static final String K_qtjambi_system_libraries  = "qtjambi.system.libraries";
-    private static final String K_qtjambi_jni_libdir_before = "qtjambi.jni.libdir.before";
-    private static final String K_qtjambi_jni_libdir        = "qtjambi.jni.libdir";  // implicit meaning of "after"
+    private static final String K_qtjambi_version              = "qtjambi.version";
+    private static final String K_qtjambi_soname_version_major = "qtjambi.soname.version.major";
+    private static final String K_qtjambi_system_libraries     = "qtjambi.system.libraries";
+    private static final String K_qtjambi_jni_libdir_before    = "qtjambi.jni.libdir.before";
+    private static final String K_qtjambi_jni_libdir           = "qtjambi.jni.libdir";  // implicit meaning of "after"
     private static final Configuration DEFAULT_CONFIGURATION = Configuration.Release;
 
     static {
         String tmpVERSION_STRING = null;
         String tmpVERSION_MAJOR_STRING = null;
+        String tmpQTJAMBI_SONAME_VERSION_MAJOR = null;
         List<String> tmpSystemLibrariesList = null;
         List<String> tmpJniLibdirBeforeList = null;
         List<String> tmpJniLibdirList = null;
@@ -88,15 +92,17 @@ public class Utilities {
             } catch (Exception ex) {
                 throw new ExceptionInInitializerError("Cannot read properties!");
             }
-            tmpVERSION_STRING = props.getProperty("qtjambi.version");
+            tmpVERSION_STRING = props.getProperty(K_qtjambi_version);
             if (tmpVERSION_STRING == null)
-                throw new ExceptionInInitializerError("qtjambi.version is not set!");
+                throw new ExceptionInInitializerError(K_qtjambi_version + " is not set!");
 
             int dotIndex = tmpVERSION_STRING.indexOf(".");	// "4.7.4" => "4"
             if(dotIndex > 0)	// don't allow setting it be empty
                 tmpVERSION_MAJOR_STRING = tmpVERSION_STRING.substring(0, dotIndex);
             else
                 tmpVERSION_MAJOR_STRING = tmpVERSION_STRING;
+
+            tmpQTJAMBI_SONAME_VERSION_MAJOR = props.getProperty(K_qtjambi_soname_version_major);
 
             SortedMap<String,String> tmpSystemLibrariesMap = new TreeMap<String,String>();
             SortedMap<String,String> tmpJniLibdirBeforeMap = new TreeMap<String,String>();
@@ -145,6 +151,7 @@ public class Utilities {
         } finally {
             VERSION_STRING = tmpVERSION_STRING;
             VERSION_MAJOR_STRING = tmpVERSION_MAJOR_STRING;
+            QTJAMBI_SONAME_VERSION_MAJOR = tmpQTJAMBI_SONAME_VERSION_MAJOR;
             systemLibrariesList = tmpSystemLibrariesList;
             jniLibdirBeforeList = tmpJniLibdirBeforeList;
             jniLibdirList = tmpJniLibdirList;
