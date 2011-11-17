@@ -65,9 +65,10 @@ struct FieldData {
 };
 
 QTJAMBI_EXPORT bool qtjambi_resolve_classes(JNIEnv *env, ClassData *data);
-QTJAMBI_EXPORT void qtjambi_resolve_fields(JNIEnv *env, FieldData *data);
-QTJAMBI_EXPORT void qtjambi_resolve_static_fields(JNIEnv *env, FieldData *data);
-QTJAMBI_EXPORT void qtjambi_resolve_methods(JNIEnv *env, MethodData *data);
-QTJAMBI_EXPORT void qtjambi_resolve_static_methods(JNIEnv *env, MethodData *data);
+QTJAMBI_EXPORT void qtjambi_unresolve_classes(JNIEnv *env, ClassData *data);
+QTJAMBI_EXPORT bool qtjambi_resolve_fields(JNIEnv *env, bool bf_static, FieldData *data);
+QTJAMBI_EXPORT void qtjambi_unresolve_fields(JNIEnv *env, FieldData *data);
+QTJAMBI_EXPORT bool qtjambi_resolve_methods(JNIEnv *env, bool bf_static, MethodData *data);
+QTJAMBI_EXPORT void qtjambi_unresolve_methods(JNIEnv *env, MethodData *data);
 
 #endif // QTJAMBI_UTILS_H

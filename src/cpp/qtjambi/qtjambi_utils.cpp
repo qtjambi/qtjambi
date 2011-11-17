@@ -48,79 +48,122 @@
 
 bool qtjambi_resolve_classes(JNIEnv *env, ClassData *data)
 {
+    bool rv = true;
     // Resolve Data...
     for (int i=0; data[i].cl; ++i) {
+        if (*data[i].cl)  // function is restartable
+            continue;
+
         jclass cl = qtjambi_find_class(env, data[i].name);
+        if (cl == 0) {
+            // Handle possible exception
+            qtjambi_exception_check(env);
+            rv = false;
+            continue;  // best-effort try next one
+        }
 
-        if (cl == 0) return false;
-        *data[i].cl =(jclass) env->NewGlobalRef(cl);
+        jclass gcls = (jclass) env->NewGlobalRef(cl);
+        if (gcls == 0) {
+            qtjambi_exception_check(env);
+            rv = false;
+            goto next;  // best-effort try next one
+        }
+
+        *data[i].cl = gcls;
+
+next:
+        env->DeleteLocalRef(cl);
     }
 
-    return true;
+    return rv;
 }
 
-
-void qtjambi_resolve_fields(JNIEnv *env, FieldData *data)
+void qtjambi_unresolve_classes(JNIEnv *env, ClassData *data)
 {
-    // Resovle fields
     for (int i=0; data[i].cl; ++i) {
-        *data[i].id = env->GetFieldID(*data[i].cl,
-                                      data[i].name,
-                                      data[i].signature);
-        Q_ASSERT_X(*data[i].id,
-                   data[i].name,
-                   data[i].signature);
+        if (*data[i].cl) {
+            env->DeleteGlobalRef(*data[i].cl);
+            *data[i].cl = 0;
+        }
     }
-
 }
 
-
-void qtjambi_resolve_static_fields(JNIEnv *env, FieldData *data)
+bool qtjambi_resolve_fields(JNIEnv *env, bool bf_static, FieldData *data)
 {
-    // Resovle fields
+    bool rv = true;
+    // Resolve fields
     for (int i=0; data[i].cl; ++i) {
-        *data[i].id = env->GetStaticFieldID(*data[i].cl,
-                                            data[i].name,
-                                            data[i].signature);
-        Q_ASSERT_X(*data[i].id,
-                   data[i].name,
-                   data[i].signature);
+        if (*data[i].id)  // function is restartable
+            continue;
+        if (*data[i].cl == 0) {
+            rv = false;   // no class to lookup fieldID against
+            continue;
+        }
+
+        jfieldID fid;
+        if (bf_static)
+            fid = env->GetStaticFieldID(*data[i].cl, data[i].name, data[i].signature);
+        else
+            fid = env->GetFieldID(*data[i].cl, data[i].name, data[i].signature);
+        Q_ASSERT_X(fid, data[i].name, data[i].signature);
+
+        if (fid == 0) {
+            // Handle possible exception
+            qtjambi_exception_check(env);
+            rv = false;
+            continue;  // best-effort try next one
+        }
+
+        *data[i].id = fid;
     }
 
+    return rv;
 }
 
-
-void qtjambi_resolve_methods(JNIEnv *env, MethodData *data)
+void qtjambi_unresolve_fields(JNIEnv *env, FieldData *data)
 {
-    // Resolve member functions
     for (int i=0; data[i].cl; ++i) {
-        *data[i].id = env->GetMethodID(*data[i].cl,
-                                       data[i].name,
-                                       data[i].signature);
-        Q_ASSERT_X(*data[i].id,
-                   data[i].name,
-                   data[i].signature);
+        if (*data[i].id)  // it is a jfieldID so no memory allocation exists
+            *data[i].id = 0;
     }
-
-
 }
 
-
-void qtjambi_resolve_static_methods(JNIEnv *env, MethodData *data)
+bool qtjambi_resolve_methods(JNIEnv *env, bool bf_static, MethodData *data)
 {
+    bool rv = true;
     // Resolve static functions
     for (int i=0; data[i].cl; ++i) {
-        *data[i].id = env->GetStaticMethodID(*data[i].cl,
-                                             data[i].name,
-                                             data[i].signature);
-        Q_ASSERT_X(*data[i].id,
-                   data[i].name,
-                   data[i].signature);
+        if (*data[i].id)  // function is restartable
+            continue;
+        if (*data[i].cl == 0) {
+            rv = false;   // no class to lookup methodID against
+            continue;
+        }
+
+        jmethodID mid;
+        if(bf_static)
+            mid = env->GetStaticMethodID(*data[i].cl, data[i].name, data[i].signature);
+        else
+            mid = env->GetMethodID(*data[i].cl, data[i].name, data[i].signature);
+        Q_ASSERT_X(mid, data[i].name, data[i].signature);
+
+        if (mid == 0) {
+            // Handle possible exception
+            qtjambi_exception_check(env);
+            rv = false;
+            continue;  // best-effort try next one
+        }
+
+        *data[i].id = mid;
     }
 
+    return rv;
 }
 
-
-
-
-
+void qtjambi_unresolve_methods(JNIEnv *env, MethodData *data)
+{
+    for (int i=0; data[i].cl; ++i) {
+        if (*data[i].id)  // it is a jmethodID so no memory allocation exists
+            *data[i].id = 0;
+    }
+}

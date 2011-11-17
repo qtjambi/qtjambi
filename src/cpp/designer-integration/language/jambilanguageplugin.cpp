@@ -82,13 +82,15 @@ JambiLanguagePlugin::JambiLanguagePlugin():
 {
     if (qtjambi_initialize_vm()) {
         JNIEnv *env = qtjambi_current_environment();
-        if (qtjambi_resolve_classes(env, jni_class_table)) {
-            qtjambi_resolve_methods(env, jni_method_table);
-            qtjambi_resolve_static_methods(env, jni_static_method_table);
+
+        bool rv_c  = qtjambi_resolve_classes(env, jni_class_table);
+        bool rv_m  = qtjambi_resolve_methods(env, false, jni_method_table);
+        bool rv_sm = qtjambi_resolve_methods(env, true, jni_static_method_table);
+        if(rv_c && rv_m && rv_sm)
             m_vmLoaded = true;
-        } else {
+
+        if(!m_vmLoaded)
             qWarning("Qt Jambi: Cannot load JambiLanguagePlugin due to missing class files");
-        }
     } else {
        QMessageBox::information(0, tr("Qt Jambi Plugin"),
                           tr("Could not locate the java virtual machine.\n\nQt Jambi plugins have been disabled."),

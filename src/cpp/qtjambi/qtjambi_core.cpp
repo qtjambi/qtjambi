@@ -1495,8 +1495,13 @@ Q_GLOBAL_STATIC(QString, oldUrlBase);
 Q_GLOBAL_STATIC(QReadWriteLock, gClassLoaderLock);
 jclass qtjambi_find_class(JNIEnv *env, const char *qualifiedName)
 {
-    if (env->ExceptionCheck())
+    if (env->ExceptionCheck()) {
+        // It is not allowed to call env->FindClass() with an exception pending, this is illegal JNI
+        //  usage and must be the result of a software design error.
+        qWarning("qtjambi_find_class(\"%s\") with Exception pending", qualifiedName);
+        Q_ASSERT(false);
         return 0;
+    }
 
     // This should do the trick when running outside Eclipse,
     // or in the context of a previously loaded class
