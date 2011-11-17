@@ -3,5 +3,10 @@ TARGET = com_trolltech_qt_help
 include(../qtjambi/qtjambi_include.pri)
 include($$QTJAMBI_CPP/com_trolltech_qt_help/com_trolltech_qt_help.pri)
 
-QT += core gui
-CONFIG += core gui help
+# This looks like a bug in Qt to me
+INCLUDEPATH += $$QMAKE_INCDIR_QT/QtHelp
+
+# libQtHelp.so.4.7.4 is dependant on many, using modifiers
+#  libQtCore.so.4 libQtGui.so.4 libQtNetwork.so.4 libQtSql.so.4 libQtXml.so.4 libQtCLucene.so.4
+QT += help
+#CONFIG += core gui help
