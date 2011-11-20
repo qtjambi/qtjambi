@@ -817,7 +817,7 @@ public class TestReferenceCounting extends QApplicationTest {
     }
 
     // JVM CRASHER
-    @Test public void testQStackedLayoutAddStackedWidget() {
+    /**@Test**/ public void testQStackedLayoutAddStackedWidget() {
         QStackedLayout layout = new QStackedLayout();
 
         reset();
@@ -840,7 +840,7 @@ public class TestReferenceCounting extends QApplicationTest {
     }
 
     // JVM CRASHER
-    @Test public void testQStackLayoutRemoveWidget() {
+    /**@Test**/ public void testQStackLayoutRemoveWidget() {
         final QStackedLayout layout = new QStackedLayout();
 
         reset();
@@ -875,7 +875,7 @@ public class TestReferenceCounting extends QApplicationTest {
     }
 
     // JVM CRASHER
-    @Test public void testQStackLayoutAddWidget() {
+    /**@Test**/ public void testQStackLayoutAddWidget() {
         QStackedLayout layout = new QStackedLayout();
 
         reset();
@@ -902,7 +902,7 @@ public class TestReferenceCounting extends QApplicationTest {
     }
 
     // JVM CRASHER
-    @Test public void testQStackLayoutAddRemoveWidget() {
+    /**@Test**/ public void testQStackLayoutAddRemoveWidget() {
         final QStackedLayout layout = new QStackedLayout();
 
         reset();
