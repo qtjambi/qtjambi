@@ -167,10 +167,10 @@
             </classpath>
 <!-- ${qtLib}${psep} -->
             <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
-            <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/>
-            <jvmarg value="-Dcom.trolltech.qt.debug=true"/>
+            <!-- <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/> -->
+            <!-- <jvmarg value="-Dcom.trolltech.qt.debug=true"/> --><!-- This should not be needed now, it loads default from MANIFEST.MF -->
             <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
-            <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/>
+            <!-- <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/> -->
             <jvmarg value="-Dcom.trolltech.qt.exceptions-for-messages=none"/>
             <jvmarg value="-Xrs"/><!-- This stops JVM intercepting SIGSEGV
             from native code (so we can see where/why it crashed) otherwise

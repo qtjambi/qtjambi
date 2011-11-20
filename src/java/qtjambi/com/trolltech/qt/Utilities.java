@@ -44,8 +44,22 @@
 
 package com.trolltech.qt;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.net.URL;
+import java.net.URLConnection;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 // !!NOTE!! This class can have no dependencies on Qt since
 //          it is used by the NativeLibraryManager
@@ -71,6 +85,13 @@ public class Utilities {
     private static final String K_qtjambi_jni_libdir_before    = "qtjambi.jni.libdir.before";
     private static final String K_qtjambi_jni_libdir           = "qtjambi.jni.libdir";  // implicit meaning of "after"
     private static final Configuration DEFAULT_CONFIGURATION = Configuration.Release;
+
+    public static final String K_Bundle_SymbolicName = "Bundle-SymbolicName";
+    public static final String K_X_QtJambi_Build     = "X-QtJambi-Build";
+    public static final String K_com_trolltech_qt    = "com.trolltech.qt";
+    public static final String K_debug               = "debug";
+    public static final String K_test                = "test";
+    public static final String K_release             = "release";
 
     static {
         String tmpVERSION_STRING = null;
@@ -170,7 +191,8 @@ public class Utilities {
     /** Defines whether Qt is build in Release or Debug. */
     public enum Configuration {
         Release,
-        Debug
+        Debug,
+        Test
     }
 
     /** The operating system Qt Jambi is running on. */
@@ -262,8 +284,9 @@ public class Utilities {
     }
 
     private static Configuration decideConfiguration() {
+        Configuration configuration = null;
+
         final String K_com_trolltech_qt_debug = "com.trolltech.qt.debug";
-        Configuration configuration = DEFAULT_CONFIGURATION;
         String debugString = System.getProperty(K_com_trolltech_qt_debug);
         try {
             if(debugString != null) {
@@ -278,7 +301,77 @@ public class Utilities {
             }
         } catch(Exception e) {
             e.printStackTrace();
+            // only because Configuration.Release is assumed
             System.err.println("-D" + K_com_trolltech_qt_debug + "=" + Boolean.FALSE + "; is assumed default");
+        }
+
+        if(configuration == null)
+            configuration = decideDefaultConfiguration();
+
+        if(configuration == null)
+            configuration = DEFAULT_CONFIGURATION;
+
+        return configuration;
+    }
+
+    private static Configuration decideDefaultConfiguration() {
+        Configuration configuration = null;
+        try {
+            Enumeration<URL> enumUrls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
+            while(enumUrls.hasMoreElements()) {
+                URL url = enumUrls.nextElement();
+                InputStream inStream = null;
+                try {
+                    URLConnection urlConnection = url.openConnection();
+                    inStream = urlConnection.getInputStream();
+                    Manifest manifest = new Manifest(inStream);
+                    inStream.close();
+                    inStream = null;
+
+                    Attributes attributes = manifest.getMainAttributes();
+                    String tmpBundleSymbolicName = attributes.getValue(K_Bundle_SymbolicName);
+                    String tmpXQtJambiBuild = attributes.getValue(K_X_QtJambi_Build);
+
+                    Configuration tmpConfiguration = null;
+                    if(K_com_trolltech_qt.equals(tmpBundleSymbolicName)) {
+                        // We found the right bundle
+                        if(K_release.equals(tmpXQtJambiBuild)) {
+                            tmpConfiguration = Configuration.Release;
+                        } else if(K_debug.equals(tmpXQtJambiBuild)) {
+                            tmpConfiguration = Configuration.Debug;
+                        } else if(K_test.equals(tmpXQtJambiBuild)) {
+                            tmpConfiguration = Configuration.Test;
+                        } else {
+                            if(tmpXQtJambiBuild == null)
+                                tmpXQtJambiBuild = "<notset>";
+                            System.out.println("com.trolltech.qt.Utilities#decideDefaultConfiguration()  " + url.toString() + " invalid " + K_X_QtJambi_Build + ": " + tmpXQtJambiBuild);
+                        }
+
+                        // We keep checking them all
+                        // If we find 2 matches this is a failure case right now, until we have resolution strategy implemented
+                        if(configuration != null) {
+                            // Multiple matches, ah well...
+                            configuration = null;
+                        } else {
+                            configuration = tmpConfiguration;  // found
+                        }
+                    }
+                } catch(IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if(inStream != null) {
+                        try {
+                            inStream.close();
+                        } catch(IOException eat) {
+                        }
+                        inStream = null;
+                    }
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        } catch(SecurityException e) {
+            e.printStackTrace();
         }
         return configuration;
     }
