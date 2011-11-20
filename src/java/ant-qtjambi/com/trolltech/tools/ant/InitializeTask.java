@@ -56,6 +56,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,6 +84,7 @@ public class InitializeTask extends Task {
     private int qtMinorVersion;
     private int qtPatchlevelVersion;
     private String qtVersionSource = "";
+    private String versionSuffix;		// beta4
 
     private String pathVersionProperties            = "version.properties";
     private String pathVersionPropertiesTemplate    = "version.properties.template";
@@ -108,6 +111,9 @@ public class InitializeTask extends Task {
     public static final String JAMBILIBDIR              = "qtjambi.jambi.libdir";
     public static final String JAMBIPLUGINSDIR          = "qtjambi.jambi.pluginsdir";
     public static final String VERSION                  = "qtjambi.version";
+    public static final String BUNDLE_VERSION           = "qtjambi.version.bundle";
+    public static final String BUNDLE_VERSION_MODE      = "qtjambi.version.bundle.mode";
+    public static final String SUFFIX_VERSION           = "qtjambi.version.suffix";
     public static final String JAVA_HOME_TARGET         = "java.home.target";
     public static final String JAVA_OSARCH_TARGET       = "java.osarch.target";
 
@@ -350,8 +356,29 @@ public class InitializeTask extends Task {
         propertyHelper.setNewProperty((String) null, QT_VERSION_MINOR_NEXT, String.valueOf(qtMinorVersion + 1));
         propertyHelper.setNewProperty((String) null, QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
 
+
+        versionSuffix = (String) propertyHelper.getProperty(SUFFIX_VERSION);
+        mySetProperty(propertyHelper, -1, SUFFIX_VERSION, null, null, false);  // report
+
+        String canonVersionSuffix;
+        if(versionSuffix != null)
+            canonVersionSuffix = versionSuffix;
+        else
+            canonVersionSuffix = "";
+        String bundleVersionMode = (String) propertyHelper.getProperty(BUNDLE_VERSION_MODE);
+        if(bundleVersionMode != null) {
+            if(bundleVersionMode.equals("auto-suffix-date")) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                s = qtVersion + "." + sdf.format(new Date()) + canonVersionSuffix;
+            }
+        } else {
+            s = qtVersion + canonVersionSuffix;
+        }
+        mySetProperty(propertyHelper, -1, BUNDLE_VERSION, null, s, true);
+
+
         if(OSInfo.isWindows() == false)   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
-            mySetProperty(propertyHelper, -1, QTJAMBI_SONAME_VERSION_MAJOR, " (set by init)", DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR);
+            mySetProperty(propertyHelper, -1, QTJAMBI_SONAME_VERSION_MAJOR, " (set by init)", DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR, false);
 
 
         if(!decideGeneratorPreProc())
@@ -863,20 +890,32 @@ public class InitializeTask extends Task {
         return doesQtPluginExist(name, subdir, false);
     }
 
-    private String mySetProperty(PropertyHelper propertyHelper, int verboseMode, String attrName, String sourceValue, String newValue) {
+    private String mySetProperty(PropertyHelper propertyHelper, int verboseMode, String attrName, String sourceValue, String newValue, boolean forceNewValue) {
         String currentValue = (String) propertyHelper.getProperty((String) null, attrName);
-        if(currentValue != null) {
-            sourceValue = " (already set; detected as: " + newValue + ")";
+        if(newValue != null) {
+            if(currentValue != null) {
+                sourceValue = " (already set; detected as: " + newValue + ")";
+            } else {
+                if(forceNewValue)
+                    propertyHelper.setProperty((String) null, attrName, newValue, false);
+                else
+                    propertyHelper.setNewProperty((String) null, attrName, newValue);
+                currentValue = newValue;
+            }
         } else {
-            propertyHelper.setNewProperty((String) null, attrName, newValue);
-            currentValue = newValue;
+            if(currentValue != null)
+                sourceValue = null;  // we don't use newValue in any way, and currentValue exists
         }
 
         if(sourceValue == null)
             sourceValue = "";
 
-        if((verboseMode == -1 && verbose) || (verboseMode > 0))
-            System.out.println(attrName + ": " + currentValue + sourceValue);
+        if((verboseMode == -1 && verbose) || (verboseMode > 0)) {
+            String prettyCurrentValue = currentValue;
+            if(prettyCurrentValue == null)
+                prettyCurrentValue = "<notset>";
+            System.out.println(attrName + ": " + prettyCurrentValue + sourceValue);
+        }
 
         return currentValue;
     }
@@ -889,7 +928,7 @@ public class InitializeTask extends Task {
         boolean exists = doesQtLibExist("phonon", qtMajorVersion, (String) propertyHelper.getProperty((String) null, PHONONLIBDIR));
         String result = String.valueOf(exists);
 
-        result = mySetProperty(propertyHelper, -1, PHONON, " (auto-detected)", result);
+        result = mySetProperty(propertyHelper, -1, PHONON, " (auto-detected)", result, false);
         if("false".equals(result))
             return result;
 
@@ -913,7 +952,7 @@ public class InitializeTask extends Task {
             sourceValue = " (auto-detected)";
         else if(OSInfo.isWindows() == false)
             sourceValue = " (expected for non-Windows platform)";
-        mySetProperty(propertyHelper, -1, PHONON_DS9, sourceValue, result);
+        mySetProperty(propertyHelper, -1, PHONON_DS9, sourceValue, result, false);
         return result;
     }
 
@@ -962,9 +1001,9 @@ public class InitializeTask extends Task {
             else if(OSInfo.isWindows() || OSInfo.isMacOS())
                 sourceValue = " (expected for non-Unix platform)";
         }
-        mySetProperty(propertyHelper, -1, PHONON_GSTREAMER, sourceValue, result);
+        mySetProperty(propertyHelper, -1, PHONON_GSTREAMER, sourceValue, result, false);
         if(autodetectKdePhonon != null && autodetectKdePhonon.booleanValue())
-            mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true");
+            mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true", false);
         return result;
     }
 
@@ -976,7 +1015,7 @@ public class InitializeTask extends Task {
             sourceValue = " (auto-detected)";
         else if(OSInfo.isWindows() == false)
             sourceValue = " (expected for non-MacOSX platform)";
-        mySetProperty(propertyHelper, -1, PHONON_QT7, sourceValue, result);
+        mySetProperty(propertyHelper, -1, PHONON_QT7, sourceValue, result, false);
         return result;
     }
 
