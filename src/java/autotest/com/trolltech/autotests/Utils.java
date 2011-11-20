@@ -162,11 +162,15 @@ public abstract class Utils {
             try {
                 final String PROP_NAME = "com.trolltech.qt.debug.level";
                 String s = System.getProperty(PROP_NAME);
-                tmpDebugLevel = Integer.valueOf(s);
-                if(tmpDebugLevel < 0)
-                    throw new NumberFormatException("number is negative");
-                if(tmpDebugLevel.intValue() > 1)
-                    System.out.println("-D" + PROP_NAME + "=" + tmpDebugLevel + "; is set");
+                if(s != null) {
+                    tmpDebugLevel = Integer.valueOf(s);
+                    if(tmpDebugLevel < 0)
+                        throw new NumberFormatException("number is negative");
+                    if(tmpDebugLevel.intValue() > 1)
+                        System.out.println("-D" + PROP_NAME + "=" + tmpDebugLevel + "; is set");
+                } else {
+                    tmpDebugLevel = DEFAULT_DEBUG_LEVEL;
+                }
             } catch(NumberFormatException e) {
                 e.printStackTrace();
                 tmpDebugLevel = DEFAULT_DEBUG_LEVEL;
