@@ -105,8 +105,7 @@ public class PlatformJarTask extends Task {
         }
     }
 
-    public void addConfiguredPluginDesigner(PluginDesignerPath path) {
-        System.out.println("addConfiguredPluginDesigner() path="+path);
+    public void addConfigured(PluginDesignerPath path) {
         try {
             path.perform();
             pluginDesignerPaths.add(path);
@@ -116,19 +115,6 @@ public class PlatformJarTask extends Task {
         }
     }
 
-    public void addConfiguredPlugin_Designer(PluginDesignerPath path) {
-        System.out.println("addConfiguredPlugin_Designer() path="+path);
-        addConfiguredPluginDesigner(path);
-    }
-
-    public void addConfigured(PluginDesignerPath path) {
-        System.out.println("addConfigured() path="+path);
-        addConfiguredPluginDesigner(path);
-    }
-
-    public void add(PluginDesignerPath path) {
-        System.out.println("add() path="+path);
-        addConfiguredPluginDesigner(path);
     }
 
     public void setSyslibs(String s) {
@@ -212,6 +198,7 @@ public class PlatformJarTask extends Task {
         writeQtJambiDeployment();
     }
 
+    // FIXME: We should be XML escaping data
     private void writeQtJambiDeployment() {
         PrintWriter writer;
         try {
@@ -225,25 +212,29 @@ public class PlatformJarTask extends Task {
         writer.println("<qtjambi-deploy" + " system=\""
                             + propertyHelper.getProperty((String) null,
                             InitializeTask.OSNAME).toString() + "\">");
-        writer.println("\n  <cache key=\"" + cacheKey + "\" />");
+        writer.println();
+        writer.println("  <cache key=\"" + cacheKey + "\" />");
 
         // system libraries that must be loaded first of all...
         if(systemLibs.equals(SYSLIB_AUTO)) {
-            if(runtimeLibs.size() > 0)
-                writer.println("\n  <!-- Runtime libraries, loaded automatically -->");
+            if(runtimeLibs.size() > 0) {
+                writer.println();
+                writer.println("  <!-- Runtime libraries, loaded automatically -->");
+            }
             for(String rt : runtimeLibs) {
                 writer.println("  <library name=\"" + rt + "\" load=\"yes\" />");
             }
         }
 
-        writer.println("\n  <!-- Qt libraries -->");
+        writer.println();
+        writer.println("  <!-- Qt libraries -->");
         for(LibraryEntry e : libs) {
             String libraryName = e.getName();
             String subdir = e.getSubdir();
-            String destSubDir = e.getDestSubdir();
+            String destSubdir = e.getDestSubdir();
             String load = e.getLoad();
 
-            writer.print("  <library name=\"" + pathCanon(new String[] { destSubDir, subdir, libraryName }) + "\"");
+            writer.print("  <library name=\"" + pathCanon(new String[] { destSubdir, subdir, libraryName }) + "\"");
             if(!load.equals(LibraryEntry.LOAD_DEFAULT))
                 writer.print(" load=\"" + load + "\"");
             writer.println("/>");
@@ -251,8 +242,10 @@ public class PlatformJarTask extends Task {
 
         // Manifests and the like...
         if(systemLibs.equals(SYSLIB_AUTO)) {
-            if(unpackLibs.size() > 0)
-                writer.println("\n  <!-- Dependency libraries, not loaded... -->");
+            if(unpackLibs.size() > 0) {
+                writer.println();
+                writer.println("  <!-- Dependency libraries, not loaded... -->");
+            }
             for(String unpack : unpackLibs) {
                 writer.println("  <library name=\"" + unpack + "\" load=\"never\" />");
             }
@@ -260,20 +253,23 @@ public class PlatformJarTask extends Task {
 
         // plugins...
         if(pluginPaths.size() > 0) {
-            writer.println("\n  <!-- Plugins... -->");
+            writer.println();
+            writer.println("  <!-- Plugins... -->");
             for(PluginPath p : pluginPaths) {
                 writer.println("  <plugin path=\"" + p.getPath() + "\" />");
             }
         }
         // designer plugins...
         if(pluginDesignerPaths.size() > 0) {
-            writer.println("\n  <!-- Designer Plugins... -->");
+            writer.println();
+            writer.println("  <!-- Designer Plugins... -->");
             for(PluginDesignerPath p : pluginDesignerPaths) {
                 writer.println("  <plugin-designer path=\"" + p.getPath() + "\" />");
             }
         }
 
-        writer.println("\n</qtjambi-deploy>");
+        writer.println();
+        writer.println("</qtjambi-deploy>");
 
         writer.close();
     }
@@ -309,7 +305,7 @@ public class PlatformJarTask extends Task {
         File srcFile = null;
         File destFile = null;
         try {
-            rootPath = e.getRootpath();
+            rootPath = e.getRootPath();
             if(rootPath == null)
                 rootPath = new File(".");
             libraryName = e.getName();

@@ -82,7 +82,7 @@ public class LibraryEntry extends Task {
      */
     private String type = TYPE_DEFAULT;
     private String name;
-    private File rootpath;
+    private File rootPath;
     private boolean kdephonon = false;
     private String subdir;
     private String destSubdir;
@@ -114,12 +114,12 @@ public class LibraryEntry extends Task {
         this.name = name;
     }
 
-    public File getRootpath() {
-        return rootpath;
+    public File getRootPath() {
+        return rootPath;
     }
 
-    public void setRootpath(File rootpath) {
-        this.rootpath = rootpath;
+    public void setRootPath(File rootPath) {
+        this.rootPath = rootPath;
     }
 
     public String getSubdir() {
@@ -194,11 +194,11 @@ public class LibraryEntry extends Task {
     }
 
     public String absoluteSourcePath() {
-        return rootpath + "/" + subdir + "/" + name;
+        return getRootPath() + "/" + getSubdir() + "/" + getName();
     }
 
     public String relativePath() {
-        return subdir + "/" + name;
+        return getSubdir() + "/" + getName();
     }
 
     public static String formatPluginName(String name, boolean kdephonon, boolean debug, String versionString) {
