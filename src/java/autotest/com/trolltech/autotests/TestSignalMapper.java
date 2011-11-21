@@ -45,6 +45,8 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -59,25 +61,67 @@ public class TestSignalMapper extends QApplicationTest {
      * Receiver class for the various mapped signals in this test.
      */
     private static class Receiver extends QObject {
-        public int lastInteger;
-        public String lastString;
-        public QObject lastQObject;
-        public QWidget lastQWidget;
+        private int lastInteger;
+        private String lastString;
+        private QObject lastQObject;
+        private QWidget lastQWidget;
 
+        public int getLastInteger() {
+            synchronized(this) {
+                return lastInteger;
+            }
+        }
         public void slotInteger(int i) {
-            lastInteger = i;
+            synchronized(this) {
+                lastInteger = i;
+                notifyAll();
+            }
         }
 
+        public String getLastString() {
+            synchronized(this) {
+                return lastString;
+            }
+        }
         public void slotString(String s) {
-            lastString = s;
+            synchronized(this) {
+                lastString = s;
+                notifyAll();
+            }
         }
 
+        public QObject getLastQObject() {
+            synchronized(this) {
+                return lastQObject;
+            }
+        }
         public void slotQObject(QObject o) {
-            lastQObject = o;
+            synchronized(this) {
+                lastQObject = o;
+                notifyAll();
+            }
         }
 
+        public QWidget getLastQWidget() {
+            synchronized(this) {
+                return lastQWidget;
+            }
+        }
         public void slotQWidget(QWidget w) {
-            lastQWidget = w;
+            synchronized(this) {
+                lastQWidget = w;
+                notifyAll();
+            }
+        }
+
+        public void reset() {
+            synchronized(this) {
+                lastInteger = -1;
+                lastString = null;
+                lastQObject = null;
+                lastQWidget = null;
+                notifyAll();
+            }
         }
     }
 
@@ -92,11 +136,19 @@ public class TestSignalMapper extends QApplicationTest {
         }
     }
 
+    private static class SignalQuit extends QObject {
+        Signal0 signal = new Signal0();
+
+        public Signal0 getSignal0() {
+            return signal;
+        }
+    }
+
     @Test
-    public void run_mappedInt() {
+    public void run_mappedInt() throws InterruptedException {
         QSignalMapper mapper = new QSignalMapper();
         Receiver receiver = new Receiver();
-        Emitter emitters[] = new Emitter[10];
+        final Emitter emitters[] = new Emitter[10];
 
         for (int i = 0; i < emitters.length; ++i) {
             emitters[i] = new Emitter();
@@ -105,40 +157,62 @@ public class TestSignalMapper extends QApplicationTest {
         }
         mapper.mappedInteger.connect(receiver, "slotInteger(int)");
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < emitters.length; ++i) {
             emitters[i].emitSignal();
-            assertEquals(receiver.lastInteger, i);
+            assertEquals("receiver.getLastInteger() same thread", i, receiver.getLastInteger());
         }
+        receiver.reset();
+        assertEquals("receiver.getLastInteger()!=-1", -1, receiver.getLastInteger());
 
-        Thread thread = new Thread("Reciver Thread") {
+        final SignalQuit signalQuit = new SignalQuit();
+        Thread thread = new Thread("Receiver Thread") {
             @Override
             public void run() {
-                new QEventLoop().exec();
+                try {
+                    QEventLoop eventLoop = new QEventLoop();
+                    signalQuit.getSignal0().connect(eventLoop, "quit()");
+                    eventLoop.exec();
+                } catch(Throwable t) {
+                    t.printStackTrace();
+                }
             }
         };
 
         receiver.moveToThread(thread);
         thread.start();
 
-
-        for (int i = 0; i < 10; ++i) {
+        receiver.reset();
+        assertEquals("receiver.getLastInteger()!=-1", -1, receiver.getLastInteger());
+        assertTrue("thread.isAlive()", thread.isAlive());  // make sure Thread did not die on us
+        for (int i = 0; i < emitters.length; ++i) {
             emitters[i].emitSignal();
 
             try {
-                Thread.sleep(100);
+                // Use Java sleep/wake to speed this up
+                synchronized(receiver) {
+                    receiver.wait(1000); // was: Thread.sleep(100)
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            assertEquals(receiver.lastInteger, i);
+            assertTrue("thread.isAlive()", thread.isAlive());  // make sure Thread did not die on us
+            assertEquals("receiver.getLastInteger() diff thread", i, receiver.getLastInteger());
         }
+        receiver.reset();
+        assertEquals("receiver.getLastInteger()!=-1", -1, receiver.getLastInteger());
+
+        // Shutdown the thread
+        signalQuit.getSignal0().emit();
+        thread.join(1000);
+        assertFalse("thread.isAlive()", thread.isAlive());
     }
 
     @Test
     public void run_mappedString() {
         QSignalMapper mapper = new QSignalMapper();
         Receiver receiver = new Receiver();
-        Emitter emitters[] = new Emitter[10];
+        final Emitter emitters[] = new Emitter[10];
 
         for (int i = 0; i < emitters.length; ++i) {
             emitters[i] = new Emitter();
@@ -147,9 +221,9 @@ public class TestSignalMapper extends QApplicationTest {
         }
         mapper.mappedString.connect(receiver, "slotString(String)");
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < emitters.length; ++i) {
             emitters[i].emitSignal();
-            assertEquals(receiver.lastString, "id(" + i + ")");
+            assertEquals("receiver.getLastString()", "id(" + i + ")", receiver.getLastString());
         }
     }
 
@@ -157,7 +231,7 @@ public class TestSignalMapper extends QApplicationTest {
     public void run_mappedQObject() {
         QSignalMapper mapper = new QSignalMapper();
         Receiver receiver = new Receiver();
-        Emitter emitters[] = new Emitter[10];
+        final Emitter emitters[] = new Emitter[10];
 
         for (int i = 0; i < emitters.length; ++i) {
             emitters[i] = new Emitter();
@@ -166,9 +240,9 @@ public class TestSignalMapper extends QApplicationTest {
         }
         mapper.mappedQObject.connect(receiver, "slotQObject(QObject)");
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < emitters.length; ++i) {
             emitters[i].emitSignal();
-            assertEquals(receiver.lastQObject, emitters[i]);
+            assertEquals("receiver.getLastQObject()", emitters[i], receiver.getLastQObject());
         }
     }
 
@@ -177,7 +251,7 @@ public class TestSignalMapper extends QApplicationTest {
     public void run_mappedQWidget() {
         QGuiSignalMapper mapper = new QGuiSignalMapper();
         Receiver receiver = new Receiver();
-        Emitter emitters[] = new Emitter[10];
+        final Emitter emitters[] = new Emitter[10];
         QWidget widgets[] = new QWidget[10];
 
         for (int i = 0; i < emitters.length; ++i) {
@@ -188,9 +262,9 @@ public class TestSignalMapper extends QApplicationTest {
         }
         mapper.mappedQWidget.connect(receiver, "slotQWidget(QWidget)");
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < emitters.length; ++i) {
             emitters[i].emitSignal();
-            assertEquals(receiver.lastQWidget, widgets[i]);
+            assertEquals("receiver.getLastQWidget()", widgets[i], receiver.getLastQWidget());
         }
     }
 
