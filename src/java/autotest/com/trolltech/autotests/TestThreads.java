@@ -45,8 +45,11 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import com.trolltech.qt.core.QCoreApplication;
@@ -55,6 +58,12 @@ import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QObject;
 
 public class TestThreads extends QApplicationTest {
+    @AfterClass
+    public static void testDispose() throws Exception {
+        PingPong.ID_PING = null;   // clean up static reference to QObject
+        QApplicationTest.testDispose();
+    }
+
     /**
      */
     private static class AffinityTester implements Runnable {
@@ -71,14 +80,16 @@ public class TestThreads extends QApplicationTest {
         AffinityTester tester = new AffinityTester();
         Thread thread = new Thread(tester);
         thread.start();
-        thread.join(10000);
+        thread.join(2500);
+        assertFalse("thread.isAlive()", thread.isAlive());
         assertTrue("tester.ok", tester.ok);
     }
 
     /*************************************************************************/
 
-    private static class PingPong extends QObject{
-        private static final QEvent.Type ID_PING = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
+    private static class PingPong extends QObject {
+        /* Removed 'final' and made public (from private) so we can cleanup on destruction and get clean memory leak check */
+        public static /*final*/ QEvent.Type ID_PING = QEvent.Type.resolve(QEvent.Type.User.value() + 1);
         public int numPings = 0;
         public PingPong other;
         public boolean affinityOk = true;
@@ -148,14 +159,20 @@ public class TestThreads extends QApplicationTest {
             ping.waitUntilObjectCreated();
             pong.waitUntilObjectCreated();
 
+            assertNotNull("ping.object != null", ping.object);
+            assertNotNull("pong.object != null", pong.object);
+
             ping.setOtherObject(pong.object);
             pong.setOtherObject(ping.object);
 
-            ping.join(1000);
+            ping.join(2500);
             pong.join(1000);
 
-            assertEquals(ping.object.numPings, 100);
-            assertEquals(pong.object.numPings, 100);
+            assertFalse("ping.isAlive()", ping.isAlive());
+            assertFalse("pong.isAlive()", pong.isAlive());
+
+            assertEquals("ping.object.numPings", 100, ping.object.numPings);
+            assertEquals("pong.object.numPings", 100, pong.object.numPings);
 
             assertTrue("ping.object.affinityOk", ping.object.affinityOk);
             assertTrue("ping.object.affinityOk", ping.object.affinityOk);
@@ -165,7 +182,7 @@ public class TestThreads extends QApplicationTest {
     }
 
 
-    private static class PingPongSS extends QObject{
+    private static class PingPongSS extends QObject {
         public int numPings = 0;
         public PingPongSS other;
         public boolean affinityOk = true;
@@ -192,6 +209,7 @@ public class TestThreads extends QApplicationTest {
     private static class PingPongSSRunner extends Thread {
         public PingPongSS object;
         public boolean ping;
+        public boolean ready;
         public PingPongSSRunner(boolean ping) {
             setDaemon(true);
             this.ping = ping;
@@ -199,7 +217,18 @@ public class TestThreads extends QApplicationTest {
         @Override
         public void run() {
             object = new PingPongSS();
-            try { sleep(100); } catch (Exception e) { e.printStackTrace(); };
+            // Wait for startup sync
+            while(true) {
+                try {
+                    sleep(25);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                synchronized(this) {
+                    if(ready)
+                        break;  // lets go
+                }
+            }
             if (ping) {
                 object.firePing();
             }
@@ -216,7 +245,10 @@ public class TestThreads extends QApplicationTest {
 
         ping.start();
         pong.start();
-        Thread.sleep(50);
+
+        Thread.sleep(50);  // wait for object to be initalized
+        assertNotNull("ping.object", ping.object);
+        assertNotNull("pong.object", pong.object);
 
         ping.object.other = pong.object;
         pong.object.other = ping.object;
@@ -224,8 +256,18 @@ public class TestThreads extends QApplicationTest {
         ping.object.ping.connect(pong.object, "pong()");
         pong.object.ping.connect(ping.object, "pong()");
 
-        ping.join(1000);
+        synchronized(ping) {
+            synchronized(pong) {
+                ping.ready = true;
+                pong.ready = true;
+            }
+        }
+
+        ping.join(2500);
         pong.join(1000);
+
+        assertFalse("ping.isAlive()", ping.isAlive());
+        assertFalse("pong.isAlive()", pong.isAlive());
 
         assertEquals("ping.object.numPings", 100, ping.object.numPings);
         assertEquals("pong.object.numPings", 100, pong.object.numPings);
