@@ -16,5 +16,9 @@
     <!-- Added due to dash in name -->
     <typedef name="plugin-designer"
          classname="com.trolltech.tools.ant.PluginDesignerPath"/>
+    <typedef name="directory"
+         classname="com.trolltech.tools.ant.Directory"/>
+    <typedef name="file"
+         classname="com.trolltech.tools.ant.File"/>
 </antlib>
 

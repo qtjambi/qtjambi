@@ -34,6 +34,8 @@
         <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
                               outdir="${outputDir}/platform-output">
 
+            <directory name="" rootPath="${qtjambi.macosx.qtmenunib.dir}" destSubdir="lib" recursive="true" />
+
             <!-- Qt Libraries -->
             <library name="QtCore"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" />
             <library name="QtGui"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" />

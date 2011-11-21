@@ -234,6 +234,8 @@ public class InitializeTask extends Task {
 
     public static final String PACKAGING_DSO_CPLUSPLUSRUNTIME = "qtjambi.packaging.dso.cplusplusruntime";
 
+    public static final String QTJAMBI_MACOSX_QTMENUNIB_DIR = "qtjambi.macosx.qtmenunib.dir";
+
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
     public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
@@ -391,6 +393,29 @@ public class InitializeTask extends Task {
         if(verbose)
             System.out.println(GENERATOR_PREPROC_STAGE2 + " is " + ((s != null) ? s : "<unset>"));
         propertyHelper.setNewProperty((String) null, GENERATOR_PREPROC_STAGE2, Util.safeArrayJoinToString(generatorPreProcStageTwoA, ","));
+
+
+        String d = (String) propertyHelper.getProperty((String) null, LIBDIR).toString();
+        if(d != null) {
+            String sourceValue = null;
+//            s = (String) propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR);
+//            if(s == null) {
+                s = doesQtLibExistDir(d, "qt_menu.nib");
+                //if(s == null)
+                //    s= = doesQtLibExistDir(d, "src/gui/mac/qt_menu.nib");
+                // FIXME: auto-detect, directroy from source, directory from QtSDK on MacOSX, directory from framework on MacOSX
+                if(s != null)
+                    sourceValue = " (auto-detected)";
+                
+//            }
+            if(s == null) {
+                if(OSInfo.isMacOS() == false)
+                    sourceValue = " (expected for non-MacOSX platform)";
+                else
+                    sourceValue = " (WARNING you should resolve this for targetting MacOSX)";
+            }
+            mySetProperty(propertyHelper, -1, QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
+        }
 
 
         String clucene = decideCLucene();
@@ -827,6 +852,13 @@ public class InitializeTask extends Task {
 
         if(verbose) System.out.println(CONFIGURATION + ": " + result);
         return result;
+    }
+
+    private String doesQtLibExistDir(String librarydir, String name) {
+        File dir = new File(librarydir, name);
+        if(dir.exists() && dir.isDirectory())
+            return dir.getAbsolutePath();
+        return null;
     }
 
     private boolean doesQtLibExist(String name, int version, String librarydir) {

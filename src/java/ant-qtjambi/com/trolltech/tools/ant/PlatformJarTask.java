@@ -76,6 +76,7 @@ public class PlatformJarTask extends Task {
     private String systemLibs               = OSInfo.os() == OSInfo.OS.Solaris ? SYSLIB_NONE : SYSLIB_AUTO;
     private List<PluginPath> pluginPaths    = new ArrayList<PluginPath>();
     private List<PluginDesignerPath> pluginDesignerPaths = new ArrayList<PluginDesignerPath>();
+    private List<Directory> directoryList   = new ArrayList<Directory>();
     private boolean debugConfiguration      = false;
     private String javaLibDir               = "";
 
@@ -115,6 +116,14 @@ public class PlatformJarTask extends Task {
         }
     }
 
+    public void addConfigured(Directory directory) {
+        try {
+            directory.perform();
+            directoryList.add(directory);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new BuildException("Failed to add directory sub-element.......");
+        }
     }
 
     public void setSyslibs(String s) {
@@ -182,6 +191,10 @@ public class PlatformJarTask extends Task {
 
         outdir.mkdirs();
 
+        for(Directory d : directoryList) {
+            processDirectory(d);
+        }
+
         for(LibraryEntry e : libs) {
             processLibraryEntry(e);
         }
@@ -214,6 +227,20 @@ public class PlatformJarTask extends Task {
                             InitializeTask.OSNAME).toString() + "\">");
         writer.println();
         writer.println("  <cache key=\"" + cacheKey + "\" />");
+
+        if(directoryList.size() > 0) {
+            writer.println();
+            writer.println("  <!-- Directory -->");
+        }
+        for(Directory d : directoryList) {
+           writer.print("  <directory name=\"" + pathCanon(new String[] { d.getDestSubdir(), d.getName() }) + "\"");
+           writer.println(">");
+           for(Dirent f : d.getChildList()) {
+               if(f.isDirectory() == false)  // FIXME for == true case
+                   writer.println("    <file name=\"" + f.getName() + "\"/>");
+           }
+           writer.println("  </directory>");
+        }
 
         // system libraries that must be loaded first of all...
         if(systemLibs.equals(SYSLIB_AUTO)) {
@@ -292,6 +319,213 @@ public class PlatformJarTask extends Task {
             }
         }
         return sb.toString();
+    }
+
+    // This copies one whole directory but does not recurse
+    private List<String> processDirectoryOne(File srcDir, File destDir, Set<String> skipSet) throws IOException {
+        List<String> dirNameList = new ArrayList<String>();
+        // find files (ignore those specified in childList)
+        File[] fileA = srcDir.listFiles();
+        for(File f : fileA) {
+            String name = f.getName();
+System.out.println("   f " + f);
+            if(skipSet != null && skipSet.contains(name))
+                continue;
+            File thisSrcFile = new File(srcDir, name);
+            File thisDestFile = new File(destDir, name);
+            if(f.isDirectory())
+                dirNameList.add(name);
+            else
+                Util.copy(thisSrcFile, thisDestFile);
+        }
+        for(String name : dirNameList) {
+            File thisDestFile = new File(destDir, name);
+            if(thisDestFile.exists() == false)
+                thisDestFile.mkdir();
+        }
+        return dirNameList;
+    }
+
+    // recurseDepth = -1 (infinite), 0 only files of given directory, 1 recurse once
+    private void processDirectoryInternal(File srcDir, File destDir, int recurseDepth, Set<String> skipSet) throws IOException {
+        if(recurseDepth > 0)
+            recurseDepth--;
+
+        List<String> dirNameList = processDirectoryOne(srcDir, destDir, skipSet);
+
+        if(recurseDepth == 0)
+            return;
+        for(String name : dirNameList) {
+            File thisSrcFile = new File(srcDir, name);
+            File thisDestFile = new File(destDir, name);
+            processDirectoryInternal(thisSrcFile, thisDestFile, recurseDepth, null);
+        }
+    }
+
+    // recurseDepth = -1 (infinite), 0 only files of given directory, 1 recurse once
+    private void processDirentInternal(File srcDir, File destDir, int recurseDepth, Directory parent) throws IOException {
+        if(recurseDepth > 0)
+            recurseDepth--;
+
+        // FIXME: Manage Dirent parent and refactor main code below to use this
+        List<String> dirNameList = processDirectoryOne(srcDir, destDir, null);
+
+        if(recurseDepth == 0)
+            return;
+        for(String name : dirNameList) {
+            File thisSrcFile = new File(srcDir, name);
+            File thisDestFile = new File(destDir, name);
+            processDirectoryInternal(thisSrcFile, thisDestFile, recurseDepth, null);
+        }
+    }
+
+    private void processDirectory(Directory d) {
+        File rootPathFile = null;
+        String rootPath = null;
+        String toplevelName = null;
+        String subdir = null;
+        String destSubdir = null;
+        String outputPath = null;
+        boolean recursive = false;
+        File srcDir = null;
+        File destDir = null;
+        File srcTarget = null;
+        File destTarget = null;
+        try {
+            rootPath = d.getRootPath();
+            toplevelName = d.getName();
+            if(rootPath == null) {
+                if(toplevelName == null || toplevelName.length() == 0)
+                    throw new IllegalArgumentException("name must be set, when rootPath is not set; name=" + toplevelName);
+                rootPathFile = new File(".");
+            } else if(rootPath.length() == 0) {
+                return;  // skip
+            } else {
+                rootPathFile = new File(rootPath);
+            }
+            if(toplevelName == null || toplevelName.length() == 0) {
+                toplevelName = rootPathFile.getName();
+                rootPathFile = rootPathFile.getParentFile();
+                rootPath = rootPathFile.getAbsolutePath();
+
+                // FIXUP the top level so qtjambi-descriptor.xml is emitted correctly
+                d.setRootPath(rootPath);
+                d.setName(toplevelName);
+            }
+            System.out.println("   rootPath " + rootPath);
+            System.out.println("       name " + toplevelName);
+            subdir = d.getSubdir();
+            destSubdir = d.getDestSubdir();
+            recursive = d.getRecursive();
+
+            if(destSubdir != null) {
+                if(destSubdir.startsWith("/")) {   // no subdir
+                    outputPath = pathCanon(new String[] { destSubdir });
+                } else {
+                   outputPath = pathCanon(new String[] { destSubdir, subdir });
+                }
+            } else {
+                outputPath = pathCanon(new String[] { subdir });
+            }
+            if(subdir != null)
+                srcDir = new File(rootPathFile, subdir);
+            else
+                srcDir = rootPathFile;
+            destDir = new File(outdir, outputPath);
+            if(!destDir.exists()) {
+                System.out.println("   mkdir " + destDir.getAbsolutePath());
+                destDir.mkdir();
+            }
+            srcTarget = new File(srcDir, toplevelName);
+            destTarget = new File(destDir, toplevelName);
+            if(srcTarget.isDirectory()) {
+                if(!destTarget.exists()) {
+                    System.out.println("   mkdir " + destTarget.getAbsolutePath());
+                    destTarget.mkdir();
+                }
+
+                List<Directory> direntList = new ArrayList<Directory>();
+                List<String> dirnameList = new ArrayList<String>();
+
+                File[] fileA = srcTarget.listFiles();
+                for(File f : fileA) {
+                    // do files
+                    String name = f.getName();
+                    Dirent child = d.getChild(name);
+                    if(child == null || child.isDirectory() != f.isDirectory()) {
+                        File thisSrcFile = new File(srcTarget, name);
+                        File thisDestFile = new File(destTarget, name);
+                        if(thisSrcFile.isDirectory()) {
+                            if(thisDestFile.exists() == false) {
+                                System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
+                                thisDestFile.mkdir();
+                            }
+                            if(recursive)
+                                dirnameList.add(name);
+                        } else {
+                            System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
+                            Util.copy(thisSrcFile, thisDestFile);
+                        }
+                    } else {
+                        if(child.isDirectory()) {
+                            File thisDestFile = new File(destTarget, name);
+                            if(thisDestFile.exists() == false) {
+                                System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
+                                thisDestFile.mkdir();
+                            }
+                            if(recursive)
+                                direntList.add((Directory)child);
+                        } else {
+                            File thisSrcFile = new File(srcTarget, name);
+                            File thisDestFile = new File(destTarget, name);
+                            System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
+                            Util.copy(thisSrcFile, thisDestFile);
+                        }
+                    }
+                }
+                for(Directory directory : direntList) {
+                    String name = directory.getName();
+                    File thisSrcFile = new File(srcTarget, name);
+                    File thisDestFile = new File(destTarget, name);
+                    processDirentInternal(thisSrcFile, thisDestFile, -1, directory);
+                }
+                for(String name : dirnameList) {
+                    File thisSrcFile = new File(srcTarget, name);
+                    File thisDestFile = new File(destTarget, name);
+                    processDirectoryInternal(thisSrcFile, thisDestFile, -1, null);
+                }
+            } else {
+                try {
+                    System.out.println("Copying " + srcTarget + " to " + destTarget);
+                    Util.copy(srcTarget, destTarget);
+                } catch(IOException ex) {
+                    ex.printStackTrace();
+                    throw new BuildException("Failed to copy file '" + toplevelName + "'");
+                }
+            }
+        } catch(Exception ex) {
+            StringBuffer sb = new StringBuffer("DIAGNOSTIC");
+            if(rootPathFile != null)
+                sb.append("; rootPathFile=" + rootPathFile.getAbsolutePath());
+            if(toplevelName != null)
+                sb.append("; toplevelName=" + toplevelName);
+            if(subdir != null)
+                sb.append("; subdir=" + subdir);
+            if(destSubdir != null)
+                sb.append("; destSubdir=" + destSubdir);
+            if(outputPath != null)
+                sb.append("; outputPath=" + outputPath);
+            if(srcDir != null)
+                sb.append("; srcDir=" + srcDir.getAbsolutePath());
+            if(destDir != null)
+                sb.append("; destDir=" + destDir.getAbsolutePath());
+            if(srcTarget != null)
+                sb.append("; srcTarget=" + srcTarget.getAbsolutePath());
+            if(destTarget != null)
+                sb.append("; destTarget=" + destTarget.getAbsolutePath());
+            ex.printStackTrace();
+            throw new BuildException(ex);
+        }
     }
 
     private void processLibraryEntry(LibraryEntry e) {
