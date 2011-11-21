@@ -104,7 +104,9 @@ public class TestUtilities {
 			assertFalse("true", true);
 	}
 
-	@org.junit.Test
+        // This test is not valid anymore, the property com.trolltech.qt.debug is no
+        //  longer the main mechanism for holding the Configuration type.
+	/**@org.junit.Test**/
 	public void testDecideConfiguration() {
 		if (configuration != null)
 			assertTrue("Configuration.Debug", Utilities.configuration.equals(Configuration.Debug));
