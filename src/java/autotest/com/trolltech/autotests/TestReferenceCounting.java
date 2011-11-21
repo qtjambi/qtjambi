@@ -889,6 +889,36 @@ public class TestReferenceCounting extends QApplicationTest {
                 }
             };
             layout.addWidget(widget);
+            QApplication.processEvents(); // force ChildAdd/ChildRemove processing
+            widget = null;   // kill hard-reference
+
+            gcAndWait(0, null, null, null);
+            QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
+        }
+
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 1000)
+            gc();
+
+        assertEquals(COUNT, layout.count());
+        assertEquals(0, deleted);
+    }
+
+    // JVM CRASHER
+    /*@Test*/ public void testQStackLayoutAddWidget2() {
+        QStackedLayout layout = new QStackedLayout();
+
+        reset();
+        for (int i=0; i<COUNT; ++i) {
+            QWidget widget = new QWidget() {
+                @Override
+                public void disposed() {
+                    synchronized(TestReferenceCounting.class) {
+                        deleted++;
+                    }
+                }
+            };
+            layout.addWidget(widget);
 
             gcAndWait(0, null, null, null);
         }
