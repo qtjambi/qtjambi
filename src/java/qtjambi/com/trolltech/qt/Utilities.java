@@ -314,6 +314,24 @@ public class Utilities {
         return configuration;
     }
 
+    private static boolean bundleSymbolicNameMatch(String a, String b) {
+        if(a == null || b == null)
+            return false;
+        int i = a.indexOf(';');
+        if(i >= 0)
+            a = a.substring(0, i);
+        i = a.indexOf(';');
+        if(i >= 0)
+            b = b.substring(0, i);
+        if(a.equals(b))
+            return true;
+        // FIXME later for now we don't care, we need to remove this and properly
+        //   find the bundle we expect, not almost anything with X-QtJambi-Build set
+        if(b.startsWith(a))
+            return true;
+        return false;
+    }
+
     private static Configuration decideDefaultConfiguration() {
         Configuration configuration = null;
         try {
@@ -333,7 +351,7 @@ public class Utilities {
                     String tmpXQtJambiBuild = attributes.getValue(K_X_QtJambi_Build);
 
                     Configuration tmpConfiguration = null;
-                    if(K_com_trolltech_qt.equals(tmpBundleSymbolicName)) {
+                    if(bundleSymbolicNameMatch(K_com_trolltech_qt, tmpBundleSymbolicName)) {
                         // We found the right bundle
                         if(K_release.equals(tmpXQtJambiBuild)) {
                             tmpConfiguration = Configuration.Release;
