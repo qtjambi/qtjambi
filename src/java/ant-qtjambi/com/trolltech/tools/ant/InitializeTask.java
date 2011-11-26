@@ -129,6 +129,10 @@ public class InitializeTask extends Task {
     public static final String QT_VERSION_PROPERTIES          = "version.properties";
     public static final String QT_VERSION_PROPERTIES_TEMPLATE = "version.properties.template";
 
+    public static final String CONFIG_RELEASE     = "release";
+    public static final String CONFIG_DEBUG       = "debug";
+    public static final String CONFIG_TEST        = "test";
+
     /*
      * This is needed for Linux/Unix/MacOSX so that the bundled item filename matches the
      *  one referenced by the dynamic linker.
@@ -141,6 +145,7 @@ public class InitializeTask extends Task {
      */
     public static final String CLUCENE            = "qtjambi.clucene";
     public static final String COMPILER           = "qtjambi.compiler";
+    public static final String CONFIG             = "qtjambi.config";
     public static final String CONFIGURATION      = "qtjambi.configuration";
     public static final String CONFIGURATION_OSGI = "qtjambi.configuration.osgi";
     public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x

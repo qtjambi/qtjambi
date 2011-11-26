@@ -1,8 +1,14 @@
 include(qtjambi_base.pri)
 
 QTJAMBI_LIB_NAME = qtjambi
-CONFIG(debug, debug|release) {
-    QTJAMBI_LIB_NAME = $$member(QTJAMBI_LIB_NAME, 0)_debuglib
+!isEmpty(QTJAMBI_CONFIG) {
+    contains(QTJAMBI_CONFIG, debug) {
+        QTJAMBI_LIB_NAME = $$member(QTJAMBI_LIB_NAME, 0)_debuglib
+    }
+} else {
+    CONFIG(debug, debug|release) {
+        QTJAMBI_LIB_NAME = $$member(QTJAMBI_LIB_NAME, 0)_debuglib
+    }
 }
 
 macx:{

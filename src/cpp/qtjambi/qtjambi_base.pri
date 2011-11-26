@@ -21,8 +21,14 @@ DESTDIR = ../lib
 DLLDESTDIR = ../bin
 
 
-CONFIG(debug, debug|release) {
-    TARGET = $$member(TARGET, 0)_debuglib
+!isEmpty(QTJAMBI_CONFIG) {
+    contains(QTJAMBI_CONFIG, debug) {
+        TARGET = $$member(TARGET, 0)_debuglib
+    }
+} else {
+    CONFIG(debug, debug|release) {
+        TARGET = $$member(TARGET, 0)_debuglib
+    }
 }
 
 INCLUDEPATH += $$PWD/..

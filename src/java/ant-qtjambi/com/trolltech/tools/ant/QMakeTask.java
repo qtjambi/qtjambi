@@ -59,12 +59,13 @@ public class QMakeTask extends Task {
     private String pro = "";
 
     //parameters
-    private String qtconfig = null;
-    private String includepath = null;
-    private String qmakebinary = null;
+    private String qtconfig;
+    private String qtjambiConfig;
+    private String includepath;
+    private String qmakebinary;
 
-    private boolean recursive = false;
-    private boolean debugTools = false;
+    private boolean recursive;
+    private boolean debugTools;
 
     private List<String> parseArguments() {
         List<String> arguments = new ArrayList<String>();
@@ -91,6 +92,9 @@ public class QMakeTask extends Task {
         if(qtconfig != null)
             parameters.add("QT_CONFIG+=" + qtconfig);
 
+        if(qtjambiConfig != null)
+            parameters.add("QTJAMBI_CONFIG=" + qtjambiConfig);
+
         if(includepath != null)
             parameters.add("INCLUDEPATH+=" + includepath);
 
@@ -100,6 +104,23 @@ public class QMakeTask extends Task {
     @Override
     public void execute() throws NullPointerException {
         System.out.println(msg);
+
+        PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
+        if(qtjambiConfig == null) {
+            String thisQtjambiConfig = (String) propertyHelper.getProperty((String) null, InitializeTask.CONFIG);  // ANT 1.7.x
+            if(thisQtjambiConfig != null) {
+                if(InitializeTask.CONFIG_RELEASE.equals(thisQtjambiConfig))
+                    qtjambiConfig = thisQtjambiConfig;
+                else if(InitializeTask.CONFIG_DEBUG.equals(thisQtjambiConfig))
+                    qtjambiConfig = thisQtjambiConfig;
+                else if(InitializeTask.CONFIG_TEST.equals(thisQtjambiConfig))
+                    qtjambiConfig = thisQtjambiConfig;
+                else
+                    System.out.println("WARNING: QTJAMBI_CONFIG will not be exported as value " + thisQtjambiConfig + " is not recognised (from " + InitializeTask.CONFIG + ")");
+                if(thisQtjambiConfig != null)
+                    System.out.println("QTJAMBI_CONFIG will be exported as " + qtjambiConfig + " (from " + InitializeTask.CONFIG + ")");
+            }
+        }
 
         String proFile = "";
         if(!pro.equals(""))
@@ -129,8 +150,12 @@ public class QMakeTask extends Task {
         this.config = config;
     }
 
-    public void setQtconfig(String config) {
-        this.qtconfig = config;
+    public void setQtconfig(String qtconfig) {
+        this.qtconfig = qtconfig;
+    }
+
+    public void setQtjambiConfig(String qtjambiConfig) {
+        this.qtjambiConfig = qtjambiConfig;
     }
 
     public void setDir(String dir) {
