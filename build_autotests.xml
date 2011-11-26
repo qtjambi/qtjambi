@@ -46,7 +46,7 @@
         </fail>
     </target>
 
-    <target name="compile.native" depends="init">
+    <target name="compile.native.generator" depends="init">
         <mkdir dir="${outputDir}/tests/autotest-generator"/>
         <generator dir="${generatorDir}"
                 debugTools="${qtjambi.debug-tools}"
@@ -60,7 +60,9 @@
                 includepaths="${basedir}/autotestlib${psep}${generator.includepaths}"
                 outputPreprocessFile="preprocessed_autotests.tmp"
             />
+    </target>
 
+    <target name="compile.native" depends="init">
         <qmake  dir="${outputDir}/tests/autotest-generator"
                 pro="${basedir}/autotestlib/autotestlib.pro"
                 config="${qtjambi.configuration}"
@@ -202,7 +204,7 @@
     </target>
 
     <target name="tests.compile"
-            depends="compile.native, compile.java" description="Builds tests and required libraries"/>
+            depends="compile.native.generator, compile.native, compile.java" description="Builds tests and required libraries"/>
 
     <target name="tests.run"
             depends="init, run" description="Runs tests and generates report in TestReport subdir"/>
