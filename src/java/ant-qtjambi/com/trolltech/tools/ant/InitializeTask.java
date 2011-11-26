@@ -104,6 +104,7 @@ public class InitializeTask extends Task {
     public static final String LIBDIR                   = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR               = "qtjambi.qt.includedir";
     public static final String PLUGINSDIR               = "qtjambi.qt.pluginsdir";
+    public static final String PHONONPLUGINSDIR         = "qtjambi.phonon.pluginsdir";
     public static final String GENERATOR_PREPROC_STAGE1 = "qtjambi.generator.preproc.stage1";
     public static final String GENERATOR_PREPROC_STAGE2 = "qtjambi.generator.preproc.stage2";
     public static final String PHONONLIBDIR             = "qtjambi.phonon.libdir";
@@ -416,6 +417,8 @@ public class InitializeTask extends Task {
             }
             mySetProperty(propertyHelper, -1, QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
         }
+        if(propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR) == null)
+            propertyHelper.setProperty((String) null, QTJAMBI_MACOSX_QTMENUNIB_DIR, "", false);
 
 
         String clucene = decideCLucene();
@@ -906,7 +909,18 @@ public class InitializeTask extends Task {
 
     private boolean doesQtPluginExist(String name, String subdir, boolean noLibPrefix) {
         StringBuilder path = new StringBuilder();
-        path.append(propertyHelper.getProperty((String) null, PLUGINSDIR));
+        String pluginsDirPropertyName;
+        if(noLibPrefix)
+            pluginsDirPropertyName = PHONONPLUGINSDIR;
+        else
+            pluginsDirPropertyName = PLUGINSDIR;
+        String pluginsPath = (String) propertyHelper.getProperty((String) null, pluginsDirPropertyName);
+        if(pluginsPath == null)
+            return false;
+        File filePluginsPath = new File(pluginsPath);
+        if(filePluginsPath.isDirectory() == false)
+            return false;
+        path.append(pluginsPath);
         path.append(File.separator);
         path.append("plugins");
         path.append(File.separator);
@@ -977,7 +991,7 @@ public class InitializeTask extends Task {
     }
 
     private String decidePluginsPhononBackendPhononDs9() {
-        boolean exists = doesQtPluginExist("phonon_ds9", "phonon_backend");;
+        boolean exists = doesQtPluginExist("phonon_ds9", "phonon_backend");
         String result = String.valueOf(exists);
         String sourceValue = null;
         if(exists)
@@ -1005,6 +1019,8 @@ public class InitializeTask extends Task {
                 if(exists)  // found
                     sourceValue = " (WARNING auto-detected qt phonon; but " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon +"\"; so turning this off)";
                 autodetectKdePhonon = Boolean.FALSE;
+            } else {
+                sourceValue = " (auto-detected kind:kdephonon)";
             }
         } else {
             // build configuration states use Qt phonon
@@ -1018,7 +1034,7 @@ public class InitializeTask extends Task {
                 result = String.valueOf(exists);
                 if(exists) {
                     if(kdephonon == null)
-                        sourceValue = " (auto-detected kde phonon)";
+                        sourceValue = " (auto-detected as kind:kdephonon)";
                     else
                         sourceValue = " (auto-detected kde phonon; but " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon + "\"; so \"lib\" prefix removed)";
                     autodetectKdePhonon = Boolean.TRUE;
@@ -1040,7 +1056,7 @@ public class InitializeTask extends Task {
     }
 
     private String decidePluginsPhononBackendPhononQt7() {
-        boolean exists = doesQtPluginExist("phonon_qt7", "phonon_backend");;
+        boolean exists = doesQtPluginExist("phonon_qt7", "phonon_backend");
         String result = String.valueOf(exists);
         String sourceValue = null;
         if(exists)

@@ -405,7 +405,7 @@ System.out.println("   f " + f);
             }
             if(toplevelName == null || toplevelName.length() == 0) {
                 toplevelName = rootPathFile.getName();
-                rootPathFile = rootPathFile.getParentFile();
+                rootPathFile = new File(rootPathFile.getAbsolutePath()).getParentFile();  // converts relative to absolute
                 rootPath = rootPathFile.getAbsolutePath();
 
                 // FIXUP the top level so qtjambi-descriptor.xml is emitted correctly
