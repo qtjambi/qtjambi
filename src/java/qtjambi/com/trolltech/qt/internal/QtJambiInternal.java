@@ -486,6 +486,18 @@ public class QtJambiInternal {
                 }
 
                 if (actualType instanceof Class) {
+                    Class actualTypeClass = (Class) actualType;
+                    // JRE7 returns Class as the top level item, but isArray() is set (for each dimension, hence we loop)
+                    // JRE5/JRE6 returns GenericArrayTypeImpl for each dimension and the final unwrapping returns a Class with isArray() not set
+                    // So this while loop below is needed since JRE7
+                    while (actualTypeClass.isArray()) {
+                        arrayDims++;
+                        actualTypeClass = actualTypeClass.getComponentType();
+                    }
+                    // If we do not do this assignment here, we need to uncomment the section in QSignalEmitterInternal#matchTwoTypes()
+                    //  to unwrap things there as well (or unit tests continue to fail).
+                    actualType = actualTypeClass;
+                    // End of JRE7 changes
                     resolvedSignal.types[j] = (Class<?>) actualType;
                     resolvedSignal.arrayDimensions[j] = arrayDims;
                 } else {

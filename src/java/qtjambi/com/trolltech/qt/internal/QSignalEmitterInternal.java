@@ -419,7 +419,7 @@ public abstract class QSignalEmitterInternal {
             Class<?> signalArguments[] = resolveSignal();
             int signalArrayDims[] = arrayDimensions();
 
-            if (slotArguments.length > signalArguments.length){
+            if (slotArguments.length > signalArguments.length) {
                 return false;
             }
 
@@ -449,6 +449,20 @@ public abstract class QSignalEmitterInternal {
                     slotArgument = slotArgument.getComponentType();
                     ++slotArrayDims;
                 }
+                // JRE7 returns Class as the top level item, but isArray() is set (for each dimension, hence we loop)
+                // JRE5/JRE6 returns GenericArrayTypeImpl for each dimension and the final unwrapping returns a Class with isArray() not set
+                // So this while loop below is needed since JRE7, the purpose is not really to count but to unwrap.
+                // This section of code is commented out because it is not needed because we unwrap in
+                //  QtJambiInternal#resolveSignal() and use the keep the result.
+                //if (signalArgument.isArray()) {
+                //    int newSignalArrayDims = 0;
+                //    while (signalArgument.isArray()) {
+                //        newSignalArrayDims++;
+                //        signalArgument = signalArgument.getComponentType();
+                //    }
+                //    if(signalArrayDims >= 0 && newSignalArrayDims != signalArrayDims)
+                //        return false;
+                //}
                 return slotArrayDims == signalArrayDims && matchTwoTypes(slotArgument, signalArgument, 0, true);
             } else if (slotArgument.isPrimitive() && !wasArray) {
                 return matchTwoTypes(QtJambiInternal.getComplexType(slotArgument),
