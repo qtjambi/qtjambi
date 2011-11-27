@@ -269,7 +269,7 @@ public class InitializeTask extends Task {
 
         propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        String sep = (String) propertyHelper.getProperty("sep");
+        String sep = (String) propertyHelper.getProperty("sep");	// ANT 1.7.x
         if(sep == null) {
             sep = File.separator;
             propertyHelper.setNewProperty((String) null, "sep", sep);
@@ -280,7 +280,7 @@ public class InitializeTask extends Task {
                 System.out.println("sep is " + sep);
         }
 
-        String psep = (String) propertyHelper.getProperty("psep");
+        String psep = (String) propertyHelper.getProperty("psep");	// ANT 1.7.x
         if(psep == null) {
             psep = File.pathSeparator;
             propertyHelper.setNewProperty((String) null, "psep", psep);
@@ -365,7 +365,7 @@ public class InitializeTask extends Task {
         propertyHelper.setNewProperty((String) null, QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
 
 
-        versionSuffix = (String) propertyHelper.getProperty(SUFFIX_VERSION);
+        versionSuffix = (String) propertyHelper.getProperty(SUFFIX_VERSION);	// ANT 1.7.x
         mySetProperty(propertyHelper, -1, SUFFIX_VERSION, null, null, false);  // report
 
         String canonVersionSuffix;
@@ -373,7 +373,7 @@ public class InitializeTask extends Task {
             canonVersionSuffix = versionSuffix;
         else
             canonVersionSuffix = "";
-        String bundleVersionMode = (String) propertyHelper.getProperty(BUNDLE_VERSION_MODE);
+        String bundleVersionMode = (String) propertyHelper.getProperty(BUNDLE_VERSION_MODE);	// ANT 1.7.x
         if(bundleVersionMode != null) {
             if(bundleVersionMode.equals("auto-suffix-date")) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -422,7 +422,7 @@ public class InitializeTask extends Task {
             }
             mySetProperty(propertyHelper, -1, QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
         }
-        if(propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR) == null)
+        if(propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR) == null)	// ANT 1.7.x
             propertyHelper.setProperty((String) null, QTJAMBI_MACOSX_QTMENUNIB_DIR, "", false);
 
 
@@ -645,7 +645,7 @@ public class InitializeTask extends Task {
         String tmpQtVersion = null;
 
         if(!versionFound) {
-            tmpQtVersion = (String) propertyHelper.getProperty(QT_VERSION);
+            tmpQtVersion = (String) propertyHelper.getProperty(QT_VERSION);	// ANT 1.7.x
             if(parseQtVersion(tmpQtVersion)) {
                 versionFound = true;
                 qtVersionSource = " (${" + QT_VERSION + "})";
@@ -687,7 +687,7 @@ public class InitializeTask extends Task {
 
         if(!versionFound) {
             // Run "qmake -query"
-            String qmakeExe = (String) propertyHelper.getProperty("qmake.binary");
+            String qmakeExe = (String) propertyHelper.getProperty("qmake.binary");	// ANT 1.7.x
             if(qmakeExe == null) {
                 if(OSInfo.isWindows())
                     qmakeExe = "qmake.exe";
@@ -729,7 +729,7 @@ public class InitializeTask extends Task {
         // debatable if it should be here at all.  Maybe the only use is with maybe
         // supporting really older Qt which does not allow: qmake -query
         if(!versionFound) {
-            tmpQtVersion = (String) propertyHelper.getProperty(VERSION);
+            tmpQtVersion = (String) propertyHelper.getProperty(VERSION);	// ANT 1.7.x
             if(parseQtVersion(tmpQtVersion)) {
                 versionFound = true;
                 qtVersionSource = " (${" + VERSION + "})";

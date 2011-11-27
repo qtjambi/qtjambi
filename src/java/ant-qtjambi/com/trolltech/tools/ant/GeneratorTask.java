@@ -204,10 +204,10 @@ public class GeneratorTask extends Task {
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         Object o;
 
-        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE1);
+        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE1);	// ANT 1.7.x
         handlePreprocArgument(o, "--preproc-stage1");
 
-        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE2);
+        o = props.getProperty(InitializeTask.GENERATOR_PREPROC_STAGE2);	// ANT 1.7.x
         handlePreprocArgument(o, "--preproc-stage2");
 
         parseArgumentFiles(commandList);

@@ -98,14 +98,14 @@ public class ResolvePathTask extends Task {
         String newValue = file.getAbsolutePath();
 
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
-        String oldPath = (String) props.getProperty(var);
+        String oldPath = (String) props.getProperty(var);	// ANT 1.7.x
         if(oldPath == null) {
-            props.setNewProperty(var, newValue);
+            props.setNewProperty(var, newValue);	// ANT 1.7.x
             if(verbose)
                 System.out.println(var + "=\"" + newValue + "\"");
         } else {
             if(isOverwrite()) {
-                props.setProperty(var, newValue, false);
+                props.setProperty(var, newValue, false);	// ANT 1.7.x
                 if(verbose)
                     System.out.println(var + "=\"" + newValue + "\" (old value=\"" + oldPath + "\")");
             }

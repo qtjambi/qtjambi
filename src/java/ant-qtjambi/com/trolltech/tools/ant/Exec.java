@@ -92,24 +92,24 @@ class Exec {
         if(ldpath != null) {
             env.put("LD_LIBRARY_PATH", ldpath);	// FIXME: Should merge into existing value
         } else {
-            s = (String) props.getProperty("qt.libdir");
+            s = (String) props.getProperty("qt.libdir");	// ANT 1.7.x
             if(s != null)
                 env.put("LD_LIBRARY_PATH", s);	// FIXME: Should merge into existing value
         }
 
-        s = (String) props.getProperty("java.home.target");
+        s = (String) props.getProperty("java.home.target");	// ANT 1.7.x
         if(s != null)
             env.put("JAVA_HOME_TARGET", s);
-        s = (String) props.getProperty("java.osarch.target");
+        s = (String) props.getProperty("java.osarch.target");	// ANT 1.7.x
         if(s != null)
             env.put("JAVA_OSARCH_TARGET", s);
 
         //something extra?
-        s = (String) props.getProperty("qtjambi.phonon.includedir");
+        s = (String) props.getProperty("qtjambi.phonon.includedir");	// ANT 1.7.x
         if(s != null && s.length() > 0)
             env.put("PHONON_INCLUDEPATH", s);
 
-        s = (String) props.getProperty("qtjambi.phonon.libdir");
+        s = (String) props.getProperty("qtjambi.phonon.libdir");	// ANT 1.7.x
         if(s != null && s.length() > 0)
             env.put("PHONON_LIBS", s);
     }

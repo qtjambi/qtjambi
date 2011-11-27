@@ -107,7 +107,7 @@ public class QMakeTask extends Task {
 
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
         if(qtjambiConfig == null) {
-            String thisQtjambiConfig = (String) propertyHelper.getProperty((String) null, InitializeTask.CONFIG);  // ANT 1.7.x
+            String thisQtjambiConfig = (String) propertyHelper.getProperty(InitializeTask.CONFIG);	// ANT 1.7.x
             if(thisQtjambiConfig != null) {
                 if(InitializeTask.CONFIG_RELEASE.equals(thisQtjambiConfig))
                     qtjambiConfig = thisQtjambiConfig;

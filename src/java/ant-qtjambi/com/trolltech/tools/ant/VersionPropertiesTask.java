@@ -94,19 +94,19 @@ public class VersionPropertiesTask extends Task {
 
         String tmpPathVersionProperties = pathVersionProperties;
         if(tmpPathVersionProperties == null)
-            tmpPathVersionProperties = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION_PROPERTIES);
+            tmpPathVersionProperties = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION_PROPERTIES);	// ANT 1.7.x
         if(tmpPathVersionProperties == null)
             tmpPathVersionProperties = DEFAULT_PATH_VERSION_PROPERTIES;
         File fileVersion = new File(tmpPathVersionProperties);
 
         String tmpPathVersionPropertiesTemplate = pathVersionPropertiesTemplate;
         if(tmpPathVersionPropertiesTemplate == null)
-            tmpPathVersionPropertiesTemplate = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION_PROPERTIES_TEMPLATE);
+            tmpPathVersionPropertiesTemplate = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION_PROPERTIES_TEMPLATE);	// ANT 1.7.x
         if(tmpPathVersionPropertiesTemplate == null)
             tmpPathVersionPropertiesTemplate = DEFAULT_PATH_VERSION_PROPERTIES_TEMPLATE;
         File fileTemplate = new File(tmpPathVersionPropertiesTemplate);
 
-        String qtVersion = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION);
+        String qtVersion = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION);	// ANT 1.7.x
         if(qtVersion == null)
             throw new BuildException("Unable to determine Qt version, try editing: " + fileTemplate.getAbsolutePath());
 
