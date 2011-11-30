@@ -382,7 +382,7 @@ public class InitializeTask extends Task {
         } else {
             s = qtVersion + canonVersionSuffix;
         }
-        mySetProperty(propertyHelper, -1, BUNDLE_VERSION, null, s, true);
+        mySetProperty(propertyHelper, -1, BUNDLE_VERSION, null, s, false);
 
 
         if(OSInfo.isWindows() == false)   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
@@ -941,11 +941,13 @@ public class InitializeTask extends Task {
         return doesQtPluginExist(name, subdir, false);
     }
 
-    private String mySetProperty(PropertyHelper propertyHelper, int verboseMode, String attrName, String sourceValue, String newValue, boolean forceNewValue) {
+    private String mySetProperty(PropertyHelper propertyHelper, int verboseMode, String attrName, String sourceValue, String newValue, boolean forceNewValue) throws BuildException {
         String currentValue = (String) propertyHelper.getProperty((String) null, attrName);
         if(newValue != null) {
             if(currentValue != null) {
                 sourceValue = " (already set; detected as: " + newValue + ")";
+                if(forceNewValue)
+                    throw new BuildException("Unable to overwrite property " + attrName + " with value " + newValue);
             } else {
                 if(forceNewValue)
                     propertyHelper.setProperty((String) null, attrName, newValue, false);
@@ -1055,8 +1057,12 @@ public class InitializeTask extends Task {
                 sourceValue = " (expected for non-Unix platform)";
         }
         mySetProperty(propertyHelper, -1, PHONON_GSTREAMER, sourceValue, result, false);
-        if(autodetectKdePhonon != null && autodetectKdePhonon.booleanValue())
-            mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true", false);
+        if(autodetectKdePhonon != null) {
+            if(autodetectKdePhonon.booleanValue())
+                mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true", false);
+            else
+                mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, null, "false", true);  // force off
+        }
         return result;
     }
 
