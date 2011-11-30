@@ -118,7 +118,8 @@ public class TestQScriptEngine {
 	public void testNewQObjectScriptValueConstructor() {
 		scriptButton = testEngine.newQObject(scriptButton1, button, QScriptEngine.ValueOwnership.ScriptOwnership);
 		assertTrue("scriptButton.isQObject()", scriptButton.isQObject());
-		val = testEngine.newQObject(val1, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
+		val = testEngine.newQObject(val1, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isQObject()", val.isQObject());
 	}
 
@@ -130,19 +131,22 @@ public class TestQScriptEngine {
 	
 	@org.junit.Test
 	public void testNewQObjectNullQObj() {
-		val = testEngine.newQObject(val1, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
+		val = testEngine.newQObject(val1, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isNull()", val.isNull());
 	}
 	
 	@org.junit.Test
 	public void testNewQObjectNullQScripVal() {
-		val = testEngine.newQObject(null, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
+		val = testEngine.newQObject(null, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isQObject()", val.isQObject());
 	}
 	
 	@org.junit.Test
 	public void testNewQObjectBothNull() {
-		val = testEngine.newQObject(null, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeSlots);
+	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
+		val = testEngine.newQObject(null, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isNull()", val.isNull());
 	}
 	
