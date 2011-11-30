@@ -79,7 +79,12 @@
 
 #ifndef QT_NO_PHONON
 # if QT_VERSION >= 0x040600
-#  include <phonon/phonon>
+#  ifdef QTJAMBI_USE_MASTER_PHONON_INCLUDE
+// RHEL6 has what looks more like Qt Phonon to us but no <phonon/phonon> header so we need to provide it.
+#   include <kdephonon_include.h>
+#  else
+#   include <phonon/phonon>
+#  endif
 # endif
 #endif
 
