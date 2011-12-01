@@ -152,17 +152,23 @@ public class QClassPathEngine extends QAbstractFileEngine
             }
         }
 
+        Exception urlParseException = null;
         if(goodPath == null && skipTryAsis == false) {
             try {
-                // See if the data passed is a well-forked URL
+                // See if the data passed is a well-formed URL
+                // Relative paths end up here and throwing exceptions
+                // Maybe we should look for "://" in path before using this method?
+                // What is the resolution mechanism for using URL(path) with arbitrary string?
                 URL url = new URL(path);
                 if(url.getProtocol().length() > 0)
                     goodPath = path;
             } catch(Exception e) {
-                e.printStackTrace();
+                urlParseException = e;
+                //e.printStackTrace();
             }
         }
 
+        Exception urlParseException2 = null;
         if(goodPath == null) {
             try {
                 // Validate the URL we build is well-formed
@@ -172,8 +178,18 @@ public class QClassPathEngine extends QAbstractFileEngine
                 if(url.getProtocol().length() > 0)
                     goodPath = tmpPath;
             } catch(Exception e) {
-                e.printStackTrace();
+                urlParseException2 = e;
+                //e.printStackTrace();
             }
+        }
+
+        if(goodPath == null) {
+            File f = new File(path);
+            System.out.println("makeUrl(path=" + path + ") exists()=" + f.exists() + "; isDirectory()=" + f.isDirectory() + "; isFile()=" + f.isFile());
+            if(urlParseException != null)
+                urlParseException.printStackTrace();
+            if(urlParseException2 != null)
+                urlParseException2.printStackTrace();
         }
 
         return goodPath;
