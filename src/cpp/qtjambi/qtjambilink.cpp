@@ -1312,7 +1312,9 @@ QtJambiLinkUserData::~QtJambiLinkUserData()
             // QtJambiLink::deleteNativeObject()  invokes "delete qobj;" and we end up here
             //  re-entering the QtJambi infrastructure code (we already have acquired the
             //  m_link->acquireMagic().  So we short circuit ~QtJambiLinkUserData() dtor.
+#if defined(QTJAMBI_DEBUG_TOOLS)
             fprintf(stderr, "QtJambiLinkUserData(%p)::~QtJambiLinkUserData()  SKIP env=%p tid=%p;  m_link=%p, user_data_skip=%d\n", this, env, THREAD_ID(), m_link, m_link->isUserDataSkip());
+#endif
             goto release;
         }
         // This typically happens when a QObject is destroyed after the vm shuts down,
