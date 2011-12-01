@@ -128,25 +128,112 @@
     -->
 
     <target name="makejar" depends="compile, copy-resources">
+        <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
         <mkdir dir="${destdir}"/>
-        <jar basedir="${java.outdir}/${module}"
-            destfile="${destdir}/${module}.jar">
+        <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="makejar.qtjambi-util" depends="compile, copy-resources">
+        <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
+            <manifest>
+                <!-- FIXME: Chicken and Egg problem with ANT building, we need the -->
+                <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
+                <attribute name="Bundle-Description"      value="QtJambi Util Bundle"/>
+                <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.util;version=${qtjambi.version.bundle}"/>
+                <!-- TODO: qtjambi.png -->
+                <!-- <attribute name="Bundle-Icon"             value="qtjambi.png"/> -->
+                <attribute name="Bundle-License"          value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
+                <attribute name="Bundle-ManifestVersion"  value="2"/>
+                <attribute name="Bundle-Name"             value="QtJambi Examples Demos and Launcher Bundle"/>
+                <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
+                <attribute name="Bundle-SymbolicName"     value="com.trolltech.qt.util;singleton:=true"/>
+                <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.util;version=${qtjambi.version.bundle}"/>
+                <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
+                <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
+                <attribute name="Export-Package"          value="com.trolltech.qt.osinfo"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="makejar.qtjambi-examples" depends="compile2, copy-resources">
+        <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+<!--                <attribute name="Bundle-Activator"        value="com.trolltech.qt.example.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
+                <attribute name="Bundle-Description"      value="QtJambi Examples Demos and Launcher Bundle"/>
+                <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.example;version=${qtjambi.version.bundle}"/>
+                <!-- TODO: qtjambi.png -->
+                <!-- <attribute name="Bundle-Icon"             value="qtjambi.png"/> -->
+                <attribute name="Bundle-License"          value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
+<!--                <attribute name="Bundle-Localization"    value="plugin"/> -->
+                <attribute name="Bundle-ManifestVersion"  value="2"/>
+                <attribute name="Bundle-Name"             value="QtJambi Examples Demos and Launcher Bundle"/>
+                <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
+                <attribute name="Bundle-SymbolicName"     value="com.trolltech.qt.example;singleton:=true"/>
+                <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.example;version=${qtjambi.version.bundle}"/>
+                <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
+                <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
+<!-- FIXME: Import-Package com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.images,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.internal,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns -->
+                <attribute name="Import-Package"          value="com.trolltech.qt;version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/>
+<!-- FIXME: com.trolltech.demos.* etc... -->
+                <attribute name="Export-Package"          value="com.trolltech.demos,com.trolltech.examples,com.trolltech.images,com.trolltech.launcher"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="makejar.qtjambi-designer" depends="compile2, copy-resources">
+        <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+<!--                <attribute name="Bundle-Activator"       value="com.trolltech.qt.designer.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
+                <attribute name="Bundle-Description"      value="QtJambi Designer Bundle (${qtjambi.osname} ${qtjambi.configuration})"/>
+                <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.tools.designer.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+                <!-- TODO: qtjambi.png -->
+                <!-- <attribute name="Bundle-Icon"             value="qtjambi.png"/> -->
+                <attribute name="Bundle-License"          value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
+<!--                <attribute name="Bundle-Localization"    value="plugin"/> -->
+                <attribute name="Bundle-ManifestVersion"  value="2"/>
+                <attribute name="Bundle-Name"             value="QtJambi Designer Bundle"/>
+                <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
+                <attribute name="Bundle-SymbolicName"     value="com.trolltech.tools.designer.${qtjambi.osname}${qtjambi.configuration.osgi};singleton:=true"/>
+                <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.tools.designer.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+                <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
+                <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
+<!-- FIXME: com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/> -->
+                <attribute name="Import-Package"          value="com.trolltech.qt;version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/>
+                <attribute name="Export-Package"          value="com.trolltech.tools.designer,com.trolltech.qt.designer"/>
+                <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
+                <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
+                <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>
             </manifest>
         </jar>
     </target>
 
     <!-- Same as "makejar" target but uses compile2 to process 2 sourcedirs -->
-    <target name="makejar2" depends="compile2, copy-resources">
+    <target name="makejar.qtjambi" depends="compile2, copy-resources">
+        <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
         <mkdir dir="${destdir}"/>
         <jar basedir="${java.outdir}/${module}"
-            destfile="${destdir}/${module}.jar">
+            destfile="${destdir}/${module}.jar"
+            excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
-<!--                <attribute name="Bundle-Activator"       value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
+<!--                <attribute name="Bundle-Activator"       value="com.trolltech.qt.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
                 <attribute name="Bundle-Description"      value="QtJambi Common API Bundle (${qtjambi.osname} ${qtjambi.configuration})"/>
                 <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
                 <!-- TODO: qtjambi.png -->
@@ -160,8 +247,8 @@
                 <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
                 <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
                 <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
-<!--                <attribute name="Import-Package"          value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next}]&quot;"/> -->
-                <attribute name="Export-Package"          value="com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.images,com.trolltech.qt.core,com.trolltech.qt.designer,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.internal,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns"/>
+                <attribute name="Import-Package"          value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/>
+                <attribute name="Export-Package"          value="com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.images,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.internal,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns"/>
                 <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
                 <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
                 <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>

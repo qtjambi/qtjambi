@@ -30,14 +30,13 @@
     </target>
 
     <target name="jar.qtjambi-util">
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar.qtjambi-util">
             <property name="module" value="qtjambi-util"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi-util"/>
         </ant>
     </target>
 
-    <target name="jar.qtjambi"
-        depends="init, jar.qtjambi-util">
+    <target name="jar.qtjambi" depends="init, jar.qtjambi-util">
         <qtjambi-version-properties verbose="true"/>
         <!-- 1. This is a fix for adding the OsInfo class to the the main jar-->
         <!--
@@ -55,24 +54,26 @@
                 <include name="version.properties" />
             </fileset>
         </copy>
-        <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar2">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar.qtjambi">
             <property name="module" value="qtjambi"/>
+            <property name="jar.excludes" value="com/trolltech/tools/**"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi"/>
             <property name="sourcedir2" value="${generator.outputdir}/java"/>
         </ant>
     </target>
 
-    <target name="jar.qtjambi-designer"
-        depends="init, jar.qtjambi">
-        <ant antfile="antfiles/jar.xml" inheritrefs="true">
+    <target name="jar.qtjambi-designer" depends="init, jar.qtjambi">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar.qtjambi-designer">
             <property name="module" value="qtjambi-designer"/>
+            <!-- Keep com/trolltech/qt/designer/**-->
+            <property name="jar.excludes" value="com/trolltech/qt/core/**,com/trolltech/qt/designer/**,com/trolltech/qt/gui/**,com/trolltech/qt/help/**,com/trolltech/qt/multimedia/**,com/trolltech/qt/network/**,com/trolltech/qt/opengl/**,com/trolltech/qt/phonon/**,com/trolltech/qt/script/**,com/trolltech/qt/scripttools/**,com/trolltech/qt/sql/**,com/trolltech/qt/svg/**,com/trolltech/qt/webkit/**,com/trolltech/qt/xml/**,com/trolltech/qt/xmlpatterns/**"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi-designer"/>
+            <property name="sourcedir2" value="${generator.outputdir}/java"/><!-- duped with jar.qtjambi -->
         </ant>
     </target>
 
     <!-- This fileset looks unused/redundant -->
-    <fileset id="java.src.qtjambi-examples"
-        dir="${java.srcdir}/qtjambi-examples">
+    <fileset id="java.src.qtjambi-examples" dir="${java.srcdir}/qtjambi-examples">
         <include name="**/*.java"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/demos/phonon/*.java"
             unless="qtjambi.phonon"/>
@@ -98,8 +99,7 @@
         <dojuic module="qtjambi-examples"/>
     </target>
 
-    <target name="jar.qtjambi-examples"
-        depends="jar.qtjambi-designer, jar.qtjambi-examples.juic">
+    <target name="jar.qtjambi-examples" depends="init, jar.qtjambi-designer, jar.qtjambi-examples.juic">
         <!-- exclude java classes, which were not build, depending on qtjambi config -->
         <condition property="javac.opengl.excludes" value="**/opengl/**/*.java">
             <isfalse value="${qtjambi.opengl}"/>
@@ -126,7 +126,7 @@
                                                ${javac.svg.excludes}
                                                ${javac.extra.excludes}"/>
         <echo message="processed excludes ${javac.excludes}"/>
-        <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar2">
+        <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar.qtjambi-examples">
             <property name="module" value="qtjambi-examples"/>
             <property name="module.excludes" value="${javac.excludes}"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi-examples"/>
