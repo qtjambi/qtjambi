@@ -707,7 +707,7 @@ int QtJambiLink::deleteNativeObject(JNIEnv *env)
 #endif
     Q_ASSERT(m_pointer);	// must be non-null
     Q_ASSERT(!m_delete_later);	// must be 0
-    int rv;
+    int rv = 0;
 
 #if 0
     // I can only guess we call this from here to give the disposed() callback a
