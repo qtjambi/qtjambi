@@ -17,6 +17,7 @@ SOURCES += \
     qvariant.cpp \
     qtdynamicmetaobject.cpp \
     qtjambivariant.cpp \
+    qtwindows.cpp
 
 
 HEADERS += \

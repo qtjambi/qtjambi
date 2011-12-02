@@ -100,7 +100,8 @@ typedef void (*PtrDestructorFunction)(void *);
     #define THREAD_ID() ((void*)pthread_self())
 #endif
 #ifdef WIN32
-    #define THREAD_ID() ((void*)GetCurrentThreadId())
+    QTJAMBI_EXPORT long qtjambi_get_current_thread_id();
+    #define THREAD_ID() ((void*)qtjambi_get_current_thread_id())
 #endif
 
 #endif
