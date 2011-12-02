@@ -126,7 +126,7 @@ class QTJAMBI_EXPORT QtJambiLink
 #if defined(QTJAMBI_DEBUG_TOOLS)
           m_magic(QTJAMBI_LINK_MAGIC),
 #endif
-          m_java_object(jobj),
+          //m_java.object(jobj),
           m_pointer(pointer),
           m_ownership(SplitOwnership), // Default to split, because it's safest
           m_last_ownership(InvalidOwnership),
@@ -160,21 +160,23 @@ class QTJAMBI_EXPORT QtJambiLink
           , prev(0)
 #endif
     {
+        m_java.object = jobj;
 #if defined(QTJAMBI_DEBUG_TOOLS)  
-          QtJambiLinkList_add();
+        QtJambiLinkList_add();
 #endif
     };
 
-protected:
-    inline QtJambiLink(jobject jobj)
+    inline QtJambiLink(jobject jobj, bool is_qobject, void *pointer)
         : 
 #if defined(QTJAMBI_DEBUG_TOOLS)
           m_magic(QTJAMBI_LINK_MAGIC),
 #endif
-          m_java_object(jobj),
-          m_pointer(0),
+          //m_java.object(jobj),
+          m_pointer(pointer),
           m_ownership(SplitOwnership), // Default to split, because it's safest
           m_last_ownership(InvalidOwnership),
+          m_global_ref(true),          // we are jobject
+          m_is_qobject(is_qobject),
           m_has_been_finalized(false),
           m_qobject_deleted(false),
           m_created_by_java(false),
@@ -203,8 +205,102 @@ protected:
           , prev(0)
 #endif
     {
+        m_java.object = jobj;
 #if defined(QTJAMBI_DEBUG_TOOLS)  
-          QtJambiLinkList_add();
+        QtJambiLinkList_add();
+#endif
+    };
+
+#ifdef _CLASSPATH_VM_JNI_TYPES_DEFINED
+    /* We are being built under GNU ClassPath */
+    inline QtJambiLink(jweak jobj, bool is_qobject, void *pointer)
+        : 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_magic(QTJAMBI_LINK_MAGIC),
+#endif
+          //m_java.weak(jobj),
+          m_pointer(pointer),
+          m_ownership(SplitOwnership), // Default to split, because it's safest
+          m_last_ownership(InvalidOwnership),
+          m_global_ref(false),         // we are jweak!
+          m_is_qobject(is_qobject),
+          m_has_been_finalized(false),
+          m_qobject_deleted(false),
+          m_created_by_java(false),
+          m_object_invalid(false),
+          m_in_cache(false),
+          m_connected_to_java(false),
+          m_delete_in_main_thread(false),
+          m_java_link_removed(false),
+          m_link_cacheable(false),
+          m_delete_later(false),
+          m_pointer_zeroed(false),
+          m_pointer_zapped(false),
+          m_user_data_skip(false),
+          m_reserved1(0),
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_in_qtjambilink_list(0),
+#else
+          m_reserved2(0),
+#endif
+          m_meta_type(QMetaType::Void),
+          m_wrapper(0),
+          m_destructor_function(0)
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          , m_qtJambiLinkUserData(0)
+          , next(0)
+          , prev(0)
+#endif
+    {
+        m_java.weak = jobj;
+#if defined(QTJAMBI_DEBUG_TOOLS)  
+        QtJambiLinkList_add();
+#endif
+    };
+#endif  // _CLASSPATH_VM_JNI_TYPES_DEFINED
+
+protected:
+    inline QtJambiLink(jobject jobj)
+        : 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_magic(QTJAMBI_LINK_MAGIC),
+#endif
+          //m_java.object(jobj),
+          m_pointer(0),
+          m_ownership(SplitOwnership), // Default to split, because it's safest
+          m_last_ownership(InvalidOwnership),
+          m_global_ref(true),          // we are jobject
+          m_has_been_finalized(false),
+          m_qobject_deleted(false),
+          m_created_by_java(false),
+          m_object_invalid(false),
+          m_in_cache(false),
+          m_connected_to_java(false),
+          m_delete_in_main_thread(false),
+          m_java_link_removed(false),
+          m_link_cacheable(false),
+          m_delete_later(false),
+          m_pointer_zeroed(false),
+          m_pointer_zapped(false),
+          m_user_data_skip(false),
+          m_reserved1(0),
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          m_in_qtjambilink_list(0),
+#else
+          m_reserved2(0),
+#endif
+          m_meta_type(QMetaType::Void),
+          m_wrapper(0),
+          m_destructor_function(0)
+#if defined(QTJAMBI_DEBUG_TOOLS)
+          , m_qtJambiLinkUserData(0)
+          , next(0)
+          , prev(0)
+#endif
+    {
+        m_java.object = jobj;
+#if defined(QTJAMBI_DEBUG_TOOLS)  
+        QtJambiLinkList_add();
 #endif
     };
 
@@ -318,7 +414,7 @@ public:
     bool isUserDataSkip() const { return m_user_data_skip; }
 
     // For debug messages
-    jobject getJavaObject() const { return m_java_object; }
+    jobject getJavaObject() const { return m_java.object; }
     bool isPointerZapped() const { return m_pointer_zapped; }
     const char *debugFlagsToString(char *buf) const;
 
@@ -360,7 +456,15 @@ private:
     long m_magic;   // natural bit width
 #endif
 
-    jobject m_java_object;
+    // This union arrangement helps building on top of GNU ClassPath and maybe
+    //  other JVMs using C++ with strict types where jweak != jobject.
+    union {
+        jobject object;
+        jweak weak;
+    } m_java;
+    #define m_java_object m_java.object
+    #define m_java_weak   m_java.weak
+
     void *m_pointer;
 
     uint m_ownership : 2;
@@ -424,9 +528,9 @@ public:
 inline jobject QtJambiLink::javaObject(JNIEnv *env) const
 {
     if (m_global_ref)
-        return m_java_object;
+        return m_java.object;
     else
-        return env->NewLocalRef(m_java_object);	// this is null-safe
+        return env->NewLocalRef(m_java.object);	// this is null-safe
 }
 
 inline void QtJambiLink::javaObjectDeleteIfLocalRef(JNIEnv *env, jobject o, bool global_ref) const
