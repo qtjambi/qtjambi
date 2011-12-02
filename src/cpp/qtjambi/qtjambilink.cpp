@@ -260,15 +260,6 @@ int qtjambi_object_cache_operation_count()
     return count;
 }
 
-inline static void deleteWeakObject(JNIEnv *env, jobject object)
-{
-#ifdef Q_CC_MINGW
-    env->DeleteWeakGlobalRef( (jweak) object);
-#else
-    env->DeleteWeakGlobalRef(object);
-#endif
-}
-
 void QtJambiLink::registerSubObject(void *ptr) {
     QWriteLocker locker(gUserObjectCacheLock());
     Q_ASSERT(gUserObjectCache());
@@ -472,7 +463,7 @@ int QtJambiLink::releaseJavaObject(JNIEnv *env)
         // if we were to try to access the object we'd need to obtain a NewLocalRef() first.
         jobject localRef = env->NewLocalRef(m_java_object);
         if (!env->IsSameObject(localRef, 0)) {
-            deleteWeakObject(env, m_java_object);
+            env->DeleteWeakGlobalRef(m_java_object);
             env->DeleteLocalRef(localRef);
         }
     }
@@ -1182,7 +1173,7 @@ void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
         jobject global_ref = env->NewGlobalRef(obj);
 
         if (m_java_object)
-            deleteWeakObject(env, m_java_object);
+            env->DeleteWeakGlobalRef(m_java_object);
 
         m_java_object = global_ref;
         m_global_ref = true;
