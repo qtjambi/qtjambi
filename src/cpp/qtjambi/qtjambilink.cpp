@@ -461,20 +461,25 @@ int QtJambiLink::releaseJavaObject(JNIEnv *env)
 
     if (isGlobalReference()) {
         env->DeleteGlobalRef(m_java_object);
+        m_java_object = 0;
     } else {
         // Check if garbage collector has removed the object, hmm... it doesn't matter if the GC
         // has made the target null (by removing the object) because the GC still knows we are
         // holding a reference and it is this reference that has to be released by us here.  Now
         // if we were to try to access the object we'd need to obtain a NewLocalRef() first.
-        jobject localRef = env->NewLocalRef(m_java_object);
-        if (!env->IsSameObject(localRef, 0)) {
-            env->DeleteWeakGlobalRef(m_java_object);
-            env->DeleteLocalRef(localRef);
-        }
+        //
+        // I do not understand this pantomime, you only need to check IsSameObject when going to
+        // access it not to delete it, since there will always be a WeakReference holder object
+        // needing to be deallocated.
+        //jobject localRef = env->NewLocalRef(m_java_weak);
+        //bool bf = env->IsSameObject(localRef, 0);
+        //if (env->IsSameObject(localRef, 0) == JNI_FALSE)  // localRef != null
+            env->DeleteWeakGlobalRef(m_java_weak);
+        //env->DeleteLocalRef(localRef);
+        m_java_weak = 0;
     }
 
     rv |= 0x10000;	// deleted java object reference
-    m_java_object = 0;
     return rv;
 }
 
