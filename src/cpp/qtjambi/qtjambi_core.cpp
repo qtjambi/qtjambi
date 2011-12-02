@@ -1133,7 +1133,7 @@ void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue
     sc->resolveAbstractSignal();
 
     // Check if signal has since been collected
-    jobject object = env->NewLocalRef(signal_info.object);
+    jobject object = env->NewLocalRef(signal_info.ref.weak);
     if (env->IsSameObject(object, 0) != JNI_FALSE) {    // it can be non-null (in C++) but null (in Java)
         goto done;     // Checks for non-null and for lost weak-reference
     }
@@ -1234,16 +1234,16 @@ void qtjambi_resolve_signals(JNIEnv *env,
                 continue;
             }
 
-            jobject signalWeakRef = env->NewWeakGlobalRef(signal);
+            jweak signalWeakRef = env->NewWeakGlobalRef(signal);
 
             if (signalWeakRef && emitMethodID) {  // everything went well
-                if(infos[i].object)  // restartable
-                    env->DeleteWeakGlobalRef(infos[i].object);
-                infos[i].object = signalWeakRef;
+                if(infos[i].ref.weak)  // restartable
+                    env->DeleteWeakGlobalRef(infos[i].ref.weak);
+                infos[i].ref.weak = signalWeakRef;
                 infos[i].methodId = emitMethodID;
             } else {  // something went bad
                 env->DeleteWeakGlobalRef(signalWeakRef);
-                infos[i].object   = 0;
+                infos[i].ref.weak = 0;
                 infos[i].methodId = 0;
             }
 
@@ -1253,7 +1253,7 @@ void qtjambi_resolve_signals(JNIEnv *env,
     }
 #ifndef QT_NO_DEBUG
     for (int i=0; i<count; ++i) {
-        Q_ASSERT_X(infos[i].object, "qtjambi_resolve_signals", names[i]);
+        Q_ASSERT_X(infos[i].ref.weak, "qtjambi_resolve_signals", names[i]);
         Q_ASSERT_X(infos[i].methodId, "qtjambi_resolve_signals", names[i]);
     }
 #endif

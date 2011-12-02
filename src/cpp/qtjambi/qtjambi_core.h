@@ -92,7 +92,10 @@ class QtJambiFunctionTable;
 
 struct QtJambiSignalInfo
 {
-    jobject object;
+    union {
+        jobject object;
+        jweak weak;
+    } ref;
     jmethodID methodId;
 };
 
