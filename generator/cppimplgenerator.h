@@ -91,7 +91,7 @@ class CppImplGenerator : public CppGenerator {
         void writeToStringFunction(QTextStream &s, const AbstractMetaClass *java_class);
         void writeCloneFunction(QTextStream &s, const AbstractMetaClass *java_class);
         void writeShellSignatures(QTextStream &s, const AbstractMetaClass *java_class);
-        void writeShellConstructor(QTextStream &s, const AbstractMetaFunction *java_function);
+        void writeShellConstructor(QTextStream &s, const AbstractMetaFunction *java_function, int options = 0);
         void writeShellDestructor(QTextStream &s, const AbstractMetaClass *java_class);
         void writeSignalFunction(QTextStream &s, const AbstractMetaFunction *java_function,
                                  const AbstractMetaClass *implementor, int pos);

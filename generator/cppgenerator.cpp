@@ -132,9 +132,12 @@ void CppGenerator::writeFunctionArguments(QTextStream &s,
         int numArguments) {
     if (numArguments < 0) numArguments = arguments.size();
 
+    bool needComma = false;
     for (int i = 0; i < numArguments; ++i) {
-        if (i != 0)
+        if (needComma)
             s << ", ";
+        else
+            needComma = true;
         AbstractMetaArgument *arg = arguments.at(i);
         writeTypeInfo(s, arg->type(), option);
         if (!(option & SkipName))
@@ -217,12 +220,26 @@ void CppGenerator::writeFunctionSignature(QTextStream &s,
 
     s << "(";
 
-    writeFunctionArguments(s, java_function->arguments(), option, numArguments);
+    AbstractMetaArgumentList tmpList;
+    if ((option & SkipRemovedArguments) == SkipRemovedArguments) {	// this should be a method
+        const AbstractMetaArgumentList arguments = java_function->arguments();
+        for (int i = 0; i < arguments.size(); ++i) {
+            if(java_function->argumentRemoved(i + 1))
+                continue;
+            tmpList.append(arguments.at(i));
+        }
+    } else {
+        tmpList.append(java_function->arguments());
+    }
+    writeFunctionArguments(s, tmpList, option, numArguments);
 
     // The extra arguments...
+    bool needComma = tmpList.size() != 0 ? true : false;
     for (int i = 0; i < extra_arguments.size(); ++i) {
-        if (i > 0 || java_function->arguments().size() != 0)
+        if (needComma)
             s << ", ";
+        else
+            needComma = true;
         s << extra_arguments.at(i);
     }
 

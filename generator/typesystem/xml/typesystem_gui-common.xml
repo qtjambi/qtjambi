@@ -80,6 +80,7 @@
     <rejection class="QAccessibleInterface" function-name="actionInterface"/>
     <rejection class="QAccessibleInterface" function-name="imageInterface"/>
     <rejection class="QAccessibleInterface" function-name="tableInterface"/>
+    <rejection class="QAccessibleInterface" function-name="table2Interface"/><!-- since 4.8, non-public API -->
     <rejection class="QAccessibleInterface" function-name="editableTextInterface"/>
     <rejection class="QAccessibleInterface" function-name="cast_helper"/>
     <rejection class="QAccessibleInterfaceEx" function-name="interface_cast"/>
@@ -131,6 +132,7 @@
     <enum-type name="QDesktopServices::StandardLocation" />
     <enum-type name="QDirModel::Roles"/>
     <enum-type name="QFont::Capitalization" />
+    <enum-type name="QFont::HintingPreference" /><!-- since 4.8 -->
     <enum-type name="QFont::SpacingType" />
     <enum-type name="QGraphicsItem::CacheMode" />
     <enum-type name="QMdiArea::AreaOption" flags="QMdiArea::AreaOptions"/>
@@ -373,6 +375,7 @@
     <enum-type name="QTableWidgetItem::ItemType"/>
     <enum-type name="QTabletEvent::PointerType"/>
     <enum-type name="QTabletEvent::TabletDevice"/>
+    <enum-type name="QTextBlockFormat::LineHeightTypes"/>
     <enum-type name="QTextCharFormat::UnderlineStyle"/>
     <enum-type name="QTextCharFormat::VerticalAlignment"/>
     <enum-type name="QTextCursor::MoveMode"/>
@@ -624,6 +627,11 @@
                 <remove-default-expression/>
             </modify-argument>
         </modify-function>
+        <modify-function signature="swap(QBitmap&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QBitmap"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
     <value-type name="QTextInlineObject" delete-in-main-thread="yes"/>
     <value-type name="QSizePolicy"/>
@@ -653,6 +661,11 @@
 
     <value-type name="QPainterPath">
         <modify-function signature="operator=(QPainterPath)" remove="all"/>
+        <modify-function signature="swap(QPainterPath&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QPainterPath"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
     <value-type name="QPalette">
         <modify-function signature="operator=(const QPalette&amp;)" remove="all"/>
@@ -666,6 +679,11 @@
         <modify-function signature="operator=(QKeySequence)" remove="all"/>
         <modify-function signature="operator int()const" access="private"/>
         <modify-function signature="operator[](uint)const" access="private"/>
+        <modify-function signature="swap(QKeySequence&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QKeySequence"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QPicture" delete-in-main-thread="yes">
@@ -678,6 +696,12 @@
         <modify-function signature="inputFormats()" remove="all"/> <!--### Obsolete in 4.3-->
         <modify-function signature="outputFormatList()" remove="all"/> <!--### Obsolete in 4.3-->
         <modify-function signature="outputFormats()" remove="all"/> <!--### Obsolete in 4.3-->
+
+        <modify-function signature="swap(QPicture&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QPicture"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QRegion" expense-limit="4096">
@@ -699,6 +723,11 @@
         <modify-function signature="operator&amp;=(QRect)" remove="all" />
         <modify-function signature="operator+=(QRect)" remove="all" />
 
+        <modify-function signature="swap(QRegion&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QRegion"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QTextBlock" delete-in-main-thread="yes">
@@ -730,13 +759,23 @@
         <modify-function signature="operator&lt;&lt;(QPoint)" remove="all"/>
         <modify-function signature="operator&lt;&lt;(QVector&lt;QPoint&gt;)" remove="all"/>
 
-
+        <modify-function signature="swap(QPolygon&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QPolygon"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QPolygonF">
         <modify-function signature="operator+(QVector&lt;QPointF&gt;)const" remove="all"/>
         <modify-function signature="operator&lt;&lt;(QPointF)" remove="all"/>
         <modify-function signature="operator&lt;&lt;(QVector&lt;QPointF&gt;)" remove="all"/>
+
+        <modify-function signature="swap(QPolygonF&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QPolygonF"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QIcon" delete-in-main-thread="yes">
@@ -750,6 +789,11 @@
         <modify-function signature="QIcon(QIconEngine *)">
             <modify-argument index="1">
                 <define-ownership class="java" owner="cplusplus" />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="swap(QIcon&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QIcon"/>
             </modify-argument>
         </modify-function>
     </value-type>
@@ -799,6 +843,11 @@
         <modify-function signature="operator!()const" remove="all"/>
         <modify-function signature="QPixmap(const char **)" access="private"/>
         <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
+        <modify-function signature="swap(QPixmap&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QPixmap"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QTextCursor" delete-in-main-thread="yes">
@@ -1060,6 +1109,12 @@
 
         <modify-function signature="serialNumber()const" remove="all"/> <!--### Obsolete in 4.3-->
         <modify-function signature="textLanguages()const" remove="all"/> <!--### Obsolete in 4.3-->
+
+        <modify-function signature="swap(QImage&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QImage"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QColormap" delete-in-main-thread="yes">
@@ -1094,6 +1149,12 @@
         </extra-includes>
 
         <modify-function signature="operator=(QPen)" remove="all"/>
+
+        <modify-function signature="swap(QPen&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QPen"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QBrush">
@@ -1103,6 +1164,12 @@
         <extra-includes>
             <include file-name="QPixmap" location="global"/>
         </extra-includes>
+
+        <modify-function signature="swap(QBrush&amp;)"><!-- since 4.8 -->
+            <modify-argument index="1">
+                <replace-type modified-type="com.trolltech.qt.gui.QBrush"/>
+            </modify-argument>
+        </modify-function>
     </value-type>
 
     <value-type name="QColor">
@@ -4812,12 +4879,23 @@
 
         <modify-function signature="QApplication(int &amp;, char  **, int)">
             <access modifier="private"/>
+            <modify-argument index="3">
+                <remove-argument/><!-- since 4.8, we want this to call the
+                other C++ constructor, so the default value for the 3rd
+                argument is provided via the default C++ argument -->
+            </modify-argument>
         </modify-function>
         <modify-function signature="QApplication(int &amp;, char **, QApplication::Type, int)">
-            <remove/>
+            <access modifier="private"/>
+            <modify-argument index="4">
+                <remove-argument/><!-- exposed since around 4.8, this api look viable -->
+            </modify-argument>
         </modify-function>
         <modify-function signature="QApplication(int &amp;, char **, bool, int)">
-            <remove/>
+            <access modifier="private"/>
+            <modify-argument index="4">
+                <remove-argument/><!-- exposed since around 4.8, this api look viable -->
+            </modify-argument>
         </modify-function>
 
         <modify-function signature="font(const char*)">

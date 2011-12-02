@@ -371,6 +371,7 @@
     <rejection class="QCoreApplication" function-name="eventFilter"/>
     <rejection class="QCoreApplication" function-name="filterEvent"/>
     <rejection class="QCoreApplication" function-name="setEventFilter"/>
+    <rejection class="QCoreApplication" enum-name="enum_1"/><!-- since 4.8 -->
     <rejection class="QFile" function-name="setDecodingFunction"/>
     <rejection class="QFile" function-name="setEncodingFunction"/>
     <rejection class="QList" function-name="begin"/>
@@ -456,6 +457,7 @@
     <enum-type name="QStateMachine::RestorePolicy" />
     <enum-type name="Qt::AnchorPoint" />
     <enum-type name="Qt::CoordinateSystem" />
+    <enum-type name="Qt::CursorMoveStyle" /><!-- since 4.8 -->
     <enum-type name="Qt::GestureState" />
     <enum-type name="Qt::InputMethodHint" flags="Qt::InputMethodHints" />
     <enum-type name="Qt::NavigationMode" />
@@ -486,13 +488,16 @@
     </enum-type>
     <enum-type name="QEventLoop::ProcessEventsFlag" flags="QEventLoop::ProcessEventsFlags"/>
     <enum-type name="QFile::FileError"/>
+    <enum-type name="QFile::FileHandleFlag" flags="QFile::FileHandleFlags"/><!-- since 4.8 -->
     <enum-type name="QFile::MemoryMapFlags" />
     <enum-type name="QFile::Permission" flags="QFile::Permissions"/>
     <enum-type name="QIODevice::OpenModeFlag" flags="QIODevice::OpenMode"/>
     <enum-type name="QLibraryInfo::LibraryLocation"/>
+    <enum-type name="QLocale::CurrencySymbolFormat"/><!-- since 4.8 -->
     <enum-type name="QLocale::FormatType"/>
     <enum-type name="QLocale::NumberOption" flags="QLocale::NumberOptions"/>
     <enum-type name="QLocale::MeasurementSystem" />
+    <enum-type name="QLocale::QuotationStyle" /><!-- since 4.8 -->
     <enum-type name="QMutex::RecursionMode"/>
     <enum-type name="QProcess::ExitStatus"/>
     <enum-type name="QProcess::ProcessChannel"/>
@@ -608,8 +613,9 @@
     </enum-type>
 
     <enum-type name="QDataStream::Version">
-        <reject-enum-value name="Qt_4_1"/>
-        <reject-enum-value name="Qt_4_7"/>
+        <reject-enum-value name="Qt_4_1"/><!-- duplicate enum same as Qt_4_0 -->
+        <reject-enum-value name="Qt_4_7"/><!-- duplicate enum same as Qt_4_6 -->
+        <reject-enum-value name="Qt_4_8"/><!-- duplicate enum same as Qt_4_6 -->
     </enum-type>
 
     <enum-type name="QDir::SortFlag" flags="QDir::SortFlags">
@@ -640,6 +646,12 @@
 
     <enum-type name="QLocale::Country">
         <reject-enum-value name="LastCountry"/>
+    </enum-type>
+
+    <enum-type name="QLocale::Script"><!-- since 4.8 -->
+        <reject-enum-value name="SimplifiedHanScript"/><!-- same as SimplifiedChineseScript -->
+        <reject-enum-value name="TraditionalHanScript"/><!-- same as TraditionalChineseScript -->
+        <reject-enum-value name="LastScript"/><!-- pseudo end value -->
     </enum-type>
 
     <enum-type name="Qt::ToolBarArea" flags="Qt::ToolBarAreas">
@@ -816,6 +828,12 @@
         <modify-function signature="toUInt(QString,bool*,int)const" remove="all"/>
         <modify-function signature="toULongLong(QString,bool*,int)const" remove="all"/>
         <modify-function signature="operator=(QLocale)" remove="all"/>
+        <!-- since Qt 4.8 introduces toCurrencyString(...) overlapping signatures short/ushort, int/uint, qlonglong/qulonglong -->
+        <modify-function signature="toCurrencyString(unsigned short,const QString&amp;)const" remove="all"/>
+        <modify-function signature="toCurrencyString(unsigned int,const QString&amp;)const" remove="all"/>
+        <modify-function signature="toCurrencyString(unsigned long long,const QString&amp;)const" remove="all"/>
+        <!-- since Qt 4.8 introduces quoteString(...), arg1 type const QStringRef &amp; already exists -->
+        <modify-function signature="quoteString(const QStringRef&amp;,QLocale::QuotationStyle)const" remove="all"/>
     </value-type>
 
 
@@ -1242,8 +1260,15 @@
         </modify-function>
 
 
-        <modify-function signature="QCoreApplication(int &amp;, char  **)">
-        <access modifier="private"/>
+<!--        <modify-function signature="QCoreApplication(int &amp;, char **)"> -->
+            <!-- before 4.8, instead call 3 arg ctor and make use of C++ default argument (for 3rd arg) -->
+<!--            <access modifier="private"/>
+        </modify-function> -->
+        <modify-function signature="QCoreApplication(int &amp;, char **, int)"><!-- since 4.8, was 2 arg -->
+            <access modifier="private"/>
+            <modify-argument index="3">
+                <remove-argument/>
+            </modify-argument>
         </modify-function>
         <modify-function signature="removePostedEvents(QObject*)">
         <modify-argument index="1">

@@ -1418,6 +1418,10 @@
               qtjambi_register_variant_handler();
           </inject-code>
       </modify-function>
+      <!-- since 4.8 new QCoreApplication(int &amp;, char  **, int): removed for now as this looks to be a
+           QT_VERSION compatibility flag that also deals with QT3_SUPPORT.  We could expose this API but
+           we need to address providing useful ApplicationFlags integer values. -->
+<!--      <modify-function signature="QCoreApplication(int &amp;, char  **, int)" remove="all"/>           -->
       <!-- We implement a custom Java wrapper to this -->
       <modify-function signature="exec()">
         <access modifier="private"/>

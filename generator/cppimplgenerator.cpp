@@ -488,7 +488,7 @@ void CppImplGenerator::write(QTextStream &s, const AbstractMetaClass *java_class
         s << "// emitting (writeShellConstructor)" << endl;
         foreach(AbstractMetaFunction *function, java_class->functions()) {
             if (function->isConstructor() && !function->isPrivate())
-                writeShellConstructor(s, function);
+                writeShellConstructor(s, function, SkipRemovedArguments);
         }
         s << "// emitting (writeShellDestructor)" << endl;
         writeShellDestructor(s, java_class);
@@ -988,21 +988,29 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
     << "}" << endl << endl;
 }
 
-void CppImplGenerator::writeShellConstructor(QTextStream &s, const AbstractMetaFunction *java_function) {
+void CppImplGenerator::writeShellConstructor(QTextStream &s, const AbstractMetaFunction *java_function, int options) {
     if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
         return;
 
     const AbstractMetaClass *cls = java_function->ownerClass();
     AbstractMetaArgumentList arguments = java_function->arguments();
 
-    writeFunctionSignature(s, java_function, cls);
+    writeFunctionSignature(s, java_function, cls, /*default-arg*/QString(), Option(options));
 
     s << endl;
     s << "    : " << cls->qualifiedCppName() << "(";
+    bool needComma = false;
     for (int i = 0; i < arguments.size(); ++i) {
-        s << arguments.at(i)->indexedName();
-        if (i != arguments.size() - 1)
+        const AbstractMetaArgument *argument = arguments.at(i);
+        if ((options & SkipRemovedArguments) == SkipRemovedArguments
+                && java_function->argumentRemoved(i + 1)) {
+            continue;
+        }
+        if(needComma)
             s << ", ";
+        else
+            needComma = true;
+        s << arguments.at(i)->indexedName();
     }
     s << ")," << endl;
     if (cls->isQObject())
@@ -1938,7 +1946,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     s << INDENT << shellClassName(cls) << " *" << qt_object_name
     << " = new " << shellClassName(cls)
     << "(";
-    writeFunctionCallArguments(s, java_function, "__qt_");
+    writeFunctionCallArguments(s, java_function, "__qt_", SkipRemovedArguments);
     s << ");" << endl;
 
     s << INDENT << "QtJambiLink *__qt_java_link = ";

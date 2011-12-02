@@ -177,7 +177,7 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
     s << "public:" << endl;
     foreach(const AbstractMetaFunction *function, java_class->functions()) {
         if (function->isConstructor() && !function->isPrivate())
-            writeFunction(s, function);
+            writeFunction(s, function, SkipRemovedArguments);
     }
 
     s << "    ~" << shellClassName(java_class) << "();" << endl;
@@ -221,12 +221,12 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
     Writes out declarations of virtual C++ functions so that they
     can be reimplemented from the java side.
 */
-void CppHeaderGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *java_function) {
+void CppHeaderGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *java_function, int options) {
     if (java_function->isModifiedRemoved(TypeSystem::ShellCode))
         return;
 
     s << "    ";
-    writeFunctionSignature(s, java_function, 0, QString(), Option(OriginalName | ShowStatic));
+    writeFunctionSignature(s, java_function, 0, QString(), Option(OriginalName | ShowStatic | options));
     s << ";" << endl;
 }
 

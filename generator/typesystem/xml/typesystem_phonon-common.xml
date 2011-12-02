@@ -15,17 +15,21 @@
     <rejection class="Phonon::AudioOutputInterface40" />
     <rejection class="Phonon::AudioOutputInterface42" />
     <rejection class="*" function-name="availableAudioCaptureDevices" />
+    <rejection class="*" function-name="registerMetaTypes" /><!-- deprecated phonon API -->
 
     <namespace-type name="Phonon" />
     <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities">
         <modify-function signature="availableAVCaptureDevices()" remove="all" /> <!-- kde phonon support -->
         <modify-function signature="availableVideoCaptureDevices()" remove="all" /> <!-- kde phonon support -->
     </namespace-type>
+    <namespace-type name="Phonon::Capture" java-name="Capture"/>
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
     </enum-type>
     <enum-type name="Phonon::AddonInterface::SubtitleCommand" />
     <enum-type name="Phonon::AddonInterface::AudioChannelCommand" />
+    <enum-type name="Phonon::Capture::DeviceType" /><!-- since 4.8 ~F16 -->
+    <enum-type name="Phonon::CaptureCategory" /><!-- since 4.8 ~F16 -->
     <enum-type name="Phonon::DiscType" />
     <enum-type name="Phonon::ErrorType" />
     <enum-type name="Phonon::MetaData" />
@@ -40,6 +44,7 @@
     <enum-type name="Phonon::BackendInterface::Class" />
     <enum-type name="Phonon::EffectParameter::Hint" flags="Phonon::EffectParameter::Hints" />
     <enum-type name="Phonon::MediaController::Feature" flags="Phonon::MediaController::Features" />
+    <enum-type name="Phonon::MediaController::NavigationMenu" /><!-- since 4.8 ~F16 -->
     <enum-type name="Phonon::MediaSource::Type" />
     <enum-type name="Phonon::VideoWidget::AspectRatio" />
     <enum-type name="Phonon::VideoWidget::ScaleMode" />
@@ -68,6 +73,12 @@
     <value-type name="Phonon::MediaSource" java-name="MediaSource">
         <modify-function signature="operator=(Phonon::MediaSource)" remove="all" /> <!-- Covered by copy constructor -->
         <modify-function signature="MediaSource(const Phonon::ObjectDescription &amp;)" remove="all" /> <!-- kde phonon support -->
+        <modify-function signature="MediaSource(Phonon::Capture::DeviceType,Phonon::CaptureCategory)">
+           <modify-argument index="2">
+               <!-- remove-default-expression / because of no alias resolution support for enum value NoCaptureCategory = NoCategory -->
+               <remove-default-expression/>
+           </modify-argument>
+        </modify-function>
         <modify-function signature="videoCaptureDevice()const" remove="all" /> <!-- kde phonon support -->
     </value-type>
     <value-type name="Phonon::Path" java-name="Path">
@@ -142,6 +153,7 @@
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioCaptureDevice' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioOutputDevice' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'AudioChannelDescription' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class 'VideoCaptureDevice' has equals operators but no qHash() function. Hashcode of objects will consistently be 0." />
 
     <suppress-warning text="WARNING(MetaJavaBuilder) :: Final class 'AbstractAudioOutput' set to non-final, as it is extended by other classes" />
     <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace 'QDBus' does not have a type entry" />

@@ -59,7 +59,7 @@ class CppHeaderGenerator : public CppGenerator {
         virtual QString fileNameForClass(const AbstractMetaClass *cls) const;
 
         void write(QTextStream &s, const AbstractMetaClass *java_class);
-        void writeFunction(QTextStream &s, const AbstractMetaFunction *java_function);
+        void writeFunction(QTextStream &s, const AbstractMetaFunction *java_function, int options = 0);
         void writePublicFunctionOverride(QTextStream &s, const AbstractMetaFunction *java_function);
         void writeVirtualFunctionOverride(QTextStream &s, const AbstractMetaFunction *java_function);
         void writeForwardDeclareSection(QTextStream &s, const AbstractMetaClass *java_class);

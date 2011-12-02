@@ -26,6 +26,7 @@
 #include <phonon/mediaobject.h>
 #include <phonon/mediaobjectinterface.h>
 #include <phonon/mediasource.h>
+#include <phonon/mrl.h>  /* since 4.8 ~F16 */
 #include <phonon/objectdescription.h>
 #include <phonon/objectdescriptionmodel.h>
 #include <phonon/path.h>
