@@ -628,22 +628,41 @@ void QtJambiLink::aboutToMakeObjectInvalid(JNIEnv *env)
     // This used to care about (env != 0)
     // This used to care about (m_pointer != 0)
     // This used to care about (!m_object_invalid) not its an Q_ASSERT and caller checks
-    if (m_java_object != 0) {
+
+    jobject localRef = 0;
+    jobject javaRefToInvalidate;
+    if (!isGlobalReference()) {
+        // Reconsile a non-null weak reference
+        localRef = env->NewLocalRef(m_java_weak);
+        if (env->IsSameObject(localRef, 0) != JNI_FALSE)
+            goto done;  // weak ref is null so nothing to invalidate
+        // We were a weak global reference, we now have a hard local reference to
+        //  use for invalidation that is not 'null'.
+        javaRefToInvalidate = localRef;
+    } else {
+        javaRefToInvalidate = m_java_object;
+    }
+
+    if (javaRefToInvalidate) {
         StaticCache *sc = StaticCache::instance();
         sc->resolveQtJambiObject();
-        env->CallVoidMethod(m_java_object, sc->QtJambiObject.disposed);
+        env->CallVoidMethod(javaRefToInvalidate, sc->QtJambiObject.disposed);
         qtjambi_exception_check(env);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
         qtjambi_increase_objectInvalidatedCount(m_className);
 #endif
 
-        env->SetLongField(m_java_object, sc->QtJambiObject.native_id, 0);
+        env->SetLongField(javaRefToInvalidate, sc->QtJambiObject.native_id, 0);
         if (m_in_cache)
             removeFromCache(env);
         QTJAMBI_EXCEPTION_CHECK(env);
         m_object_invalid = true;
     }
+
+done:
+    if(localRef)
+        env->DeleteLocalRef(localRef);
 }
 
 void QtJambiLink::setMetaObject(const QMetaObject *mo) const
