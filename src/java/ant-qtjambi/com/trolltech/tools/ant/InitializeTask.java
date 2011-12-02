@@ -1072,7 +1072,7 @@ public class InitializeTask extends Task {
         String sourceValue = null;
         if(exists)
             sourceValue = " (auto-detected)";
-        else if(OSInfo.isWindows() == false)
+        else if(OSInfo.isMacOS() == false)
             sourceValue = " (expected for non-MacOSX platform)";
         mySetProperty(propertyHelper, -1, PHONON_QT7, sourceValue, result, false);
         return result;
