@@ -331,8 +331,15 @@ public class InitializeTask extends Task {
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();
 
-        propertyHelper.setNewProperty((String) null, JAVA_HOME_TARGET, decideJavaHomeTarget());
-        propertyHelper.setNewProperty((String) null, JAVA_OSARCH_TARGET, decideJavaOsarchTarget());
+        String javaHomeTarget = decideJavaHomeTarget();
+        if(javaHomeTarget == null)
+            throw new BuildException("Unable to determine JAVA_HOME_TARGET, setup environment variable JAVA_HOME (or JAVA_HOME_TARGET) or edit buildpath.properties");
+        propertyHelper.setNewProperty((String) null, JAVA_HOME_TARGET, javaHomeTarget);
+
+        String javaOsarchTarget = decideJavaOsarchTarget();
+        if(javaOsarchTarget == null)
+            throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit buildpath.properties");
+        propertyHelper.setNewProperty((String) null, JAVA_OSARCH_TARGET, javaOsarchTarget);
 
         String configuration = decideConfiguration();
         propertyHelper.setNewProperty((String) null, CONFIGURATION, configuration);
@@ -804,8 +811,6 @@ public class InitializeTask extends Task {
         if(s == null)
             s = System.getenv("JAVA_HOME");
         String result = s;
-        propertyHelper.setProperty((String) null, "env.JAVA_HOME_TARGET", result, false);    //TODO: does this work?
-        propertyHelper.setProperty("env", "JAVA_HOME_TARGET", result, false);    //TODO: does this work?
         if(verbose) System.out.println(JAVA_HOME_TARGET + ": " + result);
         return result;
     }
