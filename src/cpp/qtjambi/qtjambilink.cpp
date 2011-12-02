@@ -686,18 +686,22 @@ void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
 
     Q_ASSERT_X(m_java_object, "QtJambiLink::setGlobalRef()", "Java object required");
 
-    // Delete the global reference and make it a weak one
     if (!global) {
-        jobject localRef = env->NewWeakGlobalRef(m_java_object);
+        // Delete the global reference and make it a weak one
+        jweak weakGlobalRef = env->NewWeakGlobalRef(m_java_object); // CHECKME: m_global_ref ? m_java_object : m_java_weak
+
         env->DeleteGlobalRef(m_java_object);
+        m_java_object = 0;  // PARANOIA
 
         m_global_ref = false;
-        m_java_object = localRef;
+        m_java_weak = weakGlobalRef;
 
-    // Delete the weak ref and replace it with a global ref
     } else {
-        jobject globalRef = env->NewGlobalRef(m_java_object);
-        env->DeleteWeakGlobalRef((jweak)m_java_object);
+        // Delete the weak ref and replace it with a global ref
+        jobject globalRef = env->NewGlobalRef(m_java_object); // CHECKME: m_global_ref ? m_java_object : m_java_weak
+
+        env->DeleteWeakGlobalRef(m_java_weak);
+        m_java_weak = 0;  // PARANOIA
 
         m_global_ref = true;
         m_java_object = globalRef;
@@ -1194,12 +1198,14 @@ void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
         //  for: junit.framework.AssertionFailedError: linkConstructedCount expected:<1> but was:<0>
         // Reading the notes in QtJambiLink::createLinkForObject(...) around use of enter_in_cache==true it would appear that
         //  caching is only valid when Java has ownership.
-        jobject global_ref = env->NewGlobalRef(obj);
+        jobject globalRef = env->NewGlobalRef(obj);
 
-        if (m_java_object)
-            env->DeleteWeakGlobalRef(m_java_object);
+        if (m_java_weak) {
+            env->DeleteWeakGlobalRef(m_java_weak);
+            m_java_weak = 0;  // PARANOIA
+        }
 
-        m_java_object = global_ref;
+        m_java_object = globalRef;
         m_global_ref = true;
     }
     m_ownership = CppOwnership;
@@ -1216,10 +1222,14 @@ void QtJambiLink::setDefaultOwnership(JNIEnv *env, jobject obj)
 void QtJambiLink::setJavaOwnership(JNIEnv *env, jobject obj)
 {
     if (isGlobalReference()) {
-        jobject weak_ref = env->NewWeakGlobalRef(obj);
-        if (m_java_object)
+        jobject weakGlobalRef = env->NewWeakGlobalRef(obj);
+
+        if (m_java_object) {
             env->DeleteGlobalRef(m_java_object);
-        m_java_object = weak_ref;
+            m_java_object = 0;  // PARANOIA
+        }
+
+        m_java_weak = weakGlobalRef;
         m_global_ref = false;
     }
     m_ownership = JavaOwnership;
@@ -1228,10 +1238,14 @@ void QtJambiLink::setJavaOwnership(JNIEnv *env, jobject obj)
 void QtJambiLink::setSplitOwnership(JNIEnv *env, jobject obj)
 {
     if (isGlobalReference()) {
-        jobject weak_ref = env->NewWeakGlobalRef(obj);
-        if (m_java_object)
+        jobject weakGlobalRef = env->NewWeakGlobalRef(obj);
+
+        if (m_java_object) {
             env->DeleteGlobalRef(m_java_object);
-        m_java_object = weak_ref;
+            m_java_object = 0;  // PARANOIA
+        }
+
+        m_java_weak = weakGlobalRef;
         m_global_ref = false;
     }
     m_ownership = SplitOwnership;
