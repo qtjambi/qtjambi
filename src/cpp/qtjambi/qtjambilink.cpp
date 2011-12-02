@@ -273,7 +273,10 @@ void QtJambiLink::unregisterSubObject(void *ptr) {
 
 const char *QtJambiLink::debugFlagsToString(char *buf) const {
     char *s = buf;
-    *s++ = ((m_java_object)            ? 'J' : '.');
+    if(m_global_ref)
+        *s++ = ((m_java_object)            ? 'J' : '.');
+    else
+        *s++ = ((m_java_weak)              ? 'W' : '.');
     *s++ = ((m_pointer)                ? 'P' : '.');
     *s++ = ((char)((int)m_ownership + '0'));
     *s++ = ((char)((int)m_last_ownership + '0'));
@@ -303,9 +306,9 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     Q_ASSERT(object);
 
     // Initialize the link
-    jobject java_object = env->NewWeakGlobalRef(java);
+    jweak weakGlobalRef = env->NewWeakGlobalRef(java);
     // QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
-    QtJambiLink *link = new QtJambiLink(java_object, false, true, object);
+    QtJambiLink *link = new QtJambiLink(weakGlobalRef, false, true, object);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
     link->m_className = QString::fromLatin1(object->metaObject()->className());
@@ -322,9 +325,10 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
     // Set the native__id field of the java object
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
-    env->SetLongField(link->m_java_object, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
-
-    link->setCppOwnership(env, link->m_java_object);
+    // We continue to use the hard local reference to java object in preference to the weak one we just created
+    env->SetLongField(java, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
+    // FIXME: I have no idea why we created a weakGlobalRef to then immediately upgrade it to a hardGlobalRef
+    link->setCppOwnership(env, java);
 
     return link;
 }
@@ -361,9 +365,9 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     Q_ASSERT(ptr);
 
     // Initialize the link
-    jobject java_object = env->NewWeakGlobalRef(java);
+    jweak weakGlobalRef = env->NewWeakGlobalRef(java);
     // QtJambiLink(jobject jobj, bool global_ref, bool is_qobject, void *pointer)
-    QtJambiLink *link = new QtJambiLink(java_object, false, false, ptr);
+    QtJambiLink *link = new QtJambiLink(weakGlobalRef, false, false, ptr);
 
     link->m_destructor_function = java_name.isEmpty() ? 0 : destructor(java_name);
 
@@ -388,7 +392,8 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
     // Set the native__id field of the java object
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
-    env->SetLongField(link->m_java_object, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
+    // We continue to use the hard local reference to java object in preference to the weak one we just created
+    env->SetLongField(java, sc->QtJambiObject.native_id, reinterpret_cast<jlong>(link));
 
     return link;
 }
@@ -441,9 +446,9 @@ QtJambiLink *QtJambiLink::findLink(JNIEnv *env, jobject java)
 //  and set the native_id=0 and removeFromCache() via aboutToMakeObjectInvalid().
 int QtJambiLink::releaseJavaObject(JNIEnv *env)
 {
-    if (!m_java_object) {
+    if (!m_java_object && !m_java_weak)
         return 0;
-    }
+
     int rv = 0;
 
     // The name of the method below isn't well chosen.  It is possible we
