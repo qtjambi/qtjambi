@@ -1,4 +1,53 @@
 <?xml version="1.0"?>
 <typesystem>
+    <enum-type name="QDeclarativeComponent::Status"/>
+    <enum-type name="QDeclarativeEngine::ObjectOwnership"/>
+    <enum-type name="QDeclarativeImageProvider::ImageType"/>
+    <enum-type name="QDeclarativeItem::TransformOrigin"/>
+    <enum-type name="QDeclarativeProperty::PropertyTypeCategory"/>
+    <enum-type name="QDeclarativeProperty::Type"/>
+    <enum-type name="QDeclarativeView::ResizeMode"/>
+    <enum-type name="QDeclarativeView::Status"/>
 
+    <object-type name="QDeclarativeComponent"/><!-- since 4.7 -->
+
+    <object-type name="QDeclarativeContext"/><!-- since 4.7 -->
+
+    <object-type name="QDeclarativeEngine"/><!-- since 4.7 -->
+
+    <value-type name="QDeclarativeError"/><!-- since 4.7, value type -->
+
+    <object-type name="QDeclarativeExpression"/><!-- since 4.7 -->
+
+    <object-type name="QDeclarativeExtensionPlugin"/><!-- since 4.7, abstract base for interface -->
+
+    <interface-type name="QDeclarativeImageProvider"/><!-- since 4.7, interface -->
+
+    <object-type name="QDeclarativeItem"><!-- since 4.7, value type -->
+        <modify-function signature="parentItem() const">
+            <rename to="parentItem_QDeclarativeItem"/><!-- FIXME: Remove final from QGraphicsItem generation -->
+        </modify-function>
+        <!-- FIXME this calles this->QGraphicsItem::parentItem() and not just this->parentItem(), this overrides -->
+        <modify-function signature="hasFocus() const">
+            <rename to="hasFocus_QDeclarativeItem"/><!-- FIXME: Remove final from QGraphicsItem generation -->
+        </modify-function>
+    </object-type>
+
+    <object-type name="QDeclarativeListReference"/><!-- since 4.7, helper -->
+
+    <interface-type name="QDeclarativeNetworkAccessManagerFactory"/><!-- since 4.7, interface -->
+
+    <interface-type name="QDeclarativeParserStatus"/><!-- since 4.7, interface -->
+
+    <object-type name="QDeclarativeProperty"/><!-- since 4.7, helper -->
+
+    <object-type name="QDeclarativePropertyMap"><!-- since 4.7 -->
+        <modify-function signature="operator[](const QString &amp;) const" remove="all"/><!-- duplicate with non-const version -->
+    </object-type>
+
+    <interface-type name="QDeclarativePropertyValueSource"/><!-- since 4.7, interface -->
+
+    <object-type name="QDeclarativeScriptString"/><!-- since 4.7, value type -->
+
+    <object-type name="QDeclarativeView"/><!-- since 4.7 -->
 </typesystem>
