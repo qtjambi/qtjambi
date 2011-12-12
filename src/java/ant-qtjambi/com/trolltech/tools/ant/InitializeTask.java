@@ -392,8 +392,14 @@ public class InitializeTask extends Task {
         mySetProperty(propertyHelper, -1, BUNDLE_VERSION, null, s, false);
 
 
-        if(OSInfo.isWindows() == false)   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
-            mySetProperty(propertyHelper, -1, QTJAMBI_SONAME_VERSION_MAJOR, " (set by init)", DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR, false);
+        String sonameVersionMajor = DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR;
+        String sonameSource = " (set by init)";
+        if(OSInfo.isWindows()) {   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
+            sonameVersionMajor = "";  // got to set it empty otherwise we get unsubstitued ${foo} are value
+            sonameSource = " (set blank by init)";
+        }
+        mySetProperty(propertyHelper, -1, QTJAMBI_SONAME_VERSION_MAJOR, sonameSource, sonameVersionMajor, false);
+        
 
 
         if(!decideGeneratorPreProc())

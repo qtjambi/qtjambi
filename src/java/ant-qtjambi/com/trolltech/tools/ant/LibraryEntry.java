@@ -173,9 +173,29 @@ public class LibraryEntry extends Task {
 
         boolean debug = "debug".equals(propertyHelper.getProperty((String) null, InitializeTask.CONFIGURATION));
 
+        // On windows the Qt plugins are versioned
+        String qtVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QT_VERSION);
+        String qtMajorVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QT_VERSION_MAJOR);
+        String sonameVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QTJAMBI_SONAME_VERSION_MAJOR);
+
         // Fix name
         if(type.equals(TYPE_PLUGIN)) {
-            name = formatPluginName(name, this.kdephonon, debug, dsoVersion);
+            String useDsoVersion = dsoVersion;
+            if(dsoVersion != null && dsoVersion.compareToIgnoreCase("no-version") == 0) {
+                useDsoVersion = null;
+            } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-qt-major-version") == 0) {
+                useDsoVersion = qtMajorVersion;
+            } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-qt-version") == 0) {
+                useDsoVersion = qtVersion;
+            } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-soname-version") == 0) {
+                useDsoVersion = sonameVersion;
+            } else if(dsoVersion == null) {  // the default stratagy
+                if(OSInfo.os() == OSInfo.OS.Windows)
+                    useDsoVersion = qtMajorVersion;
+                else
+                    useDsoVersion = null;
+            }
+            name = formatPluginName(name, this.kdephonon, debug, useDsoVersion);
         } else if(type.equals(TYPE_QTJAMBI_PLUGIN)) {
             // this may have _debuglib in the filename (unlike normal qt plugins)
             name = formatQtJambiName(name, debug, dsoVersion);
@@ -300,7 +320,7 @@ public class LibraryEntry extends Task {
             switch(OSInfo.os()) {
             case Windows:
                 tmpVersionString = (versionString != null) ? versionString : "";
-                return name + tmpVersionString + "_debuglib.dll";
+                return name + "d" + tmpVersionString + ".dll";
             case MacOS:
                 tmpVersionString = (versionString != null) ? "." + versionString : "";
                 return "lib" + name + tmpVersionString + "_debuglib.jnilib";
