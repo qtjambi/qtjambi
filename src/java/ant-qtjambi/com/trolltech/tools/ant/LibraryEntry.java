@@ -180,6 +180,7 @@ public class LibraryEntry extends Task {
 
         // Fix name
         if(type.equals(TYPE_PLUGIN)) {
+            // MacOSX: uses *.dylib and _debug suffix
             String useDsoVersion = dsoVersion;
             if(dsoVersion != null && dsoVersion.compareToIgnoreCase("no-version") == 0) {
                 useDsoVersion = null;
@@ -197,15 +198,19 @@ public class LibraryEntry extends Task {
             }
             name = formatPluginName(name, this.kdephonon, debug, useDsoVersion);
         } else if(type.equals(TYPE_QTJAMBI_PLUGIN)) {
-            // this may have _debuglib in the filename (unlike normal qt plugins)
-            name = formatQtJambiName(name, debug, dsoVersion);
+            // MacOSX: uses *.dylib and _debuglib suffix
+            name = formatQtJambiPluginName(name, debug, dsoVersion);
         } else if(type.equals(TYPE_QT)) {
+            // MacOSX: uses *.dylib and _debug suffix
             name = formatQtName(name, debug, dsoVersion);
-        } else if(type.equals(TYPE_QTJAMBI)) {
+        } else if(type.equals(TYPE_QTJAMBI)) {  // JNI
+            // MacOSX: uses *.jnilib and _debuglib suffix
             name = formatQtJambiName(name, debug, dsoVersion);
         } else if(type.equals(TYPE_DSO) || type.equals(TYPE_SYSTEM)) {
-            name = formatQtJambiName(name, debug, null);
+            // name as-is
+            name = formatQtName(name, false, "");
         } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
+            // MacOSX: uses *.dylib and _debug any suffix
             name = formatUnversionedPluginName(name, debug);
         }
 
@@ -261,27 +266,30 @@ public class LibraryEntry extends Task {
     }
 
     public static String formatQtName(String name, boolean debug, String versionString) {
+        String tmpVersionString = (versionString != null) ? versionString : "";
+        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
         if(debug) {
+            String tmpDebugSuffix = "_" + "debug";
             switch(OSInfo.os()) {
             case Windows:
-                return name + "d" + versionString + ".dll";
+                return name + "d" + tmpVersionString + ".dll";
             case MacOS:
-                return "lib" + name + "_debug." + versionString + ".dylib";
+                return "lib" + name + tmpDebugSuffix + tmpDotVersionString + ".dylib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                return "lib" + name + ".so." + versionString;
+                return "lib" + name + ".so" + tmpDotVersionString;
             }
         } else {
             switch(OSInfo.os()) {
             case Windows:
-                return name + versionString + ".dll";
+                return name + tmpVersionString + ".dll";
             case MacOS:
-                return "lib" + name + "." + versionString + ".dylib";
+                return "lib" + name + tmpDotVersionString + ".dylib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                return "lib" + name + ".so." + versionString;
+                return "lib" + name + ".so" + tmpDotVersionString;
             }
         }
         throw new BuildException("unhandled case...");
@@ -289,11 +297,12 @@ public class LibraryEntry extends Task {
 
     public static String formatUnversionedPluginName(String name, boolean debug) {
         if(debug) {
+            String tmpDebugSuffix = "_" + "debug";
             switch(OSInfo.os()) {
             case Windows:
                 return name + "d.dll";
             case MacOS:
-                return "lib" + name + "_debug.dylib";
+                return "lib" + name + tmpDebugSuffix + ".dylib";
             case Solaris:
             case Linux:
             case FreeBSD:
@@ -315,37 +324,62 @@ public class LibraryEntry extends Task {
     }
 
     public static String formatQtJambiName(String name, boolean debug, String versionString) {
-        String tmpVersionString;
-        if(debug)  {
+        String tmpVersionString = (versionString != null) ? versionString : "";
+        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
+        if(debug) {
+            String tmpDebugSuffix = "_" + "debuglib";
             switch(OSInfo.os()) {
             case Windows:
-                tmpVersionString = (versionString != null) ? versionString : "";
                 return name + "d" + tmpVersionString + ".dll";
             case MacOS:
-                tmpVersionString = (versionString != null) ? "." + versionString : "";
-                return "lib" + name + tmpVersionString + "_debuglib.jnilib";
+                return "lib" + name + tmpDotVersionString + tmpDebugSuffix + ".jnilib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                tmpVersionString = (versionString != null) ? "." + versionString : "";
-                return "lib" + name + "_debuglib.so" + tmpVersionString;
+                return "lib" + name + tmpDebugSuffix + ".so" + tmpDotVersionString;
             }
         } else {
             switch(OSInfo.os()) {
             case Windows:
-                tmpVersionString = (versionString != null) ? versionString : "";
                 return name + tmpVersionString + ".dll";
             case MacOS:
-                tmpVersionString = (versionString != null) ? "." + versionString : "";
-                return "lib" + name + tmpVersionString + ".jnilib";
+                return "lib" + name + tmpDotVersionString + ".jnilib";
             case Solaris:
             case Linux:
             case FreeBSD:
-                tmpVersionString = (versionString != null) ? "." + versionString : "";
-                return "lib" + name + ".so" + tmpVersionString;
+                return "lib" + name + ".so" + tmpDotVersionString;
             }
         }
         throw new BuildException("unhandled case...");
     }
 
+    public static String formatQtJambiPluginName(String name, boolean debug, String versionString) {
+        String tmpVersionString = (versionString != null) ? versionString : "";
+        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
+         if(debug) {
+            String tmpDebugSuffix = "_" + "debuglib";
+             switch(OSInfo.os()) {
+             case Windows:
+                return name + tmpVersionString + tmpDebugSuffix + ".dll";
+             case MacOS:
+                return "lib" + name + tmpDotVersionString + tmpDebugSuffix + ".dylib";
+             case Solaris:
+             case Linux:
+             case FreeBSD:
+                return "lib" + name + tmpDebugSuffix + ".so" + tmpDotVersionString;
+             }
+         } else {
+             switch(OSInfo.os()) {
+             case Windows:
+                 return name + tmpVersionString + ".dll";
+             case MacOS:
+                return "lib" + name + tmpDotVersionString + ".dylib";
+             case Solaris:
+             case Linux:
+             case FreeBSD:
+                return "lib" + name + ".so" + tmpDotVersionString;
+             }
+         }
+         throw new BuildException("unhandled case...");
+    }
 }

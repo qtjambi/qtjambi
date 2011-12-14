@@ -50,6 +50,7 @@ import org.apache.tools.ant.Task;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -328,7 +329,6 @@ public class PlatformJarTask extends Task {
         File[] fileA = srcDir.listFiles();
         for(File f : fileA) {
             String name = f.getName();
-System.out.println("   f " + f);
             if(skipSet != null && skipSet.contains(name))
                 continue;
             File thisSrcFile = new File(srcDir, name);
@@ -764,25 +764,35 @@ System.out.println("   f " + f);
             System.out.println(" - updating: " + with.getName());
 
             for(LibraryEntry change : libs) {
+                String changeDestSubdir = change.getDestSubdir();
                 String changeSubdir = change.getSubdir();
-                StringBuilder builder = createDotDots(changeSubdir);
-                String destSubdir = with.getDestSubdir();
-                if(destSubdir != null)
-                    builder.append(destSubdir);
+                StringBuilder builder = createDotDots(pathCanon(new String[] { changeDestSubdir, changeSubdir }));
+                String withDestSubdir = with.getDestSubdir();
+                if(withDestSubdir != null)
+                    builder.append(withDestSubdir);
                 String withSubdir = with.getSubdir();
                 if(withSubdir == null)
                     withSubdir = "";
+if(false) {
+System.out.println(" change.Name       =  " + change.getName());
+System.out.println(" change.Subdir     =  " + changeSubdir);
+System.out.println(" change.DestSubdir =  " + change.getDestSubdir());
+System.out.println(" with.destSubdir   =  " + withDestSubdir);
+System.out.println(" with.Subdir       =  " + withSubdir);
+System.out.println(" with.Name         =  " + with.getName());
+}
                 builder.append(withSubdir);
                 builder.append("/");
                 builder.append(with.getName());
                 builder.insert(0, "@loader_path/");
 
                 cmd[3] = builder.toString();
-                cmd[4] = pathCanon(new String[] { destSubdir, changeSubdir, change.getName() }); //change.relativePath();
+                cmd[4] = pathCanon(new String[] { changeDestSubdir, changeSubdir, change.getName() }); //change.relativePath();
 
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
 
+System.out.println(" exec " + Arrays.toString(cmd) + " in " + outdir);
                 Exec.exec(cmd, outdir, getProject(), false);
 
                 // CHECKME: Is this needed since we started to use soname.major when deploying ?

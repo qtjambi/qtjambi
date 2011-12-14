@@ -240,6 +240,7 @@ public class InitializeTask extends Task {
 
     public static final String PACKAGING_DSO_CPLUSPLUSRUNTIME = "qtjambi.packaging.dso.cplusplusruntime";
 
+    public static final String QTJAMBI_CONFIG_ISMACOSX      = "qtjambi.config.ismacosx";
     public static final String QTJAMBI_MACOSX_QTMENUNIB_DIR = "qtjambi.macosx.qtmenunib.dir";
 
     // Windows specific vars...
@@ -391,6 +392,9 @@ public class InitializeTask extends Task {
         }
         mySetProperty(propertyHelper, -1, BUNDLE_VERSION, null, s, false);
 
+        if(OSInfo.isMacOS())
+            mySetProperty(propertyHelper, 0, QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
+
 
         String sonameVersionMajor = DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR;
         String sonameSource = " (set by init)";
@@ -419,13 +423,15 @@ public class InitializeTask extends Task {
             String sourceValue = null;
 //            s = (String) propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR);
 //            if(s == null) {
-                s = doesQtLibExistDir(d, "qt_menu.nib");
+                s = doesQtLibExistDir(d, "Resources/qt_menu.nib");
+                if(s == null)
+                    s = doesQtLibExistDir(d, "qt_menu.nib");
                 //if(s == null)
                 //    s= = doesQtLibExistDir(d, "src/gui/mac/qt_menu.nib");
                 // FIXME: auto-detect, directroy from source, directory from QtSDK on MacOSX, directory from framework on MacOSX
+                
                 if(s != null)
                     sourceValue = " (auto-detected)";
-                
 //            }
             if(s == null) {
                 if(OSInfo.isMacOS() == false)
@@ -760,8 +766,13 @@ public class InitializeTask extends Task {
         if(compilerString == null)
             return false;
 
-        if(OSInfo.isWindows()) {
+        String gccVersionMajor = "";
+        if(Compiler.isCompiler(compilerString, Compiler.GCC, Compiler.MinGW, Compiler.MinGW_W64))
+            gccVersionMajor = "=4";
+        else if(Compiler.isCompiler(compilerString, Compiler.OldGCC))
+            gccVersionMajor = "=3";
 
+        if(OSInfo.isWindows()) {
             if(Compiler.is64Only(compilerString))
                 generatorPreProcStageOneList.add("-DWIN64");
             generatorPreProcStageOneList.add("-DWIN32");	// always set this
@@ -773,23 +784,22 @@ public class InitializeTask extends Task {
             } else if(Compiler.isCompiler(compilerString, Compiler.MSVC2010, Compiler.MSVC2010_64)) {
                 generatorPreProcStageOneList.add("-D_MSC_VER=1600");
             } else if(Compiler.isCompiler(compilerString, Compiler.GCC, Compiler.OldGCC, Compiler.MinGW, Compiler.MinGW_W64)) {
-                generatorPreProcStageOneList.add("-D__GNUC__");
+                generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
             }
-
         } else if(OSInfo.isLinux()) {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-D__linux__");
-            generatorPreProcStageOneList.add("-D__GNUC__");
+            generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
         } else if(OSInfo.isMacOS()) {
             generatorPreProcStageOneList.add("-D__APPLE__");
             // FIXME: When we detect an alternative compiler is in use (LLVM)
-            generatorPreProcStageOneList.add("-D__GNUC__");
+            generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
             // if(OSInfo.isMacOSX64())
             //     generatorPreProcStageOneList.add("-D__LP64__");
         } else if(OSInfo.isFreeBSD()) {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-D__FreeBSD__");
-            generatorPreProcStageOneList.add("-D__GNUC__");
+            generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
         } else if(OSInfo.isSolaris()) {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-Dsun");

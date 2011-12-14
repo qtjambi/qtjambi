@@ -83,6 +83,8 @@
                 destdir="${java.outdir}/${module}">
             <src path="${sourcedir}"/>
             <src path="${sourcedir2}"/>
+            <!-- These are excluded due to the MacOSX port of Qt not needing this backward compatibility -->
+            <exclude name="com/trolltech/qt/xml/QXmlStream*.java" if="qtjambi.config.ismacosx"/>
             <classpath refid="java.compile.classpath"/>
         </javac>
     </target>
