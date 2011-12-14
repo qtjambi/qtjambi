@@ -274,10 +274,12 @@ public class TestClassFunctionality extends QApplicationTest {
 	while (t + 2500 > System.currentTimeMillis()) {
 	    // For some reason when we compile with ECJ this loop times out and then
 	    //  fails the: assertTrue(GraphicsSceneSubclassSubclass.items != null);
-//	    synchronized(GraphicsSceneSubclassSubclass.class) {
+	    // I tried again without using synchronized() here but am still seeing
+	    //   occasional random failures in this test.  So putting lock back in place.
+	    synchronized(GraphicsSceneSubclassSubclass.class) {
                 if(GraphicsSceneSubclassSubclass.items != null)
 	            break;
-//            }
+            }
 	    QApplication.processEvents();
         }
 
@@ -660,10 +662,12 @@ public class TestClassFunctionality extends QApplicationTest {
 	while (t + 2500 > System.currentTimeMillis()) {
 	    // For some reason when we compile with ECJ this loop times out and then
 	    //  fails the: assertTrue(receiver.paintEventCastWorked);
-//            synchronized(receiver.class) {
+	    // I tried again without using synchronized() here but am still seeing
+	    //   occasional random failures in this test.  So putting lock back in place.
+            synchronized(receiver) {
                 if(receiver.paintEventCastWorked)
                     break;
-//            }
+            }
 	    QApplication.processEvents();
         }
         assertEquals(receiver.customEventString, "this is my stuff");
