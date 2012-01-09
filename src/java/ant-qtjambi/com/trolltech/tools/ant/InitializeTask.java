@@ -335,12 +335,12 @@ public class InitializeTask extends Task {
         String javaHomeTarget = decideJavaHomeTarget();
         if(javaHomeTarget == null)
             throw new BuildException("Unable to determine JAVA_HOME_TARGET, setup environment variable JAVA_HOME (or JAVA_HOME_TARGET) or edit buildpath.properties");
-        propertyHelper.setNewProperty((String) null, JAVA_HOME_TARGET, javaHomeTarget);
 
         String javaOsarchTarget = decideJavaOsarchTarget();
-        if(javaOsarchTarget == null)
-            throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit buildpath.properties");
-        propertyHelper.setNewProperty((String) null, JAVA_OSARCH_TARGET, javaOsarchTarget);
+        if(javaOsarchTarget == null) {
+            if(OSInfo.isMacOS() == false)  // On MacOSX there is no sub-dir inside the JDK include directory that contains jni.h
+                throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit buildpath.properties");
+        }
 
         String configuration = decideConfiguration();
         propertyHelper.setNewProperty((String) null, CONFIGURATION, configuration);
@@ -821,26 +821,34 @@ public class InitializeTask extends Task {
     }
 
     private String decideJavaHomeTarget() {
+        String sourceValue = null;
         String s = (String) propertyHelper.getProperty((String) null, JAVA_HOME_TARGET);
-        if(s == null)
+        if(s == null) {
             s = System.getenv("JAVA_HOME_TARGET");
-        if(s == null)
+            if(s != null)
+                sourceValue = " (from envvar:JAVA_HOME_TARGET)";
+        }
+        if(s == null) {
             s = System.getenv("JAVA_HOME");
+            if(s != null)
+                sourceValue = " (from envvar:JAVA_HOME)";
+        }
         String result = s;
-        if(verbose) System.out.println(JAVA_HOME_TARGET + ": " + result);
+        mySetProperty(propertyHelper, -1, JAVA_HOME_TARGET, sourceValue, result, false);
         return result;
     }
 
     private String decideJavaOsarchTarget() {
-        String method = "";
+        String sourceValue = null;;
         String s = (String) propertyHelper.getProperty((String) null, JAVA_OSARCH_TARGET);
 
         if(s == null) {
             s = System.getenv("JAVA_OSARCH_TARGET");
+            if(s != null)
+                sourceValue = " (from envvar:JAVA_OSARCH_TARGET)";
         }
 
         if(s == null) {    // auto-detect using what we find
-
             // This is based on a token observation that the include direcory
             //  only had one sub-directory (this is needed for jni_md.h).
             File includeDir = new File((String)propertyHelper.getProperty((String) null, JAVA_HOME_TARGET), "include");
@@ -859,12 +867,12 @@ public class InitializeTask extends Task {
 
             if(foundCount == 1) {
                 s = found.getName();
-                method = " (auto-detected)";
+                sourceValue = " (auto-detected)";
             }
         }
 
         String result = s;
-        if(verbose) System.out.println(JAVA_OSARCH_TARGET + ": " + result + method);
+        mySetProperty(propertyHelper, -1, JAVA_OSARCH_TARGET, sourceValue, result, false);
         return result;
     }
 
@@ -968,7 +976,8 @@ public class InitializeTask extends Task {
         if(newValue != null) {
             if(currentValue != null) {
                 sourceValue = " (already set; detected as: " + newValue + ")";
-                if(forceNewValue)
+                // Don't error if we don't have to i.e. the two values are the same
+                if(forceNewValue && newValue.equals(currentValue) == false)
                     throw new BuildException("Unable to overwrite property " + attrName + " with value " + newValue);
             } else {
                 if(forceNewValue)
