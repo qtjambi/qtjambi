@@ -49,3 +49,14 @@ include(generator.pri)
 #  4.29    462.12    26.81 2773082225     0.00     0.00  QString::QString(QString const&)
 #  2.47    477.54    15.43 2943952981     0.00     0.00  QString::~QString()
 #
+
+macx {
+    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.5.sdk
+    # (commented out) To inherit the Qt SDK default arches
+    #contains(QT_CONFIG, x86):CONFIG += x86
+    #contains(QT_CONFIG, x86_64):CONFIG += x86_64
+    # ppc and ppc64 could be disable (uncomment lined below) as most people are using/building with
+    # Intel this tool "generator" is only used for building QtJambi and not required at runtime.
+    #contains(QT_CONFIG, ppc):CONFIG -= ppc
+    #contains(QT_CONFIG, ppc64):CONFIG -= ppc64
+}
