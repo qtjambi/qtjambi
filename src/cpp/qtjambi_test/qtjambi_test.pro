@@ -10,3 +10,4 @@ INCLUDEPATH += $$QMAKE_INCDIR_QT/QtGui
 
 # libQtTest.so.4.7.4 is only dependant on libQtCore.so.4 (ensures removal of 'Qt -= gui')
 QT = core qtestlib
+CONFIG += qtestlib
