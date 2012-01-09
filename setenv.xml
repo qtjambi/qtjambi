@@ -121,7 +121,7 @@
                 <property name="qtjambi.libdir" value="${env.JAMBIDIR}/${qt.lib.subdir}"/>
 
 
-                <property name="qt.pluginsdir" value="${env.QTDIR}"/>
+                <property name="qt.pluginsdir" value="${env.QTDIR}/plugins"/>
                 <property name="qt.includedir" value="${env.QTDIR}/include"/>
 
                 <!--

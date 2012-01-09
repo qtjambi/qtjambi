@@ -948,8 +948,9 @@ public class InitializeTask extends Task {
             return false;
         path.append(pluginsPath);
         path.append(File.separator);
-        path.append("plugins");
-        path.append(File.separator);
+        // We make buildpath.properties also set the plugins/ part (like lib/)
+        //path.append("plugins");
+        //path.append(File.separator);
         path.append(subdir);
         path.append(File.separator);
 

@@ -60,107 +60,116 @@
 
             <library name="phonon_ds9"          type="plugin"
                     rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="plugins/phonon_backend"
+                    subdir="phonon_backend"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.phonon_ds9}"/>
             <library name="phonon_gstreamer"    type="plugin"
                     rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="plugins/phonon_backend"
+                    subdir="phonon_backend"
+                    destSubdir="plugins"
                     load="never"
                     kdephonon="${qtjambi.phonon.kdephonon}"
                     if="${qtjambi.phonon_gstreamer}"/>
             <library name="phonon_qt7"          type="plugin"
                     rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="plugins/phonon_backend"
+                    subdir="phonon_backend"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.phonon_qt7}"/>
 
             <!-- Qt Plugins -->
             <library name="qtaccessiblewidgets" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/accessible" load="never"
+                    subdir="accessible" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.accessible.qtaccessiblewidgets}"/>
 
             <library name="qsvgicon"            type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/iconengines" load="never"
+                    subdir="iconengines" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.iconengines.svgicon}"/>
 
             <library name="qgif"                type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
+                    subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.gif}"/>
             <library name="qico"                type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
+                    subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.ico}"/>
             <library name="qjpeg"               type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
+                    subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.jpeg}"/>
             <library name="qmng"                type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
+                    subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.mng}"/>
             <library name="qpng"               type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
+                    subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.png}"/>
             <library name="qsvg"                type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
+                    subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.svg}"/>
             <library name="qtiff"               type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/imageformats" load="never"
+                    subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.tiff}"/>
 
             <!-- Unicode codecs -->
             <library name="qcncodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"
+                    subdir="codecs" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.codecs.cncodecs}"/>
             <library name="qjpcodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"
+                    subdir="codecs" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.codecs.jpcodecs}"/>
             <library name="qkrcodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"
+                    subdir="codecs" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.codecs.krcodecs}"/>
             <library name="qtwcodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/codecs" load="never"
+                    subdir="codecs" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.codecs.twcodecs}"/>
 
             <library name="qsqlite" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/sqldrivers"
+                    subdir="sqldrivers"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.sqlite}"/>
             <library name="qsqlite2" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/sqldrivers"
+                    subdir="sqldrivers"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.sqlite2}"/>
             <library name="qsqlmysql" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/sqldrivers"
+                    subdir="sqldrivers"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.sqlmysql}"/>
             <library name="qsqlodbc" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/sqldrivers"
+                    subdir="sqldrivers"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.sqlodbc}"/>
             <library name="qsqlpsql" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/sqldrivers"
+                    subdir="sqldrivers"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.sqlpsql}"/>
             <library name="qsqltds" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="plugins/sqldrivers"
+                    subdir="sqldrivers"
+                    destSubdir="plugins"
                     load="never"
                     if="${qtjambi.plugins.sqldrivers.sqltds}"/>
 
