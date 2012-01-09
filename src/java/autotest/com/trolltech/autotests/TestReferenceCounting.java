@@ -888,7 +888,8 @@ public class TestReferenceCounting extends QApplicationTest {
                     }
                 }
             };
-            layout.addWidget(widget);
+            // layout.addWidget() is wrong here
+            layout.addStackedWidget(widget);
             QApplication.processEvents(); // force ChildAdd/ChildRemove processing
             widget = null;   // kill hard-reference
 
@@ -918,7 +919,8 @@ public class TestReferenceCounting extends QApplicationTest {
                     }
                 }
             };
-            layout.addWidget(widget);
+            // layout.addWidget() is wrong here
+            layout.addStackedWidget(widget);
 
             gcAndWait(0, null, null, null);
         }
@@ -945,7 +947,8 @@ public class TestReferenceCounting extends QApplicationTest {
                     }
                 }
             };
-            layout.addWidget(widget);
+            // layout.addWidget() is wrong here
+            layout.addStackedWidget(widget);
             layout.removeWidget(widget);
 
             gcAndWait(0, null, null, null);
