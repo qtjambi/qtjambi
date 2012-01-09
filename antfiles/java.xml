@@ -65,8 +65,10 @@
     <target name="jar.qtjambi-designer" depends="init, jar.qtjambi">
         <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar.qtjambi-designer">
             <property name="module" value="qtjambi-designer"/>
-            <!-- Keep com/trolltech/qt/designer/**-->
-            <property name="jar.excludes" value="com/trolltech/qt/core/**,com/trolltech/qt/designer/**,com/trolltech/qt/gui/**,com/trolltech/qt/help/**,com/trolltech/qt/multimedia/**,com/trolltech/qt/network/**,com/trolltech/qt/opengl/**,com/trolltech/qt/phonon/**,com/trolltech/qt/script/**,com/trolltech/qt/scripttools/**,com/trolltech/qt/sql/**,com/trolltech/qt/svg/**,com/trolltech/qt/webkit/**,com/trolltech/qt/xml/**,com/trolltech/qt/xmlpatterns/**"/>
+            <!-- Keep com/trolltech/qt/designer/**, Still see com/trolltech/qt/ directory in JAR but can't inhibit it
+               - tried com/trolltech/qt,com/trolltech/qt/,com/trolltech/qt/*
+              -->
+            <property name="jar.excludes" value="com/trolltech/qt/core/**,com/trolltech/qt/dbus/**,com/trolltech/qt/declarative/**,com/trolltech/qt/designer/**,com/trolltech/qt/gui/**,com/trolltech/qt/help/**,com/trolltech/qt/multimedia/**,com/trolltech/qt/network/**,com/trolltech/qt/opengl/**,com/trolltech/qt/phonon/**,com/trolltech/qt/script/**,com/trolltech/qt/scripttools/**,com/trolltech/qt/sql/**,com/trolltech/qt/svg/**,com/trolltech/qt/test/**,com/trolltech/qt/webkit/**,com/trolltech/qt/xml/**,com/trolltech/qt/xmlpatterns/**"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi-designer"/>
             <property name="sourcedir2" value="${generator.outputdir}/java"/><!-- duped with jar.qtjambi -->
         </ant>
