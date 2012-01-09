@@ -21,22 +21,23 @@ DESTDIR = ../lib
 DLLDESTDIR = ../bin
 
 
-!isEmpty(QTJAMBI_CONFIG) {
-    contains(QTJAMBI_CONFIG, debug) {
-        TARGET = $$member(TARGET, 0)_debuglib
-    }
-} else {
+#!isEmpty(QTJAMBI_CONFIG) {
+#    contains(QTJAMBI_CONFIG, debug) {
+#        TARGET = $$member(TARGET, 0)_debuglib
+#    }
+#} else {
     CONFIG(debug, debug|release) {
         TARGET = $$member(TARGET, 0)_debuglib
     }
-}
+#}
 
 INCLUDEPATH += $$PWD/..
 DEPENDPATH += $$PWD/..
 
 macx:{
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
+    # if(!defined(QMAKE_MAC_SDK)) { }
+    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.5.sdk
+    #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib
 } else {
