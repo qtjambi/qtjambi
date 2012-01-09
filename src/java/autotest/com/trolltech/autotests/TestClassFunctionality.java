@@ -111,6 +111,8 @@ import com.trolltech.qt.internal.QSignalEmitterInternal;
 import com.trolltech.qt.internal.QtJambiInternal;
 import com.trolltech.qt.network.QHostAddress;
 
+import com.trolltech.qt.osinfo.OSInfo;
+
 class OrdinarySubclass extends OrdinaryDestroyed {
     private TestClassFunctionality tc = null;
 
@@ -656,7 +658,16 @@ public class TestClassFunctionality extends QApplicationTest {
 
         QApplication.postEvent(receiver, event1);
         QApplication.postEvent(someQObject, event2);
+
+        // This should still be false (as we've not processed posted events yet or issues show())
+        assertFalse(receiver.paintEventCastWorked);
         parentWidget.show();
+        // CHECKME: This ends up still being false on Linux/Windows.
+        // MacOSX: This is already true here (not the difference between platforms), show() caused it to happen
+        if(OSInfo.isMacOS() == false)
+            assertFalse(receiver.paintEventCastWorked);
+        // ensure this gets called at least once (important on MacOSX, otherwise loop will not cause it)
+        QApplication.processEvents();
 
 	long t = System.currentTimeMillis();
 	while (t + 2500 > System.currentTimeMillis()) {
@@ -665,6 +676,7 @@ public class TestClassFunctionality extends QApplicationTest {
 	    // I tried again without using synchronized() here but am still seeing
 	    //   occasional random failures in this test.  So putting lock back in place.
             synchronized(receiver) {
+                // TODO: Rework this check, put a flag on everything that needs to happen, each custom event and the paint/show events.
                 if(receiver.paintEventCastWorked)
                     break;
             }
