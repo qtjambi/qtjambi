@@ -95,7 +95,7 @@
 
 typedef void (*PtrDestructorFunction)(void *);
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
     #include <pthread.h>
     #define THREAD_ID() ((void*)pthread_self())
 #endif
