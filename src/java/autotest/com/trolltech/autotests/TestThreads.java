@@ -115,6 +115,7 @@ public class TestThreads extends QApplicationTest {
     private static class PingPongRunner extends Thread {
         public PingPong object;
         public boolean ping;
+        public boolean goFlag;  // startup sync
         public PingPongRunner(boolean ping) {
             setDaemon(true);
             this.ping = ping;
@@ -129,11 +130,24 @@ public class TestThreads extends QApplicationTest {
             }
 
             if (ping) {
+                synchronized (this) {
+                    while (true) {
+                        if (goFlag)
+                            break;
+                        // It is important the pinger doesn't start any the pong will receive
+                        try { wait(); } catch (InterruptedException e) { };
+                    }
+                }
                 QCoreApplication.postEvent(object.other, new QEvent(PingPong.ID_PING));
             }
             QEventLoop loop = new QEventLoop();
             object.done.connect(loop, "quit()");
             loop.exec();
+        }
+
+        public synchronized void go() {
+            goFlag = true;
+            notifyAll();
         }
 
         public synchronized void setOtherObject(PingPong ppr) {
@@ -164,6 +178,8 @@ public class TestThreads extends QApplicationTest {
 
             ping.setOtherObject(pong.object);
             pong.setOtherObject(ping.object);
+
+            ping.go();
 
             ping.join(2500);
             pong.join(1000);
@@ -217,6 +233,10 @@ public class TestThreads extends QApplicationTest {
         @Override
         public void run() {
             object = new PingPongSS();
+
+            QEventLoop loop = new QEventLoop();
+            object.done.connect(loop, "quit()");
+
             // Wait for startup sync
             while(true) {
                 try {
@@ -232,8 +252,6 @@ public class TestThreads extends QApplicationTest {
             if (ping) {
                 object.firePing();
             }
-            QEventLoop loop = new QEventLoop();
-            object.done.connect(loop, "quit()");
             loop.exec();
         }
     }
