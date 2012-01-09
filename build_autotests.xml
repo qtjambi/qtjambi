@@ -1,6 +1,6 @@
 <!--
     TODO:
-    - I modified the run.osx target too, but I couldn't test it
+    - We work the target names into "tests.*" namespace "compile.java" => "tests.compile.java".
 -->
 <project default="all" basedir=".">
 
@@ -87,9 +87,12 @@
 
     <target name="compile.java" depends="init, compile.deps, check.junit">
         <mkdir dir="${outputDir}/tests/auto"/>
+        <!-- encoding="UTF-8" required due to some file tests (I18N) using
+        no ASCII/ISO-8859-1 characters and the MacOSX Java using "MacRoman"
+        character set by default. -->
         <javac destdir="${outputDir}/tests/auto" debug="true"
                 includeantruntime="false"
-                source="1.5" target="1.5">
+                source="1.5" target="1.5" encoding="UTF-8">
             <compilerarg value="-Xlint:deprecation" />
             <compilerarg value="-Xlint:unchecked" />
             <classpath>
@@ -109,7 +112,7 @@
         <mkdir dir="${outputDir}/tests/unit"/>
         <javac destdir="${outputDir}/tests/unit" debug="true"
                 includeantruntime="false"
-                source="1.5" target="1.5">
+                source="1.5" target="1.5" encoding="UTF-8">
             <compilerarg value="-Xlint:deprecation" />
             <compilerarg value="-Xlint:unchecked" />
             <classpath>
@@ -122,17 +125,57 @@
         </javac>
     </target>
 
+    <!-- NOTES: This should be merged with the normal target as the only difference is the -XstartOnFirstThread option.
+         In order to execute I needed to "export DYLD_LIBRARY_PATH=$QTDIR/lib:$(pwd)/build/platform-output/lib"
+         and then run the usual "ant compile.tests tests.run"
+      -->
     <target name="run.osx" if="qtjambi.osx" depends="init">
+        <qtjambi-resolve-path var="absOutputDir" path="${outputDir}" />
+        <qtjambi-resolve-path var="absQtLib"     path="${qtLib}" />
+        <qtjambi-resolve-path var="absJambiLib"  path="${jambiLib}" />
         <delete dir="${outputDir}/tests/junitxml" />
         <delete dir="${outputDir}/tests/TestResults" />
         <mkdir dir="${outputDir}/tests/junitxml"/>
         <mkdir dir="${outputDir}/tests/TestResults"/>
-        <junit fork="yes" printsummary="true" haltonfailure="no" timeout="20000">
+        <junit fork="yes" printsummary="true" haltonfailure="no" timeout="600000" showoutput="yes" logfailedtests="yes">
+            <classpath>
+                <pathelement location="${tests.junit}" />
+                <pathelement location="${tests.hamcrest}" />
+                <pathelement location="${basedir}/jars/qtjambi.jar" />
+<!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar" />                -->
+                <pathelement path="src/java/qtjambi-examples" />
+                <pathelement path="${absOutputDir}/tests/auto" />
+                <pathelement path="${absOutputDir}/tests/unit" />
+                <pathelement path="${absOutputDir}/tests/autotests" />
+                <pathelement path="${basedir}/src/java/qtjambi-examples" />
+                <!-- examples: is needed to pickup some images and non-code resource files to work with  -->
+                <!-- this is needed by 2 tests in com/trolltech/autotests/TestInjectedCode.java#testIODevicePeek() -->
+                <pathelement path="src/java/autotest" />
+            </classpath>
             <jvmarg value="-XstartOnFirstThread"/>
+            <jvmarg value="-d32"/><!-- This option can force 32bit JRE when
+            we're built using fat binaries supporting both 32 and 64bit -->
+            <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
+            <!-- <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/> -->
+            <!-- <jvmarg value="-Dcom.trolltech.qt.debug=true"/> --><!-- This should not be needed now, it loads default from MANIFEST.MF -->
+            <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
+            <!-- <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/> -->
+            <jvmarg value="-Dcom.trolltech.qt.exceptions-for-messages=none"/>
+            <jvmarg value="-Xrs"/><!-- This stops JVM intercepting SIGSEGV
+            from native code (so we can see where/why it crashed) otherwise
+            the JVM may promote SIGSEGV to NullPointerException, which is
+            not that useful for debugging. -->
+            <jvmarg value="-Xcheck:jni"/>
+            <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml">
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/autotests/Test*.java"/>
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/unittests/Test*.java"/>
+                <fileset dir="src/java/autotest">
+                    <include name="**/com/trolltech/autotests/**/Test*.java"/>
+                    <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
+                </fileset>
+                <fileset dir="src/java/autotest" includes="**/com/trolltech/unittests/**/Test*.java"/>
+                <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/**/Test*.java"/>
             </batchtest>
         </junit>
     </target>
