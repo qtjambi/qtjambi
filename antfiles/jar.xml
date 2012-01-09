@@ -172,9 +172,9 @@
         <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
-<!--                <attribute name="Bundle-Activator"        value="com.trolltech.qt.example.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
+<!--                <attribute name="Bundle-Activator"        value="com.trolltech.qt.examples.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
                 <attribute name="Bundle-Description"      value="QtJambi Examples Demos and Launcher Bundle"/>
-                <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.example;version=${qtjambi.version.bundle}"/>
+                <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.examples;version=${qtjambi.version.bundle}"/>
                 <!-- TODO: qtjambi.png -->
                 <!-- <attribute name="Bundle-Icon"             value="qtjambi.png"/> -->
                 <attribute name="Bundle-License"          value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
@@ -182,8 +182,8 @@
                 <attribute name="Bundle-ManifestVersion"  value="2"/>
                 <attribute name="Bundle-Name"             value="QtJambi Examples Demos and Launcher Bundle"/>
                 <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
-                <attribute name="Bundle-SymbolicName"     value="com.trolltech.qt.example;singleton:=true"/>
-                <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.example;version=${qtjambi.version.bundle}"/>
+                <attribute name="Bundle-SymbolicName"     value="com.trolltech.qt.examples;singleton:=true"/>
+                <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.examples;version=${qtjambi.version.bundle}"/>
                 <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
                 <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
 <!-- FIXME: Import-Package com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.images,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.internal,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns -->
