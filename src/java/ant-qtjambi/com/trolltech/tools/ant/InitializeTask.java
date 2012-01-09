@@ -238,6 +238,8 @@ public class InitializeTask extends Task {
     public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";   // Windows MSVC
     public static final String PACKAGING_DSO_LIBEAY32 = "qtjambi.packaging.dso.libeay32";   // Windows
 
+    public static final String PACKAGING_DSO_LIBDBUS  = "qtjambi.packaging.dso.libdbus-1";   // Macosx
+
     public static final String PACKAGING_DSO_CPLUSPLUSRUNTIME = "qtjambi.packaging.dso.cplusplusruntime";
 
     public static final String QTJAMBI_CONFIG_ISMACOSX      = "qtjambi.config.ismacosx";
@@ -562,11 +564,11 @@ public class InitializeTask extends Task {
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_MINGWM10,        decideQtBinDso(PACKAGING_DSO_MINGWM10,        "mingwm10"));
 
 
-        String packagingDsoLibeay32 = decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32");
+        String packagingDsoLibeay32 = decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32", (Integer)null);
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, packagingDsoLibeay32);
 
-        String packagingDsoLibssl32 = decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32", false);
-        String packagingDsoSsleay32 = decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32", false);
+        String packagingDsoLibssl32 = decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32", (Integer)null, false);
+        String packagingDsoSsleay32 = decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32", (Integer)null, false);
         // When building QtJambi against the offical Nokia Qt SDK they appear to provide duplicate
         // DLLs for the two naming variants libssl32.dll ssleay32.dll so we need to resolve this and
         // omit one.
@@ -590,8 +592,13 @@ public class InitializeTask extends Task {
         if(verbose && (packagingDsoSsleay32Message.length() > 0 || "true".equals(packagingDsoSsleay32)))
             System.out.println(PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message);
 
-        String packagingDsoZlib1    = decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1");
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,    packagingDsoZlib1);
+        String packagingDsoZlib1   = decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1", (Integer)null);
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1,   packagingDsoZlib1);
+
+        // FIXME: On Macosx when we build and have qtjambi.dbus==true we should WARN when we can not locate libdbus-1.*.dylib
+        // FIXME: On Macosx we should also search /usr/local/lib
+        String packagingDsoLibdbus = decideQtLibDso(PACKAGING_DSO_LIBDBUS, "dbus-1", new Integer[] { Integer.valueOf(3), Integer.valueOf(2), null });
+        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBDBUS, packagingDsoLibdbus);
 
         alreadyRun = true;
     }
@@ -898,20 +905,50 @@ public class InitializeTask extends Task {
         return null;
     }
 
-    private boolean doesQtLibExist(String name, int version, String librarydir) {
+    private String doesQtLibExist(String name, Integer version, String librarydir, Boolean debugValue) {
         StringBuilder path = new StringBuilder();
-        path.append(librarydir);
+        
+        if(librarydir != null) {
+            path.append(librarydir);
+        } else {
+            path.append(propertyHelper.getProperty((String) null, LIBDIR).toString());
+        }
+
         path.append(File.separator);
-        path.append(LibraryEntry.formatQtName(name, debug, String.valueOf(version)));
+        String versionString = null;
+        if(version != null)
+            versionString = String.valueOf(version);
+        boolean thisDebug = debug;
+        if(debugValue != null)
+            thisDebug = debugValue.booleanValue();
+        path.append(LibraryEntry.formatQtName(name, thisDebug, versionString));
         //System.out.println("Checking QtLib: " + path);
-        return new File(path.toString()).exists();
+        File testForFile = new File(path.toString());
+        if(testForFile.exists())
+            return testForFile.getAbsolutePath();
+        return null;
     }
 
-    private boolean doesQtLibExist(String name, int version) {
-        return doesQtLibExist(name, version, propertyHelper.getProperty((String) null, LIBDIR).toString());
+    private String doesQtLibExist(String name, Integer version) {
+        return doesQtLibExist(name, version, null, null);
     }
 
-    private boolean doesQtLibExist(String name, String librarydir) {
+    // FIXME: Phase this out (compatiblity method, use absolute path and != null to mean true/present)
+    private boolean doesQtLibExistAsBoolean(String name, Integer version, String librarydir) {
+        if(doesQtLibExist(name, version, librarydir, null) != null)
+            return true;
+        return false;
+    }
+
+    // FIXME: Phase this out (compatiblity method, use absolute path and != null to mean true/present)
+    private boolean doesQtLibExistAsBoolean(String name, Integer version) {
+        if(doesQtLibExist(name, version) != null)
+            return true;
+        return false;
+    }
+
+    // FIXME: This remains another method because of _debug and _debuglib differences in #formatQtJambiName() and #formatQtName()
+    private boolean doesQtJambiLibExist(String name, String librarydir) {
         StringBuilder path = new StringBuilder();
 
         if(librarydir != null) {
@@ -1009,7 +1046,8 @@ public class InitializeTask extends Task {
      * correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper propertyHelper) {
-        boolean exists = doesQtLibExist("phonon", qtMajorVersion, (String) propertyHelper.getProperty((String) null, PHONONLIBDIR));
+        String phononLibDir = (String) propertyHelper.getProperty((String) null, PHONONLIBDIR);
+        boolean exists = doesQtLibExistAsBoolean("phonon", qtMajorVersion, phononLibDir);
         String result = String.valueOf(exists);
 
         result = mySetProperty(propertyHelper, -1, PHONON, " (auto-detected)", result, false);
@@ -1157,21 +1195,21 @@ public class InitializeTask extends Task {
     }
 
     private String decideSql() {
-        String result = String.valueOf(doesQtLibExist("QtSql", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtSql", qtMajorVersion));
         if(verbose) System.out.println(SQL + ": " + result);
         if("true".equals(result)) addToQtConfig("sql");
         return result;
     }
 
     private String decideSvg() {
-        String result = String.valueOf(doesQtLibExist("QtSvg", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtSvg", qtMajorVersion));
         if(verbose) System.out.println(SVG + ": " + result);
         if("true".equals(result)) addToQtConfig("svg");
         return result;
     }
 
     private String decideTest() {
-        String result = String.valueOf(doesQtLibExist("QtTest", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtTest", qtMajorVersion));
         if(verbose) System.out.println(TEST + ": " + result);
         if("true".equals(result)) addToQtConfig("qtestlib");
         return result;
@@ -1283,124 +1321,140 @@ public class InitializeTask extends Task {
     }
 
     private String decideCore() {
-        String result = String.valueOf(doesQtLibExist("QtCore", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtCore", qtMajorVersion));
         if(verbose) System.out.println(CORE + ": " + result);
         if("true".equals(result)) addToQtConfig("core");
         return result;
     }
 
     private String decideCLucene() {
-        String result = String.valueOf(doesQtLibExist("QtCLucene", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtCLucene", qtMajorVersion));
         if(verbose) System.out.println(CLUCENE + ": " + result);
         return result;
     }
 
     private String decideDBus() {
-        String result = String.valueOf(doesQtLibExist("QtDBus", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtDBus", qtMajorVersion));
         if(verbose) System.out.println(DBUS + ": " + result);
         if("true".equals(result)) addToQtConfig("dbus");
         return result;
     }
 
     private String decideDeclarative() {
-        String result = String.valueOf(doesQtLibExist("QtDeclarative", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtDeclarative", qtMajorVersion));
         if(verbose) System.out.println(DECLARATIVE + ": " + result);
         if("true".equals(result)) addToQtConfig("declarative");
         return result;
     }
 
     private String decideDesigner() {
-        String result = String.valueOf(doesQtLibExist("QtDesigner", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtDesigner", qtMajorVersion));
         if(verbose) System.out.println(DESIGNER + ": " + result);
         if("true".equals(result)) addToQtConfig("designer");
         return result;
     }
 
     private String decideDesignerComponents() {
-        String result = String.valueOf(doesQtLibExist("QtDesignerComponents", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtDesignerComponents", qtMajorVersion));
         if(verbose) System.out.println(DESIGNERCOMPONENTS + ": " + result);
         return result;
     }
 
     private String decideGui() {
-        String result = String.valueOf(doesQtLibExist("QtGui", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtGui", qtMajorVersion));
         if(verbose) System.out.println(GUI + ": " + result);
         if("true".equals(result)) addToQtConfig("gui");
         return result;
     }
 
     private String decideHelp() {
-        String result = String.valueOf(doesQtLibExist("QtHelp", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtHelp", qtMajorVersion));
         if(verbose) System.out.println(HELP + ": " + result);
         if("true".equals(result)) addToQtConfig("help");
         return result;
     }
 
     private String decideMultimedia() {
-        String result = String.valueOf(doesQtLibExist("QtMultimedia", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtMultimedia", qtMajorVersion));
         if(verbose) System.out.println(MULTIMEDIA + ": " + result);
         if("true".equals(result)) addToQtConfig("multimedia");
         return result;
     }
 
     private String decideNetwork() {
-        String result = String.valueOf(doesQtLibExist("QtNetwork", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtNetwork", qtMajorVersion));
         if(verbose) System.out.println(NETWORK + ": " + result);
         if("true".equals(result)) addToQtConfig("network");
         return result;
     }
 
     private String decideOpenGL() {
-        String result = String.valueOf(doesQtLibExist("QtOpenGL", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtOpenGL", qtMajorVersion));
         if(verbose) System.out.println(OPENGL + ": " + result);
         if("true".equals(result)) addToQtConfig("opengl");
         return result;
     }
 
     private String decideScript() {
-        String result = String.valueOf(doesQtLibExist("QtScript", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtScript", qtMajorVersion));
         if(verbose) System.out.println(SCRIPT + ": " + result);
         if("true".equals(result)) addToQtConfig("script");
         return result;
     }
 
     private String decideScripttools() {
-        String result = String.valueOf(doesQtLibExist("QtScriptTools", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtScriptTools", qtMajorVersion));
         if(verbose) System.out.println(SCRIPTTOOLS + ": " + result);
         if("true".equals(result)) addToQtConfig("scripttools");
         return result;
     }
 
     private String decideWebkit() {
-        String result = String.valueOf(doesQtLibExist("QtWebKit", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtWebKit", qtMajorVersion));
         if(verbose) System.out.println(WEBKIT + ": " + result);
         if("true".equals(result)) addToQtConfig("webkit");
         return result;
     }
 
     private String decideXml() {
-        String result = String.valueOf(doesQtLibExist("QtXml", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtXml", qtMajorVersion));
         if(verbose) System.out.println(XML + ": " + result);
         if("true".equals(result)) addToQtConfig("xml");
         return result;
     }
 
     private String decideXmlPatterns() {
-        String result = String.valueOf(doesQtLibExist("QtXmlPatterns", qtMajorVersion));
+        String result = String.valueOf(doesQtLibExistAsBoolean("QtXmlPatterns", qtMajorVersion));
         if(verbose) System.out.println(XMLPATTERNS + ": " + result);
         if("true".equals(result)) addToQtConfig("xmlpatterns");
         return result;
     }
 
-    private String decideQtLibDso(String attrName, String name, boolean verboseFlag) {
-        boolean bf = doesQtLibExist(name, null);
-        String result = String.valueOf(bf);
-        if(verboseFlag && bf) System.out.println(attrName + ": " + result);
-        return result;
+    private String decideQtLibDso(String attrName, String name, Integer version, boolean verboseFlag) {
+        String path = doesQtLibExist(name, version, null, Boolean.FALSE);
+        if(verboseFlag && path != null) System.out.println(attrName + ": " + path);
+        return path;
     }
 
-    private String decideQtLibDso(String attrName, String name) {
-        return decideQtLibDso(attrName, name, verbose);
+    private String decideQtLibDso(String attrName, String name, Integer version) {
+        return decideQtLibDso(attrName, name, version, verbose);
+    }
+
+    // FIXME use String[] not Integer[] for allowing "1.3"
+    private String decideQtLibDso(String attrName, String name, Integer[] tryVersionA) {
+        if(tryVersionA == null)
+            return decideQtLibDso(attrName, name, null, verbose);  // run at least once
+
+        String rv = null;
+        for(Integer tryVersion : tryVersionA) {
+            if(tryVersion != null)
+                rv = decideQtLibDso(attrName, name, tryVersion, verbose);
+            else
+                rv = decideQtLibDso(attrName, name, null, verbose);
+            if(rv != null)
+                return rv;
+        }
+        return rv;
     }
 
     private String decideQtBinDso(String attrName, String name) {

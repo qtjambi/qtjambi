@@ -261,6 +261,16 @@
                     load="never"
                     if="${qtjambi.packaging.dso.zlib1}"/>
 
+            <!-- Macosx libdbus-1.3.dylib (this should never have _debug
+            since the Qt runtime loader code does not account for that,
+            src/dbus/qdbus_symbols.cpp) -->
+            <library name="dbus-1"       type="dso"
+                    rootPath="${qtjambi.qt.libdir}"
+                    destSubdir="lib"
+                    load="never"
+                    srcPath="${qtjambi.packaging.dso.libdbus-1}"
+                    if="${qtjambi.packaging.dso.libdbus-1}"/>
+
             <plugin path="plugins"/>
             <plugin-designer path="plugins-designer"/>
 

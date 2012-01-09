@@ -87,13 +87,13 @@ public class LibraryEntry extends Task {
     private String subdir;
     private String destSubdir;
     private String load = LOAD_DEFAULT;
+    private String srcPath;
     private boolean included = true;
     private String dsoVersion;
 
     public boolean getKdephonon() {
         return kdephonon;
     }
-
     public void setKdephonon(boolean enabled) {
         this.kdephonon = enabled;
     }
@@ -101,7 +101,6 @@ public class LibraryEntry extends Task {
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
@@ -109,7 +108,6 @@ public class LibraryEntry extends Task {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -117,7 +115,6 @@ public class LibraryEntry extends Task {
     public File getRootPath() {
         return rootPath;
     }
-
     public void setRootPath(File rootPath) {
         this.rootPath = rootPath;
     }
@@ -125,7 +122,6 @@ public class LibraryEntry extends Task {
     public String getSubdir() {
         return subdir;
     }
-
     public void setSubdir(String subdir) {
         this.subdir = subdir;
     }
@@ -133,7 +129,6 @@ public class LibraryEntry extends Task {
     public String getDestSubdir() {
         return destSubdir;
     }
-
     public void setDestSubdir(String destSubdir) {
         this.destSubdir = destSubdir;
     }
@@ -141,15 +136,29 @@ public class LibraryEntry extends Task {
     public String getLoad() {
         return load;
     }
-
     public void setLoad(String load) {
         this.load = load;
     }
 
-    public void setIf(boolean included) {
-        this.included = included;
+
+    public void setSrcPath(String srcPath) {
+        this.srcPath = srcPath;
+    }
+    public String getSrcPath() {
+        return this.srcPath;
     }
 
+    public void setIf(String included) {
+        if(included == null || included.length() == 0 || "false".compareToIgnoreCase(included) == 0)
+            this.included = false;
+        else if("true".compareToIgnoreCase(included) == 0 || new File(included).exists())
+            this.included = true;
+        else
+            this.included = false;
+    }
+    public String getIf() {
+        return Boolean.valueOf(included).toString();
+    }
     public boolean isIncluded() {
         return included;
     }
