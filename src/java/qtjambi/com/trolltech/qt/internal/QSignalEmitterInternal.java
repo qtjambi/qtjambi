@@ -51,6 +51,7 @@ import com.trolltech.qt.core.QCoreApplication;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Field;
@@ -65,7 +66,7 @@ public abstract class QSignalEmitterInternal {
     public abstract class AbstractSignalInternal {
 
         private boolean             inCppEmission       = false;
-        private List<Connection> connections         = null;
+        private List<Connection>    connections         = null;
         private Class<?>            types[]             = null;
         private int                 arrayDimensions[]   = null;
         private String              name                = "";
@@ -79,18 +80,21 @@ public abstract class QSignalEmitterInternal {
          * @exclude
          */
         protected class Connection {
-            public int      flags           = 0;
-            public Object   receiver        = null;
-            public Method slot            = null;
-            public byte     returnType      = 0;
-            public int      convertTypes[]  = null;
-            public long     slotId          = 0;
-            public Object   args[]          = null;
+            private WeakReference<Object> weakReceiver    = null;	// use #resolveReceiver() for access
+            private Object                receiver        = null;	// use #resolveReceiver() for access
+            public  int                   flags           = 0;
+            public  Method                slot            = null;
+            public  byte                  returnType      = 0;
+            public  int                   convertTypes[]  = null;
+            public  long                  slotId          = 0;
+            public  Object                args[]          = null;
 
 
-            public static final int DIRECT_CONNECTION = 0x0001;
-            public static final int QUEUED_CONNECTION = 0x0002;
-            public static final int PUBLIC_SLOT       = 0x0010;
+            public static final int DIRECT_CONNECTION         = 0x01;
+            public static final int QUEUED_CONNECTION         = 0x02;
+            public static final int PUBLIC_SLOT               = 0x10;
+            public static final int HARD_REFERENCE_CONNECTION = 0x40;  // Seems unused bit at this time (~4.7.x)
+            public static final int CONNECTION_TYPE_MASK      = 0x87;  // 0, 1, 2, 3, 4, 128 (in use from Qt.ConnectionType)
 
             public final boolean isSlotPublic() {
                 return (flags & PUBLIC_SLOT) != 0;
@@ -108,16 +112,32 @@ public abstract class QSignalEmitterInternal {
                 return (flags & (QUEUED_CONNECTION | DIRECT_CONNECTION)) == 0;
             }
 
-            public Connection(Object receiver, Method slot, byte returnType,
-                    byte connectionType) {
-                this.receiver = receiver;
+            public final boolean isHardReferenceConnection() {
+                return (flags & HARD_REFERENCE_CONNECTION) != 0;
+            }
+
+            // This method encapsulates access to receiver, that is why it is not public
+            public final Object resolveReceiver() {
+                if(this.weakReceiver != null)
+                    return weakReceiver.get();
+                else
+                    return receiver;
+            }
+
+            public Connection(Object receiver, Method slot, byte returnType, byte connectionType) {
+                if((connectionType & HARD_REFERENCE_CONNECTION) != 0) {
+                    this.receiver = receiver;
+                    flags |= HARD_REFERENCE_CONNECTION;
+                } else {
+                    this.weakReceiver = new WeakReference<Object>(receiver);
+                }
                 this.slot = slot;
                 this.slotId = com.trolltech.qt.internal.QtJambiInternal.resolveSlot(slot);
                 this.returnType = returnType;
 
-                if (connectionType == Qt.ConnectionType.QueuedConnection.value())
+                if ((connectionType & CONNECTION_TYPE_MASK) == Qt.ConnectionType.QueuedConnection.value())
                     flags |= QUEUED_CONNECTION;
-                else if (connectionType == Qt.ConnectionType.DirectConnection.value())
+                else if ((connectionType & CONNECTION_TYPE_MASK) == Qt.ConnectionType.DirectConnection.value())
                     flags |= DIRECT_CONNECTION;
 
                 if (Modifier.isPublic(slot.getModifiers())
@@ -186,7 +206,7 @@ public abstract class QSignalEmitterInternal {
          */
         private boolean slotIsCppEmit(Connection connection) {
             return (connection.slot.getName().equals(name())
-                    && connection.receiver == QSignalEmitterInternal.this
+                    && connection.resolveReceiver() == QSignalEmitterInternal.this
                     && connection.slot.getDeclaringClass().equals(declaringClass));
         }
 
@@ -325,8 +345,9 @@ public abstract class QSignalEmitterInternal {
             try {
                 for (Connection c : cons) {
 
+                    Object receiver = c.resolveReceiver();
                     // If the receiver has been deleted we take the connection out of the list
-                    if (c.receiver instanceof QtJambiObject && ((QtJambiObject)c.receiver).nativeId() == 0) {
+                    if (receiver instanceof QtJambiObject && ((QtJambiObject)receiver).nativeId() == 0) {
                         if (toRemove == null)
                             toRemove = new ArrayList<Connection>();
                         toRemove.add(c);
@@ -352,30 +373,30 @@ public abstract class QSignalEmitterInternal {
                     //    are both in the current thread
                     if (c.isDirectConnection()
                             || (c.isAutoConnection()
-                                && !(c.receiver instanceof QSignalEmitter))
+                                && !(receiver instanceof QSignalEmitter))
                             || (c.isAutoConnection()
-                                    && c.receiver instanceof QSignalEmitter
-                                    && ((QSignalEmitter) c.receiver).thread() == Thread.currentThread()
-                                    && ((QSignalEmitter) c.receiver).thread() == thread())) {
+                                    && receiver instanceof QSignalEmitter
+                                    && ((QSignalEmitter) receiver).thread() == Thread.currentThread()
+                                    && ((QSignalEmitter) receiver).thread() == thread())) {
                         QSignalEmitterInternal oldEmitter = currentSender.get();
                         currentSender.set(QSignalEmitterInternal.this);
                         try {
-                            boolean updateSender = c.receiver instanceof QObject && QSignalEmitterInternal.this instanceof QObject;
+                            boolean updateSender = receiver instanceof QObject && QSignalEmitterInternal.this instanceof QObject;
                             long oldSender = 0;
                             if (updateSender) {
-                                oldSender = QtJambiInternal.setQObjectSender(((QObject) c.receiver).nativeId(),
+                                oldSender = QtJambiInternal.setQObjectSender(((QObject) receiver).nativeId(),
                                                                              ((QObject) QSignalEmitterInternal.this).nativeId());
                             }
 
                             try {
-                                c.slot.invoke(c.receiver, c.args);
+                                c.slot.invoke(receiver, c.args);
                             } catch (IllegalAccessException e) {
-                                QtJambiInternal.invokeSlot(c.receiver, c.slotId, c.returnType,
+                                QtJambiInternal.invokeSlot(receiver, c.slotId, c.returnType,
                                         c.args, c.convertTypes);
                             }
 
                             if (updateSender) {
-                                QtJambiInternal.resetQObjectSender(((QObject) c.receiver).nativeId(),
+                                QtJambiInternal.resetQObjectSender(((QObject) receiver).nativeId(),
                                                                   oldSender);
                             }
 
@@ -391,14 +412,14 @@ public abstract class QSignalEmitterInternal {
                     } else {
 
                         QObject sender = null;
-                        if(c.receiver instanceof QObject && QSignalEmitterInternal.this instanceof QObject) {
+                        if(receiver instanceof QObject && QSignalEmitterInternal.this instanceof QObject) {
                             sender = (QObject) QSignalEmitterInternal.this;
                         }
 
                         QtJambiInternal.QMetaCallEvent event = new QtJambiInternal.QMetaCallEvent(c, sender, c.args);
                         QObject eventReceiver = null;
-                        if (c.receiver instanceof QObject)
-                            eventReceiver = (QObject) c.receiver;
+                        if (receiver instanceof QObject)
+                            eventReceiver = (QObject) receiver;
                         else
                             eventReceiver = QCoreApplication.instance();
 
@@ -532,7 +553,8 @@ public abstract class QSignalEmitterInternal {
             if (connections != null) {
                 List<Connection> toRemove = null;
                 for (Connection c : connections) {
-                    if ((receiver == null || c.receiver == receiver)
+                    Object resolvedReceiver = c.resolveReceiver();
+                    if ((receiver == null || resolvedReceiver == receiver)
                         && (slot == null || slot.equals(c.slot))) {
                         if (toRemove == null)
                             toRemove = new ArrayList<Connection>();

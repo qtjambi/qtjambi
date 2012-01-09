@@ -107,22 +107,23 @@ public class QtJambiInternal {
             boolean updateSender = sender != null;
             long oldSender = 0;
             QSignalEmitterInternal oldEmitter = null;
+            Object resolvedReceiver = connection.resolveReceiver();
             if (updateSender) {
-                oldSender = QtJambiInternal.setQObjectSender(((QObject) connection.receiver).nativeId(),
+                oldSender = QtJambiInternal.setQObjectSender(((QObject) resolvedReceiver).nativeId(),
                                                              sender.nativeId());
                 oldEmitter = QSignalEmitterInternal.currentSender.get();
                 QSignalEmitterInternal.currentSender.set(sender);
             }
             try {
-                connection.slot.invoke(connection.receiver, arguments);
+                connection.slot.invoke(resolvedReceiver, arguments);
             } catch (IllegalAccessException e) {
-                QtJambiInternal.invokeSlot(connection.receiver, connection.slotId,
+                QtJambiInternal.invokeSlot(resolvedReceiver, connection.slotId,
                                            connection.returnType,
                                            connection.args, connection.convertTypes);
             } catch (Exception e) {
                 System.err.printf("Exception while executing queued connection: sender=%s, receiver=%s %s\n",
                         sender != null ? sender.getClass().getName() : "N/A",
-                        connection.receiver,
+                        resolvedReceiver,
                         connection.slot.toString());
                 if (e.getCause() != null)
                     e.getCause().printStackTrace();
@@ -130,7 +131,7 @@ public class QtJambiInternal {
                     e.printStackTrace();
             }
             if (updateSender) {
-                QtJambiInternal.resetQObjectSender(((QObject) connection.receiver).nativeId(),
+                QtJambiInternal.resetQObjectSender(((QObject) resolvedReceiver).nativeId(),
                                                    oldSender);
                 QSignalEmitterInternal.currentSender.set(oldEmitter);
             }
