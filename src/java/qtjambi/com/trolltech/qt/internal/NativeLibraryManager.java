@@ -768,19 +768,26 @@ public class NativeLibraryManager {
 
 
     private static String qtLibraryName(String lib, String version) {
+        String dotVersion;
+        if(version != null) {
+            dotVersion = "." + version;
+        } else {
+            version = "";
+            dotVersion = "";
+        }
         switch (Utilities.operatingSystem) {
         case Windows:
             return Utilities.configuration == Utilities.Configuration.Debug
-                ? lib + "d" + version + ".dll"
-                : lib + version + ".dll";
+                ? lib + "d" + version + ".dll"  // "QtFood4.dll"
+                : lib + version + ".dll";  // "QtFoo4.dll"
         case MacOSX:
             return Utilities.configuration == Utilities.Configuration.Debug
-                ? "lib" + lib + "_debug." + version + ".dylib"
-                : "lib" + lib + "." + version + ".dylib";
+                ? "lib" + lib + "_debug" + dotVersion + ".dylib"  // "libQtFoo_debug.4.dylib"
+                : "lib" + lib + dotVersion + ".dylib";  // "libQtFoo.4.dylib"
         case Linux:
         case FreeBSD:
             // Linux doesn't have a dedicated "debug" library since 4.2
-            return "lib" + lib + ".so." + version;
+            return "lib" + lib + ".so." + version;  // "libQtFoo.so.4"
         }
         throw new RuntimeException("Unreachable statement");
     }

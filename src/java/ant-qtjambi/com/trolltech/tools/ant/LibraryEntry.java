@@ -355,7 +355,7 @@ public class LibraryEntry extends Task {
             case Windows:
                 return name + "d" + tmpVersionString + ".dll";
             case MacOS:
-                return "lib" + name + tmpDotVersionString + tmpDebugSuffix + ".jnilib";
+                return "lib" + name + tmpDebugSuffix + tmpDotVersionString + ".jnilib";
             case Solaris:
             case Linux:
             case FreeBSD:
@@ -385,7 +385,7 @@ public class LibraryEntry extends Task {
              case Windows:
                 return name + tmpVersionString + tmpDebugSuffix + ".dll";
              case MacOS:
-                return "lib" + name + tmpDotVersionString + tmpDebugSuffix + ".dylib";
+                return "lib" + name + tmpDebugSuffix + tmpDotVersionString + ".dylib";
              case Solaris:
              case Linux:
              case FreeBSD:
