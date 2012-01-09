@@ -181,18 +181,34 @@ public class Utilities {
 
     /** Enum for defining the operation system. */
     public enum OperatingSystem {
-        Windows,
-        MacOSX,
-        Linux,
-        FreeBSD,
-        SunOS
+        Windows("Windows"),
+        MacOSX("MacOSX"),
+        Linux("Linux"),
+        FreeBSD("FreeBSD"),
+        SunOS("SunOS");
+
+        private OperatingSystem(String label) {
+            this.label = label;
+        }
+        public String toString() {
+            return label;
+        }
+        private String label;
     }
 
     /** Defines whether Qt is build in Release or Debug. */
     public enum Configuration {
-        Release,
-        Debug,
-        Test
+        Release("Release"),
+        Debug("Debug"),
+        Test("Test");
+
+        private Configuration(String label) {
+            this.label = label;
+        }
+        public String toString() {
+            return label;
+        }
+        private String label;
     }
 
     /** The operating system Qt Jambi is running on. */
@@ -334,7 +350,9 @@ public class Utilities {
 
     private static Configuration decideDefaultConfiguration() {
         Configuration configuration = null;
+        String configurationSource = null;
         try {
+            boolean error = false;
             Enumeration<URL> enumUrls = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");
             while(enumUrls.hasMoreElements()) {
                 URL url = enumUrls.nextElement();
@@ -362,16 +380,24 @@ public class Utilities {
                         } else {
                             if(tmpXQtJambiBuild == null)
                                 tmpXQtJambiBuild = "<notset>";
-                            System.out.println("com.trolltech.qt.Utilities#decideDefaultConfiguration()  " + url.toString() + " invalid " + K_X_QtJambi_Build + ": " + tmpXQtJambiBuild);
+                            // FIXME: Only JARs with/relating-to platform specific DSO parts will have X-QtJambi-Build setting.
+                            //System.out.println(Utilities.class.getName() + "#decideDefaultConfiguration()  " + url.toString() + " invalid " + K_X_QtJambi_Build + ": " + tmpXQtJambiBuild);
                         }
 
                         // We keep checking them all
                         // If we find 2 matches this is a failure case right now, until we have resolution strategy implemented
-                        if(configuration != null) {
+                        if(configuration != null && tmpConfiguration != null && tmpConfiguration != configuration) {
                             // Multiple matches, ah well...
+                            System.err.println(Utilities.class.getName() + "#decideDefaultConfiguration()  " +
+                                configurationSource + "(" + configuration.toString() + ") != " +
+                                url.toString() + "(" + tmpConfiguration.toString() + ") multiple different " +
+                                K_X_QtJambi_Build + ": found in ClassPath JARs, this is currently not supported");
                             configuration = null;
-                        } else {
+                            configurationSource = null;
+                            error = true;
+                        } else if(!error) {
                             configuration = tmpConfiguration;  // found
+                            configurationSource = url.toString();
                         }
                     }
                 } catch(IOException e) {
