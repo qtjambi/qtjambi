@@ -722,7 +722,7 @@ public class PlatformJarTask extends Task {
             /*
              * "lib" is somewhat of a hack to specify where the files should be copied to.
              */
-            Util.copy(rt, new File(outdir + "/lib",  name));
+            Util.copy(rt, new File(outdir + File.separator + "lib", name));
             runtimeLibs.add("lib/" + name);
         } catch(IOException e) {
             e.printStackTrace();
