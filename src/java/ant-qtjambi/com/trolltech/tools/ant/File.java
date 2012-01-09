@@ -52,6 +52,10 @@ import org.apache.tools.ant.Task;
 public class File extends Task implements Dirent {
     private String name;
 
+    public File(String name) {
+        setName(name);
+    }
+
     public void execute() throws BuildException {
         if(name == null || name.length() == 0)
             throw new BuildException("Attribute 'name' is missing or invalid; name=" + name);
@@ -60,7 +64,7 @@ public class File extends Task implements Dirent {
     public String getName() {
         return name;
     }
-    public void setPath(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -68,6 +72,6 @@ public class File extends Task implements Dirent {
         return null;
     }
     public boolean isDirectory() {
-        return true;
+        return false;
     }
 }

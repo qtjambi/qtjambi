@@ -212,7 +212,59 @@ public class PlatformJarTask extends Task {
         writeQtJambiDeployment();
     }
 
-    // FIXME: We should be XML escaping data
+    // Not sure we needed pathFragment, since it is only used by toplevel and it is always null for that.  Ah yes for indent now.
+    private void writeDirectoryElementRecurse(PrintWriter writer, Directory root, String pathFragment, Dirent dirent) {
+        if(dirent == null)
+            return;
+
+        int indentCount = 0;
+        {   // Pretty XML
+            if(pathFragment != null) {
+                String[] pfA = pathFragment.split("/");
+                if(pfA != null)
+                    indentCount += pfA.length;
+            }
+        }
+        for(int i = indentCount; i > 0; i--)
+            writer.print("  ");
+        if(dirent.isDirectory()) {
+            if(root == dirent)  // Top  level include full path from getDestSubDir()
+                writer.println("  <directory name=\"" + xmlEscape(pathCanon(new String[] { root.getDestSubdir(), pathFragment, dirent.getName() })) + "\">");
+            else
+                writer.println("  <directory name=\"" + xmlEscape(pathCanon(new String[] { dirent.getName() })) + "\">");
+        } else {
+            writer.println("  <file name=\"" + xmlEscape(pathCanon(new String[] { dirent.getName() })) + "\"/>");
+        }
+
+        List<Dirent> list = dirent.getChildList();
+        if(list != null) {
+            String subPathFragment = pathFragment;
+            if(subPathFragment != null && subPathFragment.length() > 0)
+                subPathFragment += "/";
+            if(subPathFragment == null)
+                subPathFragment = "";	// stops += appending "null" first
+            subPathFragment += dirent.getName();
+
+            for(Dirent d : list)
+                writeDirectoryElementRecurse(writer, root, subPathFragment, d);
+        }
+
+        if(dirent.isDirectory()) {
+            for(int i = indentCount; i > 0; i--)
+                writer.print("  ");
+            writer.println("  </directory>");
+        }
+    }
+
+    private void writeDirectoryElementTree(PrintWriter writer, List<Directory> list) {
+        if(list.size() > 0) {
+            writer.println();
+            writer.println("  <!-- Directory -->");
+        }
+        for(Directory root : list)
+            writeDirectoryElementRecurse(writer, root, null, root);
+    }
+
     private void writeQtJambiDeployment() {
         PrintWriter writer;
         try {
@@ -224,24 +276,12 @@ public class PlatformJarTask extends Task {
         }
 
         writer.println("<qtjambi-deploy" + " system=\""
-                            + propertyHelper.getProperty((String) null,
-                            InitializeTask.OSNAME).toString() + "\">");
+                            + xmlEscape(propertyHelper.getProperty((String) null,
+                            InitializeTask.OSNAME).toString()) + "\">");
         writer.println();
-        writer.println("  <cache key=\"" + cacheKey + "\" />");
+        writer.println("  <cache key=\"" + xmlEscape(cacheKey) + "\" />");
 
-        if(directoryList.size() > 0) {
-            writer.println();
-            writer.println("  <!-- Directory -->");
-        }
-        for(Directory d : directoryList) {
-           writer.print("  <directory name=\"" + pathCanon(new String[] { d.getDestSubdir(), d.getName() }) + "\"");
-           writer.println(">");
-           for(Dirent f : d.getChildList()) {
-               if(f.isDirectory() == false)  // FIXME for == true case
-                   writer.println("    <file name=\"" + f.getName() + "\"/>");
-           }
-           writer.println("  </directory>");
-        }
+        writeDirectoryElementTree(writer, directoryList);
 
         // system libraries that must be loaded first of all...
         if(systemLibs.equals(SYSLIB_AUTO)) {
@@ -250,7 +290,7 @@ public class PlatformJarTask extends Task {
                 writer.println("  <!-- Runtime libraries, loaded automatically -->");
             }
             for(String rt : runtimeLibs) {
-                writer.println("  <library name=\"" + rt + "\" load=\"yes\" />");
+                writer.println("  <library name=\"" + xmlEscape(rt) + "\" load=\"yes\" />");
             }
         }
 
@@ -262,9 +302,9 @@ public class PlatformJarTask extends Task {
             String destSubdir = e.getDestSubdir();
             String load = e.getLoad();
 
-            writer.print("  <library name=\"" + pathCanon(new String[] { destSubdir, subdir, libraryName }) + "\"");
+            writer.print("  <library name=\"" + xmlEscape(pathCanon(new String[] { destSubdir, subdir, libraryName })) + "\"");
             if(!load.equals(LibraryEntry.LOAD_DEFAULT))
-                writer.print(" load=\"" + load + "\"");
+                writer.print(" load=\"" + xmlEscape(load) + "\"");
             writer.println("/>");
         }
 
@@ -275,7 +315,7 @@ public class PlatformJarTask extends Task {
                 writer.println("  <!-- Dependency libraries, not loaded... -->");
             }
             for(String unpack : unpackLibs) {
-                writer.println("  <library name=\"" + unpack + "\" load=\"never\" />");
+                writer.println("  <library name=\"" + xmlEscape(unpack) + "\" load=\"never\" />");
             }
         }
 
@@ -284,7 +324,7 @@ public class PlatformJarTask extends Task {
             writer.println();
             writer.println("  <!-- Plugins... -->");
             for(PluginPath p : pluginPaths) {
-                writer.println("  <plugin path=\"" + p.getPath() + "\" />");
+                writer.println("  <plugin path=\"" + xmlEscape(p.getPath()) + "\" />");
             }
         }
         // designer plugins...
@@ -292,7 +332,7 @@ public class PlatformJarTask extends Task {
             writer.println();
             writer.println("  <!-- Designer Plugins... -->");
             for(PluginDesignerPath p : pluginDesignerPaths) {
-                writer.println("  <plugin-designer path=\"" + p.getPath() + "\" />");
+                writer.println("  <plugin-designer path=\"" + xmlEscape(p.getPath()) + "\" />");
             }
         }
 
@@ -305,7 +345,7 @@ public class PlatformJarTask extends Task {
     private String pathCanon(String[] sA) {
         if(sA == null)
             return null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for(String s : sA) {
             if(s == null)
                 continue;
@@ -379,6 +419,37 @@ public class PlatformJarTask extends Task {
         }
     }
 
+    private Directory buildDirentDirectory(Directory parent, String rootPath, String name) {
+        String thisRootPath = rootPath + "/" + name;
+        Directory direntDirectory = new Directory(thisRootPath, name);
+        if(parent.getChild(name) != null)
+            throw new RuntimeException("duplicate name=" + name);   // should never happen
+        parent.getChildList().add(direntDirectory);
+        return direntDirectory;
+    }
+
+    private com.trolltech.tools.ant.File buildDirentFile(Directory parent, String name) {
+        com.trolltech.tools.ant.File direntFile = new com.trolltech.tools.ant.File(name);
+        if(parent.getChild(name) != null)
+            throw new RuntimeException("duplicate name=" + name);   // should never happen
+        parent.getChildList().add(direntFile);
+        return direntFile;
+    }
+
+    private void buildDirentDirectoryRecurse(Directory parent, File dirParent, String rootPath, String name) {
+        Directory subDirectory = buildDirentDirectory(parent, rootPath, name);
+
+        File[] subFileA = dirParent.listFiles();
+        for(File f : subFileA) {
+            if(f.isDirectory()) {
+                File x = new File(dirParent, f.getName());
+                buildDirentDirectoryRecurse(subDirectory, x, rootPath, f.getName());   // recursive
+            } else {
+                com.trolltech.tools.ant.File direntFile = buildDirentFile(subDirectory, f.getName());
+            }
+        }
+    }
+
     private void processDirectory(Directory d) {
         File rootPathFile = null;
         String rootPath = null;
@@ -445,6 +516,7 @@ public class PlatformJarTask extends Task {
                 }
 
                 List<Directory> direntList = new ArrayList<Directory>();
+                List<String> filenameList = new ArrayList<String>();
                 List<String> dirnameList = new ArrayList<String>();
 
                 File[] fileA = srcTarget.listFiles();
@@ -463,8 +535,10 @@ public class PlatformJarTask extends Task {
                             if(recursive)
                                 dirnameList.add(name);
                         } else {
-                            System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
+                            //System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
                             Util.copy(thisSrcFile, thisDestFile);
+                            if(recursive)
+                                filenameList.add(name);
                         }
                     } else {
                         if(child.isDirectory()) {
@@ -478,7 +552,7 @@ public class PlatformJarTask extends Task {
                         } else {
                             File thisSrcFile = new File(srcTarget, name);
                             File thisDestFile = new File(destTarget, name);
-                            System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
+                            //System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
                             Util.copy(thisSrcFile, thisDestFile);
                         }
                     }
@@ -493,10 +567,15 @@ public class PlatformJarTask extends Task {
                     File thisSrcFile = new File(srcTarget, name);
                     File thisDestFile = new File(destTarget, name);
                     processDirectoryInternal(thisSrcFile, thisDestFile, -1, null);
+                    // We need to make a Dirent for all these nodes
+                    buildDirentDirectoryRecurse(d, thisSrcFile, rootPath, name);
+                }
+                for(String name : filenameList) {
+                    com.trolltech.tools.ant.File direntFile = buildDirentFile(d, name);
                 }
             } else {
                 try {
-                    System.out.println("Copying " + srcTarget + " to " + destTarget);
+                    //System.out.println("Copying " + srcTarget + " to " + destTarget);
                     Util.copy(srcTarget, destTarget);
                 } catch(IOException ex) {
                     ex.printStackTrace();
@@ -504,7 +583,7 @@ public class PlatformJarTask extends Task {
                 }
             }
         } catch(Exception ex) {
-            StringBuffer sb = new StringBuffer("DIAGNOSTIC");
+            StringBuilder sb = new StringBuilder("DIAGNOSTIC");
             if(rootPathFile != null)
                 sb.append("; rootPathFile=" + rootPathFile.getAbsolutePath());
             if(toplevelName != null)
@@ -575,7 +654,7 @@ public class PlatformJarTask extends Task {
                 throw new BuildException("Failed to copy library '" + libraryName + "'");
             }
         } catch(Exception ex) {
-            StringBuffer sb = new StringBuffer("DIAGNOSTIC");
+            StringBuilder sb = new StringBuilder("DIAGNOSTIC");
             if(rootPath != null)
                 sb.append("; rootPath=" + rootPath.getAbsolutePath());
             if(libraryName != null)
@@ -781,18 +860,23 @@ System.out.println(" with.destSubdir   =  " + withDestSubdir);
 System.out.println(" with.Subdir       =  " + withSubdir);
 System.out.println(" with.Name         =  " + with.getName());
 }
-                builder.append(withSubdir);
-                builder.append("/");
+                File withTarget = new File(withSubdir, with.getName());
+                String targetPath = pathCanon(new String[] { changeDestSubdir, changeSubdir, change.getName() }); //change.relativePath();
+                String resolvedWithSubdir = resolveWithSubdir(builder.toString(), targetPath);
+                if(resolvedWithSubdir != null)
+                    builder = new StringBuilder(resolvedWithSubdir);
+                if(builder.length() > 0)
+                    builder.append("/");
                 builder.append(with.getName());
                 builder.insert(0, "@loader_path/");
 
                 cmd[3] = builder.toString();
-                cmd[4] = pathCanon(new String[] { changeDestSubdir, changeSubdir, change.getName() }); //change.relativePath();
+                cmd[4] = targetPath;
 
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
 
-System.out.println(" exec " + Arrays.toString(cmd) + " in " + outdir);
+//System.out.println(" exec " + Arrays.toString(cmd) + " in " + outdir);
                 Exec.exec(cmd, outdir, getProject(), false);
 
                 // CHECKME: Is this needed since we started to use soname.major when deploying ?
@@ -804,6 +888,83 @@ System.out.println(" exec " + Arrays.toString(cmd) + " in " + outdir);
                 Exec.exec(cmd, outdir, getProject(), false);
             }
         }
+    }
+
+    /**
+     * Convert: "../lib", "lib/libfoo.dylib" into ""
+     * Convert: "../../lib", "/tmp/dir/qtjambi-community/build/platform-output/lib/libfoo.dylib" into ".."
+     * @param withSubdir  must be a directory name (do not include any filename part on the end)
+     * @param withTarget  the target we are resolving it to
+     */
+    private static String resolveWithSubdir(String withSubdir, String withTarget) {
+        // remove trailing / character
+        int len = withSubdir.length();
+        int testCharAt = len - 1;
+        while(testCharAt >= 0 && withSubdir.charAt(testCharAt) == '/')
+            testCharAt--;
+        withSubdir = withSubdir.substring(0, testCharAt + 1);   // truncate
+//System.out.println(" resolveWithSubdir withSubdir=" + withSubdir + " truncated");
+
+        String[] withTargetA = withTarget.split("/");
+        List<String> withTargetParts = Arrays.asList(withTargetA);
+        String[] withSubdirA = withSubdir.split("/");
+        List<String> pathParts = Arrays.asList(withSubdirA);
+        // Find the last ".." part (one at a time) and try to remove it and its counterpart directory
+        int maxIndex = -1;
+        while(true) {
+            int index = 0;
+            int foundDownIndex = -1;
+            int upIndex = -1;
+            for(String s : pathParts) {
+                if(maxIndex >= 0 && maxIndex == index)
+                    break;
+                if(s.length() > 0) {
+                    if(s.equals(".")) {
+                        pathParts.set(index, "");  // zap it
+                    } else if(s.equals("..")) {
+                        foundDownIndex = index;
+                        upIndex = -1;
+                    } else if(foundDownIndex >= 0 && upIndex < 0) {
+                        upIndex = index;
+                    }
+                }
+                index++;
+            }
+            if(foundDownIndex >= 0 && upIndex >= 0) {
+//System.out.println(" resolveWithSubdir foundDownIndex=" + foundDownIndex);
+                String upDir = pathParts.get(upIndex);
+//System.out.println(" resolveWithSubdir upDir=" + upDir);
+                int distance = pathParts.size() - upIndex;
+                int targetUpIndex = withTargetParts.size() - distance - 1; // -1 due to filename removal
+                if(targetUpIndex >= 0) {
+//System.out.println(" resolveWithSubdir targetUpIndex=" + targetUpIndex);
+                    String targetUpDir = withTargetParts.get(targetUpIndex);
+//System.out.println(" resolveWithSubdir targetUpDir=" + targetUpDir);
+
+                    if(targetUpDir.equals(upDir)) {
+//System.out.println(" resolveWithSubdir ZAPPING " + foundDownIndex + " " + upIndex);
+                        // we do it this way to the indexes don't change throughout
+                        //  then remove empty parts before returning at the end
+                        pathParts.set(foundDownIndex, "");  // zero-length
+                        pathParts.set(upIndex, "");  // zero-length
+                    }
+                }
+
+                maxIndex = foundDownIndex;   // limit the next pass
+            } else {
+                break;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for(String s : pathParts) {
+            if(s.length() == 0)  // removed part
+                continue;
+            if(sb.length() > 0)
+                sb.append("/");
+            sb.append(s);
+        }
+        return sb.toString();
     }
 
     /**
@@ -820,5 +981,30 @@ System.out.println(" exec " + Arrays.toString(cmd) + " in " + outdir);
         for(int i = 0; i < subdir; ++i)
             builder.append("../");
         return builder;
+    }
+
+    private String xmlEscape(String s) {
+        if(s == null)
+            return s;
+        StringBuilder sb = new StringBuilder();
+        final int len = s.length();
+        for(int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            switch(c) {
+            case '<':
+                sb.append("&lt;");
+                break;
+            case '>':
+                sb.append("&gt;");
+                break;
+            case '&':
+                sb.append("&amp;");
+                break;
+            default:
+                sb.append(c);
+                break;
+            }
+        }
+        return sb.toString();
     }
 }

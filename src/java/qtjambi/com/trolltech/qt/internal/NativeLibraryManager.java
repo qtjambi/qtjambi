@@ -162,12 +162,21 @@ public class NativeLibraryManager {
         public String jarName;
         public List<LibraryEntry> libraries;
         public List<String> pluginPaths;
+        public List<String> pluginDesignerPaths;
+        public List<String> dirents;
 
         public void addPluginPath(String path) {
             if (pluginPaths == null)
                 pluginPaths = new ArrayList<String>();
             pluginPaths.add(path);
             reporter.report(" - plugin path='", path, "'");
+        }
+
+        public void addPluginDesignerPath(String path) {
+            if (pluginDesignerPaths == null)
+                pluginDesignerPaths = new ArrayList<String>();
+            pluginDesignerPaths.add(path);
+            reporter.report(" - plugin-designer path='", path, "'");
         }
 
         public void addLibraryEntry(LibraryEntry e) {
@@ -179,11 +188,19 @@ public class NativeLibraryManager {
                              (e.load == LOAD_NEVER ? "never load" : ""))
                             );
         }
+
+        public void addDirentPath(String direntAsString) {
+            if (dirents == null)
+                dirents = new ArrayList<String>();
+            dirents.add(direntAsString);
+            reporter.report(" - dirent path='", direntAsString, "'");
+        }
     }
 
 
     private static class XMLHandler extends DefaultHandler {
         public DeploymentSpec spec;
+        private List<String> direntCurrentPathList = new ArrayList<String>();
 
         public void startElement(String uri,
                                  String localName,
@@ -236,6 +253,12 @@ public class NativeLibraryManager {
                     throw new DeploymentSpecException("<plugin> element missing required attribute \"path\"");
                 }
                 spec.addPluginPath(path);
+            } else if (name.equals("plugin-designer")) {
+                String path = attributes.getValue("path");
+                if (path == null) {
+                    throw new DeploymentSpecException("<plugin-designer> element missing required attribute \"path\"");
+                }
+                spec.addPluginDesignerPath(path);
             } else if (name.equals("qtjambi-deploy")) {
                 String system = attributes.getValue("system");
                 if (system == null || system.length() == 0) {
@@ -244,6 +267,40 @@ public class NativeLibraryManager {
                     throw new WrongSystemException("trying to load: '" + system
                                                    + "', expected: '" + OSInfo.osArchName() + "'");
                 }
+            } else if (name.equals("directory")) {
+                String attrName = attributes.getValue("name");
+                if (attrName == null) {
+                    throw new DeploymentSpecException("<directory> element missing required attribute \"name\"");
+                }
+                while(attrName.length() > 0 && attrName.charAt(0) == '/')
+                    attrName = attrName.substring(1);
+                while(attrName.length() > 0 && attrName.charAt(attrName.length() - 1) == '/')
+                    attrName = attrName.substring(0, attrName.length() - 1 - 1);
+                direntCurrentPathList.add(attrName);
+            } else if (name.equals("file")) {
+                String attrName = attributes.getValue("name");
+                if (attrName == null) {
+                    throw new DeploymentSpecException("<file> element missing required attribute \"name\"");
+                }
+                StringBuilder sb = new StringBuilder();
+                for(String s : direntCurrentPathList) {
+                    if(sb.length() > 0)
+                        sb.append('/');
+                    sb.append(s);
+                }
+                if(sb.length() > 0)
+                    sb.append('/');
+                sb.append(attrName);
+                spec.addDirentPath(sb.toString());
+            }
+        }
+
+        public void endElement(String uri,
+                                 String localName,
+                                 String name) {
+            if (name.equals("directory")) {
+                if (direntCurrentPathList.isEmpty() == false)
+                    direntCurrentPathList.remove(direntCurrentPathList.size() - 1);  // remove last
             }
         }
     }
@@ -294,6 +351,25 @@ public class NativeLibraryManager {
             File root = jambiTempDirBase(spec.key);
             if (spec.pluginPaths != null)
                 for (String path : spec.pluginPaths)
+                    paths.add(new File(root, path).getAbsolutePath());
+        }
+        return paths;
+    }
+
+
+    /**
+     * Returns the list of all plugin-designer paths that are specified in the
+     * deployment descriptors. If deployment descriptors are not used,
+     * this list will be an empty list.
+     *
+     * @return The list of plugin paths
+     */
+    public static List<String> pluginDesignerPaths() {
+        List<String> paths = new ArrayList<String>();
+        for (DeploymentSpec spec : deploymentSpecs) {
+            File root = jambiTempDirBase(spec.key);
+            if (spec.pluginDesignerPaths != null)
+                for (String path : spec.pluginDesignerPaths)
                     paths.add(new File(root, path).getAbsolutePath());
         }
         return paths;
@@ -462,8 +538,8 @@ public class NativeLibraryManager {
                 return;
             }
 
-            reporter.report(" - using deployment spec");
             File libFile = new File(jambiTempDirBase(e.spec.key), e.name);
+            reporter.report(" - using deployment spec at " + libFile.getAbsolutePath());
             Runtime.getRuntime().load(libFile.getAbsolutePath());
             reporter.report(" - ok!");
             e.loaded = true;
@@ -555,37 +631,104 @@ public class NativeLibraryManager {
         if (shouldCopy) {
             reporter.report(" - starting to copy content to cache directory...");
 
-            for (LibraryEntry e : spec.libraries) {
-                reporter.report(" - copying over: '", e.name, "'...");
-                InputStream in = null;
+            if (spec.dirents != null) {
+                for (String path : spec.dirents) {
+                    reporter.report(" - copying over: '", path, "'...");
 
-                Enumeration<URL> resources = classLoader().getResources(e.name);
-                while (resources.hasMoreElements()) {
-                    URL url = resources.nextElement();
-                    String eform = url.toExternalForm();
-                    if (eform.contains(jarName)) {
-                        in = url.openStream();
-                        reporter.report("    - matched url: ", url.toExternalForm());
-                    } else if (VERBOSE_LOADING) {
-                        reporter.report("    - unmatched .jar file: ", eform);
+                    InputStream in = null;
+                    OutputStream out = null;
+                    try {
+                        Enumeration<URL> resources = classLoader().getResources(path);
+                        while (resources.hasMoreElements()) {
+                            URL url = resources.nextElement();
+                            String eform = url.toExternalForm();
+                            if (eform.contains(jarName)) {
+                                in = url.openStream();
+                                reporter.report("    - matched url: ", url.toExternalForm());
+                            } else if (VERBOSE_LOADING) {
+                                reporter.report("    - unmatched .jar file: ", eform);
+                            }
+                        }
+
+                        if (in == null) {
+                            throw new FileNotFoundException("Dirent '" + path
+                                                            + "' specified in qtjambi-deployment.xml in '"
+                                                            + jarName + "' does not exist");
+                        }
+
+                        File outFile = new File(tmpDir, path);
+                        File outFileDir = outFile.getParentFile();
+                        if (!outFileDir.exists()) {
+                            reporter.report(" - creating directory: ", outFileDir.getAbsolutePath());
+                            outFileDir.mkdirs();
+                        }
+
+                        out = new FileOutputStream(new File(tmpDir, path));
+                        try {
+                            copy(in, out);
+                        } finally {
+                            in = null;    // copy() ALWAYS closes it for us
+                            out = null;   // copy() ALWAYS closes it for us
+                        }
+                    } finally {
+                        if(in != null) {
+                            try {
+                                in.close();
+                            } catch(IOException eat) {
+                            }
+                        }
                     }
                 }
+            }
 
-                if (in == null) {
-                    throw new FileNotFoundException("Library '" + e.name
-                                                    + "' specified in qtjambi-deployment.xml in '"
-                                                    + jarName + "' does not exist");
+            if (spec.libraries != null) {
+                for (LibraryEntry e : spec.libraries) {
+                    reporter.report(" - copying over: '", e.name, "'...");
+
+                    InputStream in = null;
+                    OutputStream out = null;
+                    try {
+                        Enumeration<URL> resources = classLoader().getResources(e.name);
+                        while (resources.hasMoreElements()) {
+                            URL url = resources.nextElement();
+                            String eform = url.toExternalForm();
+                            if (eform.contains(jarName)) {
+                                in = url.openStream();
+                                reporter.report("    - matched url: ", url.toExternalForm());
+                            } else if (VERBOSE_LOADING) {
+                                reporter.report("    - unmatched .jar file: ", eform);
+                            }
+                        }
+
+                        if (in == null) {
+                            throw new FileNotFoundException("Library '" + e.name
+                                                            + "' specified in qtjambi-deployment.xml in '"
+                                                            + jarName + "' does not exist");
+                        }
+
+                        File outFile = new File(tmpDir, e.name);
+                        File outFileDir = outFile.getParentFile();
+                        if (!outFileDir.exists()) {
+                            reporter.report(" - creating directory: ", outFileDir.getAbsolutePath());
+                            outFileDir.mkdirs();
+                        }
+
+                        out = new FileOutputStream(new File(tmpDir, e.name));
+                        try {
+                            copy(in, out);
+                        } finally {
+                            in = null;    // copy() ALWAYS closes it for us
+                            out = null;   // copy() ALWAYS closes it for us
+                        }
+                    } finally {
+                        if(in != null) {
+                            try {
+                                in.close();
+                            } catch(IOException eat) {
+                            }
+                        }
+                    }
                 }
-
-                File outFile = new File(tmpDir, e.name);
-                File outFileDir = outFile.getParentFile();
-                if (!outFileDir.exists()) {
-                    reporter.report(" - creating directory: ", outFileDir.getAbsolutePath());
-                    outFileDir.mkdirs();
-                }
-
-                OutputStream out = new FileOutputStream(new File(tmpDir, e.name));
-                copy(in, out);
             }
 
             if (!dummyFile.createNewFile()) {
@@ -711,6 +854,9 @@ public class NativeLibraryManager {
 
         for (String s : pluginPaths())
             System.out.println("PluginPath: " + s);
+
+        for (String s : pluginDesignerPaths())
+            System.out.println("PluginDesignerPath: " + s);
 
     }
 

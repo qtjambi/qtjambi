@@ -59,6 +59,12 @@ public class Directory extends Task implements Dirent {
     private Boolean recursive;
     private List<Dirent> childList;
 
+    public Directory(String rootPath, String name) {
+        childList = new ArrayList<Dirent>();
+        setRootPath(rootPath);
+        setName(name);
+    }
+
     public Directory() {
         childList = new ArrayList<Dirent>();
     }

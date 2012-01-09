@@ -187,40 +187,54 @@ public class LibraryEntry extends Task {
         String qtMajorVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QT_VERSION_MAJOR);
         String sonameVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QTJAMBI_SONAME_VERSION_MAJOR);
 
-        // Fix name
-        if(type.equals(TYPE_PLUGIN)) {
-            // MacOSX: uses *.dylib and _debug suffix
-            String useDsoVersion = dsoVersion;
-            if(dsoVersion != null && dsoVersion.compareToIgnoreCase("no-version") == 0) {
-                useDsoVersion = null;
-            } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-qt-major-version") == 0) {
-                useDsoVersion = qtMajorVersion;
-            } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-qt-version") == 0) {
-                useDsoVersion = qtVersion;
-            } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-soname-version") == 0) {
-                useDsoVersion = sonameVersion;
-            } else if(dsoVersion == null) {  // the default stratagy
-                if(OSInfo.os() == OSInfo.OS.Windows)
-                    useDsoVersion = qtMajorVersion;
-                else
-                    useDsoVersion = null;
+        boolean resolved = false;
+
+        if(!resolved && srcPath != null) {
+            File srcPathFile = new File(srcPath);
+            if(srcPathFile.exists()) {
+                // FIXME this should override everythiung
+                //name = srcPathFile.getAbsolutePath();
+                name = srcPathFile.getName();
+                resolved = true;
             }
-            name = formatPluginName(name, this.kdephonon, debug, useDsoVersion);
-        } else if(type.equals(TYPE_QTJAMBI_PLUGIN)) {
-            // MacOSX: uses *.dylib and _debuglib suffix
-            name = formatQtJambiPluginName(name, debug, dsoVersion);
-        } else if(type.equals(TYPE_QT)) {
-            // MacOSX: uses *.dylib and _debug suffix
-            name = formatQtName(name, debug, dsoVersion);
-        } else if(type.equals(TYPE_QTJAMBI)) {  // JNI
-            // MacOSX: uses *.jnilib and _debuglib suffix
-            name = formatQtJambiName(name, debug, dsoVersion);
-        } else if(type.equals(TYPE_DSO) || type.equals(TYPE_SYSTEM)) {
-            // name as-is
-            name = formatQtName(name, false, "");
-        } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
-            // MacOSX: uses *.dylib and _debug any suffix
-            name = formatUnversionedPluginName(name, debug);
+        }
+
+        if(!resolved) {
+            // Fix name
+            if(type.equals(TYPE_PLUGIN)) {
+                // MacOSX: uses *.dylib and _debug suffix
+                String useDsoVersion = dsoVersion;
+                if(dsoVersion != null && dsoVersion.compareToIgnoreCase("no-version") == 0) {
+                    useDsoVersion = null;
+                } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-qt-major-version") == 0) {
+                    useDsoVersion = qtMajorVersion;
+                } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-qt-version") == 0) {
+                    useDsoVersion = qtVersion;
+                } else if(dsoVersion != null && dsoVersion.compareToIgnoreCase("use-soname-version") == 0) {
+                    useDsoVersion = sonameVersion;
+                } else if(dsoVersion == null) {  // the default stratagy
+                    if(OSInfo.os() == OSInfo.OS.Windows)
+                        useDsoVersion = qtMajorVersion;
+                    else
+                        useDsoVersion = null;
+                }
+                name = formatPluginName(name, this.kdephonon, debug, useDsoVersion);
+            } else if(type.equals(TYPE_QTJAMBI_PLUGIN)) {
+                // MacOSX: uses *.dylib and _debuglib suffix
+                name = formatQtJambiPluginName(name, debug, dsoVersion);
+            } else if(type.equals(TYPE_QT)) {
+                // MacOSX: uses *.dylib and _debug suffix
+                name = formatQtName(name, debug, dsoVersion);
+            } else if(type.equals(TYPE_QTJAMBI)) {  // JNI
+                // MacOSX: uses *.jnilib and _debuglib suffix
+                name = formatQtJambiName(name, debug, dsoVersion);
+            } else if(type.equals(TYPE_DSO) || type.equals(TYPE_SYSTEM)) {
+                // name as-is
+                name = formatQtName(name, false, "");
+            } else if(type.equals(TYPE_UNVERSIONED_PLUGIN)) {
+                // MacOSX: uses *.dylib and _debug any suffix
+                name = formatUnversionedPluginName(name, debug);
+            }
         }
 
         if(!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
