@@ -730,7 +730,7 @@ public class InitializeTask extends Task {
 
             try {
                 File fileDir = new File(".");
-                String[] sA = Exec.executeCaptureOutput(qmakeArgs, fileDir, getProject(), null);
+                String[] sA = Exec.executeCaptureOutput(qmakeArgs, fileDir, getProject(), null, false);
                 if(sA != null && sA.length == 2 && sA[0] != null)
                    tmpQtVersion = sA[0];		// stdout
                 // Extract QT_VERSION:4.7.4
@@ -1015,7 +1015,7 @@ public class InitializeTask extends Task {
                 sourceValue = " (already set; detected as: " + newValue + ")";
                 // Don't error if we don't have to i.e. the two values are the same
                 if(forceNewValue && newValue.equals(currentValue) == false)
-                    throw new BuildException("Unable to overwrite property " + attrName + " with value " + newValue);
+                    throw new BuildException("Unable to overwrite property " + attrName + " with value " + newValue + " (current value is: " + currentValue + ")");
             } else {
                 if(forceNewValue)
                     propertyHelper.setProperty((String) null, attrName, newValue, false);

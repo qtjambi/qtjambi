@@ -143,7 +143,7 @@ class Exec {
         }
     }
 
-    public static String[] executeCaptureOutput(List<String> command, File directory, Project project, String ldpath) throws BuildException, InterruptedException, IOException {
+    public static String[] executeCaptureOutput(List<String> command, File directory, Project project, String ldpath, boolean emitErrorExitStatus) throws BuildException, InterruptedException, IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
 
         // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
@@ -183,7 +183,7 @@ class Exec {
             out.close();
             out = null;
 
-            if(process.exitValue() != 0) {
+            if(emitErrorExitStatus && process.exitValue() != 0) {
                 String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
                 String inDirectory = (directory != null) ? " in " + directory.getAbsolutePath() : "";
                 System.err.println("Running: '" + command.toString() + "'" + inDirectory + " failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");

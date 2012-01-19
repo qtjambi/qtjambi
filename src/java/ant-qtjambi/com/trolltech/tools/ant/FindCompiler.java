@@ -247,7 +247,7 @@ public class FindCompiler {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add("gcc");
             cmdAndArgs.add("-dumpversion");
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
             String stdout = null;
             if(sA != null && sA.length == 2 && sA[0] != null)
                 stdout = sA[0];
@@ -275,7 +275,7 @@ public class FindCompiler {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add("gcc");
             cmdAndArgs.add("-v");
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
             String stderr = null;
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
@@ -304,7 +304,7 @@ public class FindCompiler {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add(cmd);
             cmdAndArgs.add("-v");
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
             String stderr = null;
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
@@ -325,7 +325,7 @@ public class FindCompiler {
         try {
             List<String> cmdAndArgs = new ArrayList<String>();
             cmdAndArgs.add("cl.exe");	// /version ?
-            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null);
+            String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
             String stderr = null;
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
