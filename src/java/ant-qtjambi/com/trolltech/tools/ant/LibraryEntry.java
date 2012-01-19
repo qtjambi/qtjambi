@@ -353,7 +353,7 @@ public class LibraryEntry extends Task {
             String tmpDebugSuffix = "_" + "debuglib";
             switch(OSInfo.os()) {
             case Windows:
-                return name + "d" + tmpVersionString + ".dll";
+                return name + tmpVersionString + tmpDebugSuffix + ".dll";
             case MacOS:
                 return "lib" + name + tmpDebugSuffix + tmpDotVersionString + ".jnilib";
             case Solaris:

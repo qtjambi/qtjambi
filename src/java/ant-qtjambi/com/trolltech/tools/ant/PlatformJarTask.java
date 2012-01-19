@@ -493,7 +493,7 @@ public class PlatformJarTask extends Task {
                 if(destSubdir.startsWith("/")) {   // no subdir
                     outputPath = pathCanon(new String[] { destSubdir });
                 } else {
-                   outputPath = pathCanon(new String[] { destSubdir, subdir });
+                    outputPath = pathCanon(new String[] { destSubdir, subdir });
                 }
             } else {
                 outputPath = pathCanon(new String[] { subdir });
