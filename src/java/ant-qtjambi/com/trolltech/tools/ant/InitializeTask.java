@@ -600,6 +600,81 @@ public class InitializeTask extends Task {
         String packagingDsoLibdbus = decideQtLibDso(PACKAGING_DSO_LIBDBUS, "dbus-1", new Integer[] { Integer.valueOf(3), Integer.valueOf(2), null });
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBDBUS, packagingDsoLibdbus);
 
+        // Other build information sanity testing and warning
+
+        String QTDIR = System.getenv("QTDIR");
+        System.out.println("QTDIR is set: " + QTDIR);
+
+        if(OSInfo.isLinux()) {    // Check we have libQtCore.so.4 in one of the paths in LD_LIBRARY_PATH
+            String LD_LIBRARY_PATH = System.getenv("LD_LIBRARY_PATH");
+            System.out.println("LD_LIBRARY_PATH is set: " + ((LD_LIBRARY_PATH == null) ? "<notset>" : LD_LIBRARY_PATH));
+            if(LD_LIBRARY_PATH != null) {
+                String[] sA = LD_LIBRARY_PATH.split(File.pathSeparator);  // should regex escape it
+                String filename = LibraryEntry.formatQtName("QtCore", debug, String.valueOf(qtMajorVersion));
+                int found = 0;
+                for(String element : sA) {
+                    File testDir = new File(element);
+                    if(testDir.isDirectory() == false)
+                        System.out.println("WARNING:    LD_LIBRARY_PATH directory does not exit: " + element);
+                    File testFile = new File(element, filename);
+                    if(testFile.isFile()) {
+                        System.out.println("  FOUND:    LD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath());
+                        found++;
+                    }
+                }
+                if(found == 0)  // Maybe we should check to see if (QTDIR != null) before warning
+                   System.out.println("WARNING: LD_LIBRARY_PATH environment variable is set, but does not contain a valid location for libQtCore.so.*; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+            } else {   // Maybe we should check to see if (QTDIR != null) before warning
+                System.out.println("WARNING: LD_LIBRARY_PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+            }
+        }
+        if(OSInfo.isWindows()) {    // Check we have QtCore4.dll in one of the paths in PATH
+            String PATH = System.getenv("PATH");
+            System.out.println("PATH is set: " + ((PATH == null) ? "<notset>" : PATH));
+            if(PATH != null) {
+                String[] sA = PATH.split(File.pathSeparator);  // should regex escape it
+                String filename = LibraryEntry.formatQtName("QtCore", debug, String.valueOf(qtMajorVersion));
+                int found = 0;
+                for(String element : sA) {
+                    File testDir = new File(element);
+                    if(testDir.isDirectory() == false)
+                        System.out.println("WARNING:    PATH directory does not exit: " + element);
+                    File testFile = new File(element, filename);
+                    if(testFile.isFile()) {
+                        System.out.println("  FOUND:    PATH directory contains QtCore: " + testFile.getAbsolutePath());
+                        found++;
+                    }
+                }
+                if(found == 0)
+                   System.out.println("WARNING: PATH environment variable is set, but does not contain a valid location for QtCore*.dll; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+            } else {
+                System.out.println("WARNING: PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+            }
+        }
+        if(OSInfo.isMacOS()) {    // Check we have libQtCore.4.dylib in one of the paths in DYLD_LIBRARY_PATH
+            String DYLD_LIBRARY_PATH = System.getenv("DYLD_LIBRARY_PATH");
+            System.out.println("DYLD_LIBRARY_PATH is set: " + ((DYLD_LIBRARY_PATH == null) ? "<notset>" : DYLD_LIBRARY_PATH));
+            if(DYLD_LIBRARY_PATH != null) {
+                String[] sA = DYLD_LIBRARY_PATH.split(File.pathSeparator);  // should regex escape it
+                String filename = LibraryEntry.formatQtName("QtCore", debug, String.valueOf(qtMajorVersion));
+                int found = 0;
+                for(String element : sA) {
+                    File testDir = new File(element);
+                    if(testDir.isDirectory() == false)
+                        System.out.println("WARNING:    DYLD_LIBRARY_PATH directory does not exit: " + element);
+                    File testFile = new File(element, filename);
+                    if(testFile.isFile()) {
+                        System.out.println("  FOUND:    DYLD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath());
+                        found++;
+                    }
+                }
+                if(found == 0)
+                   System.out.println("WARNING: DYLD_LIBRARY_PATH environment variable is set, but does not contain a valid location for libQtCore.*.dylib; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+            } else {
+                System.out.println("WARNING: DYLD_LIBRARY_PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+            }
+        }
+
         alreadyRun = true;
     }
 
