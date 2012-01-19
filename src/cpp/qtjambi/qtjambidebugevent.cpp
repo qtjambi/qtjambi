@@ -52,35 +52,62 @@
 #include "qtjambi_global.h"
 #include "qtjambi_core.h"
 
+#if 0
+#include <QtGui/QAccessibleEvent>
+#include <QtGui/QActionEvent>
+#include <QtCore/QChildEvent>
+#endif
+
 QString
 QtJambiDebugEvent::qtjambi_event_to_string(QAccessibleEvent *e, const char *type_name)
 {
+#if 0
+    // Move this to qtjambi_gui
     QString s = QString("%1 child=%2 value=%3")
         .arg(type_name)
         .arg((long)(void*)e->child(), 0, 16)
         .arg(e->value());
+#else
+    Q_UNUSED(e);
+    QString s = QString("%1")
+        .arg(type_name);
+#endif
     return s;
 }
 
 QString
 QtJambiDebugEvent::qtjambi_event_to_string(QActionEvent *e, const char *type_name)
 {
+#if 0
+    // Move this to qtjambi_gui
     QString s = QString("%1 action=%2 before=%3")
         .arg(type_name)
         .arg((long)(void*)e->action(), 0, 16)
         .arg((long)(void*)e->before(), 0, 16);
+#else
+    Q_UNUSED(e);
+    QString s = QString("%1")
+        .arg(type_name);
+#endif
     return s;
 }
 
 QString
 QtJambiDebugEvent::qtjambi_event_to_string(QChildEvent *e, const char *type_name)
 {
+#if 0
+    // Move this to qtjambi_core
     QString s = QString("%1 child=%2 added=%3 removed=%4 polished=%5")
         .arg(type_name)
         .arg((long)(void*)e->child(), 0, 16)
         .arg(e->added())
         .arg(e->removed())
         .arg(e->polished());
+#else
+    Q_UNUSED(e);
+    QString s = QString("%1")
+        .arg(type_name);
+#endif
     return s;
 }
 
