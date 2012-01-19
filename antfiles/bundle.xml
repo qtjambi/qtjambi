@@ -187,6 +187,9 @@
                     load="never"
                     if="${qtjambi.designer}"/>
 
+            <!-- Additional designer plugin configuration, we absolute path in destSubdir to ignore the source path -->
+            <directory name="" rootPath="${basedir}/plugins/qtjambi" destSubdir="/plugins-designer" recursive="true" />
+
 
             <library name="qtjambi"                      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
             <library name="com_trolltech_qt_core"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
