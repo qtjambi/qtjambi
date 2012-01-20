@@ -279,7 +279,7 @@ public class PlatformJarTask extends Task {
                             + xmlEscape(propertyHelper.getProperty((String) null,
                             InitializeTask.OSNAME).toString()) + "\">");
         writer.println();
-        writer.println("  <cache key=\"" + xmlEscape(cacheKey) + "\" />");
+        writer.println("  <cache key=\"" + xmlEscape(cacheKey) + "\"/>");
 
         writeDirectoryElementTree(writer, directoryList);
 
@@ -290,7 +290,7 @@ public class PlatformJarTask extends Task {
                 writer.println("  <!-- Runtime libraries, loaded automatically -->");
             }
             for(String rt : runtimeLibs) {
-                writer.println("  <library name=\"" + xmlEscape(rt) + "\" load=\"yes\" />");
+                writer.println("  <library name=\"" + xmlEscape(rt) + "\" load=\"yes\"/>");
             }
         }
 
@@ -315,7 +315,7 @@ public class PlatformJarTask extends Task {
                 writer.println("  <!-- Dependency libraries, not loaded... -->");
             }
             for(String unpack : unpackLibs) {
-                writer.println("  <library name=\"" + xmlEscape(unpack) + "\" load=\"never\" />");
+                writer.println("  <library name=\"" + xmlEscape(unpack) + "\" load=\"never\"/>");
             }
         }
 
@@ -324,7 +324,7 @@ public class PlatformJarTask extends Task {
             writer.println();
             writer.println("  <!-- Plugins... -->");
             for(PluginPath p : pluginPaths) {
-                writer.println("  <plugin path=\"" + xmlEscape(p.getPath()) + "\" />");
+                writer.println("  <plugin path=\"" + xmlEscape(p.getPath()) + "\"/>");
             }
         }
         // designer plugins...
@@ -332,7 +332,7 @@ public class PlatformJarTask extends Task {
             writer.println();
             writer.println("  <!-- Designer Plugins... -->");
             for(PluginDesignerPath p : pluginDesignerPaths) {
-                writer.println("  <plugin-designer path=\"" + xmlEscape(p.getPath()) + "\" />");
+                writer.println("  <plugin-designer path=\"" + xmlEscape(p.getPath()) + "\"/>");
             }
         }
 
