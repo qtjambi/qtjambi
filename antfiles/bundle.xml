@@ -191,25 +191,25 @@
             <directory name="" rootPath="${basedir}/plugins/qtjambi" destSubdir="/plugins-designer" recursive="true" />
 
 
-            <library name="qtjambi"                      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_core"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_gui"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_xml"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_sql"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.sql}"         />
-            <library name="com_trolltech_qt_help"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.help}"        />
-            <library name="com_trolltech_qt_script"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.script}"      />
-            <library name="com_trolltech_qt_scripttools" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.scripttools}" />
-            <library name="com_trolltech_qt_multimedia"  dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.multimedia}"  />
-            <library name="com_trolltech_qt_svg"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.svg}"         />
-            <library name="com_trolltech_qt_opengl"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.opengl}"      />
-            <library name="com_trolltech_qt_network"     dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_phonon"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.phonon}"      />
-            <library name="com_trolltech_qt_webkit"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.webkit}"      />
-            <library name="com_trolltech_qt_xmlpatterns" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.xmlpatterns}" />
-            <library name="com_trolltech_qt_declarative" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.declarative}" />
-            <library name="com_trolltech_qt_dbus"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.dbus}"        />
-            <library name="com_trolltech_qt_test"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.test}"        />
-            <library name="com_trolltech_tools_designer" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.designer}"    />
+            <library name="qtjambi"                      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi"     rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
+            <library name="com_trolltech_qt_core"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
+            <library name="com_trolltech_qt_gui"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
+            <library name="com_trolltech_qt_xml"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
+            <library name="com_trolltech_qt_sql"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.sql}"         />
+            <library name="com_trolltech_qt_help"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.help}"        />
+            <library name="com_trolltech_qt_script"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.script}"      />
+            <library name="com_trolltech_qt_scripttools" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.scripttools}" />
+            <library name="com_trolltech_qt_multimedia"  dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.multimedia}"  />
+            <library name="com_trolltech_qt_svg"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.svg}"         />
+            <library name="com_trolltech_qt_opengl"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.opengl}"      />
+            <library name="com_trolltech_qt_network"     dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
+            <library name="com_trolltech_qt_phonon"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.phonon}"      />
+            <library name="com_trolltech_qt_webkit"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.webkit}"      />
+            <library name="com_trolltech_qt_xmlpatterns" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.xmlpatterns}" />
+            <library name="com_trolltech_qt_declarative" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.declarative}" />
+            <library name="com_trolltech_qt_dbus"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.dbus}"        />
+            <library name="com_trolltech_qt_test"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.test}"        />
+            <library name="com_trolltech_tools_designer" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.designer}"    />
 
             <!-- Win32/Win64 MinGW only -->
             <library name="libstdc++-6"     type="system"

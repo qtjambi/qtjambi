@@ -63,6 +63,7 @@ public class LibraryEntry extends Task {
     public static final String TYPE_SYSTEM             = "system";
     public static final String TYPE_QT                 = "qt";
     public static final String TYPE_QTJAMBI            = "qtjambi";
+    public static final String TYPE_QTJAMBI_JNI        = "qtjambi-jni";
     public static final String TYPE_QTJAMBI_PLUGIN     = "qtjambi-plugin";
     public static final String TYPE_UNVERSIONED_PLUGIN = "unversioned-plugin";
 
@@ -225,8 +226,11 @@ public class LibraryEntry extends Task {
             } else if(type.equals(TYPE_QT)) {
                 // MacOSX: uses *.dylib and _debug suffix
                 name = formatQtName(name, debug, dsoVersion);
-            } else if(type.equals(TYPE_QTJAMBI)) {  // JNI
+            } else if(type.equals(TYPE_QTJAMBI_JNI)) {  // JNI
                 // MacOSX: uses *.jnilib and _debuglib suffix
+                name = formatQtJambiJniName(name, debug, dsoVersion);
+            } else if(type.equals(TYPE_QTJAMBI)) {  // non-JNI base library
+                // MacOSX: uses *.dylib and _debuglib suffix
                 name = formatQtJambiName(name, debug, dsoVersion);
             } else if(type.equals(TYPE_DSO) || type.equals(TYPE_SYSTEM)) {
                 // name as-is
@@ -346,7 +350,7 @@ public class LibraryEntry extends Task {
         throw new BuildException("unhandled case...");
     }
 
-    public static String formatQtJambiName(String name, boolean debug, String versionString) {
+    public static String formatQtJambiJniName(String name, boolean debug, String versionString) {
         String tmpVersionString = (versionString != null) ? versionString : "";
         String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
         if(debug) {
@@ -375,6 +379,37 @@ public class LibraryEntry extends Task {
         }
         throw new BuildException("unhandled case...");
     }
+
+    public static String formatQtJambiName(String name, boolean debug, String versionString) {
+        String tmpVersionString = (versionString != null) ? versionString : "";
+        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
+        if(debug) {
+            String tmpDebugSuffix = "_" + "debuglib";
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + tmpVersionString + tmpDebugSuffix + ".dll";
+            case MacOS:
+                return "lib" + name + tmpDebugSuffix + tmpDotVersionString + ".dylib";
+            case Solaris:
+            case Linux:
+            case FreeBSD:
+                return "lib" + name + tmpDebugSuffix + ".so" + tmpDotVersionString;
+            }
+        } else {
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + tmpVersionString + ".dll";
+            case MacOS:
+                return "lib" + name + tmpDotVersionString + ".dylib";
+            case Solaris:
+            case Linux:
+            case FreeBSD:
+                return "lib" + name + ".so" + tmpDotVersionString;
+            }
+        }
+        throw new BuildException("unhandled case...");
+    }
+
 
     public static String formatQtJambiPluginName(String name, boolean debug, String versionString) {
         String tmpVersionString = (versionString != null) ? versionString : "";
