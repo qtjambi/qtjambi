@@ -112,8 +112,10 @@ public class JuicTask extends MatchingTask {
         switch(OSInfo.os()) {
         case Windows:
             exe = "juic.exe";
+            break;
         default:
             exe = "juic";
+            break;
         }
         return Util.LOCATE_EXEC(exe, searchPath(), null).getAbsolutePath();
     }

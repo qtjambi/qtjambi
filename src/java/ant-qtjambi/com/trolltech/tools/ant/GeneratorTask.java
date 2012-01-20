@@ -225,11 +225,20 @@ public class GeneratorTask extends Task {
         if(directory == null || directory.length() <= 0)
             return;
 
-        File file = Util.makeCanonical(directory);
-        if(mustExistIfSpecified && !file.exists())
-            throw new BuildException(name + " '" + directory + "' does not exist.");
+        // The 'directory' maybe a File.pathSeparator delimted list of directories and on 
+        //  windows both : and ; can appear which makeCanonical() doesn't like.
+        StringBuilder sb = new StringBuilder();
+        String[] directoryElementA = directory.split(File.pathSeparator);
+        for(String directoryElement : directoryElementA) {
+            File file = Util.makeCanonical(directoryElement);
+            if(mustExistIfSpecified && !file.exists())
+                throw new BuildException(name + " '" + directoryElement + "' does not exist.");
+            if(sb.length() > 0)
+                sb.append(File.pathSeparator);
+            sb.append(file.getAbsolutePath());
+        }
 
-        commandList.add(argumentName + "=" + file.getAbsolutePath());
+        commandList.add(argumentName + "=" + sb.toString());
     }
 
     /**

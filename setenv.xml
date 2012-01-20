@@ -109,15 +109,19 @@
                 <var name="qt.pluginsdir" unset="true"/>
                 <var name="qt.includedir" unset="true"/>
                 -->
+                <!-- All SDKs have DLLs in lib/* directory even on windows
+                     yes the bin/* dir has a copy of the DLLs but it doesn't have other
+                     important files qmake uses like *.prl
                 <if>
                     <os family="windows"/>
                     <then>
                         <property name="qt.lib.subdir" value="bin"/>
                     </then>
-                    <else>
+                    <else> -->
                         <property name="qt.lib.subdir" value="lib"/>
-                    </else>
+                    <!-- </else>
                 </if>
+                -->
                 <property name="qt.bindir" value="${env.QTDIR}${file.separator}bin"/>
                 <property name="qt.libdir" value="${env.QTDIR}${file.separator}${qt.lib.subdir}"/>
                 <property name="qtjambi.libdir" value="${env.JAMBIDIR}/${qt.lib.subdir}"/>
@@ -205,6 +209,9 @@
     </target>
 
     <target name="lookup-libdir">
+        <!-- All SDKs have DLLs in lib/* directory even on windows
+             yes the bin/* dir has a copy of the DLLs but it doesn't have other
+             important files qmake uses like *.prl
         <if>
             <os family="windows"/>
             <then>
@@ -215,6 +222,7 @@
                 <property name="qtjambi.phonon.libdir" value="${env.QTDIR}${file.separator}bin"/>
             </then>
         </if>
+         -->
     </target>
 
     <target name="setup-properties" depends="setenv.solve-path, handle-qtdir, check-kdephonon, lookup-libdir">

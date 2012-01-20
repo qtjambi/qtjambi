@@ -74,6 +74,7 @@ abstract class Util {
         StringTokenizer tokenizer = new StringTokenizer(searchPath, File.pathSeparator);
         while(tokenizer.hasMoreTokens()) {
             File exec = new File(tokenizer.nextToken() + File.separator + name);
+            //System.out.println("Trying " + exec.getAbsolutePath() + ": " + exec.isFile());
             if(exec.isFile())
                 return makeCanonical(exec);
         }
@@ -250,6 +251,7 @@ abstract class Util {
         try {
             return file.getCanonicalFile();
         } catch(IOException e) {
+            e.printStackTrace();
             throw new BuildException("Path : " + file.getAbsolutePath() + " failed to create canonical form.", e);
         }
     }

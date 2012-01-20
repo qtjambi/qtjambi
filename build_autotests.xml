@@ -48,7 +48,7 @@
 
     <target name="compile.native.generator" depends="init">
         <mkdir dir="${outputDir}/tests/autotest-generator"/>
-        <generator dir="${generatorDir}"
+        <generator dir="${generator.builddir}"
                 debugTools="${qtjambi.debug-tools}"
                 inputDirectory="${generatorDir}${psep}${basedir}/autotestlib"
                 outputDirectory="${outputDir}/tests/autotest-generator"

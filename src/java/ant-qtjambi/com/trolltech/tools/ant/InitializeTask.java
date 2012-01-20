@@ -584,22 +584,23 @@ public class InitializeTask extends Task {
         // omit one.
         String packagingDsoLibssl32Message = "";
         String packagingDsoSsleay32Message = "";
-        if("true".equals(packagingDsoLibssl32) && "true".equals(packagingDsoSsleay32)) {
+        // "true" or a path, also means true.  Only "false" means false.
+        if(("false".equals(packagingDsoLibssl32) == false && packagingDsoLibssl32 != null) && ("false".equals(packagingDsoSsleay32) == false && packagingDsoSsleay32 != null)) {
             // FIXME: Compare the files are actually the same
             if(compiler == Compiler.GCC || compiler == Compiler.OldGCC || compiler == Compiler.MinGW || compiler == Compiler.MinGW_W64) {
+                packagingDsoSsleay32Message = " (was " + packagingDsoSsleay32 + "; auto-inhibited)";
                 packagingDsoSsleay32 = "false";    // favour libssl32.dll
-                packagingDsoSsleay32Message = " (was true; auto-inhibited)";
             } else {
+                packagingDsoLibssl32Message = " (was " + packagingDsoLibssl32 + "; auto-inhibited)";
                 packagingDsoLibssl32 = "false";    // favour ssleay32.dll
-                packagingDsoLibssl32Message = " (was true; auto-inhibited)";
             }
         }
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, packagingDsoLibssl32);
-        if(verbose && (packagingDsoLibssl32Message.length() > 0 || "true".equals(packagingDsoLibssl32)))
+        if(verbose && (packagingDsoLibssl32Message.length() > 0 || ("false".equals(packagingDsoLibssl32) == false) && packagingDsoLibssl32 != null))
             System.out.println(PACKAGING_DSO_LIBSSL32 + ": " + packagingDsoLibssl32 + packagingDsoLibssl32Message);
 
         propertyHelper.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, packagingDsoSsleay32);
-        if(verbose && (packagingDsoSsleay32Message.length() > 0 || "true".equals(packagingDsoSsleay32)))
+        if(verbose && (packagingDsoSsleay32Message.length() > 0 || ("false".equals(packagingDsoSsleay32) == false) && packagingDsoSsleay32 != null))
             System.out.println(PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message);
 
         String packagingDsoZlib1   = decideQtLibDso(PACKAGING_DSO_ZLIB1,    "zlib1", (Integer)null);
@@ -1007,8 +1008,8 @@ public class InitializeTask extends Task {
         if(debugValue != null)
             thisDebug = debugValue.booleanValue();
         path.append(LibraryEntry.formatQtName(name, thisDebug, versionString));
-        //System.out.println("Checking QtLib: " + path);
         File testForFile = new File(path.toString());
+        //System.out.println("Checking QtLib: " + path + " " + testForFile.exists());
         if(testForFile.exists())
             return testForFile.getAbsolutePath();
         return null;

@@ -89,8 +89,12 @@ public class QMakeTask extends Task {
     private List<String> parseParameters() {
         List<String> parameters = new ArrayList<String>();
 
-        if(qtconfig != null)
-            parameters.add("QT_CONFIG+=" + qtconfig);
+        if(qtconfig != null) {
+            if(qtconfig.indexOf('{') >= 0) // windows name does not like (unescaped) "{" character this creates
+                System.out.println("QT_CONFIG not exported as value is: " + qtconfig);
+            else
+                parameters.add("QT_CONFIG+=" + qtconfig);
+        }
 
         if(qtjambiConfig != null)
             parameters.add("QTJAMBI_CONFIG=" + qtjambiConfig);
