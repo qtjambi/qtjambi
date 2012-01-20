@@ -31,8 +31,8 @@
     <target name="library.native.bundle" depends="library.native.compile"
             description="Creates a .jar file file containing native libraries.">
 
-        <qtjambi-platform-jar cacheKey="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}"
-                              outdir="${outputDir}/platform-output">
+        <qtjambi-platform-jar cacheKey="${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}"
+                              outdir="${outputDir}/platform-output${qtjambi.configuration.dash}">
 
             <directory name="" rootPath="${qtjambi.macosx.qtmenunib.dir}" destSubdir="lib/Resources" recursive="true" />
 
@@ -279,12 +279,12 @@
 
         </qtjambi-platform-jar>
 
-        <mkdir dir="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment"/>
-        <copy file="${outputDir}/platform-output/qtjambi-deployment.xml" tofile="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}.${qtjambi.configuration}-${qtjambi.version.bundle}.xml"/>
+        <mkdir dir="${outputDir}/platform-output${qtjambi.configuration.dash}/META-INF/com.trolltech.qt.deployment"/>
+        <copy file="${outputDir}/platform-output${qtjambi.configuration.dash}/qtjambi-deployment.xml" tofile="${outputDir}/platform-output${qtjambi.configuration.dash}/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}.${qtjambi.configuration}-${qtjambi.version.bundle}.xml"/>
 
-        <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}.jar"/>
+        <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}${qtjambi.configuration.dash}.jar"/>
         <jar destfile="${destination-file}">
-            <fileset dir="${outputDir}/platform-output"/>
+            <fileset dir="${outputDir}/platform-output${qtjambi.configuration.dash}"/>
             <manifest>
                 <!-- <attribute name="Created-By"              value="${user.name} - ${TODAY}"/>  -->
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>

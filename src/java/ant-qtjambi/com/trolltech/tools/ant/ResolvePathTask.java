@@ -92,12 +92,20 @@ public class ResolvePathTask extends Task {
             throw new BuildException("ResolvePathTask.path property is not set or empty string");
         }
 
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+        // Don't like this kind of hack
+        for(int i = 0; i < 10; i++) {
+            String replacedPath = props.replaceProperties(null, path, null);
+            if(replacedPath.equals(path))
+                break;
+            path = replacedPath;
+        }
+
         File file = new File(path);
         if(!file.exists())
             throw new BuildException("Unable to resolve path \"" + path + "\" to absolute path");
         String newValue = file.getAbsolutePath();
 
-        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         String oldPath = (String) props.getProperty(var);	// ANT 1.7.x
         if(oldPath == null) {
             props.setNewProperty(var, newValue);	// ANT 1.7.x

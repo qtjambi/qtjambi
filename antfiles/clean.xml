@@ -54,6 +54,8 @@
         </delete>
         <delete file="${java.srcdir}/qtjambi/com/trolltech/qt/version.properties" quiet="true"/>
         <delete dir="${outputDir}/platform-output" quiet="true"/>
+        <delete dir="${outputDir}/platform-output-debug" quiet="true"/>
+        <delete dir="${outputDir}/platform-output-test" quiet="true"/>
         <delete file="qtjambi-${qtjambi.version}-src.zip" quiet="true"/>
         <delete dir="build" quiet="true"/>
     </target>

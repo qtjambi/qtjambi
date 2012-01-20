@@ -125,7 +125,7 @@
 
     <target name="library.java.bundle" depends="log, jar.qtjambi">
         <copy file="${jardir}/qtjambi.jar"
-            tofile="qtjambi-${qtjambi.version}.jar"/>
+            tofile="qtjambi-${qtjambi.version}${qtjambi.configuration.dash}.jar"/>
     </target>
 
     <target name="library.designer.bundle" depends="log, jar.qtjambi-designer">

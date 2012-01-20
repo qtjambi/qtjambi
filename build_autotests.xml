@@ -11,7 +11,7 @@
     <property file="tests.properties"/>
 
     <property name="jambiLib" value="${outputDir}/tests/lib" />
-    <property name="qtLib" value="${outputDir}/platform-output/lib" />
+    <property name="qtLib" value="${outputDir}/platform-output${qtjambi.configuration.dash}/lib" />
     <property name="junit.exists" value="tests.junit.exists" />
 
     <condition property="qtjambi.osx">
@@ -126,7 +126,7 @@
     </target>
 
     <!-- NOTES: This should be merged with the normal target as the only difference is the -XstartOnFirstThread option.
-         In order to execute I needed to "export DYLD_LIBRARY_PATH=$QTDIR/lib:$(pwd)/build/platform-output/lib"
+         In order to execute I needed to "export DYLD_LIBRARY_PATH=$QTDIR/lib:$(pwd)/build/platform-output${qtjambi.configuration.dash}/lib"
          and then run the usual "ant compile.tests tests.run"
       -->
     <target name="run.osx" if="qtjambi.osx" depends="init">
@@ -142,7 +142,7 @@
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${tests.hamcrest}" />
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
-<!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar" />                -->
+<!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}${qtjambi.configuration.dash}.jar" /> -->
                 <pathelement path="src/java/qtjambi-examples" />
                 <pathelement path="${absOutputDir}/tests/auto" />
                 <pathelement path="${absOutputDir}/tests/unit" />
@@ -200,11 +200,14 @@
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${tests.hamcrest}" />
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
-<!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar" />                -->
+<!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}${qtjambi.configuration.dash}.jar" /> -->
                 <pathelement path="src/java/qtjambi-examples" />
                 <pathelement path="${absOutputDir}/tests/auto" />
                 <pathelement path="${absOutputDir}/tests/unit" />
                 <pathelement path="${absOutputDir}/tests/autotests" />
+                <!-- platform-output folder is needed by Windows so that the addLibraryPath()
+                     is setup correctly so plugins can be loaded -->
+                <pathelement path="${absOutputDir}/platform-output${qtjambi.configuration.dash}" />
                 <pathelement path="${basedir}/src/java/qtjambi-examples" />
                 <!-- examples: is needed to pickup some images and non-code resource files to work with  -->
                 <!-- this is needed by 2 tests in com/trolltech/autotests/TestInjectedCode.java#testIODevicePeek() -->

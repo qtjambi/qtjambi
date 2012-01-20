@@ -147,6 +147,7 @@ public class InitializeTask extends Task {
     public static final String COMPILER           = "qtjambi.compiler";
     public static final String CONFIG             = "qtjambi.config";
     public static final String CONFIGURATION      = "qtjambi.configuration";
+    public static final String CONFIGURATION_DASH = "qtjambi.configuration.dash";
     public static final String CONFIGURATION_OSGI = "qtjambi.configuration.osgi";
     public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x
     public static final String DBUS               = "qtjambi.dbus";
@@ -346,6 +347,15 @@ public class InitializeTask extends Task {
 
         String configuration = decideConfiguration();
         propertyHelper.setNewProperty((String) null, CONFIGURATION, configuration);
+        s = null;
+        if("release".equals(configuration))
+            s = "";	// empty
+        else if("debug".equals(configuration))
+            s = "-debug";
+        else
+            s = "-test";
+        if(s != null)
+            propertyHelper.setNewProperty((String) null, CONFIGURATION_DASH, s);
         s = null;
         if("release".equals(configuration))
             s = "";	// empty
