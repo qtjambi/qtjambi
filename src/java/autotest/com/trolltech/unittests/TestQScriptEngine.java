@@ -33,7 +33,7 @@ public class TestQScriptEngine extends QApplicationTest {
 	private QScriptEngine testEngineFromObj;
 	private QObject engineParent;
 	private QObject holder;
-	
+
 	private QScriptProgram qsprogram;
 	private QPushButton button;
 	private QPushButton button1;
@@ -43,6 +43,11 @@ public class TestQScriptEngine extends QApplicationTest {
 	private QScriptValue val1;
 	private QScriptString testString;
 	private QScriptContext scriptContext;
+	
+	@org.junit.BeforeClass
+	public static void setUpClass() {
+		QApplication app = new QApplication(new String[] {});
+	}
 
 	@org.junit.Before
 	public void setUp() {
@@ -70,9 +75,11 @@ public class TestQScriptEngine extends QApplicationTest {
 	@org.junit.Test
 	public void testQscripEngineQObjConstructor() {
 		testEngineFromObj = new QScriptEngine(engineParent);
-		assertEquals("testEngineFromObj.parent()", engineParent, testEngineFromObj.parent());
+		assertEquals("testEngineFromObj.parent()", engineParent,
+				testEngineFromObj.parent());
 		testEngineFromObj = new QScriptEngine(null);
-		assertEquals("testEngineFromObj.parent()", null, testEngineFromObj.parent());
+		assertEquals("testEngineFromObj.parent()", null,
+				testEngineFromObj.parent());
 	}
 
 	@org.junit.Test
@@ -104,13 +111,15 @@ public class TestQScriptEngine extends QApplicationTest {
 	public void testSetProperty() {
 		testEngine.globalObject().setProperty("button", scriptButton);
 		scriptButton.setProperty("checkable", new QScriptValue(true));
-		assertTrue("(button.checkable = true) == true", testEngine.evaluate("button.checkable = true").toBoolean());
+		assertTrue("(button.checkable = true) == true",
+				testEngine.evaluate("button.checkable = true").toBoolean());
 	}
 
 	@org.junit.Test
 	public void testProperty() {
 		scriptButton.setProperty("aBooleanProperty", new QScriptValue(true));
-		assertTrue("aBooleanProperty", scriptButton.property("aBooleanProperty").toBoolean());
+		assertTrue("aBooleanProperty", scriptButton
+				.property("aBooleanProperty").toBoolean());
 	}
 
 	@org.junit.Test
@@ -120,21 +129,28 @@ public class TestQScriptEngine extends QApplicationTest {
 		val = testEngine.newQObject(null);
 		assertTrue("val.isNull()", val.isNull());
 	}
-	
+
 	@org.junit.Test
 	public void testNewQObjectOwnerWrapperConstructor() {
-		val1 = testEngine.newQObject(button, QScriptEngine.ValueOwnership.ScriptOwnership);
+		val1 = testEngine.newQObject(button,
+				QScriptEngine.ValueOwnership.ScriptOwnership);
 		assertTrue("val1.isQObject()", val1.isQObject());
-		val = testEngine.newQObject(button, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
+		val = testEngine.newQObject(button,
+				QScriptEngine.ValueOwnership.ScriptOwnership,
+				QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isQObject()", val.isQObject());
 	}
-	
+
 	@org.junit.Test
 	public void testNewQObjectScriptValueConstructor() {
-		scriptButton = testEngine.newQObject(scriptButton1, button, QScriptEngine.ValueOwnership.ScriptOwnership);
+		scriptButton = testEngine.newQObject(scriptButton1, button,
+				QScriptEngine.ValueOwnership.ScriptOwnership);
 		assertTrue("scriptButton.isQObject()", scriptButton.isQObject());
-	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
-		val = testEngine.newQObject(val1, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
+		// had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not
+		// present in older Qt releases
+		val = testEngine.newQObject(val1, button1,
+				QScriptEngine.ValueOwnership.ScriptOwnership,
+				QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isQObject()", val.isQObject());
 	}
 
@@ -143,28 +159,37 @@ public class TestQScriptEngine extends QApplicationTest {
 		val = testEngine.newQObject(val1, button1);
 		assertTrue("val.isQObject()", val.isQObject());
 	}
-	
+
 	@org.junit.Test
 	public void testNewQObjectNullQObj() {
-	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
-		val = testEngine.newQObject(val1, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
+		// had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not
+		// present in older Qt releases
+		val = testEngine.newQObject(val1, null,
+				QScriptEngine.ValueOwnership.ScriptOwnership,
+				QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isNull()", val.isNull());
 	}
-	
+
 	@org.junit.Test
 	public void testNewQObjectNullQScripVal() {
-	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
-		val = testEngine.newQObject(null, button1, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
+		// had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not
+		// present in older Qt releases
+		val = testEngine.newQObject(null, button1,
+				QScriptEngine.ValueOwnership.ScriptOwnership,
+				QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isQObject()", val.isQObject());
 	}
-	
+
 	@org.junit.Test
 	public void testNewQObjectBothNull() {
-	        // had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not present in older Qt releases
-		val = testEngine.newQObject(null, null, QScriptEngine.ValueOwnership.ScriptOwnership, QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
+		// had QScriptEngine.QObjectWrapOption.ExcludeSlots option is not
+		// present in older Qt releases
+		val = testEngine.newQObject(null, null,
+				QScriptEngine.ValueOwnership.ScriptOwnership,
+				QScriptEngine.QObjectWrapOption.ExcludeChildObjects);
 		assertTrue("val.isNull()", val.isNull());
 	}
-	
+
 	@org.junit.Test
 	public void testNewQArray() {
 		val = testEngine.newArray(1);
@@ -218,77 +243,89 @@ public class TestQScriptEngine extends QApplicationTest {
 		val = testEngine.nullValue();
 		assertTrue("val.isNull()", val.isNull());
 	}
-	
+
 	@org.junit.Test
 	public void testPushPopContext() {
 		testEngine.setProperty("global", new QScriptValue(3));
 		scriptContext = testEngine.pushContext();
-		scriptContext.activationObject().setProperty("local", new QScriptValue(5));
-		assertEquals("global + local", 11, testEngine.evaluate("global = 6; global + local;").toInt32());
+		scriptContext.activationObject().setProperty("local",
+				new QScriptValue(5));
+		assertEquals("global + local", 11,
+				testEngine.evaluate("global = 6; global + local;").toInt32());
 		testEngine.popContext();
-		assertEquals("global", 3, ((QScriptValue) testEngine.property("global")).toInt32());
+		assertEquals("global", 3,
+				((QScriptValue) testEngine.property("global")).toInt32());
 	}
 
 	/*
 	 * The following method is obsolete in Qt 4.7.
 	 * 
-	 * How it works here:
-	 * QScriptEngine.canEvaluate(java.lang.String) always
+	 * How it works here: QScriptEngine.canEvaluate(java.lang.String) always
 	 * returns with true, however if the program looks incomplete
 	 * (Syntactically) it should return false.
 	 * 
-	 * Possible workarounds:
-	 * 1.	use QScriptEngine.checkSyntax(java.lang.String) instead (recommended)
-	 * 2.	check the return value of QScriptEngine.evaluate(java.lang.String)
-	 *		because it returns "SyntaxError: Parse error" when canEvaluate(java.lang.String program)
-	 *		should return false
+	 * Possible workarounds: 1. use QScriptEngine.checkSyntax(java.lang.String)
+	 * instead (recommended) 2. check the return value of
+	 * QScriptEngine.evaluate(java.lang.String) because it returns
+	 * "SyntaxError: Parse error" when canEvaluate(java.lang.String program)
+	 * should return false
 	 */
 	@org.junit.Test
 	public void testCanEvaluate() {
-		assertTrue("testEngine.canEvaluate(\"foo = 3;\")", testEngine.canEvaluate("foo = 3;"));
+		assertTrue("testEngine.canEvaluate(\"foo = 3;\")",
+				testEngine.canEvaluate("foo = 3;"));
 		// CHECKME Unable to make it ever return false in version: 4.7.3
-//		assertFalse("testEngine.canEvaluate(\"foo[\"bar\"\")", testEngine.canEvaluate("foo[\"bar\""));
+		// assertFalse("testEngine.canEvaluate(\"foo[\"bar\"\")",
+		// testEngine.canEvaluate("foo[\"bar\""));
 	}
 
 	@org.junit.Test
 	public void testCheckSyntax() {
-		assertEquals("Valid", QScriptSyntaxCheckResult.State.Valid, QScriptEngine.checkSyntax("foo = 3;").state());
-		assertEquals("Error", QScriptSyntaxCheckResult.State.Error, QScriptEngine.checkSyntax("foo[\"bar\"").state());
-		assertEquals("Intermediate", QScriptSyntaxCheckResult.State.Intermediate, QScriptEngine.checkSyntax("if (\n").state());
+		assertEquals("Valid", QScriptSyntaxCheckResult.State.Valid,
+				QScriptEngine.checkSyntax("foo = 3;").state());
+		assertEquals("Error", QScriptSyntaxCheckResult.State.Error,
+				QScriptEngine.checkSyntax("foo[\"bar\"").state());
+		assertEquals("Intermediate",
+				QScriptSyntaxCheckResult.State.Intermediate, QScriptEngine
+						.checkSyntax("if (\n").state());
 	}
-	
+
 	@org.junit.Test
 	public void testEvaluateQScriptPorgram() {
 		assertEquals("qsprogram", 3, testEngine.evaluate(qsprogram).toInt32());
 	}
-	
+
 	/*
-	 * QtScriptEngine#objectById(long) exposes memory pointer dereference to QtJambi API.
-	 * It is also marked as <i>internal</i> Qt C++ API.
+	 * QtScriptEngine#objectById(long) exposes memory pointer dereference to
+	 * QtJambi API. It is also marked as <i>internal</i> Qt C++ API.
 	 */
-//	@org.junit.Test
-//	public void testObjectById() {
-//		val = testEngine.newQObject(button);
-//		QScriptValue valFound = testEngine.objectById(val.objectId());
-//		assertEquals("val", val.objectId(), valFound.objectId());
-//	}
-	
+	// @org.junit.Test
+	// public void testObjectById() {
+	// 		val = testEngine.newQObject(button);
+	// 		QScriptValue valFound = testEngine.objectById(val.objectId());
+	// 		assertEquals("val", val.objectId(), valFound.objectId());
+	// }
+
 	@org.junit.Test
 	public void testProcessEventsInterval() {
 		testEngine.setProcessEventsInterval(5);
-		assertEquals("testEngine.processEventsInterval()", 5, testEngine.processEventsInterval());
+		assertEquals("testEngine.processEventsInterval()", 5,
+				testEngine.processEventsInterval());
 	}
-	
+
 	@org.junit.Test
 	public void testsetGlobalObject() {
 		val = testEngine.newQObject(holder);
 		testEngine.setGlobalObject(val);
 		val.setProperty("testProperty1", new QScriptValue(5));
-		assertEquals("testProperty1.toInt32()", 5, testEngine.globalObject().property("testProperty1").toInt32());
+		assertEquals("testProperty1.toInt32()", 5, testEngine.globalObject()
+				.property("testProperty1").toInt32());
 		val.setProperty("testProperty1", new QScriptValue("test"));
-		assertTrue("testProperty1 == test", testEngine.globalObject().property("testProperty1").toString().equals("test"));
+		assertTrue("testProperty1 == test",
+				testEngine.globalObject().property("testProperty1").toString()
+						.equals("test"));
 	}
-	
+
 	@org.junit.Test
 	public void testToObject() {
 		val = new QScriptValue(5);
@@ -305,7 +342,8 @@ public class TestQScriptEngine extends QApplicationTest {
 		val = testEngine.newQObject(holder);
 		val.setProperty("testProperty", new QScriptValue("te$t"));
 		testString = testEngine.toStringHandle("testProperty");
-		assertTrue("testString == \"te$t\"", val.property(testString).toString().equals("te$t"));
+		assertTrue("testString == \"te$t\"", val.property(testString)
+				.toString().equals("te$t"));
 	}
-	
+
 }
