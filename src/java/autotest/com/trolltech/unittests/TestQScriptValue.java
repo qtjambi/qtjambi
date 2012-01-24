@@ -9,22 +9,20 @@ package com.trolltech.unittests;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
+
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.script.QScriptEngine;
 import com.trolltech.qt.script.QScriptValue;
 
-public class TestQScriptValue {
+public class TestQScriptValue extends QApplicationTest {
 
 	private QScriptValue scriptButton;
 	private QScriptValue val;
 	private QScriptEngine testEngine;
 	private QPushButton button;
-	
-	@org.junit.BeforeClass
-	public static void setUpClass() {
-		QApplication.initialize(new String[] {});
-	}
 	
 	@org.junit.Before
 	public void setUp() {

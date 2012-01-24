@@ -11,6 +11,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
+
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QObject;
@@ -24,7 +27,7 @@ import com.trolltech.qt.script.QScriptString;
 import com.trolltech.qt.script.QScriptSyntaxCheckResult;
 import com.trolltech.qt.script.QScriptValue;
 
-public class TestQScriptEngine {
+public class TestQScriptEngine extends QApplicationTest {
 
 	private QScriptEngine testEngine;
 	private QScriptEngine testEngineFromObj;
@@ -43,7 +46,6 @@ public class TestQScriptEngine {
 
 	@org.junit.Before
 	public void setUp() {
-		QApplication.initialize(new String[] {});
 		testEngine = new QScriptEngine();
 		qsprogram = new QScriptProgram("5 - 2");
 		engineParent = new QObject();
@@ -63,8 +65,6 @@ public class TestQScriptEngine {
 		val = null;
 		val1 = null;
 		scriptContext = null;
-		QApplication.quit();
-		QApplication.instance().dispose();
 	}
 
 	@org.junit.Test
@@ -76,12 +76,27 @@ public class TestQScriptEngine {
 	}
 
 	@org.junit.Test
-	public void testEvaluate() {
+	public void testEvaluate1() {
 		assertTrue("1 + 2 == 3", testEngine.evaluate("1 + 2").toString().equals("3"));
+	}
+	@org.junit.Test
+	public void testEvaluate2() {
 		assertEquals("toInt32(1 + 2) == 3", 3, testEngine.evaluate("1 + 2").toInt32());
+	}
+	@org.junit.Test
+	public void testEvaluate3() {
 		assertFalse("1 == 2", testEngine.evaluate("1 == 2").toBoolean());
+	}
+	@org.junit.Test
+	public void testEvaluate4() {
 		assertEquals("for()", 120, testEngine.evaluate("var res = 1; for(var i = 1; i <= 5; i++)res = res*i;").toInt32());
+	}
+	@org.junit.Test
+	public void testEvaluate5() {
 		assertEquals("1 + 2", 3.00, testEngine.evaluate("1 + 2").toInteger(), 0);
+	}
+	@org.junit.Test
+	public void testEvaluate6() {
 		assertEquals("3.14", 3.14, testEngine.evaluate("3.14").toNumber(), 0);
 	}
 

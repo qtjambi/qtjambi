@@ -98,8 +98,6 @@
             <classpath>
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
                 <pathelement location="${tests.junit}" />
-                <pathelement location="${outputDir}/tests/autotests" />
-                <pathelement location="${basedir}/src/java/autotest" />
             </classpath>
             <src path="${basedir}/src/java/autotest"/>
             <!-- pick up the generated code from compile.native -->
@@ -118,7 +116,7 @@
             <classpath>
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
                 <pathelement location="${tests.junit}" />
-                <pathelement location="${outputDir}/tests/unittests" />
+                <pathelement location="${outputDir}/tests/auto" />
                 <pathelement location="${basedir}/src/java/autotest" />
             </classpath>
             <src path="src/java/autotest/com/trolltech/unittests"/>
@@ -215,10 +213,10 @@
             </classpath>
 <!-- ${qtLib}${psep} -->
             <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
-            <!-- <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/> -->
-            <!-- <jvmarg value="-Dcom.trolltech.qt.debug=true"/> --><!-- This should not be needed now, it loads default from MANIFEST.MF -->
+            <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/>
+            <!--<jvmarg value="-Dcom.trolltech.qt.debug=true"/> --><!-- This should not be needed now, it loads default from MANIFEST.MF -->
             <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
-            <!-- <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/> -->
+            <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/>
             <jvmarg value="-Dcom.trolltech.qt.exceptions-for-messages=none"/>
             <jvmarg value="-Xrs"/><!-- This stops JVM intercepting SIGSEGV
             from native code (so we can see where/why it crashed) otherwise
@@ -230,6 +228,7 @@
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml">
                 <fileset dir="src/java/autotest">
+<!--                    <include name="**/com/trolltech/autotests/**/TestClipboard.java"/>                -->
                     <include name="**/com/trolltech/autotests/**/Test*.java"/>
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
                     <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
