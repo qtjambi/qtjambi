@@ -886,7 +886,7 @@ QtJambiDebugEvent::qtjambi_event_to_string(QEvent *event)
 
     int type = event->type();
 
-    char tmpbuf[48];
+    char tmpbuf[64];
     const char *typedesc = qtjambi_event_type_to_string(tmpbuf, sizeof(tmpbuf), type, true);
 
     switch(type) {
@@ -1111,10 +1111,11 @@ QtJambiDebugEvent::qtjambi_event_desc_to_string(char *buf, size_t buflen, QEvent
     QString typedesc = qtjambi_event_to_string(event);
     if(typedesc.isNull())
         return 0;
-    const char *s = typedesc.toLocal8Bit().constData();
+    QByteArray ba = typedesc.toLocal8Bit(); // keeps constData() alive for strncpy()
+    const char *s = ba.constData();
     if(s) {
         strncpy(buf, s, buflen);
-        buf[buflen] = '\0';
+        buf[buflen - 1] = '\0';
         return buf;
     }
     return 0;
