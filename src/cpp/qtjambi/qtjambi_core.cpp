@@ -73,6 +73,7 @@
 #include <QtGui/QStyleOption>
 
 #include <stdio.h>
+#include <string.h>
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
  #include "qtjambidebugevent_p.h"
@@ -2408,7 +2409,16 @@ void qtjambi_register_callbacks()
 
 void qtjambi_unregister_callbacks() 
 {
-    QMetaType::unregisterType(QMetaType::typeName(qMetaTypeId<JObjectWrapper>()));
+    {
+        // unregisterType() will clear pointer returned by typeName() causing an
+        // invalid memory read access during the unregisterType() call so we must
+        // copy the string value to a local.
+        const char *typenamestr = QMetaType::typeName(qMetaTypeId<JObjectWrapper>());
+        char typenamebuf[256];
+        strncpy(typenamebuf, typenamestr, sizeof(typenamebuf));
+        typenamebuf[sizeof(typenamebuf) - 1] = '\0';
+        QMetaType::unregisterType(typenamebuf);
+    }
 
 #if QT_VERSION >= 0x040300
     QInternal::unregisterCallback(QInternal::EventNotifyCallback, qtjambi_event_notify);
