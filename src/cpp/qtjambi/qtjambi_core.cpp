@@ -159,6 +159,8 @@ extern "C" Q_DECL_EXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(JNI_OnLoad)(JavaVM
 
 extern "C" Q_DECL_EXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(JNI_OnUnload)(JavaVM *vm, void *reserved)
 {
+    Q_UNUSED(vm);
+    Q_UNUSED(reserved);
     qtjambi_vm_lock()->lock();
     if(qtjambi_vm_count <= 1)
         qtjambi_shutdown();
@@ -2339,6 +2341,7 @@ static bool qtjambi_event_notify(void **data)
 #if defined(QTJAMBI_DEBUG_TOOLS)
     char tmpbuf[512];
     const char *eventdesc = QtJambiDebugEvent::qtjambi_event_desc_to_string(tmpbuf, sizeof(tmpbuf), event);
+    Q_UNUSED(eventdesc);
 #endif
 
     switch (event->type()) {

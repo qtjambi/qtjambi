@@ -599,6 +599,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiRuntime_pushDebugM
 #if defined(QTJAMBI_DEBUG_TOOLS)
     return qtjambi_debug_marker_push((qint64)id);
 #else
+    Q_UNUSED(id);
     return JNI_FALSE;
 #endif
 }

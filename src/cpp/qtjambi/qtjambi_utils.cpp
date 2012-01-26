@@ -122,6 +122,7 @@ bool qtjambi_resolve_fields(JNIEnv *env, bool bf_static, FieldData *data)
 
 void qtjambi_unresolve_fields(JNIEnv *env, FieldData *data)
 {
+    Q_UNUSED(env);
     for (int i=0; data[i].cl; ++i) {
         if (*data[i].id)  // it is a jfieldID so no memory allocation exists
             *data[i].id = 0;
@@ -162,6 +163,7 @@ bool qtjambi_resolve_methods(JNIEnv *env, bool bf_static, MethodData *data)
 
 void qtjambi_unresolve_methods(JNIEnv *env, MethodData *data)
 {
+    Q_UNUSED(env);
     for (int i=0; data[i].cl; ++i) {
         if (*data[i].id)  // it is a jmethodID so no memory allocation exists
             *data[i].id = 0;
