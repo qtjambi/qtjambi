@@ -202,11 +202,13 @@ class QCoreApplication___ extends QCoreApplication {
 
             com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
 
-            String path = Utilities.unpackPlugins();
-            if (path != null)
-                addLibraryPath(path);
-            else
+            List<String> paths = Utilities.unpackPlugins();
+            if (paths != null) {
+                for (String p : paths)
+                    addLibraryPath(p);
+            } else {
                 com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
+            }
             m_instance = new QCoreApplication(applicationName, args);
             m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
         }
@@ -217,11 +219,13 @@ class QCoreApplication___ extends QCoreApplication {
 
             com.trolltech.qt.internal.HelperFunctions.setAsMainThread();
 
-            String path = Utilities.unpackPlugins();
-            if (path != null)
-                addLibraryPath(path);
-            else
+            List<String> paths = Utilities.unpackPlugins();
+            if (paths != null) {
+                for (String p : paths)
+                    addLibraryPath(p);
+            } else {
                 com.trolltech.qt.internal.QtJambiInternal.setupDefaultPluginPath();
+            }
             m_instance = new QCoreApplication(args);
             m_instance.aboutToQuit.connect(m_instance, "disposeOfMyself()");
         }

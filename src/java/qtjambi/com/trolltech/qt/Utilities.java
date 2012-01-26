@@ -451,7 +451,43 @@ public class Utilities {
         return lib.substring(0, dot);
     }*/
 
-    public static String unpackPlugins() {
-        return null;
+    public static List<String> unpackPlugins() {
+        // FIXME: enumerate ClassPath look for qtjambi-deployment.xml
+        // FIXME: Use qtjambi-deployment.xml is one exists
+        // FIXME: Make a resolver method (that produces a list of automatic things found) and another method to set from list
+        List<String> paths = new ArrayList<String>();
+
+        String classPath = System.getProperty("java.class.path");
+        String[] classPathElements = classPath.split(File.pathSeparator);
+        for(String element : classPathElements) {
+            File base = new File(element);
+            if(base.isDirectory()) {
+                File descriptorFile = new File(base, "qtjambi-deployment.xml");
+                if(descriptorFile.isFile()) {
+                    if(configuration == Configuration.Debug)
+                        System.out.println("unpackPlugins() found qtjambi-deployment.xml at " + descriptorFile.getAbsolutePath());
+                }
+                // Assume a default plugins layout
+                File pluginsDir = new File(base, "plugins");
+                if(pluginsDir.isDirectory()) {
+                    if(configuration == Configuration.Debug)
+                        System.out.println("unpackPlugins() found plugins/ at " + pluginsDir.getAbsolutePath());
+                    paths.add(pluginsDir.getAbsolutePath());
+                } else {
+                    if(configuration == Configuration.Debug)
+                        System.out.println("unpackPlugins() found DIRECTORY at " + base.getAbsolutePath());
+                }
+            } else if(element.toLowerCase().endsWith(".jar")) {
+                if(configuration == Configuration.Debug)
+                    System.out.println("unpackPlugins() found JAR at " + base.getAbsolutePath());
+            } else {
+                if(configuration == Configuration.Debug)
+                    System.out.println("unpackPlugins() found FILE at " + base.getAbsolutePath());
+            }
+        }
+
+        if(paths.isEmpty())
+            return null;
+        return paths;
     }
 }
