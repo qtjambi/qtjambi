@@ -232,7 +232,11 @@ public class TestThreads extends QApplicationTest {
         }
         @Override
         public void run() {
-            object = new PingPongSS();
+            PingPongSS tmpObject = new PingPongSS();
+            synchronized(this) {
+                object = tmpObject;
+                notifyAll();
+            }
 
             QEventLoop loop = new QEventLoop();
             object.done.connect(loop, "quit()");
@@ -254,6 +258,16 @@ public class TestThreads extends QApplicationTest {
             }
             loop.exec();
         }
+        public boolean startupReady(long millis) {
+            synchronized(this) {
+                if(object != null)
+                    return true;
+                try { wait(millis); } catch (InterruptedException e) { };
+                if(object != null)
+                    return true;
+            }
+            return false;
+        }
     }
 
     @Test
@@ -264,7 +278,9 @@ public class TestThreads extends QApplicationTest {
         ping.start();
         pong.start();
 
-        Thread.sleep(50);  // wait for object to be initalized
+        ping.startupReady(500);  // wait for object to be initalized
+        pong.startupReady(500);
+
         assertNotNull("ping.object", ping.object);
         assertNotNull("pong.object", pong.object);
 
