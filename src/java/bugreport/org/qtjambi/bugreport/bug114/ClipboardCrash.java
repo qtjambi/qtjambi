@@ -24,7 +24,10 @@ public class ClipboardCrash //extends QMainWindow
 
 	public static void main(String[] args)
 	{
-	        new ClipboardCrash(args);
+		QApplication.initialize(args);
+	        ClipboardCrash clipboardCrash = new ClipboardCrash(args);
+	        clipboardCrash = null;
+                QApplication.shutdown();
 	}
 
         private void setupClipboard() {
@@ -34,7 +37,7 @@ public class ClipboardCrash //extends QMainWindow
 
 	public ClipboardCrash(String[] args)
 	{
-		QApplication.initialize(args);
+//		QApplication.initialize(args);
 
                 setupClipboard();
 
@@ -53,6 +56,7 @@ public class ClipboardCrash //extends QMainWindow
                         }
                         if(key == Qt.Key.Key_Q.value()) {
                             System.out.println("keyPressEvent(): QUIT");
+                            QApplication.clipboard().dataChanged.disconnect();
                             QApplication.quit();
                         }
                     }
@@ -60,7 +64,10 @@ public class ClipboardCrash //extends QMainWindow
                 mainWindow.show();
 
                 QApplication.execStatic();
-                QApplication.shutdown();
+		mainWindow = null;
+
+		// This test case crashes when QApplication is destroyed while QMainWindow exists
+//                QApplication.shutdown();
 	}
 
         private void grabClipboard() throws Exception {

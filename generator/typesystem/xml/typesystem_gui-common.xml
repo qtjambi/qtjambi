@@ -2538,19 +2538,22 @@
         <modify-function signature="addWidget(QWidget *)">
             <modify-argument index="1">
                 <no-null-pointer/>
-                <reference-count variable-name="__rcWidgets" action="add"/>
+                <reference-count variable-name="__rcWidgets" action="add" access="protected"/>
+                <!-- A Layout never owns the QWidget* but retains a reference to it -->
             </modify-argument>
         </modify-function>
         <modify-function signature="addChildWidget(QWidget *)">
             <modify-argument index="1">
                 <no-null-pointer/>
-                <reference-count variable-name="__rcWidgets" action="add"/>
+                <reference-count variable-name="__rcWidgets" action="add" access="protected"/>
+                <!-- A Layout never owns the QWidget* but retains a reference to it -->
             </modify-argument>
         </modify-function>
         <modify-function signature="removeWidget(QWidget *)">
             <modify-argument index="1">
                 <no-null-pointer/>
-                <reference-count variable-name="__rcWidgets" action="remove"/>
+                <reference-count variable-name="__rcWidgets" action="remove" access="protected"/>
+                <!-- A Layout never owns the QWidget* but retains a reference to it -->
             </modify-argument>
         </modify-function>
 
@@ -2589,6 +2592,7 @@
             </modify-argument>
         </modify-function>
         <modify-function signature="addWidget(QWidget *)">
+            <!-- This would mask the QLayout superclass addWidget(Widget) method -->
             <rename to="addStackedWidget"/>
             <modify-argument index="1">
                 <no-null-pointer/>
@@ -2672,6 +2676,7 @@
         <modify-function signature="addWidget(QWidget *)" remove="all"/>
         <modify-function signature="addItem(QLayoutItem *)">
             <modify-argument index="1">
+                <!-- FIXME: Maybe we should have a use/inherit ownership rule from base-class -->
                 <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
@@ -4936,6 +4941,17 @@
         <modify-function signature="setStyle(QStyle*)">
             <modify-argument index="1">
                 <reference-count action="ignore"/>
+            </modify-argument>
+        </modify-function>
+
+        <!-- Bug#114 - Was missing signature="clipboard()" and define-ownership -->
+        <modify-function signature="clipboard()">
+            <modify-argument index="return">
+                <!-- The returned instance has its lifecycle managed by
+                QApplication so the pointer/reference you only get to borrow
+                to make use of and let cplusplus manage it.
+                TODO Java should also try to share the same Java object -->
+                <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
     </object-type>
