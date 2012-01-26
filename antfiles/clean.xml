@@ -64,6 +64,9 @@
         depends="clean">
         <delete dir="${jardir}" quiet="true"/>
         <delete dir="${timestamp.dir}" quiet="true"/>
+        <!-- These two JARs can fail to delete on windows due to JAR file locking, as they open/mapped by process -->
+        <delete file="jars/nobundle/ant-qtjambi.jar" quiet="true"/>
+        <delete file="jars/qtjambi-util.jar" quiet="true"/>
     </target>
 
     <target name="distclean" description="Cleans really everything"
