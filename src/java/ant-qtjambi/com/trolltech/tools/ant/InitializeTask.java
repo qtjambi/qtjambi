@@ -104,10 +104,8 @@ public class InitializeTask extends Task {
     public static final String LIBDIR                   = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR               = "qtjambi.qt.includedir";
     public static final String PLUGINSDIR               = "qtjambi.qt.pluginsdir";
-    public static final String PHONONPLUGINSDIR         = "qtjambi.phonon.pluginsdir";
     public static final String GENERATOR_PREPROC_STAGE1 = "qtjambi.generator.preproc.stage1";
     public static final String GENERATOR_PREPROC_STAGE2 = "qtjambi.generator.preproc.stage2";
-    public static final String PHONONLIBDIR             = "qtjambi.phonon.libdir";
     public static final String JAVALIBDIR               = "qtjambi.java.library.path";
     public static final String JAMBILIBDIR              = "qtjambi.jambi.libdir";
     public static final String JAMBIPLUGINSDIR          = "qtjambi.jambi.pluginsdir";
@@ -180,6 +178,8 @@ public class InitializeTask extends Task {
     public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
 
     public static final String QTJAMBI_PHONON_KDEPHONON           = "qtjambi.phonon.kdephonon";
+    public static final String QTJAMBI_PHONON_INCLUDEDIR          = "qtjambi.phonon.includedir";
+    public static final String QTJAMBI_PHONON_LIBDIR              = "qtjambi.phonon.libdir";
     public static final String QTJAMBI_PHONON_PLUGINSDIR          = "qtjambi.phonon.pluginsdir";
 
     public static final String PLUGINS_BEARER_CONNMANBEARER       = "qtjambi.plugins.bearer.connmanbearer";
@@ -293,6 +293,21 @@ public class InitializeTask extends Task {
         } else {
             if(verbose)
                 System.out.println("psep is " + psep);
+        }
+
+        final String[] emitA = {
+            BINDIR, LIBDIR, INCLUDEDIR, PLUGINSDIR,
+            QTJAMBI_PHONON_INCLUDEDIR, QTJAMBI_PHONON_LIBDIR, QTJAMBI_PHONON_PLUGINSDIR
+        };
+        for(String emit : emitA) {
+            String value = (String) propertyHelper.getProperty(emit);	// ANT 1.7.x
+            if(value == null) {
+                if(verbose)
+                    System.out.println(emit + ": <notset>");
+            } else {
+                if(verbose)
+                    System.out.println(emit + ": " + (value.length() == 0 ? "<empty-string>" : value));
+            }
         }
 
         FindCompiler finder = new FindCompiler(getProject(), propertyHelper);
@@ -1068,7 +1083,7 @@ public class InitializeTask extends Task {
         StringBuilder path = new StringBuilder();
         String pluginsDirPropertyName;
         if(noLibPrefix)
-            pluginsDirPropertyName = PHONONPLUGINSDIR;
+            pluginsDirPropertyName = QTJAMBI_PHONON_PLUGINSDIR;
         else
             pluginsDirPropertyName = PLUGINSDIR;
         String pluginsPath = (String) propertyHelper.getProperty((String) null, pluginsDirPropertyName);
@@ -1132,7 +1147,7 @@ public class InitializeTask extends Task {
      * correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper propertyHelper) {
-        String phononLibDir = (String) propertyHelper.getProperty((String) null, PHONONLIBDIR);
+        String phononLibDir = (String) propertyHelper.getProperty((String) null, QTJAMBI_PHONON_LIBDIR);
         boolean exists = doesQtLibExistAsBoolean("phonon", qtMajorVersion, phononLibDir);
         String result = String.valueOf(exists);
 
