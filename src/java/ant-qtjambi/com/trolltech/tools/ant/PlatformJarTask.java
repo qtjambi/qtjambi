@@ -685,8 +685,9 @@ public class PlatformJarTask extends Task {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            String vsredistdir = propertyHelper.getProperty((String) null, InitializeTask.VSREDISTDIR).toString();
-            if(vsredistdir != null) {
+            Object vsredistdirObject = propertyHelper.getProperty((String) null, InitializeTask.VSREDISTDIR);
+            if(vsredistdirObject != null) {
+                String vsredistdir = vsredistdirObject.toString();
                 File crt = new File(vsredistdir, "Microsoft.VC" + vcnumber + ".CRT");
 
                 String files[] = new String[] { "Microsoft.VC" + vcnumber + ".CRT.manifest",
