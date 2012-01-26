@@ -96,10 +96,10 @@ struct QtJambiLinkUserData : public QObjectUserData
 #if defined(QTJAMBI_DEBUG_TOOLS)
     void validateMagic_unlocked(const char *prefix, bool validate_children);
     void validateMagic(bool validate_children = true);
-    int acquireMagic_unlocked();
-    void acquireMagic(bool validate_children = true);
-    int releaseMagic_unlocked();
-    void releaseMagic(bool validate_children = true);
+    int acquireMagic_unlocked(int source_id);
+    void acquireMagic(int source_id, bool validate_children = true);
+    int releaseMagic_unlocked(int source_id);
+    void releaseMagic(int source_id, bool validate_children = true);
 #endif
 
 private:
@@ -112,6 +112,7 @@ private:
     QMutex m_mutex;
     QAtomicInt m_atomic_int;
     void *m_pthread_id;
+    long m_magic_source_id;	// gluttony
 #endif
 };
 
@@ -439,10 +440,12 @@ public:
 #if defined(QTJAMBI_DEBUG_TOOLS)
     void validateMagic_unlocked(const char *prefix, bool validate_children);
     void validateMagic(bool validate_children = true);
-    int acquireMagic_unlocked();
-    void acquireMagic(bool validate_children = true);
-    int releaseMagic_unlocked();
-    void releaseMagic(bool validate_children = true);
+    int acquireMagic_unlocked(int source_id);
+    void acquireMagic(int source_id, bool validate_children = true);
+    int releaseMagic_unlocked(int source_id);
+    void releaseMagic(int source_id, bool validate_children = true);
+    // Method shared by QtJambiLinkUserData for description
+    static const char *acquire_magic_source_id_to_string(int source_id);
 #endif
 
 private:
@@ -504,6 +507,7 @@ private:
     QMutex m_mutex;
     QAtomicInt m_atomic_int;
     void *m_pthread_id;
+    long m_magic_source_id;	// gluttony, but we're aligned gluttony
 #endif
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
@@ -524,6 +528,16 @@ public:
     QtJambiLink *prev;
 #endif
 };
+
+#if defined(QTJAMBI_DEBUG_TOOLS)
+ // These are used with acquireMagic() methods for debugging so that the purpose of the original acquisition is recorded.
+ #define QTJAMBI_MAGIC_QTJAMBILINK_DTOR 1
+ #define QTJAMBI_MAGIC_JAVAOBJECTFINALIZED 2
+ #define QTJAMBI_MAGIC_JAVAOBJECTDISPOSED 3
+ #define QTJAMBI_MAGIC_QTJAMBILINKUSERDATA_DTOR 4
+ #define QTJAMBI_MAGIC_QTJAMBILINKUSERDATA_DTOR2 5
+#endif
+
 
 inline jobject QtJambiLink::javaObject(JNIEnv *env) const
 {
