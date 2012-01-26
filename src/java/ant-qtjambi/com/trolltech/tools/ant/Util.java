@@ -348,4 +348,47 @@ abstract class Util {
             return null;
         return splitStringTokenizer(s);
     }
+
+    // FIXME: This is implement enough for our needs only.  See perlre quotemeta()
+    public static String regexEscape(String s) {
+        StringBuilder sb = new StringBuilder();
+        final int len = s.length();
+        for(int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            switch(c) {
+            case '\\':
+                sb.append("\\\\");
+                break;
+
+            default:
+                sb.append(c);
+                break;
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String pathCanon(String[] sA, String separator) {
+        if(sA == null)
+            return null;
+        StringBuilder sb = new StringBuilder();
+        for(String s : sA) {
+            if(s == null)
+                continue;
+            // Split by "/" since this is a path expressed in XML
+            String[] ssA = s.split(regexEscape(separator));
+            for(String ss : ssA) {
+                if(ss.length() == 0)
+                    continue;
+                if(sb.length() > 0)
+                    sb.append(separator);
+                sb.append(ss);
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String pathCanon(String[] sA) {
+        return pathCanon(sA, File.separator);
+    }
 }

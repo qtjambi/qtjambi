@@ -229,11 +229,11 @@ public class PlatformJarTask extends Task {
             writer.print("  ");
         if(dirent.isDirectory()) {
             if(root == dirent)  // Top  level include full path from getDestSubDir()
-                writer.println("  <directory name=\"" + xmlEscape(pathCanon(new String[] { root.getDestSubdir(), pathFragment, dirent.getName() })) + "\">");
+                writer.println("  <directory name=\"" + xmlEscape(Util.pathCanon(new String[] { root.getDestSubdir(), pathFragment, dirent.getName() }, "/")) + "\">");
             else
-                writer.println("  <directory name=\"" + xmlEscape(pathCanon(new String[] { dirent.getName() })) + "\">");
+                writer.println("  <directory name=\"" + xmlEscape(Util.pathCanon(new String[] { dirent.getName() }, "/")) + "\">");
         } else {
-            writer.println("  <file name=\"" + xmlEscape(pathCanon(new String[] { dirent.getName() })) + "\"/>");
+            writer.println("  <file name=\"" + xmlEscape(Util.pathCanon(new String[] { dirent.getName() }, "/")) + "\"/>");
         }
 
         List<Dirent> list = dirent.getChildList();
@@ -302,7 +302,7 @@ public class PlatformJarTask extends Task {
             String destSubdir = e.getDestSubdir();
             String load = e.getLoad();
 
-            writer.print("  <library name=\"" + xmlEscape(pathCanon(new String[] { destSubdir, subdir, libraryName })) + "\"");
+            writer.print("  <library name=\"" + xmlEscape(Util.pathCanon(new String[] { destSubdir, subdir, libraryName }, "/")) + "\"");
             if(!load.equals(LibraryEntry.LOAD_DEFAULT))
                 writer.print(" load=\"" + xmlEscape(load) + "\"");
             writer.println("/>");
@@ -340,26 +340,6 @@ public class PlatformJarTask extends Task {
         writer.println("</qtjambi-deploy>");
 
         writer.close();
-    }
-
-    private String pathCanon(String[] sA) {
-        if(sA == null)
-            return null;
-        StringBuilder sb = new StringBuilder();
-        for(String s : sA) {
-            if(s == null)
-                continue;
-            // Split by "/" since this is a path expressed in XML
-            String[] ssA = s.split("/");
-            for(String ss : ssA) {
-                if(ss.length() == 0)
-                    continue;
-                if(sb.length() > 0)
-                    sb.append("/");
-                sb.append(ss);
-            }
-        }
-        return sb.toString();
     }
 
     // This copies one whole directory but does not recurse
@@ -491,12 +471,12 @@ public class PlatformJarTask extends Task {
 
             if(destSubdir != null) {
                 if(destSubdir.startsWith("/")) {   // no subdir
-                    outputPath = pathCanon(new String[] { destSubdir });
+                    outputPath = Util.pathCanon(new String[] { destSubdir }, "/");
                 } else {
-                    outputPath = pathCanon(new String[] { destSubdir, subdir });
+                    outputPath = Util.pathCanon(new String[] { destSubdir, subdir }, "/");
                 }
             } else {
-                outputPath = pathCanon(new String[] { subdir });
+                outputPath = Util.pathCanon(new String[] { subdir }, "/");
             }
             if(subdir != null)
                 srcDir = new File(rootPathFile, subdir);
@@ -627,12 +607,12 @@ public class PlatformJarTask extends Task {
 
             if(destSubdir != null) {
                 if(destSubdir.startsWith("/")) {   // no subdir
-                    outputPath = pathCanon(new String[] { destSubdir });
+                    outputPath = Util.pathCanon(new String[] { destSubdir }, "/");
                 } else {
-                   outputPath = pathCanon(new String[] { destSubdir, subdir });
+                   outputPath = Util.pathCanon(new String[] { destSubdir, subdir }, "/");
                 }
             } else {
-                outputPath = pathCanon(new String[] { subdir });
+                outputPath = Util.pathCanon(new String[] { subdir }, "/");
             }
             if(subdir != null)
                 srcDir = new File(rootPath, subdir);
@@ -845,7 +825,7 @@ public class PlatformJarTask extends Task {
             for(LibraryEntry change : libs) {
                 String changeDestSubdir = change.getDestSubdir();
                 String changeSubdir = change.getSubdir();
-                StringBuilder builder = createDotDots(pathCanon(new String[] { changeDestSubdir, changeSubdir }));
+                StringBuilder builder = createDotDots(Util.pathCanon(new String[] { changeDestSubdir, changeSubdir }, "/"));
                 String withDestSubdir = with.getDestSubdir();
                 if(withDestSubdir != null)
                     builder.append(withDestSubdir);
@@ -861,7 +841,7 @@ System.out.println(" with.Subdir       =  " + withSubdir);
 System.out.println(" with.Name         =  " + with.getName());
 }
                 File withTarget = new File(withSubdir, with.getName());
-                String targetPath = pathCanon(new String[] { changeDestSubdir, changeSubdir, change.getName() }); //change.relativePath();
+                String targetPath = Util.pathCanon(new String[] { changeDestSubdir, changeSubdir, change.getName() }, "/"); //change.relativePath();
                 String resolvedWithSubdir = resolveWithSubdir(builder.toString(), targetPath);
                 if(resolvedWithSubdir != null)
                     builder = new StringBuilder(resolvedWithSubdir);

@@ -121,9 +121,9 @@ public class FindCompiler {
 
                     String redistDir;
                     if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64)
-                        redistDir = vcdir + "/vc/redist/amd64";
+                        redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "amd64" });
                     else
-                        redistDir = vcdir + "/vc/redist/x86";
+                        redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "x86" });
                     File fileRedistDir = new File(redistDir);
                     if(!fileRedistDir.isDirectory()) {
                         System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
