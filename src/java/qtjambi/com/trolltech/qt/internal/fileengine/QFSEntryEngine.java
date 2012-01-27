@@ -44,18 +44,18 @@
 
 package com.trolltech.qt.internal.fileengine;
 
-// FIXME: This should be protected API (candiate to move com/trolltech/qt/native/internal).
-public class QClassPathFileEngineHandler
-{
-    public synchronized static void start() {
+import com.trolltech.qt.core.QFSFileEngine;
+
+class QFSEntryEngine extends QFSFileEngine implements QClassPathEntry {
+    private String m_classPathEntryFileName;
+
+    public QFSEntryEngine(String file, String classPathEntryFileName) {
+        super(file);
+        System.out.println("QFSEntryEngine().ctor(\"" + file + "\", \"" + classPathEntryFileName + "\")");
+        m_classPathEntryFileName = classPathEntryFileName;
     }
 
-    public synchronized static void stop() {
-        JarCache.invalidate();
+    public String classPathEntryName() {
+        return m_classPathEntryFileName;
     }
-
-    public native synchronized static boolean initialize();
-    // FIXME This is only public so com/trolltech/qt/QtJambi_LibraryShutdown.java can see it
-    //  MUST hide it when we refactor, only qtjambi internal code should be able to run it.
-    public native synchronized static boolean uninitialize();
 }

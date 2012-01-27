@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.qt.internal;
+package com.trolltech.qt.internal.fileengine;
 
 import java.io.File;
 import java.io.InputStream;
@@ -67,6 +67,8 @@ import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QDir;
 import com.trolltech.qt.core.QFileInfo;
 import com.trolltech.qt.core.QIODevice;
+
+import com.trolltech.qt.internal.RetroTranslatorHelper;
 
 public class QClassPathEngine extends QAbstractFileEngine
 {

@@ -70,9 +70,8 @@ public class QtJambiInternal {
      * com.trolltech.qt.core.QAbstractFileEngine.addSearchPathForResourceEngine() instead.
      */
     @Deprecated
-    public static void addSearchPathForResourceEngine(String path)
-    {
-        com.trolltech.qt.internal.QClassPathEngine.addSearchPath(path, false);
+    public static void addSearchPathForResourceEngine(String path) {
+        com.trolltech.qt.internal.fileengine.QClassPathEngine.addSearchPath(path, false);
     }
 
     /**
@@ -80,9 +79,8 @@ public class QtJambiInternal {
      * com.trolltech.qt.core.QAbstractFileEngine.removeSearchPathForResourceEngine() instead.
      */
     @Deprecated
-    public static void removeSearchPathForResourceEngine(String path)
-    {
-        com.trolltech.qt.internal.QClassPathEngine.removeSearchPath(path);
+    public static void removeSearchPathForResourceEngine(String path) {
+        com.trolltech.qt.internal.fileengine.QClassPathEngine.removeSearchPath(path);
     }
 
     /**
@@ -126,8 +124,7 @@ public class QtJambiInternal {
      * com.trolltech.qt.GeneratorUtilities.createExtendedEnum() instead.
      */
     @Deprecated
-    public static Object createExtendedEnum(int value, int ordinal,
-            Class<?> cl, String name) {
+    public static Object createExtendedEnum(int value, int ordinal, Class<?> cl, String name) {
         return com.trolltech.qt.internal.QtJambiInternal.createExtendedEnum(value, ordinal, cl, name);
     }
 

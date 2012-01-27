@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.qt.internal;
+package com.trolltech.qt.internal.fileengine;
 
 import java.util.Collections;
 import java.util.List;

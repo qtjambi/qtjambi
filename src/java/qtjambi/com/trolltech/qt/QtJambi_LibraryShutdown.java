@@ -50,7 +50,7 @@ import java.lang.reflect.Modifier;
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QMessageHandler;
-import com.trolltech.qt.internal.QClassPathFileEngineHandler;
+import com.trolltech.qt.internal.fileengine.QClassPathFileEngineHandler;
 
 class QtJambi_LibraryShutdown implements Runnable {
     // At the time a shutdown hook is called it is possible to see a java.lang.NoClassDefFoundError

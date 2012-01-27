@@ -47,7 +47,7 @@ package com.trolltech.qt;
 import java.lang.ref.WeakReference;
 
 import com.trolltech.qt.core.QMessageHandler;
-import com.trolltech.qt.internal.QClassPathFileEngineHandler;
+import com.trolltech.qt.internal.fileengine.QClassPathFileEngineHandler;
 
 public abstract class QtJambi_LibraryInitializer
 {

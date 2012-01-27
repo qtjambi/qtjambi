@@ -44,18 +44,6 @@
 
 package com.trolltech.qt.internal.fileengine;
 
-// FIXME: This should be protected API (candiate to move com/trolltech/qt/native/internal).
-public class QClassPathFileEngineHandler
-{
-    public synchronized static void start() {
-    }
-
-    public synchronized static void stop() {
-        JarCache.invalidate();
-    }
-
-    public native synchronized static boolean initialize();
-    // FIXME This is only public so com/trolltech/qt/QtJambi_LibraryShutdown.java can see it
-    //  MUST hide it when we refactor, only qtjambi internal code should be able to run it.
-    public native synchronized static boolean uninitialize();
+interface QClassPathEntry {
+    public String classPathEntryName();
 }

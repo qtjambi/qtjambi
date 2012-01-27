@@ -488,7 +488,7 @@ static QClassPathFileEngineHandler *qtjambiQClassPathFileEngineHandler;
 
 /* This is synchronized with initialize() by the caller in Java linkage */
 extern "C" QTJAMBI_EXPORT jboolean JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandler_uninitialize)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_fileengine_QClassPathFileEngineHandler_uninitialize)
 (JNIEnv *,
  jclass)
 {
@@ -502,7 +502,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandl
 
 /* This is synchronized with uninitialize() by the caller in Java linkage */
 extern "C" QTJAMBI_EXPORT jboolean JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QClassPathFileEngineHandler_initialize)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_fileengine_QClassPathFileEngineHandler_initialize)
 (JNIEnv *,
  jclass)
 {
