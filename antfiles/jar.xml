@@ -113,6 +113,17 @@
                 <exclude name="**/.*"/>
                 <exclude name="**/*.java"/>
                 <exclude name="**/*.jui"/>
+                <exclude name="${jar.excludes}"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="copy-src-resources">
+        <mkdir dir="${java.outsrcdir}/${module}"/>
+        <copy todir="${java.outsrcdir}/${module}" includeemptydirs="false">
+            <fileset dir="${java.srcdir}/${module}">
+                <include name="**/*"/>
+                <exclude name="${jar.excludes}"/>
             </fileset>
         </copy>
     </target>
@@ -169,6 +180,18 @@
         </jar>
     </target>
 
+    <target name="makesrcjar.qtjambi-util" depends="copy-src-resources">
+        <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
+            </manifest>
+            <fileset dir="${java.outsrcdir}/${module}" excludes="**/*.class"/>
+        </jar>
+    </target>
+
     <target name="makejar.qtjambi-examples" depends="compile2, copy-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
@@ -198,11 +221,24 @@
         </jar>
     </target>
 
+    <target name="makesrcjar.qtjambi-examples" depends="copy-src-resources">
+        <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+            </manifest>
+            <fileset dir="${java.outsrcdir}/${module}" excludes="**/*.class"/>
+            <fileset dir="${juic.outputdir}/${module}" />
+        </jar>
+    </target>
+
     <target name="makejar.qtjambi-designer" depends="compile2, copy-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
         <mkdir dir="${destdir}"/>
-        <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
+        <jar destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
 <!--                <attribute name="Bundle-Activator"       value="com.trolltech.qt.designer.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
@@ -226,6 +262,23 @@
                 <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
                 <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>
             </manifest>
+            <fileset dir="${java.outdir}/${module}">
+                <exclude name="com/trolltech/qt/**"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="makesrcjar.qtjambi-designer" depends="copy-src-resources">
+        <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
+            </manifest>
+            <fileset dir="${java.outsrcdir}/${module}" excludes="**/*.class"/>
+            <fileset dir="${java.outsrcdir}/qtjambi"   includes="com/trolltech/qt/designer/**/*.class"/>
+            <fileset dir="${generator.outputdir}/java" includes="com/trolltech/tools/**"/>
         </jar>
     </target>
 
@@ -234,9 +287,7 @@
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
         <mkdir dir="${destdir}"/>
-        <jar basedir="${java.outdir}/${module}"
-            destfile="${destdir}/${module}.jar"
-            excludes="${jar.excludes}">
+        <jar destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
 <!--                <attribute name="Bundle-Activator"       value="com.trolltech.qt.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
@@ -259,6 +310,20 @@
                 <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
                 <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>
             </manifest>
+            <fileset dir="${java.outdir}/${module}" excludes="com/trolltech/tools/**,com/trolltech/qt/designer/**"/>
+        </jar>
+    </target>
+
+    <target name="makesrcjar.qtjambi" depends="copy-src-resources">
+        <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
+            </manifest>
+            <fileset dir="${java.outsrcdir}/${module}" excludes="com/trolltech/qt/designer/**,**/*.class"/>
+            <fileset dir="${generator.outputdir}/java" excludes="com/trolltech/tools/**,com/trolltech/qt/designer/**"/>
         </jar>
     </target>
 
