@@ -66,6 +66,8 @@
                 includeantruntime="true"
                 excludes="${module.excludes}"
                 destdir="${java.outdir}/${module}">
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
             <src path="${sourcedir}"/>
             <classpath refid="java.compile.classpath"/>
         </javac>
@@ -81,6 +83,8 @@
                 includeantruntime="true"
                 excludes="${module.excludes}"
                 destdir="${java.outdir}/${module}">
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
             <src path="${sourcedir}"/>
             <src path="${sourcedir2}"/>
             <!-- These are excluded due to the MacOSX port of Qt not needing this backward compatibility -->
