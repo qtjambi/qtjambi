@@ -44,10 +44,33 @@
 
 package com.trolltech.tools.designer;
 
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.QAbstractItemModel;
+import com.trolltech.qt.core.QDir;
+import com.trolltech.qt.core.QFileInfo;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QCompleter;
+import com.trolltech.qt.gui.QDialog;
+import com.trolltech.qt.gui.QDialogButtonBox;
+import com.trolltech.qt.gui.QDirModel;
+import com.trolltech.qt.gui.QFileDialog;
+import com.trolltech.qt.gui.QGridLayout;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QLineEdit;
+import com.trolltech.qt.gui.QListWidget;
+import com.trolltech.qt.gui.QListWidgetItem;
+import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QPushButton;
+import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QtEnumerator;
 
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class SearchPathDialog extends QDialog {
 

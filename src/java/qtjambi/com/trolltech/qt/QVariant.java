@@ -44,8 +44,22 @@
 
 package com.trolltech.qt;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QBitArray;
+import com.trolltech.qt.core.QDate;
+import com.trolltech.qt.core.QDateTime;
+import com.trolltech.qt.core.QLocale;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QPointF;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QRectF;
+import com.trolltech.qt.core.QRegExp;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.QSizeF;
+import com.trolltech.qt.core.QTime;
+import com.trolltech.qt.gui.QLine;
+import com.trolltech.qt.gui.QLineF;
+
 import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;

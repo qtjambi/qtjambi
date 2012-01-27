@@ -44,11 +44,37 @@
 
 package com.trolltech.tools.designer;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.*;
+import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QAbstractItemModel;
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QSettings;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QDialog;
+import com.trolltech.qt.gui.QGridLayout;
+import com.trolltech.qt.gui.QHBoxLayout;
+import com.trolltech.qt.gui.QHeaderView;
+import com.trolltech.qt.gui.QItemSelectionModel;
+import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QLayoutItemInterface;
+import com.trolltech.qt.gui.QLineEdit;
+import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QShowEvent;
+import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.gui.QSortFilterProxyModel;
+import com.trolltech.qt.gui.QTreeView;
+import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.Utilities;
 
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class ResourceBrowser extends JambiResourceBrowser {
 

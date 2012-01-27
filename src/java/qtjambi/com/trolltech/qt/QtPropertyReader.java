@@ -44,7 +44,8 @@
 
 package com.trolltech.qt;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * This annotation is used to mark a method as a getter

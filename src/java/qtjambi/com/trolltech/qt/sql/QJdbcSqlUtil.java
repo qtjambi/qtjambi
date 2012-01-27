@@ -46,8 +46,14 @@ package com.trolltech.qt.sql;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.*;
-import java.util.*;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 import com.trolltech.qt.core.QDate;
 import com.trolltech.qt.core.QDateTime;

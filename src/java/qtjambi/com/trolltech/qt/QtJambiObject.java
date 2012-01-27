@@ -47,7 +47,7 @@ package com.trolltech.qt;
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.core.QCoreApplication;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
 
 /**
  * The super class of all class types in Qt Jambi. Loading this class or any

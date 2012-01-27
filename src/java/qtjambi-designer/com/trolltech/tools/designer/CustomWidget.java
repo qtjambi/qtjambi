@@ -44,9 +44,10 @@
 
 package com.trolltech.tools.designer;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
 
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QWidget;
 
 public class CustomWidget {
 

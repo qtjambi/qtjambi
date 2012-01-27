@@ -44,15 +44,25 @@
 
 package com.trolltech.qt.internal;
 
-import java.io.*;
-import java.util.*;
-//import java.util.jar.*;
-import java.net.*;
-//import java.security.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.helpers.*;
+import org.xml.sax.helpers.DefaultHandler;
 
 import com.trolltech.qt.Utilities;
 

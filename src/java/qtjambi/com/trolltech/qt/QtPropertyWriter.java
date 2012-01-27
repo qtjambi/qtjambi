@@ -44,7 +44,8 @@
 
 package com.trolltech.qt;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * QtPropertyWriter annotates a method as being a setter for a property.

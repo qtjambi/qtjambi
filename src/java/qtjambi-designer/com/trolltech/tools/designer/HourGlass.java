@@ -44,8 +44,23 @@
 
 package com.trolltech.tools.designer;
 
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QPointF;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QRectF;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.QTimerEvent;
+import com.trolltech.qt.gui.QBrush;
+import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QHideEvent;
+import com.trolltech.qt.gui.QMatrix;
+import com.trolltech.qt.gui.QPainter;
+import com.trolltech.qt.gui.QPainterPath;
+import com.trolltech.qt.gui.QPaintEvent;
+import com.trolltech.qt.gui.QPen;
+import com.trolltech.qt.gui.QShowEvent;
+import com.trolltech.qt.gui.QWidget;
 
 public class HourGlass extends QWidget {
 

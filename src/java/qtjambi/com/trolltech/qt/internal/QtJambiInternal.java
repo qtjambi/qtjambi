@@ -44,14 +44,31 @@
 
 package com.trolltech.qt.internal;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.*;
+import com.trolltech.qt.QNativePointer;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QtJambiGeneratedClass;
+import com.trolltech.qt.QtProperty;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QDataStream;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRegExp;
 
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.lang.reflect.*;
-import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 public class QtJambiInternal {
 

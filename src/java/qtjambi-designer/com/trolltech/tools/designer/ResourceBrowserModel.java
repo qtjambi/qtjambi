@@ -44,10 +44,28 @@
 
 package com.trolltech.tools.designer;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QAbstractItemModel;
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRegExp;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QBrush;
+import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QGradient;
+import com.trolltech.qt.gui.QImage;
+import com.trolltech.qt.gui.QLinearGradient;
+import com.trolltech.qt.gui.QPalette;
+import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QSortFilterProxyModel;
+import com.trolltech.qt.QSignalEmitter;
 
-import java.util.*;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class ResourceBrowserModel extends QAbstractItemModel {
 

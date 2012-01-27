@@ -44,13 +44,47 @@
 
 package com.trolltech.qt.designer;
 
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.core.Qt.*;
-import com.trolltech.qt.xml.*;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QBoxLayout;
+import com.trolltech.qt.gui.QComboBox;
+import com.trolltech.qt.gui.QContentsMargins;
+import com.trolltech.qt.gui.QDockWidget;
+import com.trolltech.qt.gui.QGridLayout;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QLayout;
+import com.trolltech.qt.gui.QLayoutItem;
+import com.trolltech.qt.gui.QLayoutItemInterface;
+import com.trolltech.qt.gui.QListWidget;
+import com.trolltech.qt.gui.QListWidgetItem;
+import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QMenu;
+import com.trolltech.qt.gui.QMenuBar;
+import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.gui.QSpacerItem;
+import com.trolltech.qt.gui.QStatusBar;
+import com.trolltech.qt.gui.QTabWidget;
+import com.trolltech.qt.gui.QToolBar;
+import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QIODevice;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.FocusPolicy;
+import com.trolltech.qt.xml.QDomDocument;
+import com.trolltech.qt.xml.QDomElement;
+import com.trolltech.qt.xml.QDomNode;
+import com.trolltech.qt.xml.QDomNodeList;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class QUiLoader {
 

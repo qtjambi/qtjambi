@@ -44,11 +44,29 @@
 
 package com.trolltech.tools.designer;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.*;
+import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QDir;
+import com.trolltech.qt.core.QFileInfo;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QSettings;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.QTimerEvent;
+import com.trolltech.qt.gui.QImage;
+import com.trolltech.qt.gui.QImageReader;
+import com.trolltech.qt.QPair;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QtEnumerator;
 
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  */

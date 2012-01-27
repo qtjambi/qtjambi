@@ -44,7 +44,11 @@
 
 package com.trolltech.qt.internal;
 
-import com.trolltech.qt.*;
+import com.trolltech.qt.QBlockedSlotException;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QtBlockedSlot;
+import com.trolltech.qt.QtJambiGeneratedClass;
+import com.trolltech.qt.QtJambiObject;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QCoreApplication;

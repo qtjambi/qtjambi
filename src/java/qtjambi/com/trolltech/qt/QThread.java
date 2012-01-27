@@ -44,7 +44,9 @@
 
 package com.trolltech.qt;
 
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QEvent;
 
 /**
  * The QThread class extends the java.lang.Thread class and should be used when

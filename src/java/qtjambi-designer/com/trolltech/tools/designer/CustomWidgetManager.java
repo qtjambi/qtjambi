@@ -44,14 +44,25 @@
 
 package com.trolltech.tools.designer;
 
-import java.io.*;
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.xml.*;
+import com.trolltech.qt.core.QDir;
+import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QFileInfo;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QMessageBox;
+import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.xml.QDomDocument;
+import com.trolltech.qt.xml.QDomElement;
+import com.trolltech.qt.xml.QDomNode;
+import com.trolltech.qt.xml.QDomNodeList;
 
 /**
  * The CustomWidgetManager class is used by the designer custom widget plugin to

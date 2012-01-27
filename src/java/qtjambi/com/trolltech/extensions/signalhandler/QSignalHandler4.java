@@ -44,7 +44,7 @@
 
 package com.trolltech.extensions.signalhandler;
 
-import com.trolltech.qt.*;
+import com.trolltech.qt.QSignalEmitter;
 
 /**
  * Signal handlers are a convenience class that provides compile time type checking of signal / slot

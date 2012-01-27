@@ -44,7 +44,13 @@
 
 package com.trolltech.qt.sql;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 class QJdbcSqlResult extends QSqlResult
 {

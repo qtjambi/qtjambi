@@ -44,11 +44,7 @@
 
 package com.trolltech.qt;
 
-import com.trolltech.qt.core.*;
-
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
+import com.trolltech.qt.core.QObject;
 
 /**
  * @exclude

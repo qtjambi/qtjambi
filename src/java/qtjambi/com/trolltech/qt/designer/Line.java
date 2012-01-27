@@ -44,9 +44,10 @@
 
 package com.trolltech.qt.designer;
 
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.*;
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.QtPropertyWriter;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QFrame;
+import com.trolltech.qt.gui.QWidget;
 
 class Line extends QFrame {
 

@@ -44,14 +44,26 @@
 
 package com.trolltech.qt.designer;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QBrush;
+import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QFont;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QPalette;
+import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.internal.RetroTranslatorHelper;
-import com.trolltech.qt.xml.*;
+import com.trolltech.qt.xml.QDomElement;
+import com.trolltech.qt.xml.QDomNode;
+import com.trolltech.qt.xml.QDomNodeList;
 
-import java.lang.reflect.*;
-import java.util.*;
-
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 
 abstract class PropertyHandler {
     public abstract Object create(QDomElement e) throws QUiLoaderException;

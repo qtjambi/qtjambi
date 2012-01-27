@@ -44,7 +44,9 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.PropertyHelper;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 
 import java.io.File;
 import java.util.ArrayList;

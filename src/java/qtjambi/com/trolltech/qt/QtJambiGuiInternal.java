@@ -44,9 +44,15 @@
 
 package com.trolltech.qt;
 
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QAbstractScrollArea;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QMessageBox;
+import com.trolltech.qt.gui.QPainter;
+import com.trolltech.qt.gui.QPaintDeviceInterface;
+import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QWidget;
 
-import java.util.*;
+import java.util.HashMap;
 
 /**
  * @exclude
