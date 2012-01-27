@@ -46,6 +46,9 @@ package com.trolltech.qt;
 
 import java.lang.ref.WeakReference;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import com.trolltech.qt.core.QMessageHandler;
 import com.trolltech.qt.internal.fileengine.QClassPathFileEngineHandler;
 
@@ -74,8 +77,47 @@ public abstract class QtJambi_LibraryInitializer
             thread.setName("qtjambi-" + QtJambi_LibraryShutdown.class.getName());
             Runtime.getRuntime().addShutdownHook(thread);
             shutdownHookThread = new WeakReference<Thread>(thread);	// weak reference
+
+            // pre-load the known static data (this appears to be needed since there isn't any way
+            //  of asking the ClassLoader if a particular class is currently loaded so we don't
+            //  load it in an attempt to null static final references on shutdown).
+            // We only do this to help the debugging mode ALIVE stats (leak checking)
+            if(Utilities.configuration == Utilities.Configuration.Debug) {
+                setupStaticReferences(QtJambi_LibraryShutdown.K_com_trolltech_qt_gui_QPen,   QtJambi_LibraryShutdown.K_com_trolltech_qt_gui_QPen_FIELDNAMES);
+                setupStaticReferences(QtJambi_LibraryShutdown.K_com_trolltech_qt_gui_QColor, QtJambi_LibraryShutdown.K_com_trolltech_qt_gui_QColor_FIELDNAMES);
+                setupStaticReferences(QtJambi_LibraryShutdown.K_com_trolltech_qt_gui_QBrush, QtJambi_LibraryShutdown.K_com_trolltech_qt_gui_QBrush_FIELDNAMES);
+            }
         } catch(Throwable e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void setupStaticReferences(String className, String[] fieldNameA) {
+        Class<? extends Object> clazz;
+        try {
+            ClassLoader classLoader = QtJambi_LibraryInitializer.class.getClassLoader();
+            clazz = Class.forName(className, /*false*/true, classLoader);
+            //clazz = classLoader.loadClass(className);
+        } catch(ClassNotFoundException eat) {
+            // nop (if not loaded/exists, there is nothing to clear)
+            eat.printStackTrace();
+            return;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        for(String fieldName : fieldNameA) {
+            try {
+                Field field = clazz.getDeclaredField(fieldName);
+                if(Modifier.isStatic(field.getModifiers())) {
+                    if(Modifier.isFinal(field.getModifiers())) {
+                        // Get value (and discard)
+                        field.get(clazz);
+                    }
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

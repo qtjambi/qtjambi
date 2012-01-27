@@ -90,12 +90,12 @@ class QtJambi_LibraryShutdown implements Runnable {
         }
     }
 
-    private static final String K_com_trolltech_qt_gui_QPen   = "com.trolltech.qt.gui.QPen";
-    private static final String[] K_com_trolltech_qt_gui_QPen_FIELDNAMES = {
+    /*private*/ static final String K_com_trolltech_qt_gui_QPen   = "com.trolltech.qt.gui.QPen";
+    /*private*/ static final String[] K_com_trolltech_qt_gui_QPen_FIELDNAMES = {
         "NoPen"
     };
-    private static final String K_com_trolltech_qt_gui_QColor = "com.trolltech.qt.gui.QColor";
-    private static final String[] K_com_trolltech_qt_gui_QColor_FIELDNAMES = {
+    /*private*/ static final String K_com_trolltech_qt_gui_QColor = "com.trolltech.qt.gui.QColor";
+    /*private*/ static final String[] K_com_trolltech_qt_gui_QColor_FIELDNAMES = {
         "white",
         "black",
         "red",
@@ -117,8 +117,8 @@ class QtJambi_LibraryShutdown implements Runnable {
         "color0",
         "color1"
     };
-    private static final String K_com_trolltech_qt_gui_QBrush = "com.trolltech.qt.gui.QBrush";
-    private static final String[] K_com_trolltech_qt_gui_QBrush_FIELDNAMES = {
+    /*private*/ static final String K_com_trolltech_qt_gui_QBrush = "com.trolltech.qt.gui.QBrush";
+    /*private*/ static final String[] K_com_trolltech_qt_gui_QBrush_FIELDNAMES = {
         "NoBrush"
     };
 
