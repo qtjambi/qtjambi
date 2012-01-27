@@ -11,14 +11,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-
+import com.trolltech.autotests.QApplicationTest;
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
-import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.script.QScriptContext;
 import com.trolltech.qt.script.QScriptEngine;
@@ -43,11 +40,11 @@ public class TestQScriptEngine extends QApplicationTest {
 	private QScriptValue val1;
 	private QScriptString testString;
 	private QScriptContext scriptContext;
-	
-	@org.junit.BeforeClass
+
+/*	@org.junit.BeforeClass
 	public static void setUpClass() {
 		QApplication app = new QApplication(new String[] {});
-	}
+	}*/
 
 	@org.junit.Before
 	public void setUp() {

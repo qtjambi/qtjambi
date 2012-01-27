@@ -12,12 +12,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-
-import com.trolltech.qt.gui.QApplication;
+import com.trolltech.autotests.QApplicationTest;
 import com.trolltech.qt.gui.QPushButton;
-import com.trolltech.qt.script.QScriptContext;
 import com.trolltech.qt.script.QScriptEngine;
 import com.trolltech.qt.script.QScriptValue;
 import com.trolltech.qt.script.QScriptValue.PropertyFlag;
@@ -25,7 +21,6 @@ import com.trolltech.qt.script.QScriptValue.PropertyFlags;
 import com.trolltech.qt.script.QScriptValue.ResolveFlags;
 import com.trolltech.qt.script.QScriptValue.SpecialValue;
 import com.trolltech.qt.script.QScriptValue.ResolveFlag;
-import com.trolltech.qt.script.QScriptValueIterator;
 
 public class TestQScriptValue extends QApplicationTest {
 
