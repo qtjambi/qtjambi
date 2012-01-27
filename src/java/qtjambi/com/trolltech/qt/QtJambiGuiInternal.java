@@ -76,7 +76,7 @@ public class QtJambiGuiInternal {
                    + "<p>Qt Jambi is a Trolltech product. See "
                    + "<a href=\"http://www.trolltech.com/jambi\">http://www.trolltech.com/jambi</a> for more information.</p>");
         mb.setIconPixmap(new QPixmap(
-                "classpath:com/trolltech/images/qt-logo.png"));
+                "classpath:com/trolltech/qt/images/qt-logo.png"));
         mb.exec();
     }
 

@@ -76,7 +76,7 @@ public class TestGeneratorUtilities {
 
 	@org.junit.Test
 	public void testCountExpense() {
-		image.load("./src/java/qtjambi/com/trolltech/images/qt-logo.png");
+		image.load("./src/java/qtjambi/com/trolltech/qt/images/qt-logo.png");
 		assertEquals("height*bytesPerLine", 4096, image.height() * image.bytesPerLine());
 	}
 
