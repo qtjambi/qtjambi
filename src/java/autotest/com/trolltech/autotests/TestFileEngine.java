@@ -45,6 +45,7 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -64,9 +65,10 @@ import com.trolltech.qt.gui.QPixmap;
 public class TestFileEngine extends QApplicationTest {
     @Test
     public void run_classPathFileEngine() {
-        QAbstractFileEngine.addSearchPathForResourceEngine(".");
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");  // Hmm not sure on the merit of this cwd will be project top-level dir
         QFileInfo info = new QFileInfo("classpath:com/trolltech/autotests/TestClassFunctionality.jar");
         assertTrue(info.exists());
+        Utils.println(3, "info.absoluteFilePath() = " + info.absoluteFilePath());
 
         QFile af = new QFile(info.absoluteFilePath());
         assertTrue(af.exists());
@@ -76,14 +78,27 @@ public class TestFileEngine extends QApplicationTest {
         String search_path = info.canonicalFilePath();
         QAbstractFileEngine.addSearchPathForResourceEngine(search_path);
 
-        QFileInfo ne_info = new QFileInfo("classpath:*#TestClassFunctionality_nosuchfile.txt");
-        assertTrue(!ne_info.exists());
+        QFileInfo ne_info = new QFileInfo("classpath:TestClassFunctionality_nosuchfile.txt");
+        assertFalse(ne_info.exists());
+
+        QFileInfo ne2_info = new QFileInfo("classpath:*#TestClassFunctionality_nosuchfile.txt");
+        assertFalse(ne2_info.exists());
 
         QFileInfo pm_info = new QFileInfo("classpath:TestClassFunctionality_picture.jpg");
         assertTrue(pm_info.exists());
         assertEquals(pm_info.size(), 11769L);
 
+        QFileInfo pm2_info = new QFileInfo("classpath:*#TestClassFunctionality_picture.jpg");
+        assertTrue(pm2_info.exists());
+        assertEquals(pm2_info.size(), 11769L);
+
+        QFile pm2_file = new QFile("classpath:*#TestClassFunctionality_picture.jpg");
+        assertTrue(pm2_file.exists());
+        assertTrue(pm2_file.open(QIODevice.OpenModeFlag.ReadOnly));
+        pm2_file.close();
+
         QPixmap pm = new QPixmap("classpath:*#TestClassFunctionality_picture.jpg");
+        assertFalse(pm.isNull());
         assertEquals(pm.width(), 200);
         assertEquals(pm.height(), 242);
 
