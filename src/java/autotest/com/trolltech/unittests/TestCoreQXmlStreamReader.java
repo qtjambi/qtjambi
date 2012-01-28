@@ -13,6 +13,8 @@ public class TestCoreQXmlStreamReader {
 	private QXmlStreamReader xmlr;
 	private QFile xmlFile;
 	private TokenType token;
+	private String person[] = {"John", "Jane"};
+	private int i = 0;
 
 	@org.junit.BeforeClass
 	public static void setUpClass() {
@@ -33,6 +35,7 @@ public class TestCoreQXmlStreamReader {
 
 	@org.junit.After
 	public void tearDown() throws Exception {
+		xmlFile.close();
 	}
 
 	@org.junit.Test
@@ -61,6 +64,15 @@ public class TestCoreQXmlStreamReader {
 	public void testProcessing1() {
 		while (!xmlr.atEnd()) {
 			token = xmlr.readNext();
+			if (token == TokenType.StartElement) {
+				if (token.name().equals("persons"))
+					continue;
+				if (xmlr.name().equals("person")) {
+					//skip the text() of StartElement token
+					xmlr.readNext();
+					assertEquals(xmlr.text(), person[i++]);
+				}
+			}
 		}
 	}
 
