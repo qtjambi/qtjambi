@@ -51,7 +51,6 @@ class QFSEntryEngine extends QFSFileEngine implements QClassPathEntry {
 
     public QFSEntryEngine(String file, String classPathEntryFileName) {
         super(file);
-        System.out.println("QFSEntryEngine().ctor(\"" + file + "\", \"" + classPathEntryFileName + "\")");
         m_classPathEntryFileName = classPathEntryFileName;
     }
 

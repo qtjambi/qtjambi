@@ -61,7 +61,7 @@ public class QClassPathFileEngineIterator extends QAbstractFileEngineIterator {
         System.out.println("QClassPathFileEngineIterator().ctor(\"" + path + "\", ...)");
         index = 0;
         QAbstractFileEngine engine = QAbstractFileEngine.create(path);
-            entries = engine.entryList(filters, nameFilters);
+        entries = engine.entryList(filters, nameFilters);
         System.out.println("QClassPathFileEngineIterator().ctor(\"" + path + "\", ...) entries.size()="+entries.size());
     }
 
@@ -74,7 +74,8 @@ public class QClassPathFileEngineIterator extends QAbstractFileEngineIterator {
 
     @Override
     public boolean hasNext() {
-        return index < entries.size() - 1;
+        boolean bf = index < entries.size() - 1;
+        return bf;
     }
 
     @Override
@@ -82,6 +83,7 @@ public class QClassPathFileEngineIterator extends QAbstractFileEngineIterator {
         if(!hasNext())
             return "";
         index++;
-        return currentFilePath();
+        String n = currentFilePath();
+        return n;
     }
 }

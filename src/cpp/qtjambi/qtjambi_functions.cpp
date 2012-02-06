@@ -453,10 +453,12 @@ class QClassPathFileEngineHandler: public QAbstractFileEngineHandler
 public:
     QAbstractFileEngine *create(const QString &fileName) const
     {
+        QAbstractFileEngine *rv;
         if (fileName.startsWith("classpath:"))
-            return newClassPathFileEngine(fileName);
+            rv = newClassPathFileEngine(fileName);
         else
-            return 0;
+            rv = 0;
+        return rv;
     }
 
 private:
@@ -472,8 +474,9 @@ private:
         jobject javaFileEngine = env->NewObject(sc->QClassPathEngine.class_ref, sc->QClassPathEngine.constructor, javaFileName);
         QTJAMBI_EXCEPTION_CHECK(env);
         QAbstractFileEngine *fileEngine = reinterpret_cast<QAbstractFileEngine *>(qtjambi_to_object(env, javaFileEngine));
+        QtJambiLink *link = 0;
         if (javaFileEngine != 0) {
-            QtJambiLink *link = QtJambiLink::findLink(env, javaFileEngine);
+            link = QtJambiLink::findLink(env, javaFileEngine);
             Q_ASSERT(link != 0);
 
             link->setCppOwnership(env, javaFileEngine);
