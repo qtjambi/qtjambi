@@ -929,6 +929,8 @@ void QtJambiLink::javaObjectFinalized(JNIEnv *env)
     if((disp & 0x0001) != 0) {  // FIXME move up ?
         m_qtJambiLinkUserData = 0;
     }
+#else
+    Q_UNUSED(disp);
 #endif
     setAsFinalized();
 
@@ -1002,6 +1004,8 @@ void QtJambiLink::javaObjectDisposed(JNIEnv *env)
             if((disp & 0x0001) != 0) {  // FIXME move up ?
                 m_qtJambiLinkUserData = 0;
             }
+#else
+            Q_UNUSED(disp);
 #endif
         }
 
