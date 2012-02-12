@@ -176,8 +176,8 @@ protected:
     qint64 readData(char *data, qint64 maxSize) {
         Q_UNUSED(maxSize);
         const char *inp = "I am a boy";
-        const int len = strlen(inp);
-        for (int i=0; i<len; ++i)
+        const size_t len = strlen(inp);
+        for (size_t i=0; i<len; ++i)
             data[i] = inp[i];
 
         return len;
@@ -186,7 +186,7 @@ protected:
     qint64 writeData(const char *data, qint64 maxSize) {
         delete buffer;
         buffer = new char[maxSize];
-        for (int i=0; i<maxSize; ++i)
+        for (qint64 i=0; i<maxSize; ++i)
             buffer[i] = data[i];
 
         return maxSize;
@@ -195,8 +195,8 @@ protected:
     qint64 readLineData(char *data, qint64 maxSize) {
         Q_UNUSED(maxSize)
         const char *inp = "Confucius say: Don't go outside with wet hair";
-        const int len = strlen(inp);
-        for (int i=0; i<len; ++i)
+        const size_t len = strlen(inp);
+        for (size_t i=0; i<len; ++i)
             data[i] = inp[i];
 
         return len;
