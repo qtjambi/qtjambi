@@ -105,11 +105,17 @@ public class TestClipboard /*extends QApplicationTest*/ {
         // noop
     }
 
+    private int threadCount;
+
     // Sarogate heavy weight thing to cause memory re-use
     private void runQThread() {
         TestRunnable testRunnable = new TestRunnable();
 
         QThread qThread = new QThread(testRunnable);
+
+        synchronized(TestClipboard.class) {
+            threadCount++;
+        }
 
         qThread.start();
     }
@@ -122,6 +128,9 @@ public class TestClipboard /*extends QApplicationTest*/ {
             System.out.println("TestRunnable run() start");
 
             System.out.println("TestRunnable run() finished");
+            synchronized(TestClipboard.class) {
+                threadCount--;
+            }
         }
     }
 
@@ -141,6 +150,8 @@ public class TestClipboard /*extends QApplicationTest*/ {
         clipboard = null;
         }
     }
+
+    private boolean quitFlag;
 
     //@Test
     public void testClipboardCrash() {
@@ -168,6 +179,9 @@ public class TestClipboard /*extends QApplicationTest*/ {
                 if(key == Qt.Key.Key_Q.value()) {
                     System.out.println("keyPressEvent(): QUIT");
                     QApplication.quit();
+                    synchronized(TestClipboard.class) {
+                        quitFlag = true;
+                    }
                 }
             }
         };
@@ -184,12 +198,22 @@ public class TestClipboard /*extends QApplicationTest*/ {
         QApplication.postEvent(mainWindow, new QKeyEvent(QEvent.Type.KeyPress, Qt.Key.Key_G.value(), Qt.KeyboardModifier.createQFlags(Qt.KeyboardModifier.NoModifier)));
 
         QApplication.execStatic();
+        QApplication.processEvents();
+        QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
 
         disconnectGrabClipboard();
 
-        try {
-            Thread.sleep(100);  // wait for runQThread() to die
-        } catch(InterruptedException eat) {
+        for(int i = 0; i < 100; i++) {
+            try {
+                Thread.sleep(100);  // wait for runQThread() to die
+            } catch(InterruptedException eat) {
+            }
+            synchronized(TestClipboard.class) {
+                if(threadCount == 0 && quitFlag)
+                    break;
+            }
+            QApplication.processEvents();
+            QApplication.processEvents(QEventLoop.ProcessEventsFlag.DeferredDeletion);
         }
 
         mainWindow.close();
