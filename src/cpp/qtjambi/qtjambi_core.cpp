@@ -760,6 +760,13 @@ jobject qtjambi_from_enum(JNIEnv *env, int qt_enum, const char *className)
 {
     Q_ASSERT(className);
     jclass cl = qtjambi_find_class(env, className);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    if(!cl) {
+        fprintf(stderr, "qtjambi_find_class(): %s NOTFOUND", className);
+        fflush(stderr);
+        qWarning("qtjambi_find_class(): %s NOTFOUND", className);
+    }
+#endif
     Q_ASSERT(cl);
 
     jmethodID method = env->GetStaticMethodID(cl, "resolve_internal", "(I)Ljava/lang/Object;");
