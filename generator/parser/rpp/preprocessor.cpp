@@ -104,7 +104,7 @@ QStringList Preprocessor::macroNames() const {
     pp_environment::const_iterator it = d->env.first_macro();
     while (it != d->env.last_macro()) {
         const pp_macro *m = *it;
-        macros += QString::fromLatin1(m->name->begin(), m->name->size());
+        macros += QString::fromLatin1(m->name->begin(), (int) m->name->size());
         ++it;
     }
 
@@ -120,10 +120,10 @@ QList<Preprocessor::MacroItem> Preprocessor::macros() const {
         MacroItem item;
         item.name = QString::fromLatin1(m->name->begin(), m->name->size());
         item.definition = QString::fromLatin1(m->definition->begin(),
-                                              m->definition->size());
+                                              (int) m->definition->size());
         for (size_t i = 0; i < m->formals.size(); ++i) {
             item.parameters += QString::fromLatin1(m->formals[i]->begin(),
-                                                   m->formals[i]->size());
+                                                   (int) m->formals[i]->size());
         }
         item.isFunctionLike = m->function_like;
 

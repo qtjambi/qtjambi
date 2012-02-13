@@ -764,7 +764,7 @@ void Binder::visitUsingDirective(UsingDirectiveAST *node) {
 void Binder::visitQEnums(QEnumsAST *node) {
     const Token &start = _M_token_stream->token((int) node->start_token);
     const Token &end = _M_token_stream->token((int) node->end_token);
-    QStringList enum_list = QString::fromLatin1(start.text + start.position,
+    QStringList enum_list = QString::fromLatin1(start.text + (int) start.position,
                             end.position - start.position).split(' ');
 
     ScopeModelItem scope = currentScope();
@@ -775,7 +775,7 @@ void Binder::visitQEnums(QEnumsAST *node) {
 void Binder::visitQProperty(QPropertyAST *node) {
     const Token &start = _M_token_stream->token((int) node->start_token);
     const Token &end = _M_token_stream->token((int) node->end_token);
-    QString property = QString::fromLatin1(start.text + start.position,
+    QString property = QString::fromLatin1(start.text + (int) start.position,
                                            end.position - start.position);
     _M_current_class->addPropertyDeclaration(property);
 }

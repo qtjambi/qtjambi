@@ -1577,8 +1577,8 @@ bool Parser::parse_Attribute__() {
 QString Parser::tokenText(AST *ast) const {
     if (ast == 0) return QString();
 
-    int start_token = ast->start_token;
-    int end_token = ast->end_token;
+    std::size_t start_token = ast->start_token;
+    std::size_t end_token = ast->end_token;
 
     Token const &tk = token_stream.token(start_token);
     Token const &end_tk = token_stream.token(end_token);
@@ -3925,7 +3925,7 @@ bool Parser::parseQ_ENUMS(DeclarationAST *&node) {
     token_stream.nextToken();
     token_stream.nextToken();
 
-    int firstToken = token_stream.cursor();
+    std::size_t firstToken = token_stream.cursor();
     while (token_stream.lookAhead() != ')') {
         token_stream.nextToken();
     }
@@ -3948,7 +3948,7 @@ bool Parser::parseQ_PROPERTY(DeclarationAST *&node) {
     token_stream.nextToken();
     token_stream.nextToken();
 
-    int firstToken = token_stream.cursor();
+    std::size_t firstToken = token_stream.cursor();
     int nestCount = 1;
     while (nestCount > 0) {
         if (token_stream.lookAhead() == '(')
