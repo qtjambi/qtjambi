@@ -13,6 +13,7 @@ import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.xmlpatterns.QXmlFormatter;
+import com.trolltech.qt.xmlpatterns.QXmlItem;
 import com.trolltech.qt.xmlpatterns.QXmlName;
 import com.trolltech.qt.xmlpatterns.QXmlQuery;
 import com.trolltech.qt.xmlpatterns.QXmlResultItems;
@@ -36,6 +37,7 @@ public class TestQXmlFormatter extends QApplicationTest {
     @Before
     public void setUp() throws Exception {
         query = new QXmlQuery();
+        xmlResultItems = new QXmlResultItems();
         file = new QFile("classpath:com/trolltech/unittests/queryResult.xml");
         file.open(new QIODevice.OpenMode(QIODevice.OpenModeFlag.ReadWrite));
     }
@@ -74,12 +76,30 @@ public class TestQXmlFormatter extends QApplicationTest {
     }
 
     @Test
-    public void testAttribute() {
+    public void testEvaluateToQXmlSerializer() {
         query.setQuery(samplePath1 + "/a/p");
         TestSerializerClass clazz = new TestSerializerClass(query, file);
         assertTrue(query.isValid());
         query.evaluateTo(clazz.outputDevice());
     }
+    
+    @Test
+    public void testEvaluateToQXmlResultItems() {
+        query.setQuery(samplePath1 + "/a/p");
+        assertTrue(query.isValid());
+        query.evaluateTo(xmlResultItems);
+        
+        QXmlItem item = xmlResultItems.next();
+        while(!item.isNull()) {
+            if (item.isNode()) {
+                query.setFocus(item);
+                query.setQuery(samplePath1 + "/a/p/string()");
+                assertEquals(query.evaluateTo(), "Some Text in p");
+            }
+            item = xmlResultItems.next();
+        }
+    }
+    
 }
 
 class TestSerializerClass extends QXmlSerializer {
