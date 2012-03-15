@@ -51,13 +51,15 @@ import org.junit.Test;
 import com.trolltech.qt.gui.QApplication;
 
 public class TestStartup {
-    @Test
+	// DISABLED due to this messing up the JUnit suite
+	// TODO Move this to Integration Testing
+    //@Test
     public void testQApplicationInitializeNull() {
         boolean caughtExpectedException = false;
         try {
             QApplication.initialize(null);   // this has been known to crash JVM
         } catch(NullPointerException npe) {
-            // Now was this NPE a conveted SIGSEGV ?  or due to "args.length" access below:
+            // Now was this NPE a converted SIGSEGV ?  or due to "args.length" access below:
             //   com/trolltech/qt/core/QCoreApplication#argc(String args[])
             //     argc.setIntValue(args.length + 1);
             caughtExpectedException = true;
