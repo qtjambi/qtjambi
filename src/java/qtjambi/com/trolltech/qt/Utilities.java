@@ -395,7 +395,7 @@ public class Utilities {
                             configuration = null;
                             configurationSource = null;
                             error = true;
-                        } else if(!error) {
+                        } else if(tmpConfiguration != null && !error) {
                             configuration = tmpConfiguration;  // found
                             configurationSource = url.toString();
                         }
