@@ -664,18 +664,28 @@ else
         }
     }
 
+    // FIXME: private void addURLFromPath(URL url, String fileName) { }
+
+    /**
+     * 
+     * @param url This maybe a file URL such as new URL("file:/C:/foobar/cp")
+     * @param fileName
+     * @return
+     */
     private boolean addFromPath(URL url, String fileName) {
-String x_file = url.getFile();
-String x_path = url.getPath();
-        String qtified_path = url.getPath().replace('\\', '/');
+        String path = url.getPath();  // All URL paths have "/" separators
+        if(OSInfo.isWindows()) {
+            if(path.length() > 2 && path.charAt(2) == ':' && path.startsWith("/"))
+                path = path.substring(1);	// Convert "/C:/foobar/cp" => "C:/foobar/cp"
+        }
 
         // If it is a plain file on the disk, just read it from the disk
         if (url.getProtocol().equals("file")) {
-            QFileInfo file = new QFileInfo(qtified_path);
+            QFileInfo file = new QFileInfo(path);
             if (file.isDir()
                     && file.exists()
-                    && new QFileInfo(qtified_path + "/" + fileName).exists()) {
-                addEngine(new QFSEntryEngine(qtified_path + "/" + fileName, url.toExternalForm()));
+                    && new QFileInfo(path + "/" + fileName).exists()) {
+                addEngine(new QFSEntryEngine(path + "/" + fileName, url.toExternalForm()));
                 return true;
             }
         }
