@@ -1753,7 +1753,13 @@ public class TestInjectedCode extends QApplicationTest {
     @Test
     public void testIODevicePeek() {
         QAbstractFileEngine.addSearchPathForResourceEngine(".");
-        QIODevice file = new QFile("classpath:com/trolltech/autotests/TestInjectedCode.java");
+        // This was "classpath:com/trolltech/autotests/TestInjectedCode.java" by it is not
+        // normal to expect *.java files in the classpath.
+        QFile qfile = new QFile("classpath:com/trolltech/autotests/TestInjectedCode.dat");
+        QIODevice file = qfile;
+
+        boolean bf = qfile.exists();
+        assertTrue(bf);
 
         assertTrue(file.open(QIODevice.OpenModeFlag.ReadOnly));
 
@@ -1783,7 +1789,9 @@ public class TestInjectedCode extends QApplicationTest {
     @Test
     public void testIODeviceGetByteSuccess() {
         QAbstractFileEngine.addSearchPathForResourceEngine(".");
-        QIODevice file = new QFile("classpath:com/trolltech/autotests/TestInjectedCode.java");
+        // This was "classpath:com/trolltech/autotests/TestInjectedCode.java" by it is not
+        // normal to expect *.java files in the classpath.
+        QIODevice file = new QFile("classpath:com/trolltech/autotests/TestInjectedCode.dat");
 
         assertTrue(file.open(QIODevice.OpenModeFlag.ReadOnly));
 
