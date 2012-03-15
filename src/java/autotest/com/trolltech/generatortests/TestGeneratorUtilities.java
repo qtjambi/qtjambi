@@ -12,6 +12,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.trolltech.qt.GeneratorUtilities;
 import com.trolltech.qt.QtJambi_LibraryInitializer;
+import com.trolltech.qt.core.QDir;
+import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QImage;
 
@@ -76,7 +78,12 @@ public class TestGeneratorUtilities {
 
 	@org.junit.Test
 	public void testCountExpense() {
-		image.load("./src/java/qtjambi/com/trolltech/qt/images/qt-logo.png");
+		final String path = "./src/java/qtjambi/com/trolltech/qt/images/qt-logo.png";
+		QFile qfile = new QFile(path);
+		boolean bf = qfile.exists();
+		assertTrue(bf);
+
+		image.load(path);
 		assertEquals("height*bytesPerLine", 4096, image.height() * image.bytesPerLine());
 	}
 

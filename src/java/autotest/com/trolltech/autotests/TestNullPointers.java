@@ -44,6 +44,7 @@
 
 package com.trolltech.autotests;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -114,6 +115,7 @@ public class TestNullPointers extends QApplicationTest {
         MyLayout l = new MyLayout();
         w.setLayout(l);
         l.addWidget(new QWidget());
+        assertNull(l.takeAt(0));	// eclEMMA
 
         w.show();
 

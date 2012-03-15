@@ -47,7 +47,7 @@ public class TestPluginImageFormats extends QApplicationTest {
 		List<QByteArray> list = QImageReader.supportedImageFormats();
 		List<String> labelList = new ArrayList<String>();
 		for(QByteArray ba : list) {
-                	StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			for(int i = 0; i < ba.size(); i++)
 				sb.append((char)ba.at(i));
 			labelList.add(sb.toString());
