@@ -217,6 +217,7 @@ public class Utilities {
     /** The configuration of Qt Jambi. */
     public static Configuration configuration = decideConfiguration();
 
+    // What is this used for, since this does not appear to be currently true.  The lib directory works just fine on windows from QtSDK.
     /** The library sub path. */
     public static String libSubPath = decideLibSubPath();
 
@@ -287,7 +288,7 @@ public class Utilities {
     }
 
     public static File jambiTempDir() {
-        return NativeLibraryManager.jambiTempDirBase("");
+        return NativeLibraryManager.jambiTempDir();
     }
 
     private static OperatingSystem decideOperatingSystem() {
@@ -455,6 +456,7 @@ public class Utilities {
         // FIXME: enumerate ClassPath look for qtjambi-deployment.xml
         // FIXME: Use qtjambi-deployment.xml is one exists
         // FIXME: Make a resolver method (that produces a list of automatic things found) and another method to set from list
+        // FIXME: The last resort should be to find a plugins/ directory (when we have no qtjambi-deployment.xml)
         List<String> paths = new ArrayList<String>();
 
         String classPath = System.getProperty("java.class.path");
@@ -478,6 +480,7 @@ public class Utilities {
                         System.out.println("unpackPlugins() found DIRECTORY at " + base.getAbsolutePath());
                 }
             } else if(element.toLowerCase().endsWith(".jar")) {
+                // FIXME: We should only load MANIFEST.MF qtjambi-deployment.xml from the JAR we activated
                 if(configuration == Configuration.Debug)
                     System.out.println("unpackPlugins() found JAR at " + base.getAbsolutePath());
             } else {
