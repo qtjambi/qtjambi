@@ -44,7 +44,6 @@
 
 package com.trolltech.qt.internal.fileengine;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.trolltech.qt.core.QAbstractFileEngine;
@@ -53,6 +52,7 @@ import com.trolltech.qt.core.QDir.Filters;
 
 public class QClassPathFileEngineIterator extends QAbstractFileEngineIterator {
     private List<String> entries = null;
+    private int entriesCount;
     private int index;
 
     public QClassPathFileEngineIterator(String path, Filters filters, List<String> nameFilters) {
@@ -68,19 +68,21 @@ public class QClassPathFileEngineIterator extends QAbstractFileEngineIterator {
 
     @Override
     public String currentFileName() {
+        if(index < 0 || index >= entriesCount)
+            return null;
         return entries.get(index);
     }
 
     @Override
     public boolean hasNext() {
-        boolean bf = index < entries.size() - 1;
+        boolean bf = index < entriesCount - 1;
         return bf;
     }
 
     @Override
     public String next() {
         if(!hasNext())
-            return "";
+            return null;
         index++;
         String n = currentFilePath();
         return n;
