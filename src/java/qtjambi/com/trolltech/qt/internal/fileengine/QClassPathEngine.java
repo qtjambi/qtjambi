@@ -61,6 +61,7 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipException;
 
 import com.trolltech.qt.QNativePointer;
+import com.trolltech.qt.Utilities;
 import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QAbstractFileEngineIterator;
 import com.trolltech.qt.core.QDateTime;
@@ -69,23 +70,31 @@ import com.trolltech.qt.core.QFileInfo;
 import com.trolltech.qt.core.QIODevice;
 
 import com.trolltech.qt.internal.RetroTranslatorHelper;
+import com.trolltech.qt.osinfo.OSInfo;
 
-public class QClassPathEngine extends QAbstractFileEngine
-{
+public class QClassPathEngine extends QAbstractFileEngine {
     public final static String FileNameDelim = "#";
     public final static String FileNameIndicator = "classpath";
     public final static String FileNamePrefix = FileNameIndicator + ":";
 
+    // JarCache should not be global but instated here
     private static HashSet<String> classpaths;
 
     private String m_fileName = "";
     private String m_baseName = "";
     private String m_selectedSource = "*";
-    private List<QAbstractFileEngine> m_engines = new LinkedList<QAbstractFileEngine>();
+    private LinkedList<QAbstractFileEngine> m_engines = new LinkedList<QAbstractFileEngine>();  // ConcurrentLinkedList ?
 
     private static String currentDirectory;
 
+    private String namespaceSchemePrefix = "classpath";
+
     public QClassPathEngine(String fileName) {
+        setFileName(fileName);
+    }
+
+    public QClassPathEngine(String fileName, String namespaceSchemePrefix) {
+        this.namespaceSchemePrefix = namespaceSchemePrefix;
         setFileName(fileName);
     }
 
@@ -100,9 +109,16 @@ public class QClassPathEngine extends QAbstractFileEngine
             if(tmpCurrentDirectory != null)
                 return tmpCurrentDirectory;
 
+            // FIXME: Maybe user.dir should be priority here ?
+
             File fileCurDir = new File(".");
             if(fileCurDir.isDirectory()) {
+                // getParentFile() does not do the trick for us (it will/can be null in this circumstance)
+                //  this method ensures it does not end with "/." or "\\." which is unwanted
                 tmpCurrentDirectory = fileCurDir.getAbsolutePath();
+                String removeDelimAndDot = File.separator + ".";  // "/." on unix, "\\." on windows
+                if(tmpCurrentDirectory.endsWith(removeDelimAndDot))
+                    tmpCurrentDirectory = tmpCurrentDirectory.substring(0, tmpCurrentDirectory.length() - removeDelimAndDot.length());
             } else {
                 tmpCurrentDirectory = System.getProperty("user.dir");
             }
@@ -118,6 +134,8 @@ public class QClassPathEngine extends QAbstractFileEngine
         }
     }
 
+    // FIXME: This API needs improving, I think URL() can be heavy weight and I guess most
+    //  user of this API probably want that.
     private static String makeUrl(String path) {
         String goodPath = null;
 
@@ -135,6 +153,7 @@ public class QClassPathEngine extends QAbstractFileEngine
             if(firstChar == File.separatorChar) {
                 skipTryAsis = true;
             } else if(firstChar == '.') {
+                // FIXME: ../../foo/bar   ./foo/bar
                 // Special case for current directory
                 String tmpPath = resolveCurrentDirectory();
                 if(tmpPath != null) {
@@ -161,6 +180,7 @@ public class QClassPathEngine extends QAbstractFileEngine
                 // Relative paths end up here and throwing exceptions
                 // Maybe we should look for "://" in path before using this method?
                 // What is the resolution mechanism for using URL(path) with arbitrary string?
+                // Does a windows path C:/foo/bar/file.dat end up as scheme=C or protocol=C ?
                 URL url = new URL(path);
                 if(url.getProtocol().length() > 0)
                     goodPath = path;
@@ -176,27 +196,48 @@ public class QClassPathEngine extends QAbstractFileEngine
                 // Validate the URL we build is well-formed
                 // FIXME: file://
                 String tmpPath = "file:" + path;
-                URL url = new URL(tmpPath);
-                if(url.getProtocol().length() > 0)
-                    goodPath = tmpPath;
+String xPath = path.replace('\\', '/');
+String xPrefix;
+if(path.length() > 0 && xPath.charAt(0) != '/')
+    xPrefix = "file:///";
+else
+    xPrefix = "file://";
+                String newTmpPath = xPrefix;
+                if(File.separatorChar == '\\')
+                    newTmpPath += path.replace('\\', '/');  // windows
+                else
+                    newTmpPath += path;
+                String newTmpPathY = Utilities.convertAbsolutePathStringToFileUrlString(path);
+                URL url = new URL(newTmpPath);
+                if(url.getProtocol().length() > 0) {
+                     goodPath = newTmpPath;	// This must be converted to URL valid form like "file:///C:/foobar/cp"
+                }
             } catch(Exception e) {
                 urlParseException2 = e;
                 //e.printStackTrace();
             }
         }
 
-        if(goodPath == null) {
-            File f = new File(path);
-            System.out.println("makeUrl(path=" + path + ") exists()=" + f.exists() + "; isDirectory()=" + f.isDirectory() + "; isFile()=" + f.isFile());
-            if(urlParseException != null)
-                urlParseException.printStackTrace();
-            if(urlParseException2 != null)
-                urlParseException2.printStackTrace();
+    URLConnection urlConn = null;
+    InputStream inStream = null;
+    try {
+        URL openUrl = new URL(goodPath);
+        urlConn = openUrl.openConnection();
+        inStream = urlConn.getInputStream();
+    } catch(Exception e) {
+        e.printStackTrace();
+    } finally {
+        if(inStream != null) {
+            try {
+                inStream.close();
+            } catch(IOException eat) {
+            }
         }
-
+    }
         return goodPath;
     }
 
+    // Need API to add one/one-or-more, separate API to JarCache.reset()
     public static boolean addSearchPath(String path, boolean allowDuplicate) {
         boolean bf = false;
         String urlString = makeUrl(path);
@@ -211,6 +252,7 @@ public class QClassPathEngine extends QAbstractFileEngine
             // things are sensitive matters.
             if(urlString != null) {
                 // FWIW this is a Set so we can't duplicate, but we probably should be a list
+                // when we are a list, we should ignore the re-add if at a lower-priority position, but take not if higher-priority
                 if(allowDuplicate || classpaths.contains(urlString) == false) {
                     classpaths.add(urlString);
                     bf = true;
@@ -274,11 +316,11 @@ public class QClassPathEngine extends QAbstractFileEngine
             findClassPaths();
 
         if (m_selectedSource.equals("*")) {
-            List<JarFile> potentialJars = JarCache.jarFiles(m_baseName);
+            List<String> pathToPotentialJars = JarCache.pathToJarFiles(m_baseName);
 
-            if (potentialJars != null) { // Its at least a directory which exists in jar files
-                for (JarFile path : potentialJars) {
-                    addJarFileFromPath(path, m_baseName, true);
+            if (pathToPotentialJars != null) { // Its at least a directory which exists in jar files
+                for (String pathToJar : pathToPotentialJars) {
+                    addJarFileFromPath(pathToJar, m_baseName, true);
                 }
             } else { // Its a file or directory, look for jar files which contains its a directory
 
@@ -290,17 +332,23 @@ public class QClassPathEngine extends QAbstractFileEngine
                 else
                     parentSearch = m_baseName.substring(0, pos);
 
-                List<JarFile> parentDirJars = JarCache.jarFiles(parentSearch);
-                if (parentDirJars != null) {
-                    for (JarFile path : parentDirJars) {
-                        addJarFileFromPath(path, m_baseName, false);
+                // This is all wrong... we need to maintain the ordered list of the mix then attempt
+                //  to populate from each in turn (if we are exhaustive) otherwise
+                List<String> pathToJars = JarCache.pathToJarFiles(parentSearch);
+                if (pathToJars != null) {
+                    for (String pathToJar : pathToJars) {
+                        addJarFileFromPath(pathToJar, m_baseName, false);
                     }
                 }
 
-                for (String path : JarCache.classPathDirs()) try {
-                    addFromPath(new URL(makeUrl(path)), m_baseName);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                for (String path : JarCache.classPathDirs()) {
+                    try {
+                        // FIXME: This maybe already URL or raw dir, I think we should just make this a
+                        //  dir in the native String format
+                        addFromPath(new URL(makeUrl(path)), m_baseName);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else
@@ -310,13 +358,16 @@ public class QClassPathEngine extends QAbstractFileEngine
                 // If it's a file (it should be), strip away the getProtocol() and check whether the
                 // file is a directory. Otherwise it's assumed to be a .jar file
                 URL url = new URL(urlString);
-                File file;
+                File fileOnlyIfDirectory = null;
                 if(url.getProtocol().equals("file")) {
-                    file = new File(url.getFile());
-                    if(file.isDirectory()) {
-                    }
+                    String pathString = url.getPath();
+                    if(File.separatorChar == '\\')
+                        pathString = pathString.replace('/', '\\');  // windows
+                    fileOnlyIfDirectory = new File(pathString);
+                    if(fileOnlyIfDirectory.isDirectory() == false)
+                        fileOnlyIfDirectory = null;
                 }
-                if (urlString.startsWith("file:") && new File(urlString.substring(5)).isDirectory())
+                if(fileOnlyIfDirectory != null)
                     addFromPath(url, m_baseName);
                 else
                     addJarFileFromPath(new URL("jar:" + urlString + "!/"), m_baseName);
@@ -326,51 +377,51 @@ public class QClassPathEngine extends QAbstractFileEngine
     }
 
     @Override
-    public boolean copy(String newName)
-    {
-        if (m_engines.size() > 0)
-            return m_engines.get(0).copy(newName);
-        else
-            return false;
-    }
-
-    @Override
-    public boolean setPermissions(int perms)
-    {
-        for (QAbstractFileEngine engine : m_engines) {
-            if (engine.setPermissions(perms))
-                return true;
-        }
-
+    public boolean copy(String newName) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.copy(newName);
         return false;
     }
 
     @Override
-    public boolean caseSensitive()
-    {
+    public boolean setPermissions(int perms) {
+        synchronized(QClassPathEngine.class) {
+            for(QAbstractFileEngine engine : m_engines) {
+                if(engine.setPermissions(perms))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean caseSensitive() {
         return true;
     }
 
     @Override
-    public boolean close()
-    {
-        if (m_engines.size() == 0)
-            return false;
-        else
-            return m_engines.get(0).close();
+    public boolean close() {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.close();     // FIXME: How does the closed engine get removed from the list ?
+        return false;
     }
 
     @Override
-    public List<String> entryList(QDir.Filters filters, List<String> filterNames)
-    {
+    public List<String> entryList(QDir.Filters filters, List<String> filterNames) {
         List<String> result = null;
-        for (QAbstractFileEngine engine : m_engines) {
-            if (result == null) {
-                result = engine.entryList(filters, filterNames);
-            } else {
-                List<String> list = engine.entryList(filters, filterNames);
-                result.removeAll(list);
-                result.addAll(list);
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines) {
+                if (result == null) {
+                    result = engine.entryList(filters, filterNames);
+                } else {
+                    List<String> list = engine.entryList(filters, filterNames);
+                    // FIXME: Surely the higher precedence engines get asked first and the first found has priority over the last
+                    //   so why do we removeAll() here.  list.removeAll(result);  result.addAll(list); ?
+                    result.removeAll(list);
+                    result.addAll(list);
+                }
             }
         }
 
@@ -378,12 +429,13 @@ public class QClassPathEngine extends QAbstractFileEngine
     }
 
     @Override
-    public FileFlags fileFlags(FileFlags type)
-    {
+    public FileFlags fileFlags(FileFlags type) {
         FileFlags flags = new FileFlags();
 
-        for (QAbstractFileEngine engine : m_engines)
-            flags.set(engine.fileFlags(type));
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines)
+                flags.set(engine.fileFlags(type));
+        }
 
         if (fileName(FileName.PathName).equals("/"))
             flags.set(QAbstractFileEngine.FileFlag.RootFlag);
@@ -394,21 +446,24 @@ public class QClassPathEngine extends QAbstractFileEngine
     }
 
     @Override
-    public String fileName(FileName file)
-    {
-        if (m_engines.size() == 0) {
+    public String fileName(FileName file) {
+        QAbstractFileEngine afe = null;
+        int engineCount;
+        synchronized(QClassPathEngine.class) {
+            engineCount = m_engines.size();
+            if(engineCount > 0)
+                afe = m_engines.getFirst();
+        }
+        if (engineCount == 0) {
             return "";
         }
 
-        String classPathEntry = "";
-        if (m_engines.size() == 1) {
-            QAbstractFileEngine engine = m_engines.get(0);
-
-            if (engine instanceof QClassPathEntry)
-                classPathEntry = ((QClassPathEntry) engine).classPathEntryName();
+        String classPathEntry;
+        if (engineCount == 1) {
+            if (afe instanceof QClassPathEntry)
+                classPathEntry = ((QClassPathEntry) afe).classPathEntryName();
             else
                 throw new RuntimeException("Bogus engine in class path file engine");
-
         } else {
             classPathEntry = "*";
         }
@@ -429,191 +484,190 @@ public class QClassPathEngine extends QAbstractFileEngine
         } else if (file == FileName.AbsolutePathName) {
             result = QClassPathEngine.FileNamePrefix + classPathEntry + FileNameDelim + fileName(FileName.PathName);
         } else if (file == FileName.CanonicalPathName) {
-            result = m_engines.get(0).fileName(file);
+            // FIXME: can afe==null ?
+            result = afe.fileName(file);
         } else {
             throw new IllegalArgumentException("Unknown file name type: " + file);
         }
 
-
         return result;
     }
 
     @Override
-    public QDateTime fileTime(FileTime time)
-    {
-        if (m_engines.size() == 0)
-            return new QDateTime();
-        else
-            return m_engines.get(0).fileTime(time);
+    public QDateTime fileTime(FileTime time) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.fileTime(time);
+        return new QDateTime();
     }
 
     @Override
-    public boolean link(String newName)
-    {
-        for (QAbstractFileEngine engine : m_engines) {
-            if (engine.link(newName))
-                return true;
+    public boolean link(String newName) {
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines) {
+                if (engine.link(newName))
+                    return true;
+            }
         }
         return false;
     }
 
     @Override
-    public boolean mkdir(String dirName, boolean createParentDirectories)
-    {
-        for (QAbstractFileEngine engine : m_engines) {
-            if (engine.mkdir(dirName, createParentDirectories))
-                return true;
+    public boolean mkdir(String dirName, boolean createParentDirectories) {
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines) {
+                if (engine.mkdir(dirName, createParentDirectories))
+                    return true;
+            }
         }
         return false;
     }
 
     @Override
-    public boolean open(QIODevice.OpenMode openMode)
-    {
-        if (m_engines.size() == 0)
-            return false;
-        else
-            return m_engines.get(0).open(openMode);
-    }
-
-    @Override
-    public long pos()
-    {
-        if (m_engines.size() == 0)
-            return -1;
-        else
-            return m_engines.get(0).pos();
-    }
-
-    @Override
-    public long read(QNativePointer data, long maxlen)
-    {
-        if (m_engines.size() == 0)
-            return -1;
-        else
-            return m_engines.get(0).read(data, maxlen);
-    }
-
-    @Override
-    public long readLine(QNativePointer data, long maxlen)
-    {
-        if (m_engines.size() == 0)
-            return -1;
-        else
-            return m_engines.get(0).readLine(data, maxlen);
-    }
-
-    @Override
-    public boolean remove()
-    {
-        boolean ok = true;
-        for (QAbstractFileEngine engine : m_engines)
-            ok = ok && engine.remove();
-        return ok;
-    }
-
-    @Override
-    public boolean rename(String newName)
-    {
-        boolean ok = true;
-        for (QAbstractFileEngine engine : m_engines)
-            ok = ok && engine.rename(newName);
-        return ok;
-    }
-
-    @Override
-    public boolean rmdir(String dirName, boolean recursive)
-    {
-        boolean ok = true;
-        for (QAbstractFileEngine engine : m_engines)
-            ok = ok && engine.rmdir(dirName, recursive);
-        return ok;
-    }
-
-    @Override
-    public boolean seek(long offset)
-    {
-        if (m_engines.size() == 0)
-            return false;
-        else
-            return m_engines.get(0).seek(offset);
-    }
-
-    @Override
-    public String owner(FileOwner owner)
-    {
-        String result = "";
-        int i = 0;
-        while (result.length() == 0 && i < m_engines.size())
-            result = m_engines.get(i++).owner(owner);
-
-        return result;
-    }
-
-    @Override
-    public int ownerId(FileOwner owner)
-    {
-        int result = -2;
-        int i = 0;
-        while (result == -2 && i < m_engines.size())
-            result = m_engines.get(i++).ownerId(owner);
-
-        return result;
-    }
-
-    @Override
-    public boolean isRelativePath()
-    {
+    public boolean open(QIODevice.OpenMode openMode) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.open(openMode);
         return false;
     }
 
     @Override
-    public boolean isSequential()
-    {
-        for (QAbstractFileEngine engine : m_engines) {
-            if (engine.isSequential())
-                return true;
+    public long pos() {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.pos();
+        return -1;
+    }
+
+    @Override
+    public long read(QNativePointer data, long maxlen) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.read(data, maxlen);
+        return -1;
+    }
+
+    @Override
+    public long readLine(QNativePointer data, long maxlen) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.readLine(data, maxlen);
+        return -1;
+    }
+
+    @Override
+    public boolean remove() {
+        boolean ok = true;
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines)
+                ok = ok && engine.remove();
         }
+        return ok;
+    }
 
+    @Override
+    public boolean rename(String newName) {
+        boolean ok = true;
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines)
+                ok = ok && engine.rename(newName);
+        }
+        return ok;
+    }
+
+    @Override
+    public boolean rmdir(String dirName, boolean recursive) {
+        boolean ok = true;
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines)
+                ok = ok && engine.rmdir(dirName, recursive);
+        }
+        return ok;
+    }
+
+    @Override
+    public boolean seek(long offset) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.seek(offset);
         return false;
     }
 
     @Override
-    public boolean setSize(long sz)
-    {
-        if (m_engines.size() == 0)
-            return false;
-        else
-            return m_engines.get(0).setSize(sz);
+    public String owner(FileOwner owner) {
+        synchronized(QClassPathEngine.class) {
+            for(QAbstractFileEngine afe : m_engines) {
+                String result = afe.owner(owner);
+                if(result != null && result.length() > 0)  // result.isEmpty() is Java 1.6+
+                    return result;
+            }
+        }
+        return ""; // FIXME: Why not null ?
     }
 
     @Override
-    public long size()
-    {
-        if (m_engines.size() == 0)
-            return -1;
-        else
+    public int ownerId(FileOwner owner) {
+        synchronized(QClassPathEngine.class) {
+            for(QAbstractFileEngine afe : m_engines) {
+                int result = afe.ownerId(owner);
+                if (result != -2)
+                    return result;
+            }
+        }
+        return -2;
+    }
+
+    @Override
+    public boolean isRelativePath() {
+        return false;
+    }
+
+    @Override
+    public boolean isSequential() {
+        synchronized(QClassPathEngine.class) {
+            for (QAbstractFileEngine engine : m_engines) {
+                if (engine.isSequential())
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean setSize(long sz) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.setSize(sz);
+        return false;
+    }
+
+    @Override
+    public long size() {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
             return m_engines.get(0).size();
+        return -1;
     }
 
     @Override
-    public long write(QNativePointer data, long len)
-    {
-        if (m_engines.size() == 0)
-            return -1;
-        else
-            return m_engines.get(0).write(data, len);
+    public long write(QNativePointer data, long len) {
+        QAbstractFileEngine afe = getFirstEngine();
+        if(afe != null)
+            return afe.write(data, len);
+        return -1;
     }
 
-    private void cleanUp()
-    {
-        if (m_engines != null)
-            m_engines.clear();
+    private void cleanUp() {
+        synchronized(QClassPathEngine.class) {
+            if (m_engines != null)
+                m_engines.clear();
+        }
     }
 
-    private void addFromPath(URL url, String fileName)
-    {
-        String qtified_path = url.getFile().replace('\\', '/');
+    private boolean addFromPath(URL url, String fileName) {
+String x_file = url.getFile();
+String x_path = url.getPath();
+        String qtified_path = url.getPath().replace('\\', '/');
 
         // If it is a plain file on the disk, just read it from the disk
         if (url.getProtocol().equals("file")) {
@@ -622,16 +676,43 @@ public class QClassPathEngine extends QAbstractFileEngine
                     && file.exists()
                     && new QFileInfo(qtified_path + "/" + fileName).exists()) {
                 addEngine(new QFSEntryEngine(qtified_path + "/" + fileName, url.toExternalForm()));
-                return ;
+                return true;
             }
         }
+        return false;
     }
 
-    private void addJarFileFromPath(JarFile jarFile, String fileName, boolean directory)
-    {
+    // We are passed an open JarFile to take ownership of and use, if we throw exception caller is responsible for the still open JarFile
+    private boolean addJarFileFromPath(JarFile jarFile, String fileName, boolean directory) throws IOException {
         QJarEntryEngine engine = new QJarEntryEngine(jarFile, fileName, directory);
-        if (engine.isValid())
+        if(engine.isValid()) {
             addEngine(engine);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean addJarFileFromPath(String pathToJarFile, String fileName, boolean directory) {
+        boolean bf = false;
+        JarFile jarFile = null;
+        try {
+            jarFile = new JarFile(pathToJarFile);
+            // Each engine must have its own instance of JarFile as it can not be shared across threads
+            bf = addJarFileFromPath(jarFile, fileName, directory);
+            if(bf)
+                jarFile = null;  // stops it being closed in finally
+        } catch(IOException eat) {
+        } finally {
+            // We are responsible to close in all cases except bf==true (such as Exception or bf==false)
+            if(jarFile != null) {
+                try {
+                    jarFile.close();
+                } catch(IOException eat) {
+                }
+                jarFile = null;
+            }
+        }
+        return bf;
     }
 
     /**
@@ -648,8 +729,6 @@ public class QClassPathEngine extends QAbstractFileEngine
                 return true;	// avoid NPE
             inStream.read();
         } catch(IOException e) {
-            return true;
-        } catch(Exception e) {	// NPE
             return true;
         } finally {
             if(inStream != null) {
@@ -696,11 +775,11 @@ public class QClassPathEngine extends QAbstractFileEngine
             if (!isDirectory) {
                 // Otherwise, look if the directory exists in the
                 // cache...
-                List<JarFile> files = JarCache.jarFiles(fileName);
+                List<String> pathToJarFiles = JarCache.pathToJarFiles(fileName);
                 String jarFileName = jarFile.getName();
-                if (files != null) {
-                    for (JarFile f : files) {
-                        if (f.getName().equals(jarFileName)) {
+                if (pathToJarFiles != null) {
+                    for (String thisPathToJar : pathToJarFiles) {
+                        if (thisPathToJar.equals(jarFileName)) {
                             isDirectory = true;
                             break;
                         }
@@ -724,13 +803,16 @@ public class QClassPathEngine extends QAbstractFileEngine
                 }
             }
 
-            addJarFileFromPath(jarFile, fileName, isDirectory);
-            jarFile = null;	// CHECKME invalidate close!
-
+            addJarFileFromPath(jarFile, fileName, isDirectory);  // handover jarFile
+            jarFile = null;	// inhibit jarFile.close() in finally block
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
             if(jarFile != null) {
+                try {
+                    jarFile.close();
+                } catch(IOException eat) {
+                }
                 jarFile = null;
             }
             if(urlConnection != null) {
@@ -751,14 +833,11 @@ public class QClassPathEngine extends QAbstractFileEngine
         }
     }
 
-    private void addEngine(QAbstractFileEngine engine)
-    {
-        if (m_engines == null)
-            m_engines = new LinkedList<QAbstractFileEngine>();
-
-        m_engines.add(engine);
+    private void addEngine(QAbstractFileEngine engine) {
+        synchronized(QClassPathEngine.class) {
+            m_engines.add(engine);
+        }
     }
-
 
 
     private static void findClassPaths() {
@@ -768,6 +847,8 @@ public class QClassPathEngine extends QAbstractFileEngine
             List<URL> cpUrls = new ArrayList<URL>();
 
             try {
+                // FIXME: QtJambi should not mix and match the method of obtaining the current ClassLoader
+                //  all use this class or all use Thread.
                 ClassLoader loader = Thread.currentThread().getContextClassLoader();
                 if (loader == null)
                     loader = QClassPathFileEngineHandler.class.getClassLoader();
@@ -776,7 +857,7 @@ public class QClassPathEngine extends QAbstractFileEngine
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
                     if (url.getProtocol().equals("jar")) try {
-                        String f = url.getFile();
+                        String f = url.getPath();
                         int bang = f.indexOf("!");
                         if (bang >= 0)
                             f = f.substring(0, bang);
@@ -802,15 +883,30 @@ public class QClassPathEngine extends QAbstractFileEngine
                 if (p.trim().length() > 0) {
                     k++; // count all paths, invalid and valid
 
-                    String url = makeUrl(p);
+                    String urlString = makeUrl(p);
                     boolean match = false;
+
+                    try {
+                        URL url = new URL(urlString);
+
+                        if("file".equals(url.getProtocol())) {
+                            File fileA = new File(url.getPath());
+                            if(fileA.isDirectory()) {  // FIXME
+                                classpaths.add(Utilities.convertAbsolutePathStringToFileUrlString(fileA));  // "file://" + "/C:/foo/bar"
+                                continue;
+                            }
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        continue;
+                    }
 
                     URLConnection urlConnection2 = null;
                     JarFile jarFile2 = null;
                     URLConnection urlConnection1 = null;
                     JarFile jarFile1 = null;
                     try {
-                        URL url2 = new URL("jar:" + url.toString() + "!/");
+                        URL url2 = new URL("jar:" + urlString.toString() + "!/");
                         urlConnection2 = url2.openConnection();
                         if(!(urlConnection2 instanceof JarURLConnection))
                             throw new RuntimeException("not a JarURLConnection type: " + urlConnection2.getClass().getName());
@@ -860,16 +956,16 @@ public class QClassPathEngine extends QAbstractFileEngine
                     }
 
                     if (!match)
-                        classpaths.add(url);
+                        classpaths.add(urlString);
                 }
             }
 
             // If there are no paths set in java.class.path, we do what Java does and
             // add the current directory; at least ask Java what the current directory
-            // is not Qt.
+            // is and not Qt.
             if (k == 0) {
                 // FIXME: Use JVM cwd notion
-                classpaths.add("file:" + QDir.currentPath());	// CHECKME "file://" ?
+                classpaths.add("file:" + QDir.currentPath());	// CHECKME "file:///" ?
             }
         }
         JarCache.reset(classpaths);
@@ -878,17 +974,23 @@ public class QClassPathEngine extends QAbstractFileEngine
     @Override
     public QAbstractFileEngineIterator beginEntryList(QDir.Filters filters, java.util.List<String> nameFilters) {
     	String path = "";
-    	// CHECKME: Doesn't this have to check for "classpath:" ?
-    	if(m_baseName.startsWith("classpath"))
+    	if(m_baseName.startsWith(namespaceSchemePrefix + ":"))
     		path = m_baseName;
     	else
-    		path = "classpath:" + m_baseName;
-        System.out.println("QClassPathEngine.beginEntryList(...) path=" + path);
+    		path = namespaceSchemePrefix + ":" + m_baseName;
     	return new QClassPathFileEngineIterator(path, filters, nameFilters);
     }
     
     @Override
     public QAbstractFileEngineIterator endEntryList() {
     	return null;
+    }
+
+    private QAbstractFileEngine getFirstEngine() {
+        synchronized(QClassPathEngine.class) {
+            if(m_engines.isEmpty() == false)
+                return m_engines.getFirst();
+        }
+        return null;
     }
 }

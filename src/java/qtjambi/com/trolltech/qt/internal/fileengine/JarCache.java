@@ -45,12 +45,16 @@
 package com.trolltech.qt.internal.fileengine;
 
 import java.io.IOException;
+import java.io.File;
+import java.io.PrintStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.List;
@@ -63,16 +67,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 class JarCache {
     // Must only be called with lock.writeLock() held.
-    private static void add(HashMap<String, List<JarFile>> lookupCache, String dirName, JarFile jarFile) {
-        List<JarFile> files = lookupCache.get(dirName);
+    private static void add(HashMap<String, List<String>> lookupCache, String dirName, String pathToJarFile) {
+        List<String> files = lookupCache.get(dirName);
         if (files == null) {
-            files = new ArrayList<JarFile>();
-            files.add(jarFile);
+            files = new ArrayList<String>();
+            files.add(pathToJarFile);
             lookupCache.put(dirName, files);
         } else {
-            // CHECKME: Why are we checking for the instance ?  not the the file/path ?
-            if (!files.contains(jarFile))
-                files.add(jarFile);
+            // CHECKME: Why are we checking for the instance ?  not the the file/path ?  TRY A FIX NOW
+            if (!files.contains(pathToJarFile))
+                files.add(pathToJarFile);
         }
     }
 
@@ -88,82 +92,136 @@ class JarCache {
             //   but keep that reference counting intact for old entries.
             //invalidateLocked();
 
-            HashMap<String, List<JarFile>> tmpCache = new HashMap<String, List<JarFile>>();
+            HashMap<String, List<String>> tmpCache = new HashMap<String, List<String>>();
             classPathDirs = new ArrayList<String>();
 
             for (String jarFileName : jarFileList) {
                 JarURLConnection jarUrlConnection = null;
-                JarFile file = null;
+                JarFile jarFile = null;
                 try {
+                    // 
+                    if(jarFileName.startsWith("file:")) {
+                        URL urlDir = new URL(jarFileName);
+                        String urlFileString = urlDir.getFile();
+                        File fileDir = new File(urlFileString);
+                        if(fileDir.isDirectory()) {
+                            // Need to add in top level so that
+                            // add(tmpCache, "", new DirectoryResolver(fileDir));
+// Uncommenting this causes many testcases to fail
+                            classPathDirs.add(jarFileName);
+                            continue;   // FIXME: Use a directory resolver
+                        }
+                    }
                     URL url = new URL("jar:" + jarFileName + "!/");
                     URLConnection urlConnection = url.openConnection();
                     if((urlConnection instanceof JarURLConnection) == false)
                         throw new RuntimeException("no a JarURLConnection: " + urlConnection.getClass().getName());
                     jarUrlConnection = (JarURLConnection) urlConnection;
-                    file = jarUrlConnection.getJarFile();
+                    jarFile = jarUrlConnection.getJarFile();
 
-                    // Add root dir for all jar files (event empty ones)
-                    add(tmpCache, "", file);
+                    String jarFileNameX = jarFile.getName();  // "/foo/my.jar", "C:\foo\my.jar"
 
-                    Enumeration<JarEntry> entries = file.entries();
+                    Set<String> seenSet = new HashSet<String>();
+
+                    Enumeration<JarEntry> entries = jarFile.entries();
+                    // FIXME: Special case for empty directory
                     while (entries.hasMoreElements()) {
                         JarEntry entry = entries.nextElement();
 
-                        String dirName = "";
+                        String dirName = null;
+                        boolean isToplevelFile = false;
 
                         String entryName = entry.getName();
+
+                        // Remove potentially initial '/'
+                        while (entryName.startsWith("/"))
+                            entryName = entryName.substring(1);
+
                         if (entry.isDirectory()) {
                             if (entryName.endsWith("/"))
-                                dirName = entryName.substring(0, entryName.length() - 1);
+                                dirName = entryName.substring(0, entryName.length() - 1);  // canonicalize
                             else
                                 dirName = entryName;
                         } else {
                             int slashPos = entryName.lastIndexOf("/");
                             if (slashPos > 0)
-                                dirName = entryName.substring(0, slashPos);
+                                dirName = entryName.substring(0, slashPos);  // isolate directory part
+                            else
+                                isToplevelFile = true;  // dirName will be null; there is no directory part
                         }
 
-                        // Remove potentially initial '/'
-                        if (dirName.startsWith("/"))
-                            dirName = dirName.substring(1);
 
+                        // Add all parent directories "foo/bar/dir1/dir2", "foo/bar/dir1", "foo/bar", "foo"
                         while (dirName != null) {
-                            add(tmpCache, dirName, file);
+                            // optimization: if we saw the long nested path (then we already processed its parents as well)
+                            if (seenSet.contains(dirName))
+                                break;
+                            seenSet.add(dirName);
+                            add(tmpCache, dirName, jarFileNameX);
                             int slashPos = dirName.lastIndexOf("/");
                             if (slashPos > 0)
                                 dirName = dirName.substring(0, slashPos);
                             else
                                 dirName = null;
                         }
+
+                        if (isToplevelFile) {
+                            if (seenSet.contains("") == false) {
+                                seenSet.add("");
+                                add(tmpCache, "", jarFileNameX);
+                            }
+                        }
                     }
 
-                    // Make sure all files are registered under the empty
-                    // since all have roots
-                    add(tmpCache, "", file);
+                    // Add root dir for all jar files (even empty ones)
+                    if (seenSet.contains("") == false) {
+                        seenSet.add("");
+                        // Add root dir for all jar files (even empty ones)
+                        add(tmpCache, "", jarFileNameX);
+                    }
                 } catch (Exception e) {
                     // Expected as directories will fail when doing openConnection.getJarFile()
                     // Note that ZipFile throws different types of run time exceptions on different
                     // platforms (ZipException on Linux and FileNotFoundException on Windows)
                     classPathDirs.add(jarFileName);
                 } finally {
+                    if (jarFile != null) {
+                        try {
+                            jarFile.close();
+                        } catch (IOException eat) {
+                        }
+                    }
                 }
             }
 
             cache = tmpCache;
-
-//         for (String s : cache.keySet()) {
-//             System.out.println(s);
-//             for (JarFile f : cache.get(s)) {
-//                 System.out.println(" - '" + f.getName() + "'");
-//             }
-//         }
         } finally {
             thisLock.unlock();
         }
     }
 
-    public static List<JarFile> jarFiles(String entry) {
-        List<JarFile> files = null;
+    private static void dumpCache(PrintStream out, Map<String, List<String>> thisCache) {
+        Lock thisLock = null;
+        if(cache == null) {
+            thisLock = lock.writeLock();
+            thisLock.lock();
+            thisCache = cache;
+        }
+        try {
+            for(String s : thisCache.keySet()) {
+                out.println(s);
+                for(String pathToJarFile : thisCache.get(s)) {
+                    out.println(" - '" + pathToJarFile + "'");
+                }
+            }
+        } finally {
+            if(thisLock != null)
+                thisLock.unlock();
+        }
+    }
+
+    public static List<String> pathToJarFiles(String entry) {
+        List<String> files = null;
         Lock thisLock = lock.readLock();
         thisLock.lock();
         try {
@@ -178,17 +236,17 @@ class JarCache {
     private static void invalidateLocked() {
         if(cache == null)
             return;
-        for(Map.Entry<String, List<JarFile>> entry : cache.entrySet()) {
-            String key = entry.getKey();
-            List<JarFile> value = entry.getValue();
-            for(JarFile jarFile : value) {
-                try {
-                    jarFile.close();
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        for(Map.Entry<String, List<JarFile>> entry : cache.entrySet()) {
+//            String key = entry.getKey();
+//            List<JarFile> value = entry.getValue();
+//            for(JarFile jarFile : value) {
+//                try {
+//                    jarFile.close();
+//                } catch(IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
         cache.clear();
         cache = null;
     }
@@ -207,7 +265,14 @@ class JarCache {
         return classPathDirs;
     }
 
+    // Need a way to invalidate the cache (keeping the settings) full/partial
+    // Need a way to ensure re-evaluation (removing repeatible-read) full/partial
+    // Need a way to add/remove/move one/one-or-more items
+    // Need a way to configure each source http/jar/dir (allow adding a source)
+    // Need a way to enumerate what we have setup, the source, its policy/config
+
+    // We must maintain an ordered list of the operational ClassPath we a using for resolution
     private static ReadWriteLock lock = new ReentrantReadWriteLock();
-    private static HashMap<String, List<JarFile>> cache;
+    private static HashMap<String, List<String>> cache;
     private static List<String> classPathDirs;
 }

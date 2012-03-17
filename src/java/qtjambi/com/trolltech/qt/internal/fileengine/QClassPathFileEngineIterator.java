@@ -58,11 +58,10 @@ public class QClassPathFileEngineIterator extends QAbstractFileEngineIterator {
     public QClassPathFileEngineIterator(String path, Filters filters, List<String> nameFilters) {
         super(filters, nameFilters);
 
-        System.out.println("QClassPathFileEngineIterator().ctor(\"" + path + "\", ...)");
-        index = 0;
+        index = -1;
         QAbstractFileEngine engine = QAbstractFileEngine.create(path);
         entries = engine.entryList(filters, nameFilters);
-        System.out.println("QClassPathFileEngineIterator().ctor(\"" + path + "\", ...) entries.size()="+entries.size());
+        entriesCount = entries.size();
     }
 
     // FIXME: Implement #currentFileInfo()

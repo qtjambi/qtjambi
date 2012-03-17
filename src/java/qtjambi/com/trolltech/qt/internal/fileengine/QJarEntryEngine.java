@@ -45,117 +45,121 @@
 package com.trolltech.qt.internal.fileengine;
 
 import com.trolltech.qt.core.QAbstractFileEngine;
-import com.trolltech.qt.core.QAbstractFileEngineIterator;
 import com.trolltech.qt.core.QDate;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QDir;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QFileInfo;
-import com.trolltech.qt.core.QFSFileEngine;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.core.QTime;
-import com.trolltech.qt.internal.RetroTranslatorHelper;
-import com.trolltech.qt.QFlags;
 import com.trolltech.qt.QNativePointer;
-import com.trolltech.qt.QtEnumerator;
-
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.net.HttpURLConnection;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipException;
+
+// TODO: We this is re-worked we want to separate the resolution process for finding
+//   locations to search, from the access/usage of a particular thing.
+// We can then have a standard classpath resolver
+// Have filter hierarchy/package/name/extension from a select group of JARs.
+// Allow application writers to create their own custom resolvers.
+// Have standard Java security ClassPath access, have this special kind, handle JAR, file, directory, HTTP
 
 class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 {
-    // private String m_classPathEntryFileName = null;
-    // private String m_jarFileName = null;
-    private String m_entryFileName = null;
+    // private String m_classPathEntryFileName;
+    // private String m_jarFileName;
+    private String m_entryFileName;
 
-    private JarEntry m_entry = null;
-    private JarFile m_jarFile = null;
+    private JarEntry m_entry;
+    private JarFile m_jarFile;
 
-    private InputStream m_stream = null;
-    private BufferedReader m_reader = null;
+    private InputStream m_stream;
+//    private BufferedReader m_reader;  // FIXME: Why do we even have this ?  m_stream will do right?
 
-    private long m_pos = -1;
+    private long m_pos;
     private int m_openMode;
-    private boolean m_valid = false;
-    private boolean m_directory = false;
+    private boolean m_valid;
+    private boolean m_directory;
     private String m_name;
+    private boolean m_eof;
 
 
-    public QJarEntryEngine(JarFile jarFile, String fileName, boolean isDirectory)
-    {
+    // FIXME: This JarFile needs to be a unique handle that does sharable accounting for JarCache
+    public QJarEntryEngine(JarFile jarFile, String fileName, boolean isDirectory) {
+        m_pos = -1;
         m_jarFile = jarFile;
         m_directory = isDirectory;
         setFileName(fileName);
     }
 
+    protected void disposed() {
+        close();
+
+        m_entry = null;
+
+        if (m_jarFile != null) {
+            try {
+                m_jarFile.close();
+            } catch(IOException eat) {
+                eat.printStackTrace();
+            }
+            m_jarFile = null;
+
+            // FIXME: Do a put/deref/release for JarCache
+        }
+    }
 
     @Override
-    public void setFileName(String fileName)
-    {
+    public void setFileName(String fileName) {
         m_entry = null;
-        if (m_jarFile == null)
-            return ;
+        if (m_jarFile == null) {
+             return;
+        }
 
         if (fileName.length() == 0) {
             m_entryFileName = "";
             m_name = "";
             m_valid = true;
             m_directory = true;
-            return ;
+            return;
         }
 
         m_entryFileName = fileName;
         m_entry = m_jarFile.getJarEntry(m_entryFileName);
 
-        if (m_entry == null && !m_directory)
+        if (m_entry == null && !m_directory) {
             m_valid = false;
-        else {
+        } else {
             if (m_entry == null)
                 m_name = fileName;
             else
                m_name = m_entry.getName();
             m_valid = true;
         }
-
     }
 
     public String classPathEntryName() {
+        if(m_jarFile == null)
+            return null;
         return m_jarFile.getName();
     }
 
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return m_valid;
     }
 
+    // FIXME: we need to use exception handling in here
     @Override
-    public boolean copy(String newName)
-    {
-        final int BUFFER_SIZE = 1024*1024;
+    public boolean copy(String newName) {
+        final int BUFFER_SIZE = 64*1024;	// 64Kb will do us
         QNativePointer buffer = new QNativePointer(QNativePointer.Type.Byte, BUFFER_SIZE);
 
         QFile newFile = new QFile(newName);
@@ -166,7 +170,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
             return false;
 
         if (!newFile.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly))) {
-            close();
+            closeInternal();
             return false;
         }
 
@@ -189,44 +193,87 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
         }
 
         newFile.close();
-        if (!close())
+        if (!closeInternal())
             return false;
 
         return (i == sz);
     }
 
-    @Override
-    public boolean setPermissions(int perms)
-    {
+    // Hmm why are these different virtual for AbstractFileEngine and IODevice ?
+    //@Override
+    public boolean reset() {
+        if (m_stream == null)
+            return false;  // not open
+        if (m_pos == 0)
+            return true;  // already open and at start
+        return reopen();
+    }
+
+    private boolean reopen() {
+        if (m_stream == null)
+            return false;  // not open
+        QIODevice.OpenMode om = new QIODevice.OpenMode(m_openMode);  // saved OpenMode
+        if(closeInternal())
+            return open(om);
         return false;
     }
 
-    @Override
-    public boolean caseSensitive()
-    {
-        return true;
+    // Hmm why are these different virtual for AbstractFileEngine and IODevice ?
+    // Want to make this public
+    //@Override
+    private boolean atEnd_internal() {
+        return m_eof;
     }
 
     @Override
-    public boolean close() {
+    public boolean setPermissions(int perms) {
+        return false;  // IODevice is immutable
+    }
+
+    @Override
+    public boolean caseSensitive() {
+        return true;
+    }
+
+    private boolean closeInternal() {
+        boolean bf = false;
+
         if(m_stream != null) {
             try {
                 m_stream.close();
             } catch(IOException e) {
-                return false;
+            } finally {
+                m_stream = null;
+                bf = true;  // was open now closed
             }
-
-            m_stream = null;
         }
 
-        return true;
+        // FIXME: close m_reader
+
+        return bf;
     }
 
     @Override
-    public List<String> entryList(QDir.Filters filters, List<String> filterNames)
-    {
-        if (!m_directory)
-            return new LinkedList<String>();
+    public boolean close() {
+        boolean bf = closeInternal();
+
+        if(m_jarFile != null) {
+            //try {
+                // We really want to do this some how and not leave it to disposed()
+                //m_jarFile.close();
+            //} catch (IOException eat) {
+            //}
+            //m_jarFile = null;
+        }
+
+        return bf;
+    }
+
+    @Override
+    public List<String> entryList(QDir.Filters filters, List<String> filterNames) {
+        if (!m_directory) {
+             return new LinkedList<String>();
+        }
 
         List<String> result = new LinkedList<String>();
 
@@ -300,8 +347,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     @Override
-    public FileFlags fileFlags(FileFlags type)
-    {
+    public FileFlags fileFlags(FileFlags type) {
         try {
             int flags = 0;
 
@@ -328,44 +374,44 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     @Override
-    public String fileName(FileName file)
-    {
+    public String fileName(FileName file) {
         String entryFileName = m_entryFileName;
 
+        String s;
         if (file == FileName.LinkName) {
-            return "";
+            s = "";
         } else if (file == FileName.DefaultName
                 || file == FileName.AbsoluteName
                 || file == FileName.CanonicalName) {
-            return QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + entryFileName;
+            s = QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + entryFileName;
         } else if (file == FileName.BaseName) {
             int pos = m_entryFileName.lastIndexOf("/");
-            return pos >= 0 ? m_entryFileName.substring(pos + 1) : entryFileName;
+            s = pos >= 0 ? m_entryFileName.substring(pos + 1) : entryFileName;
         } else if (file == FileName.PathName) {
             int pos = m_entryFileName.lastIndexOf("/");
-            return pos > 0 ? m_entryFileName.substring(0, pos) : "";
+            s = pos > 0 ? m_entryFileName.substring(0, pos) : "";
         } else if (file == FileName.CanonicalPathName || file == FileName.AbsolutePathName) {
-            return QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
+            s = QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
         } else {
             throw new IllegalArgumentException("Unknown file name type: " + file);
         }
+        return s;
     }
 
     @Override
-    public QDateTime fileTime(QAbstractFileEngine.FileTime time)
-    {
+    public QDateTime fileTime(QAbstractFileEngine.FileTime time) {
         if (m_entry == null) {
             QFileInfo info = new QFileInfo(m_jarFile.getName());
 
             if (info.exists())
                 return info.lastModified();
             else
-                return new QDateTime();
+                return new QDateTime();  // the current time
         }
 
         long tm = m_entry.getTime();
         if (tm == -1)
-            return new QDateTime();
+            return new QDateTime();  // the current time
 
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date(tm));
@@ -380,56 +426,53 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     @Override
-    public boolean link(String newName)
-    {
-        return false;
+    public boolean link(String newName) {
+        return false;  // IODevice is immutable
     }
 
     @Override
-    public boolean mkdir(String dirName, boolean createParentDirectories)
-    {
-        return false;
+    public boolean mkdir(String dirName, boolean createParentDirectories) {
+        return false;  // IODevice is immutable
     }
 
     @Override
-    public boolean open(QIODevice.OpenMode openMode)
-    {
-        if (m_entry == null)
-            return false;
+    public boolean open(QIODevice.OpenMode openMode) {
+        boolean bf = false;
+        closeInternal();  // reset state to open again
 
-        if (!openMode.isSet(QIODevice.OpenModeFlag.WriteOnly) && !openMode.isSet(QIODevice.OpenModeFlag.Append)) {
-            try {
-                m_stream = m_jarFile.getInputStream(m_entry);
-            } catch (IOException e) {
-                return false;
+        if (m_entry != null) {
+            if (!openMode.isSet(QIODevice.OpenModeFlag.WriteOnly) && !openMode.isSet(QIODevice.OpenModeFlag.Append)) {
+                try {
+                    m_stream = m_jarFile.getInputStream(m_entry);
+                    if (m_stream != null) {
+                        //if (openMode.isSet(QIODevice.OpenModeFlag.Text))
+                        //    m_reader = new BufferedReader(new InputStreamReader(m_stream));
+                        m_pos = 0;
+                        m_openMode = openMode.value();
+                        bf = true;
+                    }
+                } catch (IOException eat) {  // cause a return false
+                }
             }
-
-            if (m_stream != null) {
-                if (openMode.isSet(QIODevice.OpenModeFlag.Text))
-                    m_reader = new BufferedReader(new InputStreamReader(m_stream));
-                m_pos = 0;
-                m_openMode = openMode.value();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
         }
+        return bf;
     }
 
     @Override
-    public long pos()
-    {
+    public long pos() {
         return m_pos;
     }
 
     @Override
-    public long read(QNativePointer data, long maxlen)
-    {
+    public long read(QNativePointer data, long maxlen) {
         if (m_stream == null)
             return -1;
 
+        // CHECKME: Not sure why we clamp this high when we already chunk the data, my guess this
+        //  would kill cache efficiency if maxlen was over a few Mb's.  I think it would be better
+        //  to do smaller chunks and keep the cache hot for the chunk refill process, this high value
+        //  is trying to make the system gulp/swallow a huge chunk of food all at once.  Then once it
+        //  is done half the cache that was used as the bounce buffer is now worthless.
         if (maxlen > Integer.MAX_VALUE)
             maxlen = Integer.MAX_VALUE;
 
@@ -437,14 +480,21 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
         int bytes_read = 0;
         try {
-            int read = 0;
-            while (m_stream.available() > 0 && bytes_read < maxlen && read >= 0) {
+            int read = -1;
+            while (m_stream.available() > 0 && bytes_read < maxlen) {
                 read = m_stream.read(b, 0, (int)maxlen - bytes_read);
                 if (read > 0) {
                     for (int i=0; i<read; ++i)
                         data.setByteAt(i + bytes_read, b[i]);
                     bytes_read += read;
+                } else if (read  == -1) {
+                    break;
                 }
+            }
+            // Qt contract is that we return -1 on EoF/EoS
+            if (read < 0 && bytes_read == 0) {
+                m_eof = true;
+                return -1;
             }
         } catch (IOException e) {
             return -1;
@@ -455,21 +505,30 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     @Override
-    public long readLine(QNativePointer data, long maxlen)
-    {
-        if (m_stream == null || m_reader == null)
+    public long readLine(QNativePointer data, long maxlen) {
+        if (m_stream == null /*|| m_reader == null*/)
             return -1;
 
         int bytes_read = 0;
         try {
+            int read = -1;
             while (m_stream.available() > 0 && bytes_read < maxlen) {
-                int read = m_stream.read();
+                read = m_stream.read();
                 if (read == -1)
-                    break ;
+                    break;
 
                 data.setByteAt(bytes_read++, (byte) read);
+                // We follow how QIODevice::readLine behavior here.
+                // FIXME: We should have testcase to verify it, compare Qt API with our implementation.
+                // CHECKME: This is how QIODevice::readLine almost works, except (if I understand docs
+                //  correctly) that for <CR><NL> sequence on windows it might replace with <NL>.
                 if (read == '\n')
-                    break ;
+                    break;
+            }
+            // Qt contract is that we return -1 on EoF/EoS
+            if (read < 0 && bytes_read == 0) {
+                m_eof = true;
+                return -1;
             }
         } catch (IOException e) {
             return -1;
@@ -480,85 +539,83 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     @Override
-    public boolean remove()
-    {
-        return false;
+    public boolean remove() {
+        return false;  // IODevice is immutable
     }
 
     @Override
-    public boolean rename(String newName)
-    {
-        return false;
+    public boolean rename(String newName) {
+        return false;  // IODevice is immutable
     }
 
     @Override
-    public boolean rmdir(String dirName, boolean recursive)
-    {
-        return false;
+    public boolean rmdir(String dirName, boolean recursive) {
+        return false;  // IODevice is immutable
     }
 
     @Override
-    public boolean seek(long offset)
-    {
-        try {
-            m_stream.close();
-            if (!open(new QIODevice.OpenMode(m_openMode)))
-                return false;
-
-            m_pos = 0;
-            while (m_pos < offset) {
-                int skip = (int)Math.min(offset - m_pos, Integer.MAX_VALUE);
-
-                // FIXME: We just closed above! ??? eclEmma?
-                m_stream.skip(skip);
-                m_pos += skip;
-            }
-        } catch (IOException e) {
+    public boolean seek(long offset) {
+        if(offset < 0)
             return false;
+
+        try {
+            if (!open(new QIODevice.OpenMode(m_openMode)))  // open() will automatically force a close()
+                return false;
+            if (offset < m_pos) {
+                if (!reset());  // auto-rewind
+                    return false;
+            }
+
+            while (m_pos < offset) {
+                long skipBytesRemaining = Math.min(offset - m_pos, Integer.MAX_VALUE);
+
+                // InputStream#skip(long) may not skip all the requested bytes in a single invocation
+                long skipBytesActual = m_stream.skip(skipBytesRemaining);
+                if(skipBytesActual < 0)
+                    throw new IOException("InputStream#skip() = " + skipBytesActual);
+                m_pos += skipBytesActual;	// The actual number of bytes skipped
+            }
+            return true;
+        } catch (IOException e) {
         }
 
-        return true;
+        return false;
     }
 
     @Override
-    public String owner(QAbstractFileEngine.FileOwner owner)
-    {
+    public String owner(QAbstractFileEngine.FileOwner owner) {
         return "";
     }
 
     @Override
-    public int ownerId(QAbstractFileEngine.FileOwner owner)
-    {
+    public int ownerId(QAbstractFileEngine.FileOwner owner) {
         return -2;
     }
 
     @Override
-    public boolean isRelativePath()
-    {
+    public boolean isRelativePath() {
         return false;
     }
 
     @Override
-    public boolean isSequential()
-    {
-        return false;
+    public boolean isSequential() {
+        return false;  // We allow size/seek/pos etc.. so we return false here.
     }
 
     @Override
-    public boolean setSize(long sz)
-    {
-        return false;
+    public boolean setSize(long sz) {
+        return false;  // IODevice is read-only
     }
 
     @Override
-    public long size()
-    {
-        return m_entry == null ? 0 : m_entry.getSize();
+    public long size() {
+        // Check with the Qt source, should we return -1 ?
+        long size = m_entry == null ? 0 : m_entry.getSize();
+        return size;
     }
 
     @Override
-    public long write(QNativePointer data, long len)
-    {
-        return -1;
+    public long write(QNativePointer data, long len) {
+        return -1;  // IODevice is read-only
     }
 }

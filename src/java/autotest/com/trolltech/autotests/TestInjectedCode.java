@@ -1291,7 +1291,7 @@ public class TestInjectedCode extends QApplicationTest {
         assertTrue(file.open(QIODevice.OpenModeFlag.ReadOnly));
 
         img.load(file, "JPEG");
-        assertTrue(img.isNull());
+        assertTrue(img.isNull());  // this assert fails when plugins did not load
 
         img = new QImage();
         file.reset();
@@ -1332,7 +1332,8 @@ public class TestInjectedCode extends QApplicationTest {
     @Test
     public void testQImageConstructedFromStringAndStuff() {
         QImage img = new QImage("classpath:com/trolltech/examples/images/cheese.png", "JPEG");
-        assertTrue(img.isNull());
+        assertTrue(img.isNull());  // this assert fails when plugins did not load
+        assertEquals(0, img.width());
 
         img = new QImage("classpath:com/trolltech/examples/images/cheese.png", "PNG");
         assertFalse(img.isNull());
@@ -1382,7 +1383,8 @@ public class TestInjectedCode extends QApplicationTest {
 
         QPixmap pmLoad = new QPixmap();
         pmLoad.loadFromData(buffer.buffer(), "JPEG");
-        assertTrue(pmLoad.isNull());
+        assertTrue(pmLoad.isNull());  // this assert fails when plugins did not load
+        assertEquals(0, pmLoad.width());
 
         pmLoad.loadFromData(buffer.buffer(), "PNG");
         buffer.close();

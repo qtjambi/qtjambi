@@ -490,4 +490,69 @@ public class Utilities {
             return null;
         return paths;
     }
+
+    // This is implemented so that String#replace(char, char) is not used as this is regexp based
+    //  and sounds heavy weight for us.  Maybe I should performance test this point before just
+    //  implementing this but bleh!
+    public static String stringCharReplace(String s, char fromChar, char toChar) {
+        final int len = s.length();
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if(c == fromChar)
+                sb.append(toChar);
+            else
+                sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    // a - haystack, b - needle
+    public static boolean stringCompareAt(CharSequence a, int aOffset, CharSequence b, int bOffset) {
+        final int aLen = a.length();  // used as end range
+        final int bLen = b.length();  // used as end range
+        while(aOffset < aLen && bOffset < bLen) {
+            char ca = a.charAt(aOffset++);
+            char ba = b.charAt(bOffset++);
+            if(ca != ba)
+                return false;
+        }
+        // we are only allowed to run out of chars on 'a' side
+        if(bOffset < bLen)
+            return false;  // ran out of chars on 'b' side
+        return true;
+    }
+
+    public static String stringCharReplace(String s, CharSequence fromCharSequence, CharSequence toCharSequence) {
+        final int len = s.length();
+        char[] cA = new char[fromCharSequence.length()];
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while(i < len) {
+            char c = s.charAt(i);
+            if(c == fromCharSequence.charAt(0) && stringCompareAt(s, i, fromCharSequence, 0)) {  // FIXME needle/haystack
+                sb.append(toCharSequence);
+                i += fromCharSequence.length();  // skip input sequence
+            } else {
+                sb.append(c);
+                i++;
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String convertAbsolutePathStringToFileUrlString(String pathString) {
+        if(File.separatorChar == '\\')
+            pathString = stringCharReplace(pathString, '\\', '/');  // windows
+        String schemePrefix;
+        if(pathString.length() > 0 && pathString.charAt(0) != '/')
+            schemePrefix = "file:///";  // empty authority part, ensure leading / in path part
+        else
+            schemePrefix = "file://";   // empty authority part, pathString already has leading /
+        return schemePrefix + pathString;
+    }
+
+    public static String convertAbsolutePathStringToFileUrlString(File file) {
+        return convertAbsolutePathStringToFileUrlString(file.getAbsolutePath());
+    }
 }
