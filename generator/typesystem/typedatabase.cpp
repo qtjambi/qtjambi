@@ -26,6 +26,7 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarning
     //  not with:
     // (const QStringRef &)QString("string")
     StringRefTypeEntry *sr = new StringRefTypeEntry("QStringRef");
+    sr->setPreferredConversion(false);
     addType(sr);
     // TODO: Use of StringRefTypeEntry for QXmlStreamStringRef has not been tested,
     //  I am sure the previous code would cause a crash.
