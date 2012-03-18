@@ -2414,10 +2414,13 @@ void qtjambi_unregister_callbacks()
         // invalid memory read access during the unregisterType() call so we must
         // copy the string value to a local.
         const char *typenamestr = QMetaType::typeName(qMetaTypeId<JObjectWrapper>());
-        char typenamebuf[256];
-        strncpy(typenamebuf, typenamestr, sizeof(typenamebuf));
-        typenamebuf[sizeof(typenamebuf) - 1] = '\0';
+        size_t len = strlen(typenamestr);
+        char *typenamebuf = new char[len+1];
+        strcpy(typenamebuf, typenamestr);
+
         QMetaType::unregisterType(typenamebuf);
+
+        delete typenamebuf;
     }
 
 #if QT_VERSION >= 0x040300
