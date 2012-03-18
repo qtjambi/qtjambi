@@ -181,7 +181,7 @@ public class TestThreads extends QApplicationTest {
 
             ping.go();
 
-            ping.join(2500);
+            ping.join(5000);
             pong.join(1000);
 
             assertFalse("ping.isAlive()", ping.isAlive());
@@ -297,7 +297,7 @@ public class TestThreads extends QApplicationTest {
             }
         }
 
-        ping.join(2500);
+        ping.join(5000);
         pong.join(1000);
 
         assertFalse("ping.isAlive()", ping.isAlive());
