@@ -152,23 +152,54 @@ public class QClassPathEngine extends QAbstractFileEngine {
             // Both a "/" and "\\" are illegal characters in the scheme/protocol.
             if(firstChar == File.separatorChar) {
                 skipTryAsis = true;
-            } else if(firstChar == '.') {
-                // FIXME: ../../foo/bar   ./foo/bar
-                // Special case for current directory
-                String tmpPath = resolveCurrentDirectory();
-                if(tmpPath != null) {
-                    path = tmpPath;
-                    skipTryAsis = true;
-                }
-            } else if(pathLength > 2) {
-                // Windows "C:\\..." for which "\\" is incorrect for URLs
-                char secondChar = path.charAt(1);
-                char thirdChar = path.charAt(2);
-                if((firstChar >= 'A' && firstChar <= 'Z') || (firstChar >= 'a' && firstChar <= 'z')) {
-                    // We don't check for '/' since that might be a real URL "a://host:port/path?qs"
-                    // and would be invalid for windows using java.io.File API anyway.
-                    if(secondChar == ':' && thirdChar == '\\')
+            } else if(pathLength == 1) {
+                if(firstChar == '.') {
+                    // FIXME: ../../foo/bar
+                    // Special case for current directory
+                    String tmpPath = resolveCurrentDirectory();
+                    if(tmpPath != null) {
+                        path = tmpPath;
                         skipTryAsis = true;
+                    }
+                }
+                // ELSE it is a relative path and will be picked up below
+            } else if(pathLength > 1) {
+                char secondChar = path.charAt(1);
+                if(secondChar == File.separatorChar) {
+                    // ./foo/bar case
+                    String tmpPath = resolveCurrentDirectory();
+                    if(tmpPath != null) {
+                        // FIXME: This is better resolved later via path canonicalization (to fix the ./././foo case)
+                        path = tmpPath + File.separatorChar + path.substring(2);
+                        skipTryAsis = true;
+                    }
+                } else if(pathLength > 2) {
+                    // Windows "C:\\..." for which "\\" is incorrect for URLs
+                    char thirdChar = path.charAt(2);
+                    if((firstChar >= 'A' && firstChar <= 'Z') || (firstChar >= 'a' && firstChar <= 'z')) {
+                        // We don't check for '/' since that might be a real URL "a://host:port/path?qs"
+                        // and would be invalid for windows using java.io.File API anyway.
+                        if(secondChar == ':' && thirdChar == '\\')
+                            skipTryAsis = true;
+                    }
+                }
+            }
+            if(skipTryAsis == false) {
+                // If skipTryAsis==true then we found an absolute path (or converted
+                //   what is there already to an absolute path)
+                boolean prefix = true;
+                // Eek... temporary hack, some users of this method makeUrl() seem to be
+                //  already passing a valid URL as input.  This is one point to fix in a
+                //  later review.  For now be blacklist known prefixes from being treated
+                //  as relative paths.  FIXME
+                if(path.startsWith("file:") || path.startsWith("jar:") || path.startsWith("http:") || path.startsWith("https:"))
+                    prefix = false;
+                if(prefix) {
+                    String tmpPath = resolveCurrentDirectory();
+                    if(tmpPath != null) {
+                        path = tmpPath + File.separatorChar + path;
+                        skipTryAsis = true;
+                    }
                 }
             }
         }
