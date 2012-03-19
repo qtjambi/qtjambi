@@ -543,6 +543,10 @@ QtJambiLink::acquire_magic_source_id_to_string(int source_id)
     case QTJAMBI_MAGIC_QTJAMBILINKUSERDATA_DTOR2:
         kp = "~QtJambiLinkUserData#2";
         break;
+
+    default:
+        kp = 0;  // kp unintialized warning
+        break;
     }
     return kp;
 }
