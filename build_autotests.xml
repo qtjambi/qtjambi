@@ -165,6 +165,7 @@
             not that useful for debugging. -->
             <jvmarg value="-Xcheck:jni"/>
             <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
+            <env key="DYLD_LIBRARY_PATH" value="${env.DYLD_LIBRARY_PATH}${psep}${absQtLib}${psep}${absJambiLib}"/>
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml">
                 <fileset dir="src/java/autotest">
