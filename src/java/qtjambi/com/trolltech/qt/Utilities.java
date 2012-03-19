@@ -274,7 +274,11 @@ public class Utilities {
     }
 
     public static void loadJambiLibrary(String library) {
-        NativeLibraryManager.loadLibrary(library);
+        NativeLibraryManager.loadJambiLibrary(library);
+    }
+
+    public static void loadJambiJniLibrary(String library) {
+        NativeLibraryManager.loadJambiJniLibrary(library);
     }
 
     public static boolean loadLibrary(String lib) {

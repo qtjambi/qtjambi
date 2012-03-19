@@ -433,6 +433,18 @@ public class NativeLibraryManager {
         loadNativeLibrary(lib);
     }
 
+    public static void loadJambiJniLibrary(String library) {
+        loadLibrary(library);
+    }
+
+    public static void loadJambiLibrary(String library) {
+        if (Utilities.configuration == Utilities.Configuration.Debug)
+            library += DEBUG_SUFFIX;
+        String version = Utilities.QTJAMBI_SONAME_VERSION_MAJOR;
+        String lib = jambiLibraryName(library, version);
+        loadNativeLibrary(lib);
+    }
+
 
     /**
      * Overload which passes the default value of "4" as the version
@@ -838,6 +850,24 @@ public class NativeLibraryManager {
     }
 
 
+    private static String jambiLibraryName(String lib, String version) {
+        String dotVersion;
+        if(version != null) {
+            dotVersion = "." + version;
+        } else {
+            version = "";
+            dotVersion = "";
+        }
+        switch (Utilities.operatingSystem) {
+        case Windows: return lib + version + ".dll";  // "foobar1.dll"
+        case MacOSX: return "lib" + lib + dotVersion + ".dylib";  // "libfoobar.1.dylib"
+        case Linux:
+        case FreeBSD: return "lib" + lib + ".so" + dotVersion;  // "libfoobar.so.1"
+        }
+        throw new RuntimeException("Unreachable statement");
+    }
+
+
     private static String qtLibraryName(String lib, String version) {
         String dotVersion;
         if(version != null) {
@@ -923,12 +953,12 @@ public class NativeLibraryManager {
 
         loadQtLibrary("QtCore");
         loadQtLibrary("QtGui");
-        loadLibrary("qtjambi");
-        loadLibrary("com_trolltech_qt_core");
-        loadLibrary("com_trolltech_qt_gui");
+        loadJambiLibrary("qtjambi");
+        loadJambiJniLibrary("com_trolltech_qt_core");
+        loadJambiJniLibrary("com_trolltech_qt_gui");
         loadQtLibrary("QtGui");
         loadQtLibrary("QtNetwork");
-//         loadLibrary("com_trolltech_qt_network");
+//         loadJambiJniLibrary("com_trolltech_qt_network");
 
         for (String s : pluginPaths())
             System.out.println("PluginPath: " + s);

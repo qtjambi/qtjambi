@@ -637,7 +637,7 @@ void MetaInfoGenerator::writeLibraryInitializers() {
 
             generateInitializer(s, package, CodeSnip::Beginning);
 
-            s << "            com.trolltech.qt.Utilities.loadJambiLibrary(\""
+            s << "            com.trolltech.qt.Utilities.loadJambiJniLibrary(\""
             << QString(package).replace(".", "_") << "\");" << endl;
 
             if (generatedMetaInfo(package))
