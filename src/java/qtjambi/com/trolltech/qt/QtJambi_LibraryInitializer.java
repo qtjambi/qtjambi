@@ -62,7 +62,7 @@ public abstract class QtJambi_LibraryInitializer
         try {
             Utilities.loadSystemLibraries();
             Utilities.loadQtLibrary("QtCore");
-            Utilities.loadJambiLibrary("qtjambi");
+            Utilities.loadJambiJniLibrary("qtjambi");
 
             String s = System.getProperty("com.trolltech.qt.exceptions-for-messages");
             installMessageHandlerForExceptions(s);

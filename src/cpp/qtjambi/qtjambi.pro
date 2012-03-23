@@ -2,13 +2,6 @@ TARGET = qtjambi
 
 include(qtjambi_base.pri)
 
-macx:{
-    # This library is not designed to ever be loaded directly by any JVM, it is
-    #  a support library for the per-Qt-module *.jnilib.
-    QMAKE_EXTENSION_SHLIB = dylib
-}
-
-
 SOURCES += \
     qnativepointer.cpp \
     qsysinfo.cpp \

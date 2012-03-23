@@ -953,7 +953,7 @@ public class NativeLibraryManager {
 
         loadQtLibrary("QtCore");
         loadQtLibrary("QtGui");
-        loadJambiLibrary("qtjambi");
+        loadJambiJniLibrary("qtjambi");
         loadJambiJniLibrary("com_trolltech_qt_core");
         loadJambiJniLibrary("com_trolltech_qt_gui");
         loadQtLibrary("QtGui");
