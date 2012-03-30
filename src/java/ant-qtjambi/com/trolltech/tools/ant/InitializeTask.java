@@ -74,6 +74,7 @@ public class InitializeTask extends Task {
     public static final String DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR = "1";
 
     private boolean verbose;
+    private int verboseLevel;
     private PropertyHelper propertyHelper;
     private String configuration;
     private boolean debug;
@@ -263,6 +264,7 @@ public class InitializeTask extends Task {
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
+        this.verboseLevel = (verbose == false) ? 0 : 1;
     }
 
     public void setConfiguration(String configuration) {
@@ -483,6 +485,7 @@ public class InitializeTask extends Task {
                     sourceValue = " (expected for non-MacOSX platform)";
                 else
                     sourceValue = " (WARNING you should resolve this for targetting MacOSX)";
+                s = "";
             }
             mySetProperty(propertyHelper, -1, QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
         }
@@ -1070,7 +1073,8 @@ public class InitializeTask extends Task {
             thisDebug = debugValue.booleanValue();
         path.append(LibraryEntry.formatQtName(name, thisDebug, version));
         File testForFile = new File(path.toString());
-        //System.out.println("Checking QtLib: " + path + " " + testForFile.exists());
+        if(verboseLevel > 1)
+            System.out.println("Checking QtLib: " + path + " " + testForFile.exists());
         if(testForFile.exists())
             return testForFile.getAbsolutePath();
         return null;
@@ -1163,7 +1167,10 @@ public class InitializeTask extends Task {
         String currentValue = (String) propertyHelper.getProperty((String) null, attrName);
         if(newValue != null) {
             if(currentValue != null) {
-                sourceValue = " (already set; detected as: " + newValue + ")";
+                if(currentValue.equals(newValue))
+                    sourceValue = " (already set to same value)";
+                else
+                    sourceValue = " (already set; detected as: " + newValue + ")";
                 // Don't error if we don't have to i.e. the two values are the same
                 if(forceNewValue && newValue.equals(currentValue) == false)
                     throw new BuildException("Unable to overwrite property " + attrName + " with value " + newValue + " (current value is: " + currentValue + ")");
@@ -1186,6 +1193,8 @@ public class InitializeTask extends Task {
             String prettyCurrentValue = currentValue;
             if(prettyCurrentValue == null)
                 prettyCurrentValue = "<notset>";
+            else if(prettyCurrentValue.length() == 0)
+                prettyCurrentValue = "<empty-string>";
             System.out.println(attrName + ": " + prettyCurrentValue + sourceValue);
         }
 
