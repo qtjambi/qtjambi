@@ -100,6 +100,7 @@ public class InitializeTask extends Task {
      * Or rather these binds shouldn't exist, how much of this could be moved to
      * xml side?
      */
+    public static final String DIRECTORY                = "jambi.directory";
     public static final String BINDIR                   = "qtjambi.qt.bindir";
     public static final String LIBDIR                   = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR               = "qtjambi.qt.includedir";
@@ -296,7 +297,7 @@ public class InitializeTask extends Task {
         }
 
         final String[] emitA = {
-            BINDIR, LIBDIR, INCLUDEDIR, PLUGINSDIR,
+            DIRECTORY, BINDIR, LIBDIR, INCLUDEDIR, PLUGINSDIR,
             QTJAMBI_PHONON_INCLUDEDIR, QTJAMBI_PHONON_LIBDIR, QTJAMBI_PHONON_PLUGINSDIR
         };
         for(String emit : emitA) {
@@ -630,7 +631,11 @@ public class InitializeTask extends Task {
         // Other build information sanity testing and warning
 
         String QTDIR = System.getenv("QTDIR");
-        System.out.println("QTDIR is set: " + QTDIR);
+        System.out.println("QTDIR is set: " + ((QTDIR != null) ? QTDIR : "<notset>"));
+
+        String JAMBIDIR = System.getenv("JAMBIDIR");
+        if(JAMBIDIR != null)
+            System.out.println("JAMBIDIR is set: " + JAMBIDIR);
 
         if(OSInfo.isLinux()) {    // Check we have libQtCore.so.4 in one of the paths in LD_LIBRARY_PATH
             String LD_LIBRARY_PATH = System.getenv("LD_LIBRARY_PATH");
