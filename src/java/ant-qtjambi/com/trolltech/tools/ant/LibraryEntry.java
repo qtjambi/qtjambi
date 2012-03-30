@@ -294,7 +294,7 @@ public class LibraryEntry extends Task {
 
     public static String formatQtName(String name, boolean debug, String versionString) {
         String tmpVersionString = (versionString != null) ? versionString : "";
-        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
+        String tmpDotVersionString = (versionString != null && versionString.length() > 0) ? "." + versionString : "";
         if(debug) {
             String tmpDebugSuffix = "_" + "debug";
             switch(OSInfo.os()) {
@@ -352,7 +352,7 @@ public class LibraryEntry extends Task {
 
     public static String formatQtJambiJniName(String name, boolean debug, String versionString) {
         String tmpVersionString = (versionString != null) ? versionString : "";
-        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
+        String tmpDotVersionString = (versionString != null && versionString.length() > 0) ? "." + versionString : "";
         if(debug) {
             String tmpDebugSuffix = "_" + "debuglib";
             switch(OSInfo.os()) {
@@ -382,7 +382,7 @@ public class LibraryEntry extends Task {
 
     public static String formatQtJambiName(String name, boolean debug, String versionString) {
         String tmpVersionString = (versionString != null) ? versionString : "";
-        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
+        String tmpDotVersionString = (versionString != null && versionString.length() > 0) ? "." + versionString : "";
         if(debug) {
             String tmpDebugSuffix = "_" + "debuglib";
             switch(OSInfo.os()) {
@@ -413,7 +413,7 @@ public class LibraryEntry extends Task {
 
     public static String formatQtJambiPluginName(String name, boolean debug, String versionString) {
         String tmpVersionString = (versionString != null) ? versionString : "";
-        String tmpDotVersionString = (versionString != null) ? "." + versionString : "";
+        String tmpDotVersionString = (versionString != null && versionString.length() > 0) ? "." + versionString : "";
          if(debug) {
             String tmpDebugSuffix = "_" + "debuglib";
              switch(OSInfo.os()) {

@@ -236,6 +236,10 @@ public class InitializeTask extends Task {
     public static final String PACKAGING_DSO_LIBGCC_S_SJLJ_1 = "qtjambi.packaging.dso.libgcc_s_sjlj-1"; // Windows MinGW-W64 runtime pre-req
     public static final String PACKAGING_DSO_MINGWM10        = "qtjambi.packaging.dso.mingwm10";        // Windows older MinGW runtime pre-req
 
+    public static final String PACKAGING_DSO_LIBZ      = "qtjambi.packaging.dso.libz";       // Linux
+    public static final String PACKAGING_DSO_LIBSSL    = "qtjambi.packaging.dso.libssl";     // Linux
+    public static final String PACKAGING_DSO_LIBCRYPTO = "qtjambi.packaging.dso.libcrypto";  // Linux
+
     public static final String PACKAGING_DSO_ZLIB1    = "qtjambi.packaging.dso.zlib1";      // Windows
     public static final String PACKAGING_DSO_LIBSSL32 = "qtjambi.packaging.dso.libssl32";   // Windows MinGW
     public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";   // Windows MSVC
@@ -629,8 +633,20 @@ public class InitializeTask extends Task {
         if(verbose && (packagingDsoSsleay32Message.length() > 0 || ("false".equals(packagingDsoSsleay32) == false) && packagingDsoSsleay32 != null))
             System.out.println(PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message);
 
+        if(OSInfo.isWindows()) {
             String packagingDsoZlib1 = decideQtLibDso(PACKAGING_DSO_ZLIB1, "zlib1", null);
             propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1, packagingDsoZlib1);
+        } else {
+            // If the lib directory contains "libz.so.1" or "libssl.so" or "libcrypto.so.1.0.0"
+            String packagingDsoLibssl = decideQtLibDso(PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, null);
+            propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSSL, packagingDsoLibssl);
+            // FIXME: Implement file globs and reverse sort
+            String packagingDsoLibcrypto = decideQtLibDso(PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0g", "1.0.0", "0.0.0", null }, null);
+            propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBCRYPTO, packagingDsoLibcrypto);
+
+            String packagingDsoLibz = decideQtLibDso(PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, null);
+            propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBZ, packagingDsoLibz);
+        }
 
         // FIXME: On Macosx when we build and have qtjambi.dbus==true we should WARN when we can not locate libdbus-1.*.dylib
         // FIXME: On Macosx we should also search /usr/local/lib
