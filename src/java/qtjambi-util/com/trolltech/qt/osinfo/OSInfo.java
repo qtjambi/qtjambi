@@ -186,6 +186,22 @@ public class OSInfo
         return false;
     }
 
+    public static Boolean is64bit() {
+        String s = osArchName();
+        if(K_LINUX64.equals(s))
+            return Boolean.TRUE;
+        if(K_WIN64.equals(s))
+           return Boolean.TRUE;
+        if(K_MACOSX.equals(s))
+            return Boolean.TRUE;
+        if(K_FREEBSD64.equals(s))
+            return Boolean.TRUE;
+        if(K_SUNOS64.equals(s))
+            return Boolean.TRUE;
+        return Boolean.FALSE;
+    }
+
+
     private static OS os;
     private static String osArchName;
 }

@@ -886,6 +886,7 @@ public class InitializeTask extends Task {
         else if(Compiler.isCompiler(compilerString, Compiler.OldGCC))
             gccVersionMajor = "=3";
 
+        Boolean is64bit = OSInfo.is64bit();
         if(OSInfo.isWindows()) {
             if(Compiler.is64Only(compilerString))
                 generatorPreProcStageOneList.add("-DWIN64");
@@ -904,6 +905,12 @@ public class InitializeTask extends Task {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-D__linux__");
             generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
+            if(is64bit != null) {
+                if(is64bit.booleanValue())
+                    generatorPreProcStageOneList.add("-D__x86_64__");
+                else
+                    generatorPreProcStageOneList.add("-D__i386__");
+            }
         } else if(OSInfo.isMacOS()) {
             generatorPreProcStageOneList.add("-D__APPLE__");
             // FIXME: When we detect an alternative compiler is in use (LLVM)
@@ -914,6 +921,12 @@ public class InitializeTask extends Task {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-D__FreeBSD__");
             generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
+            if(is64bit != null) {
+                if(is64bit.booleanValue())
+                    generatorPreProcStageOneList.add("-D__x86_64__");  // untested
+                else
+                    generatorPreProcStageOneList.add("-D__i386__");  // untested
+            }
         } else if(OSInfo.isSolaris()) {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-Dsun");
