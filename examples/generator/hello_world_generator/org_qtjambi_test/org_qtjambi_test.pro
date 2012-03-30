@@ -8,20 +8,24 @@ TARGET = org_qtjambi_test
 contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     # Qt was configued with both debug and release libs
     CONFIG += debug_and_release
-} else {
-    contains(QT_CONFIG, debug) {
-        # Qt was configued with both debug and release libs
-        CONFIG += debug
-    }
-    contains(QT_CONFIG, release) {
-        # Qt was configued with both debug and release libs
-        CONFIG += release
-    }
+#} else {
+#    contains(QT_CONFIG, debug) {
+#        # Qt was configued with both debug and release libs
+#        CONFIG += debug
+#    }
+#    contains(QT_CONFIG, release) {
+#        # Qt was configued with both debug and release libs
+#        CONFIG += release
+#    }
 }
 
 
 include(../../../../src/cpp/qtjambi/qtjambi_include.pri)
 include(../build/generator/cpp/org_qtjambi_test/org_qtjambi_test.pri)
+
+#CONFIG += dll
+# CONFIG += staticlib
+#CONFIG += static_and_shared
 
 INCLUDEPATH += $$PWD $$PWD/../src
 
@@ -37,5 +41,13 @@ CONFIG(debug, debug|release) {
 macx: {
     LIBS += $$PWD/../build/qmake/cpp/lib$$member(QTJAMBI_IMPL_NAME, 0).jnilib
 } else {
-    LIBS += -L$$PWD/../build/qmake/cpp -l$$QTJAMBI_IMPL_NAME
+    win32 {
+        CONFIG(debug, debug|release) {
+            LIBS += -L$$PWD/../build/qmake/cpp/debug -l$$QTJAMBI_IMPL_NAME
+        } else {
+            LIBS += -L$$PWD/../build/qmake/cpp/release -l$$QTJAMBI_IMPL_NAME
+        }
+    } else {
+        LIBS += -L$$PWD/../build/qmake/cpp -l$$QTJAMBI_IMPL_NAME
+    }
 }
