@@ -117,6 +117,7 @@ public class InitializeTask extends Task {
     public static final String SUFFIX_VERSION           = "qtjambi.version.suffix";
     public static final String JAVA_HOME_TARGET         = "java.home.target";
     public static final String JAVA_OSARCH_TARGET       = "java.osarch.target";
+    public static final String EXEC_STRIP               = "exec.strip";
 
     public static final String QT_VERSION_MAJOR         = "qt.version.major";
     public static final String QT_VERSION_MINOR         = "qt.version.minor";
@@ -355,6 +356,8 @@ public class InitializeTask extends Task {
 
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();
+
+        mySetProperty(propertyHelper, -1, EXEC_STRIP, null, null, false);  // report value
 
         String javaHomeTarget = decideJavaHomeTarget();
         if(javaHomeTarget == null)

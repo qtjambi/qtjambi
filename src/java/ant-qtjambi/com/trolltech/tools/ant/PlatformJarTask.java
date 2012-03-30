@@ -82,6 +82,7 @@ public class PlatformJarTask extends Task {
     private String javaLibDir               = "";
 
     private boolean rpath = true;
+    private String execStrip;
 
     private PropertyHelper propertyHelper;
 
@@ -180,6 +181,8 @@ public class PlatformJarTask extends Task {
         javaLibDir =(String) propertyHelper.getProperty((String) null, InitializeTask.JAVALIBDIR);
 
         debugConfiguration = "debug".equals(propertyHelper.getProperty((String) null, InitializeTask.CONFIGURATION));
+
+        execStrip = (String) propertyHelper.getProperty((String) null, InitializeTask.EXEC_STRIP);
 
         if(outdir == null) {
             throw new BuildException("Missing required attribute 'outdir'. " +
@@ -587,6 +590,12 @@ public class PlatformJarTask extends Task {
         }
     }
 
+    private void runBinaryStrip(File file) {
+        System.out.println("Stripping binary: " + file.getAbsolutePath());
+        String[] cmd = new String[] { execStrip, file.getAbsolutePath() };
+        Exec.exec(cmd, null, getProject(), false);
+    }
+
     private void processLibraryEntry(LibraryEntry e) {
         File rootPath = null;
         String libraryName = null;
@@ -628,6 +637,8 @@ public class PlatformJarTask extends Task {
             try {
                 //System.out.println("Copying " + src + " to " + dest);
                 Util.copy(srcFile, destFile);
+                if(execStrip != null)
+                    runBinaryStrip(destFile);
                 libraryDir.add(outputPath);
            } catch(IOException ex) {
                 ex.printStackTrace();
