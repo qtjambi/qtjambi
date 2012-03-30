@@ -145,7 +145,10 @@ public class QMakeTask extends Task {
         if(!parameters.isEmpty())
             command.addAll(parameters);
 
-        Exec.execute(command, new File(dir), getProject());
+        File dirExecute = null;
+        if(dir != null)
+            dirExecute = new File(dir);
+        Exec.execute(command, dirExecute, getProject());
     }
 
     public void setMessage(String msg) {

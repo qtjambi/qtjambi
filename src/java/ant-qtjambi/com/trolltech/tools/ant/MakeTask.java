@@ -102,7 +102,10 @@ public class MakeTask extends Task {
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
         String ldpath = (String) propertyHelper.getProperty((String) null, InitializeTask.LIBDIR);
         try {
-            Exec.execute(commandArray, new File(dir), getProject(), ldpath);
+            File dirExecute = null;
+            if(dir != null)
+                dirExecute = new File(dir);
+            Exec.execute(commandArray, dirExecute, getProject(), ldpath);
         } catch(BuildException e) {
             if(failOnError)
                 throw e;

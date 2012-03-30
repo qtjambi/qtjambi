@@ -445,16 +445,17 @@ public class InitializeTask extends Task {
         propertyHelper.setNewProperty((String) null, GENERATOR_PREPROC_STAGE2, Util.safeArrayJoinToString(generatorPreProcStageTwoA, ","));
 
 
-        String d = (String) propertyHelper.getProperty((String) null, LIBDIR).toString();
-        if(d != null) {
+        Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, LIBDIR);
+        if(qtjambiQtLibdirObject != null) {
+            String qtjambiQtLibdir = (String) qtjambiQtLibdirObject.toString();
             String sourceValue = null;
 //            s = (String) propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR);
 //            if(s == null) {
-                s = doesQtLibExistDir(d, "Resources/qt_menu.nib");
+                s = doesQtLibExistDir(qtjambiQtLibdir, "Resources/qt_menu.nib");
                 if(s == null)
-                    s = doesQtLibExistDir(d, "qt_menu.nib");
+                    s = doesQtLibExistDir(qtjambiQtLibdir, "qt_menu.nib");
                 //if(s == null)
-                //    s= = doesQtLibExistDir(d, "src/gui/mac/qt_menu.nib");
+                //    s= = doesQtLibExistDir(qtjambiQtLibdir, "src/gui/mac/qt_menu.nib");
                 // FIXME: auto-detect, directroy from source, directory from QtSDK on MacOSX, directory from framework on MacOSX
                 
                 if(s != null)
@@ -1012,7 +1013,9 @@ public class InitializeTask extends Task {
         if(librarydir != null) {
             path.append(librarydir);
         } else {
-            path.append(propertyHelper.getProperty((String) null, LIBDIR).toString());
+            Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, LIBDIR);
+            if(qtjambiQtLibdirObject != null)
+                path.append(qtjambiQtLibdirObject.toString());
         }
 
         path.append(File.separator);
@@ -1055,7 +1058,9 @@ public class InitializeTask extends Task {
         if(librarydir != null) {
             path.append(librarydir);
         } else {
-            path.append(propertyHelper.getProperty((String) null, LIBDIR).toString());
+            Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, LIBDIR);
+            if(qtjambiQtLibdirObject != null)
+                path.append(qtjambiQtLibdirObject.toString());
         }
 
         path.append(File.separator);
@@ -1070,7 +1075,9 @@ public class InitializeTask extends Task {
         if(librarydir != null) {
             path.append(librarydir);
         } else {
-            path.append(propertyHelper.getProperty((String) null, BINDIR).toString());
+            Object qtjambiQtBindirObject = propertyHelper.getProperty((String) null, BINDIR);
+            if(qtjambiQtBindirObject != null)
+                path.append(qtjambiQtBindirObject.toString());
         }
 
         path.append(File.separator);
