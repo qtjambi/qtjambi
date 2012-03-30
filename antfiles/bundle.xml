@@ -31,7 +31,7 @@
     <target name="library.native.bundle" depends="library.native.compile"
             description="Creates a .jar file file containing native libraries.">
 
-        <qtjambi-platform-jar cacheKey="${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}"
+        <qtjambi-platform-jar cacheKey="${qtjambi.version.cachekey}"
                               outdir="${outputDir}/platform-output${qtjambi.configuration.dash}">
 
             <directory name="" rootPath="${qtjambi.macosx.qtmenunib.dir}" destSubdir="lib/Resources" recursive="true" />
@@ -313,7 +313,7 @@
 <!-- ,com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;${qtjambi.version.bundle}&quot; -->
                 <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
                 <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
-                <attribute name="X-QtJambi-CacheKey"      value="${qtjambi.compiler}-${DSTAMP}-${TSTAMP}" />
+                <attribute name="X-QtJambi-CacheKey"      value="${qtjambi.version.cachekey}" />
                 <attribute name="X-QtJambi-Deployment"    value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.${qtjambi.configuration}-${qtjambi.version.bundle}.xml"/>
                 <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>
             </manifest>

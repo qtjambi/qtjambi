@@ -110,6 +110,7 @@ public class InitializeTask extends Task {
     public static final String JAVALIBDIR               = "qtjambi.java.library.path";
     public static final String JAMBILIBDIR              = "qtjambi.jambi.libdir";
     public static final String JAMBIPLUGINSDIR          = "qtjambi.jambi.pluginsdir";
+    public static final String CACHEKEY                 = "qtjambi.version.cachekey";
     public static final String VERSION                  = "qtjambi.version";
     public static final String BUNDLE_VERSION           = "qtjambi.version.bundle";
     public static final String BUNDLE_VERSION_MODE      = "qtjambi.version.bundle.mode";
@@ -431,7 +432,15 @@ public class InitializeTask extends Task {
             sonameSource = " (set blank by init)";
         }
         mySetProperty(propertyHelper, -1, QTJAMBI_SONAME_VERSION_MAJOR, sonameSource, sonameVersionMajor, false);
-        
+
+        String cachekeyVersion = (String) propertyHelper.getProperty(CACHEKEY);	// ANT 1.7.x
+        String cachekeyVersionSource = " (already set)";
+        if(cachekeyVersion == null) {	// auto-configure
+            cachekeyVersionSource = " (set by init)";
+            // ${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}
+            cachekeyVersion = propertyHelper.replaceProperties(null, "${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}", null);
+        }
+        mySetProperty(propertyHelper, -1, CACHEKEY, cachekeyVersionSource, cachekeyVersion, false);
 
 
         if(!decideGeneratorPreProc())
