@@ -84,6 +84,32 @@
                     subdir="accessible" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.accessible.qtaccessiblewidgets}"/>
 
+            <library name="qconnmanbearer"       type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="bearer" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.bearer.connmanbearer}"/>
+            <library name="qgenericbearer"       type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="bearer" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.bearer.genericbearer}"/>
+            <library name="qnativewifibearer"    type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="bearer" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.bearer.nativewifibearer}"/>
+            <library name="qnmbearer"            type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="bearer" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.bearer.nmbearer}"/>
+
+            <library name="qglgraphicssystem"    type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="graphicssystems" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.graphicssystems.glgraphicssystem}"/>
+            <library name="qtracegraphicssystem" type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="graphicssystems" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.graphicssystems.tracegraphicssystem}"/>
+
             <library name="qsvgicon"            type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="iconengines" destSubdir="plugins" load="never"
@@ -118,6 +144,11 @@
                     subdir="imageformats" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.imageformats.tiff}"/>
 
+            <library name="qimsw-multi"         type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="inputmethods" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.inputmethods.imsw-multi}"/>
+
             <!-- Unicode codecs -->
             <library name="qcncodecs"           type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"
@@ -135,6 +166,16 @@
                     rootPath="${qtjambi.qt.pluginsdir}"
                     subdir="codecs" destSubdir="plugins" load="never"
                     if="${qtjambi.plugins.codecs.twcodecs}"/>
+
+            <library name="qmldbg_tcp"          type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="qmltooling" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.qmltooling.qmldbg_tcp}"/>
+
+            <library name="qtscriptdbus"         type="plugin"
+                    rootPath="${qtjambi.qt.pluginsdir}"
+                    subdir="script" destSubdir="plugins" load="never"
+                    if="${qtjambi.plugins.script.qtscriptdbus}"/>
 
             <library name="qsqlite" type="plugin"
                     rootPath="${qtjambi.qt.pluginsdir}"

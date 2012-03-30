@@ -224,7 +224,7 @@ public class InitializeTask extends Task {
 
     public static final String PLUGINS_QMLTOOLING_QMLDBG_TCP      = "qtjambi.plugins.qmltooling.qmldbg_tcp";
 
-    public static final String PLUGINS_SCRIPT_QMLDBG_QTSCRIPTDBUS = "qtjambi.plugins.script.qtscriptdbus";
+    public static final String PLUGINS_SCRIPT_QTSCRIPTDBUS = "qtjambi.plugins.script.qtscriptdbus";
 
     public static final String PLUGINS_SQLDRIVERS_SQLITE    = "qtjambi.plugins.sqldrivers.sqlite";
     public static final String PLUGINS_SQLDRIVERS_SQLITE2   = "qtjambi.plugins.sqldrivers.sqlite2";
@@ -573,10 +573,18 @@ public class InitializeTask extends Task {
 
         propertyHelper.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
 
+        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_CONNMANBEARER, decidePlugins(PLUGINS_BEARER_CONNMANBEARER, "bearer", "connmanbearer"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_GENERICBEARER, decidePlugins(PLUGINS_BEARER_GENERICBEARER, "bearer", "genericbearer"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_NATIVEWIFIBEARER, decidePlugins(PLUGINS_BEARER_NATIVEWIFIBEARER, "bearer", "nativewifibearer"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_NMBEARER, decidePlugins(PLUGINS_BEARER_NMBEARER, "bearer", "nmbearer"));
+
         propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_CNCODECS, decidePluginsCodecs(PLUGINS_CODECS_CNCODECS, "cncodecs"));
         propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_JPCODECS, decidePluginsCodecs(PLUGINS_CODECS_JPCODECS, "jpcodecs"));
         propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_KRCODECS, decidePluginsCodecs(PLUGINS_CODECS_KRCODECS, "krcodecs"));
         propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_TWCODECS, decidePluginsCodecs(PLUGINS_CODECS_TWCODECS, "twcodecs"));
+
+        propertyHelper.setNewProperty((String) null, PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM, decidePlugins(PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM, "graphicssystems", "glgraphicssystem"));
+        propertyHelper.setNewProperty((String) null, PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, decidePlugins(PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, "graphicssystems", "tracegraphicssystem"));
 
         propertyHelper.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
 
@@ -596,6 +604,12 @@ public class InitializeTask extends Task {
         propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_SVG,  decidePluginsImageformatsSvg());
 
         propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
+
+        propertyHelper.setNewProperty((String) null, PLUGINS_INPUTMETHODS_IMSW_MULTI, decidePlugins(PLUGINS_INPUTMETHODS_IMSW_MULTI, "inputmethods", "imsw-multi"));
+
+        propertyHelper.setNewProperty((String) null, PLUGINS_QMLTOOLING_QMLDBG_TCP, decidePlugins(PLUGINS_QMLTOOLING_QMLDBG_TCP, "qmltooling", "mldbg_tcp"));
+
+        propertyHelper.setNewProperty((String) null, PLUGINS_SCRIPT_QTSCRIPTDBUS, decidePlugins(PLUGINS_SCRIPT_QTSCRIPTDBUS, "script", "tscriptdbus"));
 
         propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE,     decidePluginsSqldriversSqlite());
         propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE2,    decidePluginsSqldriversSqlite2());
@@ -1372,6 +1386,12 @@ public class InitializeTask extends Task {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtTest", String.valueOf(qtMajorVersion)));
         if(verbose) System.out.println(TEST + ": " + result);
         if("true".equals(result)) addToQtConfig("qtestlib");
+        return result;
+    }
+
+    private String decidePlugins(String attrName, String pluginPath, String name) {
+        String result = String.valueOf(doesQtPluginExist("q" + name, pluginPath));
+        if(verbose) System.out.println(attrName + ": " + result);
         return result;
     }
 
