@@ -41,11 +41,6 @@ public class TestQScriptEngine extends QApplicationTest {
 	private QScriptString testString;
 	private QScriptContext scriptContext;
 
-/*	@org.junit.BeforeClass
-	public static void setUpClass() {
-		QApplication app = new QApplication(new String[] {});
-	}*/
-
 	@org.junit.Before
 	public void setUp() {
 		testEngine = new QScriptEngine();
