@@ -27,6 +27,10 @@
             <property name="destdir" value="${jardir}/nobundle"/>
             <property name="sourcedir" value="${java.srcdir}/ant-qtjambi"/>
         </ant>
+        <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makesrcjar">
+            <property name="module" value="ant-qtjambi"/>
+            <property name="destdir" value="${jardir}/nobundle"/>
+        </ant>
     </target>
 
     <target name="jar.qtjambi-util">

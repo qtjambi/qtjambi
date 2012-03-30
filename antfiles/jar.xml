@@ -155,6 +155,18 @@
         </jar>
     </target>
 
+    <target name="makesrcjar" depends="copy-src-resources">
+        <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
+        <property name="destdir" value="${jardir}"/>
+        <mkdir dir="${destdir}"/>
+        <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
+            </manifest>
+            <fileset dir="${java.outsrcdir}/${module}" excludes="**/*.class"/>
+        </jar>
+    </target>
+
     <target name="makejar.qtjambi-util" depends="compile, copy-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
