@@ -64,7 +64,7 @@ public class TestQSslSocket {
 			expDate.setTimeSpec(Qt.TimeSpec.UTC);
 
 			assertTrue(cert.isValid());
-			assertEquals(cert.expiryDate(), expDate);
+				assertEquals(expDate, cert.expiryDate());
 		}
 	}
 }

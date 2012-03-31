@@ -47,39 +47,39 @@ public class TestCoreQXmlStreamReader {
 
 	@org.junit.Test
 	public void testStartDocument() {
-		assertEquals(token, TokenType.StartDocument);
+		assertEquals(TokenType.StartDocument, token);
 		assertTrue(xmlr.isStartDocument());
 	}
 
 	@org.junit.Test
 	public void testTokenType() {
-		assertEquals(xmlr.tokenType(), TokenType.StartDocument);
+		assertEquals(TokenType.StartDocument, xmlr.tokenType());
 		assertTrue(xmlr.isStartDocument());
 		while (!xmlr.atEnd()) {
 			token = xmlr.readNext();
 			if (token == TokenType.StartElement) {
-				assertEquals(xmlr.tokenType(), TokenType.StartElement);
+				assertEquals(TokenType.StartElement, xmlr.tokenType());
 				assertTrue(xmlr.isStartElement());
 				if (token.name().equals("persons"))
 					continue;
 				if (xmlr.name().equals("person")) {
 					// skip the text() of StartElement token
 					xmlr.readNext();
-					assertEquals(xmlr.tokenType(), TokenType.Characters);
+					assertEquals(TokenType.Characters, xmlr.tokenType());
 					assertTrue(xmlr.isCharacters());
 				}
 			} else if (token == TokenType.EndElement) {
-				assertEquals(xmlr.tokenType(), TokenType.EndElement);
+				assertEquals(TokenType.EndElement, xmlr.tokenType());
 				assertTrue(xmlr.isEndElement());
 			}
 		}
-		assertEquals(xmlr.tokenType(), TokenType.EndDocument);
+		assertEquals(TokenType.EndDocument, xmlr.tokenType());
 		assertTrue(xmlr.isEndDocument());
 	}
 
 	@org.junit.Test
 	public void testDocumentVersion() {
-		assertEquals(xmlr.documentVersion(), "1.0");
+		assertEquals("1.0", xmlr.documentVersion());
 	}
 
 	@org.junit.Test
@@ -91,7 +91,7 @@ public class TestCoreQXmlStreamReader {
 	@org.junit.Test
 	public void testName() {
 		xmlr.readNext();
-		assertEquals(xmlr.name(), "persons");
+		assertEquals("persons", xmlr.name());
 	}
 
 	@org.junit.Test
@@ -104,7 +104,7 @@ public class TestCoreQXmlStreamReader {
 				if (xmlr.name().equals("person")) {
 					// skip the text() of StartElement token
 					xmlr.readNext();
-					assertEquals(xmlr.text(), person[i++]);
+					assertEquals(person[i++], xmlr.text());
 				}
 			}
 		}
@@ -122,7 +122,7 @@ public class TestCoreQXmlStreamReader {
 					// attributes extracted from <person></person>
 					attr = xmlr.attributes();
 					assertTrue(attr.count() == 1);
-					assertEquals(attr.value("id"), person[i++]);
+					assertEquals(person[i++], attr.value("id"));
 				}
 			}
 		}
@@ -142,7 +142,7 @@ public class TestCoreQXmlStreamReader {
 					xmlr.readNext(); // [ ]<person id="Jane">Jane</person>
 					xmlr.readNext(); // [<person id="Jane">]Jane</person>
 					xmlr.readNext(); // <person id="Jane">[Jane]</person>
-					assertEquals(xmlr.text(), person[1]);
+					assertEquals(person[1], xmlr.text());
 				}
 			}
 		}
@@ -157,10 +157,10 @@ public class TestCoreQXmlStreamReader {
 					continue;
 				if (xmlr.name().equals("person")) {
 					//
-					assertEquals(xmlr.tokenType(), TokenType.StartElement);
+					assertEquals(TokenType.StartElement, xmlr.tokenType());
 					// consume the start element completely
-					assertEquals(xmlr.readElementText(), person[i++]);
-					assertEquals(xmlr.tokenType(), TokenType.EndElement);
+					assertEquals(person[i++], xmlr.readElementText());
+					assertEquals(TokenType.EndElement, xmlr.tokenType());
 				}
 			}
 		}
@@ -169,14 +169,14 @@ public class TestCoreQXmlStreamReader {
 	@org.junit.Test
 	public void testLineNumber() {
 		// StartDocument
-		assertEquals(xmlr.lineNumber(), 1);
+		assertEquals(1, xmlr.lineNumber());
 		xmlr.readNext();
 		// StartElement - <persons></persons>
-		assertEquals(xmlr.lineNumber(), 2);
+		assertEquals(2, xmlr.lineNumber());
 		// StartElement - <person></person>
 		xmlr.readNextStartElement();
-		assertEquals(xmlr.lineNumber(), 3);
-		assertEquals(xmlr.readElementText(), "John");
+		assertEquals(3, xmlr.lineNumber());
+		assertEquals("John", xmlr.readElementText());
 	}
 
 	@org.junit.Test
@@ -194,7 +194,7 @@ public class TestCoreQXmlStreamReader {
 					assertTrue(xmlr.isWhitespace());// ^
 					xmlr.readNext(); // [<person id="Jane">]Jane</person>
 					xmlr.readNext(); // <person id="Jane">[Jane]</person>
-					assertEquals(xmlr.text(), person[1]);
+					assertEquals(person[1], xmlr.text());
 				}
 			}
 		}
@@ -214,7 +214,7 @@ public class TestCoreQXmlStreamReader {
 		sb.append("</persons>");
 		xmlrNoDevice.addData(sb.toString());
 		assertEquals(TokenType.StartDocument, xmlrNoDevice.readNext());
-		assertEquals(xmlrNoDevice.documentVersion(), "1.0");
+		assertEquals("1.0", xmlrNoDevice.documentVersion());
 		// xmlrNoDevice.skipCurrentElement();
 		while (!xmlrNoDevice.atEnd()) {
 			token = xmlrNoDevice.readNext();
@@ -223,11 +223,10 @@ public class TestCoreQXmlStreamReader {
 					continue;
 				if (xmlrNoDevice.name().equals("person")) {
 					//
-					assertEquals(xmlrNoDevice.tokenType(),
-							TokenType.StartElement);
+					assertEquals(TokenType.StartElement, xmlrNoDevice.tokenType());
 					// consume the start element completely
-					assertEquals(xmlrNoDevice.readElementText(), person[i++]);
-					assertEquals(xmlrNoDevice.tokenType(), TokenType.EndElement);
+					assertEquals(person[i++], xmlrNoDevice.readElementText());
+					assertEquals(TokenType.EndElement, xmlrNoDevice.tokenType());
 				}
 			}
 		}
@@ -241,13 +240,13 @@ public class TestCoreQXmlStreamReader {
 				if (token.name().equals("persons"))
 					continue;
 				if (xmlr.name().equals("person")) {
-					assertEquals(xmlr.readElementText(), "John");
+					assertEquals("John", xmlr.readElementText());
 					xmlr.raiseError("An error occurred...");
 				}
 			}
 		}
-		assertEquals(xmlr.errorString(), "An error occurred...");
-		assertEquals(xmlr.tokenType(), TokenType.Invalid);
+		assertEquals("An error occurred...", xmlr.errorString());
+		assertEquals(TokenType.Invalid, xmlr.tokenType());
 	}
 
 	@org.junit.Test
@@ -260,7 +259,7 @@ public class TestCoreQXmlStreamReader {
 				if (xmlr.name().equals("person")) {
 					assertEquals(xmlr.qualifiedName(), xmlr.prefix() + ":"
 							+ xmlr.name());
-					assertEquals(xmlr.namespaceUri(), namespaceuri[i++]);
+					assertEquals(namespaceuri[i++], xmlr.namespaceUri());
 				}
 			}
 		}

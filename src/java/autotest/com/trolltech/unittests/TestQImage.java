@@ -58,7 +58,7 @@ public class TestQImage {
 	public void testBasic() {
 		assertFalse(qimage32.isNull());
 		assertFalse(qimage32.isGrayscale());
-		assertEquals(generator.depth(), 32);
+		assertEquals(32, generator.depth());
 	}
 	
 	@org.junit.Test()
@@ -87,7 +87,7 @@ public class TestQImage {
 	
 	@org.junit.Test
 	public void testDimensions() {
-		assertEquals(qimage32.width(), 32);
+		assertEquals(32, qimage32.width());
 		assertEquals(qimage32.width(), qimage32.height());
 	}
 	
@@ -99,9 +99,9 @@ public class TestQImage {
 	
 	@org.junit.Test
 	public void testConvertToFormat() {
-		assertEquals(generator.format(), Format.Format_RGB32);
+		assertEquals(Format.Format_RGB32, generator.format());
 		generator = generator.convertToFormat(Format.Format_Mono);
-		assertEquals(generator.format(), Format.Format_Mono);
+		assertEquals(Format.Format_Mono, generator.format());
 	}
 	
 	@org.junit.Test
@@ -118,8 +118,8 @@ public class TestQImage {
 		sample.setPixel(0, 0, 0);
 		sample.setPixel(2, 2, 2);
 		
-		assertEquals(sample.pixel(2, 2), 15);
-		assertEquals(sample.pixel(0, 0), 5);
+		assertEquals(15, sample.pixel(2, 2));
+		assertEquals( 5, sample.pixel(0, 0));
 	}
 	
 }

@@ -71,7 +71,7 @@ public class TestQXmlFormatter extends QApplicationTest {
 
         int i = 0;
         for (String str : results) {
-            assertEquals(str, expected[i++]);
+            assertEquals(expected[i++], str);
         }
     }
 
@@ -94,7 +94,8 @@ public class TestQXmlFormatter extends QApplicationTest {
             if (item.isNode()) {
                 query.setFocus(item);
                 query.setQuery(samplePath1 + "/a/p/string()");
-                assertEquals(query.evaluateTo(), "Some Text in p");
+                String s = query.evaluateTo();
+                assertEquals("Some Text in p", s);
             }
             item = xmlResultItems.next();
         }
