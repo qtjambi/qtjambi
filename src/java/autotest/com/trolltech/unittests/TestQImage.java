@@ -88,9 +88,14 @@ public class TestQImage extends QApplicationTest {
 		assertTrue(anSVGImage.load(anSVGImagePath));
 	}
 	
-	@org.junit.Ignore
+//	@org.junit.Ignore
 	/**
 	 * The following test makes the JVM crash.
+	 *
+	 * dlm - Maybe that is before "extends QApplicationTest" and the crash is
+	 *  due to some interaction of using Qt API without first setting up a
+	 *  QApplication/QCoreApplication.  So far for me on Linux this test is not
+	 *  crashing.
 	 */
 	@org.junit.Test
 	public void testLoadSVGBig() {
