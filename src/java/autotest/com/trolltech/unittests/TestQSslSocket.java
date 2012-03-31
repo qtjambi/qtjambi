@@ -20,16 +20,20 @@ public class TestQSslSocket extends QApplicationTest {
 
 	private QSslSocket socket;
 	private List<QSslCertificate> certs = new ArrayList<QSslCertificate>();
-	private QDateTime first = QDateTime.fromString("Mon Jan 18 23:59:59 2038",
+	// on 31-Mar-2012        www.google.com first="Mon Jan 18 23:59:59 2038" second="Sat Oct 25 08:32:46 2036"
+	// on 31-Mar-2012 unittest.qt-jambi.org first="Mon Aug 17 22:00:00 2015" second="Thu Apr 13 16:24:22 2028"
+	private QDateTime first  = QDateTime.fromString("Mon Aug 17 22:00:00 2015",
 			"ddd MMM d HH:mm:ss yyyy");
-	private QDateTime second = QDateTime.fromString("Sat Oct 25 08:32:46 2036",
+	private QDateTime second = QDateTime.fromString("Thu Apr 13 16:24:22 2028",
 			"ddd MMM d HH:mm:ss yyyy");
 	private QDateTime[] date = { first, second };
 
-	@Before
-	public void setUp() throws Exception {
+	private static final String K_host_google_com			= "www.google.com";
+	private static final String K_host_unittest_qt_jambi_org	= "unittest.qt-jambi.org";
+
+	private void setupSocket(String hostname) {
 		socket = new QSslSocket(new QObject());
-		socket.connectToHostEncrypted("www.google.com", (short) 443);
+		socket.connectToHostEncrypted(hostname, (short) 443);
 		// block the calling thread until an encrypted connection has been
 		// established.
 		socket.waitForEncrypted(5000);
@@ -44,29 +48,70 @@ public class TestQSslSocket extends QApplicationTest {
 
 	@org.junit.Test
 	public void testConnectToHostEncrypted() {
+		setupSocket(K_host_google_com);
 		assertTrue(socket.isValid());
+		// Could not use unittest.qt-jambi.org as socket.isEncrypted()==false not sure exactly why,
+		//  maybe it doesn't like the CA.
 		assertTrue(socket.isEncrypted());
 	}
 
 	@org.junit.Test
+	public void testConnectToHostWithData() {
+		setupSocket(K_host_google_com);
+		// another test candidate
+		String s = "HEAD / HTTP/1.1\r\nHost: " + K_host_google_com + "\r\nConnection: close\r\n\r\n";
+		byte[] bA;
+		bA = s.getBytes();
+		int n = socket.write(bA);
+		assertEquals("write()", bA.length, n);
+		socket.flush();
+
+		int totalBytesRead = 0;
+		bA = new byte[4096];
+		do {
+			if(socket.waitForReadyRead(5000) == false)
+				break;
+			n = socket.read(bA);	// try to fill buffer within 5 seconds
+			if(n <= 0)
+				break;
+			totalBytesRead += n;
+		} while(n > 0);
+		// we can take the reception of any data as demonstrating SSL working
+		assertTrue("read length", (totalBytesRead > 0));
+		socket.waitForDisconnected(5000);
+	}
+
+	@org.junit.Test
 	public void testCaCertificates() {
+		// We use a remote host we can control the server side certificates on
+		setupSocket(K_host_unittest_qt_jambi_org);
 		certs = socket.caCertificates();
 		assertNotNull(certs);
 		assertTrue(certs.size() > 0);
 
-		certs = certs.subList(0, 2);
-		Iterator<QSslCertificate> i = certs.iterator();
-		int j = 0;
-		
-		while (i.hasNext()) {
-			QSslCertificate cert = i.next();
-			QDateTime expDate = date[j++];
-			// convert local time to UTC since certification exp. date is given
-			// in UTC too
-			expDate.setTimeSpec(Qt.TimeSpec.UTC);
+		// The problem with www.google.com:443 is they are a large multi-national web operation
+		//  using many machine and many systems on the same URL.  So it depends too much on the
+		//  country your request originates from, the current certificate supplier policy, the
+		//  time of year and the wind direction.  Making this check too brittle for general use.
+		// Ideally this should be hosted by unittest.qt-jambi.org so we can control exactly the
+		//  server side.  Making the user setup puppet and other things just presents additional
+		//  barriers to unittesting.
 
-			assertTrue(cert.isValid());
+		if(true) {	// Disabled (until a hostname using a long self-signed can be found)
+			certs = certs.subList(0, 2);
+			Iterator<QSslCertificate> i = certs.iterator();
+			int j = 0;
+		
+			while (i.hasNext()) {
+				QSslCertificate cert = i.next();
+				QDateTime expDate = date[j++];
+				// convert local time to UTC since certification exp. date is given
+				// in UTC too
+				expDate.setTimeSpec(Qt.TimeSpec.UTC);
+
+				assertTrue(cert.isValid());
 				assertEquals(expDate, cert.expiryDate());
+			}
 		}
 	}
 }

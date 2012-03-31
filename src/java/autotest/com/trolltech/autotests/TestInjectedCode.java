@@ -823,6 +823,7 @@ public class TestInjectedCode extends QApplicationTest {
 
     @Test
     public void testQHttpRead() {
+        // FIXME: Consider unittest.qt-jambi.org
         QHttp http = new QHttp("qt-jambi.org", 80);
         http.get("/");
 
