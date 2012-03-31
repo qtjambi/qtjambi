@@ -95,6 +95,9 @@ public class TestQXmlFormatter extends QApplicationTest {
                 query.setFocus(item);
                 query.setQuery(samplePath1 + "/a/p/string()");
                 String s = query.evaluateTo();
+                // We are seeing EOL characters appended to the results here
+                if(s.length() > 0 && Character.codePointAt(s, s.length() - 1) == '\n')
+                    s = s.substring(0, s.length() - 1);
                 assertEquals("Some Text in p", s);
             }
             item = xmlResultItems.next();
