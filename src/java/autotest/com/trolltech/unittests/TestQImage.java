@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.gui.QImage;
 import com.trolltech.qt.gui.QImage.Format;
 import com.trolltech.qt.gui.QImageReader;
@@ -28,6 +29,17 @@ public class TestQImage extends QApplicationTest {
 	
 	@org.junit.BeforeClass
 	public static void init() {
+		// Diagnostic information to help locate trouble
+		String s;
+		s = QCoreApplication.applicationDirPath();
+		System.out.println("QCoreApplication.applicationDirPath()=" + s);
+		s = QCoreApplication.applicationFilePath();
+		System.out.println("QCoreApplication.applicationFilePath()=" + s);
+		List<String> libraryPathList = QCoreApplication.libraryPaths();
+		for(String libraryPathElement : libraryPathList)
+		    System.out.println("QCoreApplication.libraryPaths(): " + libraryPathElement);
+		// We should re-validate this "." as the choice of the current working directory of
+		//  the JUnitTest should not influence the results without good reason.
 		//QAbstractFileEngine.addSearchPathForResourceEngine(".");
 		System.out.println(QImageReader.supportedImageFormats());
 	}

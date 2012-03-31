@@ -112,21 +112,21 @@ class TestSerializerClass extends QXmlSerializer {
 
     @Override
     public void attribute(QXmlName name, String value) {
-        System.out.println(value);
+        System.out.println("TestSerializerClass#attribute(QXmlName,String): " + ((value != null) ? value.toString() : value));
     }
 
     @Override
     public void atomicValue(Object value) {
-        System.out.println(value.toString());
+        System.out.println("TestSerializerClass#atomicValue(Object): " + ((value != null) ? value.toString() : value));
     }
 
     @Override
     public void startDocument() {
-        System.out.println("doc start");
+        System.out.println("TestSerializerClass#startDocument(): doc start");
     }
 
     @Override
     public void characters(String str) {
-        System.out.println(str);
+        System.out.println("TestSerializerClass#characters(String): " + str);
     }
 }
