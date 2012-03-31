@@ -12,7 +12,7 @@ import com.trolltech.qt.gui.QImage;
 import com.trolltech.qt.gui.QImage.Format;
 import com.trolltech.qt.gui.QImageReader;
 
-public class TestQImage {
+public class TestQImage extends QApplicationTest {
 
 	private QImage qimage32;
 	private QImage qimage64PNG;
@@ -28,7 +28,7 @@ public class TestQImage {
 	
 	@org.junit.BeforeClass
 	public static void init() {
-		QAbstractFileEngine.addSearchPathForResourceEngine(".");
+		//QAbstractFileEngine.addSearchPathForResourceEngine(".");
 		System.out.println(QImageReader.supportedImageFormats());
 	}
 	

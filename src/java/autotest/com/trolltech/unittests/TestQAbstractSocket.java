@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.network.QAbstractSocket;
 
-public class TestQAbstractSocket {
+public class TestQAbstractSocket extends QApplicationTest {
 
 	QAbstractSocket socket = null;
 	
@@ -20,6 +20,9 @@ public class TestQAbstractSocket {
 
 	@After
 	public void tearDown() throws Exception {
+		if(socket != null)
+			socket.close();
+		socket = null;
 	}
 
 	@Test

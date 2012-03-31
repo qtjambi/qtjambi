@@ -29,10 +29,10 @@ public class TestQXmlFormatter extends QApplicationTest {
     String samplePath1 = "doc('classpath:com/trolltech/unittests/xquerySample1.xml')";
     String samplePath2 = "doc('classpath:com/trolltech/unittests/xmlSample2.xml')";
 
-    @BeforeClass
-    public static void init() {
-        QAbstractFileEngine.addSearchPathForResourceEngine(".");
-    }
+    //@BeforeClass
+    //public static void init() {
+    //    QAbstractFileEngine.addSearchPathForResourceEngine(".");
+    //}
 
     @Before
     public void setUp() throws Exception {

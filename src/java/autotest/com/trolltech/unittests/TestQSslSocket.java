@@ -16,7 +16,7 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.network.QSslCertificate;
 import com.trolltech.qt.network.QSslSocket;
 
-public class TestQSslSocket {
+public class TestQSslSocket extends QApplicationTest {
 
 	private QSslSocket socket;
 	private List<QSslCertificate> certs = new ArrayList<QSslCertificate>();
@@ -37,7 +37,9 @@ public class TestQSslSocket {
 
 	@After
 	public void tearDown() throws Exception {
-		socket.close();
+		if(socket != null)
+			socket.close();
+		socket = null;
 	}
 
 	@org.junit.Test

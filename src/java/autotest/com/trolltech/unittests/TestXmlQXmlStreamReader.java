@@ -6,16 +6,12 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.xml.QXmlStreamReader;
 
-public class TestXmlQXmlStreamReader {
+public class TestXmlQXmlStreamReader extends QApplicationTest {
 
 	QXmlStreamReader xmlr;
 	QFile xmlFile;
 	QIODevice iod;
 	
-	@org.junit.BeforeClass
-	public static void setUpClass() {
-	}
-
 	@org.junit.Before
 	public void setUp() throws Exception {
 		xmlFile = new QFile("classpath:com/trolltech/unittests/xmlSample1.xml");

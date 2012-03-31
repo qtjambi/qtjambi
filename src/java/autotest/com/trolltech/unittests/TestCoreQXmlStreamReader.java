@@ -10,7 +10,7 @@ import com.trolltech.qt.core.QXmlStreamAttributes;
 import com.trolltech.qt.core.QXmlStreamReader;
 import com.trolltech.qt.core.QXmlStreamReader.TokenType;
 
-public class TestCoreQXmlStreamReader {
+public class TestCoreQXmlStreamReader extends QApplicationTest {
 
 	private QXmlStreamReader xmlr;
 	private QXmlStreamReader xmlrNoDevice;
@@ -22,10 +22,10 @@ public class TestCoreQXmlStreamReader {
 			"http://en.wikipedia.org" };
 	private int i = 0;
 
-	@org.junit.BeforeClass
-	public static void setUpClass() {
-		QAbstractFileEngine.addSearchPathForResourceEngine(".");
-	}
+	//@org.junit.BeforeClass
+	//public static void setUpClass() {
+	//	QAbstractFileEngine.addSearchPathForResourceEngine(".");
+	//}
 
 	@org.junit.Before
 	public void setUp() throws Exception {
