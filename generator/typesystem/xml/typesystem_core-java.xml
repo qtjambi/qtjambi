@@ -1412,6 +1412,7 @@
   <object-type name="QCoreApplication">
       <extra-includes>
           <include file-name="com.trolltech.qt.QNativePointer" location="java"/>
+          <include file-name="java.util.Collections" location="java"/>
           <include file-name="java.util.List" location="java"/>
       </extra-includes>
       <modify-function signature="QCoreApplication(int &amp;, char  **)">

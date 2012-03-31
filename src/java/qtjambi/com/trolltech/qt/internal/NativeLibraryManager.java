@@ -212,6 +212,8 @@ public class NativeLibraryManager {
         }
 
         public File buildPath(String relativePath) {
+            if(baseDir == null)
+                return null;  // we're loaded via non file:/// method ?  Java Web Start anyone ?
             return new File(baseDir, relativePath);
         }
         public URL buildUrl(String relativeUrl) throws MalformedURLException {
@@ -473,6 +475,37 @@ public class NativeLibraryManager {
     public static void loadQtLibrary(String library, String version) {
         String lib = qtLibraryName(library, version);
         loadNativeLibrary(lib);
+    }
+
+    public static List<String> unpackPlugins() {
+        if(activeDeploymentSpec != null) {
+            List<String> paths = new ArrayList<String>();
+
+            if(activeDeploymentSpec.pluginPaths != null) {
+                for(String p : activeDeploymentSpec.pluginPaths) {
+                    File resolvedFile = activeDeploymentSpec.buildPath(p);
+                    // Checking it really exists as a directory (before adding it to the list)
+                    //  is kind of a security check.
+                    if(resolvedFile != null && resolvedFile.isDirectory()) {
+                        paths.add(resolvedFile.getAbsolutePath());
+                    }
+                }
+            }
+
+            if(activeDeploymentSpec.pluginDesignerPaths != null) {
+                for(String p : activeDeploymentSpec.pluginDesignerPaths) {
+                    File resolvedFile = activeDeploymentSpec.buildPath(p);
+                    // Checking it really exists as a directory (before adding it to the list)
+                    //  is kind of a security check.
+                    if(resolvedFile != null && resolvedFile.isDirectory()) {
+                        paths.add(resolvedFile.getAbsolutePath());
+                    }
+                }
+            }
+
+            return paths;
+        }
+        return null;
     }
 
     private static DeploymentSpec unpack() {

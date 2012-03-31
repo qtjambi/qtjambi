@@ -457,11 +457,20 @@ public class Utilities {
     }*/
 
     public static List<String> unpackPlugins() {
+        // FIXME: The logic of this method is broken.  We should be reconfiguring the Qt libraryPath's
+        //  based on the active deployment spec and putting the runtime location of that at the start
+        //  of the paths list.
+        // This method should be renamed if it does not actually do anything about the "unpacking"
+        //  process.  Maybe it should be "resolvePluginLocations()"
+        List<String> paths = NativeLibraryManager.unpackPlugins();
+        if(paths != null)
+            return paths;
+
         // FIXME: enumerate ClassPath look for qtjambi-deployment.xml
         // FIXME: Use qtjambi-deployment.xml is one exists
         // FIXME: Make a resolver method (that produces a list of automatic things found) and another method to set from list
         // FIXME: The last resort should be to find a plugins/ directory (when we have no qtjambi-deployment.xml)
-        List<String> paths = new ArrayList<String>();
+        paths = new ArrayList<String>();
 
         String classPath = System.getProperty("java.class.path");
         String[] classPathElements = classPath.split(File.pathSeparator);

@@ -204,6 +204,7 @@ class QCoreApplication___ extends QCoreApplication {
 
             List<String> paths = Utilities.unpackPlugins();
             if (paths != null) {
+                Collections.reverse(paths);  // Qt prepends but our list is in highest priority first order
                 for (String p : paths)
                     addLibraryPath(p);
             } else {
@@ -221,6 +222,7 @@ class QCoreApplication___ extends QCoreApplication {
 
             List<String> paths = Utilities.unpackPlugins();
             if (paths != null) {
+                Collections.reverse(paths);  // Qt prepends but our list is in highest priority first order
                 for (String p : paths)
                     addLibraryPath(p);
             } else {

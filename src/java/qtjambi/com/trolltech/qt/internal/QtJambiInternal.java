@@ -54,6 +54,7 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -78,8 +79,23 @@ public class QtJambiInternal {
     public static void setupDefaultPluginPath() {
         try {
             if (com.trolltech.qt.internal.NativeLibraryManager.isUsingDeploymentSpec()) {
-                List<String> paths = com.trolltech.qt.internal.NativeLibraryManager.pluginPaths();
-                QCoreApplication.setLibraryPaths(paths);
+                List<String> paths = new ArrayList<String>();
+
+                List<String> pluginPaths = com.trolltech.qt.internal.NativeLibraryManager.pluginPaths();
+                if (pluginPaths != null)
+                    paths.addAll(pluginPaths);
+
+                List<String> pluginDesignerPaths = com.trolltech.qt.internal.NativeLibraryManager.pluginDesignerPaths();
+                if (pluginDesignerPaths != null)
+                    paths.addAll(pluginDesignerPaths);
+
+                // We don't override the existing values (which are baed on envvars)
+                //  as envvars should continue to take priority even for Java Qt use.
+                if (paths.size() > 0) {
+                    Collections.reverse(paths);
+                    for (String p : paths)
+                        QCoreApplication.addLibraryPath(p);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
