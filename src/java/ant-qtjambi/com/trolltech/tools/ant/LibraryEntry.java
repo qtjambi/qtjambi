@@ -83,6 +83,7 @@ public class LibraryEntry extends Task {
      */
     private String type = TYPE_DEFAULT;
     private String name;
+    private String absolutePath;
     private File rootPath;
     private boolean kdephonon = false;
     private String subdir;
@@ -111,6 +112,13 @@ public class LibraryEntry extends Task {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAbsolutePath() {
+        return absolutePath;
+    }
+    public void setAbsolutePath(String absolutePath) {
+        this.absolutePath = absolutePath;
     }
 
     public File getRootPath() {
@@ -150,12 +158,20 @@ public class LibraryEntry extends Task {
     }
 
     public void setIf(String included) {
-        if(included == null || included.length() == 0 || "false".compareToIgnoreCase(included) == 0)
+        this.absolutePath = null;
+        if(included == null || included.length() == 0 || "false".compareToIgnoreCase(included) == 0) {
             this.included = false;
-        else if("true".compareToIgnoreCase(included) == 0 || new File(included).exists())
+        } else if("true".compareToIgnoreCase(included) == 0) {
             this.included = true;
-        else
-            this.included = false;
+        } else {
+            File file = new File(included);
+            if(file.exists()) {
+                this.included = true;
+                this.absolutePath = file.getAbsolutePath();
+            } else {
+                this.included = false;
+            }
+        }
     }
     public String getIf() {
         return Boolean.valueOf(included).toString();

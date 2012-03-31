@@ -599,6 +599,7 @@ public class PlatformJarTask extends Task {
     private void processLibraryEntry(LibraryEntry e) {
         File rootPath = null;
         String libraryName = null;
+        String absolutePath = null;
         String subdir = null;
         String destSubdir = null;
         String outputPath = null;
@@ -611,6 +612,10 @@ public class PlatformJarTask extends Task {
             if(rootPath == null)
                 rootPath = new File(".");
             libraryName = e.getName();
+            absolutePath = e.getAbsolutePath();
+            if(absolutePath != null) {
+                libraryName = new File(absolutePath).getName();
+            }
             subdir = e.getSubdir();
             destSubdir = e.getDestSubdir();
 
@@ -632,7 +637,10 @@ public class PlatformJarTask extends Task {
                 System.out.println("   mkdir " + destDir.getAbsolutePath());
                 destDir.mkdir();
             }
-            srcFile = new File(srcDir, libraryName);
+            if(absolutePath == null)
+                srcFile = new File(srcDir, libraryName);
+            else
+                srcFile = new File(absolutePath);
             destFile = new File(destDir, libraryName);
             try {
                 //System.out.println("Copying " + src + " to " + dest);
@@ -650,6 +658,8 @@ public class PlatformJarTask extends Task {
                 sb.append("; rootPath=" + rootPath.getAbsolutePath());
             if(libraryName != null)
                 sb.append("; libraryName=" + libraryName);
+            if(absolutePath != null)
+                sb.append("; absolutePath=" + absolutePath);
             if(subdir != null)
                 sb.append("; subdir=" + subdir);
             if(destSubdir != null)
