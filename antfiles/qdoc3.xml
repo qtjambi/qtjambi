@@ -10,7 +10,7 @@
     </target>
 
     <target name="qdoc3.make" depends="qdoc3.qmake">
-        <make dir="qdoc3"/>
+        <make dir="qdoc3" target="all"/>
     </target>
 
 </project>

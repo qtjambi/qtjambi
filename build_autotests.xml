@@ -70,7 +70,7 @@
                 debugTools="${qtjambi.debug-tools}"
                 qmakebinary="${qmake.binary}"/>
 
-        <make dir="${outputDir}/tests/autotest-generator" />
+        <make dir="${outputDir}/tests/autotest-generator" target="all"/>
     </target>
 
     <target name="compile.deps">

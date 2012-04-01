@@ -89,7 +89,7 @@
     </target>
 
     <target name="tools.juic.make" depends="log, tools.juic.qmake">
-        <make dir="${juic.builddir}"/>
+        <make dir="${juic.builddir}" target="all"/>
     </target>
 
     <macrodef name="dojuic">
