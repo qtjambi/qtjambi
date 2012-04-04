@@ -466,8 +466,8 @@ public class PlatformJarTask extends Task {
                 d.setRootPath(rootPath);
                 d.setName(toplevelName);
             }
-            System.out.println("   rootPath " + rootPath);
-            System.out.println("       name " + toplevelName);
+            //System.out.println("   rootPath " + rootPath);
+            //System.out.println("       name " + toplevelName);
             subdir = d.getSubdir();
             destSubdir = d.getDestSubdir();
             recursive = d.getRecursive();
@@ -487,14 +487,14 @@ public class PlatformJarTask extends Task {
                 srcDir = rootPathFile;
             destDir = new File(outdir, outputPath);
             if(!destDir.exists()) {
-                System.out.println("   mkdir " + destDir.getAbsolutePath());
+                //System.out.println("   mkdir " + destDir.getAbsolutePath());
                 destDir.mkdir();
             }
             srcTarget = new File(srcDir, toplevelName);
             destTarget = new File(destDir, toplevelName);
             if(srcTarget.isDirectory()) {
                 if(!destTarget.exists()) {
-                    System.out.println("   mkdir " + destTarget.getAbsolutePath());
+                    //System.out.println("   mkdir " + destTarget.getAbsolutePath());
                     destTarget.mkdir();
                 }
 
@@ -512,7 +512,7 @@ public class PlatformJarTask extends Task {
                         File thisDestFile = new File(destTarget, name);
                         if(thisSrcFile.isDirectory()) {
                             if(thisDestFile.exists() == false) {
-                                System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
+                                //System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
                                 thisDestFile.mkdir();
                             }
                             if(recursive)
@@ -527,7 +527,7 @@ public class PlatformJarTask extends Task {
                         if(child.isDirectory()) {
                             File thisDestFile = new File(destTarget, name);
                             if(thisDestFile.exists() == false) {
-                                System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
+                                //System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
                                 thisDestFile.mkdir();
                             }
                             if(recursive)
@@ -634,7 +634,7 @@ public class PlatformJarTask extends Task {
                 srcDir = rootPath;
             destDir = new File(outdir, outputPath);
             if(!destDir.exists()) {
-                System.out.println("   mkdir " + destDir.getAbsolutePath());
+                //System.out.println("   mkdir " + destDir.getAbsolutePath());
                 destDir.mkdir();
             }
             if(absolutePath == null)

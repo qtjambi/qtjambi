@@ -1147,8 +1147,6 @@ class QApplication___ extends QApplication {
         public static QApplication instance() {
             if (type() != Type.Tty) {
                 com.trolltech.qt.core.QCoreApplication app = com.trolltech.qt.core.QCoreApplication.instance();
-                System.out.println("QApplication#instance()  return="+app+"; m_instance="+m_instance);
-                System.out.flush();
                 return (QApplication) app;
             }
             if (m_instance instanceof QApplication)
