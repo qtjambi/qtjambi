@@ -653,19 +653,37 @@ public class InitializeTask extends Task {
         if(verbose && (packagingDsoSsleay32Message.length() > 0 || ("false".equals(packagingDsoSsleay32) == false) && packagingDsoSsleay32 != null))
             System.out.println(PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message);
 
+        String QTDIR = System.getenv("QTDIR");   // used here
+
         if(OSInfo.isWindows()) {
             String packagingDsoZlib1 = decideQtLibDso(PACKAGING_DSO_ZLIB1, "zlib1", null);
             propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1, packagingDsoZlib1);
         } else {
             // If the lib directory contains "libz.so.1" or "libssl.so" or "libcrypto.so.1.0.0"
-            String packagingDsoLibssl = decideQtLibDso(PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, null);
-            propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSSL, packagingDsoLibssl);
-            // FIXME: Implement file globs and reverse sort
-            String packagingDsoLibcrypto = decideQtLibDso(PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0g", "1.0.0", "0.0.0", null }, null);
-            propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBCRYPTO, packagingDsoLibcrypto);
+            String sourceValue = null;
+            String packagingDsoLibssl = decideQtLibDso(PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, false);
+            if(packagingDsoLibssl != null && packagingDsoLibssl.startsWith(QTDIR) == false) {
+                sourceValue = " (detected: " + packagingDsoLibssl + "; but inhibited as not inside QTDIR)";
+                packagingDsoLibssl = null;
+            }
+            mySetProperty(propertyHelper, -1, PACKAGING_DSO_LIBSSL, sourceValue, packagingDsoLibssl, false);
 
-            String packagingDsoLibz = decideQtLibDso(PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, null);
-            propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBZ, packagingDsoLibz);
+            // FIXME: Implement file globs and reverse sort
+            sourceValue = null;
+            String packagingDsoLibcrypto = decideQtLibDso(PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0h", "1.0.0g", "1.0.0", "0.0.0", null, "10" }, false);
+            if(packagingDsoLibcrypto != null && packagingDsoLibcrypto.startsWith(QTDIR) == false) {
+                sourceValue = " (detected: " + packagingDsoLibcrypto + "; but inhibited as not inside QTDIR)";
+                packagingDsoLibcrypto = null;
+            }
+            mySetProperty(propertyHelper, -1, PACKAGING_DSO_LIBCRYPTO, sourceValue, packagingDsoLibcrypto, false);
+
+            sourceValue = null;
+            String packagingDsoLibz = decideQtLibDso(PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, false);
+            if(packagingDsoLibz != null && packagingDsoLibz.startsWith(QTDIR) == false) {
+                sourceValue = " (detected: " + packagingDsoLibz + "; but inhibited as not inside QTDIR)";
+                packagingDsoLibz = null;
+            }
+            mySetProperty(propertyHelper, -1, PACKAGING_DSO_LIBZ, sourceValue, packagingDsoLibz, false);
         }
 
         // FIXME: On Macosx when we build and have qtjambi.dbus==true we should WARN when we can not locate libdbus-1.*.dylib
@@ -675,7 +693,6 @@ public class InitializeTask extends Task {
 
         // Other build information sanity testing and warning
 
-        String QTDIR = System.getenv("QTDIR");
         System.out.println("QTDIR is set: " + ((QTDIR != null) ? QTDIR : "<notset>"));
 
         String JAMBIDIR = System.getenv("JAMBIDIR");
