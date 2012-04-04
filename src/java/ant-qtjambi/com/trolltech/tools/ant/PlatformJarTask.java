@@ -45,6 +45,7 @@
 package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.Task;
 
@@ -591,8 +592,10 @@ public class PlatformJarTask extends Task {
     }
 
     private void runBinaryStrip(File file) {
-        System.out.println("Stripping binary: " + file.getAbsolutePath());
-        String[] cmd = new String[] { execStrip, file.getAbsolutePath() };
+        List<String> list = Util.splitStringTokenizer(execStrip);
+        list.add(file.getAbsolutePath());
+        String[] cmd = list.toArray(new String[list.size()]);
+        getProject().log("Stripping binary: " + Arrays.toString(cmd), Project.MSG_VERBOSE);
         Exec.exec(cmd, null, getProject(), false);
     }
 
@@ -645,8 +648,21 @@ public class PlatformJarTask extends Task {
             try {
                 //System.out.println("Copying " + src + " to " + dest);
                 Util.copy(srcFile, destFile);
-                if(execStrip != null)
+
+                boolean doStrip = true;
+                if(e.getType().equals(LibraryEntry.TYPE_QT))
+                    doStrip = false;
+                else if(e.getType().equals(LibraryEntry.TYPE_PLUGIN))
+                    doStrip = false;
+                else if(e.getType().equals(LibraryEntry.TYPE_DSO))
+                    doStrip = false;
+                else if(e.getType().equals(LibraryEntry.TYPE_SYSTEM))
+                    doStrip = false;
+                else if(e.getType().equals(LibraryEntry.TYPE_UNVERSIONED_PLUGIN))
+                    doStrip = false;
+                if(doStrip && execStrip != null)
                     runBinaryStrip(destFile);
+
                 libraryDir.add(outputPath);
            } catch(IOException ex) {
                 ex.printStackTrace();
