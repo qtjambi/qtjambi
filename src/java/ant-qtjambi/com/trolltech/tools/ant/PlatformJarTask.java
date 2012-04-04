@@ -301,12 +301,12 @@ public class PlatformJarTask extends Task {
         writer.println();
         writer.println("  <!-- Qt libraries -->");
         for(LibraryEntry e : libs) {
-            String libraryName = e.getName();
+            String resolvedName = e.getResolvedName();
             String subdir = e.getSubdir();
             String destSubdir = e.getDestSubdir();
             String load = e.getLoad();
 
-            writer.print("  <library name=\"" + xmlEscape(Util.pathCanon(new String[] { destSubdir, subdir, libraryName }, "/")) + "\"");
+            writer.print("  <library name=\"" + xmlEscape(Util.pathCanon(new String[] { destSubdir, subdir, resolvedName }, "/")) + "\"");
             if(!load.equals(LibraryEntry.LOAD_DEFAULT))
                 writer.print(" load=\"" + xmlEscape(load) + "\"");
             writer.println("/>");
@@ -603,6 +603,7 @@ public class PlatformJarTask extends Task {
         File rootPath = null;
         String libraryName = null;
         String absolutePath = null;
+        String resolvedName = null;
         String subdir = null;
         String destSubdir = null;
         String outputPath = null;
@@ -616,9 +617,7 @@ public class PlatformJarTask extends Task {
                 rootPath = new File(".");
             libraryName = e.getName();
             absolutePath = e.getAbsolutePath();
-            if(absolutePath != null) {
-                libraryName = new File(absolutePath).getName();
-            }
+            resolvedName = e.getResolvedName();
             subdir = e.getSubdir();
             destSubdir = e.getDestSubdir();
 
@@ -626,7 +625,7 @@ public class PlatformJarTask extends Task {
                 if(destSubdir.startsWith("/")) {   // no subdir
                     outputPath = Util.pathCanon(new String[] { destSubdir }, "/");
                 } else {
-                   outputPath = Util.pathCanon(new String[] { destSubdir, subdir }, "/");
+                    outputPath = Util.pathCanon(new String[] { destSubdir, subdir }, "/");
                 }
             } else {
                 outputPath = Util.pathCanon(new String[] { subdir }, "/");
@@ -644,7 +643,7 @@ public class PlatformJarTask extends Task {
                 srcFile = new File(srcDir, libraryName);
             else
                 srcFile = new File(absolutePath);
-            destFile = new File(destDir, libraryName);
+            destFile = new File(destDir, resolvedName);
             try {
                 //System.out.println("Copying " + src + " to " + dest);
                 Util.copy(srcFile, destFile);
@@ -676,6 +675,8 @@ public class PlatformJarTask extends Task {
                 sb.append("; libraryName=" + libraryName);
             if(absolutePath != null)
                 sb.append("; absolutePath=" + absolutePath);
+            if(resolvedName != null)
+                sb.append("; resolvedName=" + resolvedName);
             if(subdir != null)
                 sb.append("; subdir=" + subdir);
             if(destSubdir != null)

@@ -82,7 +82,7 @@ public class LibraryEntry extends Task {
      *  setting.
      */
     private String type = TYPE_DEFAULT;
-    private String name;
+    private String name;         // name from configuration
     private String absolutePath;
     private File rootPath;
     private boolean kdephonon = false;
@@ -92,6 +92,13 @@ public class LibraryEntry extends Task {
     private String srcPath;
     private boolean included = true;
     private String dsoVersion;
+
+    public String getResolvedName() {
+        String libraryName = this.name;
+        if(absolutePath != null)
+            libraryName = new File(absolutePath).getName();  // override with actual filename used
+        return libraryName;
+    }
 
     public boolean getKdephonon() {
         return kdephonon;
