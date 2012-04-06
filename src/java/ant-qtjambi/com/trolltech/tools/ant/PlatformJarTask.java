@@ -54,6 +54,7 @@ import com.trolltech.qt.osinfo.OSInfo;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.io.BufferedWriter;
@@ -196,8 +197,11 @@ public class PlatformJarTask extends Task {
 
         outdir.mkdirs();
 
-        for(Directory d : directoryList) {
-            processDirectory(d);
+        Iterator<Directory> it = directoryList.iterator();
+        while(it.hasNext()) {
+            Directory d = it.next();
+            if(processDirectory(d) == false)
+                it.remove();    // was found to be inhibited
         }
 
         for(LibraryEntry e : libs) {
@@ -434,7 +438,8 @@ public class PlatformJarTask extends Task {
         }
     }
 
-    private void processDirectory(Directory d) {
+    private boolean processDirectory(Directory d) {
+        boolean rv = false;
         File rootPathFile = null;
         String rootPath = null;
         String toplevelName = null;
@@ -454,7 +459,7 @@ public class PlatformJarTask extends Task {
                     throw new IllegalArgumentException("name must be set, when rootPath is not set; name=" + toplevelName);
                 rootPathFile = new File(".");
             } else if(rootPath.length() == 0) {
-                return;  // skip
+                return rv;  // skip (and have caller remove)
             } else {
                 rootPathFile = new File(rootPath);
             }
@@ -566,6 +571,7 @@ public class PlatformJarTask extends Task {
                     throw new BuildException("Failed to copy file '" + toplevelName + "'");
                 }
             }
+            rv = true;
         } catch(Exception ex) {
             StringBuilder sb = new StringBuilder("DIAGNOSTIC");
             if(rootPathFile != null)
@@ -589,6 +595,7 @@ public class PlatformJarTask extends Task {
             ex.printStackTrace();
             throw new BuildException(ex);
         }
+        return rv;
     }
 
     private void runBinaryStrip(File file) {
