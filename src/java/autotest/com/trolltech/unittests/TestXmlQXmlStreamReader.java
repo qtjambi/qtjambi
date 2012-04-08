@@ -4,14 +4,18 @@ import static org.junit.Assert.*;
 
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QIODevice;
-import com.trolltech.qt.xml.QXmlStreamReader;
+// Using com.trolltech.qt.xml.* as com.trolltech.qt.xml.QXmlStreamReader is deprecated
+import com.trolltech.qt.xml.*;
 
+// See also TestCoreQXmlStreamReader
+@SuppressWarnings("deprecation")
 public class TestXmlQXmlStreamReader extends QApplicationTest {
 
+	// MacOSX version of Qt does not have this API it has only com.trolltech.qt.core.QXmlStreamReader
 	QXmlStreamReader xmlr;
 	QFile xmlFile;
 	QIODevice iod;
-	
+
 	@org.junit.Before
 	public void setUp() throws Exception {
 		xmlFile = new QFile("classpath:com/trolltech/unittests/xmlSample1.xml");

@@ -119,7 +119,12 @@
                 <pathelement location="${outputDir}/tests/auto" />
                 <pathelement location="${basedir}/src/java/autotest" />
             </classpath>
-            <src path="src/java/autotest/com/trolltech/unittests"/>
+            <src path="src/java/autotest"/>
+            <exclude name="com/trolltech/autotests/**/*.java"/>
+            <exclude name="com/trolltech/generatortests/**/*.java"/>
+            <include name="com/trolltech/unittests/**/*.java"/>
+            <!-- MacOSX version of Qt does not have this API -->
+            <exclude name="com/trolltech/unittests/TestXmlQXmlStreamReader.java" if="qtjambi.config.ismacosx"/>
         </javac>
     </target>
 
@@ -173,7 +178,11 @@
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
                     <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
                 </fileset>
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/unittests/**/Test*.java"/>
+                <fileset dir="src/java/autotest">
+                    <include name="**/com/trolltech/unittests/**/Test*.java"/>
+                    <!-- MacOSX version of Qt does not have this API -->
+                    <exclude name="**/com/trolltech/unittests/TestXmlQXmlStreamReader.java" if="qtjambi.config.ismacosx"/>
+                </fileset>
                 <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/**/Test*.java"/>
             </batchtest>
         </junit>
@@ -234,7 +243,11 @@
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
                     <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
                 </fileset>
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/unittests/**/Test*.java"/>
+                <fileset dir="src/java/autotest">
+                    <include name="**/com/trolltech/unittests/**/Test*.java"/>
+                    <!-- MacOSX version of Qt does not have this API -->
+                    <exclude name="**/com/trolltech/unittests/TestXmlQXmlStreamReader.java" if="qtjambi.config.ismacosx"/>
+                </fileset>
                 <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/**/Test*.java"/>
             </batchtest>
         </junit>
