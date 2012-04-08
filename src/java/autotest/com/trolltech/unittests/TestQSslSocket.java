@@ -13,6 +13,7 @@ import org.junit.Before;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.network.QAbstractSocket;
 import com.trolltech.qt.network.QSslCertificate;
 import com.trolltech.qt.network.QSslSocket;
 
@@ -22,9 +23,10 @@ public class TestQSslSocket extends QApplicationTest {
 	private List<QSslCertificate> certs = new ArrayList<QSslCertificate>();
 	// on 31-Mar-2012        www.google.com first="Mon Jan 18 23:59:59 2038" second="Sat Oct 25 08:32:46 2036"
 	// on 31-Mar-2012 unittest.qt-jambi.org first="Mon Aug 17 22:00:00 2015" second="Thu Apr 13 16:24:22 2028"
-	private QDateTime first  = QDateTime.fromString("Mon Aug 17 22:00:00 2015",
+	// on 31-Mar-2012 unittest.qt-jambi.org first="Thu Dec 26 14:59:59 2013" second="Mon Aug 17 22:00:00 2015"
+	private QDateTime first  = QDateTime.fromString("Thu Dec 26 14:59:59 2013",
 			"ddd MMM d HH:mm:ss yyyy");
-	private QDateTime second = QDateTime.fromString("Thu Apr 13 16:24:22 2028",
+	private QDateTime second = QDateTime.fromString("Tue Dec 24 18:20:51 2019",
 			"ddd MMM d HH:mm:ss yyyy");
 	private QDateTime[] date = { first, second };
 
@@ -78,7 +80,8 @@ public class TestQSslSocket extends QApplicationTest {
 		} while(n > 0);
 		// we can take the reception of any data as demonstrating SSL working
 		assertTrue("read length", (totalBytesRead > 0));
-		socket.waitForDisconnected(5000);
+		if(socket.state() != QAbstractSocket.SocketState.UnconnectedState)
+		        socket.waitForDisconnected(5000);
 	}
 
 	@org.junit.Test
@@ -98,20 +101,24 @@ public class TestQSslSocket extends QApplicationTest {
 		//  barriers to unittesting.
 
 		if(true) {	// Disabled (until a hostname using a long self-signed can be found)
-			certs = certs.subList(0, 2);
+			certs = certs.subList(0, date.length);
 			Iterator<QSslCertificate> i = certs.iterator();
 			int j = 0;
 		
 			while (i.hasNext()) {
 				QSslCertificate cert = i.next();
-				QDateTime expDate = date[j++];
+				QDateTime expDate = date[j];
 				// convert local time to UTC since certification exp. date is given
 				// in UTC too
 				expDate.setTimeSpec(Qt.TimeSpec.UTC);
 
-				assertTrue(cert.isValid());
-				assertEquals(expDate, cert.expiryDate());
+                                String desc = "cert[" + Integer.valueOf(j).toString() + "]";
+				assertTrue(desc + ".isValid()", cert.isValid());
+				assertEquals(desc + ".cert.expiryDate()" , expDate, cert.expiryDate());
+
+				j++;
 			}
+			assertEquals(date.length, j);  // check we looped and checked everything
 		}
 	}
 }
