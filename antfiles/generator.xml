@@ -38,7 +38,7 @@
     </target>
 
     <target name="tools.generator.make" depends="tools.generator.qmake">
-        <make dir="${generator.builddir}" target="all"/>
+        <make dir="${generator.builddir}" target="${qtjambi.qmake.target.default}"/>
     </target>
 
     <!--

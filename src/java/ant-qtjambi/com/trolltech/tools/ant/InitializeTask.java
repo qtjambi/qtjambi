@@ -134,6 +134,9 @@ public class InitializeTask extends Task {
     public static final String CONFIG_RELEASE     = "release";
     public static final String CONFIG_DEBUG       = "debug";
     public static final String CONFIG_TEST        = "test";
+    public static final String CONFIG_DEBUG_AND_RELEASE = "debug_and_release";
+
+    public static final String QMAKE_TARGET_DEFAULT     = "qtjambi.qmake.target.default";
 
     /*
      * This is needed for Linux/Unix/MacOSX so that the bundled item filename matches the
@@ -374,24 +377,43 @@ public class InitializeTask extends Task {
         String configuration = decideConfiguration();
         propertyHelper.setNewProperty((String) null, CONFIGURATION, configuration);
         s = null;
-        if("release".equals(configuration))
+        if(CONFIG_RELEASE.equals(configuration))
             s = "";	// empty
-        else if("debug".equals(configuration))
+        else if(CONFIG_DEBUG.equals(configuration))
             s = "-debug";
         else
             s = "-test";
         if(s != null)
             propertyHelper.setNewProperty((String) null, CONFIGURATION_DASH, s);
         s = null;
-        if("release".equals(configuration))
+        if(CONFIG_RELEASE.equals(configuration))
             s = "";	// empty
-        else if("debug".equals(configuration))
+        else if(CONFIG_DEBUG.equals(configuration))
             s = ".debug";
         else
             s = ".test";
         if(s != null)
             propertyHelper.setNewProperty((String) null, CONFIGURATION_OSGI, s);
-        
+
+        {
+            String sourceValue = null;
+            String qmakeTargetDefault = (String) propertyHelper.getProperty(QMAKE_TARGET_DEFAULT);   // ANT 1.7.x
+            if(qmakeTargetDefault == null) {
+                // We only need to override the default when the Qt SDK is debug_and_release but
+                //  we are only building the project for one kind.
+//              if(CONFIG_RELEASE.equals(configuration))
+//                  qmakeTargetDefault = configuration;
+//              else if(CONFIG_DEBUG.equals(configuration))
+//                  qmakeTargetDefault = configuration;
+//              else if(CONFIG_DEBUG_AND_RELEASE.equals(configuration))
+//                  qmakeTargetDefault = "all";
+//              else
+                    qmakeTargetDefault = "all";
+                // FIXME: We want ${qtjambi.configuration} to set from QTDIR build kind *.prl data
+//                sourceValue = " (set from ${qtjambi.configuration})";
+            }
+            mySetProperty(propertyHelper, -1, QMAKE_TARGET_DEFAULT, sourceValue, qmakeTargetDefault, false);  // report value
+        }
 
         if(!decideQtVersion())
             throw new BuildException("Unable to determine Qt version, try editing: " + pathVersionPropertiesTemplate);

@@ -89,7 +89,7 @@
     </target>
 
     <target name="tools.juic.make" depends="log, tools.juic.qmake">
-        <make dir="${juic.builddir}" target="all"/>
+        <make dir="${juic.builddir}" target="${qtjambi.qmake.target.default}"/>
     </target>
 
     <macrodef name="dojuic">

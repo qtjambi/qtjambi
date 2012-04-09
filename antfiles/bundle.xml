@@ -25,7 +25,7 @@
     -->
     <target name="library.native.compile" depends="library.native.qmake"
         description="Compiles the C++ Qt Jambi library">
-        <make dir="${qtjambi.builddir}" target="all"/>
+        <make dir="${qtjambi.builddir}" target="${qtjambi.qmake.target.default}"/>
     </target>
 
     <target name="library.native.bundle" depends="library.native.compile"
