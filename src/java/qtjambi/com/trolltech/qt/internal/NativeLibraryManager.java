@@ -158,67 +158,24 @@ public class NativeLibraryManager {
     private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
 
     private static final int LOAD_TRUE = 1;
-    private static final int LOAD_FALSE = 2;
-    private static final int LOAD_NEVER = 3;
+    private static final int LOAD_SYSTEM = 2;
+    private static final int LOAD_FALSE = 3;
+    private static final int LOAD_NEVER = 4;
 
     private static DeploymentSpec activeDeploymentSpec;
 
-    private static class LibraryEntry {
-        public String name;
-        public int load;
-        public DeploymentSpec spec;
-        public boolean loaded;
-    }
-
-    private static class DeploymentSpec {
-        public String key;
-        public URL sourceUrl;
-        public File baseDir;
-        public URL baseUrl;
-        public List<LibraryEntry> libraries;
-        public List<String> pluginPaths;
-        public List<String> pluginDesignerPaths;
-        public List<String> dirents;
-
-        public void addPluginPath(String path) {
-            if (pluginPaths == null)
-                pluginPaths = new ArrayList<String>();
-            pluginPaths.add(path);
-            reporter.report(" - plugin path='", path, "'");
+    public static String loadToString(int load) {
+        switch(load) {
+        case LOAD_TRUE:
+            return "load-true";
+        case LOAD_SYSTEM:
+            return "load-system";
+        case LOAD_NEVER:
+            return "load-never";
+        case LOAD_FALSE:
+            return "load-false";
         }
-
-        public void addPluginDesignerPath(String path) {
-            if (pluginDesignerPaths == null)
-                pluginDesignerPaths = new ArrayList<String>();
-            pluginDesignerPaths.add(path);
-            reporter.report(" - plugin-designer path='", path, "'");
-        }
-
-        public void addLibraryEntry(LibraryEntry e) {
-            if (libraries == null)
-                libraries = new ArrayList<LibraryEntry>();
-            libraries.add(e);
-            reporter.report(" - library: name='", e.name, "', ",
-                            (e.load == LOAD_TRUE ? "load" :
-                             (e.load == LOAD_NEVER ? "never load" : ""))
-                            );
-        }
-
-        public void addDirentPath(String direntAsString) {
-            if (dirents == null)
-                dirents = new ArrayList<String>();
-            dirents.add(direntAsString);
-            reporter.report(" - dirent path='", direntAsString, "'");
-        }
-
-        public File buildPath(String relativePath) {
-            if(baseDir == null)
-                return null;  // we're loaded via non file:/// method ?  Java Web Start anyone ?
-            return new File(baseDir, relativePath);
-        }
-        public URL buildUrl(String relativeUrl) throws MalformedURLException {
-            return new URL(baseUrl, relativeUrl);
-        }
+        return null;
     }
 
     // FIXME: Remove this from public API
@@ -226,6 +183,11 @@ public class NativeLibraryManager {
         if(activeDeploymentSpec == null)
             return null;
         return activeDeploymentSpec.buildPath("");
+    }
+
+	// FIXME: This should be a read-only object
+    public static DeploymentSpec getActiveDeploymentSpec() {
+        return activeDeploymentSpec;
     }
 
     private static class XMLHandler extends DefaultHandler {
@@ -241,41 +203,48 @@ public class NativeLibraryManager {
                 if (key == null) {
                     throw new DeploymentSpecException("<cache> element missing required attribute \"key\"");
                 }
-                spec.key = key;
-                reporter.report(" - cache key='", spec.key, "'");
+                spec.setKey(key);
+                reporter.report(" - cache key='", spec.getKey(), "'");
 
             } else if (name.equals("library")) {
                 LibraryEntry e = new LibraryEntry();
-                e.name = attributes.getValue("name");
-                if (e.name == null) {
+                e.setName(attributes.getValue("name"));
+                if (e.getName() == null) {
                     throw new DeploymentSpecException("<library> element missing required attribute \"name\"");
                 }
 
                 String load = attributes.getValue("load");
-                if (load != null && load.equals("true")) e.load = LOAD_TRUE;
-                else if (load != null && load.equals("never")) e.load = LOAD_NEVER;
-                else e.load = LOAD_FALSE;
+                e.setLoad(LOAD_FALSE);
+                if (load != null) {
+                    if (load.equals("true"))
+                        e.setLoad(LOAD_TRUE);
+                    else if (load.equals("never"))
+                        e.setLoad(LOAD_NEVER);
+                    else if (load.equals("system"))
+                        e.setLoad(LOAD_SYSTEM);
+                }
 
-                e.spec = spec;
+                e.setDeploymentSpec(spec);
 
-                String fileName = new File(e.name).getName();
-                if (e.load == LOAD_NEVER) {
+                String fileName = new File(e.getName()).getName();
+                if (e.getLoad() == LOAD_NEVER) {
                     neverLoad.put(fileName, e);
 
                 } else {
                     // Add library name to the global map of libraries...
                     LibraryEntry old = libraryMap.get(fileName);
                     if (old != null) {
-                        throw new DeploymentSpecException("<library> '" + e.name
+                        throw new DeploymentSpecException("<library> '" + e.getName()
                                                           + "' is duplicated. Present in both '"
-                                                          + spec.sourceUrl + "' and '"
-                                                          + old.spec.sourceUrl + "'.");
+                                                          + spec.getSourceUrl() + "' and '"
+                                                          + old.getDeploymentSpec().getSourceUrl() + "'.");
                     }
                     reporter.report(" - adding '", fileName, "' to library map");
                     libraryMap.put(fileName, e);
                 }
 
                 spec.addLibraryEntry(e);
+                reporter.report(" - library: name='", e.getName(), "', ", loadToString(e.getLoad()));
 
             } else if (name.equals("plugin")) {
                 String path = attributes.getValue("path");
@@ -283,12 +252,14 @@ public class NativeLibraryManager {
                     throw new DeploymentSpecException("<plugin> element missing required attribute \"path\"");
                 }
                 spec.addPluginPath(path);
+		        reporter.report(" - plugin path='", path, "'");
             } else if (name.equals("plugin-designer")) {
                 String path = attributes.getValue("path");
                 if (path == null) {
                     throw new DeploymentSpecException("<plugin-designer> element missing required attribute \"path\"");
                 }
                 spec.addPluginDesignerPath(path);
+                reporter.report(" - plugin-designer path='", path, "'");
             } else if (name.equals("qtjambi-deploy")) {
                 String system = attributes.getValue("system");
                 if (system == null || system.length() == 0) {
@@ -322,6 +293,7 @@ public class NativeLibraryManager {
                     sb.append('/');
                 sb.append(attrName);
                 spec.addDirentPath(sb.toString());
+                reporter.report(" - dirent path='", sb.toString(), "'");
             }
         }
 
@@ -378,9 +350,10 @@ public class NativeLibraryManager {
     public static List<String> pluginPaths() {
         List<String> paths = new ArrayList<String>();
         for (DeploymentSpec spec : deploymentSpecs) {
-            File root = spec.baseDir;
-            if (spec.pluginPaths != null)
-                for (String path : spec.pluginPaths)
+            File root = spec.getBaseDir();
+			List<String> pluginPaths = spec.getPluginPaths();
+            if (pluginPaths != null)
+                for (String path : pluginPaths)
                     paths.add(new File(root, path).getAbsolutePath());
         }
         return paths;
@@ -397,9 +370,10 @@ public class NativeLibraryManager {
     public static List<String> pluginDesignerPaths() {
         List<String> paths = new ArrayList<String>();
         for (DeploymentSpec spec : deploymentSpecs) {
-            File root = spec.baseDir;
-            if (spec.pluginDesignerPaths != null)
-                for (String path : spec.pluginDesignerPaths)
+            File root = spec.getBaseDir();
+			List<String> pluginDesignerPaths = spec.getPluginDesignerPaths();
+            if (pluginDesignerPaths != null)
+                for (String path : pluginDesignerPaths)
                     paths.add(new File(root, path).getAbsolutePath());
         }
         return paths;
@@ -481,8 +455,9 @@ public class NativeLibraryManager {
         if(activeDeploymentSpec != null) {
             List<String> paths = new ArrayList<String>();
 
-            if(activeDeploymentSpec.pluginPaths != null) {
-                for(String p : activeDeploymentSpec.pluginPaths) {
+			List<String> pluginPaths = activeDeploymentSpec.getPluginPaths();
+            if(pluginPaths != null) {
+                for(String p : pluginPaths) {
                     File resolvedFile = activeDeploymentSpec.buildPath(p);
                     // Checking it really exists as a directory (before adding it to the list)
                     //  is kind of a security check.
@@ -492,8 +467,9 @@ public class NativeLibraryManager {
                 }
             }
 
-            if(activeDeploymentSpec.pluginDesignerPaths != null) {
-                for(String p : activeDeploymentSpec.pluginDesignerPaths) {
+			List<String> pluginDesignerPaths = activeDeploymentSpec.getPluginDesignerPaths();
+            if(pluginDesignerPaths != null) {
+                for(String p : pluginDesignerPaths) {
                     File resolvedFile = activeDeploymentSpec.buildPath(p);
                     // Checking it really exists as a directory (before adding it to the list)
                     //  is kind of a security check.
@@ -508,7 +484,8 @@ public class NativeLibraryManager {
         return null;
     }
 
-    private static DeploymentSpec unpack() {
+	// Made this more vissible to allow unpacking earlier on the startup process
+    public static DeploymentSpec unpack() {
         if (unpacked)
             return activeDeploymentSpec;
         try {
@@ -614,16 +591,16 @@ public class NativeLibraryManager {
         e = libraryMap.get(lib);
         if (e != null) {
 
-            if (e.loaded) {
+            if (e.isLoaded()) {
                 reporter.report(" - already loaded, skipping...");
                 return;
             }
 
-            File libFile = deploymentSpec.buildPath(e.name);
+            File libFile = deploymentSpec.buildPath(e.getName());
             reporter.report(" - using deployment spec at " + libFile.getAbsolutePath());
             Runtime.getRuntime().load(libFile.getAbsolutePath());
             reporter.report(" - ok!");
-            e.loaded = true;
+            e.setLoaded(true);
 
         // Load via System.load() using default paths..
         } else {
@@ -668,7 +645,7 @@ public class NativeLibraryManager {
         reporter.report("Checking Archive '", url.toString(), "'");
 
         DeploymentSpec spec = new DeploymentSpec();
-        spec.sourceUrl = url;
+        spec.setSourceUrl(url);
 
         SAXParserFactory fact = SAXParserFactory.newInstance();
         SAXParser parser = fact.newSAXParser();
@@ -680,7 +657,7 @@ public class NativeLibraryManager {
         try {
             inStream = url.openStream();
             parser.parse(inStream, handler);
-            if (spec.key == null) {
+            if (spec.getKey() == null) {
                 throw new DeploymentSpecException("Deployment Specification doesn't include required <cache key='...'/>");
             }
 
@@ -705,7 +682,7 @@ public class NativeLibraryManager {
         if (spec == null)
             return spec;
 
-        File tmpDir = jambiTempDirBase(spec.key);
+        File tmpDir = jambiTempDirBase(spec.getKey());
 
         reporter.report(" - using cache directory: '", tmpDir.getAbsolutePath(), "'");
 
@@ -716,8 +693,8 @@ public class NativeLibraryManager {
             if (dummyFile.exists()) {
                 reporter.report(" - cache directory exists");
                 shouldUnpack = Boolean.FALSE;
-                spec.baseDir = tmpDir;
-                spec.baseUrl = new URL(Utilities.convertAbsolutePathStringToFileUrlString(tmpDir));
+                spec.setBaseDir(tmpDir);
+                spec.setBaseUrl(new URL(Utilities.convertAbsolutePathStringToFileUrlString(tmpDir)));
             } else {
             	shouldUnpack = Boolean.TRUE;
             }
@@ -729,8 +706,9 @@ public class NativeLibraryManager {
         if (shouldUnpack.booleanValue()) {
             reporter.report(" - starting to copy content to cache directory...");
 
-            if (spec.dirents != null) {
-                for (String path : spec.dirents) {
+			List<String> dirents = spec.getDirents();
+            if (dirents != null) {
+                for (String path : dirents) {
                     reporter.report(" - copying over: '", path, "'...");
 
                     InputStream in = null;
@@ -785,14 +763,15 @@ public class NativeLibraryManager {
                 }
             }
 
-            if (spec.libraries != null) {
-                for (LibraryEntry e : spec.libraries) {
-                    reporter.report(" - copying over: '", e.name, "'...");
+			List<LibraryEntry> libraries = spec.getLibraries();
+            if (libraries != null) {
+                for (LibraryEntry e : libraries) {
+                    reporter.report(" - copying over: '", e.getName(), "'...");
 
                     InputStream in = null;
                     OutputStream out = null;
                     try {
-                        Enumeration<URL> resources = classLoader().getResources(e.name);
+                        Enumeration<URL> resources = classLoader().getResources(e.getName());
                         while (resources.hasMoreElements()) {
                             URL url = resources.nextElement();
                             String eform = url.toExternalForm();
@@ -805,19 +784,19 @@ public class NativeLibraryManager {
                         }
 
                         if (in == null) {
-                            throw new FileNotFoundException("Library '" + e.name
+                            throw new FileNotFoundException("Library '" + e.getName()
                                                             + "' specified in qtjambi-deployment.xml in '"
                                                             + jarName + "' does not exist");
                         }
 
-                        File outFile = new File(tmpDir, e.name);
+                        File outFile = new File(tmpDir, e.getName());
                         File outFileDir = outFile.getParentFile();
                         if (!outFileDir.exists()) {
                             reporter.report(" - creating directory: ", outFileDir.getAbsolutePath());
                             outFileDir.mkdirs();
                         }
 
-                        out = new FileOutputStream(new File(tmpDir, e.name));
+                        out = new FileOutputStream(new File(tmpDir, e.getName()));
                         try {
                             copy(in, out);
                         } finally {
@@ -838,32 +817,43 @@ public class NativeLibraryManager {
             if (dummyFile != null && !dummyFile.createNewFile()) {
                 throw new DeploymentSpecException("Can't create dummy file in cache directory");
             }
-            spec.baseDir = tmpDir;
-            spec.baseUrl = new URL(Utilities.convertAbsolutePathStringToFileUrlString(tmpDir));
-        } else if(spec.baseUrl == null) {
+            spec.setBaseDir(tmpDir);
+            spec.setBaseUrl(new URL(Utilities.convertAbsolutePathStringToFileUrlString(tmpDir)));
+        } else if(spec.getBaseUrl() == null) {
             String path = deploymentSpec.getPath();
             int i = path.lastIndexOf('/');	// URL path
             if(i >= 0)
                 path = path.substring(0, i);
-            spec.baseDir = new File(path);
-            spec.baseUrl = new URL(deploymentSpec, path);
+            spec.setBaseDir(new File(path));
+            spec.setBaseUrl(new URL(deploymentSpec, path));
         }
 
         // Load the libraries tagged for loading...
         // FIXME: Like the unpack operation, this should be a separate API call to cause loading 
-        Runtime rt = Runtime.getRuntime();
-        for (LibraryEntry e : spec.libraries) {
-            if (e.load == LOAD_TRUE) {
-                reporter.report(" - trying to load: ", e.name);
-                File f = new File(spec.baseDir, e.name);
-                rt.load(f.getAbsolutePath());
-                reporter.report(" - ok!  load=\"true\"");
-            }
+        List<LibraryEntry> libraries = spec.getLibraries();
+        for (LibraryEntry e : libraries) {
+            if (e.getLoad() == LOAD_TRUE)
+                loadSystemLibrary(e.getName());
         }
 
         return spec;
     }
 
+	public static boolean loadSystemLibrary(String name) {
+	    DeploymentSpec activeSpec = getActiveDeploymentSpec();
+		if(activeSpec == null)
+		    throw new RuntimeException("No active deployment spec is set");
+
+        reporter.report(" - trying to load: ", name);
+        File f = new File(activeSpec.getBaseDir(), name);
+		if(f.isFile() == false)
+		    return false;
+
+        Runtime rt = Runtime.getRuntime();
+        rt.load(f.getAbsolutePath());
+        reporter.report(" - ok!");
+		return true;
+	}
 
     private static String jniLibraryName(String lib, String version) {
         String dotVersion;

@@ -70,6 +70,7 @@ public class LibraryEntry extends Task {
     public static final String LOAD_DEFAULT            = "default";
     public static final String LOAD_YES                = "yes";
     public static final String LOAD_NEVER              = "never";
+    public static final String LOAD_SYSTEM             = "system";
 
     /*
      *  set to specify where the plugin should be saved.
@@ -264,7 +265,7 @@ public class LibraryEntry extends Task {
             }
         }
 
-        if(!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT))
+        if(!load.equals(LOAD_YES) && !load.equals(LOAD_NEVER) && !load.equals(LOAD_DEFAULT) && !load.equals(LOAD_SYSTEM))
             load = LOAD_DEFAULT;
     }
 
