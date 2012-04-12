@@ -63,7 +63,10 @@ import java.util.jar.Manifest;
 
 // !!NOTE!! This class can have no dependencies on Qt since
 //          it is used by the NativeLibraryManager
+import com.trolltech.qt.internal.DeploymentSpec;
 import com.trolltech.qt.internal.NativeLibraryManager;
+
+import com.trolltech.qt.osinfo.OSInfo;
 
 /**
 This class contains static members that gives information and performs Qt Jambi
@@ -146,7 +149,7 @@ public class Utilities {
                 tmpSystemLibrariesList.add(v);
 
             if (tmpSystemLibrariesList.size() > 0)
-                tmpSystemLibrariesList = Collections.unmodifiableList(tmpSystemLibrariesList);
+                tmpSystemLibrariesList = resolveSystemLibraries(tmpSystemLibrariesList);
             else
                 tmpSystemLibrariesList = null;
 
@@ -221,6 +224,40 @@ public class Utilities {
     /** The library sub path. */
     public static String libSubPath = decideLibSubPath();
 
+    // The purpose of this method is to resolve the names provided in the list into DSO paths relative to the project.
+    public static List<String> resolveSystemLibraries(List<String> tmpSystemLibrariesList) {
+        if(tmpSystemLibrariesList == null)
+            return null;
+        DeploymentSpec deploymentSpec = NativeLibraryManager.unpack();
+		if(deploymentSpec == null)
+            return null;
+        List<String> resolvedList = new ArrayList<String>();
+        for(String original : tmpSystemLibrariesList) {
+		    String s = original;
+            if(OSInfo.isWindows())   // convert "/" into "\"
+                s = stringCharReplace(s, "/", File.separator);
+            File f = new File(deploymentSpec.getBaseDir(), s);
+            if(f.isFile() == false) {
+                File libDir = new File(deploymentSpec.getBaseDir(), "lib");
+                f = new File(libDir, s);
+                if(f.isFile()) {
+                    s = "lib" + File.separator + s;
+                } else {
+                    File binDir = new File(deploymentSpec.getBaseDir(), "bin");
+                    f = new File(binDir, s);
+                    if(f.isFile())
+                        s = "bin" + File.separator + s;
+                 }
+            }
+            if(f.isFile() == false) {
+                System.err.println("IGNORED version.properties qtjambi.system.libraries entry \"" + original + "\": file could not be found");
+                continue;
+            }
+            resolvedList.add(s);
+        }
+        return Collections.unmodifiableList(resolvedList);
+    }
+
     /**
      * Returns true if the system property name contains any of the specified
      * substrings. If substrings is null or empty the function returns true
@@ -243,7 +280,7 @@ public class Utilities {
             for (String s : systemLibrariesList) {
                 // FIXME: We want only append the suffix (no prefix, no Qt version, no debug extra)
                 //  currently is does add a prefix (maybe also debug extra).
-                loadLibrary(s);
+                NativeLibraryManager.loadSystemLibrary(s);
             }
         }
     }
