@@ -22,13 +22,10 @@ public class TestQSslSocket extends QApplicationTest {
 	private QSslSocket socket;
 	private List<QSslCertificate> certs = new ArrayList<QSslCertificate>();
 	// on 31-Mar-2012        www.google.com first="Mon Jan 18 23:59:59 2038" second="Sat Oct 25 08:32:46 2036"
-	// on 31-Mar-2012 unittest.qt-jambi.org first="Mon Aug 17 22:00:00 2015" second="Thu Apr 13 16:24:22 2028"
-	// on 31-Mar-2012 unittest.qt-jambi.org first="Thu Dec 26 14:59:59 2013" second="Mon Aug 17 22:00:00 2015"
-	private QDateTime first  = QDateTime.fromString("Thu Dec 26 14:59:59 2013",
+	// on 31-Mar-2012 unittest.qt-jambi.org first="Sun Mar 31 13:13:29 2013"
+	private QDateTime first  = QDateTime.fromString("Sun Mar 31 13:13:29 2013",
 			"ddd MMM d HH:mm:ss yyyy");
-	private QDateTime second = QDateTime.fromString("Tue Dec 24 18:20:51 2019",
-			"ddd MMM d HH:mm:ss yyyy");
-	private QDateTime[] date = { first, second };
+	private QDateTime[] date = { first };
 
 	private static final String K_host_google_com			= "www.google.com";
 	private static final String K_host_unittest_qt_jambi_org	= "unittest.qt-jambi.org";
@@ -46,6 +43,11 @@ public class TestQSslSocket extends QApplicationTest {
 		if(socket != null)
 			socket.close();
 		socket = null;
+	}
+
+	@org.junit.Test
+	public void testSupportsSsl() {
+		assertTrue(QSslSocket.supportsSsl());
 	}
 
 	@org.junit.Test
@@ -88,9 +90,10 @@ public class TestQSslSocket extends QApplicationTest {
 	public void testCaCertificates() {
 		// We use a remote host we can control the server side certificates on
 		setupSocket(K_host_unittest_qt_jambi_org);
-		certs = socket.caCertificates();
+		certs = socket.peerCertificateChain();
 		assertNotNull(certs);
 		assertTrue(certs.size() > 0);
+		assertEquals(certs.size(), 1);
 
 		// The problem with www.google.com:443 is they are a large multi-national web operation
 		//  using many machine and many systems on the same URL.  So it depends too much on the
@@ -100,25 +103,23 @@ public class TestQSslSocket extends QApplicationTest {
 		//  server side.  Making the user setup puppet and other things just presents additional
 		//  barriers to unittesting.
 
-		if(true) {	// Disabled (until a hostname using a long self-signed can be found)
-			certs = certs.subList(0, date.length);
-			Iterator<QSslCertificate> i = certs.iterator();
-			int j = 0;
+		certs = certs.subList(0, date.length);
+		Iterator<QSslCertificate> i = certs.iterator();
+		int j = 0;
 		
-			while (i.hasNext()) {
-				QSslCertificate cert = i.next();
-				QDateTime expDate = date[j];
-				// convert local time to UTC since certification exp. date is given
-				// in UTC too
-				expDate.setTimeSpec(Qt.TimeSpec.UTC);
+		while (i.hasNext()) {
+			QSslCertificate cert = i.next();
+			QDateTime expDate = date[j];
+			// convert local time to UTC since certification exp. date is given
+			// in UTC too
+			expDate.setTimeSpec(Qt.TimeSpec.UTC);
 
-                                String desc = "cert[" + Integer.valueOf(j).toString() + "]";
-				assertTrue(desc + ".isValid()", cert.isValid());
-				assertEquals(desc + ".cert.expiryDate()" , expDate, cert.expiryDate());
+                        String desc = "cert[" + Integer.valueOf(j).toString() + "]";
+			assertTrue(desc + ".isValid()", cert.isValid());
+			assertEquals(desc + ".cert.expiryDate()" , expDate, cert.expiryDate());
 
-				j++;
-			}
-			assertEquals(date.length, j);  // check we looped and checked everything
+			j++;
 		}
+		assertEquals(date.length, j);  // check we looped and checked everything
 	}
 }
