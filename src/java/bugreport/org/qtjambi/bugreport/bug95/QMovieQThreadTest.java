@@ -1,7 +1,7 @@
 // mkdir build/bugreport
 // javac -g -d build/bugreport  -cp qtjambi-4.7.4.jar -source 1.5 -target 1.5  src/java/bugreport/org/qtjambi/bugreport/bug95/QMovieQThreadTest.java
-// jar -cvf $PWD/bug95.jar -C src/java/bugreport/ .
-// jar -uvf $PWD/bug95.jar -C build/bugreport/ .
+// jar -cvf $PWD/bug95.jar -C src/java/bugreport .
+// jar -uvf $PWD/bug95.jar -C build/bugreport .
 // java -Dcom.trolltech.qt.debug=true -cp qtjambi-4.7.4.jar:build/qtjambi-linux64-gcc-4.7.4.jar:bug95.jar org/qtjambi/bugreport/bug95/QMovieQThreadTest
 
 package org.qtjambi.bugreport.bug95;

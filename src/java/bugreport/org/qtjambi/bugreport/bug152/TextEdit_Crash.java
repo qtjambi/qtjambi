@@ -1,8 +1,11 @@
 // mkdir build/bugreport
-// javac -g -d build/bugreport  -cp qtjambi-4.7.4.jar -source 1.5 -target 1.5  src/java/bugreport/org/qtjambi/bugreport/bug152/TextEdit_Crash.java
-// jar -cvf $PWD/bug152.jar -C src/java/bugreport/ .
-// jar -uvf $PWD/bug152.jar -C build/bugreport/ .
+// javac -g -encoding utf8 -d build/bugreport -cp qtjambi-4.7.4.jar -source 1.5 -target 1.5  src/java/bugreport/org/qtjambi/bugreport/bug152/TextEdit_Crash.java
+// jar -cvf $PWD/bug152.jar -C src/java/bugreport .
+// jar -uvf $PWD/bug152.jar -C build/bugreport .
 // java -Dcom.trolltech.qt.debug=true -cp qtjambi-4.7.4.jar:build/qtjambi-linux64-gcc-4.7.4.jar:bug152.jar org/qtjambi/bugreport/bug152/TextEdit_Crash
+
+// This bug was a crash when highlighting a long line of hebrew text on windows in Qy 4.7.1.
+// I was not able to cause the crash on window with 4.7.4.
 
 package org.qtjambi.bugreport.bug152;
 
@@ -31,7 +34,7 @@ public class TextEdit_Crash extends QMainWindow {
      */
     public static void main(String[] args) {
         QApplication.initialize(args);
-        new TextEdit_Crash();
+        TextEdit_Crash TextEditCrash = new TextEdit_Crash();
         QApplication.execStatic();
         QApplication.shutdown();
     }
