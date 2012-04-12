@@ -740,6 +740,19 @@ public class InitializeTask extends Task {
                 }
                 if(found == 0)  // Maybe we should check to see if (QTDIR != null) before warning
                    System.out.println("WARNING: LD_LIBRARY_PATH environment variable is set, but does not contain a valid location for libQtCore.so.*; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+
+                // FIXME: Refactor this duplicate code later (we look for !debug here but don't WARNING is we dont find it)
+                filename = LibraryEntry.formatQtName("QtCore", !debug, String.valueOf(qtMajorVersion));
+                found = 0;
+                for(String element : sA) {
+                    File testDir = new File(element);
+                    // we already warned about non-existing directory here
+                    File testFile = new File(element, filename);
+                    if(testFile.isFile()) {
+                        System.out.println(" XFOUND:    LD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath());
+                        found++;
+                    }
+                }
             } else {   // Maybe we should check to see if (QTDIR != null) before warning
                 System.out.println("WARNING: LD_LIBRARY_PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
             }
@@ -763,6 +776,19 @@ public class InitializeTask extends Task {
                 }
                 if(found == 0)
                    System.out.println("WARNING: PATH environment variable is set, but does not contain a valid location for QtCore*.dll; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+
+                // FIXME: Refactor this duplicate code later (we look for !debug here but don't WARNING is we dont find it)
+                filename = LibraryEntry.formatQtName("QtCore", !debug, String.valueOf(qtMajorVersion));
+                found = 0;
+                for(String element : sA) {
+                    File testDir = new File(element);
+                    // we already warned about non-existing directory here
+                    File testFile = new File(element, filename);
+                    if(testFile.isFile()) {
+                        System.out.println(" XFOUND:    PATH directory contains QtCore: " + testFile.getAbsolutePath());
+                        found++;
+                    }
+                }
             } else {
                 System.out.println("WARNING: PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
             }
@@ -786,6 +812,19 @@ public class InitializeTask extends Task {
                 }
                 if(found == 0)
                    System.out.println("WARNING: DYLD_LIBRARY_PATH environment variable is set, but does not contain a valid location for libQtCore.*.dylib; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
+
+                // FIXME: Refactor this duplicate code later (we look for !debug here but don't WARNING is we dont find it)
+                filename = LibraryEntry.formatQtName("QtCore", !debug, String.valueOf(qtMajorVersion));
+                found = 0;
+                for(String element : sA) {
+                    File testDir = new File(element);
+                    // we already warned about non-existing directory here
+                    File testFile = new File(element, filename);
+                    if(testFile.isFile()) {
+                        System.out.println(" XFOUND:    DYLD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath());
+                        found++;
+                    }
+                }
             } else {
                 System.out.println("WARNING: DYLD_LIBRARY_PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build");
             }
