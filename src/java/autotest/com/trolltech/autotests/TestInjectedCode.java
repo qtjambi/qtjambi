@@ -1771,6 +1771,9 @@ public class TestInjectedCode extends QApplicationTest {
         byte bytes[] = new byte[7];
         assertEquals(7, file.peek(bytes));
         assertEquals((byte) '/', bytes[0]);
+        // if this fails check you have Unix end-of-line sequence (just <NL>) of your checked out copy of 
+        //  TestInjectedCode.dat (file size should be 65963 bytes) as git can use your native EOL sequence
+        //  and make this fail due to character offsets being wrong.
         assertEquals((byte) '/', bytes[1]);
         assertEquals((byte) 't', bytes[2]);
         assertEquals((byte) 'e', bytes[3]);
@@ -1801,6 +1804,9 @@ public class TestInjectedCode extends QApplicationTest {
         file.seek(file.bytesAvailable() - 3); //instead of 4. On systems with 2 line end chars may fail
 
         byte b = (byte) file.getByte();
+        // if this fails check you have Unix end-of-line sequence (just <NL>) of your checked out copy of 
+        //  TestInjectedCode.dat (file size should be 65963 bytes) as git can use your native EOL sequence
+        //  and make this fail due to character offsets being wrong.
         assertEquals((byte) 't', b);
 
         b = (byte) file.getByte();

@@ -1,0 +1,8 @@
+# This project standardizes on UTF-8 for text file character encoding, but
+#  on windows this can be a concern do check your text editor is setup correctly.
+* encoding=utf-8
+
+# This file is used by unittests and data I/O testing and the CRLF/LF
+#  mode of the checked out working tree is important
+src/java/autotest/com/trolltech/autotests/*.dat	eol=lf text
+
