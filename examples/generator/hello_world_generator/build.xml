@@ -79,7 +79,7 @@
                pro="${basedir}/src/test.pro"
                qmakebinary="${qmake.binary}"/>
 
-        <make dir="${basedir}/build/qmake/cpp" target="all"/>
+        <make dir="${basedir}/build/qmake/cpp" target="${qtjambi.qmake.target.default}"/>
 
 
         <!-- Stage 2 - build the liborg_qtjambi_org{,_debuglib}.so -->
@@ -105,7 +105,7 @@
                pro="${basedir}/org_qtjambi_test/org_qtjambi_test.pro"
                qmakebinary="${qmake.binary}"/>
 
-        <make dir="${basedir}/build/qmake/org_qtjambi_test" target="all"/>
+        <make dir="${basedir}/build/qmake/org_qtjambi_test" target="${qtjambi.qmake.target.default}"/>
 
 
         <!-- Stage 3 - build Java parts -->
