@@ -8,6 +8,8 @@
         classname="com.trolltech.tools.ant.PlatformJarTask"/>
     <taskdef name="qtjambi-initialize"
         classname="com.trolltech.tools.ant.InitializeTask"/>
+    <taskdef name="qtjambi-initialize-build"
+        classname="com.trolltech.tools.ant.InitializeBuildTask"/>
     <taskdef name="qtjambi-resolve-path"
         classname="com.trolltech.tools.ant.ResolvePathTask"/>
     <taskdef name="qtjambi-version-properties"

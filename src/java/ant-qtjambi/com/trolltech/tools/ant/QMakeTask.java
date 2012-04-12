@@ -113,18 +113,18 @@ public class QMakeTask extends Task {
 
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
         if(qtjambiConfig == null) {
-            String thisQtjambiConfig = (String) propertyHelper.getProperty(InitializeTask.CONFIG);	// ANT 1.7.x
+            String thisQtjambiConfig = (String) propertyHelper.getProperty(Constants.CONFIG);	// ANT 1.7.x
             if(thisQtjambiConfig != null) {
-                if(InitializeTask.CONFIG_RELEASE.equals(thisQtjambiConfig))
+                if(Constants.CONFIG_RELEASE.equals(thisQtjambiConfig))
                     qtjambiConfig = thisQtjambiConfig;
-                else if(InitializeTask.CONFIG_DEBUG.equals(thisQtjambiConfig))
+                else if(Constants.CONFIG_DEBUG.equals(thisQtjambiConfig))
                     qtjambiConfig = thisQtjambiConfig;
-                else if(InitializeTask.CONFIG_TEST.equals(thisQtjambiConfig))
+                else if(Constants.CONFIG_TEST.equals(thisQtjambiConfig))
                     qtjambiConfig = thisQtjambiConfig;
                 else
-                    System.out.println("WARNING: QTJAMBI_CONFIG will not be exported as value " + thisQtjambiConfig + " is not recognised (from " + InitializeTask.CONFIG + ")");
+                    System.out.println("WARNING: QTJAMBI_CONFIG will not be exported as value " + thisQtjambiConfig + " is not recognised (from " + Constants.CONFIG + ")");
                 if(thisQtjambiConfig != null)
-                    System.out.println("QTJAMBI_CONFIG will be exported as " + qtjambiConfig + " (from " + InitializeTask.CONFIG + ")");
+                    System.out.println("QTJAMBI_CONFIG will be exported as " + qtjambiConfig + " (from " + Constants.CONFIG + ")");
             }
         }
 

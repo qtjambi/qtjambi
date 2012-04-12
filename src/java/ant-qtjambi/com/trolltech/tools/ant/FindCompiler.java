@@ -117,7 +117,7 @@ public class FindCompiler {
                     System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
                     System.err.println("         VSINSTALLDIR=\"" + vcdir + "\"");
                 } else {
-                    props.setNewProperty((String) null, InitializeTask.VSINSTALLDIR, vcdir);
+                    props.setNewProperty((String) null, Constants.VSINSTALLDIR, vcdir);
 
                     String redistDir;
                     if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64)
@@ -129,7 +129,7 @@ public class FindCompiler {
                         System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
                         System.err.println("         VSINSTALLDIR=\"" + vcdir + "\" checking for \"" + redistDir + "\"");
                     } else {
-                        props.setNewProperty((String) null, InitializeTask.VSREDISTDIR, redistDir);
+                        props.setNewProperty((String) null, Constants.VSREDISTDIR, redistDir);
                     }
                 }
             }

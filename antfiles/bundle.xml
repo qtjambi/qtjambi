@@ -9,7 +9,7 @@
     <!-- 
         Runs qmake for Jambi source
     -->
-    <target name="library.native.qmake" depends="init"
+    <target name="library.native.qmake" depends="init.build"
         description="Runs qmake on the Qt Jambi native library">
         <mkdir dir="${qtjambi.builddir}"/>
         <qmake recursive="true" dir="${qtjambi.builddir}"

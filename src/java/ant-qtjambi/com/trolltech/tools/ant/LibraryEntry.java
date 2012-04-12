@@ -205,12 +205,12 @@ public class LibraryEntry extends Task {
 
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        boolean debug = "debug".equals(propertyHelper.getProperty((String) null, InitializeTask.CONFIGURATION));
+        boolean debug = "debug".equals(propertyHelper.getProperty((String) null, Constants.CONFIGURATION));
 
         // On windows the Qt plugins are versioned
-        String qtVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QT_VERSION);
-        String qtMajorVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QT_VERSION_MAJOR);
-        String sonameVersion = (String) propertyHelper.getProperty((String) null, InitializeTask.QTJAMBI_SONAME_VERSION_MAJOR);
+        String qtVersion = (String) propertyHelper.getProperty((String) null, Constants.QT_VERSION);
+        String qtMajorVersion = (String) propertyHelper.getProperty((String) null, Constants.QT_VERSION_MAJOR);
+        String sonameVersion = (String) propertyHelper.getProperty((String) null, Constants.QTJAMBI_SONAME_VERSION_MAJOR);
 
         boolean resolved = false;
 

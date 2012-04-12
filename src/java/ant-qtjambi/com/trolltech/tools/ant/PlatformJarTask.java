@@ -180,11 +180,11 @@ public class PlatformJarTask extends Task {
     public void execute_internal() throws BuildException {
         propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        javaLibDir =(String) propertyHelper.getProperty((String) null, InitializeTask.JAVALIBDIR);
+        javaLibDir =(String) propertyHelper.getProperty((String) null, Constants.JAVALIBDIR);
 
-        debugConfiguration = "debug".equals(propertyHelper.getProperty((String) null, InitializeTask.CONFIGURATION));
+        debugConfiguration = "debug".equals(propertyHelper.getProperty((String) null, Constants.CONFIGURATION));
 
-        execStrip = (String) propertyHelper.getProperty((String) null, InitializeTask.EXEC_STRIP);
+        execStrip = (String) propertyHelper.getProperty((String) null, Constants.EXEC_STRIP);
 
         if(outdir == null) {
             throw new BuildException("Missing required attribute 'outdir'. " +
@@ -285,7 +285,7 @@ public class PlatformJarTask extends Task {
 
         writer.println("<qtjambi-deploy" + " system=\""
                             + xmlEscape(propertyHelper.getProperty((String) null,
-                            InitializeTask.OSNAME).toString()) + "\">");
+                            Constants.OSNAME).toString()) + "\">");
         writer.println();
         writer.println("  <cache key=\"" + xmlEscape(cacheKey) + "\"/>");
 
@@ -704,7 +704,7 @@ public class PlatformJarTask extends Task {
     }
 
     private void processSystemLibs() {
-        String compiler = String.valueOf(propertyHelper.getProperty((String) null, InitializeTask.COMPILER));
+        String compiler = String.valueOf(propertyHelper.getProperty((String) null, Constants.COMPILER));
         FindCompiler.Compiler c = FindCompiler.Compiler.resolve(compiler);
 
         String vcnumber = null;
@@ -730,7 +730,7 @@ public class PlatformJarTask extends Task {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            Object vsredistdirObject = propertyHelper.getProperty((String) null, InitializeTask.VSREDISTDIR);
+            Object vsredistdirObject = propertyHelper.getProperty((String) null, Constants.VSREDISTDIR);
             if(vsredistdirObject != null) {
                 String vsredistdir = vsredistdirObject.toString();
                 File crt = new File(vsredistdir, "Microsoft.VC" + vcnumber + ".CRT");
@@ -763,7 +763,7 @@ public class PlatformJarTask extends Task {
                     }
                 }
             } else {
-                System.err.println("WARNING: " + InitializeTask.VSREDISTDIR + " property not set; skipping packaging of Visual C redistributable components.");
+                System.err.println("WARNING: " + Constants.VSREDISTDIR + " property not set; skipping packaging of Visual C redistributable components.");
             }
             break;
 
@@ -810,7 +810,7 @@ public class PlatformJarTask extends Task {
         // TODO: Make this an arbitrary list of files and provide helper options to
         //  populate with Unix libstdc++.so.5/libstdc++.so.6 values.  Allow each value
         //  to be a full-path to file, filename.
-        String cplusplusRuntime = (String) propertyHelper.getProperty((String) null, InitializeTask.PACKAGING_DSO_CPLUSPLUSRUNTIME);
+        String cplusplusRuntime = (String) propertyHelper.getProperty((String) null, Constants.PACKAGING_DSO_CPLUSPLUSRUNTIME);
         if(cplusplusRuntime != null)
             copyRuntime(cplusplusRuntime);
 

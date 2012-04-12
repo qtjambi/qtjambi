@@ -94,23 +94,23 @@ public class VersionPropertiesTask extends Task {
 
         String tmpPathVersionProperties = pathVersionProperties;
         if(tmpPathVersionProperties == null)
-            tmpPathVersionProperties = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION_PROPERTIES);	// ANT 1.7.x
+            tmpPathVersionProperties = (String) propertyHelper.getProperty(Constants.QT_VERSION_PROPERTIES);	// ANT 1.7.x
         if(tmpPathVersionProperties == null)
             tmpPathVersionProperties = DEFAULT_PATH_VERSION_PROPERTIES;
         File fileVersion = new File(tmpPathVersionProperties);
 
         String tmpPathVersionPropertiesTemplate = pathVersionPropertiesTemplate;
         if(tmpPathVersionPropertiesTemplate == null)
-            tmpPathVersionPropertiesTemplate = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION_PROPERTIES_TEMPLATE);	// ANT 1.7.x
+            tmpPathVersionPropertiesTemplate = (String) propertyHelper.getProperty(Constants.QT_VERSION_PROPERTIES_TEMPLATE);	// ANT 1.7.x
         if(tmpPathVersionPropertiesTemplate == null)
             tmpPathVersionPropertiesTemplate = DEFAULT_PATH_VERSION_PROPERTIES_TEMPLATE;
         File fileTemplate = new File(tmpPathVersionPropertiesTemplate);
 
-        String qtVersion = (String) propertyHelper.getProperty(InitializeTask.QT_VERSION);	// ANT 1.7.x
+        String qtVersion = (String) propertyHelper.getProperty(Constants.QT_VERSION);	// ANT 1.7.x
         if(qtVersion == null)
             throw new BuildException("Unable to determine Qt version, try editing: " + fileTemplate.getAbsolutePath());
 
-        String qtjambiSonameVersionMajor = (String) propertyHelper.getProperty(InitializeTask.QTJAMBI_SONAME_VERSION_MAJOR);
+        String qtjambiSonameVersionMajor = (String) propertyHelper.getProperty(Constants.QTJAMBI_SONAME_VERSION_MAJOR);
 
         buildNewVersionProperties(fileVersion, fileTemplate, qtVersion, qtjambiSonameVersionMajor);
     }
@@ -139,9 +139,9 @@ public class VersionPropertiesTask extends Task {
 
                 props = new Properties();
                 props.load(inStream);		// read in
-                props.put(InitializeTask.VERSION, qtVersion);	// set version
+                props.put(Constants.VERSION, qtVersion);	// set version
                 if(qtjambiSonameVersionMajor != null)
-                    props.put(InitializeTask.QTJAMBI_SONAME_VERSION_MAJOR, qtjambiSonameVersionMajor);  // set version
+                    props.put(Constants.QTJAMBI_SONAME_VERSION_MAJOR, qtjambiSonameVersionMajor);  // set version
 
                 inStream.close();
                 inStream = null;

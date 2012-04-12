@@ -3,7 +3,7 @@
         Building and running the Generator
     -->
 
-    <target name="generator.run" depends="init, generator.xmlmerge"
+    <target name="generator.run" depends="init.build, generator.xmlmerge"
         description="Runs the Qt Jambi generator on the Qt headers">
         <mkdir dir="${generator.outputdir}"/>
         <generator dir="${generator.builddir}"
@@ -30,7 +30,7 @@
          qualification.
       -->
 
-    <target name="tools.generator.qmake" depends="init">
+    <target name="tools.generator.qmake" depends="init.build">
         <mkdir dir="${generator.builddir}"/>
         <qmake dir="${generator.builddir}" pro="generator/generator.pro"
                 config="${qtjambi.configuration}"

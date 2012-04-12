@@ -55,7 +55,7 @@
         <echo message="Build logged to ${build.log.filename}"/>
     </target>
 
-    <target name="init.taskdef" depends="log, setenv, jar.ant-qtjambi">
+    <target name="init.taskdef" depends="log, jar.ant-qtjambi">
         <taskdef resource="com/trolltech/tools/ant/ant-qtjambi.xml">
             <classpath>
                 <pathelement path="${jardir}/qtjambi-util.jar"/>
@@ -64,13 +64,16 @@
         </taskdef>
     </target>
 
-    <target name="init" depends="log, init.taskdef"
-        description="Initializes the Qt Jambi build environment." >
+    <target name="init" depends="log, init.taskdef">
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
-        <!--<copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>-->
-
         <!-- copy jogl to the jar dir. needed for compilation examples  -->
         <copy file="jogl/jogl.jar" todir="${jardir}"/>
+	</target>
+
+    <target name="init.build" depends="log, setenv, init.taskdef, init"
+	description="Initializes the Qt Jambi build environment." >
+        <qtjambi-initialize-build verbose="true" configuration="${qtjambi.config}"/>
+        <!--<copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>-->
     </target>
 
     <!--
@@ -81,7 +84,7 @@
         Tools building
     -->
 
-    <target name="tools.juic.qmake" depends="log, init">
+    <target name="tools.juic.qmake" depends="log, init.build">
         <mkdir dir="${juic.builddir}"/>
         <qmake dir="${juic.builddir}" pro="juic/juic.pro"
                 config="${qtjambi.configuration}"
@@ -160,7 +163,7 @@ ant all
         provides consistent and easy to use interface for humans to use.
     -->
 
-    <target name="generator.make" depends="log, init, tools.generator.make"
+    <target name="generator.make" depends="log, init.build, tools.generator.make"
         description="Compiles the generator."/>
 
     <target name="generator" depends="log, generator.make, generator.run"

@@ -69,9 +69,7 @@ import com.trolltech.tools.ant.FindCompiler.Compiler;
 
 // NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")
-public class InitializeTask extends Task {
-
-    public static final String DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR = "1";
+public class InitializeBuildTask extends Task {
 
     private boolean verbose;
     private int verboseLevel;
@@ -92,174 +90,6 @@ public class InitializeTask extends Task {
 
     private String[] generatorPreProcStageOneA;
     private String[] generatorPreProcStageTwoA;
-
-    /*
-     * These properties are set outside of this task
-     *
-     * TODO: These flags should be documented here and if possibly, outside in
-     * build documentation.
-     * Or rather these binds shouldn't exist, how much of this could be moved to
-     * xml side?
-     */
-    public static final String DIRECTORY                = "jambi.directory";
-    public static final String BINDIR                   = "qtjambi.qt.bindir";
-    public static final String LIBDIR                   = "qtjambi.qt.libdir";
-    public static final String INCLUDEDIR               = "qtjambi.qt.includedir";
-    public static final String PLUGINSDIR               = "qtjambi.qt.pluginsdir";
-    public static final String GENERATOR_PREPROC_STAGE1 = "qtjambi.generator.preproc.stage1";
-    public static final String GENERATOR_PREPROC_STAGE2 = "qtjambi.generator.preproc.stage2";
-    public static final String JAVALIBDIR               = "qtjambi.java.library.path";
-    public static final String JAMBILIBDIR              = "qtjambi.jambi.libdir";
-    public static final String JAMBIPLUGINSDIR          = "qtjambi.jambi.pluginsdir";
-    public static final String CACHEKEY                 = "qtjambi.version.cachekey";
-    public static final String VERSION                  = "qtjambi.version";
-    public static final String BUNDLE_VERSION           = "qtjambi.version.bundle";
-    public static final String BUNDLE_VERSION_MODE      = "qtjambi.version.bundle.mode";
-    public static final String SUFFIX_VERSION           = "qtjambi.version.suffix";
-    public static final String JAVA_HOME_TARGET         = "java.home.target";
-    public static final String JAVA_OSARCH_TARGET       = "java.osarch.target";
-    public static final String EXEC_STRIP               = "exec.strip";
-
-    public static final String QT_VERSION_MAJOR         = "qt.version.major";
-    public static final String QT_VERSION_MINOR         = "qt.version.minor";
-    public static final String QT_VERSION_PATCHLEVEL    = "qt.version.patchlevel";
-    public static final String QT_VERSION               = "qt.version";
-
-    public static final String QT_VERSION_MAJOR_NEXT    = "qt.version.major.next";
-    public static final String QT_VERSION_MINOR_NEXT    = "qt.version.minor.next";
-
-    public static final String QT_VERSION_PROPERTIES          = "version.properties";
-    public static final String QT_VERSION_PROPERTIES_TEMPLATE = "version.properties.template";
-
-    public static final String CONFIG_RELEASE     = "release";
-    public static final String CONFIG_DEBUG       = "debug";
-    public static final String CONFIG_TEST        = "test";
-    public static final String CONFIG_DEBUG_AND_RELEASE = "debug_and_release";
-
-    public static final String QMAKE_TARGET_DEFAULT     = "qtjambi.qmake.target.default";
-
-    /*
-     * This is needed for Linux/Unix/MacOSX so that the bundled item filename matches the
-     *  one referenced by the dynamic linker.
-     * This is not needed on Windows.
-     */
-    public static final String QTJAMBI_SONAME_VERSION_MAJOR   = "qtjambi.soname.version.major";
-
-    /*
-     * These properties are set inside this task
-     */
-    public static final String CLUCENE            = "qtjambi.clucene";
-    public static final String COMPILER           = "qtjambi.compiler";
-    public static final String CONFIG             = "qtjambi.config";
-    public static final String CONFIGURATION      = "qtjambi.configuration";
-    public static final String CONFIGURATION_DASH = "qtjambi.configuration.dash";
-    public static final String CONFIGURATION_OSGI = "qtjambi.configuration.osgi";
-    public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x
-    public static final String DBUS               = "qtjambi.dbus";
-    public static final String DECLARATIVE        = "qtjambi.declarative";
-    public static final String DESIGNER           = "qtjambi.designer";
-    public static final String DESIGNERCOMPONENTS = "qtjambi.designercomponents";
-    public static final String GUI                = "qtjambi.gui";              // mandatory with <= 4.7.x
-    public static final String HELP               = "qtjambi.help";
-    public static final String MULTIMEDIA         = "qtjambi.multimedia";
-    public static final String NETWORK            = "qtjambi.network";          // mandatory with <= 4.7.x
-    public static final String OPENGL             = "qtjambi.opengl";
-    public static final String OSNAME             = "qtjambi.osname";
-    public static final String OSPLATFORM         = "qtjambi.osplatform";	// linux windows macosx
-    public static final String OSCPU              = "qtjambi.oscpu";		// i386 x86_64 x86 x32
-    public static final String PHONON             = "qtjambi.phonon";
-    public static final String PHONON_DS9         = "qtjambi.phonon_ds9";
-    public static final String PHONON_GSTREAMER   = "qtjambi.phonon_gstreamer";
-    public static final String PHONON_QT7         = "qtjambi.phonon_qt7";
-    public static final String QMAKESPEC          = "qtjambi.qmakespec";
-    public static final String SCRIPT             = "qtjambi.script";
-    public static final String SCRIPTTOOLS        = "qtjambi.scripttools";
-    public static final String SQL                = "qtjambi.sql";
-    public static final String SVG                = "qtjambi.svg";
-    public static final String TEST               = "qtjambi.test";
-    public static final String WEBKIT             = "qtjambi.webkit";
-    public static final String XML                = "qtjambi.xml";              // mandatory with <= 4.7.x
-    public static final String XMLPATTERNS        = "qtjambi.xmlpatterns";
-    public static final String QTCONFIG           = "qtjambi.qtconfig";
-
-    public static final String PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS  = "qtjambi.plugins.accessible.qtaccessiblewidgets";
-
-    public static final String QTJAMBI_PHONON_KDEPHONON           = "qtjambi.phonon.kdephonon";
-    public static final String QTJAMBI_PHONON_INCLUDEDIR          = "qtjambi.phonon.includedir";
-    public static final String QTJAMBI_PHONON_LIBDIR              = "qtjambi.phonon.libdir";
-    public static final String QTJAMBI_PHONON_PLUGINSDIR          = "qtjambi.phonon.pluginsdir";
-
-    public static final String PLUGINS_BEARER_CONNMANBEARER       = "qtjambi.plugins.bearer.connmanbearer";
-    public static final String PLUGINS_BEARER_GENERICBEARER       = "qtjambi.plugins.bearer.genericbearer";
-    public static final String PLUGINS_BEARER_NATIVEWIFIBEARER    = "qtjambi.plugins.bearer.nativewifibearer";
-    public static final String PLUGINS_BEARER_NMBEARER            = "qtjambi.plugins.bearer.nmbearer";
-
-    public static final String PLUGINS_CODECS_CNCODECS      = "qtjambi.plugins.codecs.cncodecs";
-    public static final String PLUGINS_CODECS_JPCODECS      = "qtjambi.plugins.codecs.jpcodecs";
-    public static final String PLUGINS_CODECS_KRCODECS      = "qtjambi.plugins.codecs.krcodecs";
-    public static final String PLUGINS_CODECS_TWCODECS      = "qtjambi.plugins.codecs.twcodecs";
-
-    public static final String PLUGINS_DESIGNER_ARTHURPLUGIN         = "qtjambi.plugins.designer.arthurplugin";
-    public static final String PLUGINS_DESIGNER_CONTAINEREXTENSION   = "qtjambi.plugins.designer.containerextension";
-    public static final String PLUGINS_DESIGNER_CUSTOMWIDGETPLUGIN   = "qtjambi.plugins.designer.customwidgetplugin";
-    public static final String PLUGINS_DESIGNER_PHONONWIDGETS        = "qtjambi.plugins.designer.phononwidgets";
-    public static final String PLUGINS_DESIGNER_QAXWIDGET            = "qtjambi.plugins.designer.qaxwidget";
-    public static final String PLUGINS_DESIGNER_QDECLARATIVEVIEW     = "qtjambi.plugins.designer.qdeclarativeview";
-    public static final String PLUGINS_DESIGNER_QWEBVIEW             = "qtjambi.plugins.designer.qwebview";
-    public static final String PLUGINS_DESIGNER_TASKMENUEXTENSION    = "qtjambi.plugins.designer.taskmenuextension";
-    public static final String PLUGINS_DESIGNER_WORLDTIMECLOCKPLUGIN = "qtjambi.plugins.designer.worldtimeclockplugin";
-
-    public static final String PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM    = "qtjambi.plugins.graphicssystems.glgraphicssystem";
-    public static final String PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM = "qtjambi.plugins.graphicssystems.tracegraphicssystem";
-
-    public static final String PLUGINS_ICONENGINES_SVGICON  = "qtjambi.plugins.iconengines.svgicon";
-
-    public static final String PLUGINS_IMAGEFORMATS_GIF     = "qtjambi.plugins.imageformats.gif";
-    public static final String PLUGINS_IMAGEFORMATS_ICO     = "qtjambi.plugins.imageformats.ico";
-    public static final String PLUGINS_IMAGEFORMATS_JPEG    = "qtjambi.plugins.imageformats.jpeg";
-    public static final String PLUGINS_IMAGEFORMATS_MNG     = "qtjambi.plugins.imageformats.mng";
-    // PNG not seen in wild due to being statically linked into Qt DSOs
-    public static final String PLUGINS_IMAGEFORMATS_PNG     = "qtjambi.plugins.imageformats.png";
-    public static final String PLUGINS_IMAGEFORMATS_SVG     = "qtjambi.plugins.imageformats.svg";
-    public static final String PLUGINS_IMAGEFORMATS_TIFF    = "qtjambi.plugins.imageformats.tiff";
-
-    public static final String PLUGINS_INPUTMETHODS_IMSW_MULTI    = "qtjambi.plugins.inputmethods.imsw-multi";
-
-    public static final String PLUGINS_QMLTOOLING_QMLDBG_TCP      = "qtjambi.plugins.qmltooling.qmldbg_tcp";
-
-    public static final String PLUGINS_SCRIPT_QTSCRIPTDBUS = "qtjambi.plugins.script.qtscriptdbus";
-
-    public static final String PLUGINS_SQLDRIVERS_SQLITE    = "qtjambi.plugins.sqldrivers.sqlite";
-    public static final String PLUGINS_SQLDRIVERS_SQLITE2   = "qtjambi.plugins.sqldrivers.sqlite2";
-    public static final String PLUGINS_SQLDRIVERS_SQLMYSQL  = "qtjambi.plugins.sqldrivers.sqlmysql";
-    public static final String PLUGINS_SQLDRIVERS_SQLODBC   = "qtjambi.plugins.sqldrivers.sqlodbc";
-    public static final String PLUGINS_SQLDRIVERS_SQLPSQL   = "qtjambi.plugins.sqldrivers.sqlpsql";
-    public static final String PLUGINS_SQLDRIVERS_SQLTDS    = "qtjambi.plugins.sqldrivers.sqltds";
-
-    public static final String PACKAGING_DSO_LIBSTDC___6     = "qtjambi.packaging.dso.libstdc++-6";     // Windows MinGW runtime pre-req
-    public static final String PACKAGING_DSO_LIBGCC_S_DW2_1  = "qtjambi.packaging.dso.libgcc_s_dw2-1";  // Windows MinGW runtime pre-req
-    public static final String PACKAGING_DSO_LIBGCC_S_SJLJ_1 = "qtjambi.packaging.dso.libgcc_s_sjlj-1"; // Windows MinGW-W64 runtime pre-req
-    public static final String PACKAGING_DSO_MINGWM10        = "qtjambi.packaging.dso.mingwm10";        // Windows older MinGW runtime pre-req
-
-    public static final String PACKAGING_DSO_LIBZ      = "qtjambi.packaging.dso.libz";       // Linux
-    public static final String PACKAGING_DSO_LIBSSL    = "qtjambi.packaging.dso.libssl";     // Linux
-    public static final String PACKAGING_DSO_LIBCRYPTO = "qtjambi.packaging.dso.libcrypto";  // Linux
-
-    public static final String PACKAGING_DSO_ZLIB1    = "qtjambi.packaging.dso.zlib1";      // Windows
-    public static final String PACKAGING_DSO_LIBSSL32 = "qtjambi.packaging.dso.libssl32";   // Windows MinGW
-    public static final String PACKAGING_DSO_SSLEAY32 = "qtjambi.packaging.dso.ssleay32";   // Windows MSVC
-    public static final String PACKAGING_DSO_LIBEAY32 = "qtjambi.packaging.dso.libeay32";   // Windows
-
-    public static final String PACKAGING_DSO_LIBDBUS  = "qtjambi.packaging.dso.libdbus-1";   // Macosx
-
-    public static final String PACKAGING_DSO_CPLUSPLUSRUNTIME = "qtjambi.packaging.dso.cplusplusruntime";
-
-    public static final String QTJAMBI_CONFIG_ISMACOSX      = "qtjambi.config.ismacosx";
-    public static final String QTJAMBI_MACOSX_QTMENUNIB_DIR = "qtjambi.macosx.qtmenunib.dir";
-
-    // Windows specific vars...
-    public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
-    public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
 
     public boolean isVerbose() {
         return verbose;
@@ -308,8 +138,14 @@ public class InitializeTask extends Task {
         }
 
         final String[] emitA = {
-            DIRECTORY, BINDIR, LIBDIR, INCLUDEDIR, PLUGINSDIR,
-            QTJAMBI_PHONON_INCLUDEDIR, QTJAMBI_PHONON_LIBDIR, QTJAMBI_PHONON_PLUGINSDIR
+            Constants.DIRECTORY,
+            Constants.BINDIR,
+            Constants.LIBDIR,
+            Constants.INCLUDEDIR,
+            Constants.PLUGINSDIR,
+            Constants.QTJAMBI_PHONON_INCLUDEDIR,
+            Constants.QTJAMBI_PHONON_LIBDIR,
+            Constants.QTJAMBI_PHONON_PLUGINSDIR
         };
         for(String emit : emitA) {
             String value = (String) propertyHelper.getProperty(emit);	// ANT 1.7.x
@@ -325,14 +161,14 @@ public class InitializeTask extends Task {
         FindCompiler finder = new FindCompiler(getProject(), propertyHelper);
 
         String osname = finder.decideOSName();
-        propertyHelper.setNewProperty((String) null, OSNAME, osname);
+        propertyHelper.setNewProperty((String) null, Constants.OSNAME, osname);
         if(verbose)
-            System.out.println(OSNAME + " is " + osname);
+            System.out.println(Constants.OSNAME + " is " + osname);
 
         Compiler compiler = finder.decideCompiler();
-        propertyHelper.setNewProperty((String) null, COMPILER, compiler.toString());
+        propertyHelper.setNewProperty((String) null, Constants.COMPILER, compiler.toString());
         if(verbose)
-            System.out.println(COMPILER + " is " + compiler.toString());
+            System.out.println(Constants.COMPILER + " is " + compiler.toString());
 
         String s;
 
@@ -348,7 +184,7 @@ public class InitializeTask extends Task {
         else if(OSInfo.isSolaris())
             s = OSInfo.K_SUNOS;
         if(s != null)
-            propertyHelper.setNewProperty((String) null, OSPLATFORM, s);
+            propertyHelper.setNewProperty((String) null, Constants.OSPLATFORM, s);
 
         s = null;
         // FIXME incorrect for windows x86/x64, sunos
@@ -357,12 +193,12 @@ public class InitializeTask extends Task {
         else
             s = "i386";
         if(s != null)
-            propertyHelper.setNewProperty((String) null, OSCPU, s);
+            propertyHelper.setNewProperty((String) null, Constants.OSCPU, s);
 
         finder.checkCompilerDetails();
         //finder.checkCompilerBits();
 
-        mySetProperty(propertyHelper, -1, EXEC_STRIP, null, null, false);  // report value
+        mySetProperty(propertyHelper, -1, Constants.EXEC_STRIP, null, null, false);  // report value
 
         String javaHomeTarget = decideJavaHomeTarget();
         if(javaHomeTarget == null)
@@ -375,73 +211,73 @@ public class InitializeTask extends Task {
         }
 
         String configuration = decideConfiguration();
-        propertyHelper.setNewProperty((String) null, CONFIGURATION, configuration);
+        propertyHelper.setNewProperty((String) null, Constants.CONFIGURATION, configuration);
         s = null;
-        if(CONFIG_RELEASE.equals(configuration))
+        if(Constants.CONFIG_RELEASE.equals(configuration))
             s = "";	// empty
-        else if(CONFIG_DEBUG.equals(configuration))
+        else if(Constants.CONFIG_DEBUG.equals(configuration))
             s = "-debug";
         else
             s = "-test";
         if(s != null)
-            propertyHelper.setNewProperty((String) null, CONFIGURATION_DASH, s);
+            propertyHelper.setNewProperty((String) null, Constants.CONFIGURATION_DASH, s);
         s = null;
-        if(CONFIG_RELEASE.equals(configuration))
+        if(Constants.CONFIG_RELEASE.equals(configuration))
             s = "";	// empty
-        else if(CONFIG_DEBUG.equals(configuration))
+        else if(Constants.CONFIG_DEBUG.equals(configuration))
             s = ".debug";
         else
             s = ".test";
         if(s != null)
-            propertyHelper.setNewProperty((String) null, CONFIGURATION_OSGI, s);
+            propertyHelper.setNewProperty((String) null, Constants.CONFIGURATION_OSGI, s);
 
         {
             String sourceValue = null;
-            String qmakeTargetDefault = (String) propertyHelper.getProperty(QMAKE_TARGET_DEFAULT);   // ANT 1.7.x
+            String qmakeTargetDefault = (String) propertyHelper.getProperty(Constants.QMAKE_TARGET_DEFAULT);   // ANT 1.7.x
             if(qmakeTargetDefault == null) {
                 // We only need to override the default when the Qt SDK is debug_and_release but
                 //  we are only building the project for one kind.
-//              if(CONFIG_RELEASE.equals(configuration))
+//              if(Constants.CONFIG_RELEASE.equals(configuration))
 //                  qmakeTargetDefault = configuration;
-//              else if(CONFIG_DEBUG.equals(configuration))
+//              else if(Constants.CONFIG_DEBUG.equals(configuration))
 //                  qmakeTargetDefault = configuration;
-//              else if(CONFIG_DEBUG_AND_RELEASE.equals(configuration))
+//              else if(Constants.CONFIG_DEBUG_AND_RELEASE.equals(configuration))
 //                  qmakeTargetDefault = "all";
 //              else
                     qmakeTargetDefault = "all";
                 // FIXME: We want ${qtjambi.configuration} to set from QTDIR build kind *.prl data
 //                sourceValue = " (set from ${qtjambi.configuration})";
             }
-            mySetProperty(propertyHelper, -1, QMAKE_TARGET_DEFAULT, sourceValue, qmakeTargetDefault, false);  // report value
+            mySetProperty(propertyHelper, -1, Constants.QMAKE_TARGET_DEFAULT, sourceValue, qmakeTargetDefault, false);  // report value
         }
 
         if(!decideQtVersion())
             throw new BuildException("Unable to determine Qt version, try editing: " + pathVersionPropertiesTemplate);
         s = String.valueOf(qtVersion);
         if(verbose)
-            System.out.println(QT_VERSION + " is " + s + qtVersionSource);
-        propertyHelper.setNewProperty((String) null, QT_VERSION, s);
-        propertyHelper.setNewProperty((String) null, VERSION, s); // this won't overwrite existing value
+            System.out.println(Constants.QT_VERSION + " is " + s + qtVersionSource);
+        propertyHelper.setNewProperty((String) null, Constants.QT_VERSION, s);
+        propertyHelper.setNewProperty((String) null, Constants.VERSION, s); // this won't overwrite existing value
 
         s = String.valueOf(qtMajorVersion);
         if(verbose)
-            System.out.println(QT_VERSION_MAJOR + " is " + s);
-        propertyHelper.setNewProperty((String) null, QT_VERSION_MAJOR, s);
-        propertyHelper.setNewProperty((String) null, QT_VERSION_MAJOR_NEXT, String.valueOf(qtMajorVersion + 1));
-        propertyHelper.setNewProperty((String) null, QT_VERSION_MINOR,      String.valueOf(qtMinorVersion));
-        propertyHelper.setNewProperty((String) null, QT_VERSION_MINOR_NEXT, String.valueOf(qtMinorVersion + 1));
-        propertyHelper.setNewProperty((String) null, QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
+            System.out.println(Constants.QT_VERSION_MAJOR + " is " + s);
+        propertyHelper.setNewProperty((String) null, Constants.QT_VERSION_MAJOR, s);
+        propertyHelper.setNewProperty((String) null, Constants.QT_VERSION_MAJOR_NEXT, String.valueOf(qtMajorVersion + 1));
+        propertyHelper.setNewProperty((String) null, Constants.QT_VERSION_MINOR,      String.valueOf(qtMinorVersion));
+        propertyHelper.setNewProperty((String) null, Constants.QT_VERSION_MINOR_NEXT, String.valueOf(qtMinorVersion + 1));
+        propertyHelper.setNewProperty((String) null, Constants.QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
 
 
-        versionSuffix = (String) propertyHelper.getProperty(SUFFIX_VERSION);	// ANT 1.7.x
-        mySetProperty(propertyHelper, -1, SUFFIX_VERSION, null, null, false);  // report
+        versionSuffix = (String) propertyHelper.getProperty(Constants.SUFFIX_VERSION);	// ANT 1.7.x
+        mySetProperty(propertyHelper, -1, Constants.SUFFIX_VERSION, null, null, false);  // report
 
         String canonVersionSuffix;
         if(versionSuffix != null)
             canonVersionSuffix = versionSuffix;
         else
             canonVersionSuffix = "";
-        String bundleVersionMode = (String) propertyHelper.getProperty(BUNDLE_VERSION_MODE);	// ANT 1.7.x
+        String bundleVersionMode = (String) propertyHelper.getProperty(Constants.BUNDLE_VERSION_MODE);	// ANT 1.7.x
         if(bundleVersionMode != null) {
             if(bundleVersionMode.equals("auto-suffix-date")) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -450,47 +286,47 @@ public class InitializeTask extends Task {
         } else {
             s = qtVersion + canonVersionSuffix;
         }
-        mySetProperty(propertyHelper, -1, BUNDLE_VERSION, null, s, false);
+        mySetProperty(propertyHelper, -1, Constants.BUNDLE_VERSION, null, s, false);
 
         if(OSInfo.isMacOS())
-            mySetProperty(propertyHelper, 0, QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
+            mySetProperty(propertyHelper, 0, Constants.QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
 
 
-        String sonameVersionMajor = DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR;
+        String sonameVersionMajor = Constants.DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR;
         String sonameSource = " (set by init)";
         if(OSInfo.isWindows()) {   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
             sonameVersionMajor = "";  // got to set it empty otherwise we get unsubstitued ${foo} are value
             sonameSource = " (set blank by init)";
         }
-        mySetProperty(propertyHelper, -1, QTJAMBI_SONAME_VERSION_MAJOR, sonameSource, sonameVersionMajor, false);
+        mySetProperty(propertyHelper, -1, Constants.QTJAMBI_SONAME_VERSION_MAJOR, sonameSource, sonameVersionMajor, false);
 
-        String cachekeyVersion = (String) propertyHelper.getProperty(CACHEKEY);	// ANT 1.7.x
+        String cachekeyVersion = (String) propertyHelper.getProperty(Constants.CACHEKEY);	// ANT 1.7.x
         String cachekeyVersionSource = " (already set)";
         if(cachekeyVersion == null) {	// auto-configure
             cachekeyVersionSource = " (set by init)";
             // ${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}
             cachekeyVersion = propertyHelper.replaceProperties(null, "${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}", null);
         }
-        mySetProperty(propertyHelper, -1, CACHEKEY, cachekeyVersionSource, cachekeyVersion, false);
+        mySetProperty(propertyHelper, -1, Constants.CACHEKEY, cachekeyVersionSource, cachekeyVersion, false);
 
 
         if(!decideGeneratorPreProc())
             throw new BuildException("Unable to determine generator pre-processor settings");
         s = Util.safeArrayToString(generatorPreProcStageOneA);
         if(verbose)
-            System.out.println(GENERATOR_PREPROC_STAGE1 + " is " + ((s != null) ? s : "<unset>"));
-        propertyHelper.setNewProperty((String) null, GENERATOR_PREPROC_STAGE1, Util.safeArrayJoinToString(generatorPreProcStageOneA, ","));
+            System.out.println(Constants.GENERATOR_PREPROC_STAGE1 + " is " + ((s != null) ? s : "<unset>"));
+        propertyHelper.setNewProperty((String) null, Constants.GENERATOR_PREPROC_STAGE1, Util.safeArrayJoinToString(generatorPreProcStageOneA, ","));
         s = Util.safeArrayToString(generatorPreProcStageTwoA);
         if(verbose)
-            System.out.println(GENERATOR_PREPROC_STAGE2 + " is " + ((s != null) ? s : "<unset>"));
-        propertyHelper.setNewProperty((String) null, GENERATOR_PREPROC_STAGE2, Util.safeArrayJoinToString(generatorPreProcStageTwoA, ","));
+            System.out.println(Constants.GENERATOR_PREPROC_STAGE2 + " is " + ((s != null) ? s : "<unset>"));
+        propertyHelper.setNewProperty((String) null, Constants.GENERATOR_PREPROC_STAGE2, Util.safeArrayJoinToString(generatorPreProcStageTwoA, ","));
 
 
-        Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, LIBDIR);
+        Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, Constants.LIBDIR);
         if(qtjambiQtLibdirObject != null) {
             String qtjambiQtLibdir = (String) qtjambiQtLibdirObject.toString();
             String sourceValue = null;
-//            s = (String) propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR);
+//            s = (String) propertyHelper.getProperty(Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR);
 //            if(s == null) {
                 s = doesQtLibExistDir(qtjambiQtLibdir, "Resources/qt_menu.nib");
                 if(s == null)
@@ -509,148 +345,148 @@ public class InitializeTask extends Task {
                     sourceValue = " (WARNING you should resolve this for targetting MacOSX)";
                 s = "";
             }
-            mySetProperty(propertyHelper, -1, QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
+            mySetProperty(propertyHelper, -1, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
         }
-        if(propertyHelper.getProperty(QTJAMBI_MACOSX_QTMENUNIB_DIR) == null)	// ANT 1.7.x
-            propertyHelper.setProperty((String) null, QTJAMBI_MACOSX_QTMENUNIB_DIR, "", false);
+        if(propertyHelper.getProperty(Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR) == null)	// ANT 1.7.x
+            propertyHelper.setProperty((String) null, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR, "", false);
 
 
         String clucene = decideCLucene();
         if("true".equals(clucene))
-            propertyHelper.setNewProperty((String) null, CLUCENE, clucene);
+            propertyHelper.setNewProperty((String) null, Constants.CLUCENE, clucene);
 
         String core = decideCore();
         if("true".equals(core))
-            propertyHelper.setNewProperty((String) null, CORE, core);
+            propertyHelper.setNewProperty((String) null, Constants.CORE, core);
 
         String dbus = decideDBus();
         if("true".equals(dbus))
-            propertyHelper.setNewProperty((String) null, DBUS, dbus);
+            propertyHelper.setNewProperty((String) null, Constants.DBUS, dbus);
 
         String declarative = decideDeclarative();
         if("true".equals(declarative))
-            propertyHelper.setNewProperty((String) null, DECLARATIVE, declarative);
+            propertyHelper.setNewProperty((String) null, Constants.DECLARATIVE, declarative);
 
         String designer = decideDesigner();
         if("true".equals(designer))
-            propertyHelper.setNewProperty((String) null, DESIGNER, designer);
+            propertyHelper.setNewProperty((String) null, Constants.DESIGNER, designer);
 
         String designercomponents = decideDesignerComponents();
         if("true".equals(designercomponents))
-            propertyHelper.setNewProperty((String) null, DESIGNERCOMPONENTS, designercomponents);
+            propertyHelper.setNewProperty((String) null, Constants.DESIGNERCOMPONENTS, designercomponents);
 
         String gui = decideGui();
         if("true".equals(gui))
-            propertyHelper.setNewProperty((String) null, GUI, gui);
+            propertyHelper.setNewProperty((String) null, Constants.GUI, gui);
 
         String helptool = decideHelp();
         if("true".equals(helptool))
-            propertyHelper.setNewProperty((String) null, HELP, helptool);
+            propertyHelper.setNewProperty((String) null, Constants.HELP, helptool);
 
         String multimedia = decideMultimedia();
         if("true".equals(multimedia))
-            propertyHelper.setNewProperty((String) null, MULTIMEDIA, multimedia);
+            propertyHelper.setNewProperty((String) null, Constants.MULTIMEDIA, multimedia);
 
         String network = decideNetwork();
         if("true".equals(network))
-            propertyHelper.setNewProperty((String) null, NETWORK, network);
+            propertyHelper.setNewProperty((String) null, Constants.NETWORK, network);
 
         String opengl = decideOpenGL();
         if("true".equals(opengl))
-            propertyHelper.setNewProperty((String) null, OPENGL, opengl);
+            propertyHelper.setNewProperty((String) null, Constants.OPENGL, opengl);
 
         String phonon = decidePhonon(propertyHelper);
 
         String script = decideScript();
         if("true".equals(script))
-            propertyHelper.setNewProperty((String) null, SCRIPT, script);
+            propertyHelper.setNewProperty((String) null, Constants.SCRIPT, script);
 
         String scripttools = decideScripttools();
         if("true".equals(scripttools))
-            propertyHelper.setNewProperty((String) null, SCRIPTTOOLS, scripttools);
+            propertyHelper.setNewProperty((String) null, Constants.SCRIPTTOOLS, scripttools);
 
-        propertyHelper.setNewProperty((String) null, SQL, decideSql());
+        propertyHelper.setNewProperty((String) null, Constants.SQL, decideSql());
 
-        propertyHelper.setNewProperty((String) null, SVG, decideSvg());
+        propertyHelper.setNewProperty((String) null, Constants.SVG, decideSvg());
 
-        propertyHelper.setNewProperty((String) null, TEST, decideTest());
+        propertyHelper.setNewProperty((String) null, Constants.TEST, decideTest());
 
         String webkit = decideWebkit();
         // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
         //  if you have headers and DSOs for WebKit then QtJambi should build the support.
         if("true".equals(webkit) && "true".equals(phonon) == false) {
-            if(verbose) System.out.println("WARNING: " + WEBKIT + " is " + webkit + ", but " + PHONON + " is " + phonon);
+            if(verbose) System.out.println("WARNING: " + Constants.WEBKIT + " is " + webkit + ", but " + Constants.PHONON + " is " + phonon);
         }
         if("true".equals(webkit))
-            propertyHelper.setNewProperty((String) null, WEBKIT, webkit);
+            propertyHelper.setNewProperty((String) null, Constants.WEBKIT, webkit);
 
         String xml = decideXml();
         if("true".equals(xml))
-            propertyHelper.setNewProperty((String) null, XML, xml);
+            propertyHelper.setNewProperty((String) null, Constants.XML, xml);
 
         String xmlpatterns = decideXmlPatterns();
         if("true".equals(xmlpatterns))
-            propertyHelper.setNewProperty((String) null, XMLPATTERNS, xmlpatterns);
+            propertyHelper.setNewProperty((String) null, Constants.XMLPATTERNS, xmlpatterns);
 
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, decidePluginsAccessibleQtaccesswidgets());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_CONNMANBEARER, decidePlugins(PLUGINS_BEARER_CONNMANBEARER, "bearer", "connmanbearer"));
-        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_GENERICBEARER, decidePlugins(PLUGINS_BEARER_GENERICBEARER, "bearer", "genericbearer"));
-        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_NATIVEWIFIBEARER, decidePlugins(PLUGINS_BEARER_NATIVEWIFIBEARER, "bearer", "nativewifibearer"));
-        propertyHelper.setNewProperty((String) null, PLUGINS_BEARER_NMBEARER, decidePlugins(PLUGINS_BEARER_NMBEARER, "bearer", "nmbearer"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_BEARER_CONNMANBEARER, decidePlugins(Constants.PLUGINS_BEARER_CONNMANBEARER, "bearer", "connmanbearer"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_BEARER_GENERICBEARER, decidePlugins(Constants.PLUGINS_BEARER_GENERICBEARER, "bearer", "genericbearer"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_BEARER_NATIVEWIFIBEARER, decidePlugins(Constants.PLUGINS_BEARER_NATIVEWIFIBEARER, "bearer", "nativewifibearer"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_BEARER_NMBEARER, decidePlugins(Constants.PLUGINS_BEARER_NMBEARER, "bearer", "nmbearer"));
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_CNCODECS, decidePluginsCodecs(PLUGINS_CODECS_CNCODECS, "cncodecs"));
-        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_JPCODECS, decidePluginsCodecs(PLUGINS_CODECS_JPCODECS, "jpcodecs"));
-        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_KRCODECS, decidePluginsCodecs(PLUGINS_CODECS_KRCODECS, "krcodecs"));
-        propertyHelper.setNewProperty((String) null, PLUGINS_CODECS_TWCODECS, decidePluginsCodecs(PLUGINS_CODECS_TWCODECS, "twcodecs"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_CODECS_CNCODECS, decidePluginsCodecs(Constants.PLUGINS_CODECS_CNCODECS, "cncodecs"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_CODECS_JPCODECS, decidePluginsCodecs(Constants.PLUGINS_CODECS_JPCODECS, "jpcodecs"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_CODECS_KRCODECS, decidePluginsCodecs(Constants.PLUGINS_CODECS_KRCODECS, "krcodecs"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_CODECS_TWCODECS, decidePluginsCodecs(Constants.PLUGINS_CODECS_TWCODECS, "twcodecs"));
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM, decidePlugins(PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM, "graphicssystems", "glgraphicssystem"));
-        propertyHelper.setNewProperty((String) null, PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, decidePlugins(PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, "graphicssystems", "tracegraphicssystem"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM, decidePlugins(Constants.PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM, "graphicssystems", "glgraphicssystem"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, decidePlugins(Constants.PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, "graphicssystems", "tracegraphicssystem"));
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_ICONENGINES_SVGICON, decidePluginsIconenginesSvgicon());
 
         // These are only detecting if the plugins exist for these modules,
         // lack of a plugin does not necessarily mean Qt doesn't have support
         // since the implementation might be statically linked in.
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_GIF,  decidePluginsImageformatsGif());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_IMAGEFORMATS_GIF,  decidePluginsImageformatsGif());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_ICO,  decidePluginsImageformatsIco());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_IMAGEFORMATS_ICO,  decidePluginsImageformatsIco());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_JPEG, decidePluginsImageformatsJpeg());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_IMAGEFORMATS_JPEG, decidePluginsImageformatsJpeg());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_MNG,  decidePluginsImageformatsMng());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_IMAGEFORMATS_MNG,  decidePluginsImageformatsMng());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_PNG,  decidePluginsImageformatsPng());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_IMAGEFORMATS_PNG,  decidePluginsImageformatsPng());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_SVG,  decidePluginsImageformatsSvg());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_IMAGEFORMATS_SVG,  decidePluginsImageformatsSvg());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_IMAGEFORMATS_TIFF, decidePluginsImageformatsTiff());
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_INPUTMETHODS_IMSW_MULTI, decidePlugins(PLUGINS_INPUTMETHODS_IMSW_MULTI, "inputmethods", "imsw-multi"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_INPUTMETHODS_IMSW_MULTI, decidePlugins(Constants.PLUGINS_INPUTMETHODS_IMSW_MULTI, "inputmethods", "imsw-multi"));
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_QMLTOOLING_QMLDBG_TCP, decidePlugins(PLUGINS_QMLTOOLING_QMLDBG_TCP, "qmltooling", "mldbg_tcp"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_QMLTOOLING_QMLDBG_TCP, decidePlugins(Constants.PLUGINS_QMLTOOLING_QMLDBG_TCP, "qmltooling", "mldbg_tcp"));
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_SCRIPT_QTSCRIPTDBUS, decidePlugins(PLUGINS_SCRIPT_QTSCRIPTDBUS, "script", "tscriptdbus"));
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SCRIPT_QTSCRIPTDBUS, decidePlugins(Constants.PLUGINS_SCRIPT_QTSCRIPTDBUS, "script", "tscriptdbus"));
 
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE,     decidePluginsSqldriversSqlite());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLITE2,    decidePluginsSqldriversSqlite2());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLMYSQL,   decidePluginsSqldriversSqlmysql());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLODBC,    decidePluginsSqldriversSqlodbc());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLPSQL,    decidePluginsSqldriversSqlpsql());
-        propertyHelper.setNewProperty((String) null, PLUGINS_SQLDRIVERS_SQLTDS,     decidePluginsSqldriversSqltds());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLITE,     decidePluginsSqldriversSqlite());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLITE2,    decidePluginsSqldriversSqlite2());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLMYSQL,   decidePluginsSqldriversSqlmysql());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLODBC,    decidePluginsSqldriversSqlodbc());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLPSQL,    decidePluginsSqldriversSqlpsql());
+        propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLTDS,     decidePluginsSqldriversSqltds());
 
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1"));
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_MINGWM10,        decideQtBinDso(PACKAGING_DSO_MINGWM10,        "mingwm10"));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(Constants.PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1"));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_MINGWM10,        decideQtBinDso(Constants.PACKAGING_DSO_MINGWM10,        "mingwm10"));
 
 
-        String packagingDsoLibeay32 = decideQtLibDso(PACKAGING_DSO_LIBEAY32, "libeay32", null);
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBEAY32, packagingDsoLibeay32);
+        String packagingDsoLibeay32 = decideQtLibDso(Constants.PACKAGING_DSO_LIBEAY32, "libeay32", null);
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBEAY32, packagingDsoLibeay32);
 
-        String packagingDsoLibssl32 = decideQtLibDso(PACKAGING_DSO_LIBSSL32, "libssl32", null, false);
-        String packagingDsoSsleay32 = decideQtLibDso(PACKAGING_DSO_SSLEAY32, "ssleay32", null, false);
+        String packagingDsoLibssl32 = decideQtLibDso(Constants.PACKAGING_DSO_LIBSSL32, "libssl32", null, false);
+        String packagingDsoSsleay32 = decideQtLibDso(Constants.PACKAGING_DSO_SSLEAY32, "ssleay32", null, false);
         // When building QtJambi against the offical Nokia Qt SDK they appear to provide duplicate
         // DLLs for the two naming variants libssl32.dll ssleay32.dll so we need to resolve this and
         // omit one.
@@ -667,51 +503,51 @@ public class InitializeTask extends Task {
                 packagingDsoLibssl32 = "false";    // favour ssleay32.dll
             }
         }
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBSSL32, packagingDsoLibssl32);
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBSSL32, packagingDsoLibssl32);
         if(verbose && (packagingDsoLibssl32Message.length() > 0 || ("false".equals(packagingDsoLibssl32) == false) && packagingDsoLibssl32 != null))
-            System.out.println(PACKAGING_DSO_LIBSSL32 + ": " + packagingDsoLibssl32 + packagingDsoLibssl32Message);
+            System.out.println(Constants.PACKAGING_DSO_LIBSSL32 + ": " + packagingDsoLibssl32 + packagingDsoLibssl32Message);
 
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_SSLEAY32, packagingDsoSsleay32);
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_SSLEAY32, packagingDsoSsleay32);
         if(verbose && (packagingDsoSsleay32Message.length() > 0 || ("false".equals(packagingDsoSsleay32) == false) && packagingDsoSsleay32 != null))
-            System.out.println(PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message);
+            System.out.println(Constants.PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message);
 
         String QTDIR = System.getenv("QTDIR");   // used here
 
         if(OSInfo.isWindows()) {
-            String packagingDsoZlib1 = decideQtLibDso(PACKAGING_DSO_ZLIB1, "zlib1", null);
-            propertyHelper.setNewProperty((String) null, PACKAGING_DSO_ZLIB1, packagingDsoZlib1);
+            String packagingDsoZlib1 = decideQtLibDso(Constants.PACKAGING_DSO_ZLIB1, "zlib1", null);
+            propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_ZLIB1, packagingDsoZlib1);
         } else {
             // If the lib directory contains "libz.so.1" or "libssl.so" or "libcrypto.so.1.0.0"
             String sourceValue = null;
-            String packagingDsoLibssl = decideQtLibDso(PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, false);
+            String packagingDsoLibssl = decideQtLibDso(Constants.PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, false);
             if(packagingDsoLibssl != null && packagingDsoLibssl.startsWith(QTDIR) == false) {
                 sourceValue = " (detected: " + packagingDsoLibssl + "; but inhibited as not inside QTDIR)";
                 packagingDsoLibssl = null;
             }
-            mySetProperty(propertyHelper, -1, PACKAGING_DSO_LIBSSL, sourceValue, packagingDsoLibssl, false);
+            mySetProperty(propertyHelper, -1, Constants.PACKAGING_DSO_LIBSSL, sourceValue, packagingDsoLibssl, false);
 
             // FIXME: Implement file globs and reverse sort
             sourceValue = null;
-            String packagingDsoLibcrypto = decideQtLibDso(PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0h", "1.0.0g", "1.0.0", "0.0.0", null, "10" }, false);
+            String packagingDsoLibcrypto = decideQtLibDso(Constants.PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0h", "1.0.0g", "1.0.0", "0.0.0", null, "10" }, false);
             if(packagingDsoLibcrypto != null && packagingDsoLibcrypto.startsWith(QTDIR) == false) {
                 sourceValue = " (detected: " + packagingDsoLibcrypto + "; but inhibited as not inside QTDIR)";
                 packagingDsoLibcrypto = null;
             }
-            mySetProperty(propertyHelper, -1, PACKAGING_DSO_LIBCRYPTO, sourceValue, packagingDsoLibcrypto, false);
+            mySetProperty(propertyHelper, -1, Constants.PACKAGING_DSO_LIBCRYPTO, sourceValue, packagingDsoLibcrypto, false);
 
             sourceValue = null;
-            String packagingDsoLibz = decideQtLibDso(PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, false);
+            String packagingDsoLibz = decideQtLibDso(Constants.PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, false);
             if(packagingDsoLibz != null && packagingDsoLibz.startsWith(QTDIR) == false) {
                 sourceValue = " (detected: " + packagingDsoLibz + "; but inhibited as not inside QTDIR)";
                 packagingDsoLibz = null;
             }
-            mySetProperty(propertyHelper, -1, PACKAGING_DSO_LIBZ, sourceValue, packagingDsoLibz, false);
+            mySetProperty(propertyHelper, -1, Constants.PACKAGING_DSO_LIBZ, sourceValue, packagingDsoLibz, false);
         }
 
         // FIXME: On Macosx when we build and have qtjambi.dbus==true we should WARN when we can not locate libdbus-1.*.dylib
         // FIXME: On Macosx we should also search /usr/local/lib
-        String packagingDsoLibdbus = decideQtLibDso(PACKAGING_DSO_LIBDBUS, "dbus-1", new String[] { "3", "2", null }, null);
-        propertyHelper.setNewProperty((String) null, PACKAGING_DSO_LIBDBUS, packagingDsoLibdbus);
+        String packagingDsoLibdbus = decideQtLibDso(Constants.PACKAGING_DSO_LIBDBUS, "dbus-1", new String[] { "3", "2", null }, null);
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBDBUS, packagingDsoLibdbus);
 
         // Other build information sanity testing and warning
 
@@ -901,10 +737,10 @@ public class InitializeTask extends Task {
         String tmpQtVersion = null;
 
         if(!versionFound) {
-            tmpQtVersion = (String) propertyHelper.getProperty(QT_VERSION);	// ANT 1.7.x
+            tmpQtVersion = (String) propertyHelper.getProperty(Constants.QT_VERSION);	// ANT 1.7.x
             if(parseQtVersion(tmpQtVersion)) {
                 versionFound = true;
-                qtVersionSource = " (${" + QT_VERSION + "})";
+                qtVersionSource = " (${" + Constants.QT_VERSION + "})";
             }
         }
 
@@ -917,7 +753,7 @@ public class InitializeTask extends Task {
                 inStream = new FileInputStream(pathVersionPropertiesTemplate);
                 props = new Properties();
                 props.load(inStream);
-                tmpQtVersion = (String) props.get(VERSION);
+                tmpQtVersion = (String) props.get(Constants.VERSION);
             } catch(FileNotFoundException e) {
                 // Acceptable failure
                 System.err.println(e.getMessage());
@@ -985,10 +821,10 @@ public class InitializeTask extends Task {
         // debatable if it should be here at all.  Maybe the only use is with maybe
         // supporting really older Qt which does not allow: qmake -query
         if(!versionFound) {
-            tmpQtVersion = (String) propertyHelper.getProperty(VERSION);	// ANT 1.7.x
+            tmpQtVersion = (String) propertyHelper.getProperty(Constants.VERSION);	// ANT 1.7.x
             if(parseQtVersion(tmpQtVersion)) {
                 versionFound = true;
-                qtVersionSource = " (${" + VERSION + "})";
+                qtVersionSource = " (${" + Constants.VERSION + "})";
             }
         }
 
@@ -999,7 +835,7 @@ public class InitializeTask extends Task {
         List<String> generatorPreProcStageOneList = new ArrayList<String>();
         List<String> generatorPreProcStageTwoList = new ArrayList<String>();
 
-        String compilerString = (String) propertyHelper.getProperty((String) null, COMPILER);
+        String compilerString = (String) propertyHelper.getProperty((String) null, Constants.COMPILER);
         if(compilerString == null)
             return false;
 
@@ -1072,7 +908,7 @@ public class InitializeTask extends Task {
 
     private String decideJavaHomeTarget() {
         String sourceValue = null;
-        String s = (String) propertyHelper.getProperty((String) null, JAVA_HOME_TARGET);
+        String s = (String) propertyHelper.getProperty((String) null, Constants.JAVA_HOME_TARGET);
         if(s == null) {
             s = System.getenv("JAVA_HOME_TARGET");
             if(s != null)
@@ -1084,13 +920,13 @@ public class InitializeTask extends Task {
                 sourceValue = " (from envvar:JAVA_HOME)";
         }
         String result = s;
-        mySetProperty(propertyHelper, -1, JAVA_HOME_TARGET, sourceValue, result, false);
+        mySetProperty(propertyHelper, -1, Constants.JAVA_HOME_TARGET, sourceValue, result, false);
         return result;
     }
 
     private String decideJavaOsarchTarget() {
         String sourceValue = null;;
-        String s = (String) propertyHelper.getProperty((String) null, JAVA_OSARCH_TARGET);
+        String s = (String) propertyHelper.getProperty((String) null, Constants.JAVA_OSARCH_TARGET);
 
         if(s == null) {
             s = System.getenv("JAVA_OSARCH_TARGET");
@@ -1101,7 +937,7 @@ public class InitializeTask extends Task {
         if(s == null) {    // auto-detect using what we find
             // This is based on a token observation that the include direcory
             //  only had one sub-directory (this is needed for jni_md.h).
-            File includeDir = new File((String)propertyHelper.getProperty((String) null, JAVA_HOME_TARGET), "include");
+            File includeDir = new File((String)propertyHelper.getProperty((String) null, Constants.JAVA_HOME_TARGET), "include");
             File found = null;
             int foundCount = 0;
 
@@ -1122,7 +958,7 @@ public class InitializeTask extends Task {
         }
 
         String result = s;
-        mySetProperty(propertyHelper, -1, JAVA_OSARCH_TARGET, sourceValue, result, false);
+        mySetProperty(propertyHelper, -1, Constants.JAVA_OSARCH_TARGET, sourceValue, result, false);
         return result;
     }
 
@@ -1137,7 +973,7 @@ public class InitializeTask extends Task {
         debug = "debug".equals(configuration);
         result = debug ? "debug" : "release";
 
-        if(verbose) System.out.println(CONFIGURATION + ": " + result);
+        if(verbose) System.out.println(Constants.CONFIGURATION + ": " + result);
         return result;
     }
 
@@ -1154,7 +990,7 @@ public class InitializeTask extends Task {
         if(librarydir != null) {
             path.append(librarydir);
         } else {
-            Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, LIBDIR);
+            Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, Constants.LIBDIR);
             if(qtjambiQtLibdirObject != null)
                 path.append(qtjambiQtLibdirObject.toString());
         }
@@ -1197,7 +1033,7 @@ public class InitializeTask extends Task {
         if(librarydir != null) {
             path.append(librarydir);
         } else {
-            Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, LIBDIR);
+            Object qtjambiQtLibdirObject = propertyHelper.getProperty((String) null, Constants.LIBDIR);
             if(qtjambiQtLibdirObject != null)
                 path.append(qtjambiQtLibdirObject.toString());
         }
@@ -1214,7 +1050,7 @@ public class InitializeTask extends Task {
         if(librarydir != null) {
             path.append(librarydir);
         } else {
-            Object qtjambiQtBindirObject = propertyHelper.getProperty((String) null, BINDIR);
+            Object qtjambiQtBindirObject = propertyHelper.getProperty((String) null, Constants.BINDIR);
             if(qtjambiQtBindirObject != null)
                 path.append(qtjambiQtBindirObject.toString());
         }
@@ -1229,9 +1065,9 @@ public class InitializeTask extends Task {
         StringBuilder path = new StringBuilder();
         String pluginsDirPropertyName;
         if(noLibPrefix)
-            pluginsDirPropertyName = QTJAMBI_PHONON_PLUGINSDIR;
+            pluginsDirPropertyName = Constants.QTJAMBI_PHONON_PLUGINSDIR;
         else
-            pluginsDirPropertyName = PLUGINSDIR;
+            pluginsDirPropertyName = Constants.PLUGINSDIR;
         String pluginsPath = (String) propertyHelper.getProperty((String) null, pluginsDirPropertyName);
         if(pluginsPath == null)
             return false;
@@ -1298,11 +1134,11 @@ public class InitializeTask extends Task {
      * correct phonon backend to use for this OS.
      */
     private String decidePhonon(PropertyHelper propertyHelper) {
-        String phononLibDir = (String) propertyHelper.getProperty((String) null, QTJAMBI_PHONON_LIBDIR);
+        String phononLibDir = (String) propertyHelper.getProperty((String) null, Constants.QTJAMBI_PHONON_LIBDIR);
         boolean exists = doesQtLibExistAsBoolean("phonon", String.valueOf(qtMajorVersion), phononLibDir);
         String result = String.valueOf(exists);
 
-        result = mySetProperty(propertyHelper, -1, PHONON, " (auto-detected)", result, false);
+        result = mySetProperty(propertyHelper, -1, Constants.PHONON, " (auto-detected)", result, false);
         if("false".equals(result))
             return result;
 
@@ -1326,7 +1162,7 @@ public class InitializeTask extends Task {
             sourceValue = " (auto-detected)";
         else if(OSInfo.isWindows() == false)
             sourceValue = " (expected for non-Windows platform)";
-        mySetProperty(propertyHelper, -1, PHONON_DS9, sourceValue, result, false);
+        mySetProperty(propertyHelper, -1, Constants.PHONON_DS9, sourceValue, result, false);
         return result;
     }
 
@@ -1336,7 +1172,7 @@ public class InitializeTask extends Task {
         String sourceValue = null;
         Boolean autodetectKdePhonon = null;
 
-        String kdephonon = (String) propertyHelper.getProperty((String) null, QTJAMBI_PHONON_KDEPHONON);
+        String kdephonon = (String) propertyHelper.getProperty((String) null, Constants.QTJAMBI_PHONON_KDEPHONON);
         if(kdephonon != null && "true".equals(kdephonon)) {
             // build configuration states use KDE phonon
             exists = doesQtPluginExist("phonon_gstreamer", "phonon_backend", true);  // auto-detect Kde phonon
@@ -1345,7 +1181,7 @@ public class InitializeTask extends Task {
                 exists = doesQtPluginExist("phonon_gstreamer", "phonon_backend");  // try for Qt phonon anyway?
                 result = String.valueOf(exists);
                 if(exists)  // found
-                    sourceValue = " (WARNING auto-detected qt phonon; but " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon +"\"; so turning this off)";
+                    sourceValue = " (WARNING auto-detected qt phonon; but " + Constants.QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon +"\"; so turning this off)";
                 autodetectKdePhonon = Boolean.FALSE;
             } else {
                 sourceValue = " (auto-detected kind:kdephonon)";
@@ -1356,7 +1192,7 @@ public class InitializeTask extends Task {
             result = String.valueOf(exists);
             if(exists) {
                 if(kdephonon != null && "true".equals(kdephonon))  // but user has setup kde phonon as well?
-                    sourceValue = " (auto-detected; WARNING " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon + "\"; so \"lib\" prefix removed)";
+                    sourceValue = " (auto-detected; WARNING " + Constants.QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon + "\"; so \"lib\" prefix removed)";
             } else {
                 exists = doesQtPluginExist("phonon_gstreamer", "phonon_backend", true);  // try for KDE phonon anyway?
                 result = String.valueOf(exists);
@@ -1364,7 +1200,7 @@ public class InitializeTask extends Task {
                     if(kdephonon == null)
                         sourceValue = " (auto-detected as kind:kdephonon)";
                     else
-                        sourceValue = " (auto-detected kde phonon; but " + QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon + "\"; so \"lib\" prefix removed)";
+                        sourceValue = " (auto-detected kde phonon; but " + Constants.QTJAMBI_PHONON_KDEPHONON + "=\"" + kdephonon + "\"; so \"lib\" prefix removed)";
                     autodetectKdePhonon = Boolean.TRUE;
                 } else {
                     autodetectKdePhonon = Boolean.FALSE;  // FWIW
@@ -1377,12 +1213,12 @@ public class InitializeTask extends Task {
             else if(OSInfo.isWindows() || OSInfo.isMacOS())
                 sourceValue = " (expected for non-Unix platform)";
         }
-        mySetProperty(propertyHelper, -1, PHONON_GSTREAMER, sourceValue, result, false);
+        mySetProperty(propertyHelper, -1, Constants.PHONON_GSTREAMER, sourceValue, result, false);
         if(autodetectKdePhonon != null) {
             if(autodetectKdePhonon.booleanValue())
-                mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true", false);
+                mySetProperty(propertyHelper, -1, Constants.QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true", false);
             else
-                mySetProperty(propertyHelper, -1, QTJAMBI_PHONON_KDEPHONON, null, "false", true);  // force off
+                mySetProperty(propertyHelper, -1, Constants.QTJAMBI_PHONON_KDEPHONON, null, "false", true);  // force off
         }
         return result;
     }
@@ -1395,7 +1231,7 @@ public class InitializeTask extends Task {
             sourceValue = " (auto-detected)";
         else if(OSInfo.isMacOS() == false)
             sourceValue = " (expected for non-MacOSX platform)";
-        mySetProperty(propertyHelper, -1, PHONON_QT7, sourceValue, result, false);
+        mySetProperty(propertyHelper, -1, Constants.PHONON_QT7, sourceValue, result, false);
         return result;
     }
 
@@ -1426,7 +1262,7 @@ public class InitializeTask extends Task {
      * @param config Library to add
      */
     private void addToQtConfig(String config) {
-        String oldConfig = (String) propertyHelper.getProperty((String) null, QTCONFIG);
+        String oldConfig = (String) propertyHelper.getProperty((String) null, Constants.QTCONFIG);
         String newConfig = null;
 
         if(oldConfig != null) {
@@ -1443,26 +1279,26 @@ public class InitializeTask extends Task {
         }
 
         if(newConfig != null)
-            propertyHelper.setProperty((String) null, QTCONFIG, newConfig, false);
+            propertyHelper.setProperty((String) null, Constants.QTCONFIG, newConfig, false);
     }
 
     private String decideSql() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtSql", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(SQL + ": " + result);
+        if(verbose) System.out.println(Constants.SQL + ": " + result);
         if("true".equals(result)) addToQtConfig("sql");
         return result;
     }
 
     private String decideSvg() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtSvg", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(SVG + ": " + result);
+        if(verbose) System.out.println(Constants.SVG + ": " + result);
         if("true".equals(result)) addToQtConfig("svg");
         return result;
     }
 
     private String decideTest() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtTest", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(TEST + ": " + result);
+        if(verbose) System.out.println(Constants.TEST + ": " + result);
         if("true".equals(result)) addToQtConfig("qtestlib");
         return result;
     }
@@ -1475,7 +1311,7 @@ public class InitializeTask extends Task {
 
     private String decidePluginsAccessibleQtaccesswidgets() {
         String result = String.valueOf(doesQtPluginExist("qtaccessiblewidgets", "accessible"));
-        if(verbose) System.out.println(PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS + ": " + result);
         return result;
     }
 
@@ -1487,31 +1323,31 @@ public class InitializeTask extends Task {
 
     private String decidePluginsIconenginesSvgicon(){
         String result = String.valueOf(doesQtPluginExist("qsvgicon", "iconengines"));
-        if(verbose) System.out.println(PLUGINS_ICONENGINES_SVGICON + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_ICONENGINES_SVGICON + ": " + result);
         return result;
     }
 
     private String decidePluginsImageformatsGif(){
         String result = String.valueOf(doesQtPluginExist("qgif", "imageformats"));
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_GIF + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_IMAGEFORMATS_GIF + ": " + result);
         return result;
     }
 
     private String decidePluginsImageformatsIco(){
         String result = String.valueOf(doesQtPluginExist("qico", "imageformats"));
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_ICO + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_IMAGEFORMATS_ICO + ": " + result);
         return result;
     }
 
     private String decidePluginsImageformatsJpeg(){
         String result = String.valueOf(doesQtPluginExist("qjpeg", "imageformats"));
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_JPEG + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_IMAGEFORMATS_JPEG + ": " + result);
         return result;
     }
 
     private String decidePluginsImageformatsMng(){
         String result = String.valueOf(doesQtPluginExist("qmng", "imageformats"));
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_MNG + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_IMAGEFORMATS_MNG + ": " + result);
         return result;
     }
 
@@ -1520,170 +1356,170 @@ public class InitializeTask extends Task {
         String extra = "";
         if("false".equals(result))
             extra = " (probably a built-in)";
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_PNG + ": " + result + extra);
+        if(verbose) System.out.println(Constants.PLUGINS_IMAGEFORMATS_PNG + ": " + result + extra);
         return result;
     }
 
     private String decidePluginsImageformatsSvg(){
         String result = String.valueOf(doesQtPluginExist("qsvg", "imageformats"));
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_SVG + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_IMAGEFORMATS_SVG + ": " + result);
         return result;
     }
 
     private String decidePluginsImageformatsTiff() {
         String result = String.valueOf(doesQtPluginExist("qtiff", "imageformats"));
-        if(verbose) System.out.println(PLUGINS_IMAGEFORMATS_TIFF + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_IMAGEFORMATS_TIFF + ": " + result);
         return result;
     }
 
     private String decidePluginsSqldriversSqlite() {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlite", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLITE + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_SQLDRIVERS_SQLITE + ": " + result);
         return result;
     }
 
     private String decidePluginsSqldriversSqlite2() {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlite2", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLITE2 + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_SQLDRIVERS_SQLITE2 + ": " + result);
         return result;
     }
 
     private String decidePluginsSqldriversSqlmysql() {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlmysql", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLMYSQL + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_SQLDRIVERS_SQLMYSQL + ": " + result);
         return result;
     }
 
     private String decidePluginsSqldriversSqlodbc() {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlodbc", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLODBC + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_SQLDRIVERS_SQLODBC + ": " + result);
         return result;
     }
 
     private String decidePluginsSqldriversSqlpsql() {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqlpsql", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLPSQL + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_SQLDRIVERS_SQLPSQL + ": " + result);
         return result;
     }
 
     private String decidePluginsSqldriversSqltds() {
         // FIXME: Detect the case when this module was compiled into QtSql
         String result = String.valueOf(doesQtPluginExist("qsqltds", "sqldrivers"));
-        if(verbose) System.out.println(PLUGINS_SQLDRIVERS_SQLTDS + ": " + result);
+        if(verbose) System.out.println(Constants.PLUGINS_SQLDRIVERS_SQLTDS + ": " + result);
         return result;
     }
 
     private String decideCore() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtCore", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(CORE + ": " + result);
+        if(verbose) System.out.println(Constants.CORE + ": " + result);
         if("true".equals(result)) addToQtConfig("core");
         return result;
     }
 
     private String decideCLucene() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtCLucene", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(CLUCENE + ": " + result);
+        if(verbose) System.out.println(Constants.CLUCENE + ": " + result);
         return result;
     }
 
     private String decideDBus() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtDBus", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(DBUS + ": " + result);
+        if(verbose) System.out.println(Constants.DBUS + ": " + result);
         if("true".equals(result)) addToQtConfig("dbus");
         return result;
     }
 
     private String decideDeclarative() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtDeclarative", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(DECLARATIVE + ": " + result);
+        if(verbose) System.out.println(Constants.DECLARATIVE + ": " + result);
         if("true".equals(result)) addToQtConfig("declarative");
         return result;
     }
 
     private String decideDesigner() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtDesigner", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(DESIGNER + ": " + result);
+        if(verbose) System.out.println(Constants.DESIGNER + ": " + result);
         if("true".equals(result)) addToQtConfig("designer");
         return result;
     }
 
     private String decideDesignerComponents() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtDesignerComponents", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(DESIGNERCOMPONENTS + ": " + result);
+        if(verbose) System.out.println(Constants.DESIGNERCOMPONENTS + ": " + result);
         return result;
     }
 
     private String decideGui() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtGui", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(GUI + ": " + result);
+        if(verbose) System.out.println(Constants.GUI + ": " + result);
         if("true".equals(result)) addToQtConfig("gui");
         return result;
     }
 
     private String decideHelp() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtHelp", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(HELP + ": " + result);
+        if(verbose) System.out.println(Constants.HELP + ": " + result);
         if("true".equals(result)) addToQtConfig("help");
         return result;
     }
 
     private String decideMultimedia() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtMultimedia", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(MULTIMEDIA + ": " + result);
+        if(verbose) System.out.println(Constants.MULTIMEDIA + ": " + result);
         if("true".equals(result)) addToQtConfig("multimedia");
         return result;
     }
 
     private String decideNetwork() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtNetwork", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(NETWORK + ": " + result);
+        if(verbose) System.out.println(Constants.NETWORK + ": " + result);
         if("true".equals(result)) addToQtConfig("network");
         return result;
     }
 
     private String decideOpenGL() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtOpenGL", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(OPENGL + ": " + result);
+        if(verbose) System.out.println(Constants.OPENGL + ": " + result);
         if("true".equals(result)) addToQtConfig("opengl");
         return result;
     }
 
     private String decideScript() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtScript", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(SCRIPT + ": " + result);
+        if(verbose) System.out.println(Constants.SCRIPT + ": " + result);
         if("true".equals(result)) addToQtConfig("script");
         return result;
     }
 
     private String decideScripttools() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtScriptTools", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(SCRIPTTOOLS + ": " + result);
+        if(verbose) System.out.println(Constants.SCRIPTTOOLS + ": " + result);
         if("true".equals(result)) addToQtConfig("scripttools");
         return result;
     }
 
     private String decideWebkit() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtWebKit", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(WEBKIT + ": " + result);
+        if(verbose) System.out.println(Constants.WEBKIT + ": " + result);
         if("true".equals(result)) addToQtConfig("webkit");
         return result;
     }
 
     private String decideXml() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtXml", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(XML + ": " + result);
+        if(verbose) System.out.println(Constants.XML + ": " + result);
         if("true".equals(result)) addToQtConfig("xml");
         return result;
     }
 
     private String decideXmlPatterns() {
         String result = String.valueOf(doesQtLibExistAsBoolean("QtXmlPatterns", String.valueOf(qtMajorVersion)));
-        if(verbose) System.out.println(XMLPATTERNS + ": " + result);
+        if(verbose) System.out.println(Constants.XMLPATTERNS + ": " + result);
         if("true".equals(result)) addToQtConfig("xmlpatterns");
         return result;
     }

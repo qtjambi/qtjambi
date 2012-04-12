@@ -69,7 +69,7 @@ import com.trolltech.tools.ant.FindCompiler.Compiler;
 
 // NOTE: remove this after removing support for 1.7
 @SuppressWarnings("deprecation")
-public class InitializeMiniTask extends Task {
+public class InitializeTask extends Task {
 
     private int verboseLevel;
     private PropertyHelper propertyHelper;
@@ -139,7 +139,7 @@ public class InitializeMiniTask extends Task {
         }
 
 	    final String[] emitA = {
-            InitializeTask.DIRECTORY
+            Constants.DIRECTORY
         };
         for(String emit : emitA) {
             String value = (String) propertyHelper.getProperty(emit);	// ANT 1.7.x
@@ -154,9 +154,9 @@ public class InitializeMiniTask extends Task {
 
 		FindCompiler finder = new FindCompiler(getProject(), propertyHelper);
         String osname = finder.decideOSName();
-        propertyHelper.setNewProperty((String) null, InitializeTask.OSNAME, osname);
+        propertyHelper.setNewProperty((String) null, Constants.OSNAME, osname);
         if(verboseLevel > 0)
-            System.out.println(InitializeTask.OSNAME + " is " + osname);
+            System.out.println(Constants.OSNAME + " is " + osname);
 
         String s;
 
@@ -172,7 +172,7 @@ public class InitializeMiniTask extends Task {
         else if(OSInfo.isSolaris())
             s = OSInfo.K_SUNOS;
         if(s != null)
-            propertyHelper.setNewProperty((String) null, InitializeTask.OSPLATFORM, s);
+            propertyHelper.setNewProperty((String) null, Constants.OSPLATFORM, s);
 
         s = null;
         // FIXME incorrect for windows x86/x64, sunos
@@ -181,7 +181,7 @@ public class InitializeMiniTask extends Task {
         else
             s = "i386";
         if(s != null)
-            propertyHelper.setNewProperty((String) null, InitializeTask.OSCPU, s);
+            propertyHelper.setNewProperty((String) null, Constants.OSCPU, s);
 
 
         String javaHomeTarget = decideJavaHomeTarget();
@@ -195,29 +195,29 @@ public class InitializeMiniTask extends Task {
         }
 
         String configuration = decideConfiguration();
-        propertyHelper.setNewProperty((String) null, InitializeTask.CONFIGURATION, configuration);
+        propertyHelper.setNewProperty((String) null, Constants.CONFIGURATION, configuration);
         s = null;
-        if(InitializeTask.CONFIG_RELEASE.equals(configuration))
+        if(Constants.CONFIG_RELEASE.equals(configuration))
             s = "";	// empty
-        else if(InitializeTask.CONFIG_DEBUG.equals(configuration))
+        else if(Constants.CONFIG_DEBUG.equals(configuration))
             s = "-debug";
         else
             s = "-test";
         if(s != null)
-            propertyHelper.setNewProperty((String) null, InitializeTask.CONFIGURATION_DASH, s);
+            propertyHelper.setNewProperty((String) null, Constants.CONFIGURATION_DASH, s);
         s = null;
-        if(InitializeTask.CONFIG_RELEASE.equals(configuration))
+        if(Constants.CONFIG_RELEASE.equals(configuration))
             s = "";	// empty
-        else if(InitializeTask.CONFIG_DEBUG.equals(configuration))
+        else if(Constants.CONFIG_DEBUG.equals(configuration))
             s = ".debug";
         else
             s = ".test";
         if(s != null)
-            propertyHelper.setNewProperty((String) null, InitializeTask.CONFIGURATION_OSGI, s);
+            propertyHelper.setNewProperty((String) null, Constants.CONFIGURATION_OSGI, s);
 
         {
             String sourceValue = null;
-            String qmakeTargetDefault = (String) propertyHelper.getProperty(InitializeTask.QMAKE_TARGET_DEFAULT);   // ANT 1.7.x
+            String qmakeTargetDefault = (String) propertyHelper.getProperty(Constants.QMAKE_TARGET_DEFAULT);   // ANT 1.7.x
             if(qmakeTargetDefault == null) {
                 // We only need to override the default when the Qt SDK is debug_and_release but
                 //  we are only building the project for one kind.
@@ -232,23 +232,23 @@ public class InitializeMiniTask extends Task {
                 // FIXME: We want ${qtjambi.configuration} to set from QTDIR build kind *.prl data
 //                sourceValue = " (set from ${qtjambi.configuration})";
             }
-            mySetProperty(propertyHelper, -1, InitializeTask.QMAKE_TARGET_DEFAULT, sourceValue, qmakeTargetDefault, false);  // report value
+            mySetProperty(propertyHelper, -1, Constants.QMAKE_TARGET_DEFAULT, sourceValue, qmakeTargetDefault, false);  // report value
         }
 
 
-        versionSuffix = (String) propertyHelper.getProperty(InitializeTask.SUFFIX_VERSION);	// ANT 1.7.x
-        mySetProperty(propertyHelper, -1, InitializeTask.SUFFIX_VERSION, null, null, false);  // report
+        versionSuffix = (String) propertyHelper.getProperty(Constants.SUFFIX_VERSION);	// ANT 1.7.x
+        mySetProperty(propertyHelper, -1, Constants.SUFFIX_VERSION, null, null, false);  // report
 
  
         if(OSInfo.isMacOS())
-            mySetProperty(propertyHelper, 0, InitializeTask.QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
+            mySetProperty(propertyHelper, 0, Constants.QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
 
         alreadyRun = true;
     }
 
     private String decideJavaHomeTarget() {
         String sourceValue = null;
-        String s = (String) propertyHelper.getProperty((String) null, InitializeTask.JAVA_HOME_TARGET);
+        String s = (String) propertyHelper.getProperty((String) null, Constants.JAVA_HOME_TARGET);
         if(s == null) {
             s = System.getenv("JAVA_HOME_TARGET");
             if(s != null)
@@ -260,13 +260,13 @@ public class InitializeMiniTask extends Task {
                 sourceValue = " (from envvar:JAVA_HOME)";
         }
         String result = s;
-        mySetProperty(propertyHelper, -1, InitializeTask.JAVA_HOME_TARGET, sourceValue, result, false);
+        mySetProperty(propertyHelper, -1, Constants.JAVA_HOME_TARGET, sourceValue, result, false);
         return result;
     }
 
     private String decideJavaOsarchTarget() {
         String sourceValue = null;;
-        String s = (String) propertyHelper.getProperty((String) null, InitializeTask.JAVA_OSARCH_TARGET);
+        String s = (String) propertyHelper.getProperty((String) null, Constants.JAVA_OSARCH_TARGET);
 
         if(s == null) {
             s = System.getenv("JAVA_OSARCH_TARGET");
@@ -277,7 +277,7 @@ public class InitializeMiniTask extends Task {
         if(s == null) {    // auto-detect using what we find
             // This is based on a token observation that the include direcory
             //  only had one sub-directory (this is needed for jni_md.h).
-            File includeDir = new File((String)propertyHelper.getProperty((String) null, InitializeTask.JAVA_HOME_TARGET), "include");
+            File includeDir = new File((String)propertyHelper.getProperty((String) null, Constants.JAVA_HOME_TARGET), "include");
             File found = null;
             int foundCount = 0;
 
@@ -298,7 +298,7 @@ public class InitializeMiniTask extends Task {
         }
 
         String result = s;
-        mySetProperty(propertyHelper, -1, InitializeTask.JAVA_OSARCH_TARGET, sourceValue, result, false);
+        mySetProperty(propertyHelper, -1, Constants.JAVA_OSARCH_TARGET, sourceValue, result, false);
         return result;
     }
 
@@ -313,7 +313,7 @@ public class InitializeMiniTask extends Task {
         debug = "debug".equals(configuration);
         result = debug ? "debug" : "release";
 
-        if(verboseLevel > 0) System.out.println(InitializeTask.CONFIGURATION + ": " + result);
+        if(verboseLevel > 0) System.out.println(Constants.CONFIGURATION + ": " + result);
         return result;
     }
 

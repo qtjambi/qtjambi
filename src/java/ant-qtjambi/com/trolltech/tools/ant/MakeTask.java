@@ -68,7 +68,7 @@ public class MakeTask extends Task {
         switch(OSInfo.os()){
         case Windows:
             PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
-            String compiler = (String) propertyHelper.getProperty((String) null, InitializeTask.COMPILER);
+            String compiler = (String) propertyHelper.getProperty((String) null, Constants.COMPILER);
 
             if(FindCompiler.Compiler.MinGW.toString().equals(compiler))
                 return "mingw32-make";
@@ -100,7 +100,7 @@ public class MakeTask extends Task {
             commandArray.add(target);
 
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
-        String ldpath = (String) propertyHelper.getProperty((String) null, InitializeTask.LIBDIR);
+        String ldpath = (String) propertyHelper.getProperty((String) null, Constants.LIBDIR);
         try {
             File dirExecute = null;
             if(dir != null)

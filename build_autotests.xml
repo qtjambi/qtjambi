@@ -46,7 +46,7 @@
         </fail>
     </target>
 
-    <target name="compile.native.generator" depends="init">
+    <target name="compile.native.generator" depends="init.build">
         <mkdir dir="${outputDir}/tests/autotest-generator"/>
         <generator dir="${generator.builddir}"
                 debugTools="${qtjambi.debug-tools}"
@@ -62,7 +62,7 @@
             />
     </target>
 
-    <target name="compile.native" depends="init">
+    <target name="compile.native" depends="init.build">
         <qmake  dir="${outputDir}/tests/autotest-generator"
                 pro="${basedir}/autotestlib/autotestlib.pro"
                 config="${qtjambi.configuration}"
