@@ -90,5 +90,14 @@ java -cp $QTJAMBI/qtjambi-<qt-version>.jar:test-<platform>-<compiler>-<qt-versio
 Expand the above wildcards manually before executing the command.
 
 
+If there are problems loading the implementation library (such as the error below) try:
+
+Caused by: java.lang.UnsatisfiedLinkError: /tmp/QtJambi_userid_amd64_4.7.4_genex-gcc-YYYYMMDD-HHMM/lib/liborg_qtjambi_test_debuglib.so.1: libtestGenImpl_debuglib.so.1: cannot open shared object file: No such file or directory
+
+on windows =>  add build/platform-output*/lib directory to %PATH%
+on Linux   =>  add build/platform-output*/lib directory to $LD_LIBRARY_PATH
+on MacOSX  =>  add build/platform-output*/lib directory to $DYLD_LIBRARY_PATH
+
+
 Bodø 29.04.2010,
 Helge Fredriksen

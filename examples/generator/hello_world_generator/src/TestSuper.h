@@ -1,6 +1,7 @@
 #ifndef __TESTSUPER_H__
 #define __TESTSUPER_H__
 
+#include <QtCore/QDebug>
 #include <QtCore/QRectF>
 #include <QtGui/QWidget>
 #include <QtGui/QPainter>
@@ -14,6 +15,9 @@ class TestSuper : public QGraphicsObject {
 
  public:
   TestSuper(QGraphicsScene *scene);
+  ~TestSuper() {
+    qDebug() << "~TestSuper() on " << this;
+  }
 
  protected:
   virtual QRectF boundingRect() const;
