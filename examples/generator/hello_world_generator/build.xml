@@ -71,7 +71,7 @@
         <echo message="generator.exe.abspath=${generator.exe.abspath}"/>
     </target>
 
-    <target name="compile" depends="init">
+    <target name="compile.native.qmake" depends="init">
         <!-- Stage 1 - build the liborg_qtjambi_org{,_debuglib}.so -->
         <mkdir dir="${basedir}/build/qmake/cpp"/>
         <qmake config="${qtjambi.configuration}"
@@ -80,8 +80,9 @@
                qmakebinary="${qmake.binary}"/>
 
         <make dir="${basedir}/build/qmake/cpp" target="${qtjambi.qmake.target.default}"/>
+    </target>
 
-
+    <target name="compile.generate" depends="init">
         <!-- Stage 2 - build the liborg_qtjambi_org{,_debuglib}.so -->
         <mkdir dir="${generator.out}"/>
         <generator dir="${generator.out}"
@@ -98,7 +99,9 @@
                    qtlibdirectory="${qtjambi.tools.qt.libdir}"
                    includepaths="${generator.includepaths}${psep}${basedir}"
                    kdephonon="${qtjambi.phonon.kdephonon-path}"/>
+    </target>
 
+    <target name="compile.generate.qmake" depends="init">
         <mkdir dir="${basedir}/build/qmake/org_qtjambi_test"/>
         <qmake config="${qtjambi.configuration}"
                dir="${basedir}/build/qmake/org_qtjambi_test"
@@ -106,8 +109,9 @@
                qmakebinary="${qmake.binary}"/>
 
         <make dir="${basedir}/build/qmake/org_qtjambi_test" target="${qtjambi.qmake.target.default}"/>
+    </target>
 
-
+    <target name="compile.java" depends="init">
         <!-- Stage 3 - build Java parts -->
         <mkdir dir="${basedir}/build/platform-output${qtjambi.configuration.dash}"/>
         <javac destdir="${basedir}/build/platform-output${qtjambi.configuration.dash}"
@@ -124,6 +128,9 @@
             <include name="com/trolltech/qt/osinfo/*.java"/>
             <include name="test/*.java"/>
         </javac>
+    </target>
+
+    <target name="compile" depends="init, compile.native.qmake, compile.generate, compile.generate.qmake, compile.java">
     </target>
 
     <target name="package"
