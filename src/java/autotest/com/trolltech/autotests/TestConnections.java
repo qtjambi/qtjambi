@@ -54,6 +54,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.trolltech.autotests.generated.SignalsAndSlots;
@@ -80,6 +81,7 @@ import com.trolltech.qt.gui.QGraphicsScene;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.internal.QtJambiRuntime;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
@@ -143,6 +145,13 @@ public class TestConnections extends QApplicationTest implements Qt
 {
     public TestConnections()
     {
+    }
+
+    @Before
+    public void setUp() {
+        // This class is known to fail when we messed with this setting in a previous testcase running in the same JVM
+        // The method run_queuedConnection() in particular
+        assertEquals("getObjectCacheMode != DEFAULT", QtJambiRuntime.OBJECT_CACHE_MODE_DEFAULT, QtJambiRuntime.getObjectCacheMode());
     }
 
     @Test public void run_signalInNonQObject() {
@@ -1318,7 +1327,7 @@ public class TestConnections extends QApplicationTest implements Qt
                  receiver, "javaSlotDouble(Double)", RuntimeException.class, "Signature of signal");
      }
 
-
+      // Method requires: getObjectCacheMode == DEFAULT
       @Test public void run_queuedConnection() {
           MyQObject sender = new MyQObject();
           MyQObject receiver = new MyQObject();

@@ -48,6 +48,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.trolltech.qt.core.QEventLoop;
@@ -55,8 +56,17 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QSignalMapper;
 import com.trolltech.qt.gui.QGuiSignalMapper;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.internal.QtJambiRuntime;
 
 public class TestSignalMapper extends QApplicationTest {
+
+    @Before
+    public void setUp() {
+        // This class is known to fail when we messed with this setting in a previous testcase running in the same JVM
+        // The method run_mappedInt() in particular
+        assertEquals("getObjectCacheMode != DEFAULT", QtJambiRuntime.OBJECT_CACHE_MODE_DEFAULT, QtJambiRuntime.getObjectCacheMode());
+    }
+
     /**
      * Receiver class for the various mapped signals in this test.
      */
@@ -126,7 +136,7 @@ public class TestSignalMapper extends QApplicationTest {
     }
 
     /**
-     * Emitter class for triggering the vairous mapped signals...
+     * Emitter class for triggering the various mapped signals...
      */
     private static class Emitter extends QObject {
         Signal0 signal = new Signal0();
@@ -144,6 +154,7 @@ public class TestSignalMapper extends QApplicationTest {
         }
     }
 
+    // Method requires: getObjectCacheMode == DEFAULT
     @Test
     public void run_mappedInt() throws InterruptedException {
         QSignalMapper mapper = new QSignalMapper();

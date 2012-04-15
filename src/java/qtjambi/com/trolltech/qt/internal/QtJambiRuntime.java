@@ -61,11 +61,18 @@ public class QtJambiRuntime {
     public static native int getObjectCacheMode();
     public static native void setObjectCacheMode(int objectCacheMode);
 
+    public static final int OBJECT_CACHE_MODE_DISABLE = 0;
+    public static final int OBJECT_CACHE_MODE_LIMITED = 1;
+    public static final int OBJECT_CACHE_MODE_DEFAULT = 2;
+
     /*
      * 1 = Flush (clear all)
      * 2 = Count
      */
     public static native int objectCacheOperation(int operation);
+
+    public static final int OBJECT_CACHE_OPERATION_FLUSH = 0;
+    public static final int OBJECT_CACHE_OPERATION_COUNT = 1;
 
     public static native boolean pushDebugMarker(long id);
     public static native long popDebugMarker();

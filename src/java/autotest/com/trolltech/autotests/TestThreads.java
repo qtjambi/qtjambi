@@ -50,14 +50,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.internal.QtJambiRuntime;
 
 public class TestThreads extends QApplicationTest {
+    @Before
+    public void setUp() {
+        // This class is known to fail when we messed with this setting in a previous testcase running in the same JVM
+        // The method run_pingPongSignalSlot() in particular
+        assertEquals("getObjectCacheMode != DEFAULT", QtJambiRuntime.getObjectCacheMode(), QtJambiRuntime.OBJECT_CACHE_MODE_DEFAULT);
+    }
+
     @AfterClass
     public static void testDispose() throws Exception {
         PingPong.ID_PING = null;   // clean up static reference to QObject
@@ -270,6 +279,7 @@ public class TestThreads extends QApplicationTest {
         }
     }
 
+    // Method requires: getObjectCacheMode == DEFAULT
     @Test
     public void run_pingPongSignalSlot() throws Exception {
         PingPongSSRunner ping = new PingPongSSRunner(true);

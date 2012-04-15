@@ -86,7 +86,7 @@ public class TestQObject extends QApplicationTest {
 
     @Before
     public void setUp() {
-        QtJambiRuntime.setObjectCacheMode(0);	// DISABLE
+        QtJambiRuntime.setObjectCacheMode(QtJambiRuntime.OBJECT_CACHE_MODE_DISABLE);
 
         root = new QObject();
         root.setObjectName("root");
@@ -127,6 +127,9 @@ public class TestQObject extends QApplicationTest {
         child12 = null;
         child21 = null;
         child22 = null;
+        // We need to undo this unusual setting to give any test cases that run after
+        // within the same JVM a change of succeeding.
+        QtJambiRuntime.setObjectCacheMode(QtJambiRuntime.OBJECT_CACHE_MODE_DEFAULT);
     }
 
     @Test

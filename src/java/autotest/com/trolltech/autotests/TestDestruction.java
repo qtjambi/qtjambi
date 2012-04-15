@@ -65,6 +65,7 @@ import com.trolltech.autotests.generated.OrdinaryDestroyed;
 
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.internal.QtJambiRuntime;
 
 class MyOrdinaryDestroyed extends OrdinaryDestroyed {
     public final Integer id;
@@ -118,6 +119,8 @@ public class TestDestruction extends QApplicationTest {
 
     @Before
     public void setUp() {
+        // This class is known to fail when we messed with this setting in a previous testcase running in the same JVM
+        assertEquals("getObjectCacheMode != DEFAULT", QtJambiRuntime.getObjectCacheMode(), QtJambiRuntime.OBJECT_CACHE_MODE_DEFAULT);
         QApplication.processEvents();
         clearGcReferences();
     }
@@ -336,6 +339,7 @@ Utils.println(15, debugPrefix + ": elapsed=" + elapsed + "; loop="+loop+"; obtai
         accountingForNewObject(d);
     }
 
+    // Method requires: getObjectCacheMode == DEFAULT
     @Test
     public void testJavaCreationCppOwnership() {
         reset();
@@ -364,6 +368,7 @@ Utils.println(15, debugPrefix + ": elapsed=" + elapsed + "; loop="+loop+"; obtai
         accountingForNewObject(d);
     }
 
+    // Method requires: getObjectCacheMode == DEFAULT
     @Test
     public void testJavaCreationDefaultOwnershipThroughNative() {
         reset();
@@ -390,6 +395,7 @@ Utils.println(15, debugPrefix + ": elapsed=" + elapsed + "; loop="+loop+"; obtai
         accountingForNewObject(d);
     }
 
+    // Method requires: getObjectCacheMode == DEFAULT
     @Test
     public void testJavaCreationDefaultOwnershipThroughShell() {
         reset();

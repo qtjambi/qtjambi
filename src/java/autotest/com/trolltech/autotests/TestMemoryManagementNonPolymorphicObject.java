@@ -55,11 +55,14 @@ import com.trolltech.qt.QtJambiObject;
 public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManagement {
     @Override
     protected void initialize() {
-        QtJambiRuntime.setObjectCacheMode(0);	// DISABLE
+        QtJambiRuntime.setObjectCacheMode(QtJambiRuntime.OBJECT_CACHE_MODE_DISABLE);
     }
 
     @Override
     protected void uninitialize() {
+        // We need to undo this unusual setting to give any test cases that run after
+        // within the same JVM a change of succeeding.
+        QtJambiRuntime.setObjectCacheMode(QtJambiRuntime.OBJECT_CACHE_MODE_DEFAULT);
     }
 
     protected QtJambiObject createInstanceInJava() {
