@@ -72,7 +72,8 @@ static void qtjambi_messagehandler_proxy(QtMsgType type, const char *message);
 class QThreadData;
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize(JNIEnv *, jclass))
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initialize)
+(JNIEnv *, jclass)
 {
     qtjambi_register_callbacks();
 
@@ -82,7 +83,8 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryInitializer_initia
 
 
 extern "C" Q_DECL_EXPORT jint JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QThreadManager_releaseNativeResources(JNIEnv *env, jclass))
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QThreadManager_releaseNativeResources)
+(JNIEnv *env, jclass)
 {
     return qtjambi_release_threads(env);
 }
@@ -139,7 +141,8 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_resetQObj
 
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_sender(JNIEnv *env, jclass, jobject obj))
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_sender)
+(JNIEnv *env, jclass, jobject obj)
 {
     QObject *qobject = qtjambi_to_qobject(env, obj);
 
@@ -158,7 +161,8 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_sender(JN
 
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_createExtendedEnum(JNIEnv *env, jclass, jint value, jint ordinal, jclass enumClass, jstring name))
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiInternal_createExtendedEnum)
+(JNIEnv *env, jclass, jint value, jint ordinal, jclass enumClass, jstring name)
 {
     jmethodID methodId = env->GetMethodID(enumClass, "<init>", "(Ljava/lang/String;II)V");
     jobject object = env->NewObject(enumClass, methodId, name, ordinal, value);
