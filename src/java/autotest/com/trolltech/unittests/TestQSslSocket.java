@@ -16,6 +16,7 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.network.QAbstractSocket;
 import com.trolltech.qt.network.QSslCertificate;
 import com.trolltech.qt.network.QSslSocket;
+import com.trolltech.qt.network.QSslSocket.PeerVerifyMode;
 
 public class TestQSslSocket extends QApplicationTest {
 
@@ -33,6 +34,9 @@ public class TestQSslSocket extends QApplicationTest {
 	private void setupSocket(String hostname) {
 		socket = new QSslSocket(new QObject());
 		socket.connectToHostEncrypted(hostname, (short) 443);
+		// We don't care what CA certificate chain the remote end claims we're
+		// testing generic SSL functionality is available.
+		socket.setPeerVerifyMode(PeerVerifyMode.VerifyNone);
 		// block the calling thread until an encrypted connection has been
 		// established.
 		socket.waitForEncrypted(5000);
@@ -53,6 +57,7 @@ public class TestQSslSocket extends QApplicationTest {
 	@org.junit.Test
 	public void testConnectToHostEncrypted() {
 		setupSocket(K_host_google_com);
+		assertEquals("socket.state()", socket.state(), QAbstractSocket.SocketState.ConnectedState);
 		assertTrue(socket.isValid());
 		// Could not use unittest.qt-jambi.org as socket.isEncrypted()==false not sure exactly why,
 		//  maybe it doesn't like the CA.
@@ -62,6 +67,7 @@ public class TestQSslSocket extends QApplicationTest {
 	@org.junit.Test
 	public void testConnectToHostWithData() {
 		setupSocket(K_host_google_com);
+		assertEquals("socket.state()", socket.state(), QAbstractSocket.SocketState.ConnectedState);
 		// another test candidate
 		String s = "HEAD / HTTP/1.1\r\nHost: " + K_host_google_com + "\r\nConnection: close\r\n\r\n";
 		byte[] bA;
@@ -83,13 +89,14 @@ public class TestQSslSocket extends QApplicationTest {
 		// we can take the reception of any data as demonstrating SSL working
 		assertTrue("read length", (totalBytesRead > 0));
 		if(socket.state() != QAbstractSocket.SocketState.UnconnectedState)
-		        socket.waitForDisconnected(5000);
+			socket.waitForDisconnected(5000);
 	}
 
 	@org.junit.Test
 	public void testCaCertificates() {
 		// We use a remote host we can control the server side certificates on
 		setupSocket(K_host_unittest_qt_jambi_org);
+		assertEquals("socket.state()", socket.state(), QAbstractSocket.SocketState.ConnectedState);
 		certs = socket.peerCertificateChain();
 		assertNotNull(certs);
 		assertTrue(certs.size() > 0);
@@ -114,7 +121,7 @@ public class TestQSslSocket extends QApplicationTest {
 			// in UTC too
 			expDate.setTimeSpec(Qt.TimeSpec.UTC);
 
-                        String desc = "cert[" + Integer.valueOf(j).toString() + "]";
+			String desc = "cert[" + Integer.valueOf(j).toString() + "]";
 			assertTrue(desc + ".isValid()", cert.isValid());
 			assertEquals(desc + ".cert.expiryDate()" , expDate, cert.expiryDate());
 
