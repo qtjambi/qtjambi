@@ -165,7 +165,7 @@ public class QClassPathEngine extends QAbstractFileEngine {
                 // ELSE it is a relative path and will be picked up below
             } else if(pathLength > 1) {
                 char secondChar = path.charAt(1);
-                if(secondChar == File.separatorChar) {
+                if(firstChar == '.' && secondChar == File.separatorChar) {
                     // ./foo/bar case
                     String tmpPath = resolveCurrentDirectory();
                     if(tmpPath != null) {
@@ -181,6 +181,15 @@ public class QClassPathEngine extends QAbstractFileEngine {
                         // and would be invalid for windows using java.io.File API anyway.
                         if(secondChar == ':' && thirdChar == '\\')
                             skipTryAsis = true;
+                        if(secondChar == ':' && thirdChar == '/')  // "C:/dir1/dir2/file.dat" is seen when processing paths from QFileInfo
+                            skipTryAsis = true;
+                    } else if(pathLength > 3) {
+                        // Eclipse "/C:/..."
+                        char fourthChar = path.charAt(3);
+                        if(firstChar == '/' && (secondChar >= 'A' && secondChar <= 'Z') || (secondChar >= 'a' && secondChar <= 'z')) {
+                            if(thirdChar == ':' && fourthChar == '/')
+                                skipTryAsis = true;  // we prefix it with file:// below
+                        }
                     }
                 }
             }
