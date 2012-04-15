@@ -68,6 +68,9 @@ import com.trolltech.qt.gui.QPaintEngineState;
 import com.trolltech.qt.gui.QPixmap;
 
 public class TestQPaintEngine extends CustomPaintEngine {
+    // TODO explain why we don't just use QApplicaitonTest subclass or #testDispose() method ?
+    //  I can not see a good reason other than we already subclass CustomPaintEngine so we can
+    //  just invoke the static methods directly.
     @BeforeClass
     public static void testInitialize() throws Exception {
         Utils.println(2, "TestQPaintEngine.testInitialize(): begin");

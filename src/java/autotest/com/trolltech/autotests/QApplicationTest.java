@@ -82,14 +82,20 @@ public abstract class QApplicationTest extends QSignalEmitter {
 
     private static QMessageHandler myQMessageHandler;
 
-    @BeforeClass
-    public static void testInitialize() throws Exception {
+    public static void testInitialize(String[] args) throws Exception {
         Utils.println(2, "QApplicationTest.testInitialize(): begin");
-        QApplication.initialize(new String[] {});
+        if(args == null)
+            args = new String[] {};
+        QApplication.initialize(args);
         Utils.setupNativeResourceThread();
         myQMessageHandler = new MyQMessageHandler();
         QMessageHandler.installMessageHandler(myQMessageHandler);
         Utils.println(2, "QApplicationTest.testInitialize(): done");
+    }
+
+    @BeforeClass
+    public static void testInitialize() throws Exception {
+        testInitialize(null);
     }
 
     @AfterClass

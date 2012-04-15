@@ -107,7 +107,7 @@ public abstract class TestMemoryManagement {
 
     @AfterClass
     public static void testDispose() throws Exception {
-        Utils.println(2, "TestMemoryManagement.testDispose(): begin"); 
+        Utils.println(2, "TestMemoryManagement.testDispose(): begin");
         if(Utils.releaseNativeResources() > 0) {
             System.gc();
             System.runFinalization();

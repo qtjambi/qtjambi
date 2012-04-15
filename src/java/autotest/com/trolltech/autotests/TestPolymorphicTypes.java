@@ -79,10 +79,11 @@ public class TestPolymorphicTypes extends QWidget {
     @BeforeClass
     public static void testInitialize() throws Exception {
         Utils.println(2, "TestPolymorphicTypes.testInitialize(): begin");
-        QApplication.initialize(new String[] {});
+        QApplicationTest.testInitialize(null);
         Utils.println(2 ,"TestPolymorphicTypes.testInitialize(): done");
     }
 
+    // TODO explain why we don't just use QApplicaitonTest subclass or #testDispose() method ?
     @AfterClass
     public static void testDispose() throws Exception {
         Utils.println(2, "TestPolymorphicTypes.testDispose(): begin");

@@ -78,6 +78,7 @@ public class TestQMessageHandler extends QMessageHandler {
         lastFatal = message;
     }
 
+    // We don't use QApplicationTest since that will by default initialize QMessageHandler
     @BeforeClass
     public static void testInitialize() throws Exception {
         Utils.println(2, "TestQMessageHandler.testInitialize(): begin");

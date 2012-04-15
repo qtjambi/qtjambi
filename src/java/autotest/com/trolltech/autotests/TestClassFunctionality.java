@@ -210,13 +210,11 @@ class EventReceiver extends QWidget {
 public class TestClassFunctionality extends QApplicationTest {
     @BeforeClass
     public static void testInitialize() throws Exception {
-        Utils.println(2, "TestClassFunctionality.testInitialize(): begin");
         String args[] = new String[3];
         args[0] = "A";
         args[1] = "B";
         args[2] = "C";
-        QApplication.initialize(new String[] {});
-        Utils.println(2, "TestClassFunctionality.testInitialize(): done");
+        QApplicationTest.testInitialize(args);
     }
 
     @Before
