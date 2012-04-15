@@ -190,8 +190,23 @@ public class TestThreads extends QApplicationTest {
 
             ping.go();
 
-            ping.join(5000);
-            pong.join(1000);
+            // This is designed to give it more time to keep making progress
+            int pingNumPings = -1;
+            int same = 0;
+            for(int i = 0; i < 60; i++) {
+                if(!ping.isAlive())
+                    break;
+                if(pingNumPings == ping.object.numPings) {
+                    same++;
+                } else {
+                    pingNumPings = ping.object.numPings;
+                    same = 0;
+                }
+                if(same > 5)
+                    break;
+                ping.join(500);
+            }
+            pong.join(1500);
 
             assertFalse("ping.isAlive()", ping.isAlive());
             assertFalse("pong.isAlive()", pong.isAlive());
@@ -252,14 +267,14 @@ public class TestThreads extends QApplicationTest {
 
             // Wait for startup sync
             while(true) {
-                try {
-                    sleep(25);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 synchronized(this) {
-                    if(ready)
+                    try {
+                        wait(25);
+                    } catch (InterruptedException eat) {
+                    }
+                    if(ready) {
                         break;  // lets go
+                    }
                 }
             }
             if (ping) {
@@ -303,12 +318,29 @@ public class TestThreads extends QApplicationTest {
         synchronized(ping) {
             synchronized(pong) {
                 ping.ready = true;
+                ping.notifyAll();
                 pong.ready = true;
+                pong.notifyAll();
             }
         }
 
-        ping.join(5000);
-        pong.join(1000);
+        // This is designed to give it more time to keep making progress
+        int pingNumPings = -1;
+        int same = 0;
+        for(int i = 0; i < 60; i++) {
+            if(!ping.isAlive())
+                break;
+            if(pingNumPings == ping.object.numPings) {
+                same++;
+            } else {
+                pingNumPings = ping.object.numPings;
+                same = 0;
+            }
+            if(same > 5)
+                break;
+            ping.join(500);
+        }
+        pong.join(1500);
 
         assertFalse("ping.isAlive()", ping.isAlive());
         assertFalse("pong.isAlive()", pong.isAlive());
