@@ -47,6 +47,7 @@ package com.trolltech.autotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.trolltech.qt.core.QAbstractFileEngine;
@@ -55,6 +56,20 @@ import com.trolltech.qt.core.QTranslator;
 import com.trolltech.qt.gui.QApplication;
 
 public class TestI18N extends QApplicationTest {
+
+    @BeforeClass
+    public static void testInitialize() throws Exception {
+        if("Hello è".compareTo("Hello \u00e8") != 0)
+            throw new RuntimeException("Prerequisite 1 of 1: -encoding UTF-8 is required.  This test class can only be expected to work as intended when javac used -encoding UTF-8 for compling the source code.");
+        QApplicationTest.testInitialize();
+    }
+
+    @Test
+    public void testCompilerUsedUtf8WhenCompling() {
+        // If this test fails you did not tell the compiler that the source code is UTF-8
+        // during the compiling process to fix recompile the project with UTF-8 set.
+        assertEquals("Compiler used -encoding UTF-8 check", "Hello è", "Hello \u00e8");
+    }
 
     @Test
     public void TestSimpleNotTranslated() {
@@ -65,7 +80,7 @@ public class TestI18N extends QApplicationTest {
 
     @Test
     public void TestSimpleNotTranslatedWithTranslationsLoaded() {
-        QAbstractFileEngine.addSearchPathForResourceEngine(".");        
+        QAbstractFileEngine.addSearchPathForResourceEngine(".");
         QTranslator translator = new QTranslator();
         assertTrue(translator.load("classpath:com/trolltech/autotests/i18n.qm"));
         QApplication.installTranslator(translator);
