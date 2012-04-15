@@ -1429,10 +1429,41 @@ void qtjambi_metacall(JNIEnv *env, QEvent *event)
         env = qtjambi_current_environment();
 
     QtJambiLink *link = QtJambiLink::findLinkForUserObject(event);
+    if(link == 0) {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        ::fprintf(stderr, "WARNING: qtjambi_metacall() event=%p link=%p\n", event, link);
+#endif
+        return;
+    }
     Q_ASSERT(link);
 
-    jobject jEvent = link->javaObject(env);
+    // The QEvent has done its jobs and got runtime execution back into
+    // this method, while it was waiting in the Qt event queue the
+    // associated Java object was taken as a global reference to stop
+    // the JVM GCing the java data while it was waiting its turn to be
+    // processed causing execution to end up here.
+    // We always take a new (hard) local reference now because during the
+    // execution of this method that hard reference will be convered back into
+    // a weak reference which effectively goes out of scope during the calling
+    // of the execute()V method below.  So to keep this code as quirk free as
+    // possible we take our own hard reference during the time we want to keep
+    // the java object alive in this method.
+    jobject jEvent = env->NewLocalRef(link->getJavaObject());
+    if(env->IsSameObject(jEvent, 0)) {
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        ::fprintf(stderr, "WARNING: qtjambi_metacall() event=%p link=%p jEvent=%p\n", event, link, jEvent);
+#endif
+        return;
+    }
     Q_ASSERT(jEvent);
+
+    // We take charge of ensuring this is GCed, the jEvent is probably the
+    // only hard reference left.  We do this early so that it gets done
+    // regardless of any problems encountered below.
+    // FIXME: Need to investigate the concern that application code might be
+    // able to queue some other event of this type()==512 that is not what we
+    // expect.  Maybe gracefully handling link==0 jEvent==0 will solve that.
+    link->setDefaultOwnership(env, jEvent);
 
     jclass cls = env->GetObjectClass(jEvent);
     Q_ASSERT(cls);
@@ -1456,7 +1487,7 @@ void qtjambi_metacall(JNIEnv *env, QEvent *event)
     }
 
     env->DeleteLocalRef(cls);
-    link->javaObjectDeleteIfLocalRef(env, jEvent);
+    env->DeleteLocalRef(jEvent);
     // FIXME: Better failure scenarios (emit our own kind of exception/qWarning())
 }
 
