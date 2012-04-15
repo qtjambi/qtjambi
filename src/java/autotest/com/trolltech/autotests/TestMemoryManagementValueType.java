@@ -58,6 +58,10 @@ public class TestMemoryManagementValueType extends TestMemoryManagement {
     }
 
     @Override
+    protected void uninitialize() {
+    }
+
+    @Override
     protected QtJambiObject createInstanceInJava() {
         QtJambiObject o = new ValueType();
         accountingForObject(o);

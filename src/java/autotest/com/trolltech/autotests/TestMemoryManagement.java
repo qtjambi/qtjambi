@@ -53,7 +53,9 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.WeakReference;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -152,6 +154,16 @@ public abstract class TestMemoryManagement {
         Utils.println(3, "TestMemoryManagement.testDispose(): end objectCount="+objectCount);
     }
 
+    @Before
+    public void setUp() {
+        initialize();
+    }
+
+    @After
+    public void tearDown() {
+        uninitialize();
+    }
+
     public Integer getIdNext() {
         int idNext;
         synchronized(TestMemoryManagement.class) {
@@ -225,8 +237,6 @@ public abstract class TestMemoryManagement {
     // get compiled-in invocation counts.
 
     protected final void resetAll() {
-        initialize();
-
         QtJambiDebugTools.reset_destructorFunctionCalledCount();
         QtJambiDebugTools.reset_disposeCalledCount();
         QtJambiDebugTools.reset_finalizedCount();
@@ -276,6 +286,8 @@ public abstract class TestMemoryManagement {
     }
 
     protected abstract void initialize();
+
+    protected abstract void uninitialize();
 
     protected abstract QtJambiObject createInstanceInJava();
 

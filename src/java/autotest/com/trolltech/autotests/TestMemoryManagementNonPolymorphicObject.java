@@ -58,6 +58,10 @@ public class TestMemoryManagementNonPolymorphicObject extends TestMemoryManageme
         QtJambiRuntime.setObjectCacheMode(0);	// DISABLE
     }
 
+    @Override
+    protected void uninitialize() {
+    }
+
     protected QtJambiObject createInstanceInJava() {
         QtJambiObject o = new NonPolymorphicObjectType();
         accountingForObject(o);

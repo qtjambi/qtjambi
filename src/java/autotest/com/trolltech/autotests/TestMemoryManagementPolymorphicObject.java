@@ -56,6 +56,10 @@ public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement 
     protected void initialize() {
     }
 
+    @Override
+    protected void uninitialize() {
+    }
+
     protected QtJambiObject createInstanceInJava() {
         QtJambiObject o = new PolymorphicObjectType();
         accountingForObject(o);
