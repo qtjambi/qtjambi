@@ -49,6 +49,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import org.junit.Test;
@@ -77,6 +80,37 @@ public class TestFileEngine extends QApplicationTest {
         return count;
     }
 
+    // The purpose of this test is to check the JUnit testcase CLASSPATH is setup as
+    // the test case needs to perform correctly.
+    @Test
+    public void testCheckClassPath() {
+        String urlProtocol = null; 
+        boolean bf = false;
+        InputStream inputStream = null;
+        try {
+            // This should be available on the regular class path
+            inputStream = TestFileEngine.class.getClassLoader().getResourceAsStream("com/trolltech/autotests/TestClassFunctionality.jar");
+            if(inputStream != null)
+                bf = true;
+
+            // It should also be available via the file:/// protocol (i.e. a directly accessible file)
+            URL url = TestFileEngine.class.getClassLoader().getResource("com/trolltech/autotests/TestClassFunctionality.jar");
+            if(url != null)
+                urlProtocol = url.getProtocol();
+        } finally {
+            if(inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException eat) {
+                }
+                inputStream = null;
+            }
+        }
+        assertTrue("com/trolltech/autotests/TestClassFunctionality.jar exists on CLASSAPTH", bf);
+        // This checks it is not inside a JAR itself but directly accessible as a file
+        assertEquals("com/trolltech/autotests/TestClassFunctionality.jar exists on CLASSPATH and is file:/// URL protocol", "file", urlProtocol);
+    }
+
     @Test
     public void run_classPathFileEngine() {
         QAbstractFileEngine.addSearchPathForResourceEngine(".");  // Hmm not sure on the merit of this cwd will be project top-level dir
@@ -89,7 +123,7 @@ public class TestFileEngine extends QApplicationTest {
         assertTrue(af.open(QIODevice.OpenModeFlag.ReadOnly));
         af.close();
 
-        String search_path = info.canonicalFilePath();
+        String search_path = info.canonicalFilePath();  // on windows this is in the format "C:/dir1/dir2/TestClassFunctionality.jar"
         QAbstractFileEngine.addSearchPathForResourceEngine(search_path);
 
         QFileInfo ne_info = new QFileInfo("classpath:TestClassFunctionality_nosuchfile.txt");
