@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QBuffer;
 import com.trolltech.qt.core.QIODevice;
+import com.trolltech.qt.core.QIODevice.OpenMode;
 import com.trolltech.qt.xmlpatterns.QXmlFormatter;
 import com.trolltech.qt.xmlpatterns.QXmlItem;
 import com.trolltech.qt.xmlpatterns.QXmlName;
@@ -23,7 +24,6 @@ public class TestQXmlFormatter extends QApplicationTest {
 
     QXmlQuery query;
     QXmlSerializer serializer;
-    QBuffer buffer;
     QXmlResultItems xmlResultItems;
     QXmlFormatter formatter;
     String samplePath1 = "doc('classpath:com/trolltech/unittests/xquerySample1.xml')";
@@ -38,14 +38,11 @@ public class TestQXmlFormatter extends QApplicationTest {
     public void setUp() throws Exception {
         query = new QXmlQuery();
         xmlResultItems = new QXmlResultItems();
-        buffer = new QBuffer();
     }
 
     @After
     public void tearDown() throws Exception {
         query = null;
-        if(buffer != null)
-            buffer.close();
     }
 
     @Test
@@ -78,6 +75,8 @@ public class TestQXmlFormatter extends QApplicationTest {
     @Test
     public void testEvaluateToQXmlSerializer() {
         query.setQuery(samplePath1 + "/a/p");
+        QBuffer buffer = new QBuffer();
+        assertTrue(buffer.open(QIODevice.OpenModeFlag.ReadWrite));
         TestSerializerClass clazz = new TestSerializerClass(query, buffer);
         assertTrue(query.isValid());
         query.evaluateTo(clazz.outputDevice());
