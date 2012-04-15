@@ -1295,9 +1295,22 @@
 
 
         <modify-function signature="postEvent(QObject*,QEvent*)">
-        <modify-argument index="2">
-            <define-ownership class="java" owner="cplusplus"/>
-        </modify-argument>
+            <modify-argument index="2">
+                <!-- This is done to ensure the Java object side of the event is
+                not destroyed by the GC while it is waiting around in the event
+                queue as there is usually no other hard reference to it at
+                that time -->
+                <define-ownership class="java" owner="cplusplus"/>
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="postEvent(QObject*,QEvent*,int)">
+            <modify-argument index="2">
+                <!-- This is done to ensure the Java object side of the event is
+                not destroyed by the GC while it is waiting around in the event
+                queue as there is usually no other hard reference to it at
+                that time -->
+                <define-ownership class="java" owner="cplusplus"/>
+            </modify-argument>
         </modify-function>
     </object-type>
 
