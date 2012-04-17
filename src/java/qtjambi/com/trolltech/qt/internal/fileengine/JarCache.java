@@ -97,7 +97,7 @@ class JarCache {
 
             for (String jarFileName : jarFileList) {
                 JarURLConnection jarUrlConnection = null;
-                JarFile jarFile = null;
+                MyJarFile myJarFile = null;
                 try {
                     // 
                     if(jarFileName.startsWith("file:")) {
@@ -110,20 +110,41 @@ class JarCache {
 // Uncommenting this causes many testcases to fail
                             classPathDirs.add(jarFileName);
                             continue;   // FIXME: Use a directory resolver
+                        } else if(fileDir.isFile()) {
+                            JarFile jarFile = new JarFile(fileDir);
+                            myJarFile = new MyJarFile(jarFile);
                         }
                     }
-                    URL url = new URL("jar:" + jarFileName + "!/");
-                    URLConnection urlConnection = url.openConnection();
-                    if((urlConnection instanceof JarURLConnection) == false)
-                        throw new RuntimeException("no a JarURLConnection: " + urlConnection.getClass().getName());
-                    jarUrlConnection = (JarURLConnection) urlConnection;
-                    jarFile = jarUrlConnection.getJarFile();
+                    if(myJarFile == null) {  // without "file:" prefix
+                        File fileDir = new File(jarFileName);
+                        if(fileDir.isDirectory()) {
+                            // Need to add in top level so that
+                            // add(tmpCache, "", new DirectoryResolver(fileDir));
+// Uncommenting this causes many testcases to fail
+                            classPathDirs.add(jarFileName);
+                            continue;   // FIXME: Use a directory resolver
+                        } else if(fileDir.isFile()) {
+                            JarFile jarFile = new JarFile(fileDir);
+                            myJarFile = new MyJarFile(jarFile);
+                        }
+                    }
+                    if(myJarFile == null) {
+                        URL url = new URL("jar:" + jarFileName + "!/");
+                        URLConnection urlConnection = url.openConnection();
+                        if((urlConnection instanceof JarURLConnection) == false)
+                            throw new RuntimeException("no a JarURLConnection: " + urlConnection.getClass().getName());
+                        jarUrlConnection = (JarURLConnection) urlConnection;
+                        {
+                            JarFile jarFile = jarUrlConnection.getJarFile();
+                            myJarFile = new MyJarFile(jarFile);
+                        }
+                    }
 
-                    String jarFileNameX = jarFile.getName();  // "/foo/my.jar", "C:\foo\my.jar"
+                    String jarFileNameX = myJarFile.getName();  // "/foo/my.jar", "C:\foo\my.jar"
 
                     Set<String> seenSet = new HashSet<String>();
 
-                    Enumeration<JarEntry> entries = jarFile.entries();
+                    Enumeration<JarEntry> entries = myJarFile.entries();
                     // FIXME: Special case for empty directory
                     while (entries.hasMoreElements()) {
                         JarEntry entry = entries.nextElement();
@@ -185,11 +206,9 @@ class JarCache {
                     // platforms (ZipException on Linux and FileNotFoundException on Windows)
                     classPathDirs.add(jarFileName);
                 } finally {
-                    if (jarFile != null) {
-                        try {
-                            jarFile.close();
-                        } catch (IOException eat) {
-                        }
+                    if (myJarFile != null) {
+                        myJarFile.put();
+                        myJarFile = null;
                     }
                 }
             }
@@ -236,15 +255,11 @@ class JarCache {
     private static void invalidateLocked() {
         if(cache == null)
             return;
-//        for(Map.Entry<String, List<JarFile>> entry : cache.entrySet()) {
+//        for(Map.Entry<String, List<MyJarFile>> entry : cache.entrySet()) {
 //            String key = entry.getKey();
-//            List<JarFile> value = entry.getValue();
-//            for(JarFile jarFile : value) {
-//                try {
-//                    jarFile.close();
-//                } catch(IOException e) {
-//                    e.printStackTrace();
-//                }
+//            List<MyJarFile> value = entry.getValue();
+//            for(MyJarFile myJarFile : value) {
+//                myJarFile.put();
 //            }
 //        }
         cache.clear();

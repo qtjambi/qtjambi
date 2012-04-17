@@ -79,7 +79,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     private String m_entryFileName;
 
     private JarEntry m_entry;
-    private JarFile m_jarFile;
+    private MyJarFile m_myJarFile;
 
     private InputStream m_stream;
 //    private BufferedReader m_reader;  // FIXME: Why do we even have this ?  m_stream will do right?
@@ -93,11 +93,21 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
 
     // FIXME: This JarFile needs to be a unique handle that does sharable accounting for JarCache
-    public QJarEntryEngine(JarFile jarFile, String fileName, boolean isDirectory) {
+    // JAVADOC: Callers responsibiliy to transfer the reference on myJarFile to us during this ctor
+    public QJarEntryEngine(MyJarFile myJarFile, String fileName, boolean isDirectory) {
         m_pos = -1;
-        m_jarFile = jarFile;
+        // we presume we already have a reference on myJarFile and the ownership
+        //  of that reference is transfered to this instance.  So we don't increment here.
+        m_myJarFile = myJarFile;
         m_directory = isDirectory;
         setFileName(fileName);
+    }
+
+    // transfers ownership of reference count back to caller of this method
+    //  this presume the caller has a handle to the MyJarFile already
+    void disown() {
+        // Stops disposed() from trying to close handle
+        m_myJarFile = null;
     }
 
     protected void disposed() {
@@ -105,13 +115,9 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
         m_entry = null;
 
-        if (m_jarFile != null) {
-            try {
-                m_jarFile.close();
-            } catch(IOException eat) {
-                eat.printStackTrace();
-            }
-            m_jarFile = null;
+        if (m_myJarFile != null) {
+            m_myJarFile.put();
+            m_myJarFile = null;
 
             // FIXME: Do a put/deref/release for JarCache
         }
@@ -120,7 +126,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     @Override
     public void setFileName(String fileName) {
         m_entry = null;
-        if (m_jarFile == null) {
+        if (m_myJarFile == null) {
              return;
         }
 
@@ -133,7 +139,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
         }
 
         m_entryFileName = fileName;
-        m_entry = m_jarFile.getJarEntry(m_entryFileName);
+        m_entry = m_myJarFile.getJarEntry(m_entryFileName);
 
         if (m_entry == null && !m_directory) {
             m_valid = false;
@@ -147,9 +153,9 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     public String classPathEntryName() {
-        if(m_jarFile == null)
+        if(m_myJarFile == null)
             return null;
-        return m_jarFile.getName();
+        return m_myJarFile.getName();
     }
 
     public boolean isValid() {
@@ -238,17 +244,18 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     private boolean closeInternal() {
         boolean bf = false;
 
+        // FIXME: close m_reader
+
         if(m_stream != null) {
             try {
                 m_stream.close();
             } catch(IOException e) {
             } finally {
                 m_stream = null;
+                m_myJarFile.put();  // decrement reference
                 bf = true;  // was open now closed
             }
         }
-
-        // FIXME: close m_reader
 
         return bf;
     }
@@ -257,13 +264,10 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     public boolean close() {
         boolean bf = closeInternal();
 
-        if(m_jarFile != null) {
-            //try {
-                // We really want to do this some how and not leave it to disposed()
-                //m_jarFile.close();
-            //} catch (IOException eat) {
-            //}
-            //m_jarFile = null;
+        if(m_myJarFile != null) {
+            // We really want to do this some how and not leave it to disposed()
+            m_myJarFile.put();  // the reference this instance already had on construction
+            m_myJarFile = null;
         }
 
         return bf;
@@ -292,7 +296,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
         if (!mentryName.endsWith("/") && mentryName.length() > 0)
             mentryName = mentryName + "/";
 
-        Enumeration<JarEntry> entries = m_jarFile.entries();
+        Enumeration<JarEntry> entries = m_myJarFile.entries();
 
         HashSet<String> used = new HashSet<String>();
         while (entries.hasMoreElements()) {
@@ -313,7 +317,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
             } else {
                 isDir = entry.isDirectory();
                 if (!isDir)
-                    isDir = QClassPathEngine.checkIsDirectory(m_jarFile, entry);
+                    isDir = QClassPathEngine.checkIsDirectory(m_myJarFile, entry);
             }
 
             if (!filters.isSet(QDir.Filter.Readable))
@@ -351,7 +355,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
         try {
             int flags = 0;
 
-            QFileInfo info = new QFileInfo(m_jarFile.getName());
+            QFileInfo info = new QFileInfo(m_myJarFile.getName());
              if (info.exists()) {
                  flags |= info.permissions().value()
                           & (FileFlag.ReadOwnerPerm.value()
@@ -383,7 +387,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
         } else if (file == FileName.DefaultName
                 || file == FileName.AbsoluteName
                 || file == FileName.CanonicalName) {
-            s = QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + entryFileName;
+            s = QClassPathEngine.FileNamePrefix + m_myJarFile.getName() + QClassPathEngine.FileNameDelim + entryFileName;
         } else if (file == FileName.BaseName) {
             int pos = m_entryFileName.lastIndexOf("/");
             s = pos >= 0 ? m_entryFileName.substring(pos + 1) : entryFileName;
@@ -391,7 +395,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
             int pos = m_entryFileName.lastIndexOf("/");
             s = pos > 0 ? m_entryFileName.substring(0, pos) : "";
         } else if (file == FileName.CanonicalPathName || file == FileName.AbsolutePathName) {
-            s = QClassPathEngine.FileNamePrefix + m_jarFile.getName() + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
+            s = QClassPathEngine.FileNamePrefix + m_myJarFile.getName() + QClassPathEngine.FileNameDelim + fileName(FileName.PathName);
         } else {
             throw new IllegalArgumentException("Unknown file name type: " + file);
         }
@@ -401,7 +405,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     @Override
     public QDateTime fileTime(QAbstractFileEngine.FileTime time) {
         if (m_entry == null) {
-            QFileInfo info = new QFileInfo(m_jarFile.getName());
+            QFileInfo info = new QFileInfo(m_myJarFile.getName());
 
             if (info.exists())
                 return info.lastModified();
@@ -442,8 +446,12 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
         if (m_entry != null) {
             if (!openMode.isSet(QIODevice.OpenModeFlag.WriteOnly) && !openMode.isSet(QIODevice.OpenModeFlag.Append)) {
+                boolean obtained = false;
                 try {
-                    m_stream = m_jarFile.getInputStream(m_entry);
+                    m_myJarFile.get();	// increment reference while we have stream open
+                    obtained = true;
+
+                    m_stream = m_myJarFile.getInputStream(m_entry);
                     if (m_stream != null) {
                         //if (openMode.isSet(QIODevice.OpenModeFlag.Text))
                         //    m_reader = new BufferedReader(new InputStreamReader(m_stream));
@@ -452,6 +460,9 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
                         bf = true;
                     }
                 } catch (IOException eat) {  // cause a return false
+                } finally {
+                    if(!bf && obtained)    // we failed  but already obtained reference
+                        m_myJarFile.put(); // rollback reference
                 }
             }
         }
