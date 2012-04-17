@@ -468,11 +468,8 @@ public class Launcher extends QWidget {
         return deliver;
     }
 
-    public static void main(String args[]) throws IOException {
-        QApplication.initialize(args == null ? start_qt() : args);
-        QApplication.setApplicationName("Qt Jambi Demo Launcher");
-
-
+    // This inner-method gives the JVM GC a chance to discard the SplashScreen object.
+    public static void startup() throws IOException {
         SplashScreen splashScreen = null;
         splashScreen = new SplashScreen();
         splashScreen.show();
@@ -489,11 +486,19 @@ public class Launcher extends QWidget {
 
         l.progressChanged.connect(splashScreen, "updateProgress(String)");
 
-        l.init();
+        l.init();  // java.io.IOException
         l.show();
 
         if (splashScreen != null)
             splashScreen.finish(l);
+
+    }
+
+    public static void main(String args[]) throws IOException {
+        QApplication.initialize(args == null ? start_qt() : args);
+        QApplication.setApplicationName("Qt Jambi Demo Launcher");
+
+        startup();
 
         QApplication.execStatic();
         QApplication.shutdown();
