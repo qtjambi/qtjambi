@@ -476,17 +476,17 @@ public class InitializeBuildTask extends Task {
         propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLPSQL,    decidePluginsSqldriversSqlpsql());
         propertyHelper.setNewProperty((String) null, Constants.PLUGINS_SQLDRIVERS_SQLTDS,     decidePluginsSqldriversSqltds());
 
-        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(Constants.PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6"));
-        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1"));
-        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1"));
-        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_MINGWM10,        decideQtBinDso(Constants.PACKAGING_DSO_MINGWM10,        "mingwm10"));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(Constants.PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6", null, null));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1", null, null));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1", null, null));
+        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_MINGWM10,        decideQtBinDso(Constants.PACKAGING_DSO_MINGWM10,        "mingwm10", null, null));
 
 
-        String packagingDsoLibeay32 = decideQtLibDso(Constants.PACKAGING_DSO_LIBEAY32, "libeay32", null);
-        propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBEAY32, packagingDsoLibeay32);
+        String packagingDsoLibeay32 = decideQtBinDso(Constants.PACKAGING_DSO_LIBEAY32, "libeay32", null, false);
+        mySetProperty(propertyHelper, -1, Constants.PACKAGING_DSO_LIBEAY32, null, packagingDsoLibeay32, false);
 
-        String packagingDsoLibssl32 = decideQtLibDso(Constants.PACKAGING_DSO_LIBSSL32, "libssl32", null, false);
-        String packagingDsoSsleay32 = decideQtLibDso(Constants.PACKAGING_DSO_SSLEAY32, "ssleay32", null, false);
+        String packagingDsoLibssl32 = decideQtBinDso(Constants.PACKAGING_DSO_LIBSSL32, "libssl32", null, false);
+        String packagingDsoSsleay32 = decideQtBinDso(Constants.PACKAGING_DSO_SSLEAY32, "ssleay32", null, false);
         // When building QtJambi against the offical Nokia Qt SDK they appear to provide duplicate
         // DLLs for the two naming variants libssl32.dll ssleay32.dll so we need to resolve this and
         // omit one.
@@ -514,12 +514,12 @@ public class InitializeBuildTask extends Task {
         String QTDIR = System.getenv("QTDIR");   // used here
 
         if(OSInfo.isWindows()) {
-            String packagingDsoZlib1 = decideQtLibDso(Constants.PACKAGING_DSO_ZLIB1, "zlib1", null);
-            propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_ZLIB1, packagingDsoZlib1);
+            String packagingDsoZlib1 = decideQtBinDso(Constants.PACKAGING_DSO_ZLIB1, "zlib1", null, false);
+            mySetProperty(propertyHelper, -1, Constants.PACKAGING_DSO_ZLIB1, null, packagingDsoZlib1, false);
         } else {
             // If the lib directory contains "libz.so.1" or "libssl.so" or "libcrypto.so.1.0.0"
             String sourceValue = null;
-            String packagingDsoLibssl = decideQtLibDso(Constants.PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, false);
+            String packagingDsoLibssl = decideQtBinDso(Constants.PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, false);
             if(packagingDsoLibssl != null && packagingDsoLibssl.startsWith(QTDIR) == false) {
                 sourceValue = " (detected: " + packagingDsoLibssl + "; but inhibited as not inside QTDIR)";
                 packagingDsoLibssl = null;
@@ -528,7 +528,7 @@ public class InitializeBuildTask extends Task {
 
             // FIXME: Implement file globs and reverse sort
             sourceValue = null;
-            String packagingDsoLibcrypto = decideQtLibDso(Constants.PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0h", "1.0.0g", "1.0.0", "0.0.0", null, "10" }, false);
+            String packagingDsoLibcrypto = decideQtBinDso(Constants.PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0h", "1.0.0g", "1.0.0", "0.0.0", null, "10" }, false);
             if(packagingDsoLibcrypto != null && packagingDsoLibcrypto.startsWith(QTDIR) == false) {
                 sourceValue = " (detected: " + packagingDsoLibcrypto + "; but inhibited as not inside QTDIR)";
                 packagingDsoLibcrypto = null;
@@ -536,7 +536,7 @@ public class InitializeBuildTask extends Task {
             mySetProperty(propertyHelper, -1, Constants.PACKAGING_DSO_LIBCRYPTO, sourceValue, packagingDsoLibcrypto, false);
 
             sourceValue = null;
-            String packagingDsoLibz = decideQtLibDso(Constants.PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, false);
+            String packagingDsoLibz = decideQtBinDso(Constants.PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, false);
             if(packagingDsoLibz != null && packagingDsoLibz.startsWith(QTDIR) == false) {
                 sourceValue = " (detected: " + packagingDsoLibz + "; but inhibited as not inside QTDIR)";
                 packagingDsoLibz = null;
@@ -546,7 +546,7 @@ public class InitializeBuildTask extends Task {
 
         // FIXME: On Macosx when we build and have qtjambi.dbus==true we should WARN when we can not locate libdbus-1.*.dylib
         // FIXME: On Macosx we should also search /usr/local/lib
-        String packagingDsoLibdbus = decideQtLibDso(Constants.PACKAGING_DSO_LIBDBUS, "dbus-1", new String[] { "3", "2", null }, null);
+        String packagingDsoLibdbus = decideQtBinDso(Constants.PACKAGING_DSO_LIBDBUS, "dbus-1", new String[] { "3", "2", null }, null);
         propertyHelper.setNewProperty((String) null, Constants.PACKAGING_DSO_LIBDBUS, packagingDsoLibdbus);
 
         // Other build information sanity testing and warning
@@ -1044,7 +1044,7 @@ public class InitializeBuildTask extends Task {
         return new File(path.toString()).exists();
     }
 
-    private boolean doesQtBinExist(String name, String librarydir) {
+    private String doesQtBinExist(String name, String version, String librarydir, Boolean debugValue) {
         StringBuilder path = new StringBuilder();
 
         if(librarydir != null) {
@@ -1056,9 +1056,16 @@ public class InitializeBuildTask extends Task {
         }
 
         path.append(File.separator);
-        path.append(LibraryEntry.formatQtJambiName(name, false, null));  // unversioned
-        //System.out.println("Checking QtBin: " + path);
-        return new File(path.toString()).exists();
+        boolean thisDebug = debug;
+        if(debugValue != null)
+            thisDebug = debugValue.booleanValue();
+        path.append(LibraryEntry.formatQtName(name, thisDebug, version)); // was LibraryEntry.formatQtJambiName
+        File testForFile = new File(path.toString());
+        if(verboseLevel > 1)
+            System.out.println("Checking QtBin: " + path + " " + testForFile.exists());
+        if(testForFile.exists())
+            return testForFile.getAbsolutePath();
+        return null;
     }
 
     private boolean doesQtPluginExist(String name, String subdir, boolean noLibPrefix) {
@@ -1554,11 +1561,30 @@ public class InitializeBuildTask extends Task {
         return rv;
     }
 
-    private String decideQtBinDso(String attrName, String name) {
-        boolean bf = doesQtBinExist(name, null);
-        String result = String.valueOf(bf);
-        if(verbose && bf) System.out.println(attrName + ": " + result);
-        return result;
+    private String decideQtBinDso(String attrName, String name, String version, boolean verboseFlag) {
+        String path = doesQtBinExist(name, version, null, Boolean.FALSE);
+        if(verboseFlag && path != null) System.out.println(attrName + ": " + path);
+        return path;
+    }
+
+    private String decideQtBinDso(String attrName, String name, String[] tryVersionA, Boolean verboseBoolean) {
+        boolean thisVerbose = verbose;
+        if(verboseBoolean != null)
+            thisVerbose = verboseBoolean.booleanValue();
+
+        if(tryVersionA == null)
+            return decideQtBinDso(attrName, name, null, thisVerbose);  // run at least once
+
+        String rv = null;
+        for(String tryVersion : tryVersionA) {
+            if(tryVersion != null)
+                rv = decideQtBinDso(attrName, name, tryVersion, thisVerbose);
+            else
+                rv = decideQtBinDso(attrName, name, null, thisVerbose);
+            if(rv != null)
+                return rv;
+        }
+        return rv;
     }
 
 }
