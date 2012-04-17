@@ -4,10 +4,14 @@
         com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
         com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
         com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
-        com.trolltech.qt.Utilities.loadQtLibrary("QtSql");         // load if exists
-        com.trolltech.qt.Utilities.loadQtLibrary("QtScript");      // load if exists
-        com.trolltech.qt.Utilities.loadQtLibrary("QtXmlPatterns"); // load if exists
-        com.trolltech.qt.Utilities.loadQtLibrary("QtSvg");         // load if exists
+        if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtSql"))
+            com.trolltech.qt.Utilities.loadQtLibrary("QtSql");         // load if exists
+        if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtScript"))
+            com.trolltech.qt.Utilities.loadQtLibrary("QtScript");      // load if exists
+        if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtXmlPatterns"))
+            com.trolltech.qt.Utilities.loadQtLibrary("QtXmlPatterns"); // load if exists
+        if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtSvg"))
+            com.trolltech.qt.Utilities.loadQtLibrary("QtSvg");         // load if exists
         com.trolltech.qt.Utilities.loadQtLibrary("QtDeclarative");
     </inject-code>
 </typesystem>

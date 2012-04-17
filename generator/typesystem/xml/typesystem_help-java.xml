@@ -5,8 +5,10 @@
         com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
         com.trolltech.qt.Utilities.loadQtLibrary("QtNetwork");
         com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
-        com.trolltech.qt.Utilities.loadQtLibrary("QtSql");       // load if exists
-        com.trolltech.qt.Utilities.loadQtLibrary("QtCLucene");   // load if exists
+        if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtSql"))
+            com.trolltech.qt.Utilities.loadQtLibrary("QtSql");       // load if exists
+        if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtCLucene"))
+            com.trolltech.qt.Utilities.loadQtLibrary("QtCLucene");   // load if exists
         com.trolltech.qt.Utilities.loadQtLibrary("QtHelp");
     </inject-code>
 

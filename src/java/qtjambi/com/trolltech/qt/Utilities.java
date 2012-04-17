@@ -302,6 +302,10 @@ public class Utilities {
         return newList.toArray(new String[newList.size()]);
     }
 
+    public static boolean isAvailableQtLibrary(String library) {
+        return NativeLibraryManager.isAvailableQtLibrary(library, VERSION_MAJOR_STRING);
+    }
+
     public static void loadQtLibrary(String library) {
         loadQtLibrary(library, VERSION_MAJOR_STRING);
     }

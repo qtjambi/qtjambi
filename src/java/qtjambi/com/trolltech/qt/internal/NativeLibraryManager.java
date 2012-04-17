@@ -451,6 +451,30 @@ public class NativeLibraryManager {
         loadNativeLibrary(lib);
     }
 
+    // FIXME: Use proper dependency tree to loadQtLibrary() but this will do for now
+    public static boolean isAvailableQtLibrary(String library, String version) {
+        String lib = qtLibraryName(library, version);  // "QtDBus" => "libQtDBus.so.4"
+        // search active deploymentSpec for existance of library
+        DeploymentSpec deploymentSpec = getActiveDeploymentSpec();
+        if(deploymentSpec == null)
+            return false;
+        List<LibraryEntry> libraries = deploymentSpec.getLibraries();
+        for(LibraryEntry libraryEntry : libraries) {
+            String name = libraryEntry.getName();  // name="lib/libQtFoo.so.4"
+            if(name == null)
+                continue;
+            if(lib.equals(name))      // lib=="lib/libQtFoo.so.4"
+                return true;
+            String[] pathA = RetroTranslatorHelper.split(name, "/");
+            if(pathA == null || pathA.length == 0)
+                continue;
+            String lastPart = pathA[pathA.length - 1];
+            if(lib.equals(lastPart))  // lib=="libQtFoo.so.4"
+                return true;
+        }
+        return false;
+    }
+
     public static List<String> unpackPlugins() {
         if(activeDeploymentSpec != null) {
             List<String> paths = new ArrayList<String>();
