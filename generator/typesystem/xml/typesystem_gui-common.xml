@@ -4485,6 +4485,8 @@
         <modify-function signature="drawContents(QPainter*)">
             <modify-argument index="1" invalidate-after-use="yes" />
         </modify-function>
+        <!-- signature="finish(QWidget*) this method does not retain the QWidget*
+             argument so does not need any entry in here -->
     </object-type>
 
     <object-type name="QDockWidget">
