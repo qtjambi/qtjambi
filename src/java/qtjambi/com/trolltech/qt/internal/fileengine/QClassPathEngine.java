@@ -966,7 +966,10 @@ else
                 e.printStackTrace();
             }
 
-            String paths[] = RetroTranslatorHelper.split(System.getProperty("java.class.path"),
+            String javaClassPath = System.getProperty("java.class.path");
+            if(javaClassPath == null)
+                javaClassPath = "";  // gets ignored below
+            String paths[] = RetroTranslatorHelper.split(javaClassPath,
                                                          File.pathSeparator);
 
             // Only add the .jar files that are not already added...
