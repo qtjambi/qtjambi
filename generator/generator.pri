@@ -8,8 +8,6 @@ mac:CONFIG -= app_bundle
 INCLUDEPATH += $$GENERATORPATH/.
 INCLUDEPATH += $$GENERATORPATH/../src/cpp/common
 
-unix:CONFIG += debug_and_release
-
 CONFIG += console
 RESOURCES += generator.qrc
 

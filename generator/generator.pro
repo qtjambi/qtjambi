@@ -1,8 +1,3 @@
-contains(QT_CONFIG, release) {
-    CONFIG -= debug
-    CONFIG += release
-}
-
 # Input
 HEADERS += \
         classlistgenerator.h \
