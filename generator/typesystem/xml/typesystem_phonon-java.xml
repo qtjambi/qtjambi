@@ -3,7 +3,8 @@
     <inject-code>
         com.trolltech.qt.Utilities.loadQtLibrary("QtCore");
         com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
-        com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
+        if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtXml"))  // made optional as KDE phonon does not have this dependency
+            com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
         //if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtOpenGL"))
         //    com.trolltech.qt.Utilities.loadQtLibrary("QtOpenGL");	// when was this needed ?
         if(com.trolltech.qt.Utilities.isAvailableQtLibrary("QtDBus"))
