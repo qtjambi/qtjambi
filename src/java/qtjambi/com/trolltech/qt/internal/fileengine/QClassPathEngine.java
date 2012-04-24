@@ -757,8 +757,9 @@ else
         boolean bf = false;
         MyJarFile myJarFile = null;
         try {
-            JarFile jarFile = new JarFile(pathToJarFile);
-            myJarFile = new MyJarFile(jarFile);
+            File fileToJarFile = new File(pathToJarFile);
+            // We use MyJarFile(File) constructor to indicate this is a direct I/O file (as opposed to a URL)
+            myJarFile = new MyJarFile(fileToJarFile);
             // Each engine must have its own instance of JarFile as it can not be shared across threads
             bf = addJarFileFromPath(myJarFile, fileName, directory);
             if(bf)
@@ -837,16 +838,11 @@ else
             jarFileURL = checkNeedWorkaround(jarFileURL);
             if("file".equals(jarFileURL.getProtocol())) {
                 // Due to workaround
-                JarFile jarFile = new JarFile(jarFileURL.getPath());
-                myJarFile = new MyJarFile(jarFile);
+                File fileToJarFile = new File(jarFileURL.getPath());
+                myJarFile = new MyJarFile(fileToJarFile);
             } else {
-                urlConnection = jarFileURL.openConnection();  // is this turning off URL caches ?
-                if((urlConnection instanceof JarURLConnection) == false)
-                    throw new RuntimeException("not a JarURLConnection type: " + urlConnection.getClass().getName());
-                JarURLConnection jarUrlConnection = (JarURLConnection) urlConnection;
                 try {
-                    JarFile jarFile = jarUrlConnection.getJarFile();
-                    myJarFile = new MyJarFile(urlConnection, jarFile);
+                    myJarFile = new MyJarFile(jarFileURL);
                 } catch(ZipException e) {
                     // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
                     throw new ZipException(e.getMessage() + ": " + jarFileURL);
@@ -1003,16 +999,11 @@ else
                         url2 = checkNeedWorkaround(url2);
                         if("file".equals(url2.getProtocol())) {
                             // Due to workaround
-                            JarFile jarFile2 = new JarFile(url2.getPath());
-                            myJarFile2 = new MyJarFile(jarFile2);
+                            File fileToJarFile = new File(url2.getPath());
+                            myJarFile2 = new MyJarFile(fileToJarFile);
                         } else {
-                            URLConnection urlConnection2 = url2.openConnection();
-                            if(!(urlConnection2 instanceof JarURLConnection))
-                                throw new RuntimeException("not a JarURLConnection type: " + urlConnection2.getClass().getName());
-                            JarURLConnection jarUrlConnection2 = (JarURLConnection) urlConnection2;
                             try {
-                                JarFile jarFile2 = jarUrlConnection2.getJarFile();
-                                myJarFile2 = new MyJarFile(urlConnection2, jarFile2);
+                                myJarFile2 = new MyJarFile(url2);
                             } catch(ZipException e) {
                                 // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
                                 throw new ZipException(e.getMessage() + ": " + url2);
@@ -1024,16 +1015,11 @@ else
                             url1 = checkNeedWorkaround(url1);
                             if("file".equals(url1.getProtocol())) {
                                 // Due to workaround
-                                JarFile jarFile1 = new JarFile(url1.getPath());
-                                myJarFile1 = new MyJarFile(jarFile1);
+                                File fileToJarFile = new File(url1.getPath());
+                                myJarFile1 = new MyJarFile(fileToJarFile);
                             } else {
-                                URLConnection urlConnection1 = url1.openConnection();
-                                if(!(urlConnection1 instanceof JarURLConnection))
-                                    throw new RuntimeException("not a JarURLConnection type: " + urlConnection1.getClass().getName());
-                                JarURLConnection jarUrlConnection1 = (JarURLConnection) urlConnection1;
                                 try {
-                                    JarFile jarFile1 = jarUrlConnection1.getJarFile();
-                                    myJarFile1 = new MyJarFile(urlConnection1, jarFile1);
+                                    myJarFile1 = new MyJarFile(url1);
                                 } catch(ZipException e) {
                                     // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
                                     throw new ZipException(e.getMessage() + ": " + url1);

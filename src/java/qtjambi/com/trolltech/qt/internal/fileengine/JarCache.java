@@ -57,6 +57,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,12 +108,14 @@ class JarCache {
                         if(fileDir.isDirectory()) {
                             // Need to add in top level so that
                             // add(tmpCache, "", new DirectoryResolver(fileDir));
-// Uncommenting this causes many testcases to fail
                             classPathDirs.add(jarFileName);
                             continue;   // FIXME: Use a directory resolver
                         } else if(fileDir.isFile()) {
-                            JarFile jarFile = new JarFile(fileDir);
-                            myJarFile = new MyJarFile(jarFile);
+                            try {
+                                myJarFile = new MyJarFile(fileDir);
+                            } catch(IOException eat) {
+                                // We handle myJarfile==null case below
+                            }
                         }
                     }
                     if(myJarFile == null) {  // without "file:" prefix
@@ -120,23 +123,23 @@ class JarCache {
                         if(fileDir.isDirectory()) {
                             // Need to add in top level so that
                             // add(tmpCache, "", new DirectoryResolver(fileDir));
-// Uncommenting this causes many testcases to fail
                             classPathDirs.add(jarFileName);
                             continue;   // FIXME: Use a directory resolver
                         } else if(fileDir.isFile()) {
-                            JarFile jarFile = new JarFile(fileDir);
-                            myJarFile = new MyJarFile(jarFile);
+                            try {
+                                myJarFile = new MyJarFile(fileDir);
+                            } catch(IOException eat) {
+                                // We handle myJarFile==null case below
+                            }
                         }
                     }
                     if(myJarFile == null) {
                         URL url = new URL("jar:" + jarFileName + "!/");
-                        URLConnection urlConnection = url.openConnection();
-                        if((urlConnection instanceof JarURLConnection) == false)
-                            throw new RuntimeException("no a JarURLConnection: " + urlConnection.getClass().getName());
-                        jarUrlConnection = (JarURLConnection) urlConnection;
-                        {
-                            JarFile jarFile = jarUrlConnection.getJarFile();
-                            myJarFile = new MyJarFile(jarFile);
+                        try {
+                            myJarFile = new MyJarFile(url);
+                        } catch(ZipException e) {
+                            // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
+                            throw new ZipException(e.getMessage() + ": " + url);
                         }
                     }
 

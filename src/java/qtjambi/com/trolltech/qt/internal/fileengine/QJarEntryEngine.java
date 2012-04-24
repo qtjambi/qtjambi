@@ -90,6 +90,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     private boolean m_directory;
     private String m_name;
     private boolean m_eof;
+    private boolean m_closed;
 
 
     // FIXME: This JarFile needs to be a unique handle that does sharable accounting for JarCache
@@ -105,9 +106,13 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
     // transfers ownership of reference count back to caller of this method
     //  this presume the caller has a handle to the MyJarFile already
+    // FIXME: Maybe we should try to get rid of this method and object state to simplify API, i.e.
+    //  once a MyJarFile has been handed to us, we always own it, so all the caller can do now is
+    //  ask us to close/dispose/cleanup throw us away.
     void disown() {
         // Stops disposed() from trying to close handle
         m_myJarFile = null;
+        m_closed = true;
     }
 
     protected void disposed() {
@@ -115,20 +120,18 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
         m_entry = null;
 
-        if (m_myJarFile != null) {
+        if (!m_closed) {
             m_myJarFile.put();
-            m_myJarFile = null;
-
             // FIXME: Do a put/deref/release for JarCache
+            m_closed = true;	// FUTILE
         }
     }
 
     @Override
     public void setFileName(String fileName) {
         m_entry = null;
-        if (m_myJarFile == null) {
+        if (m_closed)
              return;
-        }
 
         if (fileName.length() == 0) {
             m_entryFileName = "";
@@ -153,7 +156,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     }
 
     public String classPathEntryName() {
-        if(m_myJarFile == null)
+        if(m_closed)
             return null;
         return m_myJarFile.getName();
     }
@@ -264,10 +267,12 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
     public boolean close() {
         boolean bf = closeInternal();
 
-        if(m_myJarFile != null) {
+        if(!m_closed) {
             // We really want to do this some how and not leave it to disposed()
             m_myJarFile.put();  // the reference this instance already had on construction
-            m_myJarFile = null;
+            // We do not null the reference here, since we could need to reopen() on handle
+            // so we record the state separately with boolean m_closed flag.
+            m_closed = true;
         }
 
         return bf;
@@ -446,10 +451,11 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
 
         if (m_entry != null) {
             if (!openMode.isSet(QIODevice.OpenModeFlag.WriteOnly) && !openMode.isSet(QIODevice.OpenModeFlag.Append)) {
-                boolean obtained = false;
+                int oldRefCount = -1;
                 try {
-                    m_myJarFile.get();	// increment reference while we have stream open
-                    obtained = true;
+                    // There is a usage case where the application may have called close() on the handle and is now calling open() again.
+                    // This can also happen implicitly if we need to rewind() on the Jar stream
+                    oldRefCount = m_myJarFile.getOrReopen();  // increment reference while we have stream open
 
                     m_stream = m_myJarFile.getInputStream(m_entry);
                     if (m_stream != null) {
@@ -457,12 +463,20 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
                         //    m_reader = new BufferedReader(new InputStreamReader(m_stream));
                         m_pos = 0;
                         m_openMode = openMode.value();
+                        m_closed = false;  // this maybe due to reopen() or first open()
                         bf = true;
                     }
                 } catch (IOException eat) {  // cause a return false
                 } finally {
-                    if(!bf && obtained)    // we failed  but already obtained reference
-                        m_myJarFile.put(); // rollback reference
+                    if(!bf) {    // we failed but did we obtained reference?
+                        // if oldRefCount==0 then we just did a reopen() and so we need to put() it as well as the get()
+                        // if oldRefCount>0 then we only need to undo the get() operation
+                        if(oldRefCount >= 0) {
+                            if(oldRefCount == 0)
+                                m_myJarFile.put(); // rollback extra reference
+                            m_myJarFile.put(); // rollback reference
+                        }
+                    }
                 }
             }
         }
@@ -529,7 +543,7 @@ class QJarEntryEngine extends QAbstractFileEngine implements QClassPathEntry
                     break;
 
                 data.setByteAt(bytes_read++, (byte) read);
-                // We follow how QIODevice::readLine behavior here.
+                // We follow how QIODevice::readLine behaviour here.
                 // FIXME: We should have testcase to verify it, compare Qt API with our implementation.
                 // CHECKME: This is how QIODevice::readLine almost works, except (if I understand docs
                 //  correctly) that for <CR><NL> sequence on windows it might replace with <NL>.

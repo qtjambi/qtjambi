@@ -1,8 +1,11 @@
 
 package com.trolltech.qt.internal.fileengine;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
@@ -11,20 +14,36 @@ import java.util.zip.ZipEntry;
 
 // Package private class and methods
 class MyJarFile {
-    private URLConnection urlConnection;
+    private URLConnection urlConnection;  // do we need to keep this around ?
+    private File fileToJarFile;    // we store this object type to differentiate between URLs and direct File IO.
+    private URL urlToJarFile;  // we save this to allow for close/reopen based on just this handle
     private JarFile jarFile;
     private int refCount;
 
-    // This contructor may never throw an exception
-    MyJarFile(JarFile jarFile) {
-        this.jarFile = jarFile;
-        this.refCount = 1;
+    MyJarFile(File fileToJarFile) throws IOException {
+        this.fileToJarFile = fileToJarFile;
+        openInternal();
     }
 
-    MyJarFile(URLConnection urlConnection, JarFile jarFile) {
-        this.urlConnection = urlConnection;
-        this.jarFile = jarFile;
-        this.refCount = 1;
+    MyJarFile(URL urlToJarFile) throws IOException {
+        this.urlToJarFile = urlToJarFile;
+        openInternal();
+    }
+
+    private void openInternal() throws IOException {
+        if(fileToJarFile != null) {  // Direct File I/O Jar file
+            jarFile = new JarFile(fileToJarFile);
+        } else {
+            urlConnection = urlToJarFile.openConnection();
+            if((urlConnection instanceof JarURLConnection) == false) {
+                IOException thr = new IOException("not a JarURLConnection: " + urlConnection.getClass().getName());
+                urlConnection = null;  // we only keep handle when we have active Jar open
+                throw thr;
+            }
+            JarURLConnection jarUrlConnection = (JarURLConnection) urlConnection;
+            jarFile = jarUrlConnection.getJarFile();
+        }
+        refCount = 1;
     }
 
     // This method may never throw an exception
@@ -32,6 +51,19 @@ class MyJarFile {
         synchronized(this) {
             refCount++;
         }
+    }
+
+    // This method must cause a double increment on the reopen() case
+    // Returns the previous refCount, so 0 means we just reopened, non-zero means we did get()
+    int getOrReopen() throws IOException {
+        int oldRefCount;
+        synchronized (this) {
+            oldRefCount = refCount;
+            if(refCount <= 0)
+                reopen();
+            get();
+        }
+        return oldRefCount;
     }
 
     // This method may never throw an exception
@@ -53,6 +85,12 @@ class MyJarFile {
                 urlConnection = null;
             }
         }
+    }
+
+    void reopen() throws IOException {
+        if(jarFile != null)
+            throw new IOException("jarFile already open");
+        openInternal();
     }
 
     String getName() {
