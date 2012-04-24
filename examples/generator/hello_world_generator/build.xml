@@ -30,7 +30,7 @@
         <echo>Generates the test jambi jar file</echo>
     </target>
 
-    <target name="init" depends="init.taskdef, setup-properties">
+    <target name="init.local" depends="init.taskdef, setup-properties">
         <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
         <!-- We need the ${jambi.directory} to be an absolute path -->
         <qtjambi-resolve-path var="jambi.directory.abspath" path="${jambi.directory}" verbose="true"/>
@@ -71,7 +71,11 @@
         <echo message="generator.exe.abspath=${generator.exe.abspath}"/>
     </target>
 
-    <target name="compile.native.qmake" depends="init">
+    <target name="init.build" depends="init.local, init.taskdef, setup-properties">
+        <qtjambi-initialize-build verbose="true" configuration="${qtjambi.config}"/>
+	</target>
+
+    <target name="compile.native.qmake" depends="init.build">
         <!-- Stage 1 - build the liborg_qtjambi_org{,_debuglib}.so -->
         <mkdir dir="${basedir}/build/qmake/cpp"/>
         <qmake config="${qtjambi.configuration}"
@@ -82,7 +86,7 @@
         <make dir="${basedir}/build/qmake/cpp" target="${qtjambi.qmake.target.default}"/>
     </target>
 
-    <target name="compile.generate" depends="init">
+    <target name="compile.generate" depends="init.build">
         <!-- Stage 2 - build the liborg_qtjambi_org{,_debuglib}.so -->
         <mkdir dir="${generator.out}"/>
         <generator dir="${generator.out}"
@@ -101,7 +105,7 @@
                    kdephonon="${qtjambi.phonon.kdephonon-path}"/>
     </target>
 
-    <target name="compile.generate.qmake" depends="init">
+    <target name="compile.generate.qmake" depends="init.build">
         <mkdir dir="${basedir}/build/qmake/org_qtjambi_test"/>
         <qmake config="${qtjambi.configuration}"
                dir="${basedir}/build/qmake/org_qtjambi_test"
@@ -111,7 +115,7 @@
         <make dir="${basedir}/build/qmake/org_qtjambi_test" target="${qtjambi.qmake.target.default}"/>
     </target>
 
-    <target name="compile.java" depends="init">
+    <target name="compile.java" depends="init.local">
         <!-- Stage 3 - build Java parts -->
         <mkdir dir="${basedir}/build/platform-output${qtjambi.configuration.dash}"/>
         <javac destdir="${basedir}/build/platform-output${qtjambi.configuration.dash}"
@@ -130,11 +134,11 @@
         </javac>
     </target>
 
-    <target name="compile" depends="init, compile.native.qmake, compile.generate, compile.generate.qmake, compile.java">
+    <target name="compile" depends="init.build, compile.native.qmake, compile.generate, compile.generate.qmake, compile.java">
     </target>
 
     <target name="package"
-            depends="init"
+            depends="init.build"
             description="Creating .jar file with native libs...">
 
         <!-- Bodge for Windows using subdirs for debug/release -->
@@ -267,12 +271,12 @@
         </jar>
     </target>
 
-    <target name="clean" depends="init">
-        <delete file="${basedir}/test-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}.jar"/>
+    <target name="clean" depends="init.local">
+        <delete file="${basedir}/test-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}${qtjambi.configuration.dash}.jar"/>
         <delete dir="${basedir}/build/platform-output${qtjambi.configuration.dash}"/>
         <delete dir="${basedir}/build"/>
     </target>
 
-    <target name="all" depends="init, compile, package"/>
+    <target name="all" depends="compile, package"/>
 
 </project>
