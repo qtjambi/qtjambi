@@ -44,6 +44,7 @@
 
 package com.trolltech.tools.ant;
 
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
@@ -54,8 +55,6 @@ import java.util.List;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
-//NOTE: remove this after removing support for 1.7
-@SuppressWarnings("deprecation")
 public class MakeTask extends Task {
 
     private String msg = "";
@@ -65,12 +64,20 @@ public class MakeTask extends Task {
     private boolean failOnError = true;
 
     private String compilerName() {
-        switch(OSInfo.os()){
+        String make = System.getenv("MAKE");
+        if(make !=  null)
+            return make;
+
+        switch(OSInfo.os()) {
         case Windows:
             PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
-            String compiler = (String) propertyHelper.getProperty((String) null, Constants.COMPILER);
+            String compiler = AntUtil.getPropertyAsString(propertyHelper, Constants.COMPILER);
 
             if(FindCompiler.Compiler.MinGW.toString().equals(compiler))
+                return "mingw32-make";
+            // our instructions for mingw-w64 are to copy mingw32-make.exe (and its required DLLs) into
+            //  a directory on their own such as $MINGW_W64/mybin to make use of the GNU make from mingw.
+            if(FindCompiler.Compiler.MinGW_W64.toString().equals(compiler))
                 return "mingw32-make";
             return "nmake";
         }
@@ -79,7 +86,7 @@ public class MakeTask extends Task {
 
     @Override
     public void execute() throws BuildException {
-        System.out.println(msg);
+        getProject().log(this, msg, Project.MSG_INFO);
 
         List<String> commandArray = new ArrayList<String>();
         commandArray.add(compilerName());
@@ -96,11 +103,11 @@ public class MakeTask extends Task {
         } catch(SecurityException e) {
         }
 
-        if(target != null)
+        if(target != null && target.length() > 0)  // isEmpty() is Java1.6 :(
             commandArray.add(target);
 
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
-        String ldpath = (String) propertyHelper.getProperty((String) null, Constants.LIBDIR);
+        String ldpath = AntUtil.getPropertyAsString(propertyHelper, Constants.LIBDIR);
         try {
             File dirExecute = null;
             if(dir != null)
@@ -110,7 +117,7 @@ public class MakeTask extends Task {
             if(failOnError)
                 throw e;
             else
-                System.err.println(e.getMessage() + "; failOnError=" + failOnError + "; continuing");
+                getProject().log(this, e.getMessage() + "; failOnError=" + failOnError + "; continuing", e, Project.MSG_ERR);
         }
     }
 

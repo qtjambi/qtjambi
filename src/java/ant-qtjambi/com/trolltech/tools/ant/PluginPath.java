@@ -48,6 +48,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 public class PluginPath extends Task {
+    private String path;
+    private Boolean debug;  // inherit
 
     public void execute() throws BuildException {
         if(path == null)
@@ -57,10 +59,14 @@ public class PluginPath extends Task {
     public void setPath(String p) {
         path = p;
     }
-
     public String getPath() {
         return path;
     }
 
-    private String path;
+    public Boolean getDebug() {
+        return debug;
+    }
+    public void setDebug(Boolean debug) {
+        this.debug = debug;
+    }
 }

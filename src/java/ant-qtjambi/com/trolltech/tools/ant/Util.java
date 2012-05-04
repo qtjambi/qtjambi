@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
@@ -66,7 +67,9 @@ abstract class Util {
         if(prepend != null && !prepend.equals(""))
             searchPath += prepend + File.pathSeparator;
 
-        searchPath += System.getenv("PATH");
+        String envPath = System.getenv("PATH");
+        if(envPath != null)
+            searchPath += envPath;
 
         if(append != null && !append.equals(""))
             searchPath += File.pathSeparator + append;
@@ -293,11 +296,11 @@ abstract class Util {
             else
                 isSpace = false;
 
-            if(state == 0) {	// leading
+            if(state == 0) {    // leading
                 if(isSpace)
-                    continue;	// skip
+                    continue;   // skip
                 else
-                    state = 1;	// next-state && emit
+                    state = 1;  // next-state && emit
             } else {
                 // always emit as we truncate accordingly at end
                 if(isSpace) {
@@ -391,4 +394,41 @@ abstract class Util {
     public static String pathCanon(String[] sA) {
         return pathCanon(sA, File.separator);
     }
+
+    public static void emitDebugLog(Project project, String[] sA) {
+        if(sA == null)
+            return;
+        for(String s : sA) {
+            project.log(s, Project.MSG_DEBUG);
+        }
+    }
+
+    public static String firstWord(String s) {
+        final int l = s.length();
+        int i = 0;
+        while(i < l) {  // skip leading ASCII whitespace
+            char c = s.charAt(i);
+            if(c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f') {
+                i++;
+                continue;
+            }
+            break;
+        }
+        int startOffset = i;
+        while(i < l) {  // consume until next ASCII whitespace or end of string
+            char c = s.charAt(i);
+            if(c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f')
+                break;
+            i++;
+        }
+        int endOffset = i;
+        return s.substring(startOffset, endOffset);
+    }
+
+    public static String safeFirstWord(String s) {
+        if(s == null)
+            return null;
+        return firstWord(s);
+    }
+
 }

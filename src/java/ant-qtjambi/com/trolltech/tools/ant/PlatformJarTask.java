@@ -63,8 +63,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//NOTE: remove this after removing support for 1.7
-@SuppressWarnings("deprecation")
 public class PlatformJarTask extends Task {
 
     public static final String SYSLIB_AUTO = "auto";
@@ -80,7 +78,7 @@ public class PlatformJarTask extends Task {
     private List<PluginPath> pluginPaths    = new ArrayList<PluginPath>();
     private List<PluginDesignerPath> pluginDesignerPaths = new ArrayList<PluginDesignerPath>();
     private List<Directory> directoryList   = new ArrayList<Directory>();
-    private boolean debugConfiguration      = false;
+    private Boolean debug                   = null;
     private String javaLibDir               = "";
 
     private boolean rpath = true;
@@ -90,6 +88,7 @@ public class PlatformJarTask extends Task {
 
     public void addConfiguredLibrary(LibraryEntry task) {
         try {
+            task.setDebug(debug);
             if(!task.isIncluded())
                 return;
             task.perform();
@@ -102,6 +101,7 @@ public class PlatformJarTask extends Task {
 
     public void addConfiguredPlugin(PluginPath path) {
         try {
+            path.setDebug(debug);
             path.perform();
             pluginPaths.add(path);
         } catch(Exception e) {
@@ -112,6 +112,7 @@ public class PlatformJarTask extends Task {
 
     public void addConfigured(PluginDesignerPath path) {
         try {
+            path.setDebug(debug);
             path.perform();
             pluginDesignerPaths.add(path);
         } catch(Exception e) {
@@ -138,7 +139,6 @@ public class PlatformJarTask extends Task {
         else
             throw new BuildException("Bad 'syslibs' parameter... Only 'auto' or 'none' available, was " + s);
     }
-
     public String getSyslibs() {
         return systemLibs;
     }
@@ -146,7 +146,6 @@ public class PlatformJarTask extends Task {
     public String getCacheKey() {
         return cacheKey;
     }
-
     public void setCacheKey(String cacheKey) {
         this.cacheKey = cacheKey;
     }
@@ -154,16 +153,20 @@ public class PlatformJarTask extends Task {
     public File getOutdir() {
         return outdir;
     }
-
-
     public void setOutdir(File outdir) {
         this.outdir = outdir;
+    }
+
+    public Boolean getDebug() {
+        return debug;
+    }
+    public void setDebug(Boolean debug) {
+        this.debug = debug;
     }
 
     public void setRpathenabled(boolean iname) {
         rpath = iname;
     }
-
     public boolean getRpathenabled() {
         return rpath;
     }
@@ -180,11 +183,16 @@ public class PlatformJarTask extends Task {
     public void execute_internal() throws BuildException {
         propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        javaLibDir =(String) propertyHelper.getProperty((String) null, Constants.JAVALIBDIR);
+        javaLibDir = AntUtil.getPropertyAsString(propertyHelper, Constants.JAVALIBDIR);
 
-        debugConfiguration = "debug".equals(propertyHelper.getProperty((String) null, Constants.CONFIGURATION));
+        if(debug == null) {
+            if(Constants.CONFIG_DEBUG.equals(AntUtil.getPropertyAsString(propertyHelper, Constants.CONFIGURATION)))
+                debug = Boolean.TRUE;
+            else
+                debug = Boolean.FALSE;
+        }
 
-        execStrip = (String) propertyHelper.getProperty((String) null, Constants.EXEC_STRIP);
+        execStrip = AntUtil.getPropertyAsString(propertyHelper, Constants.EXEC_STRIP);
 
         if(outdir == null) {
             throw new BuildException("Missing required attribute 'outdir'. " +
@@ -250,7 +258,7 @@ public class PlatformJarTask extends Task {
             if(subPathFragment != null && subPathFragment.length() > 0)
                 subPathFragment += "/";
             if(subPathFragment == null)
-                subPathFragment = "";	// stops += appending "null" first
+                subPathFragment = "";   // stops += appending "null" first
             subPathFragment += dirent.getName();
 
             for(Dirent d : list)
@@ -284,8 +292,7 @@ public class PlatformJarTask extends Task {
         }
 
         writer.println("<qtjambi-deploy" + " system=\""
-                            + xmlEscape(propertyHelper.getProperty((String) null,
-                            Constants.OSNAME).toString()) + "\">");
+                            + xmlEscape(AntUtil.getPropertyAsString(propertyHelper, Constants.OSNAME).toString()) + "\">");
         writer.println();
         writer.println("  <cache key=\"" + xmlEscape(cacheKey) + "\"/>");
 
@@ -472,8 +479,8 @@ public class PlatformJarTask extends Task {
                 d.setRootPath(rootPath);
                 d.setName(toplevelName);
             }
-            //System.out.println("   rootPath " + rootPath);
-            //System.out.println("       name " + toplevelName);
+            //getProject().log(this, "   rootPath " + rootPath, Project.MSG_VERBOSE);
+            //getProject().log(this, "       name " + toplevelName, Project.MSG_VERBOSE);
             subdir = d.getSubdir();
             destSubdir = d.getDestSubdir();
             recursive = d.getRecursive();
@@ -493,14 +500,14 @@ public class PlatformJarTask extends Task {
                 srcDir = rootPathFile;
             destDir = new File(outdir, outputPath);
             if(!destDir.exists()) {
-                //System.out.println("   mkdir " + destDir.getAbsolutePath());
+                //getProject().log(this, "   mkdir " + destDir.getAbsolutePath(), Project.MSG_VERBOSE);
                 destDir.mkdir();
             }
             srcTarget = new File(srcDir, toplevelName);
             destTarget = new File(destDir, toplevelName);
             if(srcTarget.isDirectory()) {
                 if(!destTarget.exists()) {
-                    //System.out.println("   mkdir " + destTarget.getAbsolutePath());
+                    //getProject().log(this, "   mkdir " + destTarget.getAbsolutePath(), Project.MSG_VERBOSE);
                     destTarget.mkdir();
                 }
 
@@ -518,13 +525,13 @@ public class PlatformJarTask extends Task {
                         File thisDestFile = new File(destTarget, name);
                         if(thisSrcFile.isDirectory()) {
                             if(thisDestFile.exists() == false) {
-                                //System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
+                                //getProject().log(this, "   mkdir " + thisDestFile.getAbsolutePath(), Project.MSG_VERBOSE);
                                 thisDestFile.mkdir();
                             }
                             if(recursive)
                                 dirnameList.add(name);
                         } else {
-                            //System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
+                            //getProject().log(this, "Copying " + thisSrcFile + " to " + thisDestFile, Project.MSG_VERBOSE);
                             Util.copy(thisSrcFile, thisDestFile);
                             if(recursive)
                                 filenameList.add(name);
@@ -533,7 +540,7 @@ public class PlatformJarTask extends Task {
                         if(child.isDirectory()) {
                             File thisDestFile = new File(destTarget, name);
                             if(thisDestFile.exists() == false) {
-                                //System.out.println("   mkdir " + thisDestFile.getAbsolutePath());
+                                //getProject().log(this, "   mkdir " + thisDestFile.getAbsolutePath(), Project.MSG_VERBOSE);
                                 thisDestFile.mkdir();
                             }
                             if(recursive)
@@ -541,7 +548,7 @@ public class PlatformJarTask extends Task {
                         } else {
                             File thisSrcFile = new File(srcTarget, name);
                             File thisDestFile = new File(destTarget, name);
-                            //System.out.println("Copying " + thisSrcFile + " to " + thisDestFile);
+                            //getProject().log(this, "Copying " + thisSrcFile + " to " + thisDestFile, Project.MSG_VERBOSE);
                             Util.copy(thisSrcFile, thisDestFile);
                         }
                     }
@@ -564,7 +571,7 @@ public class PlatformJarTask extends Task {
                 }
             } else {
                 try {
-                    //System.out.println("Copying " + srcTarget + " to " + destTarget);
+                    //getProject().log(this, "Copying " + srcTarget + " to " + destTarget, Project.MSG_VERBOSE);
                     Util.copy(srcTarget, destTarget);
                 } catch(IOException ex) {
                     ex.printStackTrace();
@@ -643,7 +650,7 @@ public class PlatformJarTask extends Task {
                 srcDir = rootPath;
             destDir = new File(outdir, outputPath);
             if(!destDir.exists()) {
-                //System.out.println("   mkdir " + destDir.getAbsolutePath());
+                //getProject().log(this, "   mkdir " + destDir.getAbsolutePath(), Project.MSG_VERBOSE);
                 destDir.mkdir();
             }
             if(absolutePath == null)
@@ -652,7 +659,7 @@ public class PlatformJarTask extends Task {
                 srcFile = new File(absolutePath);
             destFile = new File(destDir, resolvedName);
             try {
-                //System.out.println("Copying " + src + " to " + dest);
+                //getProject().log(this, "Copying " + src + " to " + dest, Project.MSG_VERBOSE);
                 Util.copy(srcFile, destFile);
 
                 boolean doStrip = true;
@@ -704,7 +711,7 @@ public class PlatformJarTask extends Task {
     }
 
     private void processSystemLibs() {
-        String compiler = String.valueOf(propertyHelper.getProperty((String) null, Constants.COMPILER));
+        String compiler = AntUtil.getPropertyAsString(propertyHelper, Constants.COMPILER);
         FindCompiler.Compiler c = FindCompiler.Compiler.resolve(compiler);
 
         String vcnumber = null;
@@ -726,11 +733,11 @@ public class PlatformJarTask extends Task {
             if(vcnumber == null)
                 vcnumber = "80";
 
-            if(debugConfiguration) {
+            if(debug) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            Object vsredistdirObject = propertyHelper.getProperty((String) null, Constants.VSREDISTDIR);
+            Object vsredistdirObject = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR);
             if(vsredistdirObject != null) {
                 String vsredistdir = vsredistdirObject.toString();
                 File crt = new File(vsredistdir, "Microsoft.VC" + vcnumber + ".CRT");
@@ -763,12 +770,12 @@ public class PlatformJarTask extends Task {
                     }
                 }
             } else {
-                System.err.println("WARNING: " + Constants.VSREDISTDIR + " property not set; skipping packaging of Visual C redistributable components.");
+                getProject().log(this, "WARNING: " + Constants.VSREDISTDIR + " property not set; skipping packaging of Visual C redistributable components.", Project.MSG_WARN);
             }
             break;
 
         case MSVC1998:
-            if(debugConfiguration) {
+            if(debug) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
@@ -777,7 +784,7 @@ public class PlatformJarTask extends Task {
             break;
 
         case MSVC2002:
-            if(debugConfiguration) {
+            if(debug) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
@@ -786,7 +793,7 @@ public class PlatformJarTask extends Task {
             break;
 
         case MSVC2003:
-            if(debugConfiguration) {
+            if(debug) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
@@ -810,7 +817,7 @@ public class PlatformJarTask extends Task {
         // TODO: Make this an arbitrary list of files and provide helper options to
         //  populate with Unix libstdc++.so.5/libstdc++.so.6 values.  Allow each value
         //  to be a full-path to file, filename.
-        String cplusplusRuntime = (String) propertyHelper.getProperty((String) null, Constants.PACKAGING_DSO_CPLUSPLUSRUNTIME);
+        String cplusplusRuntime = AntUtil.getPropertyAsString(propertyHelper, Constants.PACKAGING_DSO_CPLUSPLUSRUNTIME);
         if(cplusplusRuntime != null)
             copyRuntime(cplusplusRuntime);
 
@@ -823,7 +830,7 @@ public class PlatformJarTask extends Task {
         }
 
         try {
-            //System.out.println("Copying " + rt.toString() + " to " + "lib/" + outdir + ", " + name);
+            //getProject().log(this, "Copying " + rt.toString() + " to " + "lib/" + outdir + ", " + name, Project.MSG_VERBOSE);
             /*
              * "lib" is somewhat of a hack to specify where the files should be copied to.
              */
@@ -836,23 +843,23 @@ public class PlatformJarTask extends Task {
     }
 
     private void printVisualStudioDebugRuntimeWarning() {
-        System.out.println();
-        System.out.println("************************************************************************");
-        System.out.println();
-        System.out.println("                              WARNING");
-        System.out.println();
-        System.out.println("The debug runtimes for Visual Studio are not available for");
-        System.out.println("redistribution by Microsoft, so it is not possible to create a");
-        System.out.println("platform archive that runs on other machines...");
-        System.out.println();
-        System.out.println("************************************************************************");
-        System.out.println();
-        System.out.println();
+        getProject().log(this, "", Project.MSG_INFO);
+        getProject().log(this, "************************************************************************", Project.MSG_INFO);
+        getProject().log(this, "", Project.MSG_INFO);
+        getProject().log(this, "                              WARNING", Project.MSG_INFO);
+        getProject().log(this, "", Project.MSG_INFO);
+        getProject().log(this, "The debug runtimes for Visual Studio are not available for", Project.MSG_INFO);
+        getProject().log(this, "redistribution by Microsoft, so it is not possible to create a", Project.MSG_INFO);
+        getProject().log(this, "platform archive that runs on other machines...", Project.MSG_INFO);
+        getProject().log(this, "", Project.MSG_INFO);
+        getProject().log(this, "************************************************************************", Project.MSG_INFO);
+        getProject().log(this, "", Project.MSG_INFO);
+        getProject().log(this, "", Project.MSG_INFO);
 
     }
 
     private void processOSXInstallName() {
-        System.out.println("Processing Mac OS X install_name...");
+        getProject().log(this, "Processing Mac OS X install_name...", Project.MSG_INFO);
 
         String cmd[] = new String[] {
             "install_name_tool",
@@ -866,7 +873,7 @@ public class PlatformJarTask extends Task {
             if(LibraryEntry.TYPE_PLUGIN.equals(with.getType()))
                 continue;
 
-            System.out.println(" - updating: " + with.getName());
+            getProject().log(this, " - updating: " + with.getName(), Project.MSG_INFO);
 
             for(LibraryEntry change : libs) {
                 String changeDestSubdir = change.getDestSubdir();
@@ -879,12 +886,12 @@ public class PlatformJarTask extends Task {
                 if(withSubdir == null)
                     withSubdir = "";
 if(false) {
-System.out.println(" change.Name       =  " + change.getName());
-System.out.println(" change.Subdir     =  " + changeSubdir);
-System.out.println(" change.DestSubdir =  " + change.getDestSubdir());
-System.out.println(" with.destSubdir   =  " + withDestSubdir);
-System.out.println(" with.Subdir       =  " + withSubdir);
-System.out.println(" with.Name         =  " + with.getName());
+getProject().log(this, " change.Name       =  " + change.getName(), Project.MSG_VERBOSE);
+getProject().log(this, " change.Subdir     =  " + changeSubdir, Project.MSG_VERBOSE);
+getProject().log(this, " change.DestSubdir =  " + change.getDestSubdir(), Project.MSG_VERBOSE);
+getProject().log(this, " with.destSubdir   =  " + withDestSubdir, Project.MSG_VERBOSE);
+getProject().log(this, " with.Subdir       =  " + withSubdir, Project.MSG_VERBOSE);
+getProject().log(this, " with.Name         =  " + with.getName(), Project.MSG_VERBOSE);
 }
                 File withTarget = new File(withSubdir, with.getName());
                 String targetPath = Util.pathCanon(new String[] { changeDestSubdir, changeSubdir, change.getName() }, "/"); //change.relativePath();
@@ -902,7 +909,7 @@ System.out.println(" with.Name         =  " + with.getName());
                 // only name, when Qt is configured with -no-rpath
                 cmd[2] = with.getName();
 
-//System.out.println(" exec " + Arrays.toString(cmd) + " in " + outdir);
+//getProject().log(this, " exec " + Arrays.toString(cmd) + " in " + outdir, Project.MSG_VERBOSE);
                 Exec.exec(cmd, outdir, getProject(), false);
 
                 // CHECKME: Is this needed since we started to use soname.major when deploying ?
@@ -929,7 +936,7 @@ System.out.println(" with.Name         =  " + with.getName());
         while(testCharAt >= 0 && withSubdir.charAt(testCharAt) == '/')
             testCharAt--;
         withSubdir = withSubdir.substring(0, testCharAt + 1);   // truncate
-//System.out.println(" resolveWithSubdir withSubdir=" + withSubdir + " truncated");
+//getProject().log(this, " resolveWithSubdir withSubdir=" + withSubdir + " truncated", Project.MSG_VERBOSE);
 
         String[] withTargetA = withTarget.split("/");
         List<String> withTargetParts = Arrays.asList(withTargetA);
@@ -957,18 +964,18 @@ System.out.println(" with.Name         =  " + with.getName());
                 index++;
             }
             if(foundDownIndex >= 0 && upIndex >= 0) {
-//System.out.println(" resolveWithSubdir foundDownIndex=" + foundDownIndex);
+//getProject().log(this, " resolveWithSubdir foundDownIndex=" + foundDownIndex, Project.MSG_VERBOSE);
                 String upDir = pathParts.get(upIndex);
-//System.out.println(" resolveWithSubdir upDir=" + upDir);
+//getProject().log(this, " resolveWithSubdir upDir=" + upDir, Project.MSG_VERBOSE);
                 int distance = pathParts.size() - upIndex;
                 int targetUpIndex = withTargetParts.size() - distance - 1; // -1 due to filename removal
                 if(targetUpIndex >= 0) {
-//System.out.println(" resolveWithSubdir targetUpIndex=" + targetUpIndex);
+//getProject().log(this, " resolveWithSubdir targetUpIndex=" + targetUpIndex, Project.MSG_VERBOSE);
                     String targetUpDir = withTargetParts.get(targetUpIndex);
-//System.out.println(" resolveWithSubdir targetUpDir=" + targetUpDir);
+//getProject().log(this, " resolveWithSubdir targetUpDir=" + targetUpDir, Project.MSG_VERBOSE);
 
                     if(targetUpDir.equals(upDir)) {
-//System.out.println(" resolveWithSubdir ZAPPING " + foundDownIndex + " " + upIndex);
+//getProject().log(this, " resolveWithSubdir ZAPPING " + foundDownIndex + " " + upIndex, Project.MSG_VERBOSE);
                         // we do it this way to the indexes don't change throughout
                         //  then remove empty parts before returning at the end
                         pathParts.set(foundDownIndex, "");  // zero-length

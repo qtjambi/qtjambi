@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
@@ -11,8 +13,6 @@ import org.apache.tools.ant.Project;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
-//NOTE: remove this after removing support for 1.7
-@SuppressWarnings("deprecation")
 public class FindCompiler {
 
     private Compiler compiler;
@@ -20,6 +20,7 @@ public class FindCompiler {
     private Project project;
     private PropertyHelper props;
     private String compilerDetectionLine;
+    private String availableCompilers;
 
     public enum Compiler {
         MSVC1998("msvc98"),
@@ -104,38 +105,41 @@ public class FindCompiler {
         case MSVC2008_64:
         case MSVC2010:
         case MSVC2010_64:
-            String vcdir = System.getenv("VSINSTALLDIR");
-            if(vcdir == null) {
-                // It is not strictly _required_ to have VSINSTALLDIR set (i.e. if the user is using
-                //  Windows Platform SDK or VS Express editions to build qtjambi).  As the qtjambi can
-                //  still be built, used and deployed.   The target installed systems can manually
-                //  download and install vcredist.exe to provide the VS runtime needed.
-                System.err.println("WARNING: VSINSTALLDIR not set and building with MSVC toolchain; the resulting build output will not attempt to package Visual C redistributable components.");
-            } else {
-                File fileVcDir = new File(vcdir);
-                if(!fileVcDir.isDirectory()) {
-                    System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
-                    System.err.println("         VSINSTALLDIR=\"" + vcdir + "\"");
+            try {
+                String vcdir = System.getenv("VSINSTALLDIR");
+                if(vcdir == null) {
+                    // It is not strictly _required_ to have VSINSTALLDIR set (i.e. if the user is using
+                    //  Windows Platform SDK or VS Express editions to build qtjambi).  As the qtjambi can
+                    //  still be built, used and deployed.   The target installed systems can manually
+                    //  download and install vcredist.exe to provide the VS runtime needed.
+                    System.err.println("WARNING: VSINSTALLDIR not set and building with MSVC toolchain; the resulting build output will not attempt to package Visual C redistributable components.");
                 } else {
-                    props.setNewProperty((String) null, Constants.VSINSTALLDIR, vcdir);
-
-                    String redistDir;
-                    if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64)
-                        redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "amd64" });
-                    else
-                        redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "x86" });
-                    File fileRedistDir = new File(redistDir);
-                    if(!fileRedistDir.isDirectory()) {
+                    File fileVcDir = new File(vcdir);
+                    if(!fileVcDir.isDirectory()) {
                         System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
-                        System.err.println("         VSINSTALLDIR=\"" + vcdir + "\" checking for \"" + redistDir + "\"");
+                        System.err.println("         VSINSTALLDIR=\"" + vcdir + "\"");
                     } else {
-                        props.setNewProperty((String) null, Constants.VSREDISTDIR, redistDir);
+                        AntUtil.setNewProperty(props, Constants.VSINSTALLDIR, vcdir);
+
+                        String redistDir;
+                        if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64)
+                            redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "amd64" });
+                        else
+                            redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "x86" });
+                        File fileRedistDir = new File(redistDir);
+                        if(!fileRedistDir.isDirectory()) {
+                            System.err.println("WARNING: VSINSTALLDIR is set but the path is not found or not a directory; the resulting build output will not attempt to package Visual C redistributable components.");
+                            System.err.println("         VSINSTALLDIR=\"" + vcdir + "\" checking for \"" + redistDir + "\"");
+                        } else {
+                            AntUtil.setNewProperty(props, Constants.VSREDISTDIR, redistDir);
+                        }
                     }
                 }
+            } catch(SecurityException eat) {
             }
+            checkCompilerBits();    // This is checking in respect of MSVC compilers
             break;
         }
-        checkCompilerBits();
     }
 
     /*
@@ -143,7 +147,7 @@ public class FindCompiler {
      */
     void checkCompilerBits() {
         if(OSInfo.os() == OSInfo.OS.Windows) {
-            boolean vmx64 = decideOSName().contains("64");
+            boolean vmx64 = OSInfo.osArchName().contains("64");
             boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64;
             if(vmx64 != compiler64) {
                 // This is allowed and is not an outright build failure, but warn the user.
@@ -163,44 +167,45 @@ public class FindCompiler {
         Compiler mingw_w64 = testForMinGW_W64();
 
         StringBuffer sb = new StringBuffer();
-        if(msvc != null) {
+        if(mingw_w64 != null) {
             if(sb.length() > 0)
-               sb.append(", ");
-            sb.append(msvc.toString());
+                sb.append(", ");
+            sb.append(mingw_w64.toString());
         }
         if(mingw != null) {
             if(sb.length() > 0)
                 sb.append(", ");
             sb.append(mingw.toString());
         }
-        if(mingw_w64 != null) {
+        if(msvc != null) {
             if(sb.length() > 0)
-                sb.append(", ");
-            sb.append(mingw_w64.toString());
+               sb.append(", ");
+            sb.append(msvc.toString());
         }
+        availableCompilers = sb.toString();
 
         if(msvc != null && mingw != null && mingw_w64 != null) {
+            // allows use of QMAKESPEC to select between msvc and mingw-like
             System.out.println("Multiple compilers are available (" + sb.toString() + ")\n"
                                + "Choosing based on environment variable QMAKESPEC");
             String spec = System.getenv("QMAKESPEC");
-            String crossCompile = System.getenv("CROSS_COMPILE");
             if(spec == null) {
                 throw new BuildException("Environment variable QMAKESPEC is not set...");
             } else if(msvc != null && spec.contains("msvc")) {
                 compiler = msvc;
-            } else if(mingw != null && spec.contains("g++") && crossCompile == null) {
-                compiler = mingw;
-            } else if(mingw_w64 != null && spec.contains("g++")) {
+            } else if(mingw_w64 != null && spec.contains("g++")) {  // first due to regex for "mingw" on mingw detection
                 compiler = mingw_w64;
+            } else if(mingw != null && spec.contains("g++")) {
+                compiler = mingw;
             } else {
                 throw new BuildException("Invalid QMAKESPEC variable...");
             }
         } else if(msvc != null) {
             compiler = msvc;
+        } else if(mingw_w64 != null) {  // first due to regex for "mingw" on mingw detection
+            compiler = mingw_w64;
         } else if(mingw != null) {
             compiler = mingw;
-        } else if(mingw_w64 != null) {
-            compiler = mingw_w64;
         } else {
             throw new BuildException("No compiler detected, please make sure " +
                     "MinGW, MinGW-W64 or VisualC++ binaries are available in PATH");
@@ -238,6 +243,9 @@ public class FindCompiler {
             break;
         }
 
+        if(availableCompilers == null && compiler != null)
+            availableCompilers = compiler.toString();
+
         if(verbose) System.out.println("qtjambi.compiler: " + compiler.toString());
         return compiler;
     }
@@ -248,11 +256,11 @@ public class FindCompiler {
             cmdAndArgs.add("gcc");
             cmdAndArgs.add("-dumpversion");
             String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
-            String stdout = null;
-            if(sA != null && sA.length == 2 && sA[0] != null)
-                stdout = sA[0];
-            if(stdout.contains("3.3."))
-                return Compiler.OldGCC;
+            Util.emitDebugLog(project, sA);
+            if(sA != null && sA.length == 2 && sA[0] != null) {
+                if(match(new String[] { sA[0] }, new String[] { "^3\\.3\\." }))  // sA[0] is stdout
+                    return Compiler.OldGCC;
+            }
             return Compiler.GCC;
         } catch(InterruptedException ex) {
             if(verbose)
@@ -263,6 +271,32 @@ public class FindCompiler {
                 ex.printStackTrace();
         }
         return null;
+    }
+
+    private boolean match(String[] sA, String[] regexA) {
+        if(sA == null || regexA == null)
+            return false;
+        boolean bf = false;
+        Pattern[] patternA = new Pattern[regexA.length];
+        for(int i = 0; i < regexA.length; i++)
+            patternA[i] = Pattern.compile(regexA[i]);
+        for(String s : sA) {
+            // regex does appear to still work without needing to ensure not multiline ah but habbit
+            s = s.replace('\r', ' ');  
+            s = s.replace('\n', ' ');
+            StringBuilder sb = new StringBuilder();
+            sb.append(">>" + s);
+            for(Pattern p : patternA) {
+                Matcher matcher = p.matcher(s);
+                if(matcher.find()) {
+                    sb.append(" matches:" + p.pattern());
+                    bf = true;
+                    break;
+                }
+            }
+            project.log(sb.toString(), Project.MSG_VERBOSE);
+        }
+        return bf;
     }
 
     /**
@@ -276,11 +310,11 @@ public class FindCompiler {
             cmdAndArgs.add("gcc");
             cmdAndArgs.add("-v");
             String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
-            String stderr = null;
-            if(sA != null && sA.length == 2 && sA[1] != null)
-                stderr = sA[1];
-            if(stderr.contains("mingw"))
-                return Compiler.MinGW;
+            Util.emitDebugLog(project, sA);
+            if(sA != null && sA.length == 2 && sA[1] != null) {
+                if(match(new String[] { sA[1] }, new String[] { "mingw" }))  // sA[1] is stderr
+                    return Compiler.MinGW;
+            }
         } catch(InterruptedException ex) {
             if(verbose)
                 ex.printStackTrace();
@@ -305,11 +339,11 @@ public class FindCompiler {
             cmdAndArgs.add(cmd);
             cmdAndArgs.add("-v");
             String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
-            String stderr = null;
-            if(sA != null && sA.length == 2 && sA[1] != null)
-                stderr = sA[1];
-            if(stderr.contains("mingw-w64"))
-                return Compiler.MinGW_W64;
+            Util.emitDebugLog(project, sA);
+            if(sA != null && sA.length == 2 && sA[1] != null) {
+                if(match(new String[] { sA[1] }, new String[] { "mingw-w64", "mingw64" }))   // sA[1] is stderr
+                    return Compiler.MinGW_W64;
+            }
         } catch(InterruptedException ex) {
             if(verbose)
                 ex.printStackTrace();
@@ -324,8 +358,9 @@ public class FindCompiler {
     private Compiler testForVisualStudio() {
         try {
             List<String> cmdAndArgs = new ArrayList<String>();
-            cmdAndArgs.add("cl.exe");	// /version ?
+            cmdAndArgs.add("cl.exe");   // /version ?
             String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
+            Util.emitDebugLog(project, sA);
             String stderr = null;
             if(sA != null && sA.length == 2 && sA[1] != null)
                 stderr = sA[1];
@@ -364,9 +399,7 @@ public class FindCompiler {
         return null;
     }
 
-    String decideOSName() {
-        String osname = OSInfo.osArchName();
-        if(verbose) System.out.println("qtjambi.osname: " + osname);
-        return osname;
+    public String getAvailableCompilers() {
+        return availableCompilers;
     }
 }

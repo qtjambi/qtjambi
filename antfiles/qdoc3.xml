@@ -6,7 +6,7 @@
     <target name="qdoc3.qmake" depends="init.build">
         <qmake dir="qdoc3" pro="qdoc3/qdoc3.pro"
         config="${qtjambi.configuration}"
-            qmakebinary="${qmake.binary}"/>
+            qmakebinary="${qtjambi.qt.qmake.abspath}"/>
     </target>
 
     <target name="qdoc3.make" depends="qdoc3.qmake">

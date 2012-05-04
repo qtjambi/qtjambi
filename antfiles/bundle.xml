@@ -1,385 +1,424 @@
 <project name="qtjambi.bundle" default="library.native.bundle">
 
-    <!--
-        ************************************************************
-        Library Compilation etc ...
-        ************************************************************
-    -->
+  <!--
+      ************************************************************
+      Library Compilation etc ...
+      ************************************************************
+  -->
 
-    <!-- 
-        Runs qmake for Jambi source
-    -->
-    <target name="library.native.qmake" depends="init.build"
-        description="Runs qmake on the Qt Jambi native library">
-        <mkdir dir="${qtjambi.builddir}"/>
-        <qmake recursive="true" dir="${qtjambi.builddir}"
-            pro="src/cpp/java.pro"
-            config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
-            qtconfig="${qtjambi.qtconfig}"
-            debugTools="${qtjambi.debug-tools}"
-            qmakebinary="${qmake.binary}"/>
-    </target>
+  <!-- 
+      Runs qmake for Jambi source
+  -->
+  <target name="library.native.qmake" depends="init.build" description="Runs qmake on the Qt Jambi native library">
+      <mkdir dir="${qtjambi.builddir}"/>
+      <qmake recursive="true"
+          dir="${qtjambi.builddir}"
+          pro="src/cpp/java.pro"
+          config="${qtjambi.configuration} ${qtjambi.config.jumptable}"
+          qtconfig="${qtjambi.qtconfig}"
+          debugTools="${qtjambi.debug-tools}"
+          qmakebinary="${qtjambi.qt.qmake.abspath}"/>
+  </target>
 
-    <!--
-        Runs make for Jambi source
-    -->
-    <target name="library.native.compile" depends="library.native.qmake"
-        description="Compiles the C++ Qt Jambi library">
-        <make dir="${qtjambi.builddir}" target="${qtjambi.qmake.target.default}"/>
-    </target>
+  <!--
+      Runs make for Jambi source
+  -->
+  <target name="library.native.compile" depends="library.native.qmake" description="Compiles the C++ Qt Jambi library">
+      <make dir="${qtjambi.builddir}" target="${qtjambi.qmake.target.default}"/>
+  </target>
 
-    <target name="library.native.bundle" depends="library.native.compile"
-            description="Creates a .jar file file containing native libraries.">
+  <target name="library.native.bundle" depends="library.native.compile" description="Creates a .jar file file containing native libraries.">
+      <if>
+        <equals arg1="${qtjambi.configuration}" arg2="debug_and_release" />
+        <then>
+            <antcall target="library.native.bundle.release"/>
+            <antcall target="library.native.bundle.debug"/>
+        </then>
+      </if>
 
-        <qtjambi-platform-jar cacheKey="${qtjambi.version.cachekey}"
-                              outdir="${outputDir}/platform-output${qtjambi.configuration.dash}">
+      <if>
+        <equals arg1="${qtjambi.configuration}" arg2="release" />
+        <then>
+            <antcall target="library.native.bundle.release"/>
+        </then>
+      </if>
 
-            <directory name="" rootPath="${qtjambi.macosx.qtmenunib.dir}" destSubdir="lib/Resources" recursive="true" />
+      <if>
+        <equals arg1="${qtjambi.configuration}" arg2="test" />
+        <then>
+            <antcall target="library.native.bundle.release"/>
+        </then>
+      </if>
 
-            <!-- Qt Libraries -->
-            <library name="QtCore"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" />
-            <library name="QtGui"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" />
-            <library name="QtXml"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" />
-            <library name="QtSql"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.sql}"/>
-            <library name="QtSvg"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.svg}"/>
-            <library name="QtNetwork"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" />
-            <library name="QtHelp"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.help}"/>
-            <library name="QtScript"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.script}"/>
-            <library name="QtScriptTools"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.scripttools}"/>
-            <library name="QtMultimedia"         dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.multimedia}"/>
-            <library name="QtOpenGL"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.opengl}"/>
-            <library name="QtWebKit"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.webkit}"/>
-            <library name="QtXmlPatterns"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.xmlpatterns}"/>
-            <library name="QtDeclarative"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.declarative}"/>
-            <library name="QtDesigner"           dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.designer}"/>
-            <library name="QtDesignerComponents" dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.designercomponents}"/>
-            <library name="QtCLucene"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.clucene}"/>
-            <library name="QtDBus"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.dbus}"/>
-            <library name="QtTest"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.test}"/>
-            <library name="phonon"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.phonon.libdir}" destSubdir="lib" if="${qtjambi.phonon}"/>
+      <if>
+        <equals arg1="${qtjambi.configuration}" arg2="debug" />
+        <then>
+            <antcall target="library.native.bundle.debug"/>
+        </then>
+      </if>
+  </target>
 
-            <library name="phonon_ds9"          type="plugin"
-                    rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="phonon_backend"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.phonon_ds9}"/>
-            <library name="phonon_gstreamer"    type="plugin"
-                    rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="phonon_backend"
-                    destSubdir="plugins"
-                    load="never"
-                    kdephonon="${qtjambi.phonon.kdephonon}"
-                    if="${qtjambi.phonon_gstreamer}"/>
-            <library name="phonon_qt7"          type="plugin"
-                    rootPath="${qtjambi.phonon.pluginsdir}"
-                    subdir="phonon_backend"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.phonon_qt7}"/>
+  <target name="library.native.bundle.release" depends="library.native.compile" description="Creates a .jar file file containing native libraries.">
+    <qtjambi-platform-jar cacheKey="${qtjambi.version.cachekey}"
+                          outdir="${outputDir}/platform-output"
+                          debug="false">
 
-            <!-- Qt Plugins -->
-            <library name="qtaccessiblewidgets" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="accessible" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.accessible.qtaccessiblewidgets}"/>
+      <directory name="" rootPath="${qtjambi.macosx.qtmenunib.dir}" destSubdir="lib/Resources" recursive="true" />
 
-            <library name="qconnmanbearer"       type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="bearer" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.bearer.connmanbearer}"/>
-            <library name="qgenericbearer"       type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="bearer" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.bearer.genericbearer}"/>
-            <library name="qnativewifibearer"    type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="bearer" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.bearer.nativewifibearer}"/>
-            <library name="qnmbearer"            type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="bearer" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.bearer.nmbearer}"/>
+      <!-- Qt Libraries -->
+      <library name="QtCore"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.core}"/>
+      <library name="QtGui"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.gui}"/>
+      <library name="QtXml"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.xml}"/>
+      <library name="QtSql"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.sql}"/>
+      <library name="QtSvg"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.svg}"/>
+      <library name="QtNetwork"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.network}"/>
+      <library name="QtHelp"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.help}"/>
+      <library name="QtScript"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.script}"/>
+      <library name="QtScriptTools"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.scripttools}"/>
+      <library name="QtMultimedia"         dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.multimedia}"/>
+      <library name="QtOpenGL"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.opengl}"/>
+      <library name="QtWebKit"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.webkit}"/>
+      <library name="QtXmlPatterns"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.xmlpatterns}"/>
+      <library name="QtDeclarative"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.declarative}"/>
+      <library name="QtDesigner"           dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.designer}"/>
+      <library name="QtDesignerComponents" dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.designercomponents}"/>
+      <library name="QtCLucene"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.clucene}"/>
+      <library name="QtDBus"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.dbus}"/>
+      <library name="QtTest"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.test}"/>
+      <library name="phonon"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.phonon.libdir}" destSubdir="lib" if="${qtjambi.phonon}"/>
 
-            <library name="qglgraphicssystem"    type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="graphicssystems" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.graphicssystems.glgraphicssystem}"/>
-            <library name="qtracegraphicssystem" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="graphicssystems" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.graphicssystems.tracegraphicssystem}"/>
+      <library name="phonon_ds9"       load="never" type="plugin" rootPath="${qtjambi.phonon.pluginsdir}" subdir="phonon_backend" destSubdir="plugins" if="${qtjambi.phonon_ds9}"/>
+      <library name="phonon_gstreamer" load="never" type="plugin" rootPath="${qtjambi.phonon.pluginsdir}" subdir="phonon_backend" destSubdir="plugins" if="${qtjambi.phonon_gstreamer}" kdephonon="${qtjambi.phonon.kdephonon}"/>
+      <library name="phonon_qt7"       load="never" type="plugin" rootPath="${qtjambi.phonon.pluginsdir}" subdir="phonon_backend" destSubdir="plugins" if="${qtjambi.phonon_qt7}"/>
 
-            <library name="qsvgicon"            type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="iconengines" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.iconengines.svgicon}"/>
+      <!-- Qt Plugins -->
+      <library name="qtaccessiblewidgets"  load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="accessible" destSubdir="plugins" if="${qtjambi.plugins.accessible.qtaccessiblewidgets}"/>
 
-            <library name="qgif"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="imageformats" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.imageformats.gif}"/>
-            <library name="qico"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="imageformats" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.imageformats.ico}"/>
-            <library name="qjpeg"               type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="imageformats" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.imageformats.jpeg}"/>
-            <library name="qmng"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="imageformats" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.imageformats.mng}"/>
-            <library name="qpng"               type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="imageformats" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.imageformats.png}"/>
-            <library name="qsvg"                type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="imageformats" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.imageformats.svg}"/>
-            <library name="qtiff"               type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="imageformats" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.imageformats.tiff}"/>
+      <library name="qconnmanbearer"       load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.connmanbearer}"/>
+      <library name="qgenericbearer"       load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.genericbearer}"/>
+      <library name="qnativewifibearer"    load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.nativewifibearer}"/>
+      <library name="qnmbearer"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.nmbearer}"/>
 
-            <library name="qimsw-multi"         type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="inputmethods" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.inputmethods.imsw-multi}"/>
+      <library name="qglgraphicssystem"    load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="graphicssystems" destSubdir="plugins" if="${qtjambi.plugins.graphicssystems.glgraphicssystem}"/>
+      <library name="qtracegraphicssystem" load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="graphicssystems" destSubdir="plugins" if="${qtjambi.plugins.graphicssystems.tracegraphicssystem}"/>
 
-            <!-- Unicode codecs -->
-            <library name="qcncodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="codecs" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.codecs.cncodecs}"/>
-            <library name="qjpcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="codecs" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.codecs.jpcodecs}"/>
-            <library name="qkrcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="codecs" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.codecs.krcodecs}"/>
-            <library name="qtwcodecs"           type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="codecs" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.codecs.twcodecs}"/>
+      <library name="qsvgicon"             load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="iconengines" destSubdir="plugins" if="${qtjambi.plugins.iconengines.svgicon}"/>
 
-            <library name="qmldbg_tcp"          type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="qmltooling" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.qmltooling.qmldbg_tcp}"/>
+      <library name="qgif"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.gif}"/>
+      <library name="qico"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.ico}"/>
+      <library name="qjpeg"                load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.jpeg}"/>
+      <library name="qmng"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.mng}"/>
+      <library name="qpng"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.png}"/>
+      <library name="qsvg"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.svg}"/>
+      <library name="qtiff"                load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.tiff}"/>
 
-            <library name="qtscriptdbus"         type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="script" destSubdir="plugins" load="never"
-                    if="${qtjambi.plugins.script.qtscriptdbus}"/>
+      <library name="qimsw-multi"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="inputmethods" destSubdir="plugins" if="${qtjambi.plugins.inputmethods.imsw-multi}"/>
 
-            <library name="qsqlite" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="sqldrivers"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.plugins.sqldrivers.sqlite}"/>
-            <library name="qsqlite2" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="sqldrivers"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.plugins.sqldrivers.sqlite2}"/>
-            <library name="qsqlmysql" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="sqldrivers"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.plugins.sqldrivers.sqlmysql}"/>
-            <library name="qsqlodbc" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="sqldrivers"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.plugins.sqldrivers.sqlodbc}"/>
-            <library name="qsqlpsql" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="sqldrivers"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.plugins.sqldrivers.sqlpsql}"/>
-            <library name="qsqltds" type="plugin"
-                    rootPath="${qtjambi.qt.pluginsdir}"
-                    subdir="sqldrivers"
-                    destSubdir="plugins"
-                    load="never"
-                    if="${qtjambi.plugins.sqldrivers.sqltds}"/>
+      <!-- Unicode codecs -->
+      <library name="qcncodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.cncodecs}"/>
+      <library name="qjpcodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.jpcodecs}"/>
+      <library name="qkrcodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.krcodecs}"/>
+      <library name="qtwcodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.twcodecs}"/>
 
-            <!-- Designer plugins -->
-            <library name="JambiCustomWidget" type="qtjambi-plugin"
-                    rootPath="${qtjambi.jambi.pluginsdir}"
-                    subdir="designer"
-                    destSubdir="plugins-designer"
-                    load="never"
-                    if="${qtjambi.designer}"/>
-            <library name="JambiLanguage"     type="qtjambi-plugin"
-                    rootPath="${qtjambi.jambi.pluginsdir}"
-                    subdir="designer"
-                    destSubdir="plugins-designer"
-                    load="never"
-                    if="${qtjambi.designer}"/>
+      <library name="qmldbg_tcp"           load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="qmltooling" destSubdir="plugins" if="${qtjambi.plugins.qmltooling.qmldbg_tcp}"/>
 
-            <!-- Additional designer plugin configuration, we absolute path in destSubdir to ignore the source path -->
-            <directory name="" rootPath="${basedir}/plugins/qtjambi" destSubdir="/plugins-designer" recursive="true" />
+      <library name="qtscriptdbus"         load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="script"     destSubdir="plugins" if="${qtjambi.plugins.script.qtscriptdbus}"/>
 
+      <library name="qsqlite"           load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlite}"/>
+      <library name="qsqlite2"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlite2}"/>
+      <library name="qsqlmysql"         load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlmysql}"/>
+      <library name="qsqlodbc"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlodbc}"/>
+      <library name="qsqlpsql"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlpsql}"/>
+      <library name="qsqltds"           load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqltds}"/>
 
-            <library name="qtjambi"                      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_core"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_gui"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_xml"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_sql"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.sql}"         />
-            <library name="com_trolltech_qt_help"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.help}"        />
-            <library name="com_trolltech_qt_script"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.script}"      />
-            <library name="com_trolltech_qt_scripttools" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.scripttools}" />
-            <library name="com_trolltech_qt_multimedia"  dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.multimedia}"  />
-            <library name="com_trolltech_qt_svg"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.svg}"         />
-            <library name="com_trolltech_qt_opengl"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.opengl}"      />
-            <library name="com_trolltech_qt_network"     dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" />
-            <library name="com_trolltech_qt_phonon"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.phonon}"      />
-            <library name="com_trolltech_qt_webkit"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.webkit}"      />
-            <library name="com_trolltech_qt_xmlpatterns" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.xmlpatterns}" />
-            <library name="com_trolltech_qt_declarative" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.declarative}" />
-            <library name="com_trolltech_qt_dbus"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.dbus}"        />
-            <library name="com_trolltech_qt_test"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.test}"        />
-            <library name="com_trolltech_tools_designer" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.designer}"    />
+      <!-- Designer plugins -->
+      <library name="JambiCustomWidget" load="never" type="qtjambi-plugin" rootPath="${qtjambi.jambi.pluginsdir}" subdir="designer" destSubdir="plugins-designer" if="${qtjambi.designer.true}"/>
+      <library name="JambiLanguage"     load="never" type="qtjambi-plugin" rootPath="${qtjambi.jambi.pluginsdir}" subdir="designer" destSubdir="plugins-designer" if="${qtjambi.designer.true}"/>
 
-            <!-- Win32 MinGW only -->
-            <library name="libgcc_s_dw2-1"  type="system"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="system"
-                    if="${qtjambi.packaging.dso.libgcc_s_dw2-1}"/>
-            <!-- Win32/Win64 MinGW-W64 only -->
-            <library name="libgcc_s_sjlj-1"  type="system"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="system"
-                    if="${qtjambi.packaging.dso.libgcc_s_sjlj-1}"/>
-            <!-- Win32/Win64 MinGW only -->
-            <library name="libstdc++-6"     type="system"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="system"
-                    if="${qtjambi.packaging.dso.libstdc++-6}"/>
-            <!-- Win32/Win64 MinGW related but unable to find it required at runtime
-                 by current toolchain versions (mingw gcc 4.5.2, mingw-w64 gcc 4.7.0) -->
-            <library name="mingwm10"  type="system"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="system"
-                    if="${qtjambi.packaging.dso.mingwm10}"/>
+      <!-- Additional designer plugin configuration, we absolute path in destSubdir to ignore the source path -->
+      <directory name="" rootPath="${basedir}/plugins/qtjambi" destSubdir="/plugins-designer" recursive="true" />
 
-            <!-- Win32/Win64 libeay32.dll -->
-            <library name="libeay32"        type="dso"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="never"
-                    if="${qtjambi.packaging.dso.libeay32}"/>
+      <library name="qtjambi"                      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.core.true}"        />
+      <library name="com_trolltech_qt_core"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.gui.true}"         />
+      <library name="com_trolltech_qt_gui"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.xml.true}"         />
+      <library name="com_trolltech_qt_xml"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.sql.true}"         />
+      <library name="com_trolltech_qt_sql"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.sql.true}"         />
+      <library name="com_trolltech_qt_help"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.help.true}"        />
+      <library name="com_trolltech_qt_script"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.script.true}"      />
+      <library name="com_trolltech_qt_scripttools" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.scripttools.true}" />
+      <library name="com_trolltech_qt_multimedia"  dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.multimedia.true}"  />
+      <library name="com_trolltech_qt_svg"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.svg.true}"         />
+      <library name="com_trolltech_qt_opengl"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.opengl.true}"      />
+      <library name="com_trolltech_qt_network"     dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.network.true}"     />
+      <library name="com_trolltech_qt_phonon"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.phonon.true}"      />
+      <library name="com_trolltech_qt_webkit"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.webkit.true}"      />
+      <library name="com_trolltech_qt_xmlpatterns" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.xmlpatterns.true}" />
+      <library name="com_trolltech_qt_declarative" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.declarative.true}" />
+      <library name="com_trolltech_qt_dbus"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.dbus.true}"        />
+      <library name="com_trolltech_qt_test"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.test.true}"        />
+      <library name="com_trolltech_tools_designer" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.designer.true}"    />
 
-            <!-- Win32/Win64 libssl32.dll MinGW only -->
-            <library name="libssl32"        type="dso"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="never"
-                    if="${qtjambi.packaging.dso.libssl32}"/>
-            <!-- Win32/Win64 ssleay32.dll MSVC only -->
-            <library name="ssleay32"        type="dso"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="never"
-                    if="${qtjambi.packaging.dso.ssleay32}"/>
+      <!-- Win32 MinGW only -->
+      <library name="libgcc_s_dw2-1" type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.libgcc_s_dw2-1}"/>
+     <!-- Win32/Win64 MinGW-W64 only -->
+     <library name="libgcc_s_sjlj-1" type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.libgcc_s_sjlj-1}"/>
+      <!-- Win32/Win64 MinGW only -->
+      <library name="libstdc++-6"    type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.libstdc++-6}"/>
+      <!-- Win32/Win64 MinGW related but unable to find it required at runtime
+         by current toolchain versions (mingw gcc 4.5.2, mingw-w64 gcc 4.7.0) -->
+      <library name="mingwm10"       type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.mingwm10}"/>
 
-            <!-- Linux libssl.so -->
-            <library name="ssl"             type="dso"
-                    rootPath="${qtjambi.qt.libdir}"
-                    destSubdir="lib"
-                    load="never"
-                    if="${qtjambi.packaging.dso.libssl}"/>
-            <!-- Linux libcrypto.so.1.0.0 -->
-            <library name="crypto"          type="dso"
-                    rootPath="${qtjambi.qt.libdir}"
-                    destSubdir="lib"
-                    load="never"
-                    if="${qtjambi.packaging.dso.libcrypto}"/>
+      <!-- Win32/Win64 libeay32.dll -->
+      <library name="libeay32" type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libeay32}"/>
 
-            <!-- Win32/Win64 zlib1.dll -->
-            <library name="zlib1"           type="dso"
-                    rootPath="${qtjambi.qt.bindir}"
-                    destSubdir="lib"
-                    load="never"
-                    if="${qtjambi.packaging.dso.zlib1}"/>
+      <!-- Win32/Win64 libssl32.dll MinGW only -->
+      <library name="libssl32" type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libssl32}"/>
+      <!-- Win32/Win64 ssleay32.dll MSVC only -->
+      <library name="ssleay32" type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.ssleay32}"/>
 
-            <!-- Linux libz.so.1 -->
-            <library name="z"               type="dso"
-                    rootPath="${qtjambi.qt.libdir}"
-                    destSubdir="lib"
-                    load="never"
-                    if="${qtjambi.packaging.dso.libz}"/>
+      <!-- Linux libssl.so -->
+      <library name="ssl"      type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libssl}"/>
+      <!-- Linux libcrypto.so.1.0.0 -->
+      <library name="crypto"   type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libcrypto}"/>
 
-            <!-- Macosx libdbus-1.3.dylib (this should never have _debug
-            since the Qt runtime loader code does not account for that,
-            src/dbus/qdbus_symbols.cpp) -->
-            <library name="dbus-1"       type="dso"
-                    rootPath="${qtjambi.qt.libdir}"
-                    destSubdir="lib"
-                    load="never"
-                    srcPath="${qtjambi.packaging.dso.libdbus-1}"
-                    if="${qtjambi.packaging.dso.libdbus-1}"/>
+      <!-- Win32/Win64 zlib1.dll -->
+      <library name="zlib1"    type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.zlib1}"/>
 
-            <plugin path="plugins"/>
-            <plugin-designer path="plugins-designer"/>
+      <!-- Linux libz.so.1 -->
+      <library name="z"        type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libz}"/>
 
-        </qtjambi-platform-jar>
+      <!-- Macosx libdbus-1.3.dylib (this should never have _debug
+      since the Qt runtime loader code does not account for that,
+      src/dbus/qdbus_symbols.cpp) -->
+      <library name="dbus-1"   type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" srcPath="${qtjambi.packaging.dso.libdbus-1}" if="${qtjambi.packaging.dso.libdbus-1}"/>
 
-        <mkdir dir="${outputDir}/platform-output${qtjambi.configuration.dash}/META-INF/com.trolltech.qt.deployment"/>
-        <copy file="${outputDir}/platform-output${qtjambi.configuration.dash}/qtjambi-deployment.xml" tofile="${outputDir}/platform-output${qtjambi.configuration.dash}/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}.${qtjambi.configuration}-${qtjambi.version.bundle}.xml"/>
+      <plugin path="plugins"/>
+      <plugin-designer path="plugins-designer"/>
 
-        <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}${qtjambi.configuration.dash}.jar"/>
-        <jar destfile="${destination-file}">
-            <fileset dir="${outputDir}/platform-output${qtjambi.configuration.dash}"/>
-            <manifest>
-                <!-- <attribute name="Created-By"              value="${user.name} - ${TODAY}"/>  -->
-                <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
-                <!-- <attribute name="Bundle-ActivationPolicy" value="lazy"/> -->
-                <!-- <attribute name="Bundle-Activator"        value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.configuration}.osgi.Activator"/> -->
-                <attribute name="Bundle-Classpath"        value="."/>
-                <attribute name="Bundle-Description"      value="QtJambi Native Bundle (${qtjambi.osname} ${qtjambi.configuration})"/>
-                <attribute name="Bundle-DocURL"           value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
-                <!-- TODO: qtjambi.png -->
-                <!-- <attribute name="Bundle-Icon"             value="qtjambi.png"/> -->
-                <attribute name="Bundle-License"          value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
-                <!-- <attribute name="Bundle-Localization"     value=""/> -->
-                <attribute name="Bundle-ManifestVersion"  value="2"/>
-                <attribute name="Bundle-Name"             value="QtJambi Native Bundle (${qtjambi.osname} ${qtjambi.configuration})"/>
-                <!-- Need to format Bundle-NativeCode correctly with selectors -->
-                <!-- <attribute name="Bundle-NativeCode"       value="lib/**"/> -->
-                <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
-                <attribute name="Bundle-SymbolicName"     value="com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};singleton:=true"/>
-                <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
-                <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
-                <!-- <attribute name="DynamicImport-Package"           value=""/> -->
-                <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
-                <attribute name="Export-Package"          value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi}"/>
-<!--                <attribute name="Import-Package"          value="com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next}]&quot;"/> -->
-<!--                <attribute name="Import-Package"          value="com.trolltech.qt;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions.signalhandler;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.core;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.designer;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.gui;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.help;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.multimedia;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.network;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.opengl;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.osinfo;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.phonon;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.script;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.scripttools;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.sql;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.svg;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.webkit;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xml;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xmlpatterns;version=&quot;${qtjambi.version.bundle}&quot;"/> -->
+    </qtjambi-platform-jar>
+
+    <mkdir dir="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment"/>
+    <copy file="${outputDir}/platform-output/qtjambi-deployment.xml" tofile="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}-${qtjambi.version.bundle}.xml"/>
+
+    <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}.jar"/>
+    <jar destfile="${destination-file}">
+      <fileset dir="${outputDir}/platform-output"/>
+      <manifest>
+        <!-- <attribute name="Created-By"        value="${user.name} - ${TODAY}"/>  -->
+        <attribute name="Built-By"               value="${user.name} - ${TODAY}"/>
+        <!-- <attribute name="Bundle-ActivationPolicy" value="lazy"/> -->
+        <!-- <attribute name="Bundle-Activator"    value="com.trolltech.qt.native.${qtjambi.osplatform}.osgi.Activator"/> -->
+        <attribute name="Bundle-Classpath"       value="."/>
+        <attribute name="Bundle-Description"     value="QtJambi Native Bundle (${qtjambi.osname} release)"/>
+        <attribute name="Bundle-DocURL"          value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+        <!-- TODO: qtjambi.png -->
+        <!-- <attribute name="Bundle-Icon"       value="qtjambi.png"/> -->
+        <attribute name="Bundle-License"         value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
+        <!-- <attribute name="Bundle-Localization"   value=""/> -->
+        <attribute name="Bundle-ManifestVersion" value="2"/>
+        <attribute name="Bundle-Name"            value="QtJambi Native Bundle (${qtjambi.osname} release)"/>
+        <!-- Need to format Bundle-NativeCode correctly with selectors -->
+        <!-- <attribute name="Bundle-NativeCode"     value="lib/**"/> -->
+        <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
+        <attribute name="Bundle-SymbolicName"    value="com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};singleton:=true"/>
+        <attribute name="Bundle-UpdateLocation"  value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+        <attribute name="Bundle-Vendor"          value="www.qt-jambi.org"/>
+        <!-- <attribute name="DynamicImport-Package"       value=""/> -->
+        <attribute name="Bundle-Version"         value="${qtjambi.version.bundle}"/>
+        <attribute name="Export-Package"         value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi}"/>
+<!--        <attribute name="Import-Package"      value="com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next}]&quot;"/> -->
+<!--        <attribute name="Import-Package"      value="com.trolltech.qt;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions.signalhandler;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.core;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.designer;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.gui;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.help;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.multimedia;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.network;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.opengl;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.osinfo;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.phonon;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.script;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.scripttools;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.sql;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.svg;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.webkit;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xml;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xmlpatterns;version=&quot;${qtjambi.version.bundle}&quot;"/> -->
 <!-- ,com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;${qtjambi.version.bundle}&quot; -->
-                <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
-                <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
-                <attribute name="X-QtJambi-CacheKey"      value="${qtjambi.version.cachekey}" />
-                <attribute name="X-QtJambi-Deployment"    value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.${qtjambi.configuration}-${qtjambi.version.bundle}.xml"/>
-                <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>
-            </manifest>
-        </jar>
-        <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>
+        <attribute name="X-QtJambi-Arch"         value="${qtjambi.osname}"/>
+        <attribute name="X-QtJambi-Build"        value="release"/><!-- release debug test -->
+        <attribute name="X-QtJambi-CacheKey"     value="${qtjambi.version.cachekey}" />
+        <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.release-${qtjambi.version.bundle}.xml"/>
+        <attribute name="X-QtJambi-Version"      value="${qtjambi.version.bundle}"/>
+      </manifest>
+    </jar>
+    <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>
 
-    </target>
+  </target>
+
+  <target name="library.native.bundle.debug" depends="library.native.compile" description="Creates a .jar file file containing native libraries.">
+    <qtjambi-platform-jar cacheKey="${qtjambi.version.cachekey}"
+                          outdir="${outputDir}/platform-output-debug"
+                          debug="true">
+
+      <directory name="" rootPath="${qtjambi.macosx.qtmenunib.dir}" destSubdir="lib/Resources" recursive="true" />
+
+      <!-- Qt Libraries -->
+      <library name="QtCore"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.core.debug}"/>
+      <library name="QtGui"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.gui.debug}"/>
+      <library name="QtXml"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.xml.debug}"/>
+      <library name="QtSql"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.sql.debug}"/>
+      <library name="QtSvg"                dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.svg.debug}"/>
+      <library name="QtNetwork"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.network.debug}"/>
+      <library name="QtHelp"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.help.debug}"/>
+      <library name="QtScript"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.script.debug}"/>
+      <library name="QtScriptTools"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.scripttools.debug}"/>
+      <library name="QtMultimedia"         dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.multimedia.debug}"/>
+      <library name="QtOpenGL"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.opengl.debug}"/>
+      <library name="QtWebKit"             dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.webkit.debug}"/>
+      <library name="QtXmlPatterns"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.xmlpatterns.debug}"/>
+      <library name="QtDeclarative"        dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.declarative.debug}"/>
+      <library name="QtDesigner"           dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.designer.debug}"/>
+      <library name="QtDesignerComponents" dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.designercomponents.debug}"/>
+      <library name="QtCLucene"            dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.clucene.debug}"/>
+      <library name="QtDBus"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.dbus.debug}"/>
+      <library name="QtTest"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.qt.libdir}"     destSubdir="lib" if="${qtjambi.test.debug}"/>
+      <library name="phonon"               dsoVersion="${qt.version.major}"  type="qt"  rootPath="${qtjambi.phonon.libdir}" destSubdir="lib" if="${qtjambi.phonon.debug}"/>
+
+      <library name="phonon_ds9"       load="never" type="plugin" rootPath="${qtjambi.phonon.pluginsdir}" subdir="phonon_backend" destSubdir="plugins" if="${qtjambi.phonon_ds9.debug}"/>
+      <library name="phonon_gstreamer" load="never" type="plugin" rootPath="${qtjambi.phonon.pluginsdir}" subdir="phonon_backend" destSubdir="plugins" if="${qtjambi.phonon_gstreamer.debug}" kdephonon="${qtjambi.phonon.kdephonon}"/>
+      <library name="phonon_qt7"       load="never" type="plugin" rootPath="${qtjambi.phonon.pluginsdir}" subdir="phonon_backend" destSubdir="plugins" if="${qtjambi.phonon_qt7.debug}"/>
+
+      <!-- Qt Plugins -->
+      <library name="qtaccessiblewidgets"  load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="accessible" destSubdir="plugins" if="${qtjambi.plugins.accessible.qtaccessiblewidgets.debug}"/>
+
+      <library name="qconnmanbearer"       load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.connmanbearer.debug}"/>
+      <library name="qgenericbearer"       load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.genericbearer.debug}"/>
+      <library name="qnativewifibearer"    load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.nativewifibearer.debug}"/>
+      <library name="qnmbearer"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="bearer" destSubdir="plugins" if="${qtjambi.plugins.bearer.nmbearer.debug}"/>
+
+      <library name="qglgraphicssystem"    load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="graphicssystems" destSubdir="plugins" if="${qtjambi.plugins.graphicssystems.glgraphicssystem.debug}"/>
+      <library name="qtracegraphicssystem" load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="graphicssystems" destSubdir="plugins" if="${qtjambi.plugins.graphicssystems.tracegraphicssystem.debug}"/>
+
+      <library name="qsvgicon"             load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="iconengines" destSubdir="plugins" if="${qtjambi.plugins.iconengines.svgicon.debug}"/>
+
+      <library name="qgif"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.gif.debug}"/>
+      <library name="qico"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.ico.debug}"/>
+      <library name="qjpeg"                load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.jpeg.debug}"/>
+      <library name="qmng"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.mng.debug}"/>
+      <library name="qpng"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.png.debug}"/>
+      <library name="qsvg"                 load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.svg.debug}"/>
+      <library name="qtiff"                load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="imageformats" destSubdir="plugins" if="${qtjambi.plugins.imageformats.tiff.debug}"/>
+
+      <library name="qimsw-multi"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="inputmethods" destSubdir="plugins" if="${qtjambi.plugins.inputmethods.imsw-multi.debug}"/>
+
+      <!-- Unicode codecs -->
+      <library name="qcncodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.cncodecs.debug}"/>
+      <library name="qjpcodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.jpcodecs.debug}"/>
+      <library name="qkrcodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.krcodecs.debug}"/>
+      <library name="qtwcodecs"            load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="codecs"     destSubdir="plugins" if="${qtjambi.plugins.codecs.twcodecs.debug}"/>
+
+      <library name="qmldbg_tcp"           load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="qmltooling" destSubdir="plugins" if="${qtjambi.plugins.qmltooling.qmldbg_tcp.debug}"/>
+
+      <library name="qtscriptdbus"         load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="script"     destSubdir="plugins" if="${qtjambi.plugins.script.qtscriptdbus.debug}"/>
+
+      <library name="qsqlite"           load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlite.debug}"/>
+      <library name="qsqlite2"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlite2.debug}"/>
+      <library name="qsqlmysql"         load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlmysql.debug}"/>
+      <library name="qsqlodbc"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlodbc.debug}"/>
+      <library name="qsqlpsql"          load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqlpsql.debug}"/>
+      <library name="qsqltds"           load="never" type="plugin" rootPath="${qtjambi.qt.pluginsdir}" subdir="sqldrivers" destSubdir="plugins" if="${qtjambi.plugins.sqldrivers.sqltds.debug}"/>
+
+      <!-- Designer plugins -->
+      <library name="JambiCustomWidget" load="never" type="qtjambi-plugin" rootPath="${qtjambi.jambi.pluginsdir}" subdir="designer" destSubdir="plugins-designer" if="${qtjambi.designer.debug.true}"/>
+      <library name="JambiLanguage"     load="never" type="qtjambi-plugin" rootPath="${qtjambi.jambi.pluginsdir}" subdir="designer" destSubdir="plugins-designer" if="${qtjambi.designer.debug.true}"/>
+
+      <!-- Additional designer plugin configuration, we absolute path in destSubdir to ignore the source path -->
+      <directory name="" rootPath="${basedir}/plugins/qtjambi" destSubdir="/plugins-designer" recursive="true" />
+
+      <library name="qtjambi"                      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.core.debug.true}"        />
+      <library name="com_trolltech_qt_core"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.gui.debug.true}"         />
+      <library name="com_trolltech_qt_gui"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.xml.debug.true}"         />
+      <library name="com_trolltech_qt_xml"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.sql.debug.true}"         />
+      <library name="com_trolltech_qt_sql"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.sql.debug.true}"         />
+      <library name="com_trolltech_qt_help"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.help.debug.true}"        />
+      <library name="com_trolltech_qt_script"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.script.debug.true}"      />
+      <library name="com_trolltech_qt_scripttools" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.scripttools.debug.true}" />
+      <library name="com_trolltech_qt_multimedia"  dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.multimedia.debug.true}"  />
+      <library name="com_trolltech_qt_svg"         dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.svg.debug.true}"         />
+      <library name="com_trolltech_qt_opengl"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.opengl.debug.true}"      />
+      <library name="com_trolltech_qt_network"     dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.network.debug.true}"     />
+      <library name="com_trolltech_qt_phonon"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.phonon.debug.true}"      />
+      <library name="com_trolltech_qt_webkit"      dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.webkit.debug.true}"      />
+      <library name="com_trolltech_qt_xmlpatterns" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.xmlpatterns.debug.true}" />
+      <library name="com_trolltech_qt_declarative" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.declarative.debug.true}" />
+      <library name="com_trolltech_qt_dbus"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.dbus.debug.true}"        />
+      <library name="com_trolltech_qt_test"        dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.test.debug.true}"        />
+      <library name="com_trolltech_tools_designer" dsoVersion="${qtjambi.soname.version.major}" type="qtjambi-jni" rootPath="${qtjambi.jambi.libdir}" destSubdir="lib" if="${qtjambi.designer.debug.true}"    />
+
+      <!-- Win32 MinGW only -->
+      <library name="libgcc_s_dw2-1" type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.libgcc_s_dw2-1}"/>
+     <!-- Win32/Win64 MinGW-W64 only -->
+     <library name="libgcc_s_sjlj-1" type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.libgcc_s_sjlj-1}"/>
+      <!-- Win32/Win64 MinGW only -->
+      <library name="libstdc++-6"    type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.libstdc++-6}"/>
+      <!-- Win32/Win64 MinGW related but unable to find it required at runtime
+         by current toolchain versions (mingw gcc 4.5.2, mingw-w64 gcc 4.7.0) -->
+      <library name="mingwm10"       type="system" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="system" if="${qtjambi.packaging.dso.mingwm10}"/>
+
+      <!-- Win32/Win64 libeay32.dll -->
+      <library name="libeay32" type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libeay32}"/>
+
+      <!-- Win32/Win64 libssl32.dll MinGW only -->
+      <library name="libssl32" type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libssl32}"/>
+      <!-- Win32/Win64 ssleay32.dll MSVC only -->
+      <library name="ssleay32" type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.ssleay32}"/>
+
+      <!-- Linux libssl.so -->
+      <library name="ssl"      type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libssl}"/>
+      <!-- Linux libcrypto.so.1.0.0 -->
+      <library name="crypto"   type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libcrypto}"/>
+
+      <!-- Win32/Win64 zlib1.dll -->
+      <library name="zlib1"    type="dso" rootPath="${qtjambi.qt.bindir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.zlib1}"/>
+
+      <!-- Linux libz.so.1 -->
+      <library name="z"        type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" if="${qtjambi.packaging.dso.libz}"/>
+
+      <!-- Macosx libdbus-1.3.dylib (this should never have _debug
+      since the Qt runtime loader code does not account for that,
+      src/dbus/qdbus_symbols.cpp) -->
+      <library name="dbus-1"   type="dso" rootPath="${qtjambi.qt.libdir}" destSubdir="lib" load="never" srcPath="${qtjambi.packaging.dso.libdbus-1}" if="${qtjambi.packaging.dso.libdbus-1}"/>
+
+      <plugin path="plugins"/>
+      <plugin-designer path="plugins-designer"/>
+
+    </qtjambi-platform-jar>
+
+    <mkdir dir="${outputDir}/platform-output-debug/META-INF/com.trolltech.qt.deployment"/>
+    <copy file="${outputDir}/platform-output-debug/qtjambi-deployment.xml" tofile="${outputDir}/platform-output-debug/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}.debug-${qtjambi.version.bundle}.xml"/>
+
+    <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}-debug.jar"/>
+    <jar destfile="${destination-file}">
+      <fileset dir="${outputDir}/platform-output-debug"/>
+      <manifest>
+        <!-- <attribute name="Created-By"        value="${user.name} - ${TODAY}"/>  -->
+        <attribute name="Built-By"               value="${user.name} - ${TODAY}"/>
+        <!-- <attribute name="Bundle-ActivationPolicy" value="lazy"/> -->
+        <!-- <attribute name="Bundle-Activator"    value="com.trolltech.qt.native.${qtjambi.osplatform}.debug.osgi.Activator"/> -->
+        <attribute name="Bundle-Classpath"       value="."/>
+        <attribute name="Bundle-Description"     value="QtJambi Native Bundle (${qtjambi.osname} debug)"/>
+        <attribute name="Bundle-DocURL"          value="http://www.qt-jambi.org/go/osgi/DocURL/com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+        <!-- TODO: qtjambi.png -->
+        <!-- <attribute name="Bundle-Icon"       value="qtjambi.png"/> -->
+        <attribute name="Bundle-License"         value="GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 February 1999 with Nokia Qt LGPL Exception version 1.0"/>
+        <!-- <attribute name="Bundle-Localization"   value=""/> -->
+        <attribute name="Bundle-ManifestVersion" value="2"/>
+        <attribute name="Bundle-Name"            value="QtJambi Native Bundle (${qtjambi.osname} debug)"/>
+        <!-- Need to format Bundle-NativeCode correctly with selectors -->
+        <!-- <attribute name="Bundle-NativeCode"     value="lib/**"/> -->
+        <attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5"/>
+        <attribute name="Bundle-SymbolicName"    value="com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};singleton:=true"/>
+        <attribute name="Bundle-UpdateLocation"  value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.native.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+        <attribute name="Bundle-Vendor"          value="www.qt-jambi.org"/>
+        <!-- <attribute name="DynamicImport-Package"       value=""/> -->
+        <attribute name="Bundle-Version"         value="${qtjambi.version.bundle}"/>
+        <attribute name="Export-Package"         value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi}"/>
+<!--        <attribute name="Import-Package"      value="com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next}]&quot;"/> -->
+<!--        <attribute name="Import-Package"      value="com.trolltech.qt;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions.signalhandler;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.core;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.designer;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.gui;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.help;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.multimedia;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.network;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.opengl;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.osinfo;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.phonon;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.script;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.scripttools;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.sql;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.svg;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.webkit;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xml;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xmlpatterns;version=&quot;${qtjambi.version.bundle}&quot;"/> -->
+<!-- ,com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;${qtjambi.version.bundle}&quot; -->
+        <attribute name="X-QtJambi-Arch"         value="${qtjambi.osname}"/>
+        <attribute name="X-QtJambi-Build"        value="debug"/><!-- release debug test -->
+        <attribute name="X-QtJambi-CacheKey"     value="${qtjambi.version.cachekey}" />
+        <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.debug-${qtjambi.version.bundle}.xml"/>
+        <attribute name="X-QtJambi-Version"      value="${qtjambi.version.bundle}"/>
+      </manifest>
+    </jar>
+    <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>
+
+  </target>
 </project>

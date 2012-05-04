@@ -15,6 +15,8 @@
 
 <project default="help" basedir="." name="qtjambi.main">
 
+    <property name="jambi.directory"               value="${basedir}"/>
+
     <property file="build.properties"/>
 
     <property name="sourceDir" value="build"/>
@@ -36,6 +38,25 @@
     <import file="antfiles/generator.xml"/>
     <import file="antfiles/qdoc3.xml"/>
     <import file="build_autotests.xml" />
+
+    <!-- These properties used to be at the top of build.properties
+         but no one is expected to change them.
+         -->
+    <property name="java.srcdir"                   value="src/java"/>
+    <property name="java.outdir"                   value="build/java"/>
+    <property name="java.outsrcdir"                value="build/java-src"/>
+    <property name="jardir"                        value="jars"/>
+
+    <property name="qtjambi.builddir"              value="build/qmake-qtjambi"/>
+
+    <property name="generator.builddir"            value="build/qmake-generator"/>
+    <property name="generator.outputdir"           value="build/generator/out"/>
+    <property name="generator.xmlmerge.srcdir"     value="generator/typesystem/xml"/>
+    <property name="generator.xmlmerge.outputdir"  value="build/generator"/>
+
+    <property name="juic.builddir"                 value="build/qmake-juic"/>
+    <property name="juic.outputdir"                value="build/juic-out"/>
+
 
     <!--
         Initialization tasks. Note that the init.taskdef task depends on a jar
@@ -65,14 +86,14 @@
     </target>
 
     <target name="init" depends="log, init.taskdef">
-        <qtjambi-initialize verbose="true" configuration="${qtjambi.config}"/>
+        <qtjambi-initialize verbose="true"/>
         <!-- copy jogl to the jar dir. needed for compilation examples  -->
         <copy file="jogl/jogl.jar" todir="${jardir}"/>
 	</target>
 
     <target name="init.build" depends="log, setenv, init.taskdef, init"
 	description="Initializes the Qt Jambi build environment." >
-        <qtjambi-initialize-build verbose="true" configuration="${qtjambi.config}"/>
+        <qtjambi-initialize-build verbose="true"/>
         <!--<copy file="version.properties" todir="${java.srcdir}/qtjambi/"/>-->
     </target>
 
@@ -88,7 +109,7 @@
         <mkdir dir="${juic.builddir}"/>
         <qmake dir="${juic.builddir}" pro="juic/juic.pro"
                 config="${qtjambi.configuration}"
-                qmakebinary="${tools.qmake.binary}"/>
+                qmakebinary="${tools.qt.qmake.abspath}"/>
     </target>
 
     <target name="tools.juic.make" depends="log, tools.juic.qmake">
@@ -101,7 +122,7 @@
             <mkdir dir="${juic.outputdir}/@{module}"/>
             <juic juicDirectory="${juic.builddir}"
                 message="Running juic for @{module}..." alwaysupdate="true"
-                qtlibdirectory="${qtjambi.tools.qt.libdir}"
+                qtlibdirectory="${tools.qt.libdir}"
                 classpath="${java.srcdir}/@{module}"
                 outputdir="${juic.outputdir}/@{module}">
                 <include name="**/*.jui"/>
@@ -151,7 +172,7 @@ documentation at http://qt-jambi.org/development/building/
 Full command listing with ant -projecthelp
 
 Quick howto:
-[edit buildpath.properties to suit your system]
+[edit build.properties to suit your system]
 ant all
         </echo>
     </target>

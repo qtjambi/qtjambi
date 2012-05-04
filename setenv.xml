@@ -1,4 +1,4 @@
-<!--
+	<!--
     This file has two purposes:
 
     * download ant-contrib and use it (or pick up the jar from the system itself)
@@ -7,8 +7,7 @@
 
 <project name="qtjambi.setenv" default="setenv">
 
-    <property file="${jambi.directory}/version.properties.template"/>
-    <property file="${jambi.directory}/buildpath.properties"/>
+    <property file="${jambi.directory}/build.properties"/>
     <property file="${jambi.directory}/antcontrib.properties"/>
 
     <!--
@@ -99,101 +98,6 @@
         to qt's libraries's dir and include dir.
     -->
 
-    <target name="handle-qtdir">
-        <if>
-            <isset property="env.QTDIR"/>
-            <then>
-                <property name="qmake.binary" value="${env.QTDIR}${file.separator}bin${file.separator}qmake"/>
-                <!-- Don't override these, buildpath.propeties should be commented out
-                <var name="qt.libdir" unset="true"/>
-                <var name="qt.pluginsdir" unset="true"/>
-                <var name="qt.includedir" unset="true"/>
-                -->
-                <!-- All SDKs have DLLs in lib/* directory even on windows
-                     yes the bin/* dir has a copy of the DLLs but it doesn't have other
-                     important files qmake uses like *.prl
-                <if>
-                    <os family="windows"/>
-                    <then>
-                        <property name="qt.lib.subdir" value="bin"/>
-                    </then>
-                    <else> -->
-                        <property name="qt.lib.subdir" value="lib"/>
-                    <!-- </else>
-                </if>
-                -->
-                <property name="qt.bindir" value="${env.QTDIR}${file.separator}bin"/>
-                <property name="qt.libdir" value="${env.QTDIR}${file.separator}${qt.lib.subdir}"/>
-                <property name="qtjambi.libdir" value="${env.JAMBIDIR}/${qt.lib.subdir}"/>
-
-
-                <property name="qt.pluginsdir" value="${env.QTDIR}${file.separator}plugins"/>
-                <property name="qt.includedir" value="${env.QTDIR}${file.separator}include"/>
-
-                <!--
-                    This section can't be used on certain machines,
-                    which can't handle java.library.path natively...
-
-                <var name="qtjambi.java.library.path" unset="true"/>
-                <property name="qtjambi.java.library.path" value="${env.QTDIR}/bin"/>
-                -->
-
-                <!-- Don't override these, buildpath.propeties should be commented out
-                <var name="qtjambi.phonon.pluginsdir" unset="true"/>
-                <var name="qtjambi.phonon.libdir" unset="true"/>
-                -->
-
-                <!--
-                    If user is using Qt phonon then the correct includedir
-                    is ${env.QTDIR}/include since we prefix include directives with
-                    phonon directory <phonon/file.h>
-
-                <var name="qtjambi.phonon.includedir" unset="true"/>
-                -->
-                <property name="qtjambi.phonon.pluginsdir" value="${qt.pluginsdir}"/>
-                <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
-
-                <!--  Set this to empty value if not given in buildpath.properties -->
-                <property name="qtjambi.phonon.includedir" value=""/>
-                <property name="tools.qmake.binary" value="${qmake.binary}"/>
-                <property name="tools.qt.libdir" value="${qt.libdir}"/>
-            </then>
-            <else>
-                <if>
-                    <and>
-                        <isset property="qt.bindir"/>
-                        <available file="${qt.bindir}/${qt.qmake}"/>
-                    </and>
-                    <then>
-                        <property name="qmake.binary" value="${qt.bindir}/${qt.qmake}"/>
-                    </then>
-                    <else>
-                        <property name="qmake.binary" value="qmake"/>
-                    </else>
-                </if>
-                <if>
-                    <and>
-                        <isset property="tools.qt.bindir"/>
-                        <available file="${tools.qt.bindir}/${tools.qt.qmake}"/>
-                    </and>
-                    <then>
-                        <property name="tools.qmake.binary" value="${tools.qt.bindir}/${tools.qt.qmake}"/>
-                    </then>
-                    <else>
-                        <property name="tools.qmake.binary" value="${qmake.binary}"/>
-                    </else>
-                </if>
-                <if>
-                    <isset property="tools.qt.libdir"/>
-                    <then></then>
-                    <else>
-                        <property name="tools.qt.libdir" value="${qt.libdir}"/>
-                    </else>
-                </if>
-            </else>
-        </if>
-    </target>
-
     <target name="check-kdephonon">
         <if>
         <equals arg1="${qtjambi.phonon.kdephonon}" arg2="true" />
@@ -201,75 +105,14 @@
             <property name="qtjambi.phonon.kdephonon-path"
                     value="${generatorDir}/targets/masterinclude_with_kdephonon.h" />
         </then>
-        <else>
-            <property name="qtjambi.phonon.kdephonon-path"
-                    value="" />
-        </else>
         </if>
     </target>
 
-    <target name="lookup-libdir">
-        <!-- All SDKs have DLLs in lib/* directory even on windows
-             yes the bin/* dir has a copy of the DLLs but it doesn't have other
-             important files qmake uses like *.prl
-        <if>
-            <os family="windows"/>
-            <then>
-                <var name="qt.libdir" unset="true"/>
-                <property name="qt.libdir" value="${env.QTDIR}${file.separator}bin"/>
-
-                <var name="qtjambi.phonon.libdir" unset="true"/>
-                <property name="qtjambi.phonon.libdir" value="${env.QTDIR}${file.separator}bin"/>
-            </then>
-        </if>
-         -->
-    </target>
-
-    <target name="setup-properties" depends="setenv.solve-path, handle-qtdir, check-kdephonon, lookup-libdir">
-        <exec executable="${qmake.binary}" outputproperty="qt.version.tmp">
-            <arg value="-query"/>
-            <arg value="QT_VERSION"/>
-        </exec>
-        <fail message="ERROR: qt-jambi version and qt version differ (qt-jambi: ${qtjambi.version}, qt: ${qt.version.tmp})">
-            <condition>
-                <and>
-                    <isset property="qtjambi.version"/>
-                    <not>
-                        <equals arg1="${qtjambi.version}" arg2="${qt.version.tmp}"/>
-                    </not>
-                </and>
-            </condition>
-        </fail>
-        <property name="qtjambi.qt.bindir" value="${qt.bindir}"/>
-        <property name="qtjambi.qt.libdir" value="${qt.libdir}"/>
-        <property name="qtjambi.qt.pluginsdir" value="${qt.pluginsdir}"/>
-        <property name="qtjambi.qt.includedir" value="${qt.includedir}"/>
+    <target name="setup-properties" depends="check-kdephonon">
+        <!-- these are used by examples/generator/hello_world_generator/** not by QtJambi to build itself -->
         <property name="qtjambi.jambi.libdir"       value="${jambi.directory}${file.separator}build${file.separator}qmake-qtjambi${file.separator}lib"/>
         <property name="qtjambi.jambi.pluginsdir"   value="${jambi.directory}${file.separator}build${file.separator}qmake-qtjambi${file.separator}plugins"/>
-
-        <!--
-            dummy-set values to phonon properties, if they
-            are not set. If they are set, or if they are set by QTDIR,
-            the this won't do anything.
-        -->
-
-        <!-- Include dir should default to empty, Qt include dir is used for phonon in that case -->
-        <property name="qtjambi.phonon.includedir"  value=""/>
-        <property name="qtjambi.phonon.libdir" value="${qt.libdir}"/>
-        <property name="qtjambi.phonon.pluginsdir" value="${qt.pluginsdir}"/>
-        <property name="qtjambi.tools.qt.libdir" value="${tools.qt.libdir}"/>
     </target>
-
-   <target name="setenv.solve-path">
-       <if>
-           <isset property="jambi.directory"/>
-           <then>
-           </then>
-           <else>
-                <property name="jambi.directory" value="${basedir}"/>
-           </else>
-        </if>
-   </target>
 
     <target name="setenv" depends="source.antcontrib, setup-properties"/>
 

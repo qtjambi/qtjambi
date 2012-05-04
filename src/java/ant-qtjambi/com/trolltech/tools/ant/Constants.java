@@ -57,6 +57,9 @@ public abstract class Constants {
      * xml side?
      */
     public static final String DIRECTORY                = "jambi.directory";
+    public static final String DIRECTORY_ABSPATH        = "jambi.directory.abspath";
+    public static final String QMAKE                    = "qtjambi.qt.qmake";
+    public static final String QMAKE_ABSPATH            = "qtjambi.qt.qmake.abspath";
     public static final String BINDIR                   = "qtjambi.qt.bindir";
     public static final String LIBDIR                   = "qtjambi.qt.libdir";
     public static final String INCLUDEDIR               = "qtjambi.qt.includedir";
@@ -86,12 +89,19 @@ public abstract class Constants {
     public static final String QT_VERSION_PROPERTIES          = "version.properties";
     public static final String QT_VERSION_PROPERTIES_TEMPLATE = "version.properties.template";
 
-    public static final String CONFIG_RELEASE     = "release";
-    public static final String CONFIG_DEBUG       = "debug";
-    public static final String CONFIG_TEST        = "test";
+    public static final String CONFIG_RELEASE           = "release";
+    public static final String CONFIG_DEBUG             = "debug";
+    public static final String CONFIG_TEST              = "test";
     public static final String CONFIG_DEBUG_AND_RELEASE = "debug_and_release";
 
     public static final String QMAKE_TARGET_DEFAULT     = "qtjambi.qmake.target.default";
+    public static final String GENERATOR_INCLUDEPATHS   = "generator.includepaths";
+
+    // Cross compiling, for example (host = intel x86, target = arm)
+    public static final String TOOLS_BINDIR             = "tools.qt.bindir";
+    public static final String TOOLS_LIBDIR             = "tools.qt.libdir";
+    public static final String TOOLS_QMAKE              = "tools.qt.qmake";
+    public static final String TOOLS_QMAKE_ABSPATH      = "tools.qt.qmake.abspath";
 
     /*
      * This is needed for Linux/Unix/MacOSX so that the bundled item filename matches the
@@ -109,19 +119,19 @@ public abstract class Constants {
     public static final String CONFIGURATION      = "qtjambi.configuration";
     public static final String CONFIGURATION_DASH = "qtjambi.configuration.dash";
     public static final String CONFIGURATION_OSGI = "qtjambi.configuration.osgi";
-    public static final String CORE               = "qtjambi.core";		// mandatory with <= 4.7.x
+    public static final String CORE               = "qtjambi.core";         // mandatory with <= 4.7.x
     public static final String DBUS               = "qtjambi.dbus";
     public static final String DECLARATIVE        = "qtjambi.declarative";
     public static final String DESIGNER           = "qtjambi.designer";
     public static final String DESIGNERCOMPONENTS = "qtjambi.designercomponents";
-    public static final String GUI                = "qtjambi.gui";              // mandatory with <= 4.7.x
+    public static final String GUI                = "qtjambi.gui";          // mandatory with <= 4.7.x
     public static final String HELP               = "qtjambi.help";
     public static final String MULTIMEDIA         = "qtjambi.multimedia";
-    public static final String NETWORK            = "qtjambi.network";          // mandatory with <= 4.7.x
+    public static final String NETWORK            = "qtjambi.network";      // mandatory with <= 4.7.x
     public static final String OPENGL             = "qtjambi.opengl";
     public static final String OSNAME             = "qtjambi.osname";
-    public static final String OSPLATFORM         = "qtjambi.osplatform";	// linux windows macosx
-    public static final String OSCPU              = "qtjambi.oscpu";		// i386 x86_64 x86 x32
+    public static final String OSPLATFORM         = "qtjambi.osplatform";   // linux windows macosx
+    public static final String OSCPU              = "qtjambi.oscpu";        // i386 x86_64 x86 x32
     public static final String PHONON             = "qtjambi.phonon";
     public static final String PHONON_DS9         = "qtjambi.phonon_ds9";
     public static final String PHONON_GSTREAMER   = "qtjambi.phonon_gstreamer";
@@ -133,7 +143,7 @@ public abstract class Constants {
     public static final String SVG                = "qtjambi.svg";
     public static final String TEST               = "qtjambi.test";
     public static final String WEBKIT             = "qtjambi.webkit";
-    public static final String XML                = "qtjambi.xml";              // mandatory with <= 4.7.x
+    public static final String XML                = "qtjambi.xml";          // mandatory with <= 4.7.x
     public static final String XMLPATTERNS        = "qtjambi.xmlpatterns";
     public static final String QTCONFIG           = "qtjambi.qtconfig";
 
@@ -143,6 +153,7 @@ public abstract class Constants {
     public static final String QTJAMBI_PHONON_INCLUDEDIR          = "qtjambi.phonon.includedir";
     public static final String QTJAMBI_PHONON_LIBDIR              = "qtjambi.phonon.libdir";
     public static final String QTJAMBI_PHONON_PLUGINSDIR          = "qtjambi.phonon.pluginsdir";
+    public static final String QTJAMBI_PHONON_KDEPHONON_PATH      = "qtjambi.phonon.kdephonon-path";
 
     public static final String PLUGINS_BEARER_CONNMANBEARER       = "qtjambi.plugins.bearer.connmanbearer";
     public static final String PLUGINS_BEARER_GENERICBEARER       = "qtjambi.plugins.bearer.genericbearer";
@@ -211,9 +222,15 @@ public abstract class Constants {
 
     public static final String QTJAMBI_CONFIG_ISMACOSX      = "qtjambi.config.ismacosx";
     public static final String QTJAMBI_MACOSX_QTMENUNIB_DIR = "qtjambi.macosx.qtmenunib.dir";
+    public static final String QTJAMBI_MACOSX_MAC_SDK       = "qtjambi.macosx.macsdk";
 
     // Windows specific vars...
     public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
     public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
 
+    public static final String QTJAMBI_DEBUG_TOOLS         = "qtjambi.debug-tools";
+
+    // Initialize these to empty string if unset.
+    public static final String QTJAMBI_CONFIG_JUMPTABLE    = "qtjambi.config.jumptable";
+    public static final String QTJAMBI_GENERATOR_JUMPTABLE = "qtjambi.generator.jumptable";
 }

@@ -46,7 +46,7 @@
     </target>
 
     <target name="jar.qtjambi" depends="init.build, jar.qtjambi-util">
-        <qtjambi-version-properties verbose="true"/>
+        <qtjambi-version-properties/>
         <!-- 1. This is a fix for adding the OsInfo class to the the main jar-->
         <!--
             2. Copy version.properties to generated dir for packaging.
@@ -98,23 +98,23 @@
     <fileset id="java.src.qtjambi-examples" dir="${java.srcdir}/qtjambi-examples">
         <include name="**/*.java"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/demos/phonon/*.java"
-            unless="qtjambi.phonon"/>
+            unless="qtjambi.phonon.any.true"/>
         <exclude name="com/trolltech/examples/phonon/*.java"
-            unless="qtjambi.phonon"/>
+            unless="qtjambi.phonon.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/demos/xmlpatterns/*.java"
-            unless="qtjambi.xmlpatterns"/>
+            unless="qtjambi.xmlpatterns.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/examples/xmlpatterns/*.java"
-            unless="qtjambi.xmlpatterns"/>
+            unless="qtjambi.xmlpatterns.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/demos/webkit/*.java"
-            unless="qtjambi.webkit"/>
+            unless="qtjambi.webkit.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/examples/webkit/*.java"
-            unless="qtjambi.webkit"/>
+            unless="qtjambi.webkit.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/examples/opengl/*.java"
-            unless="qtjambi.opengl"/>
+            unless="qtjambi.opengl.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/demos/opengl/*.java"
-            unless="qtjambi.opengl"/>
+            unless="qtjambi.opengl.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/tolltech/examples/SvgCards.java"
-            unless="qtjambi.svg"/>
+            unless="qtjambi.svg.any.true"/>
     </fileset>
 
     <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
@@ -124,19 +124,19 @@
     <target name="jar.qtjambi-examples" depends="init.build, jar.qtjambi-designer, jar.qtjambi-examples.juic">
         <!-- exclude java classes, which were not build, depending on qtjambi config -->
         <condition property="javac.opengl.excludes" value="**/opengl/**/*.java">
-            <isfalse value="${qtjambi.opengl}"/>
+            <isfalse value="${qtjambi.opengl.any.true}"/>
         </condition>
         <condition property="javac.xmlpatterns.excludes" value="**/xmlpatterns/**/*.java">
-            <isfalse value="${qtjambi.xmlpatterns}"/>
+            <isfalse value="${qtjambi.xmlpatterns.any.true}"/>
         </condition>
         <condition property="javac.phonon.excludes" value="**/phonon/**/*.java">
-            <isfalse value="${qtjambi.phonon}"/>
+            <isfalse value="${qtjambi.phonon.any.true}"/>
         </condition>
         <condition property="javac.webkit.excludes" value="**/webkit/**/*.java">
-            <isfalse value="${qtjambi.webkit}"/>
+            <isfalse value="${qtjambi.webkit.any.true}"/>
         </condition>
         <condition property="javac.svg.excludes" value="**/SvgCards.java">
-            <isfalse value="${qtjambi.svg}"/>
+            <isfalse value="${qtjambi.svg.any.true}"/>
         </condition>
         <condition property="javac.extra.excludes" value="com/trolltech/examples/Styles.java">
             <istrue value="${qt.feature.QT_NO_STYLE_MOTIF}"/><!-- Styles.java needs QMotifStyle -->

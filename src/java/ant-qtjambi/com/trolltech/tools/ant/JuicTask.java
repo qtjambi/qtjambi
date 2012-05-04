@@ -45,8 +45,8 @@
 package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 
 import java.io.File;
@@ -107,7 +107,7 @@ public class JuicTask extends MatchingTask {
         return pathList;
     }
 
-    public String executableName() {
+    public static String executableName() {
         String exe;
         switch(OSInfo.os()) {
         case Windows:
@@ -117,16 +117,21 @@ public class JuicTask extends MatchingTask {
             exe = "juic";
             break;
         }
-        return Util.LOCATE_EXEC(exe, searchPath(), null).getAbsolutePath();
+        return exe;
+    }
+
+    public String resolveExecutableAbsolutePath() {
+        String executableName = executableName();
+        return Util.LOCATE_EXEC(executableName, searchPath(), null).getAbsolutePath();
     }
 
     @Override
     public void execute() throws BuildException {
         if(msg != null)
-            System.out.println(msg);
+            getProject().log(this, msg, Project.MSG_INFO);
 
         List<String> commandList = new ArrayList<String>();
-        commandList.add(executableName());
+        commandList.add(resolveExecutableAbsolutePath());
         if(outputDir != null) {
             commandList.add("-d");
             commandList.add(outputDir);

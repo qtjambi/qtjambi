@@ -15,7 +15,7 @@
         Optionally, you may call this file with a "destdir" property as well
         (see the <makejar> target), which will change the destination directory
         of the generated jar. It is set to ${jardir} by default (see
-        buildpath.properties).
+        build.xml).
 
         See the main build.xml files for examples.
     -->

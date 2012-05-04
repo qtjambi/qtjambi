@@ -52,8 +52,6 @@ import org.apache.tools.ant.PropertyHelper;
 
 import com.trolltech.qt.osinfo.OSInfo;
 
-// NOTE: remove this after removing support for 1.7
-@SuppressWarnings("deprecation")
 public class LibraryEntry extends Task {
 
     public static final String TYPE_DEFAULT            = "user";
@@ -73,12 +71,12 @@ public class LibraryEntry extends Task {
     public static final String LOAD_SYSTEM             = "system";
 
     /*
-     *  set to specify where the plugin should be saved.
+     *  set to specify where the plugins should be saved.
      *  Used to reduce redundancy of build.xml.
      *  TODO:
      *  Other variables could use same kind of solutions, I think.
      *  Whole path system needs to be rewritten to correspond
-     *  new libdir, includedir, plugindir properties.
+     *  new libdir, includedir, pluginsdir properties.
      *  Well I'm partially there for now with new destSubdir
      *  setting.
      */
@@ -93,6 +91,7 @@ public class LibraryEntry extends Task {
     private String srcPath;
     private boolean included = true;
     private String dsoVersion;
+    private Boolean debug;  // inherit
 
     public String getResolvedName() {
         String libraryName = this.name;
@@ -108,7 +107,14 @@ public class LibraryEntry extends Task {
         this.kdephonon = enabled;
     }
 
-    public String getType() {
+    public Boolean getDebug() {
+        return debug;
+    }
+    public void setDebug(Boolean debug) {
+        this.debug = debug;
+    }
+
+	public String getType() {
         return type;
     }
     public void setType(String type) {
@@ -205,19 +211,24 @@ public class LibraryEntry extends Task {
 
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
 
-        boolean debug = "debug".equals(propertyHelper.getProperty((String) null, Constants.CONFIGURATION));
+        if(debug == null) {
+            if(Constants.CONFIG_DEBUG.equals(AntUtil.getPropertyAsString(propertyHelper, Constants.CONFIGURATION)))
+                debug = Boolean.TRUE;
+            else
+                debug = Boolean.FALSE;
+        }
 
         // On windows the Qt plugins are versioned
-        String qtVersion = (String) propertyHelper.getProperty((String) null, Constants.QT_VERSION);
-        String qtMajorVersion = (String) propertyHelper.getProperty((String) null, Constants.QT_VERSION_MAJOR);
-        String sonameVersion = (String) propertyHelper.getProperty((String) null, Constants.QTJAMBI_SONAME_VERSION_MAJOR);
+        String qtVersion = AntUtil.getPropertyAsString(propertyHelper, Constants.QT_VERSION);
+        String qtMajorVersion = AntUtil.getPropertyAsString(propertyHelper, Constants.QT_VERSION_MAJOR);
+        String sonameVersion = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_SONAME_VERSION_MAJOR);
 
         boolean resolved = false;
 
         if(!resolved && srcPath != null) {
             File srcPathFile = new File(srcPath);
             if(srcPathFile.exists()) {
-                // FIXME this should override everythiung
+                // FIXME this should override everything
                 //name = srcPathFile.getAbsolutePath();
                 name = srcPathFile.getName();
                 resolved = true;
@@ -279,7 +290,7 @@ public class LibraryEntry extends Task {
 
     public static String formatPluginName(String name, boolean kdephonon, boolean debug, String versionString) {
         if(versionString == null)
-            versionString = "";		// FIXME we expect to always have a version?
+            versionString = "";   // FIXME we expect to always have a version?
         if(debug) {
             switch(OSInfo.os()) {
             case Windows:
@@ -341,6 +352,37 @@ public class LibraryEntry extends Task {
             case Linux:
             case FreeBSD:
                 return "lib" + name + ".so" + tmpDotVersionString;
+            }
+        }
+        throw new BuildException("unhandled case...");
+    }
+
+    public static String formatQtPrlName(String name, boolean debug) {
+        // Windows: QtCore.prl QtCored.prl
+        //   Linux: libQtCore.prl ??????
+        //  MacOSX: libQtCore.prl libQtCore_debug.prl
+        if(debug) {
+            String tmpDebugSuffix = "_" + "debug";
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + "d" + ".prl";
+            case MacOS:
+                return "lib" + name + tmpDebugSuffix + ".prl";
+            case Solaris:
+            case Linux:
+            case FreeBSD:
+                return "lib" + name + ".prl";
+            }
+        } else {
+            switch(OSInfo.os()) {
+            case Windows:
+                return name + ".prl";
+            case MacOS:
+                return "lib" + name + ".prl";
+            case Solaris:
+            case Linux:
+            case FreeBSD:
+                return "lib" + name + ".prl";
             }
         }
         throw new BuildException("unhandled case...");

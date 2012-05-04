@@ -46,6 +46,7 @@ package com.trolltech.tools.ant;
 
 import java.io.File;
 
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
@@ -101,22 +102,41 @@ public class ResolvePathTask extends Task {
             path = replacedPath;
         }
 
-        File file = new File(path);
-        if(!file.exists())
-            throw new BuildException("Unable to resolve path \"" + path + "\" to absolute path");
-        String newValue = file.getAbsolutePath();
+        String newValue = resolveWithString(path);
 
-        String oldPath = (String) props.getProperty(var);	// ANT 1.7.x
+        String oldPath = AntUtil.getPropertyAsString(props, var);
         if(oldPath == null) {
-            props.setNewProperty(var, newValue);	// ANT 1.7.x
-            if(verbose)
-                System.out.println(var + "=\"" + newValue + "\"");
+            AntUtil.setNewProperty(props, var, newValue);
+            getProject().log(this, var + "=\"" + newValue + "\"", Project.MSG_VERBOSE);
         } else {
             if(isOverwrite()) {
-                props.setProperty(var, newValue, false);	// ANT 1.7.x
-                if(verbose)
-                    System.out.println(var + "=\"" + newValue + "\" (old value=\"" + oldPath + "\")");
+                AntUtil.setProperty(props, var, newValue, false);
+                getProject().log(this, var + "=\"" + newValue + "\" (old value=\"" + oldPath + "\")", Project.MSG_VERBOSE);
             }
         }
     }
+
+    public static File resolve(File path) {
+        if(!path.exists())
+            throw new BuildException("Unable to resolve path \"" + path + "\" to absolute path");
+        File result = path.getAbsoluteFile();
+        do {
+            // Canonicalize with removal of "." in trailing part of path, we could do better here...
+            String n = result.getName();
+            if(n.equals(".") == false)
+                break;
+            File nextResult = result.getParentFile();
+            if(nextResult == null)
+                break;
+            result = nextResult;
+        } while(true);
+        return result;
+    }
+
+    public static String resolveWithString(String path) {
+        File file = new File(path);
+        File result = resolve(file);
+        return result.getAbsolutePath();
+    }
+
 }

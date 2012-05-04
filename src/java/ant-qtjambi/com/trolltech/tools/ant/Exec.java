@@ -1,18 +1,17 @@
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.PropertyHelper;
-import org.apache.tools.ant.Project;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.PropertyHelper;
+
+import com.trolltech.qt.osinfo.OSInfo;
 
 /**
  * @todo Rewrite. This kind of API is PITA to use and maintain.
@@ -35,7 +34,7 @@ class Exec {
      */
     public static void exec(String command, File directory, Project project) throws BuildException {
         String directoryString = ((directory != null) ? "(" + Util.makeCanonical(directory) + ")" : "");
-        System.out.println("Running : " + directoryString + " " + command);
+        project.log("Running : " + directoryString + " " + command, Project.MSG_INFO);
         try {
             ProcessBuilder builder = new ProcessBuilder(command);
             if(directory != null)
@@ -66,7 +65,7 @@ class Exec {
             StringBuilder b = new StringBuilder();
             for(String s : cmd)
                 b.append(s).append(' ');
-            System.out.println("Running : " + ((directory != null)? "(" + Util.makeCanonical(directory) + ")" : "") + " " + b);
+            project.log("Running : " + ((directory != null)? "(" + Util.makeCanonical(directory) + ")" : "") + " " + b, Project.MSG_INFO);
         }
 
         try {
@@ -86,36 +85,64 @@ class Exec {
         execute(command, directory, project, null);
     }
 
+    public static final String K_LD_LIBRARY_PATH = "LD_LIBRARY_PATH";
+    public static final String K_DYLD_LIBRARY_PATH = "DYLD_LIBRARY_PATH";
+
+    /**
+     * This prepends a new value to an environment variable that is a list of paths delimited by pathSeparator.
+     * @param env
+     * @param prependValue
+     * @return
+     */
+    private static String prependEnvironmentWithPathSeparator(Map<String, String> env, String varName, String prependValue) {
+        String v = env.get(varName);
+        if(v != null)
+            prependValue = prependValue + File.pathSeparatorChar + v;
+        env.put(varName, prependValue);
+        return v;
+    }
+
+    private static String whichEnvironmentVariable() {
+        if(OSInfo.isLinux())
+            return K_LD_LIBRARY_PATH;
+        else if(OSInfo.isMacOS())
+            return K_DYLD_LIBRARY_PATH;
+        return null;
+    }
+
     private static void setupEnvironment(Map<String, String> env, PropertyHelper props, String ldpath) {
         String s;
 
-        if(ldpath != null) {
-            env.put("LD_LIBRARY_PATH", ldpath);	// FIXME: Should merge into existing value
-        } else {
-            s = (String) props.getProperty("qt.libdir");	// ANT 1.7.x
-            if(s != null)
-                env.put("LD_LIBRARY_PATH", s);	// FIXME: Should merge into existing value
+        String envName = whichEnvironmentVariable();
+        if(envName != null) {
+            if(ldpath != null) {
+                prependEnvironmentWithPathSeparator(env, envName, ldpath);
+            } else {
+                s = AntUtil.getPropertyAsString(props, Constants.LIBDIR);
+                if(s != null)
+                    prependEnvironmentWithPathSeparator(env, envName, s);
+            }
         }
 
-        s = (String) props.getProperty("java.home.target");	// ANT 1.7.x
+        s = AntUtil.getPropertyAsString(props, Constants.JAVA_HOME_TARGET);
         if(s != null)
             env.put("JAVA_HOME_TARGET", s);
-        s = (String) props.getProperty("java.osarch.target");	// ANT 1.7.x
+        s = AntUtil.getPropertyAsString(props, Constants.JAVA_OSARCH_TARGET);
         if(s != null)
             env.put("JAVA_OSARCH_TARGET", s);
 
         //something extra?
-        s = (String) props.getProperty("qtjambi.phonon.includedir");	// ANT 1.7.x
+        s = AntUtil.getPropertyAsString(props, Constants.QTJAMBI_PHONON_INCLUDEDIR);
         if(s != null && s.length() > 0)
             env.put("PHONON_INCLUDEPATH", s);
 
-        s = (String) props.getProperty("qtjambi.phonon.libdir");	// ANT 1.7.x
+        s = AntUtil.getPropertyAsString(props, Constants.QTJAMBI_PHONON_LIBDIR);
         if(s != null && s.length() > 0)
             env.put("PHONON_LIBS", s);
     }
 
     public static void execute(List<String> command, File directory, Project project, String ldpath) throws BuildException {
-        System.out.println("Executing: " + command.toString() + " in directory " + ((directory != null) ? directory.toString() : "<notset>"));
+        project.log("Executing: " + command.toString() + " in directory " + ((directory != null) ? directory.toString() : "<notset>"), Project.MSG_INFO);
         ProcessBuilder builder = new ProcessBuilder(command);
 
         // NOTE: this is most likely very linux-specific system. For Windows one would use PATH instead,
@@ -143,6 +170,18 @@ class Exec {
         }
     }
 
+    /**
+     * 
+     * @param command
+     * @param directory
+     * @param project  May never be null.
+     * @param ldpath
+     * @param emitErrorExitStatus
+     * @return
+     * @throws BuildException
+     * @throws InterruptedException
+     * @throws IOException
+     */
     public static String[] executeCaptureOutput(List<String> command, File directory, Project project, String ldpath, boolean emitErrorExitStatus) throws BuildException, InterruptedException, IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
 
@@ -151,10 +190,8 @@ class Exec {
         // environment one can have for Linux.
         // it shouldn't affect to Windows environment though.
         Map<String, String> env = builder.environment();
-        if(project != null) {
-            PropertyHelper props = PropertyHelper.getPropertyHelper(project);
-            setupEnvironment(env, props, ldpath);
-        }
+        PropertyHelper props = PropertyHelper.getPropertyHelper(project);
+        setupEnvironment(env, props, ldpath);
 
         if(directory != null)
             builder.directory(directory);
@@ -186,7 +223,7 @@ class Exec {
             if(emitErrorExitStatus && process.exitValue() != 0) {
                 String exitValueAsHex = String.format("0x%1$08x", new Object[] { process.exitValue() });
                 String inDirectory = (directory != null) ? " in " + directory.getAbsolutePath() : "";
-                System.err.println("Running: '" + command.toString() + "'" + inDirectory + " failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")");
+                project.log("Running: '" + command.toString() + "'" + inDirectory + " failed.  exitStatus=" + process.exitValue() + " (" + exitValueAsHex + ")", Project.MSG_ERR);
             }
 
             return new String[] { outdata.toString(), errdata.toString() };

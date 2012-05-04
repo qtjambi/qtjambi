@@ -11,7 +11,6 @@
     <property file="tests.properties"/>
 
     <property name="jambiLib" value="${outputDir}/tests/lib" />
-    <property name="qtLib" value="${outputDir}/platform-output${qtjambi.configuration.dash}/lib" />
     <property name="junit.exists" value="tests.junit.exists" />
 
     <condition property="qtjambi.osx">
@@ -56,7 +55,7 @@
                 typesystem="${basedir}/autotestlib/build.txt"
                 header="${basedir}/autotestlib/global.h"
                 qtincludedirectory="${qtjambi.qt.includedir}"
-                qtlibdirectory="${qtjambi.tools.qt.libdir}"
+                qtlibdirectory="${tools.qt.libdir}"
                 includepaths="${basedir}/autotestlib${psep}${generator.includepaths}"
                 outputPreprocessFile="preprocessed_autotests.tmp"
             />
@@ -68,7 +67,7 @@
                 config="${qtjambi.configuration}"
                 qtconfig="${qtjambi.qtconfig}"
                 debugTools="${qtjambi.debug-tools}"
-                qmakebinary="${qmake.binary}"/>
+                qmakebinary="${qtjambi.qt.qmake.abspath}"/>
 
         <make dir="${outputDir}/tests/autotest-generator" target="${qtjambi.qmake.target.default}"/>
     </target>
@@ -129,13 +128,14 @@
     </target>
 
     <!-- NOTES: This should be merged with the normal target as the only difference is the -XstartOnFirstThread option.
-         In order to execute I needed to "export DYLD_LIBRARY_PATH=$QTDIR/lib:$(pwd)/build/platform-output${qtjambi.configuration.dash}/lib"
+         In order to execute I needed to "export DYLD_LIBRARY_PATH=$QTDIR/lib:${absNativeBaseDir}/lib"
          and then run the usual "ant compile.tests tests.run"
       -->
     <target name="run.osx" if="qtjambi.osx" depends="init">
-        <qtjambi-resolve-path var="absOutputDir" path="${outputDir}" />
-        <qtjambi-resolve-path var="absQtLib"     path="${qtLib}" />
-        <qtjambi-resolve-path var="absJambiLib"  path="${jambiLib}" />
+        <qtjambi-resolve-path var="absOutputDir"     path="${outputDir}" />
+        <qtjambi-resolve-path var="absQtLib"         path="${qtLib}" />
+        <qtjambi-resolve-path var="absJambiLib"      path="${jambiLib}" />
+        <qtjambi-resolve-path var="absNativeBaseDir" path="${nativeBaseDir}" />
         <delete dir="${outputDir}/tests/junitxml" />
         <delete dir="${outputDir}/tests/TestResults" />
         <mkdir dir="${outputDir}/tests/junitxml"/>
@@ -155,7 +155,7 @@
                 <!-- this is needed by 2 tests in com/trolltech/autotests/TestInjectedCode.java#testIODevicePeek() -->
                 <pathelement path="src/java/autotest" />
             </classpath>
-            <jvmarg value="-XstartOnFirstThread"/>
+            <jvmarg value="-XstartOnFirstThread"/><!-- if="qtjambi.config.ismacosx" -->
             <jvmarg value="-d32"/><!-- This option can force 32bit JRE when
             we're built using fat binaries supporting both 32 and 64bit -->
             <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
@@ -170,7 +170,7 @@
             not that useful for debugging. -->
             <jvmarg value="-Xcheck:jni"/>
             <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
-            <env key="DYLD_LIBRARY_PATH" value="${env.DYLD_LIBRARY_PATH}${psep}${absQtLib}${psep}${absJambiLib}"/>
+            <env key="DYLD_LIBRARY_PATH" value="${env.DYLD_LIBRARY_PATH}${psep}${absQtLib}${psep}${absJambiLib}"/><!-- if="qtjambi.config.ismacosx" -->
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml">
                 <fileset dir="src/java/autotest">
@@ -189,9 +189,10 @@
     </target>
 
     <target name="run.other" unless="qtjambi.osx" depends="init, check.junit">
-        <qtjambi-resolve-path var="absOutputDir" path="${outputDir}" />
-        <qtjambi-resolve-path var="absQtLib"     path="${qtLib}" />
-        <qtjambi-resolve-path var="absJambiLib"  path="${jambiLib}" />
+        <qtjambi-resolve-path var="absOutputDir"     path="${outputDir}" />
+        <qtjambi-resolve-path var="absQtLib"         path="${qtLib}" />
+        <qtjambi-resolve-path var="absJambiLib"      path="${jambiLib}" />
+        <qtjambi-resolve-path var="absNativeBaseDir" path="${nativeBaseDir}" />
         <delete dir="${outputDir}/tests/junitxml" />
         <delete dir="${outputDir}/tests/TestResults" />
         <mkdir dir="${outputDir}/tests/junitxml"/>
@@ -215,13 +216,12 @@
                 <pathelement path="${absOutputDir}/tests/autotests" />
                 <!-- platform-output folder is needed by Windows so that the addLibraryPath()
                      is setup correctly so plugins can be loaded -->
-                <pathelement path="${absOutputDir}/platform-output${qtjambi.configuration.dash}" />
+                <pathelement path="${absNativeBaseDir}" />
                 <pathelement path="${basedir}/src/java/qtjambi-examples" />
                 <!-- examples: is needed to pickup some images and non-code resource files to work with  -->
                 <!-- this is needed by 2 tests in com/trolltech/autotests/TestInjectedCode.java#testIODevicePeek() -->
                 <pathelement path="src/java/autotest" />
             </classpath>
-<!-- ${qtLib}${psep} -->
             <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
             <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/>
             <!--<jvmarg value="-Dcom.trolltech.qt.debug=true"/> --><!-- This should not be needed now, it loads default from MANIFEST.MF -->
@@ -253,7 +253,37 @@
         </junit>
     </target>
 
-    <target name="run" depends="init, run.other, run.osx">
+    <target name="run" depends="init">
+        <if>
+            <available file="${outputDir}/platform-output" type="dir"/>
+            <then>
+                <antcall target="run.other">
+                    <param name="kind"          value="release"/>
+                    <param name="nativeBaseDir" value="${outputDir}/platform-output"/>
+                    <param name="qtLib"         value="${outputDir}/platform-output/lib"/>
+                </antcall>
+                <antcall target="run.osx">
+                    <param name="kind"          value="release"/>
+                    <param name="nativeBaseDir" value="${outputDir}/platform-output"/>
+                    <param name="qtLib"         value="${outputDir}/platform-output/lib"/>
+                </antcall>
+            </then>
+        </if>
+        <if>
+            <available file="${outputDir}/platform-output-debug" type="dir"/>
+            <then>
+                <antcall target="run.other">
+                    <param name="kind"          value="debug"/>
+                    <param name="nativeBaseDir" value="${outputDir}/platform-output-debug"/>
+                    <param name="qtLib"         value="${outputDir}/platform-output-debug/lib"/>
+                </antcall>
+                <antcall target="run.osx">
+                    <param name="kind"          value="debug"/>
+                    <param name="nativeBaseDir" value="${outputDir}/platform-output-debug"/>
+                    <param name="qtLib"         value="${outputDir}/platform-output-debug/lib"/>
+                </antcall>
+            </then>
+        </if>
         <junitreport todir="${outputDir}/tests/junitxml">
             <fileset dir="${outputDir}/tests/junitxml">
                 <include name="TEST-*.xml" />
@@ -263,9 +293,9 @@
     </target>
 
     <target name="tests.compile"
-            depends="compile.native.generator, compile.native, compile.java" description="Builds tests and required libraries"/>
+            depends="init.build, compile.native.generator, compile.native, compile.java" description="Builds tests and required libraries"/>
 
     <target name="tests.run"
-            depends="init, run" description="Runs tests and generates report in TestReport subdir"/>
+            depends="init, setenv, run" description="Runs tests and generates report in TestReport subdir"/>
 
 </project>

@@ -45,6 +45,7 @@
 package com.trolltech.tools.ant;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.PropertyHelper;
 
@@ -98,18 +99,21 @@ public class GeneratorTask extends Task {
         if(jambiDirectory != null) {
             File dirJambiDirectory = new File(jambiDirectory);
             if(dirJambiDirectory.isDirectory()) {
-                // FIXME: This is really build/qmake-qtjambi
-                File dirGeneratorDirectory = new File(jambiDirectory, "generator");
-                if(dirGeneratorDirectory.isDirectory()) {
-                    pathList.add(dirGeneratorDirectory.getAbsolutePath());
+                // This is setup at the top of build.xml (of QtJambi project)
+                String propGeneratorBuilddir = getProject().getProperty("generator.builddir");
+                if(propGeneratorBuilddir != null) {
+                    File dirGeneratorDirectory = new File(jambiDirectory, propGeneratorBuilddir);
+                    if(dirGeneratorDirectory.isDirectory()) {
+                        pathList.add(dirGeneratorDirectory.getAbsolutePath());
 
-                    File dirRelease = new File(jambiDirectory, "release");
-                    if(dirRelease.isDirectory())
-                        pathList.add(dirRelease.getAbsolutePath());
+                        File dirRelease = new File(jambiDirectory, "release");
+                        if(dirRelease.isDirectory())
+                            pathList.add(dirRelease.getAbsolutePath());
 
-                    File dirDebug = new File(jambiDirectory, "debug");
-                    if(dirDebug.isDirectory())
-                        pathList.add(dirDebug.getAbsolutePath());
+                        File dirDebug = new File(jambiDirectory, "debug");
+                        if(dirDebug.isDirectory())
+                            pathList.add(dirDebug.getAbsolutePath());
+                    }
                 }
             }
         }
@@ -204,10 +208,10 @@ public class GeneratorTask extends Task {
         PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
         Object o;
 
-        o = props.getProperty(Constants.GENERATOR_PREPROC_STAGE1);	// ANT 1.7.x
+        o = AntUtil.getProperty(props, Constants.GENERATOR_PREPROC_STAGE1);
         handlePreprocArgument(o, "--preproc-stage1");
 
-        o = props.getProperty(Constants.GENERATOR_PREPROC_STAGE2);	// ANT 1.7.x
+        o = AntUtil.getProperty(props, Constants.GENERATOR_PREPROC_STAGE2);
         handlePreprocArgument(o, "--preproc-stage2");
 
         parseArgumentFiles(commandList);
@@ -225,7 +229,7 @@ public class GeneratorTask extends Task {
         if(directory == null || directory.length() <= 0)
             return;
 
-        // The 'directory' maybe a File.pathSeparator delimted list of directories and on 
+        // The 'directory' maybe a File.pathSeparator delimited list of directories and on 
         //  windows both : and ; can appear which makeCanonical() doesn't like.
         StringBuilder sb = new StringBuilder();
         String[] directoryElementA = directory.split(File.pathSeparator);
@@ -262,7 +266,6 @@ public class GeneratorTask extends Task {
         }
     }
 
-    //! TODO: remove when ant 1.7 is not anymore supported.
     @Override
     public void execute() throws BuildException {
         parseArguments();
@@ -272,7 +275,7 @@ public class GeneratorTask extends Task {
         List<String> thisCommandList = new ArrayList<String>();
         thisCommandList.add(generator);
         thisCommandList.addAll(commandList);
-        System.out.println("Arguments: " + thisCommandList.toString());
+        getProject().log(this, "Arguments: " + thisCommandList.toString(), Project.MSG_INFO);
 
         File dirExecute = null;
         if(dir != null)

@@ -44,10 +44,6 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Dirent {

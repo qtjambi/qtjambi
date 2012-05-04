@@ -44,9 +44,11 @@
 
 package com.trolltech.tools.ant;
 
-import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.Task;
+
+import com.trolltech.qt.osinfo.OSInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,6 +70,68 @@ public class QMakeTask extends Task {
 
     private boolean recursive;
     private boolean debugTools;
+
+    public static String executableName() {
+        String exe;
+        switch(OSInfo.os()) {
+        case Windows:
+            exe = "qmake.exe";
+            break;
+        default:
+            exe = "qmake";
+            break;
+        }
+        return exe;
+    }
+
+    public static String resolveExecutableAbsolutePath(Project project, String executableName, String propertyName) {
+        if(executableName == null)
+            executableName = executableName();
+
+        // If qmakebinary is already absolute use it "/somedir/bin/qmake"
+        if(executableName != null) {
+            File file = new File(executableName);
+            if(file.isAbsolute())
+                return file.getAbsolutePath();
+
+            if(propertyName != null) {
+                // try in ${qtjambi.qt.bindir} if it is configured (caller supplies propertyName=Constants.BINDIR)
+                // try in ${tools.qt.bindir} if it is configured (caller supplies propertyName=Constants.TOOLS_BINDIR)
+                String binDir = project.getProperty(propertyName);
+                if(binDir != null) {
+                    File exeFile = new File(binDir, executableName);
+                    if(exeFile.isFile()) {
+                        // FIXME: Prepend 'binDir' to $PATH (so qmake can find moc)
+                        return exeFile.getAbsolutePath();
+                    }
+                }
+            }
+
+            // try in $QTDIR/bin if it is configured
+            try {
+                String qtDir = System.getenv("QTDIR");
+                if(qtDir != null) {
+                    File exeFile = new File(qtDir, "bin" + File.separator + executableName);
+                    if(exeFile.isFile()) {
+                        // FIXME: Prepend '$QTDIR/bin' to $PATH (so qmake can find moc)
+                        return exeFile.getAbsolutePath();
+                    }
+                }
+            } catch(SecurityException eat) {
+            }
+        }
+
+        // otherwise search $PATH
+        return Util.LOCATE_EXEC(executableName, (String) null, null).getAbsolutePath();
+    }
+
+    public static String resolveExecutableAbsolutePath(Project project, String executableName) {
+        return resolveExecutableAbsolutePath(project, executableName, Constants.BINDIR);
+    }
+
+    public String resolveExecutableAbsolutePath() {
+        return resolveExecutableAbsolutePath(getProject(), qmakebinary);
+    }
 
     private List<String> parseArguments() {
         List<String> arguments = new ArrayList<String>();
@@ -93,15 +157,19 @@ public class QMakeTask extends Task {
 
         if(qtconfig != null) {
             if(qtconfig.indexOf('{') >= 0) // windows name does not like (unescaped) "{" character this creates
-                System.out.println("QT_CONFIG not exported as value is: " + qtconfig);
+                getProject().log(this, "QT_CONFIG not exported as value is: " + qtconfig, Project.MSG_INFO);
             else
                 parameters.add("QT_CONFIG+=" + qtconfig);
         }
 
-        if(qtjambiConfig != null)
+        String macSdk = getProject().getProperty(Constants.QTJAMBI_MACOSX_MAC_SDK);
+        if(macSdk != null && macSdk.length() > 0)
+            parameters.add("QMAKE_MAC_SDK=" + macSdk);
+
+        if(qtjambiConfig != null && qtjambiConfig.length() > 0)
             parameters.add("QTJAMBI_CONFIG=" + qtjambiConfig);
 
-        if(includepath != null)
+        if(includepath != null && includepath.length() > 0)
             parameters.add("INCLUDEPATH+=" + includepath);
 
         return parameters;
@@ -109,11 +177,11 @@ public class QMakeTask extends Task {
 
     @Override
     public void execute() throws NullPointerException {
-        System.out.println(msg);
+        getProject().log(this, msg, Project.MSG_INFO);
 
         PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(getProject());
         if(qtjambiConfig == null) {
-            String thisQtjambiConfig = (String) propertyHelper.getProperty(Constants.CONFIG);	// ANT 1.7.x
+            String thisQtjambiConfig = AntUtil.getPropertyAsString(propertyHelper, Constants.CONFIG);
             if(thisQtjambiConfig != null) {
                 if(Constants.CONFIG_RELEASE.equals(thisQtjambiConfig))
                     qtjambiConfig = thisQtjambiConfig;
@@ -122,9 +190,9 @@ public class QMakeTask extends Task {
                 else if(Constants.CONFIG_TEST.equals(thisQtjambiConfig))
                     qtjambiConfig = thisQtjambiConfig;
                 else
-                    System.out.println("WARNING: QTJAMBI_CONFIG will not be exported as value " + thisQtjambiConfig + " is not recognised (from " + Constants.CONFIG + ")");
+                    getProject().log(this, "WARNING: QTJAMBI_CONFIG will not be exported as value " + thisQtjambiConfig + " is not recognised (from " + Constants.CONFIG + ")", Project.MSG_INFO);
                 if(thisQtjambiConfig != null)
-                    System.out.println("QTJAMBI_CONFIG will be exported as " + qtjambiConfig + " (from " + Constants.CONFIG + ")");
+                    getProject().log(this, "QTJAMBI_CONFIG will be exported as " + qtjambiConfig + " (from " + Constants.CONFIG + ")", Project.MSG_INFO);
             }
         }
 
@@ -134,7 +202,7 @@ public class QMakeTask extends Task {
 
         final List<String> command =  new ArrayList<String>();
 
-        command.add(qmakebinary);
+        command.add(resolveExecutableAbsolutePath());
         command.add(proFile);
 
         List<String> arguments = parseArguments();
