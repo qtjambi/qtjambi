@@ -59,7 +59,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipException;
 
 import com.trolltech.qt.QNativePointer;
@@ -264,14 +263,12 @@ else
     InputStream inStream = null;
     try {
         URL openUrl = new URL(goodPath);
-        openUrl = checkNeedWorkaround(openUrl);
-        if("file".equals(openUrl.getProtocol())) {
-            // Due to workaround
-            File fooFile = new File(openUrl.getPath());
-            if(fooFile.isFile()) // skip dirs
-                inStream = new FileInputStream(fooFile);
+        URLAlias urlAlias = checkNeedWorkaround(openUrl);
+        if(urlAlias.file != null) {  // Due to workaround
+            if(urlAlias.file.isFile()) // skip dirs
+                inStream = new FileInputStream(urlAlias.file);
         } else {
-            urlConn = openUrl.openConnection();
+            urlConn = urlAlias.url.openConnection();
             inStream = urlConn.getInputStream();
         }
     } catch(Exception e) {
@@ -365,7 +362,7 @@ else
         if (classpaths == null)
             findClassPaths();
 
-        if (m_selectedSource.equals("*")) {
+        if ("*".equals(m_selectedSource)) {
             List<String> pathToPotentialJars = JarCache.pathToJarFiles(m_baseName);
 
             if (pathToPotentialJars != null) { // Its at least a directory which exists in jar files
@@ -409,7 +406,7 @@ else
                 // file is a directory. Otherwise it's assumed to be a .jar file
                 URL url = new URL(urlString);
                 File fileOnlyIfDirectory = null;
-                if(url.getProtocol().equals("file")) {
+                if("file".equals(url.getProtocol())) {
                     String pathString = url.getPath();
                     if(File.separatorChar == '\\')
                         pathString = pathString.replace('/', '\\');  // windows
@@ -487,7 +484,7 @@ else
                 flags.set(engine.fileFlags(type));
         }
 
-        if (fileName(FileName.PathName).equals("/"))
+        if ("/".equals(fileName(FileName.PathName)))
             flags.set(QAbstractFileEngine.FileFlag.RootFlag);
 
         flags.clear(FileFlag.LocalDiskFlag);
@@ -730,11 +727,12 @@ else
         }
 
         // If it is a plain file on the disk, just read it from the disk
-        if (url.getProtocol().equals("file")) {
+        if ("file".equals(url.getProtocol())) {
             QFileInfo file = new QFileInfo(path);
             if (file.isDir()
                     && file.exists()
                     && new QFileInfo(path + "/" + fileName).exists()) {
+                // TODO check URL#toExternalForm() is correct here with s/ /%20/ conversion
                 addEngine(new QFSEntryEngine(path + "/" + fileName, url.toExternalForm()));
                 return true;
             }
@@ -805,49 +803,90 @@ else
         return false;
     }
 
-    static URL checkNeedWorkaround(URL url) {
+    static String stripSuffix(String s, String suffix, String defaultValue) {
+        if(s.endsWith(suffix)) {
+            int endIndex = s.length() - suffix.length();
+            return s.substring(0, endIndex);
+        }
+        return defaultValue;
+    }
+
+    static String stripUrlFileColonPrefix(String urlString, String defaultValue) {
+        final int len = urlString.length();
+        final String PREFIX_FILE = "file:";
+        if(urlString.startsWith(PREFIX_FILE)) {  // efficiency?  f**K that for now
+            int skipCount = PREFIX_FILE.length();
+            while(len > skipCount) {  // remove multiple "/" prefixes
+                char c = urlString.charAt(skipCount);
+                if(c != '/') {
+                    if(skipCount > 0)
+                        skipCount--;  // put at least one back
+                    break;
+                }
+                skipCount++;
+            }
+            if(skipCount > 0)
+                urlString = urlString.substring(skipCount);
+            return urlString;
+        }
+        return defaultValue;
+    }
+
+    private static class URLAlias {
+        URL url;
+        File file;
+    }
+
+    static URLAlias checkNeedWorkaround(URL url) {
+        final String SEPARATOR = "!/";
+        File file = null;
         // Sun/Oracle bugid#7050028  "IllegalStateException: zip file closed" from JarURLConnection
         // Workarounds 1) Do not turn off URLConnection caches.
         //             2) Use file:/x.jar URLs rather than jar:file:x.jar!/ URLs for URLClassLoader
         if("jar".equals(url.getProtocol())) {
             // Replace "^jar:file:" with "file:" only if it also ends with "!/"
             final String PREFIX_JAR_FILE = "jar:file:";
-            final String SEPARATOR = "!/";
             String externalForm = url.toExternalForm();
             if(externalForm.startsWith(PREFIX_JAR_FILE)) {
+                // Don't use URL#toExternalForm() as this results in conversions in path to URL encoded
+                //  such as s/ /%20/ this will break java.io.File API usage on the resulting path.
+                String path = url.getPath();  // this has "file:///" prefix already and "!/" suffix
                 int index = externalForm.indexOf(SEPARATOR);
                 int externalFormLength = externalForm.length();
                 // check the first "!/" is also the last and at the end of the string
                 if(index == externalFormLength - 2) {
                     // Ok we implement the workaround (start at 4 as we need to keep the "file:"
-                    externalForm = externalForm.substring(4, externalFormLength - SEPARATOR.length());
+                    //externalForm = externalForm.substring(4, externalFormLength - SEPARATOR.length());
+                    // this approach caused %20 to appear which broke things later on.
+                    String urlString = stripUrlFileColonPrefix(path, path);
+                    urlString = stripSuffix(urlString, SEPARATOR, urlString);
+                    file = new File(urlString);
                     try {
-                        url = new URL(externalForm);
+                        url = new URL(path);
                     } catch(MalformedURLException eat) {
+                        url = null;
                     }
                 }
             }
+        } else if("file".equals(url.getProtocol())) {
+            String path = url.getPath();
+            String urlString = stripUrlFileColonPrefix(path, path);
+            urlString = stripSuffix(urlString, SEPARATOR, urlString);
+            file = new File(urlString);
         }
-        return url;
+        URLAlias urlAlias = new URLAlias();
+        urlAlias.url = url;    // never null
+        urlAlias.file = file;  // maybe null (when not a "file:" based URL)
+        return urlAlias;
     }
 
     private void addJarFileFromPath(URL jarFileURL, String fileName) {
         URLConnection urlConnection = null;
         MyJarFile myJarFile = null;
         try {
-            jarFileURL = checkNeedWorkaround(jarFileURL);
-            if("file".equals(jarFileURL.getProtocol())) {
-                // Due to workaround
-                File fileToJarFile = new File(jarFileURL.getPath());
-                myJarFile = new MyJarFile(fileToJarFile);
-            } else {
-                try {
-                    myJarFile = new MyJarFile(jarFileURL);
-                } catch(ZipException e) {
-                    // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
-                    throw new ZipException(e.getMessage() + ": " + jarFileURL);
-                }
-            }
+            myJarFile = resolveUrlToMyJarFile(jarFileURL);
+            if(myJarFile == null)
+                return;  // anti NPE check (maybe classpath directory entries don't come through here)
 
             boolean isDirectory = false;
             JarEntry fileInJar = myJarFile.getJarEntry(fileName);
@@ -890,7 +929,6 @@ else
                             break;
                         }
                     }
-
                 }
             }
 
@@ -944,18 +982,20 @@ else
                 Enumeration<URL> urls = loader.getResources("META-INF/MANIFEST.MF");
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
-                    if (url.getProtocol().equals("jar")) try {
-                        String f = url.getPath();
-                        int bang = f.indexOf("!");
-                        if (bang >= 0)
-                            f = f.substring(0, bang);
+                    if ("jar".equals(url.getProtocol())) {
+                        try {
+                            String f = url.getPath();
+                            int bang = f.indexOf("!");
+                            if (bang >= 0)
+                                f = f.substring(0, bang);
 
-                        if (f.trim().length() > 0) {
-                            classpaths.add(f);
-                            cpUrls.add(new URL(f));
+                            if (f.trim().length() > 0) {
+                                classpaths.add(f);
+                                cpUrls.add(new URL(f));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
             } catch (Exception e) {
@@ -995,46 +1035,22 @@ else
                     MyJarFile myJarFile2 = null;
                     MyJarFile myJarFile1 = null;
                     try {
-                        URL url2 = new URL("jar:" + urlString.toString() + "!/");
-                        url2 = checkNeedWorkaround(url2);
-                        if("file".equals(url2.getProtocol())) {
-                            // Due to workaround
-                            File fileToJarFile = new File(url2.getPath());
-                            myJarFile2 = new MyJarFile(fileToJarFile);
-                        } else {
-                            try {
-                                myJarFile2 = new MyJarFile(url2);
-                            } catch(ZipException e) {
-                                // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
-                                throw new ZipException(e.getMessage() + ": " + url2);
-                            }
-                        }
-
-                        for (URL otherURL : cpUrls) {
-                            URL url1 = new URL("jar:" + otherURL.toString() + "!/");
-                            url1 = checkNeedWorkaround(url1);
-                            if("file".equals(url1.getProtocol())) {
-                                // Due to workaround
-                                File fileToJarFile = new File(url1.getPath());
-                                myJarFile1 = new MyJarFile(fileToJarFile);
-                            } else {
-                                try {
-                                    myJarFile1 = new MyJarFile(url1);
-                                } catch(ZipException e) {
-                                    // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
-                                    throw new ZipException(e.getMessage() + ": " + url1);
+                        myJarFile2 = resolveUrlToMyJarFile(urlString);
+                        if(myJarFile2 != null) {
+                            for (URL otherURL : cpUrls) {
+                                myJarFile1 = resolveUrlToMyJarFile(otherURL);
+                                if(myJarFile1 != null) {
+                                    File file1 = new File(myJarFile1.getName());
+                                    File file2 = new File(myJarFile2.getName());
+                                    if (file1.getCanonicalPath().equals(file2.getCanonicalPath())) {
+                                        match = true;
+                                        break;
+                                    }
                                 }
                             }
-
-                            File file1 = new File(myJarFile1.getName());
-                            File file2 = new File(myJarFile2.getName());
-                            if (file1.getCanonicalPath().equals(file2.getCanonicalPath())) {
-                                match = true;
-                                break;
-                            }
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Exception e) {   // This should probably just be IOException
+                        e.printStackTrace();  // this has been so useful in finding many bugs/issues
                     } finally {
                         if(myJarFile2 != null) {
                             myJarFile2.put();
@@ -1061,20 +1077,42 @@ else
         }
         JarCache.reset(classpaths);
     }
-    
+
+    private static MyJarFile resolveUrlToMyJarFile(URL url) throws IOException, ZipException {
+        MyJarFile myJarFile = null;
+        URLAlias urlAlias = checkNeedWorkaround(url);
+        try {
+            if(urlAlias.file != null) {  // Due to workaround
+                if(urlAlias.file.isFile()) // skip dirs
+                    myJarFile = new MyJarFile(urlAlias.file);
+            } else {
+                 myJarFile = new MyJarFile(urlAlias.url);
+            }
+        } catch(ZipException e) {
+            // This often fails with "java.util.zip.ZipException: error in opening zip file" but never discloses the filename
+            throw new ZipException(e.getMessage() + ": " + url);
+        }
+        return myJarFile;
+    }
+
+    private static MyJarFile resolveUrlToMyJarFile(String urlString) throws MalformedURLException, IOException, ZipException {
+        URL url = new URL("jar:" + urlString.toString() + "!/");
+        return resolveUrlToMyJarFile(url);
+    }
+
     @Override
     public QAbstractFileEngineIterator beginEntryList(QDir.Filters filters, java.util.List<String> nameFilters) {
-    	String path = "";
-    	if(m_baseName.startsWith(namespaceSchemePrefix + ":"))
-    		path = m_baseName;
-    	else
-    		path = namespaceSchemePrefix + ":" + m_baseName;
-    	return new QClassPathFileEngineIterator(path, filters, nameFilters);
+        String path = "";
+        if(m_baseName.startsWith(namespaceSchemePrefix + ":"))
+            path = m_baseName;
+        else
+            path = namespaceSchemePrefix + ":" + m_baseName;
+        return new QClassPathFileEngineIterator(path, filters, nameFilters);
     }
-    
+
     @Override
     public QAbstractFileEngineIterator endEntryList() {
-    	return null;
+        return null;
     }
 
     private QAbstractFileEngine getFirstEngine() {

@@ -539,6 +539,7 @@ public class NativeLibraryManager {
 
             String protocol = url.getProtocol();
             if (protocol.equals("jar")) {
+                // Using toExternalForm() will convert a space character into %20 which breaks java.lang.File use of the resulting path.
                 String eform = url.toExternalForm();
 
                 // Try to decide the name of the .jar file to have a
@@ -741,7 +742,7 @@ public class NativeLibraryManager {
                         // Why do we use the ClassLoader to lookup the resource?  The DeploymentSpec
                         //  needs to tightly bind the location of the sub-parts with the location of the spec.
                         // This means we use the containing JAR url, + path to deployment.xml + path to file we
-                        //  are looking for to always find the path.  This way we will never get any supprised
+                        //  are looking for to always find the path.  This way we will never get any surprised
                         //  where the classloader chose to provide us with another file instead of the one we expected.
                         // FIXME
                         Enumeration<URL> resources = classLoader().getResources(path);
