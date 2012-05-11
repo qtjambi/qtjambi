@@ -30,8 +30,10 @@
     </target>
 
     <target name="reports.clean" description="Cleans the Unit Test results">
-        <delete dir="${outputDir}/tests/junitxml"/>
-        <delete dir="${outputDir}/tests/TestResults"/>
+        <delete dir="${outputDir}/tests/junitxml-release"/>
+        <delete dir="${outputDir}/tests/junitxml-debug"/>
+        <delete dir="${outputDir}/tests/TestResults-release"/>
+        <delete dir="${outputDir}/tests/TestResults-debug"/>
     </target>
 
     <target name="check.junit">
@@ -136,10 +138,10 @@
         <qtjambi-resolve-path var="absQtLib"         path="${qtLib}" />
         <qtjambi-resolve-path var="absJambiLib"      path="${jambiLib}" />
         <qtjambi-resolve-path var="absNativeBaseDir" path="${nativeBaseDir}" />
-        <delete dir="${outputDir}/tests/junitxml" />
-        <delete dir="${outputDir}/tests/TestResults" />
-        <mkdir dir="${outputDir}/tests/junitxml"/>
-        <mkdir dir="${outputDir}/tests/TestResults"/>
+        <delete dir="${outputDir}/tests/junitxml-${kind}" />
+        <delete dir="${outputDir}/tests/TestResults-${kind}" />
+        <mkdir dir="${outputDir}/tests/junitxml-${kind}"/>
+        <mkdir dir="${outputDir}/tests/TestResults-${kind}"/>
         <junit fork="yes" printsummary="true" haltonfailure="no" timeout="600000" showoutput="yes" logfailedtests="yes">
             <classpath>
                 <pathelement location="${tests.junit}" />
@@ -160,7 +162,7 @@
             we're built using fat binaries supporting both 32 and 64bit -->
             <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
             <!-- <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/> -->
-            <!-- <jvmarg value="-Dcom.trolltech.qt.debug=true"/> --><!-- This should not be needed now, it loads default from MANIFEST.MF -->
+            <jvmarg value="-Dcom.trolltech.qt.debug=${kind}"/><!-- This should not be needed now, it loads default from MANIFEST.MF -->
             <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
             <!-- <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/> -->
             <jvmarg value="-Dcom.trolltech.qt.exceptions-for-messages=none"/>
@@ -172,7 +174,7 @@
             <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
             <env key="DYLD_LIBRARY_PATH" value="${env.DYLD_LIBRARY_PATH}${psep}${absQtLib}${psep}${absJambiLib}"/><!-- if="qtjambi.config.ismacosx" -->
             <formatter type="xml" usefile="yes" />
-            <batchtest fork="yes" todir="${outputDir}/tests/junitxml">
+            <batchtest fork="yes" todir="${outputDir}/tests/junitxml-${kind}">
                 <fileset dir="src/java/autotest">
                     <include name="**/com/trolltech/autotests/**/Test*.java"/>
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
@@ -193,10 +195,10 @@
         <qtjambi-resolve-path var="absQtLib"         path="${qtLib}" />
         <qtjambi-resolve-path var="absJambiLib"      path="${jambiLib}" />
         <qtjambi-resolve-path var="absNativeBaseDir" path="${nativeBaseDir}" />
-        <delete dir="${outputDir}/tests/junitxml" />
-        <delete dir="${outputDir}/tests/TestResults" />
-        <mkdir dir="${outputDir}/tests/junitxml"/>
-        <mkdir dir="${outputDir}/tests/TestResults"/>
+        <delete dir="${outputDir}/tests/junitxml-${kind}" />
+        <delete dir="${outputDir}/tests/TestResults-${kind}" />
+        <mkdir dir="${outputDir}/tests/junitxml-${kind}"/>
+        <mkdir dir="${outputDir}/tests/TestResults-${kind}"/>
         <!-- files contained in todir being accessed from the tests -->
         <copy todir="${outputDir}/tests/auto/com/trolltech/autotests">
             <fileset dir="src/java/autotest/com/trolltech/autotests" excludes="**/*.java"/>
@@ -224,7 +226,7 @@
             </classpath>
             <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
             <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/>
-            <!--<jvmarg value="-Dcom.trolltech.qt.debug=true"/> --><!-- This should not be needed now, it loads default from MANIFEST.MF -->
+            <jvmarg value="-Dcom.trolltech.qt.debug=${kind}"/><!-- This should not be needed now, it loads default from MANIFEST.MF -->
             <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
             <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/>
             <jvmarg value="-Dcom.trolltech.qt.exceptions-for-messages=none"/>
@@ -236,7 +238,7 @@
             <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
 <!--            <jvmarg value="-verbose"/> -->
             <formatter type="xml" usefile="yes" />
-            <batchtest fork="yes" todir="${outputDir}/tests/junitxml">
+            <batchtest fork="yes" todir="${outputDir}/tests/junitxml-${kind}">
                 <fileset dir="src/java/autotest">
 <!--                    <include name="**/com/trolltech/autotests/**/TestClipboard.java"/>                -->
                     <include name="**/com/trolltech/autotests/**/Test*.java"/>
@@ -267,6 +269,12 @@
                     <param name="nativeBaseDir" value="${outputDir}/platform-output"/>
                     <param name="qtLib"         value="${outputDir}/platform-output/lib"/>
                 </antcall>
+                <junitreport todir="${outputDir}/tests/junitxml-release">
+                    <fileset dir="${outputDir}/tests/junitxml-release">
+                        <include name="TEST-*.xml" />
+                    </fileset>
+                    <report format="frames" todir="${outputDir}/tests/TestResults-release" />
+                </junitreport>
             </then>
         </if>
         <if>
@@ -282,14 +290,14 @@
                     <param name="nativeBaseDir" value="${outputDir}/platform-output-debug"/>
                     <param name="qtLib"         value="${outputDir}/platform-output-debug/lib"/>
                 </antcall>
+                <junitreport todir="${outputDir}/tests/junitxml-debug">
+                    <fileset dir="${outputDir}/tests/junitxml-debug">
+                        <include name="TEST-*.xml" />
+                    </fileset>
+                    <report format="frames" todir="${outputDir}/tests/TestResults-debug" />
+                </junitreport>
             </then>
         </if>
-        <junitreport todir="${outputDir}/tests/junitxml">
-            <fileset dir="${outputDir}/tests/junitxml">
-                <include name="TEST-*.xml" />
-            </fileset>
-            <report format="frames" todir="${outputDir}/tests/TestResults" />
-        </junitreport>
     </target>
 
     <target name="tests.compile"

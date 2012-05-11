@@ -352,13 +352,23 @@ public class Utilities {
         String debugString = System.getProperty(K_com_trolltech_qt_debug);
         try {
             if(debugString != null) {
-                Boolean booleanValue = Boolean.valueOf(debugString);
-                if((booleanValue != null && booleanValue.booleanValue()) || debugString.length() == 0) {
+                // This was added to allow unit tests to specify Configuration (as no MANIFEST.MF is available)
+                if(Configuration.Release.toString().compareToIgnoreCase(debugString) == 0)
+                    configuration = Configuration.Release;
+                else if(Configuration.Debug.toString().compareToIgnoreCase(debugString) == 0)
                     configuration = Configuration.Debug;
-                    // FIXME: When we can unambigiously auto-detect this from the MANIFEST we don't need to
-                    //  emit this, we'd only emit it when both non-debug and debug were found and we selected
-                    //  the debug kind.
-                    System.err.println("-D" + K_com_trolltech_qt_debug + "=" + Boolean.TRUE + "; is set");
+                else if(Configuration.Test.toString().compareToIgnoreCase(debugString) == 0)
+                    configuration = Configuration.Test;
+
+                if(configuration == null) {
+                    Boolean booleanValue = Boolean.valueOf(debugString);
+                    if((booleanValue != null && booleanValue.booleanValue()) || debugString.length() == 0) {
+                        configuration = Configuration.Debug;
+                        // FIXME: When we can unambigiously auto-detect this from the MANIFEST we don't need to
+                        //  emit this, we'd only emit it when both non-debug and debug were found and we selected
+                        //  the debug kind.
+                        System.err.println("-D" + K_com_trolltech_qt_debug + "=" + Boolean.TRUE + "; is set");
+                    }
                 }
             }
         } catch(Exception e) {
