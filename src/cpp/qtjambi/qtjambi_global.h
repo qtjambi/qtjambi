@@ -87,7 +87,8 @@
 #  include <jni.h>
 #endif
 
-#if defined (Q_CC_MINGW)
+/* Win64 ABI does not use underscore prefixes symbols we could also use !defined(__MINGW64__) */
+#if defined(Q_CC_MINGW) && !defined(_WIN64)
 #  define QTJAMBI_FUNCTION_PREFIX(name) _##name
 #else
 #  define QTJAMBI_FUNCTION_PREFIX(name) name
