@@ -1073,7 +1073,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         StringTokenizer tokenizer = new StringTokenizer(generatorIncludepaths, File.pathSeparator);
         while (tokenizer.hasMoreTokens()) {
             String path = tokenizer.nextToken();
-            path = propertyHelper.replaceProperties(path); // one round of substitution
+            path = propertyHelper.replaceProperties(null, path, null); // one round of substitution
             if(allowRecurse && path.indexOf(File.pathSeparatorChar) >= 0) {
                 prettifyPathSeparator(path, false);   // this is due to ${env.INCLUDE}
                 continue;
