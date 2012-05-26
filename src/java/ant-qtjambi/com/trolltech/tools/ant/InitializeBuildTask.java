@@ -1596,10 +1596,12 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         }
         mySetProperty(-1, propName, sourceValue, path, false);
         if(autodetectKdePhonon != null) {
-            if(autodetectKdePhonon.booleanValue())
-                mySetProperty(((OSInfo.isLinux()) ? -1 : 0), Constants.QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true", false);
-            else
-                mySetProperty(((OSInfo.isLinux()) ? -1 : 0), Constants.QTJAMBI_PHONON_KDEPHONON, null, "false", true);  // force off
+            if(kdephonon == null) {  // we can only set this if it was not already set
+                if(autodetectKdePhonon.booleanValue())
+                    mySetProperty(((OSInfo.isLinux()) ? -1 : 0), Constants.QTJAMBI_PHONON_KDEPHONON, " (auto-detected)", "true", false);
+                else  // FIXME: This else clause should probably be removed
+                    mySetProperty(((OSInfo.isLinux()) ? -1 : 0), Constants.QTJAMBI_PHONON_KDEPHONON, null, "false", true);  // force off
+            }
         }
         return path;
     }
