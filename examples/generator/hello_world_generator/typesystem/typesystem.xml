@@ -5,6 +5,8 @@
     com.trolltech.qt.Utilities.loadQtLibrary("QtGui");
     com.trolltech.qt.Utilities.loadQtLibrary("QtXml");
     com.trolltech.qt.Utilities.loadQtLibrary("QtOpenGL");
+    // we need to ensure we take charge of loading our custom QtJambi aware C++ library 
+    com.trolltech.qt.Utilities.loadJambiLibrary("testGenImpl");
   </inject-code>
 
     <load-typesystem name="../build/generator/typesystem_core.xml" generate="no" />
