@@ -110,6 +110,7 @@
         <qmake config="${qtjambi.configuration}"
                dir="${basedir}/build/qmake/org_qtjambi_test"
                pro="${basedir}/org_qtjambi_test/org_qtjambi_test.pro"
+               debugTools="${qtjambi.debug-tools}"
                qmakebinary="${qtjambi.qt.qmake.abspath}"/>
 
         <make dir="${basedir}/build/qmake/org_qtjambi_test" target="${qtjambi.qmake.target.default}"/>
