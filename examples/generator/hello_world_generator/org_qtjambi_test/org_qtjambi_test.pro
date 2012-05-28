@@ -51,3 +51,5 @@ macx: {
         LIBS += -L$$PWD/../build/qmake/cpp -l$$QTJAMBI_IMPL_NAME
     }
 }
+
+DEFINES += QTJAMBI_CPP_EXTEN_DEBUG

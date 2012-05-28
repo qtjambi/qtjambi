@@ -12,9 +12,11 @@ class TestItem : public TestSuper {
 
     public:
         TestItem(QGraphicsScene *scene);
+#ifdef QTJAMBI_CPP_EXTEN_DEBUG
         ~TestItem() {
             qDebug() << "~TestItem() on " << this;
         }
+#endif
         int getId();
 
 };

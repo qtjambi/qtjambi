@@ -11,17 +11,19 @@
 
 class TestSuper : public QGraphicsObject {
 
- Q_OBJECT
+    Q_OBJECT
 
- public:
-  TestSuper(QGraphicsScene *scene);
-  ~TestSuper() {
-    qDebug() << "~TestSuper() on " << this;
-  }
+    public:
+        TestSuper(QGraphicsScene *scene);
+#ifdef QTJAMBI_CPP_EXTEN_DEBUG
+        ~TestSuper() {
+            qDebug() << "~TestSuper() on " << this;
+        }
+#endif
 
- protected:
-  virtual QRectF boundingRect() const;
-  virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* );
+    protected:
+        virtual QRectF boundingRect() const;
+        virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* );
 
 };
 #endif
