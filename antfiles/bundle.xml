@@ -225,6 +225,7 @@
         <attribute name="Bundle-Vendor"          value="www.qt-jambi.org"/>
         <!-- <attribute name="DynamicImport-Package"       value=""/> -->
         <attribute name="Bundle-Version"         value="${qtjambi.version.bundle}"/>
+        <attribute name="Provide-Capability"     value="gui.ws.qtjambi.native;osplatform=${qtjambi.osplatform};oscpu=${qtjambi.oscpu};compiler=${qtjambi.compiler};configuration=release"/>
         <attribute name="Export-Package"         value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi}"/>
 <!--        <attribute name="Import-Package"      value="com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next}]&quot;"/> -->
 <!--        <attribute name="Import-Package"      value="com.trolltech.qt;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions.signalhandler;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.core;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.designer;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.gui;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.help;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.multimedia;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.network;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.opengl;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.osinfo;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.phonon;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.script;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.scripttools;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.sql;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.svg;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.webkit;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xml;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xmlpatterns;version=&quot;${qtjambi.version.bundle}&quot;"/> -->
@@ -232,7 +233,7 @@
         <attribute name="X-QtJambi-Arch"         value="${qtjambi.osname}"/>
         <attribute name="X-QtJambi-Build"        value="release"/><!-- release debug test -->
         <attribute name="X-QtJambi-CacheKey"     value="${qtjambi.version.cachekey}" />
-        <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.release-${qtjambi.version.bundle}.xml"/>
+        <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml,/META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.release-${qtjambi.version.bundle}.xml"/>
         <attribute name="X-QtJambi-Version"      value="${qtjambi.version.bundle}"/>
       </manifest>
     </jar>
@@ -407,6 +408,7 @@
         <attribute name="Bundle-Vendor"          value="www.qt-jambi.org"/>
         <!-- <attribute name="DynamicImport-Package"       value=""/> -->
         <attribute name="Bundle-Version"         value="${qtjambi.version.bundle}"/>
+        <attribute name="Provide-Capability"     value="gui.ws.qtjambi.native;osplatform=${qtjambi.osplatform};oscpu=${qtjambi.oscpu};compiler=${qtjambi.compiler};configuration=debug"/>
         <attribute name="Export-Package"         value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi}"/>
 <!--        <attribute name="Import-Package"      value="com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next}]&quot;"/> -->
 <!--        <attribute name="Import-Package"      value="com.trolltech.qt;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.extensions.signalhandler;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.core;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.designer;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.gui;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.help;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.images;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.multimedia;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.network;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.opengl;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.osinfo;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.phonon;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.script;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.scripttools;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.sql;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.svg;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.webkit;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xml;version=&quot;${qtjambi.version.bundle}&quot;,com.trolltech.qt.xmlpatterns;version=&quot;${qtjambi.version.bundle}&quot;"/> -->
@@ -414,7 +416,7 @@
         <attribute name="X-QtJambi-Arch"         value="${qtjambi.osname}"/>
         <attribute name="X-QtJambi-Build"        value="debug"/><!-- release debug test -->
         <attribute name="X-QtJambi-CacheKey"     value="${qtjambi.version.cachekey}" />
-        <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml /META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.debug-${qtjambi.version.bundle}.xml"/>
+        <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml,/META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.debug-${qtjambi.version.bundle}.xml"/>
         <attribute name="X-QtJambi-Version"      value="${qtjambi.version.bundle}"/>
       </manifest>
     </jar>

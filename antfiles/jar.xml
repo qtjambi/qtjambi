@@ -225,8 +225,10 @@
                 <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.examples;version=${qtjambi.version.bundle}"/>
                 <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
                 <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
-<!-- FIXME: Import-Package com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.images,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns -->
-                <attribute name="Import-Package"          value="com.trolltech.qt;version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/>
+<!-- FIXME: Import-Package com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.images,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.test,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns -->
+<!-- FIXME: versioned packages com.trolltech.qt;version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot; -->
+<!-- FIXME: Need to move com.trolltech.qt.internal.RetroTranslatorHelper out of internal package -->
+                <attribute name="Import-Package"          value="com.trolltech.qt,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.xml"/>
 <!-- FIXME: com.trolltech.demos.* etc... -->
                 <attribute name="Export-Package"          value="com.trolltech.demos,com.trolltech.examples,com.trolltech.images,com.trolltech.launcher"/>
             </manifest>
@@ -268,7 +270,7 @@
                 <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
                 <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
 <!-- FIXME: com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/> -->
-                <attribute name="Import-Package"          value="com.trolltech.qt;version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/>
+                <attribute name="Import-Package"          value="com.trolltech.qt,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.xml"/>
                 <attribute name="Export-Package"          value="com.trolltech.tools.designer,com.trolltech.qt.designer"/>
                 <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
                 <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
@@ -316,8 +318,10 @@
                 <attribute name="Bundle-UpdateLocation"   value="http://www.qt-jambi.org/go/osgi/UpdateLocation/com.trolltech.qt.${qtjambi.osname}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
                 <attribute name="Bundle-Vendor"           value="www.qt-jambi.org"/>
                 <attribute name="Bundle-Version"          value="${qtjambi.version.bundle}"/>
-                <attribute name="Import-Package"          value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi};version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot;"/>
-                <attribute name="Export-Package"          value="com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.images,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns"/>
+                <attribute name="Require-Capability"      value="gui.ws.qtjambi.native;filter:=&quot;(&amp;(osplatform=${qtjambi.osplatform})(oscpu=${qtjambi.oscpu})(compiler=${qtjambi.compiler})(configuration=release))&quot;"/>
+                <attribute name="Require-Bundle"          value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+                <attribute name="Import-Package"          value="com.trolltech.qt.native.${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}${qtjambi.configuration.osgi};version=${qtjambi.version.bundle}"/>
+                <attribute name="Export-Package"          value="com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.images,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.test,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns"/>
                 <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
                 <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
                 <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>
