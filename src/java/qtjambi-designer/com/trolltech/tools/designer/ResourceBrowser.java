@@ -78,7 +78,7 @@ import java.util.List;
 
 public class ResourceBrowser extends JambiResourceBrowser {
 
-    private static final boolean UNFILTERED = Utilities.matchProperty("unfiltered");
+    private static final boolean UNFILTERED = Utilities.matchProperty("unfiltered", Boolean.FALSE, Boolean.TRUE, null, null).booleanValue();
 
     public ResourceBrowser(QWidget parent) {
         super(parent);

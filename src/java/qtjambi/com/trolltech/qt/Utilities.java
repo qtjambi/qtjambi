@@ -263,16 +263,42 @@ public class Utilities {
      * substrings. If substrings is null or empty the function returns true
      * if the  value is non-null.
      */
-    public static boolean matchProperty(String name, String ... substrings) {
-        String value = System.getProperty(name);
-        if (value == null)
-            return false;
-        if (substrings == null || substrings.length == 0)
-            return value != null;
-        for (String s : substrings)
+    public static Boolean match(String value, Boolean defaultValue, String[] falseA, String[] trueA) {
+        for (String s : trueA) {
             if (value.contains(s))
                 return true;
-        return false;
+        }
+        for (String s : falseA) {
+            if (value.contains(s))
+                return false;
+        }
+        return defaultValue;
+    }
+    public static Boolean matchBooleanProperty(String name, Boolean ifNotExistsValue, Boolean ifExistsValue, String[] falseA, String[] trueA) {
+        String value = System.getProperty(name);
+        if(falseA == null)
+            falseA = new String[] { "false", "no" };
+        if(trueA == null)
+            trueA = new String[] { "true", "yes" };
+        if (value == null)
+            return ifNotExistsValue;
+        return match(value, ifExistsValue, falseA, trueA);
+    }
+    public static Boolean matchProperty(String name, Boolean ifNotExistsValue, Boolean defaultValue, String[] falseA, String[] trueA) {
+        String value = System.getProperty(name);
+        if (value == null)
+            return ifNotExistsValue;
+        return match(value, defaultValue, falseA, trueA);
+    }
+
+    public static boolean matchProperty(String name, String ... substrings) {
+        String[] substringsA = substrings;
+        if(substringsA == null)
+            substringsA = new String[] { };
+        Boolean ifExistsValue = Boolean.FALSE;
+        if(substringsA.length == 0)
+            ifExistsValue = Boolean.TRUE;
+        return matchProperty(name, Boolean.FALSE, ifExistsValue, new String[] { }, substringsA).booleanValue();
     }
 
     public static void loadSystemLibraries() {

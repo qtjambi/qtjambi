@@ -51,7 +51,9 @@ public class GeneratorUtilities {
     private static final boolean threadAsserts;
 
     static {
-        threadAsserts = !Utilities.matchProperty("com.trolltech.qt.thread-check", "false", "no");
+        // default is enabled unless "false" or "no" value is specified
+        Boolean bf = Utilities.matchBooleanProperty("com.trolltech.qt.thread-check", Boolean.TRUE, Boolean.TRUE, null, null);
+        threadAsserts = bf.booleanValue();
     }
 
     public static void threadCheck(QObject obj) {
