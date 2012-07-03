@@ -326,12 +326,6 @@ public abstract class QSignalEmitterInternal {
                 return ;
             }
 
-            if (QSignalEmitterInternal.this.signalsBlocked())
-                return;
-
-            List<Connection> cons = connections;
-            List<Connection> toRemove = null;
-
             // If the signal is generated, it will automatically be connected
             // to the original C++ function for the signal, so the native
             // signal will be emitted by this mechanism. In other cases, we
@@ -341,17 +335,20 @@ public abstract class QSignalEmitterInternal {
                 MetaObjectTools.emitNativeSignal((QObject) QSignalEmitterInternal.this, name() + "(" + signalParameters() + ")", cppSignalSignature(), args);
             }
 
-            if (connections == null)
+            List<Connection> cons = connections;
+            if (cons == null)
                 return;
-
 
             inJavaEmission = true;
             try {
+                List<Connection> toRemove = null;
+
                 for (Connection c : cons) {
 
                     Object receiver = c.resolveReceiver();
                     // If the receiver has been deleted we take the connection out of the list
-                    if (receiver instanceof QtJambiObject && ((QtJambiObject)receiver).nativeId() == 0) {
+                    if (receiver == null ||
+                        (receiver instanceof QtJambiObject && ((QtJambiObject)receiver).nativeId() == 0)) {
                         if (toRemove == null)
                             toRemove = new ArrayList<Connection>();
                         toRemove.add(c);
@@ -360,7 +357,6 @@ public abstract class QSignalEmitterInternal {
 
                     if (inCppEmission && slotIsCppEmit(c))
                         continue;
-
 
                     if (args.length == c.convertTypes.length) {
                         c.args = args;
@@ -375,13 +371,21 @@ public abstract class QSignalEmitterInternal {
                     // 2. If it is automatic and the receiver is not a QObject (no thread() function)
                     // 3. If it is automatic, the receiver is a QObject and the sender and receiver
                     //    are both in the current thread
-                    if (c.isDirectConnection()
-                            || (c.isAutoConnection()
-                                && !(receiver instanceof QSignalEmitter))
-                            || (c.isAutoConnection()
-                                    && receiver instanceof QSignalEmitter
-                                    && ((QSignalEmitter) receiver).thread() == Thread.currentThread()
-                                    && ((QSignalEmitter) receiver).thread() == thread())) {
+                    boolean notEmitterFlag = ((receiver instanceof QSignalEmitter) == false);
+                    boolean receiverWithAffinity = (receiver instanceof QSignalEmitter
+                        && ((QSignalEmitter) receiver).thread() == Thread.currentThread()
+                        && ((QSignalEmitter) receiver).thread() == thread());
+                    boolean senderWithAffinity = (QSignalEmitterInternal.this.thread() == Thread.currentThread()
+                        && QSignalEmitterInternal.this.thread() == thread());
+                    if (senderWithAffinity &&
+                            ((c.isDirectConnection() && receiverWithAffinity)
+                            || (c.isAutoConnection() && notEmitterFlag)
+                            || (c.isAutoConnection() && receiverWithAffinity))) {
+                        // signalsBlocked() is not thread-safe but we checked above that the current
+                        //  thread has affinity with sender.
+                        if (QSignalEmitterInternal.this.signalsBlocked())
+                            continue;
+
                         QSignalEmitterInternal oldEmitter = currentSender.get();
                         currentSender.set(QSignalEmitterInternal.this);
                         try {
@@ -411,10 +415,18 @@ public abstract class QSignalEmitterInternal {
                         } catch (Exception e) {
                             System.err.println("Exception caught after invoking slot:");
                             e.printStackTrace();
+                        } finally {
+                            currentSender.set(oldEmitter);
                         }
-                        currentSender.set(oldEmitter);
+                    } else if(c.isDirectConnection()) {
+                        // You are asking for a DirectConnection but the sender and receiver do not both
+                        //  have the same affinity of the current thread.
+                        //  log this state, discarded emit due to being unable to deliver it.
+                        System.err.println("emit() discarded due to thread-affinity mismatch sender=" + QSignalEmitterInternal.this +
+                            "; receiver=" + receiver + "; type=DirectConnection; senderWithAffinity=" + senderWithAffinity +
+                            "; receiverWithAffinity=" + receiverWithAffinity);
                     } else {
-
+                        // Otherwise we marshal the delivery via the event system that allows it to cross-thread.
                         QObject sender = null;
                         if(receiver instanceof QObject && QSignalEmitterInternal.this instanceof QObject) {
                             sender = (QObject) QSignalEmitterInternal.this;
@@ -545,10 +557,11 @@ public abstract class QSignalEmitterInternal {
 
         protected synchronized boolean removeConnection(Object receiver, Method slot) {
             if (inDisconnect)
-                return false;
+                return false;  // Why might we re-enter ?  Why are we not reentrant ?
             inDisconnect = true;
 
             if (!connectedToCpp) {
+                // We seem to initialize only to possibly perform cppDisconnect later in the method
                 connectedToCpp = true;
                 __qt_signalInitialization(name());
             }
@@ -558,7 +571,11 @@ public abstract class QSignalEmitterInternal {
                 List<Connection> toRemove = null;
                 for (Connection c : connections) {
                     Object resolvedReceiver = c.resolveReceiver();
-                    if ((receiver == null || resolvedReceiver == receiver)
+                    if (resolvedReceiver == null) {  // GCed receiver
+                        if (toRemove == null)
+                            toRemove = new ArrayList<Connection>();
+                        toRemove.add(c);
+                    } else if ((receiver == null || resolvedReceiver == receiver)
                         && (slot == null || slot.equals(c.slot))) {
                         if (toRemove == null)
                             toRemove = new ArrayList<Connection>();
