@@ -90,7 +90,7 @@ class QHostInfo___ extends QHostInfo {
 
 class QAbstractSocket___ extends QAbstractSocket {
 
-        public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
+        public final Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
         private boolean inEmission = false;
 
         private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) {
@@ -180,7 +180,7 @@ class QSslSocket___ extends QSslSocket {
 
 class QHttp___ extends QHttp {
 
-        public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
+        public final Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
         private boolean inEmission = false;
 
         private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) {
@@ -199,7 +199,7 @@ class QHttp___ extends QHttp {
             }
         }
 
-        public Signal3<String, Integer, QAuthenticator> authenticationRequired = new Signal3<String, Integer, QAuthenticator>();
+        public final Signal3<String, Integer, QAuthenticator> authenticationRequired = new Signal3<String, Integer, QAuthenticator>();
         private boolean inEmissionAuthenticationRequired = false;
 
         private void emitAuthenticationRequiredPrivate(String hostName, int port, QAuthenticator authenticator) {
@@ -397,7 +397,7 @@ class QNetworkProxy___ extends QNetworkProxy {
 }// class
 
 class QNetworkAccessManager___ extends QNetworkAccessManager {
-        public Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
+        public final Signal2<QNetworkProxy, QAuthenticator> proxyAuthenticationRequired = new Signal2<QNetworkProxy, QAuthenticator>();
         private boolean inEmission = false;
 
         private void emitProxyAuthenticationRequiredPrivate(QNetworkProxy proxy, QAuthenticator authenticator) {
@@ -416,7 +416,7 @@ class QNetworkAccessManager___ extends QNetworkAccessManager {
             }
         }
 
-        public Signal2<QNetworkReply, QAuthenticator> authenticationRequired = new Signal2<QNetworkReply, QAuthenticator>();
+        public final Signal2<QNetworkReply, QAuthenticator> authenticationRequired = new Signal2<QNetworkReply, QAuthenticator>();
         private boolean inEmissionAuthenticationRequired = false;
 
         private void emitAuthenticationRequiredPrivate(QNetworkReply reply, QAuthenticator authenticator) {

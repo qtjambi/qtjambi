@@ -140,7 +140,7 @@ abstract class QAbstractItemModel___ extends QAbstractItemModel {
 class QTimer___ extends QTimer {
         static private class QSingleShotTimer extends QObject {
                 private int timerId = -1;
-                public Signal0 timeout = new Signal0();
+                public final Signal0 timeout = new Signal0();
 
                 public QSingleShotTimer(int msec, QObject obj, String method) {
                     super(obj);

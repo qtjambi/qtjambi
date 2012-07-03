@@ -81,7 +81,7 @@ public final class QThread extends Thread {
      * its runnable target. The signal is emitted from the running
      * thread.
      */
-    public QSignalEmitter.Signal0 starting;
+    public final QSignalEmitter.Signal0 starting;
 
 
     /**
@@ -89,7 +89,7 @@ public final class QThread extends Thread {
      * executing its runnable target. The signal is emitted from the
      * running thread.
      */
-    public QSignalEmitter.Signal0 finished;
+    public final QSignalEmitter.Signal0 finished;
 
 
     /**
@@ -98,7 +98,9 @@ public final class QThread extends Thread {
      */
     public QThread(Runnable target) {
         super(target);
-        init();
+        notifier = new Notifier();
+        starting = notifier.starting;
+        finished = notifier.finished;
     }
 
 
@@ -109,7 +111,9 @@ public final class QThread extends Thread {
      */
     public QThread(ThreadGroup group, Runnable target) {
         super(group, target);
-        init();
+        notifier = new Notifier();
+        starting = notifier.starting;
+        finished = notifier.finished;
     }
 
 
@@ -120,7 +124,9 @@ public final class QThread extends Thread {
      */
     public QThread(Runnable target, String name) {
         super(target, name);
-        init();
+        notifier = new Notifier();
+        starting = notifier.starting;
+        finished = notifier.finished;
     }
 
 
@@ -132,7 +138,9 @@ public final class QThread extends Thread {
      */
     public QThread(ThreadGroup group, Runnable target, String name) {
         super(group, target, name);
-        init();
+        notifier = new Notifier();
+        starting = notifier.starting;
+        finished = notifier.finished;
     }
 
 
@@ -145,7 +153,9 @@ public final class QThread extends Thread {
      */
     public QThread(ThreadGroup group, Runnable target, String name, long stackSize) {
         super(group, target, name, stackSize);
-        init();
+        notifier = new Notifier();
+        starting = notifier.starting;
+        finished = notifier.finished;
     }
 
 
@@ -175,15 +185,8 @@ public final class QThread extends Thread {
 
 
     private class Notifier extends QSignalEmitter {
-        public Signal0 starting = new Signal0();
-        public Signal0 finished = new Signal0();
-    }
-
-
-    private void init() {
-        notifier = new Notifier();
-        starting = notifier.starting;
-        finished = notifier.finished;
+        public final Signal0 starting = new Signal0();
+        public final Signal0 finished = new Signal0();
     }
 
 
