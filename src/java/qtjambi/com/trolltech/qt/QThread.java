@@ -163,12 +163,14 @@ public final class QThread extends Thread {
     public void run() {
         starting.emit();
 
-        super.run();
+        try {
+            super.run();
+        } finally {
+            System.gc();
+            QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
 
-        System.gc();
-        QCoreApplication.sendPostedEvents(null, QEvent.Type.DeferredDelete.value());
-
-        finished.emit();
+            finished.emit();
+        }
     }
 
 
