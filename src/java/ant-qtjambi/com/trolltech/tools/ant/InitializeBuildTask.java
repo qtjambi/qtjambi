@@ -440,8 +440,10 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             s = "";   // empty
         else if(Constants.CONFIG_DEBUG.equals(getConfiguration()))
             s = "-debug";
-        else
+        else if(Constants.CONFIG_TEST.equals(getConfiguration()))
             s = "-test";
+        else
+            s = "";   // empty (debug_and_release)
         if(s != null)
             AntUtil.setNewProperty(propertyHelper, Constants.CONFIGURATION_DASH, s);
         s = null;
@@ -449,8 +451,10 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             s = "";   // empty
         else if(Constants.CONFIG_DEBUG.equals(getConfiguration()))
             s = ".debug";
-        else
+        else if(Constants.CONFIG_TEST.equals(getConfiguration()))
             s = ".test";
+        else
+            s = "";   // empty (debug_and_release)
         if(s != null)
             AntUtil.setNewProperty(propertyHelper, Constants.CONFIGURATION_OSGI, s);
 
