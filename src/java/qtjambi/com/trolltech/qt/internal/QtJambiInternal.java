@@ -44,6 +44,21 @@
 
 package com.trolltech.qt.internal;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QtJambiGeneratedClass;
@@ -54,23 +69,6 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 public class QtJambiInternal {
 
@@ -90,7 +88,7 @@ public class QtJambiInternal {
                 if (pluginDesignerPaths != null)
                     paths.addAll(pluginDesignerPaths);
 
-                // We don't override the existing values (which are baed on envvars)
+                // We don't override the existing values (which are based on envvars)
                 //  as envvars should continue to take priority even for Java Qt use.
                 if (paths.size() > 0) {
                     Collections.reverse(paths);
@@ -521,7 +519,7 @@ public class QtJambiInternal {
                 }
 
                 if (actualType instanceof Class) {
-                    Class actualTypeClass = (Class) actualType;
+                    Class<?> actualTypeClass = (Class<?>) actualType;
                     // JRE7 returns Class as the top level item, but isArray() is set (for each dimension, hence we loop)
                     // JRE5/JRE6 returns GenericArrayTypeImpl for each dimension and the final unwrapping returns a Class with isArray() not set
                     // So this while loop below is needed since JRE7

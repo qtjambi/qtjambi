@@ -44,22 +44,22 @@
 
 package com.trolltech.qt.internal;
 
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.trolltech.qt.QBlockedSlotException;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QtBlockedSlot;
 import com.trolltech.qt.QtJambiGeneratedClass;
 import com.trolltech.qt.QtJambiObject;
-import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QCoreApplication;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.Qt;
 
 public abstract class QSignalEmitterInternal {
     /**
@@ -77,6 +77,7 @@ public abstract class QSignalEmitterInternal {
         private Class<?>            declaringClass      = null;
         private boolean             connectedToCpp      = false;
         private boolean             inDisconnect        = false;
+        @SuppressWarnings("unused")  // used from QtJambi C++ code
         private boolean             inJavaEmission      = false;
 
         /**

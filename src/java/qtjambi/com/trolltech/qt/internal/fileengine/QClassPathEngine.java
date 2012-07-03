@@ -46,10 +46,10 @@ package com.trolltech.qt.internal.fileengine;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.net.JarURLConnection;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -64,12 +64,16 @@ import java.util.zip.ZipException;
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.Utilities;
 import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QAbstractFileEngine.FileFlag;
+import com.trolltech.qt.core.QAbstractFileEngine.FileFlags;
+import com.trolltech.qt.core.QAbstractFileEngine.FileName;
+import com.trolltech.qt.core.QAbstractFileEngine.FileOwner;
+import com.trolltech.qt.core.QAbstractFileEngine.FileTime;
 import com.trolltech.qt.core.QAbstractFileEngineIterator;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QDir;
 import com.trolltech.qt.core.QFileInfo;
 import com.trolltech.qt.core.QIODevice;
-
 import com.trolltech.qt.osinfo.OSInfo;
 import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 

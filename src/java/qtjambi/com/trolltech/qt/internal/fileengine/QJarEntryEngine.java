@@ -44,7 +44,22 @@
 
 package com.trolltech.qt.internal.fileengine;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.jar.JarEntry;
+
+import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.core.QAbstractFileEngine;
+import com.trolltech.qt.core.QAbstractFileEngine.FileFlag;
+import com.trolltech.qt.core.QAbstractFileEngine.FileFlags;
+import com.trolltech.qt.core.QAbstractFileEngine.FileName;
 import com.trolltech.qt.core.QDate;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QDir;
@@ -52,18 +67,6 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QFileInfo;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.core.QTime;
-import com.trolltech.qt.QNativePointer;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.LinkedList;
-import java.util.List;
 
 // TODO: We this is re-worked we want to separate the resolution process for finding
 //   locations to search, from the access/usage of a particular thing.
