@@ -46,7 +46,7 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.internal.RetroTranslatorHelper;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 public class Delegate extends QItemDelegate {
 

@@ -48,7 +48,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.trolltech.qt.internal.RetroTranslatorHelper;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 public class TestRetroTranslatorHelper extends QApplicationTest {
     @Test

@@ -48,7 +48,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Vector;
 
-import com.trolltech.qt.internal.RetroTranslatorHelper;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 public class QNoSuchSlotException extends ConnectionException {
     private static final long serialVersionUID = 1L;

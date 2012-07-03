@@ -56,7 +56,7 @@ import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.internal.RetroTranslatorHelper;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 import com.trolltech.qt.xml.QDomElement;
 import com.trolltech.qt.xml.QDomNode;
 import com.trolltech.qt.xml.QDomNodeList;

@@ -70,8 +70,8 @@ import com.trolltech.qt.core.QDir;
 import com.trolltech.qt.core.QFileInfo;
 import com.trolltech.qt.core.QIODevice;
 
-import com.trolltech.qt.internal.RetroTranslatorHelper;
 import com.trolltech.qt.osinfo.OSInfo;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 public class QClassPathEngine extends QAbstractFileEngine {
     public final static String FileNameDelim = "#";

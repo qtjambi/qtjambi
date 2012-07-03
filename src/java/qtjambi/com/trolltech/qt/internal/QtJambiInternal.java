@@ -53,6 +53,7 @@ import com.trolltech.qt.core.QDataStream;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 import java.util.Collections;
 import java.util.List;

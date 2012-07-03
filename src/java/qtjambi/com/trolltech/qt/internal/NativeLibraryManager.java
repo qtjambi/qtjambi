@@ -68,6 +68,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.trolltech.qt.Utilities;
 
 import com.trolltech.qt.osinfo.OSInfo;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 // !!NOTE!! This class can have no dependencies on Qt since
 // it is required for loading the libraries.

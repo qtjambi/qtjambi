@@ -47,7 +47,7 @@ package com.trolltech.launcher;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.*;
-import com.trolltech.qt.internal.RetroTranslatorHelper;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 import java.io.File;
 import java.io.IOException;

@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.qt.internal;
+package com.trolltech.qt.qtjambi.util;
 
 import java.util.Stack;
 

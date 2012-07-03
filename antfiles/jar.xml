@@ -228,7 +228,7 @@
 <!-- FIXME: Import-Package com.trolltech.qt,com.trolltech.extensions,com.trolltech.extensions.signalhandler,com.trolltech.images,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.help,com.trolltech.qt.multimedia,com.trolltech.qt.network,com.trolltech.qt.opengl,com.trolltech.qt.osinfo,com.trolltech.qt.phonon,com.trolltech.qt.script,com.trolltech.qt.scripttools,com.trolltech.qt.sql,com.trolltech.qt.svg,com.trolltech.qt.test,com.trolltech.qt.webkit,com.trolltech.qt.xml,com.trolltech.qt.xmlpatterns -->
 <!-- FIXME: versioned packages com.trolltech.qt;version=&quot;[${qt.version.major}.${qt.version.minor},${qt.version.major}.${qt.version.minor.next})&quot; -->
 <!-- FIXME: Need to move com.trolltech.qt.internal.RetroTranslatorHelper out of internal package -->
-                <attribute name="Import-Package"          value="com.trolltech.qt,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.xml"/>
+                <attribute name="Import-Package"          value="com.trolltech.qt,com.trolltech.qt.core,com.trolltech.qt.gui,com.trolltech.qt.xml,com.trolltech.qt.qtjambi.util"/>
 <!-- FIXME: com.trolltech.demos.* etc... -->
                 <attribute name="Export-Package"          value="com.trolltech.demos,com.trolltech.examples,com.trolltech.images,com.trolltech.launcher"/>
             </manifest>
