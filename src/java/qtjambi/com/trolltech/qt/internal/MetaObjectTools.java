@@ -114,17 +114,18 @@ public class MetaObjectTools {
                 return "";
             } else if (type == AnnotationType.Reader) {
                 String name = method.getName();
-                if (name.startsWith("get"))
+                int len = name.length();
+                if (name.startsWith("get") && len > 3)
                     name = removeAndLowercaseFirst(name, 3);
-                else if (isBoolean(method.getReturnType()) && name.startsWith("is"))
+                else if (isBoolean(method.getReturnType()) && name.startsWith("is") && len > 2)
                     name = removeAndLowercaseFirst(name, 2);
-                else if (isBoolean(method.getReturnType()) && name.startsWith("has"))
+                else if (isBoolean(method.getReturnType()) && name.startsWith("has") && len > 3)
                     name = removeAndLowercaseFirst(name, 3);
 
                 return name;
             } else { // starts with "set"
                 String name = method.getName();
-                if (!name.startsWith("set")) {
+                if (!name.startsWith("set") || name.length() <= 3) {
                     throw new IllegalArgumentException("The correct pattern for setter accessor names is setXxx where Xxx is the property name with upper case initial.");
                 }
 
@@ -554,15 +555,17 @@ public class MetaObjectTools {
 
             // Check naming convention by looking for setXxx patterns, but only if it hasn't already been
             // annotated as a writer
+            String declaredMethodName = declaredMethod.getName();
             if (writer == null
                 && reader == null // reader can't be a writer, cause the signature doesn't match, just an optimization
-                && declaredMethod.getName().startsWith("set")
-                && Character.isUpperCase(declaredMethod.getName().charAt(3))
+                && declaredMethodName.startsWith("set")
+                && declaredMethodName.length() > 3
+                && Character.isUpperCase(declaredMethodName.charAt(3))
                 && isValidSetter(declaredMethod)) {
 
                 Class<?> paramType = declaredMethod.getParameterTypes()[0];
-                String propertyName = Character.toLowerCase(declaredMethod.getName().charAt(3))
-                                    + declaredMethod.getName().substring(4);
+                String propertyName = Character.toLowerCase(declaredMethodName.charAt(3))
+                                    + declaredMethodName.substring(4);
 
                 if (!propertyReaders.containsKey(propertyName)) {
                     // We need a reader as well, and the reader must not be annotated as disabled
