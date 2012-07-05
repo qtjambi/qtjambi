@@ -200,7 +200,7 @@
     <mkdir dir="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment"/>
     <copy file="${outputDir}/platform-output/qtjambi-deployment.xml" tofile="${outputDir}/platform-output/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}-${qtjambi.version.bundle}.xml"/>
 
-    <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}.jar"/>
+    <property name="destination-file" value="${outputDir}/qtjambi-native-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}.jar"/>
     <jar destfile="${destination-file}">
       <fileset dir="${outputDir}/platform-output"/>
       <manifest>
@@ -235,6 +235,7 @@
         <attribute name="X-QtJambi-CacheKey"     value="${qtjambi.version.cachekey}" />
         <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml,/META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.release-${qtjambi.version.bundle}.xml"/>
         <attribute name="X-QtJambi-Version"      value="${qtjambi.version.bundle}"/>
+        <attribute name="X-QtJambi-SoName-Version" value="${qtjambi.soname.version.major}"/>
       </manifest>
     </jar>
     <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>
@@ -383,7 +384,7 @@
     <mkdir dir="${outputDir}/platform-output-debug/META-INF/com.trolltech.qt.deployment"/>
     <copy file="${outputDir}/platform-output-debug/qtjambi-deployment.xml" tofile="${outputDir}/platform-output-debug/META-INF/com.trolltech.qt.deployment/${qtjambi.osname}.${qtjambi.compiler}.debug-${qtjambi.version.bundle}.xml"/>
 
-    <property name="destination-file" value="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}-debug.jar"/>
+    <property name="destination-file" value="${outputDir}/qtjambi-native-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version.bundle}-debug.jar"/>
     <jar destfile="${destination-file}">
       <fileset dir="${outputDir}/platform-output-debug"/>
       <manifest>
@@ -418,6 +419,7 @@
         <attribute name="X-QtJambi-CacheKey"     value="${qtjambi.version.cachekey}" />
         <attribute name="X-QtJambi-Deployment"   value="/qtjambi-deployment.xml,/META-INF/com.trolltech.qt.deployment/${qtjambi.osplatform}.${qtjambi.oscpu}.${qtjambi.compiler}.debug-${qtjambi.version.bundle}.xml"/>
         <attribute name="X-QtJambi-Version"      value="${qtjambi.version.bundle}"/>
+        <attribute name="X-QtJambi-SoName-Version" value="${qtjambi.soname.version.major}"/>
       </manifest>
     </jar>
     <copy file="${destination-file}" tofile="${jardir}/qtjambi-native.jar"/>

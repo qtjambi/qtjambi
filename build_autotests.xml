@@ -147,7 +147,7 @@
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${tests.hamcrest}" />
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
-<!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}${qtjambi.configuration.dash}.jar" /> -->
+<!--                <pathelement location="${outputDir}/qtjambi-native-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}${qtjambi.configuration.dash}.jar" /> -->
                 <pathelement path="src/java/qtjambi-examples" />
                 <pathelement path="${absOutputDir}/tests/auto" />
                 <pathelement path="${absOutputDir}/tests/unit" />
@@ -215,7 +215,7 @@
                 <pathelement location="${tests.junit}" />
                 <pathelement location="${tests.hamcrest}" />
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
-<!--                <pathelement location="${outputDir}/qtjambi-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}${qtjambi.configuration.dash}.jar" /> -->
+<!--                <pathelement location="${outputDir}/qtjambi-native-${qtjambi.osname}-${qtjambi.compiler}-${qtjambi.version}${qtjambi.configuration.dash}.jar" /> -->
                 <pathelement path="src/java/qtjambi-examples" />
                 <pathelement path="${absOutputDir}/tests/auto" />
                 <pathelement path="${absOutputDir}/tests/unit" />

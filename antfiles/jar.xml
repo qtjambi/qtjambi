@@ -324,6 +324,7 @@
                 <attribute name="X-QtJambi-Arch"          value="${qtjambi.osname}"/>
                 <attribute name="X-QtJambi-Build"         value="${qtjambi.configuration}"/><!-- release debug test -->
                 <attribute name="X-QtJambi-Version"       value="${qtjambi.version.bundle}"/>
+                <attribute name="X-QtJambi-SoName-Version" value="${qtjambi.soname.version.major}"/>
             </manifest>
             <fileset dir="${java.outdir}/${module}" excludes="com/trolltech/tools/**"/>
         </jar>
