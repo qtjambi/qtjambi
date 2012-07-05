@@ -47,7 +47,9 @@
 
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
+#ifndef QT_NO_SQL
 #include <QtSql/QtSql>
+#endif
 #include <QtXml/QtXml>
 #include <QtNetwork/QtNetwork>
 
@@ -336,6 +338,7 @@ public:
     }
 };
 
+#ifndef QT_NO_SQL
 class SqlTableModelSubclass: public QSqlTableModel
 {
     Q_OBJECT
@@ -357,6 +360,7 @@ public slots:
     }
 
 };
+#endif /* QT_NO_SQL */
 
 class XmlReaderSubclass: public QXmlReader
 {

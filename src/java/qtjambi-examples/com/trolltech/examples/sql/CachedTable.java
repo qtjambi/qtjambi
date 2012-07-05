@@ -42,8 +42,9 @@
 **
 ****************************************************************************/
 
-package com.trolltech.examples;
+package com.trolltech.examples.sql;
 
+import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.sql.QSqlDatabase;

@@ -45,7 +45,7 @@
         </ant>
     </target>
 
-    <target name="jar.qtjambi" depends="init.build, jar.qtjambi-util">
+    <target name="jar.qtjambi" depends="init.build, javac.excludes, jar.qtjambi-util">
         <qtjambi-version-properties/>
         <!-- 1. This is a fix for adding the OsInfo class to the the main jar-->
         <!--
@@ -65,13 +65,15 @@
         </copy>
         <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar.qtjambi">
             <property name="module" value="qtjambi"/>
-            <property name="jar.excludes" value="com/trolltech/tools/**"/>
+            <property name="jar.excludes" value="${javac.excludes} com/trolltech/tools/**"/>
+            <property name="module.excludes" value="${javac.excludes}"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi"/>
             <property name="sourcedir2" value="${generator.outputdir}/java"/>
         </ant>
         <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makesrcjar.qtjambi">
             <property name="module" value="qtjambi"/>
-            <property name="jar.excludes" value="com/trolltech/tools/**"/>
+            <property name="jar.excludes" value="${javac.excludes} com/trolltech/tools/**"/>
+            <property name="module.excludes" value="${javac.excludes}"/>
         </ant>
     </target>
 
@@ -115,7 +117,9 @@
             unless="qtjambi.opengl.any.true"/>
         <exclude name="src/java/qtjambi-examples/com/trolltech/demos/opengl/*.java"
             unless="qtjambi.opengl.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/tolltech/examples/SvgCards.java"
+        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/sql/*.java"
+            unless="qtjambi.sql.any.true"/>
+        <exclude name="src/java/qtjambi-examples/com/tolltech/examples/svg/*.java"
             unless="qtjambi.svg.any.true"/>
     </fileset>
 
@@ -123,7 +127,7 @@
         <dojuic module="qtjambi-examples"/>
     </target>
 
-    <target name="jar.qtjambi-examples" depends="init.build, jar.qtjambi-examples.juic">
+    <target name="javac.excludes" depends="init.build">
         <!-- exclude java classes, which were not build, depending on qtjambi config -->
         <condition property="javac.opengl.excludes" value="**/opengl/**/*.java">
             <isfalse value="${qtjambi.opengl.any.true}"/>
@@ -137,7 +141,10 @@
         <condition property="javac.webkit.excludes" value="**/webkit/**/*.java">
             <isfalse value="${qtjambi.webkit.any.true}"/>
         </condition>
-        <condition property="javac.svg.excludes" value="**/SvgCards.java">
+        <condition property="javac.sql.excludes" value="**/sql/**/*.java">
+            <isfalse value="${qtjambi.sql.any.true}"/>
+        </condition>
+        <condition property="javac.svg.excludes" value="**/svg/**/*.java">
             <isfalse value="${qtjambi.svg.any.true}"/>
         </condition>
         <condition property="javac.extra.excludes" value="com/trolltech/examples/Styles.java">
@@ -147,8 +154,12 @@
                                                ${javac.xmlpatterns.excludes}
                                                ${javac.phonon.excludes}
                                                ${javac.webkit.excludes}
+                                               ${javac.sql.excludes}
                                                ${javac.svg.excludes}
                                                ${javac.extra.excludes}"/>
+    </target>
+
+    <target name="jar.qtjambi-examples" depends="init.build, javac.excludes, jar.qtjambi-examples.juic">
         <echo message="processed excludes ${javac.excludes}"/>
         <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makejar.qtjambi-examples">
             <property name="module" value="qtjambi-examples"/>

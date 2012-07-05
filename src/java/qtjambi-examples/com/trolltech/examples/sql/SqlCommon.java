@@ -42,7 +42,7 @@
 **
 ****************************************************************************/
 
-package com.trolltech.examples;
+package com.trolltech.examples.sql;
 
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMessageBox;

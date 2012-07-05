@@ -218,7 +218,7 @@ Save your changes?</source>
     </message>
 </context>
 <context>
-    <name>com.trolltech.examples.CachedTable</name>
+    <name>com.trolltech.examples.sql.CachedTable</name>
     <message>
         <location filename="CachedTable.java" line="57"/>
         <source>ID</source>
@@ -1607,7 +1607,7 @@ Save your changes?</source>
     </message>
 </context>
 <context>
-    <name>com.trolltech.examples.SqlCommon</name>
+    <name>com.trolltech.examples.sql.SqlCommon</name>
     <message>
         <location filename="SqlCommon.java" line="28"/>
         <source>Cannot open database</source>

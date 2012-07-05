@@ -48,16 +48,22 @@
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
-#include <QtSql/QtSql>
+#ifndef QT_NO_SQL
+#  include <QtSql/QtSql>
+#endif
 #ifndef QT_NO_SVG
 #  include <QtSvg/QtSvg>
 #endif
 #include <QtXml/QtXml>
-#include <QtHelp/QtHelp>
+#ifndef QT_NO_HELP
+#  include <QtHelp/QtHelp>
+#endif
 #ifndef QT_NO_MULTIMEDIA
 #  include <QtMultimedia/QtMultimedia>
 #endif
-#include <QtScript/QtScript>
+#ifndef QT_NO_SCRIPT
+#  include <QtScript/QtScript>
+#endif
 #ifndef QT_NO_SCRIPTTOOLS
 # if QT_VERSION >= 0x040600
 #  include <QtScriptTools/QtScriptTools>
@@ -100,7 +106,9 @@
 # endif
 #endif
 
-#include <QtTest/QtTest>
+#ifndef QT_NO_TEST
+#  include <QtTest/QtTest>
+#endif
 
 
 
