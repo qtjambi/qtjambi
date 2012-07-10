@@ -2371,15 +2371,16 @@ static bool qtjambi_connect_callback(void **raw_data, bool slotMustBeGenerated)
     StaticCache *sc = StaticCache::instance();
     sc->resolveAbstractSignal();
     Q_ASSERT(resolved_data.java_signal);
-    bool result = jni_env->CallBooleanMethod(resolved_data.java_signal,
+    jni_env->CallVoidMethod(resolved_data.java_signal,
                                              sc->AbstractSignal.connectSignalMethod,
                                              resolved_data.java_method,
                                              resolved_data.java_receiver,
                                              *data->type);
-    qtjambi_exception_check(jni_env);
+    if(qtjambi_exception_check(jni_env))
+        return false;
 
     // If we succeeded in connecting in Java, we skip the C++ connection
-    return result;
+    return true;
 }
 
 static bool qtjambi_connect_callback(void **raw_data)
