@@ -97,6 +97,10 @@ struct QtJambiSignalInfo
         jweak weak;
     } ref;
     jmethodID methodId;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    const char *javaClassName;
+    const char *javaSignalName;
+#endif
 };
 
 #ifdef JOBJECT_REFCOUNT
@@ -641,7 +645,13 @@ void qtjambi_resolve_signals(JNIEnv *env,
                              QtJambiSignalInfo *infos,
                              int count,
                              const char **names,
-                             const int *argument_counts);
+                             const int *argument_counts
+#if defined(QTJAMBI_DEBUG_TOOLS)
+                             ,
+                             const char *java_class_name,  /* is C++ static string const */
+                             const char *java_signal_name  /* needs to be copied if retained */
+#endif
+                             );
 
 QTJAMBI_EXPORT
 bool qtjambi_connect_cpp_to_java(JNIEnv *,

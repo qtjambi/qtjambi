@@ -1175,7 +1175,13 @@ void qtjambi_resolve_signals(JNIEnv *env,
                              QtJambiSignalInfo *infos,
                              int count,
                              const char **names,
-                             const int *argument_counts)
+                             const int *argument_counts
+#if defined(QTJAMBI_DEBUG_TOOLS)
+                             ,
+                             const char *java_class_name, /* is C++ static string const */
+                             const char *java_signal_name /* needs to be copied if retained */
+#endif
+                             )
 {
     Q_ASSERT(java_object);
     jclass clazz = qtjambi_find_generated_superclass(env,  java_object);
@@ -1251,10 +1257,20 @@ void qtjambi_resolve_signals(JNIEnv *env,
                     env->DeleteWeakGlobalRef(infos[i].ref.weak);
                 infos[i].ref.weak = signalWeakRef;
                 infos[i].methodId = emitMethodID;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+                infos[i].javaClassName = java_class_name;
+                if(infos[i].javaSignalName)
+                    free((void *)infos[i].javaSignalName);
+                infos[i].javaSignalName = strdup(java_signal_name);
+#endif
             } else {  // something went bad
                 env->DeleteWeakGlobalRef(signalWeakRef);
                 infos[i].ref.weak = 0;
                 infos[i].methodId = 0;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+                infos[i].javaClassName = 0;
+                infos[i].javaSignalName = 0;
+#endif
             }
 
             env->DeleteLocalRef(cls);

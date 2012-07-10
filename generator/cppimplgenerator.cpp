@@ -2063,6 +2063,7 @@ void CppImplGenerator::writeSignalInitialization(QTextStream &s, const AbstractM
     << "   Q_ASSERT(qt_this);" << endl << endl
     << "   QtJambi_SignalWrapper_" << java_class->name() << " *qt_wrapper = "
     << "   (QtJambi_SignalWrapper_" << java_class->name() << " *) link->signalWrapper();" << endl
+    << "   QString signal_name = qtjambi_to_qstring(__jni_env, java_signal_name);" << endl
     << "   if (qt_wrapper == 0) {" << endl
     << "       qt_wrapper = new QtJambi_SignalWrapper_" << java_class->name() << ";" << endl
     << "       link->setSignalWrapper(qt_wrapper);" << endl
@@ -2072,9 +2073,14 @@ void CppImplGenerator::writeSignalInitialization(QTextStream &s, const AbstractM
     << "                               qt_wrapper->m_signals," << endl
     << "                               qtjambi_signal_count," << endl
     << "                               qtjambi_signal_names," << endl
-    << "                               qtjambi_signal_argumentcounts);" << endl
+    << "                               qtjambi_signal_argumentcounts" << endl
+    << "#if defined(QTJAMBI_DEBUG_TOOLS)" << endl
+    << "                               ," << endl
+    << "                               \"" << java_class->fullName() << "\"," << endl
+    << "                               signal_name.toLatin1().constData()" << endl
+    << "#endif /* QTJAMBI_DEBUG_TOOLS */" << endl
+    << "                               );" << endl
     << "   }" << endl
-    << "   QString signal_name = qtjambi_to_qstring(__jni_env, java_signal_name);" << endl
     << "   return qtjambi_connect_cpp_to_java(__jni_env," << endl
     << "                                      signal_name," << endl
     << "                                      qt_this," << endl
