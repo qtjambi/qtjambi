@@ -254,17 +254,15 @@ public class QtJambiInternal {
              QSignalEmitterInternal.class.isAssignableFrom(cls) && returned == null;
              cls = cls.getSuperclass()) {
 
-            Field f;
-            try {
-                f = cls.getDeclaredField(name);
-            } catch (NoSuchFieldException e) {
+            Field[] fields = cls.getDeclaredFields();
+            Field f = findField(fields, name);
+            if(f == null)
                 continue;
-            }
-
-            //noinspection EmptyCatchBlock
+            //no inspection EmptyCatchBlock
             try {
                 f.setAccessible(true);
-            } catch (SecurityException e) { }
+            } catch (SecurityException e) {
+            }
 
             if (QSignalEmitterInternal.AbstractSignalInternal.class.isAssignableFrom(f.getType())) {
                 try {
@@ -483,6 +481,16 @@ public class QtJambiInternal {
         return slotMethod;
     }
 
+    private static Field findField(Field[] fields, String fieldName) {
+        Field found = null;
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)) {
+                found = field;
+                break;
+            }
+        }
+        return found;
+    }
 
     /**
      * Returns true if the class cl represents a Signal.
