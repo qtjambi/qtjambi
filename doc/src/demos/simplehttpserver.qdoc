@@ -4,7 +4,7 @@
 
     \bold {Code}:
     \list
-        \o \l{Code for Simple HTTP Server}{SimpleHttpServer.java}
+        \o \l{Code for Simple HTTP Server}{HttpServerExample.java}
     \endlist
 
     This demo shows how to create a http server by inheriting

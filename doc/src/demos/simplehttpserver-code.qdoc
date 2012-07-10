@@ -2,5 +2,5 @@
     \page qtjambi-simplehttpserver-code.html
     \title Code for Simple HTTP Server
 
-    \quotefile SimpleHttpServer.java
+    \quotefile HttpServerExample.java
 */
