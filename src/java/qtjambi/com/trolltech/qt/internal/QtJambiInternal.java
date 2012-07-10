@@ -376,20 +376,24 @@ public class QtJambiInternal {
      * Sets the current QObject sender for receiver to sender. A
      * function call to setQObjectSender must always be followed by a
      * call to resetQObjectSender where the data returned from set is
-     * passed to reset
+     * passed to reset.
+     * Package visibility due to handling of raw memory pointers in
+     *  long type.
      * @param receiver The receiver QObject
      * @param sender The sender QObject
      * @return A magic data to be used in the following reset call.
      */
-    public static native long setQObjectSender(long receiver, long sender);
+    static native long setQObjectSender(long receiver, long sender);
 
     /**
      * Resets the current sender for the object in receiver.
+     * Package visibility due to handling of raw memory pointers in
+     *  long type.
      * @param receiver The receiver QObject.
      * @param data A magic value which must be the return value from
      * the recent setQObjectSender call.
      */
-    public static native void resetQObjectSender(long receiver, long data);
+    static native void resetQObjectSender(long receiver, long data);
 
     private static boolean signalMatchesSlot(String signal, String slot) {
         // void slots always match...
@@ -890,7 +894,13 @@ public class QtJambiInternal {
         return MetaObjectTools.bunchOfClassNamesInARow(signal.resolveSignal(), signal.arrayDimensions());
     }
 
-    public static QtProperty userProperty(long nativeId) {
+    /**
+     * Package visibility due to handling of raw memory pointers in
+     *  long type.
+     * @param nativeId
+     * @return
+     */
+    static QtProperty userProperty(long nativeId) {
         List<QtProperty> properties = properties(nativeId);
 
         for (QtProperty property : properties) {
@@ -901,9 +911,22 @@ public class QtJambiInternal {
         return null;
     }
 
-    public native static List<QtProperty> properties(long nativeId);
+    /**
+     * Package visibility due to handling of raw memory pointers in
+     *  long type.
+     * @param nativeId
+     * @return
+     */
+    native static List<QtProperty> properties(long nativeId);
 
-    public static int indexOfProperty(long nativeId, String name) {
+    /**
+     * Package visibility due to handling of raw memory pointers in
+     *  long type.
+     * @param nativeId
+     * @param name
+     * @return
+     */
+    static int indexOfProperty(long nativeId, String name) {
         List<QtProperty> properties = properties(nativeId);
 
         for (int i=0; i<properties.size(); ++i) {
