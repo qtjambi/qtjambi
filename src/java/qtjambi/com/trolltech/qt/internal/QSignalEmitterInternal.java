@@ -627,6 +627,12 @@ public abstract class QSignalEmitterInternal {
 
     public abstract Thread thread();
 
-    protected static ThreadLocal<QSignalEmitterInternal> currentSender = new ThreadLocal<QSignalEmitterInternal>();
+    protected static final ThreadLocal<QSignalEmitterInternal> currentSender = new ThreadLocal<QSignalEmitterInternal>();
 
+    /**
+     * Paranoid cleanup method for the current Thread's ThreadLocal data.
+     */
+    static void currentSenderRemove() {
+        currentSender.remove();
+    }
 }

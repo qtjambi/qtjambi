@@ -161,11 +161,12 @@ public class QtJambiInternal {
                     e.getCause().printStackTrace();
                 else
                     e.printStackTrace();
-            }
-            if (updateSender) {
-                QtJambiInternal.resetQObjectSender(((QObject) resolvedReceiver).nativeId(),
-                                                   oldSender);
-                QSignalEmitterInternal.currentSender.set(oldEmitter);
+            } finally {
+                if (updateSender) {
+                    QtJambiInternal.resetQObjectSender(((QObject) resolvedReceiver).nativeId(),
+                                                       oldSender);
+                    QSignalEmitterInternal.currentSender.set(oldEmitter);
+                }
             }
         }
 
