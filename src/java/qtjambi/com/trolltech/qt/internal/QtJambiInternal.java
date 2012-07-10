@@ -140,6 +140,8 @@ public class QtJambiInternal {
             long oldSender = 0;
             QSignalEmitterInternal oldEmitter = null;
             Object resolvedReceiver = connection.resolveReceiver();
+            if (resolvedReceiver == null)
+                return;
             if (updateSender) {
                 oldSender = QtJambiInternal.setQObjectSender(((QObject) resolvedReceiver).nativeId(),
                                                              sender.nativeId());
