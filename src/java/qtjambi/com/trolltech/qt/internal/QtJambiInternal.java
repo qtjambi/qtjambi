@@ -866,8 +866,9 @@ public class QtJambiInternal {
         try {
             out = new ObjectOutputStream(bos);
             out.writeObject(o);
-            out.close();
-            out = null;
+            ObjectOutputStream tmpOut = out;
+            out = null;  // don't call close() twice
+            tmpOut.close();
         } finally {
             if(out != null) {
                 try {
@@ -948,8 +949,9 @@ public class QtJambiInternal {
                 }
             });
             res = in.readObject();
-            in.close();
-            in = null;
+            ObjectInputStream tmpIn = in;
+            in = null;  // don't call close() twice
+            tmpIn.close();
         } finally {
             if(in != null) {
                 try {
