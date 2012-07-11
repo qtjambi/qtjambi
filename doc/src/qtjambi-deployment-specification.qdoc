@@ -162,131 +162,131 @@
       environment variable QTDIR. If QTDIR is not available when the
       task is running an error will be thrown.
 
-     \o \c {qtjambi.qmakespec}; A variable used for Qt and qmake to
-     decide buildsystem, picked up from the environment variable
-     QMAKESPEC or from the compiler currently available in PATH.
+      \o \c {qtjambi.qmakespec}; A variable used for Qt and qmake to
+      decide buildsystem, picked up from the environment variable
+      QMAKESPEC or from the compiler currently available in PATH.
 
-     \o \c {qtjambi.version}; The version of Qt Jambi, on the form
-     "Major.Minor.Patch_buildnumber", for instance 4.4.0_01.
+      \o \c {qtjambi.version}; The version of Qt Jambi, on the form
+      "Major.Minor.Patch_buildnumber", for instance 4.4.0_01.
 
-     \o \c {qtjambi.compiler}; The compiler used to compile the C++
-     parts of Qt Jambi.
+      \o \c {qtjambi.compiler}; The compiler used to compile the C++
+      parts of Qt Jambi.
 
-     \o \c {qtjambi.vsinstalldir}; With MSVC 2005 and 2008 only. The
-     location where Visual Studio is installed. This is picked up from
-     the environment variable VSINSTALLDIR and is required if the MSVC
-     2005 or 2008 compilers are in use. For internal use only.
+      \o \c {qtjambi.vsinstalldir}; With MSVC 2005 and 2008 only. The
+      location where Visual Studio is installed. This is picked up from
+      the environment variable VSINSTALLDIR and is required if the MSVC
+      2005 or 2008 compilers are in use. For internal use only.
 
-     \o \c {qtjambi.vsredistdir}; With MSVC 2005 and 2008 only. The
-     location describing where the Visual Studio runtimes are
-     available. For internal use only.
+      \o \c {qtjambi.vsredistdir}; With MSVC 2005 and 2008 only. The
+      location describing where the Visual Studio runtimes are
+      available. For internal use only.
 
-   \endlist
+    \endlist
 
 
-   \section2 Platform Archive Task
+    \section2 Platform Archive Task
 
-   The purpose of the platform archive task is to register input
-   libraries and copy them to an output folder, along with any
-   dependent system runtime libraries. It also generates a deployment
-   specification for the libraries so the content of the output folder
-   simply can be packed into a qtjambi platform archive used for
-   loading.
+    The purpose of the platform archive task is to register input
+    libraries and copy them to an output folder, along with any
+    dependent system runtime libraries. It also generates a deployment
+    specification for the libraries so the content of the output folder
+    simply can be packed into a qtjambi platform archive used for
+    loading.
 
-   The benefit of using this task to generate the deployement spec and
-   the directory structure is that this task will handle the
-   problematic aspects of Microsoft Visual Studio 2005 and 2008,
-   manifest based, deployment for instance.
+    The benefit of using this task to generate the deployement spec and
+    the directory structure is that this task will handle the
+    problematic aspects of Microsoft Visual Studio 2005 and 2008,
+    manifest based, deployment for instance.
 
-   \section3 Attributes
+    \section3 Attributes
 
-   \list
+    \list
 
-     \o \c {cacheKey}; This parameter specifies the cache key to be
-     used in the deployment specification.
+      \o \c {cacheKey}; This parameter specifies the cache key to be
+      used in the deployment specification.
 
-     \o \c {outdir}; This parameter specifies the base directory used
-     for the qtjambi-deployment.xml and the libraries that are to be
-     included in the platform jar.
+      \o \c {outdir}; This parameter specifies the base directory used
+      for the qtjambi-deployment.xml and the libraries that are to be
+      included in the platform jar.
 
-     \o \c {syslibs}; This parameter specifies if the task should
-     handle system libs or not. The value can be either "auto" or
-     "none", where "auto" is the default.
+      \o \c {syslibs}; This parameter specifies if the task should
+      handle system libs or not. The value can be either "auto" or
+      "none", where "auto" is the default.
 
-   \endlist
+    \endlist
 
-   \section3 Library Entries
+    \section3 Library Entries
 
-   The platform specification is built up from multiple library
-   entries. Library entries are specified in the followin manner:
+    The platform specification is built up from multiple library
+    entries. Library entries are specified in the followin manner:
 
-   \code
-   <qtjambi-platform-jar>
-     <library name="..." ...>
-   \endcode
+    \code
+    <qtjambi-platform-jar>
+      <library name="..." ...>
+    \endcode
 
-   The library entry can have the following attributes:
+    The library entry can have the following attributes:
 
-   \list
+    \list
 
-     \o \c {name}; This attribute describes the name of the library,
-     without the platform specific suffix and extension.
+      \o \c {name}; This attribute describes the name of the library,
+      without the platform specific suffix and extension.
 
-     \o \c {type}; This attribute describes the type of library and can be:
+      \o \c {type}; This attribute describes the type of library and can be:
         \list
           \o \c {qt}; A Qt C++ library.
           \o \c {qtjambi}; A Qt Jambi or normal JNI native library.
           \o \c {plugin}; A Qt C++ plugin library.
         \endlist
 
-     \o \c {rootDir}; This attribute describes the root directory for
-     where to search for the directory.
+      \o \c {rootDir}; This attribute describes the root directory for
+      where to search for the directory.
 
-     \o \c {subdir}; This attribute contains the subdirectory relative
-     from \c rootDir to where the library is located. By default this
-     value is set to the typical platform specific library directory
-     which is \c bin on Windows and \c lib for other platforms. The
-     library will maintain this directory structure in the final
-     platform archive.
+      \o \c {subdir}; This attribute contains the subdirectory relative
+      from \c rootDir to where the library is located. By default this
+      value is set to the typical platform specific library directory
+      which is \c bin on Windows and \c lib for other platforms. The
+      library will maintain this directory structure in the final
+      platform archive.
 
-     \o \c {load}; This attribute describes when and how the library
-     should be loaded if at all. The possible values are:
-       \list
+      \o \c {load}; This attribute describes when and how the library
+      should be loaded if at all. The possible values are:
+        \list
 
-         \o \c {never}; The library cannot be loaded using \c
-         {Utilities.loadJambiLibrary()} or \c
-         {Utilities.loadLibrary()}. This value is normally used for
-         plugins.
+          \o \c {never}; The library cannot be loaded using \c
+          {Utilities.loadJambiLibrary()} or \c
+          {Utilities.loadLibrary()}. This value is normally used for
+          plugins.
 
-         \o \c {yes}; The library is automatically loaded when the
-         platform archive is first unpacked by Qt Jambi. This is
-         normally used for system libraries, so the user rarely has to
-         use it.
+          \o \c {yes}; The library is automatically loaded when the
+          platform archive is first unpacked by Qt Jambi. This is
+          normally used for system libraries, so the user rarely has to
+          use it.
 
-         \o \c {default}; The library can and will be loaded using
-         calls to {Utilities.loadJambiLibrary()} or \c
-         {Utilities.loadLibrary()}. This is the default value.
+          \o \c {default}; The library can and will be loaded using
+          calls to {Utilities.loadJambiLibrary()} or \c
+          {Utilities.loadLibrary()}. This is the default value.
 
-       \endlist
+        \endlist
 
-    \endlist
+   \endlist
 
-    \section3 Plugin Entries
+   \section3 Plugin Entries
 
-    In addition to containing library entries, a platform archive can
-    contain a list a plugin paths that are automatically added, so Qt
-    knows where to search for Qt C++ plugins. Each plugin entry will
-    end up result in a call to \c {QApplicaiton.addLibraryPath()} when
-    the platform archive is loaded. For instance:
+   In addition to containing library entries, a platform archive can
+   contain a list a plugin paths that are automatically added, so Qt
+   knows where to search for Qt C++ plugins. Each plugin entry will
+   end up result in a call to \c {QApplicaiton.addLibraryPath()} when
+   the platform archive is loaded. For instance:
 
-    \code
-      <qtjambi-platform-jar ...>
-        <library name="qjpeg"
-                 type="plugin"
-                 subdir="plugins/imageformats"
-                 rootDir="${qtjambi.qtdir}"
-                 load="never"/>
-        <plugin path="plugins" />
-    \endcode
+   \code
+     <qtjambi-platform-jar ...>
+       <library name="qjpeg"
+                type="plugin"
+                subdir="plugins/imageformats"
+                rootDir="${qtjambi.qtdir}"
+                load="never"/>
+       <plugin path="plugins" />
+   \endcode
 
 */
