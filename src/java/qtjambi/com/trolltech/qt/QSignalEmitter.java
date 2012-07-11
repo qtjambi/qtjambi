@@ -48,7 +48,6 @@ import java.lang.reflect.Method;
 
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.QSignalEmitter;
-import com.trolltech.qt.internal.QtJambiInternal;
 import com.trolltech.qt.internal.QSignalEmitterInternal;
 
 /**
