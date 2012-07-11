@@ -71,7 +71,7 @@ bool PreprocessHandler::handler() {
     QStringList includes = setIncludes();
 
     foreach(QString include, includes)
-        preprocess.push_include_path(QDir::convertSeparators(include).toStdString());
+        preprocess.push_include_path(toStdString(QDir::convertSeparators(include)));
 // FIXME: Dump defines set
 
     QString currentDir = QDir::current().absolutePath();
@@ -91,11 +91,11 @@ void PreprocessHandler::writeTargetFile(QString sourceFile, QString targetFile, 
 
     result += "# 1 \"builtins\"\n";
     result += "# 1 \"";
-    result += sourceFile.toStdString();
+    result += toStdString(sourceFile);
     result += "\"\n";
 
     qDebug() << "Processing source" << sourceInfo.absolutePath() << sourceInfo.fileName();
-    preprocess.file(sourceInfo.fileName().toStdString(),
+    preprocess.file(toStdString(sourceInfo.fileName()),
                     rpp::pp_output_iterator<std::string> (result));
 
     QDir::setCurrent(currentDir);

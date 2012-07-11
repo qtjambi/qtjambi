@@ -6,11 +6,12 @@
 #include "main.h"
 #include "asttoxml.h"
 #include "parser/binder.h"
+#include "util.h"
 
 QString Wrapper::include_directory = QString();
 
 void ReportHandler_message_handler(const std::string &str) {
-    ReportHandler::warning(QString::fromStdString(str));
+    ReportHandler::warning(fromStdString(str));
 }
 
 Wrapper::Wrapper(int argc, char *argv[]) :
@@ -164,7 +165,7 @@ void Wrapper::handleArguments() {
             } else if (s.compare("dump-after") == 0) {
                mod = DEBUGLOG_DUMP_AFTER;
             } else {
-               std::cerr << "Invalid debug-cpp value: " << s.toStdString() << " (ignored)" << std::endl;
+               std::cerr << "Invalid debug-cpp value: " << toStdString(s) << " (ignored)" << std::endl;
                continue;        // has the effect of not changing anything
             }
             if(space_set_mark > 0)

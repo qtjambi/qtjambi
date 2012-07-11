@@ -7,6 +7,7 @@
 #include "parser/rpp/pp-iterator.h"
 #include "parser/rpp/pp-engine-bits.h"
 #include "parser/rpp/pp-environment.h"
+#include "util.h"
 #include "debuglog.h"
 
 class PreprocessHandler {
@@ -43,12 +44,12 @@ class PreprocessHandler {
         bool dumpCheck(int kind) const;
         void dump(int kind) const;
         void undefine(const QString &name) {
-            rpp::pp_fast_string fs_name(name.toStdString());
+            rpp::pp_fast_string fs_name(::toStdString(name));
             env.unbind(&fs_name);
         }
         void define(const QString &name, const QString &value) {
-            rpp::pp_fast_string fs_name(name.toStdString());
-            rpp::pp_fast_string fs_value(value.toStdString());
+            rpp::pp_fast_string fs_name(::toStdString(name));
+            rpp::pp_fast_string fs_value(::toStdString(value));
             rpp::pp_macro macro;
             macro.name = &fs_name;
             macro.definition = &fs_value;

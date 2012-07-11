@@ -45,6 +45,7 @@ HEADERS += \
         $$GENERATORPATH/abstractmetabuilder.h \
         $$GENERATORPATH/abstractmetalang.h \
         $$GENERATORPATH/prigenerator.h \
+        $$GENERATORPATH/util.h \
 
 SOURCES += \
         $$GENERATORPATH/generator.cpp \
@@ -69,6 +70,7 @@ SOURCES += \
         $$GENERATORPATH/abstractmetabuilder.cpp \
         $$GENERATORPATH/abstractmetalang.cpp \
         $$GENERATORPATH/prigenerator.cpp \
+        $$GENERATORPATH/util.cpp \
 
 
 

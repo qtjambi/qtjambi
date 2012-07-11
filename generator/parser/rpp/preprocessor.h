@@ -52,6 +52,7 @@
 
 #include "rpp/pp-environment.h"
 #include "pp-engine-bits.h"
+#include "util.h"
 
 class PreprocessorPrivate {
     public:
@@ -61,7 +62,7 @@ class PreprocessorPrivate {
 
         void initPP(rpp::pp &proc) {
             foreach(QString path, includePaths)
-                proc.push_include_path(path.toStdString());
+                proc.push_include_path(::toStdString(path));
         }
 };
 
