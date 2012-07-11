@@ -456,7 +456,7 @@
     used, e.g.,\c "com.trolltech.qt.core". The optional \c
     default-superclass attribute is the complete class name of the
     default baseclass of all objects in Java, e.g., \c
-    "com.trolltech.qt.QtJambiObject".
+    "com.trolltech.qt.internal.QtJambiObject".
 
     \row
     \o \bold load-typesystem \target load-typesystem

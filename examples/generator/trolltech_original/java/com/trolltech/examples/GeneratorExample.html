@@ -32,7 +32,7 @@ body { color: black; }</style>
 <p>where <tt>module</tt> can be replaced by <tt>core</tt>, <tt>gui</tt>, <tt>xml</tt>, <tt>svg</tt>, <tt>network</tt>, <tt>opengl</tt>, <tt>phonon</tt>, <tt>webkit</tt> or <tt>sql</tt> depending on the project. When importing custom type systems, any absolute or relative path can be used to address the <tt>.xml</tt> specification file.</p>
 <p>In our project, we use types from the the QtCore and QtGui modules:</p>
 <pre>    &lt;typesystem package=&quot;com.trolltech.examples.generator&quot;
-                default-superclass=&quot;com.trolltech.qt.QtJambiObject&quot;&gt;
+                default-superclass=&quot;com.trolltech.qt.internal.QtJambiObject&quot;&gt;
 
         &lt;load-typesystem name=&quot;:/trolltech/generator/typesystem_core.txt&quot;
                          generate=&quot;no&quot; /&gt;

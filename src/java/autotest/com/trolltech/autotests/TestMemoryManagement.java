@@ -65,11 +65,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.trolltech.qt.QtJambiObject;
 import com.trolltech.qt.QNoNativeResourcesException;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.internal.QtJambiDebugTools;
+import com.trolltech.qt.internal.QtJambiObject;
 
 // Attempt at complete test for general memory leaks and crashes
 // Should test that all the general cases work as intended by default.

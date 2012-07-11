@@ -70,7 +70,6 @@ import com.trolltech.autotests.generated.General;
 
 import com.trolltech.qt.QNoImplementationException;
 import com.trolltech.qt.QSignalEmitter;
-import com.trolltech.qt.QtJambiObject;
 import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QCoreApplication;
@@ -109,6 +108,7 @@ import com.trolltech.qt.gui.QValidator;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.internal.QSignalEmitterInternal;
 import com.trolltech.qt.internal.QtJambiInternal;
+import com.trolltech.qt.internal.QtJambiObject;
 import com.trolltech.qt.network.QHostAddress;
 
 import com.trolltech.qt.osinfo.OSInfo;

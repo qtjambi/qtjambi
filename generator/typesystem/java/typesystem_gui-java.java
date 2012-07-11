@@ -47,7 +47,7 @@ package generator;
 import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.QtBlockedSlot;
 import com.trolltech.qt.Utilities;
-import com.trolltech.qt.QtJambiObject.QPrivateConstructor;
+import com.trolltech.qt.internal.QtJambiObject.QPrivateConstructor;
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QPointF;

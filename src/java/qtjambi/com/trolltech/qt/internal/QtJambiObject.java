@@ -42,12 +42,18 @@
 **
 ****************************************************************************/
 
-package com.trolltech.qt;
+package com.trolltech.qt.internal;
 
 import com.trolltech.qt.QNativePointer;
+import com.trolltech.qt.QNoNativeResourcesException;
+import com.trolltech.qt.QSignalEmitter;
+import com.trolltech.qt.QtJambiInterface;
+import com.trolltech.qt.QtJambi_LibraryInitializer;
+import com.trolltech.qt.QtProperty;
 import com.trolltech.qt.core.QCoreApplication;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 /**
  * The super class of all class types in Qt Jambi. Loading this class or any
@@ -296,6 +302,34 @@ public abstract class QtJambiObject extends QSignalEmitter implements QtJambiInt
         long nativeId = object.native__id;
         object.native__id = 0;
         return __qt_reassignLink(nativeId, clazz, c);
+    }
+
+    /**
+     * Accesses package visibility method with raw nativeId memory pointer.
+     * @return
+     */
+    @com.trolltech.qt.QtBlockedSlot
+    protected QtProperty qtJambiUserProperty() {
+        return QtJambiInternal.userProperty(nativeId());
+    }
+
+    /**
+     * Accesses package visibility method with raw nativeId memory pointer.
+     * @return
+     */
+    @com.trolltech.qt.QtBlockedSlot
+    protected List<QtProperty> qtJambiProperties() {
+        return QtJambiInternal.properties(nativeId());
+    }
+
+    /**
+     * Accesses package visibility method with raw nativeId memory pointer.
+     * @param name
+     * @return
+     */
+    @com.trolltech.qt.QtBlockedSlot
+    protected int qtJambiIndexOfProperty(String name) {
+        return QtJambiInternal.indexOfProperty(nativeId(), name);
     }
 
     // The constructor must take a single object reference as its

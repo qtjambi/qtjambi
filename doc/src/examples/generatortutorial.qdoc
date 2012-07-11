@@ -55,7 +55,7 @@
     default super class of our Java objects.
 
     \code
-        <typesystem package="com.trolltech.examples.hellogenerator" default-superclass="com.trolltech.qt.QtJambiObject">
+        <typesystem package="com.trolltech.examples.hellogenerator" default-superclass="com.trolltech.qt.internal.QtJambiObject">
     \endcode
     
     The typesystem node is the root node and contains all type system

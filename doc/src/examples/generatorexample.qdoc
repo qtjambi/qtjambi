@@ -61,7 +61,7 @@
 
     \code
     <typesystem package="com.trolltech.examples.generator"
-                default-superclass="com.trolltech.qt.QtJambiObject">
+                default-superclass="com.trolltech.qt.internal.QtJambiObject">
 
         <load-typesystem name=":/trolltech/generator/typesystem_core.txt"
                          generate="no" />

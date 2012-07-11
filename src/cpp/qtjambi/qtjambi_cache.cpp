@@ -830,7 +830,7 @@ void StaticCache::resolveQtJambiObject_internal()
 
     Q_ASSERT(!QtJambiObject.class_ref);
 
-    QtJambiObject.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/QtJambiObject"));
+    QtJambiObject.class_ref = ref_class(qtjambi_find_class(env, "com/trolltech/qt/internal/QtJambiObject"));
     Q_ASSERT(QtJambiObject.class_ref);
 
     QtJambiObject.native_id = env->GetFieldID(QtJambiObject.class_ref, "native__id", "J");

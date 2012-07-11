@@ -24,14 +24,14 @@
     <enum-type name="QScriptValue::ResolveFlag" flags="QScriptValue::ResolveFlags"/>
     <enum-type name="QScriptValue::SpecialValue"/>
     <enum-type name="QScriptSyntaxCheckResult::State"/>
-    <object-type name="QScriptClass" default-superclass ="com.trolltech.qt.QtJambiObject">
+    <object-type name="QScriptClass" default-superclass ="com.trolltech.qt.internal.QtJambiObject">
     </object-type>
     <value-type name="QScriptClassPropertyIterator"/>
-    <object-type name="QScriptContext" default-superclass ="com.trolltech.qt.QtJambiObject">
+    <object-type name="QScriptContext" default-superclass ="com.trolltech.qt.internal.QtJambiObject">
     <modify-function signature="scopeChain()const" remove="all"/>
     </object-type>
     <value-type name="QScriptContextInfo"/>
-    <object-type name="QScriptEngineAgent" default-superclass ="com.trolltech.qt.QtJambiObject">
+    <object-type name="QScriptEngineAgent" default-superclass ="com.trolltech.qt.internal.QtJambiObject">
     </object-type>
     <value-type name="QScriptString"/>
     <value-type name="QScriptProgram"/>
@@ -50,7 +50,7 @@
         <modify-function signature="QScriptValue(QScriptEngine*,uint)" remove="all"/>
         <modify-function signature="QScriptValue(const QLatin1String &amp;)" remove="all"/>
     </value-type>
-    <object-type name="QScriptValueIterator" default-superclass ="com.trolltech.qt.QtJambiObject">
+    <object-type name="QScriptValueIterator" default-superclass ="com.trolltech.qt.internal.QtJambiObject">
     </object-type>
     <interface-type name="QScriptable"/>
     <object-type name="QScriptEngine">

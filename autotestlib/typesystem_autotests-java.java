@@ -45,7 +45,7 @@
 package generator;
 
 import com.trolltech.qt.*;
-import com.trolltech.qt.QtJambiObject.QPrivateConstructor;
+import com.trolltech.qt.internal.QtJambiObject.QPrivateConstructor;
 import com.trolltech.qt.core.*;
 
 class QObjectType___ extends QObjectType {

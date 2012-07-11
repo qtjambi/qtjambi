@@ -50,7 +50,7 @@ import com.trolltech.autotests.generated.ValueType;
 import com.trolltech.autotests.generated.InvalidatorValueType;
 
 import com.trolltech.qt.QNativePointer;
-import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.internal.QtJambiObject;
 
 public class TestMemoryManagementValueType extends TestMemoryManagement {
     @Override

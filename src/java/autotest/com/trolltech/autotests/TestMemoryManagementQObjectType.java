@@ -49,7 +49,7 @@ import org.junit.Test;
 import com.trolltech.autotests.generated.QObjectType;
 import com.trolltech.autotests.generated.InvalidatorQObjectType;
 
-import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.internal.QtJambiObject;
 
 public class TestMemoryManagementQObjectType extends TestMemoryManagement {
     @Override

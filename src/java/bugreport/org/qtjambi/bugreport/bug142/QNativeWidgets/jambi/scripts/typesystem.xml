@@ -1,4 +1,4 @@
-<typesystem package="qtjambi.nativewidgets" default-superclass="com.trolltech.qt.QtJambiObject">
+<typesystem package="qtjambi.nativewidgets" default-superclass="com.trolltech.qt.internal.QtJambiObject">
 
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtCore");

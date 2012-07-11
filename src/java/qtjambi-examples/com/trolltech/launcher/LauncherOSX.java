@@ -87,7 +87,7 @@ public class LauncherOSX {
         String tmp = Utilities.jambiTempDir().getAbsolutePath();
         new File(tmp).mkdirs();
 
-        copy(Thread.currentThread().getContextClassLoader().getResource("com/trolltech/qt/QtJambiObject.class"),
+        copy(Thread.currentThread().getContextClassLoader().getResource("com/trolltech/qt/internal/QtJambiObject.class"),
              tmp + "/classes.jar");
         copy(Thread.currentThread().getContextClassLoader().getResource("com/trolltech/launcher/Launcher.class"),
              tmp + "/examples.jar");

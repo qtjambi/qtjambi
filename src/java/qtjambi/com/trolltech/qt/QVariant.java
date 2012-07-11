@@ -59,6 +59,7 @@ import com.trolltech.qt.core.QSizeF;
 import com.trolltech.qt.core.QTime;
 import com.trolltech.qt.gui.QLine;
 import com.trolltech.qt.gui.QLineF;
+import com.trolltech.qt.internal.QtJambiObject;
 
 import java.util.List;
 import java.util.Collection;

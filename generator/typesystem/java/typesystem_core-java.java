@@ -45,7 +45,7 @@
 package generator;
 
 import com.trolltech.qt.*;
-import com.trolltech.qt.QtJambiObject.QPrivateConstructor;
+import com.trolltech.qt.internal.QtJambiObject.QPrivateConstructor;
 import com.trolltech.qt.core.*;
 
 class QObject___ extends QObject {
@@ -96,17 +96,17 @@ class QObject___ extends QObject {
 
         @com.trolltech.qt.QtBlockedSlot
         public final QtProperty userProperty() {
-            return com.trolltech.qt.internal.QtJambiInternal.userProperty(nativeId());
+            return super.qtJambiUserProperty();
         }
 
         @com.trolltech.qt.QtBlockedSlot
         public final java.util.List<com.trolltech.qt.QtProperty> properties() {
-            return com.trolltech.qt.internal.QtJambiInternal.properties(nativeId());
+            return super.qtJambiProperties();
         }
 
         @com.trolltech.qt.QtBlockedSlot
         public final int indexOfProperty(String name) {
-            return com.trolltech.qt.internal.QtJambiInternal.indexOfProperty(nativeId(), name);
+            return super.qtJambiIndexOfProperty(name);
         }
 
         @com.trolltech.qt.QtBlockedSlot

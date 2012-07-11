@@ -346,7 +346,7 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
         return 0;
     }
 
-    jmethodID constructorId = resolveMethod(env, "<init>", "(Lcom/trolltech/qt/QtJambiObject$QPrivateConstructor;)V",
+    jmethodID constructorId = resolveMethod(env, "<init>", "(Lcom/trolltech/qt/internal/QtJambiObject$QPrivateConstructor;)V",
         class_name, package_name, false);
     Q_ASSERT(constructorId);
 

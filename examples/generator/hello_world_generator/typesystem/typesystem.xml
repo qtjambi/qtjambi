@@ -1,4 +1,4 @@
-<typesystem package="org.qtjambi.test" default-superclass="com.trolltech.qt.QtJambiObject">
+<typesystem package="org.qtjambi.test" default-superclass="com.trolltech.qt.internal.QtJambiObject">
 
   <inject-code>
     com.trolltech.qt.Utilities.loadQtLibrary("QtCore");

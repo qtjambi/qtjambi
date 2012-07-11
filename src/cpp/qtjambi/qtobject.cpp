@@ -67,7 +67,7 @@
 #endif
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_dispose)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject_dispose)
     (JNIEnv *env, jobject java)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, java);
@@ -77,7 +77,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_dispose)
 }
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_nativePointer)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject_nativePointer)
     (JNIEnv *env, jobject javaRef)
 {
     QtJambiLink *link = QtJambiLink::findLink(env, javaRef);
@@ -89,7 +89,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_nativePointer)
 }
 
 extern "C" Q_DECL_EXPORT jobject JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject__1_1qt_1reassignLink)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject__1_1qt_1reassignLink)
     (JNIEnv *env, jclass, jlong old_native_id, jclass clazz, jobject constructor)
 {
     QtJambiLink *link = reinterpret_cast<QtJambiLink *>(old_native_id);
@@ -132,7 +132,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject__1_1qt_1reassignLink
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_finalize)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject_finalize)
     (JNIEnv *env, jobject java)
 {
     Q_ASSERT(env != 0);
@@ -150,7 +150,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_finalize)
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_disableGarbageCollection)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject_disableGarbageCollection)
     (JNIEnv *env, jobject object)
 {
     if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
@@ -159,7 +159,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_disableGarbageCollec
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_reenableGarbageCollection)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject_reenableGarbageCollection)
     (JNIEnv *env, jobject object)
 {
     if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {
@@ -168,7 +168,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_reenableGarbageColle
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL
-QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambiObject_setJavaOwnership)
+QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject_setJavaOwnership)
     (JNIEnv *env, jobject object)
 {
     if (QtJambiLink *link = QtJambiLink::findLink(env, object)) {

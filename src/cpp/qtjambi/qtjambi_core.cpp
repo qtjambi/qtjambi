@@ -551,7 +551,7 @@ jobject qtjambi_from_object(JNIEnv *env, const void *qt_object, const char *clas
     if (clazz != 0) {
         jmethodID constructorId = resolveMethod(env,
                                                 "<init>",
-                                                "(Lcom/trolltech/qt/QtJambiObject$QPrivateConstructor;)V",
+                                                "(Lcom/trolltech/qt/internal/QtJambiObject$QPrivateConstructor;)V",
                                                 className,
                                                 packageName,
                                                 false);

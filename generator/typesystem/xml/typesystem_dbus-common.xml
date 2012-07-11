@@ -57,7 +57,7 @@
         <!-- bug QTJAMBI_DEBUG_TOOLS tries to instate using a default ctor, so type removed -->
 <!--    </value-type> -->
 
-    <object-type name="QDBusPendingCallWatcher" default-superclass="com.trolltech.qt.QtJambiObject"><!-- since 4.5 -->
+    <object-type name="QDBusPendingCallWatcher" default-superclass="com.trolltech.qt.internal.QtJambiObject"><!-- since 4.5 -->
         <!-- FIXME: handle QDBusPendingCall super-class, check QObject superclass is working -->
     </object-type>
 

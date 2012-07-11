@@ -49,7 +49,7 @@ import org.junit.Test;
 import com.trolltech.autotests.generated.PolymorphicObjectType;
 import com.trolltech.autotests.generated.InvalidatorPolymorphicObjectType;
 
-import com.trolltech.qt.QtJambiObject;
+import com.trolltech.qt.internal.QtJambiObject;
 
 public class TestMemoryManagementPolymorphicObject extends TestMemoryManagement {
     @Override
