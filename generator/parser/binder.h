@@ -53,6 +53,8 @@
 #include "name_compiler.h"
 #include "declarator_compiler.h"
 
+#include <string>
+
 class TokenStream;
 class LocationManager;
 class Control;
