@@ -46,6 +46,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 import java.util.*;
 
@@ -155,7 +156,7 @@ public class ItemviewChart extends QMainWindow {
 
                         model.insertRows(row, 1, null);
 
-                        String[] pieces = line.split(",");
+                        String[] pieces = RetroTranslatorHelper.split(line, ",");
 
                         model.setData(model.index(row, 0, null), pieces[0].trim());
                         model.setData(model.index(row, 1, null), pieces[1].trim());

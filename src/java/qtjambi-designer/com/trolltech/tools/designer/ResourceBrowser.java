@@ -67,6 +67,7 @@ import com.trolltech.qt.gui.QSizePolicy;
 import com.trolltech.qt.gui.QSortFilterProxyModel;
 import com.trolltech.qt.gui.QTreeView;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.Utilities;
 
@@ -200,7 +201,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
     @Override
     public void updateRootDirs(String paths) {
-        String rootArray[] = paths.split(System.getProperty("path.separator"));
+        String rootArray[] = RetroTranslatorHelper.split(paths, System.getProperty("path.separator"));
 
 
         List<String> roots = ClassPathWalker.roots();
@@ -324,7 +325,7 @@ public class ResourceBrowser extends JambiResourceBrowser {
 
         List<String> oldExtraPaths = new ArrayList<String>();
         if (oldExtraPath != null && oldExtraPath instanceof String) {
-            Collections.addAll(oldExtraPaths, ((String) oldExtraPath).split(java.io.File.pathSeparator));
+            Collections.addAll(oldExtraPaths, RetroTranslatorHelper.split((String) oldExtraPath, java.io.File.pathSeparator));
 
         }
 

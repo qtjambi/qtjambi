@@ -47,6 +47,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 import java.util.*;
 
@@ -288,7 +289,8 @@ public class OrderForm extends QMainWindow
 
         cursor.insertText(name, textFormat);
 
-        for (String line : address.split("\n")) {
+        String[] lines = RetroTranslatorHelper.split(address, "\n");
+        for (String line : lines) {
             cursor.insertBlock();
             cursor.insertText(line);
         }

@@ -13,6 +13,7 @@ import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QBuffer;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.core.QIODevice.OpenMode;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 import com.trolltech.qt.xmlpatterns.QXmlFormatter;
 import com.trolltech.qt.xmlpatterns.QXmlItem;
 import com.trolltech.qt.xmlpatterns.QXmlName;
@@ -64,7 +65,7 @@ public class TestQXmlFormatter extends QApplicationTest {
 
         String[] expected = { "<firstname>John</firstname>",
                 "<firstname>Jane</firstname>", "<firstname>Baby</firstname>" };
-        String[] results = result.split("\n");
+        String[] results = RetroTranslatorHelper.split(result, "\n");
 
         int i = 0;
         for (String str : results) {

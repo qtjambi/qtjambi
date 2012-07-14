@@ -45,6 +45,7 @@
 package com.trolltech.launcher;
 
 import com.trolltech.qt.*;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 import java.io.*;
 import java.net.*;
@@ -109,7 +110,8 @@ public class LauncherOSX {
 
         System.out.println(cmd.toString());
 
-        ProcessBuilder procBuilder = new ProcessBuilder(cmd.toString().split(" "));
+        String[] processArgs = RetroTranslatorHelper.split(cmd.toString(), " ");
+        ProcessBuilder procBuilder = new ProcessBuilder(processArgs);
         Process proc = procBuilder.start();
 
         proc.waitFor();

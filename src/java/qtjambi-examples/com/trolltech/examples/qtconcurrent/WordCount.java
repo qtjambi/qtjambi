@@ -46,6 +46,7 @@ package com.trolltech.examples.qtconcurrent;
 
 import java.util.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Integer>, String>,
                                   QtConcurrent.ReducedFunctor<HashMap<String, Integer>, HashMap<String, Integer>> {
@@ -72,7 +73,8 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
             f.open(QIODevice.OpenModeFlag.ReadOnly);
             QTextStream textStream = new QTextStream(f);
             while (!textStream.atEnd()) {
-                for (String word : textStream.readLine().split(" ")) {
+                String[] words = RetroTranslatorHelper.split(textStream.readLine(), " ");
+                for (String word : words) {
                     int i = wordCount.containsKey(word) ? wordCount.get(word) : 0;
                     wordCount.put(word, i + 1);
                 }
@@ -95,7 +97,8 @@ public class WordCount implements QtConcurrent.MappedFunctor<HashMap<String, Int
         HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
 
         while (!textStream.atEnd()) {
-            for (String word : textStream.readLine().split(" ")) {
+            String[] words = RetroTranslatorHelper.split(textStream.readLine(), " ");
+            for (String word : words) {
                 int i = wordCount.containsKey(word) ? wordCount.get(word) : 0;
                 wordCount.put(word, i + 1);
             }

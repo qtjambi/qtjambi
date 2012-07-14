@@ -67,6 +67,7 @@ import com.trolltech.qt.internal.DeploymentSpec;
 import com.trolltech.qt.internal.NativeLibraryManager;
 
 import com.trolltech.qt.osinfo.OSInfo;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 /**
 This class contains static members that gives information and performs Qt Jambi
@@ -550,7 +551,7 @@ public class Utilities {
         paths = new ArrayList<String>();
 
         String classPath = System.getProperty("java.class.path");
-        String[] classPathElements = classPath.split(File.pathSeparator);
+        String[] classPathElements = RetroTranslatorHelper.split(classPath, File.pathSeparator);
         for(String element : classPathElements) {
             File base = new File(element);
             if(base.isDirectory()) {

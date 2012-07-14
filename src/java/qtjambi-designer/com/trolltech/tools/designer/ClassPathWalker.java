@@ -55,6 +55,7 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.gui.QImage;
 import com.trolltech.qt.gui.QImageReader;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 import com.trolltech.qt.QPair;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QtEnumerator;
@@ -102,7 +103,7 @@ public class ClassPathWalker extends QObject {
         if (roots == null) {
             String classpath = System.getProperty("java.class.path");
             List<String> r = new ArrayList<String>();
-            Collections.addAll(r, classpath.split(java.io.File.pathSeparator));
+            Collections.addAll(r, RetroTranslatorHelper.split(classpath, java.io.File.pathSeparator));
             setRoots(r);
 
             addRootsFromSettings();
@@ -216,7 +217,7 @@ public class ClassPathWalker extends QObject {
         QSettings settings = new QSettings("Trolltech", "Qt Jambi Resource Browser");
         Object path = settings.value("Extra paths");
         if (roots != null && path != null && path instanceof String) {
-            String paths[] = ((String) path).split(java.io.File.pathSeparator);
+            String paths[] = RetroTranslatorHelper.split((String) path, java.io.File.pathSeparator);
             for (String p : paths) {
                 if (!p.equals("")) {
                     QAbstractFileEngine.addSearchPathForResourceEngine(p);

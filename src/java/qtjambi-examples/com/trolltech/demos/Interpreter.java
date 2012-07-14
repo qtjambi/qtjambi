@@ -46,6 +46,8 @@ package com.trolltech.demos;
 
 import java.util.*;
 
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
+
 public class Interpreter {
     protected Vector<Function> infixFunctions = new Vector<Function>();
     public java.util.Hashtable<String, Function> functions = new Hashtable<String, Function>();
@@ -214,7 +216,7 @@ public class Interpreter {
                 prioritize(stack.pop());
 
             } else {
-                String[] tmp = token.trim().split(" ");
+                String[] tmp = RetroTranslatorHelper.split(token.trim(), " ");
                 for (int i = 0; i < tmp.length; i++) {
                     if (stack.peek() == null) {
                         throw new ParseException("Missing left side parenthesis");

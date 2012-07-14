@@ -63,6 +63,7 @@ import com.trolltech.qt.gui.QListWidgetItem;
 import com.trolltech.qt.gui.QPixmap;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.QtEnumerator;
 
@@ -236,7 +237,7 @@ public class SearchPathDialog extends QDialog {
 
         String classpath = System.getProperty("java.class.path");
         List<String> list = new ArrayList<String>();
-        Collections.addAll(list, classpath.split(java.io.File.pathSeparator));
+        Collections.addAll(list, RetroTranslatorHelper.split(classpath, java.io.File.pathSeparator));
         spd.setPaths(list);
 
         spd.exec();

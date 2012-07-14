@@ -48,6 +48,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.network.*;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 import java.util.*;
 
@@ -377,6 +378,7 @@ public class Chat extends QDialog {
 
                 username = buffer.toString();
 
+                // real regex can not use RetroTranslatorHelper
                 String[] list = username.split("[:@]");
                 if(list.length!=3) {
                     abort();
@@ -567,7 +569,7 @@ public class Chat extends QDialog {
                     index++;
                 }
                 if (index < environment.size()) {
-                    String[] stringList = environment.get(index).split("=");
+                    String[] stringList = RetroTranslatorHelper.split(environment.get(index), "=");
                     if (stringList.length == 2) {
                         username = stringList[1];
                         break;

@@ -59,6 +59,7 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QMessageBox;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 import com.trolltech.qt.xml.QDomDocument;
 import com.trolltech.qt.xml.QDomElement;
 import com.trolltech.qt.xml.QDomNode;
@@ -88,7 +89,7 @@ public class CustomWidgetManager {
 
     private void splitIntoList(String s, List<String> lst) {
         if (s != null)
-            Collections.addAll(lst, s.split(File.pathSeparator));
+            Collections.addAll(lst, RetroTranslatorHelper.split(s, File.pathSeparator));
     }
 
     private void loadPlugins() {
@@ -112,7 +113,7 @@ public class CustomWidgetManager {
 
     private void loadPlugins(String path) {
         customWidgets.clear();
-        String paths[] = path.split(System.getProperty("path.separator"));
+        String paths[] = RetroTranslatorHelper.split(path, System.getProperty("path.separator"));
         for (int i=0; i<paths.length; ++i) {
             loadPluginsFromPath(paths[i]);
         }
@@ -172,7 +173,7 @@ public class CustomWidgetManager {
                     try {
                         String classPathsProperty = System.getProperty("com.trolltech.qtjambi.internal.current.classpath");
                         if (classPathsProperty != null) {
-                            String classpaths[] = classPathsProperty.split(";");
+                            String classpaths[] = RetroTranslatorHelper.split(classPathsProperty, ";");  // CHECKME confirm this is valid for unix
 
                             URL urls[] = new URL[classpaths.length];
                             for (int j=0; j<classpaths.length; ++j)
