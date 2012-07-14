@@ -64,6 +64,7 @@ import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyResetter;
 import com.trolltech.qt.QtPropertyUser;
 import com.trolltech.qt.QtPropertyWriter;
+import com.trolltech.qt.Utilities;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.Qt;
 
@@ -181,8 +182,16 @@ public class MetaObjectTools {
     private final static int MethodAccessPrivate                    = 0x0;
     private final static int MethodAccessProtected                  = 0x1;
     private final static int MethodAccessPublic                     = 0x2;
+    private final static int MethodAccessMask                       = 0x3;
+
     private final static int MethodSignal                           = 0x4;
     private final static int MethodSlot                             = 0x8;
+    private final static int MethodConstructor                      = 0xc;
+    private final static int MethodTypeMask                         = 0xc;
+
+    private final static int MethodCompatibility                    = 0x10;
+    private final static int MethodCloned                           = 0x20;
+    private final static int MethodScriptable                       = 0x40;
 
     private final static int PropertyReadable                       = 0x00000001;
     private final static int PropertyWritable                       = 0x00000002;
@@ -613,29 +622,71 @@ public class MetaObjectTools {
         {
             int functionCount = slots.size() + signalFields.size();
             int propertyCount = propertyReaders.keySet().size();
+            int propertyNotifierCount = 0;  // FIXME (see QTabWidget)
+            int constructorCount = 0;  // FIXME (see QObject)
+            int metaObjectFlags = 0;  // FIXME DynamicMetaObject
 
-            metaData.metaData = new int[12 + functionCount * 5 + 1 + propertyCount * 3 + enumCount * 4 + enumConstantCount * 2];
+            // Until 4.7.x QtJambi used revision=1 however due to a change in the way
+            //  4.7.x works some features of QtJambi stopped working.
+            // revision 1         = MO_HEADER_LEN=10
+            // revision 2 (4.5.x) = MO_HEADER_LEN=12 (added: constructorCount, constructorData)
+            // revision 3         = MO_HEADER_LEN=13 (added: flags)
+            // revision 4 (4.6.x) = MO_HEADER_LEN=14 (added: signalCount)
+            // revision 5 (4.7.x) = MO_HEADER_LEN=14 (normalization)
+            // revision 6 (4.8.x) = MO_HEADER_LEN=14 (added support for qt_static_metacall)
+            // revision 7 (5.0.x) = MO_HEADER_LEN=14 (Qt5 to break backwards compatibility)
+            // The format is compatible to share the same encoding code
+            //  then we can change the revision to suit the Qt
+            /// implementation we are working with.
+
+            final int MO_HEADER_LEN = 14;  // header size
+            final int CLASSINFO_LEN = 2;  // class info size
+            int len = MO_HEADER_LEN + CLASSINFO_LEN;
+            len += functionCount * 5;
+            len += propertyCount * 3;
+            len += propertyNotifierCount;
+            len += enumCount * 4;
+            len += enumConstantCount * 2;
+            len += constructorCount * 5;
+            metaData.metaData = new int[len + 1]; // add EOD <NUL>
+
+            int intDataOffset = 0;  // the offsets used by this descriptor are based on ints (32bit values)
 
             // Add static header
-            metaData.metaData[0] = 1; // Revision
-            // metaData[1] = 0 // class name  (ints default to 0)
+            metaData.metaData[0] = resolveMetaDataRevision();  // Revision
+            // metaData[1] = 0 // class name  (ints default to offset 0 into strings)
+            intDataOffset += MO_HEADER_LEN;
 
             metaData.metaData[2] = 1;  // class info count
-            metaData.metaData[3] = 10; // class info offset
+            metaData.metaData[3] = intDataOffset; // class info offset
+            intDataOffset += CLASSINFO_LEN;
 
-            // Functions always start at offset 12 (header has size 10, class info size 2)
+            // Functions always start right after this header at offset MO_HEADER_LEN + CLASSINFO_LEN
             metaData.metaData[4] = functionCount;
-            metaData.metaData[5] = functionCount > 0 ? 12 : 0;
+            metaData.metaData[5] = functionCount == 0 ? 0 : intDataOffset;
+            intDataOffset += functionCount * 5;  // Each function takes 5 ints
 
             metaData.metaData[6] = propertyCount;
-            metaData.metaData[7] = 12 + functionCount * 5; // Each function takes 5 ints
+            metaData.metaData[7] = propertyCount == 0 ? 0 : intDataOffset;
+            intDataOffset += (propertyCount * 3) + propertyNotifierCount;  // Each property takes 3 ints and each propertNotifier 1 int
 
             // Enums
             metaData.metaData[8] = enumCount;
-            metaData.metaData[9] = 12 + functionCount * 5 + propertyCount * 3; // Each property takes 3 ints
+            metaData.metaData[9] = enumCount == 0 ? 0 : intDataOffset;
+            intDataOffset += (enumCount * 4) + (enumConstantCount * 2);  // Each enum takes 4 ints and each enumConst takes 2 ints
+            // revision 1 ends here
+
+            metaData.metaData[10] = constructorCount;
+            metaData.metaData[11] = constructorCount == 0 ? 0 : intDataOffset;
+            intDataOffset += constructorCount * 5;
+            // revision 2 ends here
+            metaData.metaData[12] = metaObjectFlags; // flags
+            // revision 3 ends here
+            metaData.metaData[13] = signalFields.size(); // signalCount
+            // revision 4, 5 and 6 ends here
 
             int offset = 0;
-            int metaDataOffset = 10; // Header is always 10 ints long
+            int metaDataOffset = MO_HEADER_LEN; // Header is currently 14 ints long
             Hashtable<String, Integer> strings = new Hashtable<String, Integer>();
             List<String> stringsInOrder = new ArrayList<String>();
             // Class name
@@ -777,6 +828,8 @@ public class MetaObjectTools {
                 metaData.propertyResettersArray[i] = resetter;
             }
 
+            // Each property notifier takes 1 int // FIXME
+
             // Enum types
             int enumConstantOffset = metaDataOffset + enumCount * 4;
 
@@ -859,4 +912,85 @@ public class MetaObjectTools {
         return metaData;
     }
 
+    // Using a variable to ensure this is changed in all the right places in the
+    //  future when higher values are supported.
+    public static final int METAOBJECT_REVISION_HIGHEST_SUPPORTED = 7;
+    // This property allows you to override the QMetaObject revision number for
+    //  QtJambi to use.
+    public static final String K_com_trolltech_qt_qtjambi_metadata_revision = "com.trolltech.qt.qtjambi.metadata.revision";
+    private static int revision;
+    // This should be updated as the code-base supports the correct data layout
+    //  for each new revision.  We don't necessarily have to support the features
+    //  that new revision brings as well.
+    private static int resolveMetaDataRevision() {
+        int r = revision;
+        if(r != 0)
+            return r;
+
+        int[] versionA = Utilities.getVersion();
+        int major = -1;
+        if(versionA.length > 0)
+            major = versionA[0];
+        int minor = -1;
+        if(versionA.length > 1)
+            minor = versionA[1];
+        int plevel = -1;
+        if(versionA.length > 2)
+            plevel = versionA[2];
+        // It became a requirement in 4.7.x to move away from revision 1
+        //  in order to restore broken functionality due to improvements
+        //  in Qt.  Before this time QtJambi always used to report
+        //  revision=1.
+        // The following is the default version for that version of Qt
+        //  this is compatible with what QtJambi provides and needs to
+        //  be updated with any future revision.
+        if(major <= 3)
+            r = 1;  // Good luck with getting QtJambi working!
+        else if(major == 4 && minor <= 5)
+            r = 1;  // historically this version was used
+        else if(major == 4 && minor == 6)
+            r = 4;  // 4.6.x (historically revision 1 was used)
+        else if(major == 4 && minor == 7)
+            r = 5;  // 4.7.x (known issues with 1 through 3, use revision 4 minimum, 5 is best)
+        else if(major == 4)
+            r = 6;  // 4.8.x
+        else if(major == 5)
+            r = 7;  // 5.0.x (Qt5 requires a minimum of this revision)
+        else  // All future versions
+            r = METAOBJECT_REVISION_HIGHEST_SUPPORTED;
+
+        // The above computes the automatic default so we can report it below
+        int revisionOverride = resolveMetaDataRevisionFromSystemProperty(r);
+        if(revisionOverride > 0)
+            r = revisionOverride;
+
+        revision = r;
+        return r;
+    }
+
+    /**
+     * A facility to override the default metadata revision with a system property.
+     * More useful for testing and fault diagnosis than any practical runtime purpose.
+     * @param defaultRevision Value only used in error messages.
+     * @return -1 on parse error, 0 when no configured, >0 is a configured value.
+     */
+    private static int resolveMetaDataRevisionFromSystemProperty(int defaultRevision) {
+        int r = 0;
+        String s = null;
+        try {
+            s = System.getProperty(K_com_trolltech_qt_qtjambi_metadata_revision);
+            if(s != null) {
+                r = Integer.parseInt(s);
+                if(r <= 0 || r > METAOBJECT_REVISION_HIGHEST_SUPPORTED)
+                    r = -1;  // invalidate causing the value to be ignored
+            }
+        } catch(NumberFormatException e) {
+            r = -1;
+        } catch(SecurityException e) {
+            e.printStackTrace();
+        }
+        if(r < 0)
+            System.err.println("System Property " + K_com_trolltech_qt_qtjambi_metadata_revision + " invalid value: " + s + " using default: " + defaultRevision);
+        return r;
+    }
 }

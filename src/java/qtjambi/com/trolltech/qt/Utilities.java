@@ -82,6 +82,7 @@ public class Utilities {
     private static final List<String> systemLibrariesList;
     private static final List<String> jniLibdirBeforeList;
     private static final List<String> jniLibdirList;
+    private static final int[] versionA;
 
     private static final String K_qtjambi_version              = "qtjambi.version";
     private static final String K_qtjambi_soname_version_major = "qtjambi.soname.version.major";
@@ -101,6 +102,7 @@ public class Utilities {
         String tmpVERSION_STRING = null;
         String tmpVERSION_MAJOR_STRING = null;
         String tmpQTJAMBI_SONAME_VERSION_MAJOR = null;
+        int[] tmpVERSION_A = null;
         List<String> tmpSystemLibrariesList = null;
         List<String> tmpJniLibdirBeforeList = null;
         List<String> tmpJniLibdirList = null;
@@ -144,6 +146,7 @@ public class Utilities {
                    tmpJniLibdirMap.put(key, value);
                 }
             }
+            tmpVERSION_A = getVersion(tmpVERSION_STRING);
             // Map will automatically sort the lists { "", ".0", ".01", ".1", ".10", ".2", ".A", ".a" }
             tmpSystemLibrariesList = new ArrayList<String>();
             for (String v : tmpSystemLibrariesMap.values())
@@ -176,6 +179,7 @@ public class Utilities {
         } finally {
             VERSION_STRING = tmpVERSION_STRING;
             VERSION_MAJOR_STRING = tmpVERSION_MAJOR_STRING;
+            versionA = tmpVERSION_A;
             QTJAMBI_SONAME_VERSION_MAJOR = tmpQTJAMBI_SONAME_VERSION_MAJOR;
             systemLibrariesList = tmpSystemLibrariesList;
             jniLibdirBeforeList = tmpJniLibdirBeforeList;
@@ -648,5 +652,26 @@ public class Utilities {
 
     public static String convertAbsolutePathStringToFileUrlString(File file) {
         return convertAbsolutePathStringToFileUrlString(file.getAbsolutePath());
+    }
+
+    public static int[] getVersion() {
+        int[] vA = new int[versionA.length];
+        System.arraycopy(versionA, 0, vA, 0, versionA.length);
+        return vA;
+    }
+
+    /**
+     * Converts the string version number into an array of
+     * @param versionString Version string such as "1.2.3"
+     * @return Array of <code>new int[] { 1, 2, 3 };</code>
+     * @throws NumberFormatException
+     */
+    public static int[] getVersion(String versionString) {
+        String[] sA = RetroTranslatorHelper.split(versionString, ".");
+        int[] vA = new int[sA.length];
+        int i = 0;
+        for(String s : sA)
+            vA[i++] = Integer.valueOf(s);
+        return vA;
     }
 }
