@@ -439,7 +439,7 @@ public class QUiLoader {
         assert !e.isNull();
         QDomElement val = e.firstChildElement();
 
-        PropertyHandler handler = propertyHandlers.get(name);
+        AbstractPropertyHandler handler = propertyHandlers.get(name);
         if (handler == null) {
             handler = typeHandlers.get(val.nodeName());
         }
@@ -722,11 +722,11 @@ public class QUiLoader {
     private HashMap<QLabel, String> buddies = new HashMap<QLabel, String>();
 
     private static HashSet<String> ignorableStrings;
-    private static HashMap<String, PropertyHandler> typeHandlers;
-    private static HashMap<String, PropertyHandler> propertyHandlers;
+    private static HashMap<String, AbstractPropertyHandler> typeHandlers;
+    private static HashMap<String, AbstractPropertyHandler> propertyHandlers;
 
     static {
-        typeHandlers = new HashMap<String, PropertyHandler>();
+        typeHandlers = new HashMap<String, AbstractPropertyHandler>();
         typeHandlers.put("cstring", new StringPropertyHandler());
         typeHandlers.put("rect", new RectPropertyHandler());
         typeHandlers.put("string", new StringPropertyHandler());
@@ -743,7 +743,7 @@ public class QUiLoader {
         typeHandlers.put("iconset", new IconsetPropertyHandler());
         typeHandlers.put("set", new SetPropertyHandler());
 
-        propertyHandlers = new HashMap<String, PropertyHandler>();
+        propertyHandlers = new HashMap<String, AbstractPropertyHandler>();
         propertyHandlers.put("orientation", new OrientationPropertyHandler());
 
         ignorableStrings = new HashSet<String>();
