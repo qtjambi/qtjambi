@@ -106,14 +106,6 @@ import com.trolltech.qt.network.QNetworkInterface;
 import com.trolltech.qt.network.QNetworkProxy;
 import com.trolltech.qt.network.QNetworkRequest;
 import com.trolltech.qt.network.QUrlInfo;
-import com.trolltech.qt.opengl.QGLColormap;
-import com.trolltech.qt.opengl.QGLFormat;
-import com.trolltech.qt.sql.QSqlDatabase;
-import com.trolltech.qt.sql.QSqlError;
-import com.trolltech.qt.sql.QSqlField;
-import com.trolltech.qt.sql.QSqlIndex;
-import com.trolltech.qt.sql.QSqlQuery;
-import com.trolltech.qt.sql.QSqlRecord;
 import com.trolltech.qt.xml.QDomAttr;
 import com.trolltech.qt.xml.QDomCDATASection;
 import com.trolltech.qt.xml.QDomCharacterData;
@@ -425,24 +417,6 @@ public class TestCloneable extends QApplicationTest {
     }
 
     @Test
-    public void run_clone_QGLColormap() {
-        QGLColormap org = new QGLColormap();
-        QGLColormap clone = org.clone();
-        org.dispose();
-        QGLColormap clone2 = clone.clone();
-        assertEquals(clone.find(4), clone2.find(4));
-    }
-
-    @Test
-    public void run_clone_QGLFormat() {
-        QGLFormat org = new QGLFormat();
-        QGLFormat clone = org.clone();
-        org.dispose();
-        QGLFormat clone2 = clone.clone();
-        assertEquals(clone, clone2);
-    }
-
-    @Test
     public void run_clone_QHostAddress() {
         QHostAddress org = new QHostAddress();
         QHostAddress clone = org.clone();
@@ -637,60 +611,6 @@ public class TestCloneable extends QApplicationTest {
         QRegion clone = org.clone();
         org.dispose();
         QRegion clone2 = clone.clone();
-        assertEquals(clone, clone2);
-    }
-
-    @Test
-    public void run_clone_QSqlDatabase() {
-        QSqlDatabase org = new QSqlDatabase();
-        QSqlDatabase clone = org.clone();
-        org.dispose();
-        QSqlDatabase clone2 = clone.clone();
-        assertEquals(clone.connectionName(), clone2.connectionName());
-    }
-
-    @Test
-    public void run_clone_QSqlError() {
-        QSqlError org = new QSqlError("error");
-        QSqlError clone = org.clone();
-        org.dispose();
-        QSqlError clone2 = clone.clone();
-        assertEquals(clone.driverText(), clone2.driverText());
-    }
-
-    @Test
-    public void run_clone_QSqlField() {
-        QSqlField org = new QSqlField();
-        QSqlField clone = org.clone();
-        org.dispose();
-        QSqlField clone2 = clone.clone();
-        assertEquals(clone, clone2);
-    }
-
-    @Test
-    public void run_clone_QSqlIndex() {
-        QSqlIndex org = new QSqlIndex();
-        QSqlIndex clone = org.clone();
-        org.dispose();
-        QSqlIndex clone2 = clone.clone();
-        assertEquals(clone, clone2);
-    }
-
-    @Test
-    public void run_clone_QSqlQuery() {
-        QSqlQuery org = new QSqlQuery("some query");
-        QSqlQuery clone = org.clone();
-        org.dispose();
-        QSqlQuery clone2 = clone.clone();
-        assertEquals(clone.lastQuery(), clone2.lastQuery());
-    }
-
-    @Test
-    public void run_clone_QSqlRecord() {
-        QSqlRecord org = new QSqlRecord();
-        QSqlRecord clone = org.clone();
-        org.dispose();
-        QSqlRecord clone2 = clone.clone();
         assertEquals(clone, clone2);
     }
 

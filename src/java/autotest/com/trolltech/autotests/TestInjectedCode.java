@@ -58,7 +58,6 @@ import com.trolltech.autotests.generated.TextCodecSubclass;
 import com.trolltech.autotests.generated.PictureSubclass;
 import com.trolltech.autotests.generated.GraphicsItemSubclass;
 import com.trolltech.autotests.generated.AccessibleInterfaceSubclass;
-import com.trolltech.autotests.generated.SqlTableModelSubclass;
 import com.trolltech.autotests.generated.SomeQObject;
 /*import com.trolltech.autotests.generated.Relation;
 import com.trolltech.autotests.generated.Role;
@@ -69,7 +68,6 @@ import com.trolltech.autotests.generated.XmlReaderSubclass;
 import com.trolltech.autotests.generated.AccessibleTableInterfaceSubclass;
 
 import com.trolltech.qt.QNativePointer;
-import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QBuffer;
 import com.trolltech.qt.core.QByteArray;
@@ -131,10 +129,6 @@ import com.trolltech.qt.network.QHostAddress;
 import com.trolltech.qt.network.QHostAddress.SpecialAddress;
 import com.trolltech.qt.network.QHttp;
 import com.trolltech.qt.network.QTcpServer;
-import com.trolltech.qt.opengl.QGLColormap;
-import com.trolltech.qt.sql.QSqlDatabase;
-import com.trolltech.qt.sql.QSqlField;
-import com.trolltech.qt.sql.QSqlRecord;
 import com.trolltech.qt.xml.QDomDocument;
 import com.trolltech.qt.xml.QDomElement;
 import com.trolltech.qt.xml.QXmlContentHandlerInterface;
@@ -801,11 +795,6 @@ public class TestInjectedCode extends QApplicationTest {
         assertEquals("bar", element.attributeNS("something", "foo"));
     }
 
-    private void receiveBeforeInsert(QSqlRecord record) {
-        record.append(new QSqlField("javaInt", QVariant.Int));
-        record.setValue("javaInt", 3456);
-    }
-
     @Test
     public void testQTcpServerWaitForConnection() {
         QTcpServer server = new QTcpServer();
@@ -845,50 +834,6 @@ public class TestInjectedCode extends QApplicationTest {
         // QHttp seems to be pinned/leaked ?
     }
 
-    @Test
-    public void testQGLColorMapSetEntries() {
-        int firstColors[] = { new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.green).rgba() };
-        int secondColors[] = { new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue).rgba(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.yellow).rgba() };
-
-        QGLColormap map = new QGLColormap();
-        map.setEntries(firstColors);
-        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), map.entryRgb(0));
-        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.green).rgba(), map.entryRgb(1));
-
-        map.setEntries(secondColors, 1);
-        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.red).rgba(), map.entryRgb(0));
-        assertEquals(new QColor(com.trolltech.qt.core.Qt.GlobalColor.blue).rgba(), map.entryRgb(1));
-    }
-
-    @Test
-    public void testSqlTableModelBeforeInsertJava() {
-        SqlTableModelSubclass stms = new SqlTableModelSubclass();
-
-        stms.beforeInsert.connect(this, "receiveBeforeInsert(QSqlRecord)");
-        stms.emitBeforeInsert();
-
-        QSqlRecord record = stms.myRecord();
-        assertEquals(3456, record.value("javaInt"));
-        assertEquals(3456, QVariant.toInt(record.value("javaInt")));
-    }
-
-    @Test
-    public void testSqlTableModelBeforeInsertCpp() {
-        SqlTableModelSubclass stms = new SqlTableModelSubclass();
-
-        stms.connectBeforeInsert();
-
-        QSqlRecord record = new QSqlRecord();
-        stms.beforeInsert.emit(record);
-
-        assertEquals(1234, QVariant.toInt(record.value("cppInt")));
-    }
-
-    @Test
-    public void testSqlDatabaseDefaultConnection() {
-        String defaultConnection = QSqlDatabase.defaultConnection();
-        assertEquals("qt_sql_default_connection", defaultConnection);
-    }
 
     @Test
     public void testQTextDocumentUndoRedo() {

@@ -178,7 +178,11 @@
                 <fileset dir="src/java/autotest">
                     <include name="**/com/trolltech/autotests/**/Test*.java"/>
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestCloneableOpenGL" unless="qtjambi.opengl.any.true"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestCloneableSQL" unless="qtjambi.sql.any.true"/>
                     <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeOpenGL.java" unless="qtjambi.opengl.any.true"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeSQL.java" unless="qtjambi.sql.any.true"/>
                 </fileset>
                 <fileset dir="src/java/autotest">
                     <include name="**/com/trolltech/unittests/**/Test*.java"/>
@@ -243,7 +247,11 @@
 <!--                    <include name="**/com/trolltech/autotests/**/TestClipboard.java"/>                -->
                     <include name="**/com/trolltech/autotests/**/Test*.java"/>
                     <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestCloneableOpenGL" unless="qtjambi.opengl.any.true"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestCloneableSQL" unless="qtjambi.sql.any.true"/>
                     <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeOpenGL.java" unless="qtjambi.opengl.any.true"/>
+                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeSQL.java" unless="qtjambi.sql.any.true"/>
                 </fileset>
                 <fileset dir="src/java/autotest">
                     <include name="**/com/trolltech/unittests/**/Test*.java"/>
