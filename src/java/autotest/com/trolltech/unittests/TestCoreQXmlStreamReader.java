@@ -3,7 +3,6 @@ package com.trolltech.unittests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.core.QXmlStreamAttributes;
@@ -16,9 +15,9 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 	private QXmlStreamReader xmlrNoDevice;
 	private QFile xmlFile;
 	private TokenType token;
-	private String person[] = { "John", "Jane" };
-	private String namespace[] = { "c", "d" };
-	private String namespaceuri[] = { "http://qt-jambi.org",
+	private final String person[] = { "John", "Jane" };
+	private final String namespace[] = { "c", "d" };
+	private final String namespaceuri[] = { "http://qt-jambi.org",
 			"http://en.wikipedia.org" };
 	private int i = 0;
 
@@ -128,6 +127,43 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 		}
 	}
 
+	/**
+	 * The API XmlReader.skipCurrentElement() didn't exist until
+	 *  4.6.x so we do it manually.
+	 * This presumes we start off already having read the StartElement
+	 *  so are inside the element.
+	 */
+	private void mySkipCurrentElement(QXmlStreamReader reader) {
+		// We're inside the element already so a value < 0 means we
+		//  read one more EndElement and can return.
+		int nestedLevel = 0;
+		do {
+			TokenType tt = reader.readNext();
+			if(tt == TokenType.EndElement)
+				nestedLevel--;
+			else if(tt == TokenType.StartElement)
+				nestedLevel++;
+		} while(nestedLevel >= 0);
+	}
+
+	/**
+	 * The API XmlReader.readNextStartElement() didn't exist until
+	 *  4.6.x so we do it manually.
+	 * This presumes we start off already having read the StartElement
+	 *  so are inside the element.
+	 */
+	private boolean myReadNextStartElement(QXmlStreamReader reader) {
+		while(true) {
+			if(reader.atEnd())
+				return false;
+			TokenType tt = reader.readNext();
+			if(tt == TokenType.EndElement)
+				return false;
+			else if(tt == TokenType.StartElement)
+				return true;
+		}
+	}
+
 	@org.junit.Test
 	public void testSkipCurrentElement() {
 		while (!xmlr.atEnd()) {
@@ -137,7 +173,7 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 					continue;
 				if (xmlr.name().equals("person")) { // [<person
 													// id="John">]John</person>
-					xmlr.skipCurrentElement(); // <person  // API since 4.6.x
+					mySkipCurrentElement(xmlr); // <person
 												// id="John">John[</person>]
 					xmlr.readNext(); // [ ]<person id="Jane">Jane</person>
 					xmlr.readNext(); // [<person id="Jane">]Jane</person>
@@ -174,7 +210,7 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 		// StartElement - <persons></persons>
 		assertEquals(2, xmlr.lineNumber());
 		// StartElement - <person></person>
-		xmlr.readNextStartElement(); // API since 4.6.x
+		myReadNextStartElement(xmlr);
 		assertEquals(3, xmlr.lineNumber());
 		assertEquals("John", xmlr.readElementText());
 	}
@@ -188,7 +224,7 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 					continue;
 				if (xmlr.name().equals("person")) { // [<person
 													// id="John">]John</person>
-					xmlr.skipCurrentElement(); // <person // API since 4.6.x
+					mySkipCurrentElement(xmlr); // <person
 												// id="John">John[</person>]
 					xmlr.readNext(); // [ ]<person id="Jane">Jane</person>
 					assertTrue(xmlr.isWhitespace());// ^

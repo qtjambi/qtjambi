@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trolltech.qt.core.QAbstractFileEngine;
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.gui.QImage;
 import com.trolltech.qt.gui.QImage.Format;
@@ -106,12 +105,6 @@ public class TestQImage extends QApplicationTest {
 	public void testDimensions() {
 		assertEquals(32, qimage32.width());
 		assertEquals(qimage32.width(), qimage32.height());
-	}
-	
-	@org.junit.Test
-	public void testSize() {
-		int size = qimage32.height() * qimage32.bytesPerLine();
-		assertEquals(size, qimage32.byteCount()); // API since 4.6.x
 	}
 	
 	@org.junit.Test

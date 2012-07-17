@@ -19,7 +19,6 @@ import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.script.QScriptContext;
 import com.trolltech.qt.script.QScriptEngine;
-import com.trolltech.qt.script.QScriptProgram;
 import com.trolltech.qt.script.QScriptString;
 import com.trolltech.qt.script.QScriptSyntaxCheckResult;
 import com.trolltech.qt.script.QScriptValue;
@@ -31,8 +30,6 @@ public class TestQScriptEngine extends QApplicationTest {
 	private QObject engineParent;
 	private QObject holder;
 
-	// Qt documentation says API since 4.7.x+ but generator says different
-	private QScriptProgram qsprogram; // API since 4.6.x+
 	private QPushButton button;
 	private QPushButton button1;
 	private QScriptValue scriptButton;
@@ -45,7 +42,6 @@ public class TestQScriptEngine extends QApplicationTest {
 	@org.junit.Before
 	public void setUp() {
 		testEngine = new QScriptEngine();
-		qsprogram = new QScriptProgram("5 - 2");
 		engineParent = new QObject();
 		holder = new QObject();
 		button = new QPushButton();
@@ -281,11 +277,6 @@ public class TestQScriptEngine extends QApplicationTest {
 		assertEquals("Intermediate",
 				QScriptSyntaxCheckResult.State.Intermediate, QScriptEngine
 						.checkSyntax("if (\n").state());
-	}
-
-	@org.junit.Test
-	public void testEvaluateQScriptPorgram() {
-		assertEquals("qsprogram", 3, testEngine.evaluate(qsprogram).toInt32());
 	}
 
 	/*
