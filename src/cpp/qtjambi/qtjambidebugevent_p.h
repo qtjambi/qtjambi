@@ -102,7 +102,9 @@ public:
     static QString qtjambi_event_to_string(QDynamicPropertyChangeEvent *e, const char *type_name);
     static QString qtjambi_event_to_string(QFileOpenEvent *e, const char *type_name);
     static QString qtjambi_event_to_string(QFocusEvent *e, const char *type_name);
+#if QT_VERSION >= 0x040600
     static QString qtjambi_event_to_string(QGestureEvent *e, const char *type_name);
+#endif
     static QString qtjambi_event_to_string(QGraphicsSceneEvent *e, const char *type_name);
     static QString qtjambi_event_to_string(QHelpEvent *e, const char *type_name);
     static QString qtjambi_event_to_string(QHideEvent *e, const char *type_name);

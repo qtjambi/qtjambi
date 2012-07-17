@@ -45,6 +45,8 @@
 
 package com.trolltech.examples;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import com.trolltech.qt.core.*;
@@ -271,9 +273,18 @@ public class ElasticNodes extends QGraphicsView {
 
         Node(ElasticNodes graphWidget) {
             graph = graphWidget;
+
+            List<QGraphicsItem.GraphicsItemFlag> flagList = new ArrayList<QGraphicsItem.GraphicsItemFlag>();
+            flagList.add(QGraphicsItem.GraphicsItemFlag.ItemIsMovable);
             // Bug#81 Since Qt 4.6 it is necessary to set: QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges
             //  in order to receive ItemPositionChange on #itemChange(GraphicsItemChange change, Object value).
-            setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges);
+            // We do this via reflection so as source is compatible with older 4.5.x.
+            QGraphicsItem.GraphicsItemFlag flag = QGraphicsItem.GraphicsItemFlag.valueOf("ItemSendsGeometryChanges");
+            if (flag != null)
+                flagList.add(flag);
+            QGraphicsItem.GraphicsItemFlag[] flagA = flagList.toArray(new QGraphicsItem.GraphicsItemFlag[flagList.size()]);
+            setFlags(flagA);
+
             setZValue(1);
             newPos = pos();
         }

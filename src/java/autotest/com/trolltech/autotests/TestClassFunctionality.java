@@ -267,7 +267,10 @@ public class TestClassFunctionality extends QApplicationTest {
         QGraphicsView view = new QGraphicsView();
         view.setScene(gsss);
         // Since Qt 4.6 GraphicsScene#drawItems(...) is not called unless IndirectPainting is set.
-        view.setOptimizationFlag(QGraphicsView.OptimizationFlag.IndirectPainting);
+        // We do this via reflection so as source is compatible with older 4.5.x.
+        QGraphicsView.OptimizationFlag flag = QGraphicsView.OptimizationFlag.valueOf("IndirectPainting");
+        if (flag != null)
+            view.setOptimizationFlag(flag);
         view.show();
 
 	long t = System.currentTimeMillis();

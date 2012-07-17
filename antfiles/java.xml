@@ -98,36 +98,16 @@
         </ant>
     </target>
 
-    <!-- This fileset looks unused/redundant -->
-    <fileset id="java.src.qtjambi-examples" dir="${java.srcdir}/qtjambi-examples">
-        <include name="**/*.java"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/phonon/*.java"
-            unless="qtjambi.phonon.any.true"/>
-        <exclude name="com/trolltech/examples/phonon/*.java"
-            unless="qtjambi.phonon.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/xmlpatterns/*.java"
-            unless="qtjambi.xmlpatterns.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/xmlpatterns/*.java"
-            unless="qtjambi.xmlpatterns.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/webkit/*.java"
-            unless="qtjambi.webkit.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/webkit/*.java"
-            unless="qtjambi.webkit.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/opengl/*.java"
-            unless="qtjambi.opengl.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/demos/opengl/*.java"
-            unless="qtjambi.opengl.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/trolltech/examples/sql/*.java"
-            unless="qtjambi.sql.any.true"/>
-        <exclude name="src/java/qtjambi-examples/com/tolltech/examples/svg/*.java"
-            unless="qtjambi.svg.any.true"/>
-    </fileset>
-
     <target name="jar.qtjambi-examples.juic" depends="tools.juic.make">
         <dojuic module="qtjambi-examples"/>
     </target>
 
     <target name="javac.excludes" depends="init.build">
+        <!-- Phonon API only seems emitted since Qt 4.6.x -->
+        <condition property="qtjambi.phonon.api.true">
+            <available file="${generator.outputdir}/java/com/trolltech/qt/phonon" type="dir"/>
+        </condition>
+
         <!-- exclude java classes, which were not build, depending on qtjambi config -->
         <condition property="javac.opengl.excludes" value="**/opengl/**/*.java">
             <isfalse value="${qtjambi.opengl.any.true}"/>
@@ -136,7 +116,7 @@
             <isfalse value="${qtjambi.xmlpatterns.any.true}"/>
         </condition>
         <condition property="javac.phonon.excludes" value="**/phonon/**/*.java">
-            <isfalse value="${qtjambi.phonon.any.true}"/>
+            <isfalse value="${qtjambi.phonon.api.true}"/>
         </condition>
         <condition property="javac.webkit.excludes" value="**/webkit/**/*.java">
             <isfalse value="${qtjambi.webkit.any.true}"/>

@@ -31,7 +31,8 @@ public class TestQScriptEngine extends QApplicationTest {
 	private QObject engineParent;
 	private QObject holder;
 
-	private QScriptProgram qsprogram;
+	// Qt documentation says API since 4.7.x+ but generator says different
+	private QScriptProgram qsprogram; // API since 4.6.x+
 	private QPushButton button;
 	private QPushButton button1;
 	private QScriptValue scriptButton;

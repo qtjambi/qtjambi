@@ -111,7 +111,7 @@ public class TestQImage extends QApplicationTest {
 	@org.junit.Test
 	public void testSize() {
 		int size = qimage32.height() * qimage32.bytesPerLine();
-		assertEquals(size, qimage32.byteCount());
+		assertEquals(size, qimage32.byteCount()); // API since 4.6.x
 	}
 	
 	@org.junit.Test

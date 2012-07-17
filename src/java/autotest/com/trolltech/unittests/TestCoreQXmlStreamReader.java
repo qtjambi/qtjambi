@@ -137,7 +137,7 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 					continue;
 				if (xmlr.name().equals("person")) { // [<person
 													// id="John">]John</person>
-					xmlr.skipCurrentElement(); // <person
+					xmlr.skipCurrentElement(); // <person  // API since 4.6.x
 												// id="John">John[</person>]
 					xmlr.readNext(); // [ ]<person id="Jane">Jane</person>
 					xmlr.readNext(); // [<person id="Jane">]Jane</person>
@@ -174,7 +174,7 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 		// StartElement - <persons></persons>
 		assertEquals(2, xmlr.lineNumber());
 		// StartElement - <person></person>
-		xmlr.readNextStartElement();
+		xmlr.readNextStartElement(); // API since 4.6.x
 		assertEquals(3, xmlr.lineNumber());
 		assertEquals("John", xmlr.readElementText());
 	}
@@ -188,7 +188,7 @@ public class TestCoreQXmlStreamReader extends QApplicationTest {
 					continue;
 				if (xmlr.name().equals("person")) { // [<person
 													// id="John">]John</person>
-					xmlr.skipCurrentElement(); // <person
+					xmlr.skipCurrentElement(); // <person // API since 4.6.x
 												// id="John">John[</person>]
 					xmlr.readNext(); // [ ]<person id="Jane">Jane</person>
 					assertTrue(xmlr.isWhitespace());// ^

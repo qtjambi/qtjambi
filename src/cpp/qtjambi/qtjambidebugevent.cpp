@@ -176,6 +176,7 @@ QtJambiDebugEvent::qtjambi_event_to_string(QFocusEvent *e, const char *type_name
     return s;
 }
 
+#if QT_VERSION >= 0x040600
 QString
 QtJambiDebugEvent::qtjambi_event_to_string(QGestureEvent *e, const char *type_name)
 {
@@ -184,6 +185,7 @@ QtJambiDebugEvent::qtjambi_event_to_string(QGestureEvent *e, const char *type_na
         .arg(type_name);
     return s;
 }
+#endif // QT_VERSION >= 0x040600
 
 QString
 QtJambiDebugEvent::qtjambi_event_to_string(QGraphicsSceneEvent *e, const char *type_name)
@@ -807,6 +809,7 @@ QtJambiDebugEvent::qtjambi_event_type_to_string(int type)
     case QEvent::MacGLClearDrawable:			// 191 - Internal Cocoa, the window has changed, so we must clear
         return  "MacGLClearDrawable";
 
+#if QT_VERSION >= 0x040600
     case QEvent::StateMachineSignal:			// 192
         return  "StateMachineSignal";
 
@@ -847,6 +850,7 @@ QtJambiDebugEvent::qtjambi_event_type_to_string(int type)
 
     case QEvent::WinIdChange:				// 203
         return  "WinIdChange";
+#endif // QT_VERSION >= 0x040600
 
     case 512:						// 512 reserved for Qt Jambi's MetaCall event
         return "QtJambiMetaCall";
@@ -1084,6 +1088,7 @@ QtJambiDebugEvent::qtjambi_event_to_string(QEvent *event)
         return qtjambi_event_to_string(e, typedesc);
     }
 
+#if QT_VERSION >= 0x040600
     case QEvent::TouchBegin:			// 194
     case QEvent::TouchUpdate:			// 195
     case QEvent::TouchEnd:			// 196
@@ -1092,14 +1097,15 @@ QtJambiDebugEvent::qtjambi_event_to_string(QEvent *event)
         return qtjambi_event_to_string(e, typedesc);
     }
 
-#ifndef QT_NO_GESTURES
+ #ifndef QT_NO_GESTURES
     case QEvent::Gesture:			// 198
     case QEvent::GestureOverride:		// 202
     {
         QGestureEvent *e = static_cast<QGestureEvent *>(event);
         return qtjambi_event_to_string(e, typedesc);
     }
-#endif
+ #endif
+#endif // QT_VERSION >= 0x040600
     }
 
     return QString();
