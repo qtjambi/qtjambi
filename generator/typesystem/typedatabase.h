@@ -89,7 +89,7 @@ class TypeDatabase {
             return "typesystem.txt";
         }
 
-        bool parseFile(const QString &filename, const QStringList &importInputDirectoryList, bool generate = true);
+        bool parseFile(const QString &filename, const QStringList &importInputDirectoryList, bool generate = true, bool optional = false);
 
     private:
     uint m_suppressWarnings :

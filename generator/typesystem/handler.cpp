@@ -518,6 +518,7 @@ bool Handler::startElement(const QString &, const QString &n,
             case StackElement::LoadTypesystem:
                 attributes["name"] = QString();
                 attributes["generate"] = "yes";
+                attributes["optional"] = "no";
                 break;
             case StackElement::NoNullPointers:
                 attributes["default-value"] = QString();
@@ -639,7 +640,7 @@ bool Handler::startElement(const QString &, const QString &n,
                     return false;
                 }
 
-                if (!m_database->parseFile(name, m_importInputDirectoryList, convertBoolean(attributes["generate"], "generate", true))) {
+                if (!m_database->parseFile(name, m_importInputDirectoryList, convertBoolean(attributes["generate"], "generate", true), convertBoolean(attributes["optional"], "optional", false))) {
                     m_error = QString("Failed to parse: '%1'").arg(name);
                     return false;
                 }

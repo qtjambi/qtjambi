@@ -164,9 +164,13 @@ NamespaceTypeEntry *TypeDatabase::findNamespaceType(const QString &name) {
         return 0;
 }
 
-bool TypeDatabase::parseFile(const QString &filename, const QStringList &importInputDirectoryList, bool generate) {
+bool TypeDatabase::parseFile(const QString &filename, const QStringList &importInputDirectoryList, bool generate, bool optional) {
     const QString &filepath = resolveFilePath(filename, 1, importInputDirectoryList);
     qDebug() << "Resolving file: " << filename << " => " << filepath;
+    if(optional && filepath.isNull()) {
+        qWarning() << "Optional file: " << filename << ": could not be found";
+        return true;  // we're still ok
+    }
     Q_ASSERT(!filepath.isNull());
     QFile file(filepath);
     Q_ASSERT(file.exists());
