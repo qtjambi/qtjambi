@@ -266,4 +266,8 @@
     </modify-function>
   </object-type>
 
+  <object-type name="MetaObjectQtMetaCast">
+    <include file-name="metaobjectqtmetacast.h" location="local"/>
+  </object-type>
+
 </typesystem>

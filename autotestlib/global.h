@@ -55,6 +55,7 @@
 #include "injectedcode.h"
 #include "interfaces.h"
 #include "namespace.h"
+#include "metaobjectqtmetacast.h"
 #include "messagehandler.h"
 #include "nativepointertester.h"
 #include "paintengine.h"

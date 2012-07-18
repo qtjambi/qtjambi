@@ -26,6 +26,7 @@ HEADERS += \
     injectedcode.h \
     interfaces.h \
     messagehandler.h \
+    metaobjectqtmetacast.h \
     namespace.h \
     nativepointertester.h \
     paintengine.h \
