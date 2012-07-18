@@ -86,7 +86,7 @@
         </javac> -->
     </target>
 
-    <target name="compile.java" depends="init, compile.deps, check.junit">
+    <target name="compile.java" depends="init.build, compile.deps, check.junit">
         <mkdir dir="${outputDir}/tests/auto"/>
         <!-- encoding="UTF-8" required due to some file tests (I18N) using
         no ASCII/ISO-8859-1 characters and the MacOSX Java using "MacRoman"
@@ -107,6 +107,11 @@
             <include name="com/trolltech/generatortests/**/*.java"/>
             <exclude name="com/trolltech/unittests/**/*.java"/>
             <exclude name="com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
+            <exclude name="com/trolltech/autotests/**/TestCloneableOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
+            <exclude name="com/trolltech/autotests/**/TestCloneableSQL.java" unless="${qtjambi.sql.any.true}"/>
+            <exclude name="com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
+            <exclude name="com/trolltech/autotests/**/TestInjectedCodeOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
+            <exclude name="com/trolltech/autotests/**/TestInjectedCodeSQL.java" unless="${qtjambi.sql.any.true}"/>
         </javac>
         <mkdir dir="${outputDir}/tests/unit"/>
         <javac destdir="${outputDir}/tests/unit" debug="true"
@@ -133,7 +138,7 @@
          In order to execute I needed to "export DYLD_LIBRARY_PATH=$QTDIR/lib:${absNativeBaseDir}/lib"
          and then run the usual "ant compile.tests tests.run"
       -->
-    <target name="run.osx" if="qtjambi.osx" depends="init">
+    <target name="run.osx" if="qtjambi.osx" depends="init.test">
         <qtjambi-resolve-path var="absOutputDir"     path="${outputDir}" />
         <qtjambi-resolve-path var="absQtLib"         path="${qtLib}" />
         <qtjambi-resolve-path var="absJambiLib"      path="${jambiLib}" />
@@ -194,7 +199,7 @@
         </junit>
     </target>
 
-    <target name="run.other" unless="qtjambi.osx" depends="init, check.junit">
+    <target name="run.other" unless="qtjambi.osx" depends="init.test, check.junit">
         <qtjambi-resolve-path var="absOutputDir"     path="${outputDir}" />
         <qtjambi-resolve-path var="absQtLib"         path="${qtLib}" />
         <qtjambi-resolve-path var="absJambiLib"      path="${jambiLib}" />
@@ -312,6 +317,6 @@
             depends="init.build, compile.native.generator, compile.native, compile.java" description="Builds tests and required libraries"/>
 
     <target name="tests.run"
-            depends="init, setenv, run" description="Runs tests and generates report in TestReport subdir"/>
+            depends="init.test, setenv, run" description="Runs tests and generates report in TestReport subdir"/>
 
 </project>

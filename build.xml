@@ -89,7 +89,12 @@
         <qtjambi-initialize verbose="true"/>
         <!-- copy jogl to the jar dir. needed for compilation examples  -->
         <copy file="jogl/jogl.jar" todir="${jardir}"/>
-	</target>
+    </target>
+
+    <target name="init.test" depends="log, init.taskdef"
+	description="Initializes the Qt Jambi unittest environment." >
+        <qtjambi-initialize verbose="true" test="true"/>
+    </target>
 
     <target name="init.build" depends="log, setenv, init.taskdef, init"
 	description="Initializes the Qt Jambi build environment." >

@@ -58,6 +58,8 @@ public abstract class AbstractInitializeTask extends Task {
     private boolean configurationViaSetter;
     private String configuration;
 
+    private boolean test;
+
     protected PropertyHelper propertyHelper;
 
 
@@ -262,5 +264,12 @@ public abstract class AbstractInitializeTask extends Task {
     }
     protected boolean isConfigurationDebugAndRelease() {
         return Constants.CONFIG_DEBUG_AND_RELEASE.equals(configuration);
+    }
+
+    public void setTest(boolean test) {
+        this.test = test;
+    }
+    protected boolean getTest() {
+        return test;
     }
 }

@@ -45,8 +45,11 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.trolltech.qt.sql.QSqlDatabase;
 import com.trolltech.qt.sql.QSqlError;
@@ -54,8 +57,23 @@ import com.trolltech.qt.sql.QSqlField;
 import com.trolltech.qt.sql.QSqlIndex;
 import com.trolltech.qt.sql.QSqlQuery;
 import com.trolltech.qt.sql.QSqlRecord;
+import com.trolltech.unittests.support.CategorySQL;
+import com.trolltech.unittests.support.FilterSQL;
 
+// SQL support is an optional part of API:
+// 1) The javac has to compile this package (this is the usual way the
+//    test is deselected by having javac just not compile it)
+// 2) The ANT testrunner looks over the source code folder for tests the
+//    problem is that this class won't load in environment where OpenGL
+//    package does not exist.  FIXME
+@Category(CategorySQL.class)
 public class TestCloneableSQL extends QApplicationTest {
+
+    @BeforeClass
+    public static void testInitialize() throws Exception {
+        assumeTrue(FilterSQL.detectStatic());
+        QApplicationTest.testInitialize(null);
+    }
 
     @Test
     public void run_clone_QSqlDatabase() {

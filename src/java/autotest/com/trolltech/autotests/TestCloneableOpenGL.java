@@ -45,13 +45,31 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.trolltech.qt.opengl.QGLColormap;
 import com.trolltech.qt.opengl.QGLFormat;
+import com.trolltech.unittests.support.CategoryOpenGL;
+import com.trolltech.unittests.support.FilterOpenGL;
 
+// OpenGL support is an optional part of API:
+//  1) The javac has to compile this package (this is the usual way the
+//     test is deselected by having javac just not compile it)
+//  2) The ANT testrunner looks over the source code folder for tests the
+//     problem is that this class won't load in environment where OpenGL
+//     package does not exist.  FIXME
+@Category(CategoryOpenGL.class)
 public class TestCloneableOpenGL extends QApplicationTest {
+
+    @BeforeClass
+    public static void testInitialize() throws Exception {
+        assumeTrue(FilterOpenGL.detectStatic());
+        QApplicationTest.testInitialize(null);
+    }
 
     @Test
     public void run_clone_QGLColormap() {
