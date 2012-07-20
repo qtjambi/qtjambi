@@ -1322,6 +1322,31 @@ void qtjambi_resolve_signals(JNIEnv *env,
 #endif
 }
 
+void qtjambishell_signals_cleanup(QtJambiSignalInfo *infos,
+                                  int count)
+{
+    JNIEnv *env = qtjambi_current_environment();
+    Q_ASSERT(env);
+    Q_ASSERT(infos);
+    for (int i=0; i<count; ++i) {
+        if (!infos[i].methodId)
+            continue;
+
+        if (infos[i].ref.weak) {
+            env->DeleteWeakGlobalRef(infos[i].ref.weak);
+            infos[i].ref.weak = 0;
+        }
+        infos[i].methodId = 0;
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        infos[i].javaClassName = 0;
+        if (infos[i].javaSignalName) {
+            free((void *)infos[i].javaSignalName);
+            infos[i].javaSignalName = 0;
+        }
+#endif
+    }
+}
+
 // Connects the emission of a C++ signal to the emit function in the corresponding
 // signal in Java
 bool qtjambi_connect_cpp_to_java(JNIEnv *,

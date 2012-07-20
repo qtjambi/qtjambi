@@ -1028,6 +1028,15 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
         if (java_class->isQObject())
             s << INDENT << "QtDynamicMetaObject::check_dynamic_deref(m_meta_object);" << endl;
         s << INDENT << "if (m_link) {" << endl;
+        {   // Signal reference/memory cleanup
+            Indentation indent(INDENT);
+            AbstractMetaFunctionList signal_functions = signalFunctions(java_class);
+            if (signal_functions.size() > 0) {
+                s << INDENT << "QtJambi_SignalWrapper_" << java_class->name() << " *qt_wrapper = " << "reinterpret_cast<" << "QtJambi_SignalWrapper_" << java_class->name() << " *" << ">(m_link->signalWrapper());" << endl;
+                s << INDENT << "if (qt_wrapper)" << endl;
+                s << INDENT << "    qtjambishell_signals_cleanup(qt_wrapper->m_signals, qtjambi_signal_count);" << endl;
+            }
+        }
 
         AbstractMetaClassList interfaces = java_class->interfaces();
         int totalRegisterSubObject = interfaces.size() + (java_class->baseClass() != 0 ? 1 : 0);

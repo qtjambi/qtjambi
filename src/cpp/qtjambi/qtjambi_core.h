@@ -660,6 +660,11 @@ void qtjambi_resolve_signals(JNIEnv *env,
                              );
 
 QTJAMBI_EXPORT
+void qtjambishell_signals_cleanup(QtJambiSignalInfo *infos,
+                                  int count);
+
+
+QTJAMBI_EXPORT
 bool qtjambi_connect_cpp_to_java(JNIEnv *,
                                  const QString &java_signal_name,
                                  QObject *sender,
