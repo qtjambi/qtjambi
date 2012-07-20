@@ -2547,6 +2547,13 @@ done:
     return rv;
 }
 
+void qtjambishell_throw_nullpointerexception(JNIEnv *env, const char *msg)
+{
+    StaticCache *sc = StaticCache::instance();
+    sc->resolveNullPointerException();
+    env->ThrowNew(sc->NullPointerException.class_ref, msg);
+}
+
 void qtjambi_debug_trace(const char *location, const char *file, int line)
 {
     static int should = getenv("QTJAMBI_DEBUG_TRACE") != 0;

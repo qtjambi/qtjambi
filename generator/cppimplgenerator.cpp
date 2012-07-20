@@ -1382,9 +1382,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
 
                 // FIXME: Use helper method
                 // Raise exception ?  Maybe this should be QtJambiNoNativeException
-                s << INDENT << "StaticCache *sc = StaticCache::instance();" << endl;
-                s << INDENT << "sc->resolveNullPointerException();" << endl;
-                s << INDENT << "__jni_env->ThrowNew(sc->NullPointerException.class_ref, \"" << implementor->name() << "::" << java_function_signature << "\");" << endl;
+                s << INDENT << "qtjambishell_throw_nullpointerexception(__jni_env, " << "\"" << implementor->name() << "::" << java_function_signature << "\"" << ");" << endl;
                 if(function_type)
                     s << INDENT << "__qt_return_value = " << default_return_statement_qt(function_type, Generator::NoReturnStatement) << ";" << endl;
             }                
