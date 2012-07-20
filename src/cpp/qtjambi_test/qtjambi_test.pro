@@ -9,5 +9,8 @@ INCLUDEPATH += $$QMAKE_INCDIR_QT/QtTest
 INCLUDEPATH += $$QMAKE_INCDIR_QT/QtGui
 
 # libQtTest.so.4.7.4 is only dependant on libQtCore.so.4 (ensures removal of 'Qt -= gui')
-QT = core qtestlib
+# Hmmm no (not anymore?) in 4.7.4 qtestlib references qWaitForWindowShown() which
+#  on linux needs qt_x11_wait_for_window_manager(QWidget*) from QtGui
+#QT = core qtestlib
+QT += qtestlib
 CONFIG += qtestlib
