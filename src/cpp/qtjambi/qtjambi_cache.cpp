@@ -673,10 +673,10 @@ StaticCache::~StaticCache() {
 
 Q_GLOBAL_STATIC(QReadWriteLock, staticcache_instance_lock);
 
+StaticCache *StaticCache::the_cache;
+
 StaticCache *StaticCache::instance()
 {
-    static StaticCache *the_cache = 0;
-
     {
         QReadLocker read(staticcache_instance_lock());
         if (the_cache)
@@ -693,7 +693,89 @@ StaticCache *StaticCache::instance()
         the_cache->d = new StaticCachePrivate();
         return the_cache;
     }
+}
 
+#define unref_class(env, x) do { if(cache->x != 0) { (env)->DeleteGlobalRef(cache->x); cache->x = 0; } } while(0)
+
+void StaticCache::shutdown(JNIEnv *env)
+{
+    QWriteLocker write(staticcache_instance_lock());
+
+    StaticCache *cache = the_cache;
+    if(cache == 0)
+        return;
+
+    cache->d->lock.lock();
+    // unreference everything
+    unref_class(env, HashSet.class_ref);
+    unref_class(env, ArrayList.class_ref);
+    unref_class(env, Stack.class_ref);
+    unref_class(env, LinkedList.class_ref);
+    unref_class(env, Map.class_ref);
+    unref_class(env, MapEntry.class_ref);
+    unref_class(env, HashMap.class_ref);
+    unref_class(env, TreeMap.class_ref);
+    unref_class(env, NullPointerException.class_ref);
+    unref_class(env, RuntimeException.class_ref);
+    unref_class(env, Collection.class_ref);
+
+    unref_class(env, Pair.class_ref);
+    unref_class(env, Integer.class_ref);
+    unref_class(env, Double.class_ref);
+    unref_class(env, Method.class_ref);
+    unref_class(env, Modifier.class_ref);
+    unref_class(env, Object.class_ref);
+    unref_class(env, NativePointer.class_ref);
+    unref_class(env, QtJambiObject.class_ref);
+    unref_class(env, Boolean.class_ref);
+    unref_class(env, Long.class_ref);
+
+    unref_class(env, Float.class_ref);
+    unref_class(env, Short.class_ref);
+    unref_class(env, Byte.class_ref);
+    unref_class(env, Character.class_ref);
+    unref_class(env, Class.class_ref);
+    unref_class(env, System.class_ref);
+    unref_class(env, URL.class_ref);
+    unref_class(env, URLClassLoader.class_ref);
+    unref_class(env, ClassLoader.class_ref);
+    unref_class(env, QSignalEmitter.class_ref);
+
+    unref_class(env, String.class_ref);
+    unref_class(env, AbstractSignal.class_ref);
+    unref_class(env, QObject.class_ref);
+    unref_class(env, QtJambiInternal.class_ref);
+    unref_class(env, MetaObjectTools.class_ref);
+    unref_class(env, MetaData.class_ref);
+    unref_class(env, QtJambiGuiInternal.class_ref);
+    unref_class(env, Thread.class_ref);
+    unref_class(env, QModelIndex.class_ref);
+    unref_class(env, QtEnumerator.class_ref);
+
+    unref_class(env, ValidationData.class_ref);
+    unref_class(env, QTableArea.class_ref);
+    unref_class(env, CellAtIndex.class_ref);
+    unref_class(env, Qt.class_ref);
+    unref_class(env, QFlags.class_ref);
+    unref_class(env, QtProperty.class_ref);
+    unref_class(env, QtConcurrent_MapFunctor.class_ref);
+    unref_class(env, QtConcurrent_MappedFunctor.class_ref);
+    unref_class(env, QtConcurrent_ReducedFunctor.class_ref);
+    unref_class(env, QtConcurrent_FilteredFunctor.class_ref);
+
+    unref_class(env, QClassPathEngine.class_ref);
+    unref_class(env, QItemEditorCreatorBase.class_ref);
+    unref_class(env, ResolvedEntity.class_ref);
+#ifdef QTJAMBI_RETRO_JAVA
+    unref_class(env, RetroTranslatorHelper.class_ref);
+#else
+    unref_class(env, Enum.class_ref);
+#endif
+
+    cache->d->lock.unlock();
+
+    delete StaticCache::the_cache;
+    StaticCache::the_cache = 0;
 }
 
 

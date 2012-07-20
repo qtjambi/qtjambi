@@ -532,6 +532,8 @@ struct QTJAMBI_EXPORT StaticCache
 
 public:
     static StaticCache *instance();
+    static void shutdown(JNIEnv *env);
+    static StaticCache *the_cache;
 
 private:
     ~StaticCache();
