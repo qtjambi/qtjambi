@@ -2478,7 +2478,7 @@ void qtjambi_unregister_callbacks()
 
         QMetaType::unregisterType(typenamebuf);
 
-        delete typenamebuf;
+        delete[] typenamebuf;
     }
 
 #if QT_VERSION >= 0x040300
