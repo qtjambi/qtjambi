@@ -235,6 +235,8 @@ void qtjambi_disconnect_notify(JNIEnv *env, QObject *qobject, const QString &sig
 
 QTJAMBI_EXPORT void qtjambi_end_paint(JNIEnv *env, jobject widget);
 
+QTJAMBI_EXPORT void *qtjambishell_qt_metacast(const char *className, const char *shellClassName,
+                                                          QtJambiLink *link, void *shellMetaCast);
 
 inline void *qtjambi_to_interface(JNIEnv *env,
                                   jobject java_object,

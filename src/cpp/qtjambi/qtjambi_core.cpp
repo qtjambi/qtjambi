@@ -2499,6 +2499,54 @@ void qtjambi_end_paint(JNIEnv *env, jobject widget)
     QTJAMBI_EXCEPTION_CHECK(env);
 }
 
+// qtjambi_qt_metacast: this method is called from the generated shell code to implement
+//    the cast, the implementation used to be unrolled into the shell but was moved here
+//    to reduce code size (increase i-cache efficiency) as well as implement the slower
+//    path relating to Java object lookup and manipulation.
+// className: is the orignal argument passed by Qt QMetaObject API
+// return value: -1 has special meaning to instruct caller to offer the request to the
+//    superclass via WhateverSuperClass::qt_metacast(className).
+//
+// FIXME: This would appear to be another entry point that another thread might access QtJambiLink from?
+void *qtjambishell_qt_metacast(const char *className, const char *shellClassName,
+                                           QtJambiLink *link, void *shellMetaCast)
+{
+    void *rv = 0;
+
+    Q_ASSERT(shellClassName);
+    Q_ASSERT(link);
+    Q_ASSERT(shellMetaCast);
+
+    if (!className)
+        goto done;
+
+    {
+        JNIEnv *env = qtjambi_current_environment();
+        Q_ASSERT(env);
+
+        jobject java_object = link->javaObject(env); // we should always take a local ref ?
+        if (java_object) {
+            const QString name = qtjambi_object_class_name(env, java_object).replace(".", "::");
+            const QString wantedClassName = QString(className);
+            // CHECKME should we be returning the signal wrapper at any time here ?
+            if(wantedClassName == name)  // string compare
+                rv = shellMetaCast;  // reuse the Shell
+            // to the outside worlds point of view the shell is the Java object
+            link->javaObjectDeleteIfLocalRef(env, java_object);
+        }
+    }
+
+    if (rv == 0) {
+        if (!strcmp(className, shellClassName))
+            rv = shellMetaCast;
+        else
+            rv = (void *)-1;  // -1 has special meaning
+    }
+
+done:
+    return rv;
+}
+
 void qtjambi_debug_trace(const char *location, const char *file, int line)
 {
     static int should = getenv("QTJAMBI_DEBUG_TRACE") != 0;

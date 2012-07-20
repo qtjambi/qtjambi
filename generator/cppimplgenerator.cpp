@@ -892,15 +892,9 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
     << "{" << endl
     << "  void *rv;" << endl
     << "  QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << shellClassName(java_class) << "::qt_metacast(const char *_clname)\");" << endl
-    << "  if (!_clname) {" << endl
-    << "    rv = 0;" << endl
-    << "    goto done;" << endl
-    << "  }" << endl
-    << "  if (!strcmp(_clname, \"" << shellClassName(java_class) << "\"))" << endl
-    << "    rv = static_cast<void*>(const_cast<" << shellClassName(java_class) << "*>(this));" << endl
-    << "  else" << endl
+    << "  rv = qtjambishell_qt_metacast(_clname, \"" << shellClassName(java_class) << "\", m_link, static_cast<void*>(const_cast<" << shellClassName(java_class) << "*>(this)));" << endl
+    << "  if (rv == (void *)-1)" << endl
     << "    rv = " << java_class->qualifiedCppName() << "::qt_metacast(_clname);" << endl
-    << "done:" << endl
     << "  QTJAMBI_DEBUG_TRACE(\"(shell)  leaving: " << shellClassName(java_class) << "::qt_metacast(const char *_clname)\");" << endl
     << "  return rv;" << endl
     << "}" << endl << endl;
