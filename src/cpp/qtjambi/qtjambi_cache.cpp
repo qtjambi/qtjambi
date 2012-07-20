@@ -1869,6 +1869,56 @@ void StaticCache::resolveEnum_internal()
     Enum.name = env->GetMethodID(Enum.class_ref, "name", "()Ljava/lang/String;");
     Q_ASSERT(Enum.name);
 }
+#endif // QTJAMBI_RETRO_JAVA
+
+void qtjambi_cache_prune(JNIEnv *env)
+{
+    int i;
+
+    i = qtjambi_object_cache_operation_count();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "qtjambi_object_cache_operation_count()=%d\n", i);
 #endif
 
+    i = QtJambiLink::qtjambi_object_cache_prune();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "QtJambiLink::qtjambi_object_cache_operation_prune()=%d\n", i);
+#endif
 
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    i = QtJambiLink::QtJambiLinkList_count();
+    fprintf(stderr, "QtJambiLink::QtJambiLinkList_count()=%d\n", i);
+#endif
+
+    i = qtjambi_metaobject_prune(env);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "qtjambi_metaobject_prune()=%d\n", i);
+#endif
+
+    i = qtjambi_cache_prune_functiontable();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "qtjambi_cache_prune_functiontable()=%d\n", i);
+#endif
+
+    i = qtjambi_cache_prune_superclass(env);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "qtjambi_cache_prune_superclass()=%d\n", i);
+#endif
+
+    i = qtjambi_cache_prune_field();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "qtjambi_cache_prune_field()=%d\n", i);
+#endif
+
+    i = qtjambi_cache_prune_method();
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "qtjambi_cache_prune_method()=%d\n", i);
+#endif
+
+    i = qtjambi_cache_prune_class(env);
+#if defined(QTJAMBI_DEBUG_TOOLS)
+    fprintf(stderr, "qtjambi_cache_prune_class()=%d\n", i);
+#endif
+
+    StaticCache::shutdown(env);
+}

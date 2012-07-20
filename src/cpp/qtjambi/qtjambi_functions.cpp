@@ -345,10 +345,11 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_shutdown_
 
 extern "C" Q_DECL_EXPORT void JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_QtJambi_1LibraryShutdown_unregister_1helper)
-(JNIEnv *,
+(JNIEnv *env,
  jobject)
 {
     qtjambi_unregister_callbacks();
+    qtjambi_cache_prune(env);
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL

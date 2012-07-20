@@ -88,6 +88,7 @@ void removeFunctionTable(QtJambiFunctionTable *table);
 jclass resolveClosestQtSuperclass(JNIEnv *env, jclass clazz, bool wantGlobalRef = false);
 jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char *package, bool wantGlobalRef = false);
 
+void qtjambi_cache_prune(JNIEnv *env);
 
 class StaticCachePrivate {
 public:

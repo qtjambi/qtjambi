@@ -454,6 +454,8 @@ public:
     static bool stripQtPackageName(QString *className);
     static bool throwQtException(JNIEnv *env, const QString &extra, const QString &name);
 
+    static int qtjambi_object_cache_prune(); /* this method is at least a friend */
+
 #if defined(QTJAMBI_DEBUG_TOOLS)
     void validateMagic_unlocked(const char *prefix, bool validate_children);
     void validateMagic(bool validate_children = true);
