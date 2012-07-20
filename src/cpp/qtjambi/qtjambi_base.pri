@@ -78,8 +78,10 @@ macx {
 }
 
 # gcc reports some functions as unused when they are not.
-linux-g++ | freebsd-g++ {
+linux-g++* | freebsd-g++* {
     QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-function
+    QMAKE_LFLAGS_NOUNDEF   += -Wl,--no-undefined
+    QMAKE_LFLAGS += $$QMAKE_LFLAGS_NOUNDEF
 }
 
 # Extra options to be set when using jump tables...

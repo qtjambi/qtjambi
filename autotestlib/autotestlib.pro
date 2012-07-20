@@ -50,5 +50,10 @@ win32 {
     CONFIG += precompile_header
 }
 
+linux-g++* | freebsd-g++* {
+    QMAKE_LFLAGS_NOUNDEF   += -Wl,--no-undefined
+    QMAKE_LFLAGS += $$QMAKE_LFLAGS_NOUNDEF
+}
+
 QT += sql xml network
 CONFIG += warn_on
