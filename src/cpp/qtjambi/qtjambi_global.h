@@ -109,4 +109,51 @@ typedef void (*PtrDestructorFunction)(void *);
 
 QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
 
+#if defined(QTJAMBI_DEBUG_TOOLS) && defined(QTJAMBI_DEBUG_REFTYPE)
+ #ifdef JNI_VERSION_1_6
+  // This API only exists since JDK6
+  #define REFTYPE_LOCAL_SAFE(env, x)       ((x) == 0 || (env)->GetObjectRefType(x) == JNILocalRefType)
+  #define REFTYPE_LOCAL(env, x)            ((x) != 0 && (env)->GetObjectRefType(x) == JNILocalRefType)
+  #define REFTYPE_GLOBAL_SAFE(env, x)      ((x) == 0 || (env)->GetObjectRefType(x) == JNIGlobalRefType)
+  #define REFTYPE_GLOBAL(env, x)           ((x) != 0 && (env)->GetObjectRefType(x) == JNIGlobalRefType)
+  #define REFTYPE_WEAKGLOBAL_SAFE(env, x)  ((x) == 0 || (env)->GetObjectRefType(x) == JNIWeakGlobalRefType)
+  #define REFTYPE_WEAKGLOBAL(env, x)       ((x) != 0 && (env)->GetObjectRefType(x) == JNIWeakGlobalRefType)
+
+  #define REFTYPE_NOENV_LOCAL_SAFE(x)      ((x) == 0 || qtjambi_current_environment()->GetObjectRefType(x) == JNILocalRefType)
+  #define REFTYPE_NOENV_LOCAL(x)           ((x) != 0 && qtjambi_current_environment()->GetObjectRefType(x) == JNILocalRefType)
+  #define REFTYPE_NOENV_GLOBAL_SAFE(x)     ((x) == 0 || qtjambi_current_environment()->GetObjectRefType(x) == JNIGlobalRefType)
+  #define REFTYPE_NOENV_GLOBAL(x)          ((x) != 0 && qtjambi_current_environment()->GetObjectRefType(x) == JNIGlobalRefType)
+  #define REFTYPE_NOENV_WEAKGLOBAL_SAFE(x) ((x) == 0 || qtjambi_current_environment()->GetObjectRefType(x) == JNIWeakGlobalRefType)
+  #define REFTYPE_NOENV_WEAKGLOBAL(x)      ((x) != 0 && qtjambi_current_environment()->GetObjectRefType(x) == JNIWeakGlobalRefType)
+ #else
+  #define REFTYPE_LOCAL_SAFE(env, x)       (1)
+  #define REFTYPE_LOCAL(env, x)            ((x) != 0)
+  #define REFTYPE_GLOBAL_SAFE(env, x)      (1)
+  #define REFTYPE_GLOBAL(env, x)           ((x) != 0)
+  #define REFTYPE_WEAKGLOBAL_SAFE(env, x)  (1)
+  #define REFTYPE_WEAKGLOBAL(env, x)       ((x) != 0)
+
+  #define REFTYPE_NOENV_LOCAL_SAFE(x)      (1)
+  #define REFTYPE_NOENV_LOCAL(x)           ((x) != 0)
+  #define REFTYPE_NOENV_GLOBAL_SAFE(x)     (1)
+  #define REFTYPE_NOENV_GLOBAL(x)          ((x) != 0)
+  #define REFTYPE_NOENV_WEAKGLOBAL_SAFE(x) (1)
+  #define REFTYPE_NOENV_WEAKGLOBAL(x)      ((x) != 0)
+ #endif // JNI_VERSION_1_6
+#else
+ #define REFTYPE_LOCAL_SAFE(env, x)        (1)
+ #define REFTYPE_LOCAL(env, x)             ((x) != 0)
+ #define REFTYPE_GLOBAL_SAFE(env, x)       (1)
+ #define REFTYPE_GLOBAL(env, x)            ((x) != 0)
+ #define REFTYPE_WEAKGLOBAL_SAFE(env, x)   (1)
+ #define REFTYPE_WEAKGLOBAL(env, x)        ((x) != 0)
+
+ #define REFTYPE_NOENV_LOCAL_SAFE(x)       (1)
+ #define REFTYPE_NOENV_LOCAL(x)            ((x) != 0)
+ #define REFTYPE_NOENV_GLOBAL_SAFE(x)      (1)
+ #define REFTYPE_NOENV_GLOBAL(x)           ((x) != 0)
+ #define REFTYPE_NOENV_WEAKGLOBAL_SAFE(x)  (1)
+ #define REFTYPE_NOENV_WEAKGLOBAL(x)       ((x) != 0)
+#endif // QTJAMBI_DEBUG_TOOLS
+
 #endif // QTJAMBI_GLOBAL_H

@@ -154,7 +154,11 @@ extern "C" Q_DECL_EXPORT jint JNICALL QTJAMBI_FUNCTION_PREFIX(JNI_OnLoad)(JavaVM
     qtjambi_vm_count++;
     qtjambi_vm_shutdown_set(0);		// Qt becomes operational
     qtjambi_vm_lock()->unlock();
+#if defined(QTJAMBI_DEBUG_TOOLS) && defined(QTJAMBI_DEBUG_REFTYPE) && defined(JNI_VERSION_1_6)
+    return JNI_VERSION_1_6;
+#else
     return JNI_VERSION_1_4;
+#endif
 }
 
 extern "C" Q_DECL_EXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(JNI_OnUnload)(JavaVM *vm, void *reserved)
@@ -306,7 +310,12 @@ JNIEnv *qtjambi_current_environment()
     }
     // FIXME: We at least need to do an atomic read of qtjambi_vm and then test and
     //  reuse that value in this method.  Not keep accessing the global directly.
-    int result = vm->GetEnv( (void **) (void *) (&env), JNI_VERSION_1_4);
+#if defined(QTJAMBI_DEBUG_TOOLS) && defined(QTJAMBI_DEBUG_REFTYPE) && defined(JNI_VERSION_1_6)
+    int version = JNI_VERSION_1_6;
+#else
+    int version = JNI_VERSION_1_4;
+#endif
+    int result = vm->GetEnv( (void **) (void *) (&env), version);
     if (result == JNI_EDETACHED) {
         if (vm->AttachCurrentThreadAsDaemon((void **) (void *) (&env), 0) < 0) {
             qWarning("Failed attaching current thread");
@@ -1766,7 +1775,11 @@ bool qtjambi_initialize_vm()
        vm_options[i].optionString = options[i].data();
 
     JavaVMInitArgs vm_args;
+#if defined(QTJAMBI_DEBUG_TOOLS) && defined(QTJAMBI_DEBUG_REFTYPE) && defined(JNI_VERSION_1_6)
+    vm_args.version = JNI_VERSION_1_6;
+#else
     vm_args.version = JNI_VERSION_1_4;
+#endif
     vm_args.ignoreUnrecognized = JNI_FALSE;
     vm_args.nOptions = options.size();
     vm_args.options = vm_options;
