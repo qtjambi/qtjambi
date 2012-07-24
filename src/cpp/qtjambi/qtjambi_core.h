@@ -132,8 +132,6 @@ struct QtJambiSignalInfo
 #  define DEREF_JOBJECT // noop
 #endif // JOBJECT_REFCOUNT
 
-QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
-
 struct QTJAMBI_EXPORT JObjectWrapper
 {
     JObjectWrapper() : object(0)

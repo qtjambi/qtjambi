@@ -107,4 +107,6 @@ typedef void (*PtrDestructorFunction)(void *);
     #define snprintf _snprintf
 #endif
 
-#endif
+QTJAMBI_EXPORT JNIEnv *qtjambi_current_environment();
+
+#endif // QTJAMBI_GLOBAL_H
