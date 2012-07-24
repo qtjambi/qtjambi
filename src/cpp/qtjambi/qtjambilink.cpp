@@ -178,7 +178,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMutex, g_magicLock, (QMutex::Recursive));
 #endif
 
 typedef QHash<const void *, QtJambiLink *> LinkHash;
+// gStaticUserDataIdLock only protects allocation of qtjambi_user_data_id
 Q_GLOBAL_STATIC(QReadWriteLock, gStaticUserDataIdLock);
+// gUserObjectCacheLock only protects all access of gUserObjectCache
 Q_GLOBAL_STATIC(QReadWriteLock, gUserObjectCacheLock);
 Q_GLOBAL_STATIC(LinkHash, gUserObjectCache);
 
@@ -224,7 +226,7 @@ void qtjambi_object_cache_mode_set(int object_cache_mode)
 int qtjambi_object_cache_operation_flush()
 {
     {
-        QWriteLocker lock(gStaticUserDataIdLock());
+        QWriteLocker lock(gUserObjectCacheLock());
         gUserObjectCache()->clear();
     }
     return 0;
@@ -254,7 +256,7 @@ int qtjambi_object_cache_operation_count()
 {
     int count;
     {
-        QWriteLocker lock(gStaticUserDataIdLock());
+        QWriteLocker lock(gUserObjectCacheLock());
         count = gUserObjectCache()->count();
     }
     return count;
