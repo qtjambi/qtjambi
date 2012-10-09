@@ -599,7 +599,7 @@ public class NativeLibraryManager {
 
 
     private static void loadLibrary_helper(String lib) {
-        DeploymentSpec deploymentSpec = unpack();
+        unpack();
 
         reporter.report("Loading library: '", lib, "'...");
 
@@ -618,7 +618,7 @@ public class NativeLibraryManager {
                 return;
             }
 
-            File libFile = deploymentSpec.buildPath(e.getName());
+            File libFile = e.getDeploymentSpec().buildPath(e.getName());
             reporter.report(" - using deployment spec at " + libFile.getAbsolutePath());
             Runtime.getRuntime().load(libFile.getAbsolutePath());
             reporter.report(" - ok!");
