@@ -2814,12 +2814,13 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << "::const_iterator " << iteratorName << " = " << qt_name << ".constBegin(); "
         << iteratorName << " != " << iteratorEndName << "; ++" << iteratorName << ") {" << endl;
         {
+            QString java_tmp_name = (java_name == "__java_tmp") ? "__java_tmp2" : "__java_tmp";
             Indentation indent(INDENT);
             s << INDENT;
             writeTypeInfo(s, targ);
             s << " __qt_tmp = *" << iteratorName << ";" << endl;
-            writeQtToJava(s, targ, "__qt_tmp", "__java_tmp", 0, -1, BoxedPrimitive);
-            s << INDENT << "qtjambi_collection_add(__jni_env, " << java_name << ", __java_tmp);"
+            writeQtToJava(s, targ, "__qt_tmp", java_tmp_name, 0, -1, BoxedPrimitive);
+            s << INDENT << "qtjambi_collection_add(__jni_env, " << java_name << ", " << java_tmp_name << ");"
             << endl;
         }
         s << INDENT << "}" << endl;
@@ -2831,11 +2832,13 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << INDENT << "jobject " << java_name << ";" << endl
         << INDENT << "{" << endl;
         {
+            QString java_tmp_first_name = (java_name == "__java_tmp_first") ? "__java_tmp_first2" : "__java_tmp_first";
+            QString java_tmp_second_name = (java_name == "__java_tmp_second") ? "__java_tmp_second2" : "__java_tmp_second";
             Indentation indent(INDENT);
-            writeQtToJava(s, args.at(0), qt_name + ".first", "__java_tmp_first", 0, -1, BoxedPrimitive);
-            writeQtToJava(s, args.at(1), qt_name + ".second", "__java_tmp_second", 0, -1, BoxedPrimitive);
+            writeQtToJava(s, args.at(0), qt_name + ".first", java_tmp_first_name, 0, -1, BoxedPrimitive);
+            writeQtToJava(s, args.at(1), qt_name + ".second", java_tmp_second_name, 0, -1, BoxedPrimitive);
             s << INDENT << java_name << " = qtjambi_pair_new(__jni_env, "
-            << "__java_tmp_first, __java_tmp_second);" << endl;
+            << java_tmp_first_name << ", " << java_tmp_second_name << ");" << endl;
         }
 
         s << INDENT << "}" << endl;
@@ -2853,12 +2856,13 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         s << "> __qt_keys = " << qt_name << ".keys();" << endl
         << INDENT << "for (int i=0; i<__qt_keys.size(); ++i) {" << endl;
         {
+            QString java_tmp_key_name = (java_name == "__java_tmp_key") ? "__java_tmp_key2" : "__java_tmp_key";
             Indentation indent(INDENT);
 
             s << INDENT;
             writeTypeInfo(s, targ_key);
             s << " __qt_tmp_key = __qt_keys.at(i);" << endl;
-            writeQtToJava(s, targ_key, "__qt_tmp_key", "__java_tmp_key", 0, -1, BoxedPrimitive);
+            writeQtToJava(s, targ_key, "__qt_tmp_key", java_tmp_key_name, 0, -1, BoxedPrimitive);
 
             s << INDENT << "QList<";
             writeTypeInfo(s, targ_val);
@@ -2876,7 +2880,7 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
                 s << INDENT << "qtjambi_collection_add(__jni_env, __java_value_list, __java_tmp_val);" << endl;
             }
             s << INDENT << "}" << endl
-            << INDENT << "qtjambi_map_put(__jni_env, " << java_name << ", __java_tmp_key, __java_value_list);" << endl;
+            << INDENT << "qtjambi_map_put(__jni_env, " << java_name << ", " << java_tmp_key_name << ", __java_value_list);" << endl;
         }
         s << INDENT << "}" << endl;
 
@@ -2900,6 +2904,8 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
         << INDENT << "for (" << iteratorName << "=" << qt_name << ".constBegin(); "
         << iteratorName << "!=" << qt_name << ".constEnd(); ++" << iteratorName << ") {" << endl;
         {
+            QString java_tmp_key_name = (java_name == "__java_tmp_key") ? "__java_tmp_key2" : "__java_tmp_key";
+            QString java_tmp_val_name = (java_name == "__java_tmp_val") ? "__java_tmp_val2" : "__java_tmp_val";
             Indentation indent(INDENT);
             s << INDENT;
             writeTypeInfo(s, targ_key);
@@ -2907,10 +2913,10 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
             << INDENT;
             writeTypeInfo(s, targ_val);
             s << " __qt_tmp_val = " << iteratorName << ".value();" << endl;
-            writeQtToJava(s, targ_key, "__qt_tmp_key", "__java_tmp_key", 0, -1, BoxedPrimitive);
-            writeQtToJava(s, targ_val, "__qt_tmp_val", "__java_tmp_val", 0, -1, BoxedPrimitive);
+            writeQtToJava(s, targ_key, "__qt_tmp_key", java_tmp_key_name, 0, -1, BoxedPrimitive);
+            writeQtToJava(s, targ_val, "__qt_tmp_val", java_tmp_val_name, 0, -1, BoxedPrimitive);
             s << INDENT << "qtjambi_map_put(__jni_env, " << java_name
-            << ", __java_tmp_key, __java_tmp_val);" << endl;
+            << ", " << java_tmp_key_name << ", " << java_tmp_val_name << ");" << endl;
         }
         s << INDENT << "}" << endl;
 
