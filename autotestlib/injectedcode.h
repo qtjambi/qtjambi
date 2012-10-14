@@ -155,6 +155,13 @@ protected:
 class IODeviceSubclass: public QIODevice
 {
 public:
+    ~IODeviceSubclass() {
+        if(buffer) {
+            delete[] buffer;
+            buffer = 0;
+        }
+    }
+
     IODeviceSubclass(int buffer_length) {
         buffer = new char[buffer_length];
         this->buffer_length = buffer_length;
@@ -184,7 +191,7 @@ protected:
     }
 
     qint64 writeData(const char *data, qint64 maxSize) {
-        delete buffer;
+        delete[] buffer;
         buffer = new char[maxSize];
         for (qint64 i=0; i<maxSize; ++i)
             buffer[i] = data[i];
@@ -319,11 +326,13 @@ class ImageIOHandlerSubclass: public QImageIOHandler
 {
 public:
     bool callRead(QImage *image) {
-        return read(image);
+        bool bf = read(image);
+        return bf;
     }
 
     bool read(QImage *image) {
-        return image != 0 ? image->load("classpath:com/trolltech/examples/images/cheese.png") : true;
+        bool bf = image != 0 ? image->load("classpath:com/trolltech/examples/images/cheese.png") : true;
+        return bf;
     }
 };
 
