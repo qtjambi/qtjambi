@@ -997,6 +997,34 @@ void JavaGenerator::writeFunction(QTextStream &s, const AbstractMetaFunction *ja
             s << "    @com.trolltech.qt.QtPropertyResetter(name=\"" << spec->name() << "\")"
             << endl;
         }
+        if (spec->hasNotify()) {
+            // FIXME: NOTIFY signal is optional; need to understand what that means here
+            s << "    @com.trolltech.qt.QtPropertyNotify(name=\"" << spec->name() << "\", value=\"" << spec->notify() << "\")" << endl;
+        }
+        if (spec->hasRevision()) {
+            // FIXME: REVISION number is optional; need to understand what that means here
+            // FIXME: No check is made that this is an integer in spec->revision()
+            s << "    @com.trolltech.qt.QtPropertyRevision(name=\"" << spec->name() << "\", value=" << spec->revision() << ")" << endl;
+        }
+        if (spec->hasScriptable()) {
+            s << "    @com.trolltech.qt.QtPropertyScriptable(\"" << spec->scriptable() << "\")" << endl;
+        }
+        if (spec->hasStored()) {
+            // default is true (has to match 'false' word to be false, otherwise true)
+            bool bf = !(spec->stored().compare("false", Qt::CaseInsensitive) == 0);
+            s << "    @com.trolltech.qt.QtPropertyStored(" << (bf ? "true" : "false") << ")" << endl;
+        }
+        if (spec->hasUser()) {
+            // default is false (has to match 'true' word to be true, otherwise false)
+            bool bf = spec->user().compare("true", Qt::CaseInsensitive) == 0;
+            s << "    @com.trolltech.qt.QtPropertyUser(" << (bf ? "true" : "false") << ")" << endl;
+        }
+        if (spec->constant()) {
+            s << "    @com.trolltech.qt.QtPropertyConstant" << endl;
+        }
+        if (spec->final()) {
+            s << "    @com.trolltech.qt.QtPropertyFinal" << endl;
+        }
     }
 
     s << functionSignature(java_function, included_attributes, excluded_attributes);

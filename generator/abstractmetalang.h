@@ -871,38 +871,55 @@ class AbstractMetaClass : public AbstractMetaAttributes {
 class QPropertySpec {
     public:
         QPropertySpec(const TypeEntry *type)
-                : m_type(type),
-                m_index(-1) {
+                : m_constant(false), m_final(false),
+                  m_has_scriptable(false), m_has_notify(false), m_has_revision(false),
+                  m_has_stored(false), m_has_user(false),
+                  m_type(type),
+            m_index(-1) {
         }
 
         const TypeEntry *type() const { return m_type; }
 
-        QString name() const { return m_name; }
+        const QString &name() const { return m_name; }
         void setName(const QString &name) { m_name = name; }
 
-        QString read() const { return m_read; }
+        const QString &read() const { return m_read; }
         void setRead(const QString &read) { m_read = read; }
 
-        QString write() const { return m_write; }
+        const QString &write() const { return m_write; }
         void setWrite(const QString &write) { m_write = write; }
 
-        QString designable() const { return m_designable; }
+        const QString &designable() const { return m_designable; }
         void setDesignable(const QString &designable) { m_designable = designable; }
 
-        QString scriptable() const { return m_scriptable; }
-        void setScriptable(const QString &scriptable) { m_scriptable = scriptable; }
+        const QString &scriptable() const { return m_scriptable; }
+        void setScriptable(const QString &scriptable) { m_has_scriptable = true; m_scriptable = scriptable; }
+        bool hasScriptable() const { return m_has_scriptable; }
 
-        QString reset() const { return m_reset; }
+        const QString &reset() const { return m_reset; }
         void setReset(const QString &reset) { m_reset = reset; }
 
-        QString notify() const { return m_notify; }
-        void setNotify(const QString &notify) { m_notify = notify; }
+        const QString &notify() const { return m_notify; }
+        void setNotify(const QString &notify) { m_has_notify = true; m_notify = notify; }
+        bool hasNotify() const { return m_has_notify; }
 
-        QString stored() const { return m_stored; }
-        void setStored(const QString &stored) { m_stored = stored; }
+        const QString &revision() const { return m_revision; }
+        void setRevision(const QString &revision) { m_has_revision = true; m_revision = revision; }
+        bool hasRevision() const { return m_has_revision; }
 
-        QString user() const { return m_user; }
-        void setUser(const QString &user) { m_user = user; }
+        const QString &stored() const { return m_stored; }
+        void setStored(const QString &stored) { m_has_stored = true; m_stored = stored; }
+        bool hasStored() const { return m_has_stored; }
+
+        const QString &user() const { return m_user; }
+        void setUser(const QString &user) { m_has_user = true; m_user = user; }
+        bool hasUser() const { return m_has_user; }
+
+        bool constant() const { return m_constant; }
+        void setConstant(bool constant) { m_constant = constant; }
+
+        bool final() const { return m_final; }
+        void setFinal(bool final) { m_final = final; }
 
         int index() const { return m_index; }
         void setIndex(int index) { m_index = index; }
@@ -911,12 +928,20 @@ class QPropertySpec {
         QString m_name;
         QString m_read;
         QString m_write;
-        QString m_designable;
-        QString m_scriptable;
+        QString m_designable;  // true, false or method name
+        QString m_scriptable;  // true, false or method name
         QString m_reset;
         QString m_notify;
-        QString m_stored;
-        QString m_user;
+        QString m_stored;      // true, false
+        QString m_user;        // true, false
+        QString m_revision;    // should be valid 0 or positive integer
+        bool m_constant;
+        bool m_final;
+        bool m_has_scriptable;
+        bool m_has_notify;
+        bool m_has_revision;
+        bool m_has_stored;
+        bool m_has_user;
         const TypeEntry *m_type;
         int m_index;
 };

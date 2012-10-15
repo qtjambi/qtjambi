@@ -57,6 +57,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface QtPropertyWriter {
     /** Returns true if the property is enabled; otherwise, returns false. */
     boolean enabled() default true;
-    /** Returnd the name of the property. */
+    /** Returned the name of the property. */
     String name() default "";
 }

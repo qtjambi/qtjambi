@@ -2509,27 +2509,51 @@ void AbstractMetaBuilder::parseQ_Property(AbstractMetaClass *meta_class, const Q
         spec->setName(l.at(1));
         spec->setIndex(i);
 
-        for (int pos = 2; pos + 1 < l.size(); pos += 2) {
-            // I have seen DESIGNABLE and SCRIPTABLE examples that do not have
-            //  a true/false after but another keyword.
-            if (l.at(pos) == QLatin1String("READ"))
-                spec->setRead(l.at(pos + 1));
-            else if (l.at(pos) == QLatin1String("WRITE"))
-                spec->setWrite(l.at(pos + 1));
-            else if (l.at(pos) == QLatin1String("DESIGNABLE"))
-                spec->setDesignable(l.at(pos + 1));
-            else if (l.at(pos) == QLatin1String("SCRIPTABLE"))
-                spec->setScriptable(l.at(pos + 1));
-            else if (l.at(pos) == QLatin1String("RESET"))
-                spec->setReset(l.at(pos + 1));
-            else if (l.at(pos) == QLatin1String("NOTIFY"))
-                spec->setNotify(l.at(pos + 1));
-            else if (l.at(pos) == QLatin1String("USER"))
-                spec->setUser(l.at(pos + 1));
-            else if (l.at(pos) == QLatin1String("STORED"))
-                spec->setStored(l.at(pos + 1));
-            else
-                qDebug() << "WARNING: Q_PROPERTY(" << spec->name() << ", " << typeName << "): unknown aspect " << l.at(pos);
+        int inc;
+        for (int pos = 2; pos < l.size(); pos += inc) {
+            inc = 1;
+            const QString &aspect = l.at(pos);
+            if (aspect == QLatin1String("CONSTANT")) {
+                spec->setConstant(true);
+                // inc=1 already as no arg follows
+                continue;
+            } else if (aspect == QLatin1String("FINAL")) {
+                spec->setFinal(true);
+                // inc=1 already as no arg follows
+                continue;
+            }
+
+            QString arg;
+            if (pos + 1 < l.size()) {  // Check we have an argument to go with
+                arg = l.at(pos + 1);
+                inc = 2;  // the rest must have the label and an argument
+            } else {
+                qDebug() << "WARNING: Q_PROPERTY(" << spec->name() << ", " << typeName << "): unbalanced aspect " << aspect;
+                arg = "";  // default argument placeholder
+                // we don't set inc=2 as there isn't another token left
+            }
+            if (aspect == QLatin1String("READ")) {
+                spec->setRead(arg);
+            } else if (aspect == QLatin1String("WRITE")) {
+                spec->setWrite(arg);
+            } else if (aspect == QLatin1String("DESIGNABLE")) {
+                spec->setDesignable(arg);
+            } else if (aspect == QLatin1String("SCRIPTABLE")) {
+                spec->setScriptable(arg);
+            } else if (aspect == QLatin1String("RESET")) {
+                spec->setReset(arg);
+            } else if (aspect == QLatin1String("NOTIFY")) {
+                spec->setNotify(arg);
+            } else if (aspect == QLatin1String("REVISION")) {
+                spec->setRevision(arg);
+            } else if (aspect == QLatin1String("USER")) {
+                spec->setUser(arg);
+            } else if (aspect == QLatin1String("STORED")) {
+                spec->setStored(arg);
+            } else {
+                qDebug() << "WARNING: Q_PROPERTY(" << spec->name() << ", " << typeName << "): unknown aspect " << aspect;
+                inc = 1;  // default to 1 causing the arg to probably also get WARNING on next iteration
+            }
         }
 
         meta_class->addPropertySpec(spec);
