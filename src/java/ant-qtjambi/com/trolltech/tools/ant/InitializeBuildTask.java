@@ -332,12 +332,12 @@ public class InitializeBuildTask extends AbstractInitializeTask {
 
         String javaHomeTarget = decideJavaHomeTarget();
         if(javaHomeTarget == null)
-            throw new BuildException("Unable to determine JAVA_HOME_TARGET, setup environment variable JAVA_HOME (or JAVA_HOME_TARGET) or edit buildpath.properties");
+            throw new BuildException("Unable to determine JAVA_HOME_TARGET, setup environment variable JAVA_HOME (or JAVA_HOME_TARGET) or edit build.properties");
 
         String javaOsarchTarget = decideJavaOsarchTarget();
         if(javaOsarchTarget == null) {
             if(OSInfo.isMacOS() == false)  // On MacOSX there is no sub-dir inside the JDK include directory that contains jni.h
-                throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit buildpath.properties");
+                throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit build.properties");
         }
 
         {
@@ -874,7 +874,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         //  on so the developer doesn't waste their time getting an error
         //  message later in the build process.
         if(generatorIncludepaths == null)      // ${generator.includepaths}
-            throw new BuildException("ERROR: " + Constants.GENERATOR_INCLUDEPATHS + " property is not configured, please ensure you read and edit buildpath.properties");
+            throw new BuildException("ERROR: " + Constants.GENERATOR_INCLUDEPATHS + " property is not configured, please ensure you read and edit build.properties");
         String qtCore = AntUtil.getPropertyAsString(propertyHelper, Constants.CORE);
         String qtCoreDebug = AntUtil.getPropertyAsString(propertyHelper, Constants.CORE + ".debug");
         if(qtCore == null && qtCoreDebug == null)

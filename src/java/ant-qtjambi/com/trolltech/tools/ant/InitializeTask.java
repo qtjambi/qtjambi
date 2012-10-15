@@ -130,12 +130,12 @@ public class InitializeTask extends AbstractInitializeTask {
 
         String javaHomeTarget = decideJavaHomeTarget();
         if(javaHomeTarget == null)
-            throw new BuildException("Unable to determine JAVA_HOME_TARGET, setup environment variable JAVA_HOME (or JAVA_HOME_TARGET) or edit buildpath.properties");
+            throw new BuildException("Unable to determine JAVA_HOME_TARGET, setup environment variable JAVA_HOME (or JAVA_HOME_TARGET) or edit build.properties");
 
         String javaOsarchTarget = decideJavaOsarchTarget();
         if(javaOsarchTarget == null) {
             if(OSInfo.isMacOS() == false)  // On MacOSX there is no sub-dir inside the JDK include directory that contains jni.h
-                throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit buildpath.properties");
+                throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit build.properties");
         }
 
         if(OSInfo.isMacOS())
