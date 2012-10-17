@@ -50,6 +50,8 @@ import java.lang.reflect.Modifier;
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QMessageHandler;
+import com.trolltech.qt.internal.DeploymentSpec;
+import com.trolltech.qt.internal.NativeLibraryManager;
 import com.trolltech.qt.internal.fileengine.QClassPathFileEngineHandler;
 
 class QtJambi_LibraryShutdown implements Runnable {
@@ -182,6 +184,8 @@ class QtJambi_LibraryShutdown implements Runnable {
 
     public void run() {
         try {
+            DeploymentSpec[] deploymentSpecA = NativeLibraryManager.resetActiveDeploymentSpec();
+
             QCoreApplication app = QCoreApplication.instance();
 
             if(app != null) {
@@ -246,6 +250,8 @@ class QtJambi_LibraryShutdown implements Runnable {
             } catch(Throwable e) {
                 e.printStackTrace();
             }
+
+            deploymentSpecA = null;
 
             unregister_helper();
 

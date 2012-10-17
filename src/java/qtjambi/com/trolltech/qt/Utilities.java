@@ -233,32 +233,42 @@ public class Utilities {
     public static List<String> resolveSystemLibraries(List<String> tmpSystemLibrariesList) {
         if(tmpSystemLibrariesList == null)
             return null;
-        DeploymentSpec deploymentSpec = NativeLibraryManager.unpack();
-		if(deploymentSpec == null)
+        DeploymentSpec[] deploymentSpecA = NativeLibraryManager.unpack();
+        if(deploymentSpecA == null)
             return null;
         List<String> resolvedList = new ArrayList<String>();
         for(String original : tmpSystemLibrariesList) {
-		    String s = original;
+            String s = original;
             if(OSInfo.isWindows())   // convert "/" into "\"
                 s = stringCharReplace(s, "/", File.separator);
-            File f = new File(deploymentSpec.getBaseDir(), s);
-            if(f.isFile() == false) {
+
+            String resolvedPath = null;
+            for(DeploymentSpec deploymentSpec : deploymentSpecA) {
+                File f = new File(deploymentSpec.getBaseDir(), s);
+                if(f.isFile()) {
+                    resolvedPath = s;
+                    break;
+                }
+
                 File libDir = new File(deploymentSpec.getBaseDir(), "lib");
                 f = new File(libDir, s);
                 if(f.isFile()) {
-                    s = "lib" + File.separator + s;
-                } else {
-                    File binDir = new File(deploymentSpec.getBaseDir(), "bin");
-                    f = new File(binDir, s);
-                    if(f.isFile())
-                        s = "bin" + File.separator + s;
-                 }
+                    resolvedPath = "lib" + File.separator + s;
+                    break;
+                }
+
+                File binDir = new File(deploymentSpec.getBaseDir(), "bin");
+                f = new File(binDir, s);
+                if(f.isFile()) {
+                    resolvedPath = "bin" + File.separator + s;
+                    break;
+                }
             }
-            if(f.isFile() == false) {
+
+            if(resolvedPath != null)
+                resolvedList.add(resolvedPath);
+            else
                 System.err.println("IGNORED version.properties qtjambi.system.libraries entry \"" + original + "\": file could not be found");
-                continue;
-            }
-            resolvedList.add(s);
         }
         return Collections.unmodifiableList(resolvedList);
     }

@@ -159,7 +159,7 @@ public class NativeLibraryManager {
     private static final int LOAD_FALSE = 3;
     private static final int LOAD_NEVER = 4;
 
-    private static DeploymentSpec activeDeploymentSpec;
+    private static DeploymentSpec[] activeDeploymentSpecA;
 
     public static String loadToString(int load) {
         switch(load) {
@@ -177,14 +177,26 @@ public class NativeLibraryManager {
 
     // FIXME: Remove this from public API
     public static File jambiTempDir() {
-        if(activeDeploymentSpec == null)
+        if(activeDeploymentSpecA == null)
             return null;
-        return activeDeploymentSpec.buildPath("");
+        // FIXME: move this into each DeploymentSpec making the path unique per DeploymentSpec
+        return activeDeploymentSpecA[0].buildPath("");
     }
 
-	// FIXME: This should be a read-only object
-    public static DeploymentSpec getActiveDeploymentSpec() {
-        return activeDeploymentSpec;
+    // FIXME: This should be a read-only object
+    public static DeploymentSpec[] getActiveDeploymentSpec() {
+        return activeDeploymentSpecA;
+    }
+
+    /**
+     * Called during shutdown of the deployment spec to help clear
+     * the active from static values.
+     * @return
+     */
+    public static DeploymentSpec[] resetActiveDeploymentSpec() {
+        DeploymentSpec[] rv = activeDeploymentSpecA;
+        activeDeploymentSpecA = null;
+        return rv;
     }
 
     private static class XMLHandler extends DefaultHandler {
@@ -249,7 +261,7 @@ public class NativeLibraryManager {
                     throw new DeploymentSpecException("<plugin> element missing required attribute \"path\"");
                 }
                 spec.addPluginPath(path);
-		        reporter.report(" - plugin path='", path, "'");
+                reporter.report(" - plugin path='", path, "'");
             } else if (name.equals("plugin-designer")) {
                 String path = attributes.getValue("path");
                 if (path == null) {
@@ -348,7 +360,7 @@ public class NativeLibraryManager {
         List<String> paths = new ArrayList<String>();
         for (DeploymentSpec spec : deploymentSpecs) {
             File root = spec.getBaseDir();
-			List<String> pluginPaths = spec.getPluginPaths();
+            List<String> pluginPaths = spec.getPluginPaths();
             if (pluginPaths != null)
                 for (String path : pluginPaths)
                     paths.add(new File(root, path).getAbsolutePath());
@@ -368,7 +380,7 @@ public class NativeLibraryManager {
         List<String> paths = new ArrayList<String>();
         for (DeploymentSpec spec : deploymentSpecs) {
             File root = spec.getBaseDir();
-			List<String> pluginDesignerPaths = spec.getPluginDesignerPaths();
+            List<String> pluginDesignerPaths = spec.getPluginDesignerPaths();
             if (pluginDesignerPaths != null)
                 for (String path : pluginDesignerPaths)
                     paths.add(new File(root, path).getAbsolutePath());
@@ -452,50 +464,58 @@ public class NativeLibraryManager {
     public static boolean isAvailableQtLibrary(String library, String version) {
         String lib = qtLibraryName(library, version);  // "QtDBus" => "libQtDBus.so.4"
         // search active deploymentSpec for existance of library
-        DeploymentSpec deploymentSpec = getActiveDeploymentSpec();
-        if(deploymentSpec == null)
+        DeploymentSpec[] deploymentSpecA = getActiveDeploymentSpec();
+        if(deploymentSpecA == null)
             return false;
-        List<LibraryEntry> libraries = deploymentSpec.getLibraries();
-        for(LibraryEntry libraryEntry : libraries) {
-            String name = libraryEntry.getName();  // name="lib/libQtFoo.so.4"
-            if(name == null)
-                continue;
-            if(lib.equals(name))      // lib=="lib/libQtFoo.so.4"
-                return true;
-            String[] pathA = RetroTranslatorHelper.split(name, "/");
-            if(pathA == null || pathA.length == 0)
-                continue;
-            String lastPart = pathA[pathA.length - 1];
-            if(lib.equals(lastPart))  // lib=="libQtFoo.so.4"
-                return true;
+        for(DeploymentSpec deploymentSpec : deploymentSpecA) {
+            List<LibraryEntry> libraries = deploymentSpec.getLibraries();
+            for(LibraryEntry libraryEntry : libraries) {
+                String name = libraryEntry.getName();  // name="lib/libQtFoo.so.4"
+                if(name == null)
+                    continue;
+                if(lib.equals(name))      // lib=="lib/libQtFoo.so.4"
+                    return true;
+                String[] pathA = RetroTranslatorHelper.split(name, "/");
+                if(pathA == null || pathA.length == 0)
+                    continue;
+                String lastPart = pathA[pathA.length - 1];
+                if(lib.equals(lastPart))  // lib=="libQtFoo.so.4"
+                    return true;
+            }
         }
         return false;
     }
 
     public static List<String> unpackPlugins() {
-        if(activeDeploymentSpec != null) {
+        if(activeDeploymentSpecA != null) {
             List<String> paths = new ArrayList<String>();
 
-			List<String> pluginPaths = activeDeploymentSpec.getPluginPaths();
-            if(pluginPaths != null) {
-                for(String p : pluginPaths) {
-                    File resolvedFile = activeDeploymentSpec.buildPath(p);
-                    // Checking it really exists as a directory (before adding it to the list)
-                    //  is kind of a security check.
-                    if(resolvedFile != null && resolvedFile.isDirectory()) {
-                        paths.add(resolvedFile.getAbsolutePath());
+            // Merge pluginPaths
+            for(DeploymentSpec spec : activeDeploymentSpecA) {
+                List<String> pluginPaths = spec.getPluginPaths();
+                if(pluginPaths != null) {
+                    for(String p : pluginPaths) {
+                        File resolvedFile = spec.buildPath(p);
+                        // Checking it really exists as a directory (before adding it to the list)
+                        //  is kind of a security check.
+                        if(resolvedFile != null && resolvedFile.isDirectory()) {
+                            paths.add(resolvedFile.getAbsolutePath());
+                        }
                     }
                 }
             }
 
-			List<String> pluginDesignerPaths = activeDeploymentSpec.getPluginDesignerPaths();
-            if(pluginDesignerPaths != null) {
-                for(String p : pluginDesignerPaths) {
-                    File resolvedFile = activeDeploymentSpec.buildPath(p);
-                    // Checking it really exists as a directory (before adding it to the list)
-                    //  is kind of a security check.
-                    if(resolvedFile != null && resolvedFile.isDirectory()) {
-                        paths.add(resolvedFile.getAbsolutePath());
+            // Merge pluginDesignerPaths
+            for(DeploymentSpec spec : activeDeploymentSpecA) {
+                List<String> pluginDesignerPaths = spec.getPluginDesignerPaths();
+                if(pluginDesignerPaths != null) {
+                    for(String p : pluginDesignerPaths) {
+                        File resolvedFile = spec.buildPath(p);
+                        // Checking it really exists as a directory (before adding it to the list)
+                        //  is kind of a security check.
+                        if(resolvedFile != null && resolvedFile.isDirectory()) {
+                            paths.add(resolvedFile.getAbsolutePath());
+                        }
                     }
                 }
             }
@@ -505,35 +525,37 @@ public class NativeLibraryManager {
         return null;
     }
 
-	// Made this more vissible to allow unpacking earlier on the startup process
-    public static DeploymentSpec unpack() {
+    // Made this more vissible to allow unpacking earlier on the startup process
+    public static DeploymentSpec[] unpack() {
         if (unpacked)
-            return activeDeploymentSpec;
+            return activeDeploymentSpecA;
         try {
             synchronized(NativeLibraryManager.class) {
                 if (unpacked)
-                    return activeDeploymentSpec;
-                activeDeploymentSpec = unpack_helper();
+                    return activeDeploymentSpecA;
+                activeDeploymentSpecA = unpack_helper();
                 unpacked = true;
             }
         } catch (Throwable t) {
             throw new RuntimeException("Failed to unpack native libraries, progress so far:\n"
                                        + reporter, t);
         }
-        return activeDeploymentSpec;
+        return activeDeploymentSpecA;
     }
 
-    private static DeploymentSpec unpack_helper() throws Exception {
-    	DeploymentSpec spec = null;
+    private static DeploymentSpec[] unpack_helper() throws Exception {
+        List<DeploymentSpec> specList = new ArrayList<DeploymentSpec>();
         ClassLoader loader = classLoader();
-        Enumeration<URL> specs = loader.getResources(DEPLOY_DESCRIPTOR_NAME);
-        int count = 0;
-        while (specs.hasMoreElements()) {
-            URL url = specs.nextElement();
+        // Multiple descriptors maybe found
+        Enumeration<URL> specsFound = loader.getResources(DEPLOY_DESCRIPTOR_NAME);
+        // FIXME: Want searchForDescriptors/parse/resolve/unpack/load phases separated
+        while (specsFound.hasMoreElements()) {
+            URL url = specsFound.nextElement();
 
             if (VERBOSE_LOADING)
                 reporter.report("Found ", url.toString());
 
+            DeploymentSpec spec = null;
             String protocol = url.getProtocol();
             if (protocol.equals("jar")) {
                 // Using toExternalForm() will convert a space character into %20 which breaks java.lang.File use of the resulting path.
@@ -550,20 +572,22 @@ public class NativeLibraryManager {
                     if (VERBOSE_LOADING)
                         reporter.report("Loading ", jarName, " from ", eform);
                     spec = unpackDeploymentSpec(url, jarName, null);
-                    count++;
                 }
             } else if (protocol.equals("file")) {
                 // No unpack since we presume we are already unpacked
                 spec = unpackDeploymentSpec(url, null, Boolean.FALSE);
-                count++;
             }
+            if(spec != null)
+                specList.add(spec);
         }
 
-        if (count == 0) {
+        if (specList.size() == 0) {
             reporter.report("No '", DEPLOY_DESCRIPTOR_NAME,
                             "' found in classpath, loading libraries via 'java.library.path'");
+            return null;
         }
-        return spec;
+
+        return specList.toArray(new DeploymentSpec[specList.size()]);
     }
 
     /**
@@ -571,12 +595,12 @@ public class NativeLibraryManager {
      * @return The classloader
      */
     private static ClassLoader classLoader() {
-    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    if (loader == null) {
-        loader = NativeLibraryManager.class.getClassLoader();
-        assert loader != null;
-    }
-    return loader;
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) {
+            loader = NativeLibraryManager.class.getClassLoader();
+            assert(loader != null);
+        }
+        return loader;
     }
 
     /**
@@ -718,7 +742,7 @@ public class NativeLibraryManager {
                 spec.setBaseDir(tmpDir);
                 spec.setBaseUrl(new URL(Utilities.convertAbsolutePathStringToFileUrlString(tmpDir)));
             } else {
-            	shouldUnpack = Boolean.TRUE;
+                shouldUnpack = Boolean.TRUE;
             }
         }
 
@@ -728,7 +752,7 @@ public class NativeLibraryManager {
         if (shouldUnpack.booleanValue()) {
             reporter.report(" - starting to copy content to cache directory...");
 
-			List<String> dirents = spec.getDirents();
+            List<String> dirents = spec.getDirents();
             if (dirents != null) {
                 for (String path : dirents) {
                     reporter.report(" - copying over: '", path, "'...");
@@ -785,7 +809,7 @@ public class NativeLibraryManager {
                 }
             }
 
-			List<LibraryEntry> libraries = spec.getLibraries();
+            List<LibraryEntry> libraries = spec.getLibraries();
             if (libraries != null) {
                 for (LibraryEntry e : libraries) {
                     reporter.report(" - copying over: '", e.getName(), "'...");
@@ -843,7 +867,7 @@ public class NativeLibraryManager {
             spec.setBaseUrl(new URL(Utilities.convertAbsolutePathStringToFileUrlString(tmpDir)));
         } else if(spec.getBaseUrl() == null) {
             String path = deploymentSpec.getPath();
-            int i = path.lastIndexOf('/');	// URL path
+            int i = path.lastIndexOf('/');  // URL path
             if(i >= 0)
                 path = path.substring(0, i);
             spec.setBaseDir(new File(path));
@@ -861,21 +885,29 @@ public class NativeLibraryManager {
         return spec;
     }
 
-	public static boolean loadSystemLibrary(String name) {
-	    DeploymentSpec activeSpec = getActiveDeploymentSpec();
-		if(activeSpec == null)
-		    throw new RuntimeException("No active deployment spec is set");
+    public static boolean loadSystemLibrary(String name) {
+        DeploymentSpec[] activeSpecA = getActiveDeploymentSpec();
+        if(activeSpecA == null)
+            throw new RuntimeException("No active deployment spec is set");
 
         reporter.report(" - trying to load: ", name);
-        File f = new File(activeSpec.getBaseDir(), name);
-		if(f.isFile() == false)
-		    return false;
+
+        File foundFile = null;
+        for(DeploymentSpec deploymentSpec : activeSpecA) {
+            File f = new File(deploymentSpec.getBaseDir(), name);
+            if(f.isFile()) {
+                foundFile = f;
+                break;
+            }
+        }
+        if(foundFile == null)
+            return false;
 
         Runtime rt = Runtime.getRuntime();
-        rt.load(f.getAbsolutePath());
+        rt.load(foundFile.getAbsolutePath());
         reporter.report(" - ok!");
-		return true;
-	}
+        return true;
+    }
 
     private static String jniLibraryName(String lib, String version) {
         String dotVersion;
