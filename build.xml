@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     TODO:
     - ”ant all” should be ”ant full”.
     - (new) ant all should build everything, only if it has not been built before.
