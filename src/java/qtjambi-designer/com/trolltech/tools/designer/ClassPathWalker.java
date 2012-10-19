@@ -89,15 +89,15 @@ public class ClassPathWalker extends QObject {
      * The resourceFound signal is emitted with the resource name for each resource
      * that is found. The signal is emitted from the traversing thread.
      */
-    public Signal2<String, QImage> resourceFound = new Signal2<String, QImage>();
+    public final Signal2<String, QImage> resourceFound = new Signal2<String, QImage>();
 
     /**
      * The doneSearching signal is emitted when the classpath walker is done processing..
      * It is used internally to close call stop...
      */
-    public Signal0 doneSearching = new Signal0();
+    public final Signal0 doneSearching = new Signal0();
 
-    public Signal0 beginSearching = new Signal0();
+    public final Signal0 beginSearching = new Signal0();
 
     public ClassPathWalker() {
         if (roots == null) {

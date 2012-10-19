@@ -150,7 +150,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
         QImage image;
     }
 
-    public Signal1<QModelIndex> rowsAdded = new Signal1<QModelIndex>();
+    public final Signal1<QModelIndex> rowsAdded = new Signal1<QModelIndex>();
 
     public ResourceBrowserModel() {
         QPalette p = QApplication.palette();
