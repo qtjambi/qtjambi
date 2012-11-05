@@ -67,6 +67,7 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true), m_includeEclipseWarning
     addType(new ContainerTypeEntry("QPair", ContainerTypeEntry::PairContainer));
     addType(new ContainerTypeEntry("QQueue", ContainerTypeEntry::QueueContainer));
     addType(new ContainerTypeEntry("QMultiMap", ContainerTypeEntry::MultiMapContainer));
+    addType(new ContainerTypeEntry("QMultiHash", ContainerTypeEntry::MultiHashContainer));
 
     // Custom types...
     addType(new QModelIndexTypeEntry());

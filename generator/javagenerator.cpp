@@ -132,7 +132,8 @@ QString JavaGenerator::translateType(const AbstractMetaType *java_type, const Ab
                 for (int i = 0; i < args.size(); ++i) {
                     if (i != 0)
                         s += ", ";
-                    bool isMultiMap = static_cast<const ContainerTypeEntry *>(java_type->typeEntry())->type() == ContainerTypeEntry::MultiMapContainer
+                    bool isMultiMap = (static_cast<const ContainerTypeEntry *>(java_type->typeEntry())->type() == ContainerTypeEntry::MultiMapContainer
+                                       || static_cast<const ContainerTypeEntry *>(java_type->typeEntry())->type() == ContainerTypeEntry::MultiHashContainer)
                                       && i == 1;
                     if (isMultiMap)
                         s += "java.util.List<";

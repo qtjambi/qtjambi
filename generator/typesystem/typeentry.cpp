@@ -68,7 +68,7 @@ QString ContainerTypeEntry::targetLangName() const {
         case MapContainer: return "SortedMap";
         case MultiMapContainer: return "SortedMap";
         case HashContainer: return "HashMap";
-            //     case MultiHashCollectio: return "MultiHash";
+        case MultiHashContainer: return "HashMap";
         case PairContainer: return "QPair";
         default:
             qWarning("bad type... %d", m_type);

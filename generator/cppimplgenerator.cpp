@@ -2834,14 +2834,18 @@ void CppImplGenerator::writeQtToJavaContainer(QTextStream &s,
 
         s << INDENT << "}" << endl;
 
-    } else if (type->type() == ContainerTypeEntry::MultiMapContainer) {
+    } else if (type->type() == ContainerTypeEntry::MultiMapContainer
+               || type->type() == ContainerTypeEntry::MultiHashContainer) {
+        QString constructor = type->type() == ContainerTypeEntry::MultiMapContainer
+                              ? "qtjambi_treemap_new"
+                              : "qtjambi_hashmap_new";
 
         Q_ASSERT(java_type->instantiations().size() == 2);
         AbstractMetaType *targ_key = java_type->instantiations().at(0);
         AbstractMetaType *targ_val = java_type->instantiations().at(1);
 
         s << endl
-        << INDENT << "jobject " << java_name << " = qtjambi_treemap_new(__jni_env, " << qt_name << ".keys().size());" << endl
+        << INDENT << "jobject " << java_name << " = " << constructor << "(__jni_env, " << qt_name << ".keys().size());" << endl
         << INDENT << "QList<";
         writeTypeInfo(s, targ_key);
         s << "> __qt_keys = " << qt_name << ".keys();" << endl
