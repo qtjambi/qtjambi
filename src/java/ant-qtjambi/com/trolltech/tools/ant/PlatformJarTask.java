@@ -742,11 +742,12 @@ public class PlatformJarTask extends Task {
                 String vsredistdir = vsredistdirObject.toString();
                 File crt = new File(vsredistdir, "Microsoft.VC" + vcnumber + ".CRT");
 
-                String files[] = new String[] { "Microsoft.VC" + vcnumber + ".CRT.manifest",
-                                            "msvcm" + vcnumber + ".dll",
-                                            "msvcp" + vcnumber + ".dll",
-                                            "msvcr" + vcnumber + ".dll"
-                                            };
+                String files[] = new String[] {
+                    "Microsoft.VC" + vcnumber + ".CRT.manifest",
+                    "msvcm" + vcnumber + ".dll",    // This is reported to not exist since MSVC2010
+                    "msvcp" + vcnumber + ".dll",
+                    "msvcr" + vcnumber + ".dll"
+                };
 
                 for(String libDir : libraryDir) {
                     for(String name : files) {
@@ -758,14 +759,21 @@ public class PlatformJarTask extends Task {
                             if(!libdirstring.endsWith("/"))
                                 libdirstring += "/";
                         }
-                        String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
-                        unpackLibs.add(lib);
+                        File srcFile = new File(crt, name);
+                        if(srcFile.isFile()) {
+                            String lib = libdirstring + "Microsoft.VC" + vcnumber + ".CRT/" + name;
+                            File destFile = new File(outdir, lib);
 
-                        try {
-                            Util.copy(new File(crt, name), new File(outdir, lib));
-                        } catch(Exception e) {
-                            e.printStackTrace();
-                            throw new BuildException("Failed to copy VS CRT libraries", e);
+                            unpackLibs.add(lib);
+
+                            try {
+                                Util.copy(srcFile, destFile);
+                            } catch(Exception e) {
+                                e.printStackTrace();
+                                throw new BuildException("Failed to copy VS CRT libraries", e);
+                            }
+                        } else {
+                            getProject().log(this, "WARNING: " + Constants.VSREDISTDIR + " " + srcFile.getAbsolutePath() + " does not exist; skipping", Project.MSG_WARN);
                         }
                     }
                 }
