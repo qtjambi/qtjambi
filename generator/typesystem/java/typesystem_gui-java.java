@@ -55,7 +55,7 @@ import com.trolltech.qt.gui.*;
 
 class QTransform___ extends QTransform {
 
-        public final QTransform multiply(double d) {
+        public final QTransform multiply(%JAVA_QREAL_type d) {
             operator_multiply_assign(d);
             return this;
         }
@@ -65,17 +65,17 @@ class QTransform___ extends QTransform {
             return this;
         }
 
-        public final QTransform add(double d) {
+        public final QTransform add(%JAVA_QREAL_type d) {
             operator_add_assign(d);
             return this;
         }
 
-        public final QTransform divide(double d) {
+        public final QTransform divide(%JAVA_QREAL_type d) {
             operator_divide_assign(d);
             return this;
         }
 
-        public final QTransform subtract(double d) {
+        public final QTransform subtract(%JAVA_QREAL_type d) {
             operator_subtract_assign(d);
             return this;
         }
@@ -191,10 +191,10 @@ class QPolygon___ extends QPolygon {
 }// class
 
 class QPolygonF___ extends QPolygonF {
-        private native void add_private(long nid, double x, double y);
+        private native void add_private(long nid, %JAVA_QREAL_type x, %JAVA_QREAL_type y);
 
         @QtBlockedSlot
-        public final QPolygonF add(double x, double y) {
+        public final QPolygonF add(%JAVA_QREAL_type x, %JAVA_QREAL_type y) {
             add_private(nativeId(), x, y);
             return this;
         }
@@ -312,19 +312,19 @@ class QImage___ extends QImage {
 }// class
 
 class QPen___ extends QPen {
-        public QPen(QColor color, double width, com.trolltech.qt.core.Qt.PenStyle s, com.trolltech.qt.core.Qt.PenCapStyle c, com.trolltech.qt.core.Qt.PenJoinStyle j) {
+        public QPen(QColor color, %JAVA_QREAL_type width, com.trolltech.qt.core.Qt.PenStyle s, com.trolltech.qt.core.Qt.PenCapStyle c, com.trolltech.qt.core.Qt.PenJoinStyle j) {
             this(new QBrush(color), width, s, c, j);
         }
 
-        public QPen(QColor color, double width, com.trolltech.qt.core.Qt.PenStyle s, com.trolltech.qt.core.Qt.PenCapStyle c) {
+        public QPen(QColor color, %JAVA_QREAL_type width, com.trolltech.qt.core.Qt.PenStyle s, com.trolltech.qt.core.Qt.PenCapStyle c) {
             this(new QBrush(color), width, s, c);
         }
 
-        public QPen(QColor color, double width, com.trolltech.qt.core.Qt.PenStyle s) {
+        public QPen(QColor color, %JAVA_QREAL_type width, com.trolltech.qt.core.Qt.PenStyle s) {
             this(new QBrush(color), width, s);
         }
 
-        public QPen(QColor color, double width) {
+        public QPen(QColor color, %JAVA_QREAL_type width) {
             this(new QBrush(color), width);
         }
 
@@ -537,12 +537,12 @@ class QPixmap___ extends QPixmap {
 }// class
 
 class QPixmapFilter___ extends QPixmapFilter {
-        public final void setConvolutionKernel(double[] kernel, int rows, int columns) {
+        public final void setConvolutionKernel(%JAVA_QREAL_type[] kernel, int rows, int columns) {
             int length = rows * columns;
 
-            QNativePointer kernelPtr = new QNativePointer(QNativePointer.Type.Double, length);
+            QNativePointer kernelPtr = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type, length);
             for (int i = 0; i < length; ++i)
-                kernelPtr.setDoubleAt(i, kernel[i]);
+                kernelPtr.set%JAVA_QREAL_TypeAt(i, kernel[i]);
 
             setConvolutionKernel_private(kernelPtr, rows, columns);
         }
@@ -1246,13 +1246,13 @@ class QFormLayout___ extends QFormLayout {
 class Subclass_of_QGraphicsLayoutItem___ extends QGraphicsLayoutItem {
         @QtBlockedSlot
         public final QMarginsF getContentsMargins() {
-            QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer right = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Double);
+            QNativePointer left = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer top = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer right = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer bottom = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
 
             getContentsMargins(left, top, right, bottom);
-            return new QMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
+            return new QMarginsF(left.%JAVA_QREAL_typeValue(), top.%JAVA_QREAL_typeValue(), right.%JAVA_QREAL_typeValue(), bottom.%JAVA_QREAL_typeValue());
         }
 }// class
 
@@ -1265,13 +1265,13 @@ class QGraphicsWidget___ extends QGraphicsWidget {
          */
         @QtBlockedSlot
         public final QMarginsF getWindowFrameMargins() {
-            QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer right = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Double);
+            QNativePointer left = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer top = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer right = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer bottom = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
 
             getWindowFrameMargins(left, top, right, bottom);
-            return new QMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
+            return new QMarginsF(left.%JAVA_QREAL_typeValue(), top.%JAVA_QREAL_typeValue(), right.%JAVA_QREAL_typeValue(), bottom.%JAVA_QREAL_typeValue());
         }
 
 }// class
@@ -1287,13 +1287,13 @@ class QPrinter___ extends QPrinter {
          * @return The page margins for this printer.
          */
         public final QMarginsF getPageMargins(QPrinter.Unit unit) {
-            QNativePointer left = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer top = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer right = new QNativePointer(QNativePointer.Type.Double);
-            QNativePointer bottom = new QNativePointer(QNativePointer.Type.Double);
+            QNativePointer left = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer top = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer right = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
+            QNativePointer bottom = new QNativePointer(QNativePointer.Type.%JAVA_QREAL_Type);
 
             getPageMargins(left, top, right, bottom, unit);
-            return new QMarginsF(left.doubleValue(), top.doubleValue(), right.doubleValue(), bottom.doubleValue());
+            return new QMarginsF(left.%JAVA_QREAL_typeValue(), top.%JAVA_QREAL_typeValue(), right.%JAVA_QREAL_typeValue(), bottom.%JAVA_QREAL_typeValue());
         }
 
 }// class
@@ -1383,14 +1383,14 @@ class QGraphicsScene___ extends QGraphicsScene {
         /**
          * Equivalent to addEllipse(x, y, w, h, null, null)
          */
-        public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h) {
+        public final QGraphicsEllipseItem addEllipse(%JAVA_QREAL_type x, %JAVA_QREAL_type y, %JAVA_QREAL_type w, %JAVA_QREAL_type h) {
             return addEllipse(x, y, w, h, null);
         }
 
         /**
          * Equivalent to addEllipse(x, y, w, h, pen, null)
          */
-        public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen) {
+        public final QGraphicsEllipseItem addEllipse(%JAVA_QREAL_type x, %JAVA_QREAL_type y, %JAVA_QREAL_type w, %JAVA_QREAL_type h, QPen pen) {
             return addEllipse(x, y, w, h, pen, null);
         }
 
@@ -1414,7 +1414,7 @@ class QGraphicsScene___ extends QGraphicsScene {
          * @param brush The brush for the resulting QGraphicsEllipseItem.
          * @return The resulting item.
          */
-        public final QGraphicsEllipseItem addEllipse(double x, double y, double w, double h, QPen pen, QBrush brush) {
+        public final QGraphicsEllipseItem addEllipse(%JAVA_QREAL_type x, %JAVA_QREAL_type y, %JAVA_QREAL_type w, %JAVA_QREAL_type h, QPen pen, QBrush brush) {
             QGraphicsEllipseItem item = new QGraphicsEllipseItem(x, y, w, h);
             item.setPen(pen);
             item.setBrush(brush);
@@ -1454,7 +1454,7 @@ class QGraphicsScene___ extends QGraphicsScene {
         /**
          * Equivalent to addLine(x1, y1, x2, y2, null)
          */
-        public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2) {
+        public final QGraphicsLineItem addLine(%JAVA_QREAL_type x1, %JAVA_QREAL_type y1, %JAVA_QREAL_type x2, %JAVA_QREAL_type y2) {
             return addLine(x1, y1, x2, y2, null);
         }
 
@@ -1477,7 +1477,7 @@ class QGraphicsScene___ extends QGraphicsScene {
          * @param pen The pen with which to draw the line.
          * @return The resulting item.
          */
-        public final QGraphicsLineItem addLine(double x1, double y1, double x2, double y2, QPen pen) {
+        public final QGraphicsLineItem addLine(%JAVA_QREAL_type x1, %JAVA_QREAL_type y1, %JAVA_QREAL_type x2, %JAVA_QREAL_type y2, QPen pen) {
             QGraphicsLineItem item = new QGraphicsLineItem(x1, y1, x2, y2);
             item.setPen(pen);
 
@@ -1630,14 +1630,14 @@ class QGraphicsScene___ extends QGraphicsScene {
         /**
          * Equivalent to addRect(x, y, w, h, null, null)
          */
-        public final QGraphicsRectItem addRect(double x, double y, double w, double h) {
+        public final QGraphicsRectItem addRect(%JAVA_QREAL_type x, %JAVA_QREAL_type y, %JAVA_QREAL_type w, %JAVA_QREAL_type h) {
             return addRect(x, y, w, h, null);
         }
 
         /**
          * Equivalent to addRect(x, y, w, h, pen, null)
          */
-        public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen) {
+        public final QGraphicsRectItem addRect(%JAVA_QREAL_type x, %JAVA_QREAL_type y, %JAVA_QREAL_type w, %JAVA_QREAL_type h, QPen pen) {
             return addRect(x, y, w, h, pen, null);
         }
 
@@ -1661,7 +1661,7 @@ class QGraphicsScene___ extends QGraphicsScene {
          * @param brush The brush with which to draw the rectangle.
          * @return The resulting item.
          */
-        public final QGraphicsRectItem addRect(double x, double y, double w, double h, QPen pen, QBrush brush) {
+        public final QGraphicsRectItem addRect(%JAVA_QREAL_type x, %JAVA_QREAL_type y, %JAVA_QREAL_type w, %JAVA_QREAL_type h, QPen pen, QBrush brush) {
             QGraphicsRectItem item = new QGraphicsRectItem(x, y, w, h);
             item.setPen(pen);
             item.setBrush(brush);

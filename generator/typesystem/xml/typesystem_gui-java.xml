@@ -173,7 +173,7 @@
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QTransform"/>
             <replace from="%FUNCTION_NAME" to="rotate"/>
-            <replace from="%ARGUMENTS" to="double angle, Axis axis"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type angle, Axis axis"/>
             <replace from="%ARGUMENT_NAMES" to="angle, axis"/>
         </insert-template>
 
@@ -185,7 +185,7 @@
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QTransform"/>
             <replace from="%FUNCTION_NAME" to="rotate"/>
-            <replace from="%ARGUMENTS" to="double angle"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type angle"/>
             <replace from="%ARGUMENT_NAMES" to="angle"/>
         </insert-template>
         </inject-code>
@@ -206,7 +206,7 @@
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QTransform"/>
             <replace from="%FUNCTION_NAME" to="rotateRadians"/>
-            <replace from="%ARGUMENTS" to="double angle, Axis axis"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type angle, Axis axis"/>
             <replace from="%ARGUMENT_NAMES" to="angle, axis"/>
         </insert-template>
 
@@ -218,7 +218,7 @@
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QTransform"/>
             <replace from="%FUNCTION_NAME" to="rotateRadians"/>
-            <replace from="%ARGUMENTS" to="double angle"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type angle"/>
             <replace from="%ARGUMENT_NAMES" to="angle"/>
         </insert-template>
     </inject-code>
@@ -236,7 +236,7 @@
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QTransform"/>
             <replace from="%FUNCTION_NAME" to="scale"/>
-            <replace from="%ARGUMENTS" to="double x, double y"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type x, %JAVA_QREAL_type y"/>
             <replace from="%ARGUMENT_NAMES" to="x, y"/>
         </insert-template>
     </inject-code>
@@ -254,7 +254,7 @@
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QTransform"/>
             <replace from="%FUNCTION_NAME" to="shear"/>
-            <replace from="%ARGUMENTS" to="double x, double y"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type x, %JAVA_QREAL_type y"/>
             <replace from="%ARGUMENT_NAMES" to="x, y"/>
         </insert-template>
     </inject-code>
@@ -273,7 +273,7 @@
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QTransform"/>
             <replace from="%FUNCTION_NAME" to="translate"/>
-            <replace from="%ARGUMENTS" to="double x, double y"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type x, %JAVA_QREAL_type y"/>
             <replace from="%ARGUMENT_NAMES" to="x, y"/>
         </insert-template>
     </inject-code>
@@ -453,7 +453,7 @@
 
         <inject-code class="native">
       extern "C" JNIEXPORT void JNICALL QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_gui_QPolygonF_add_1private)
-      (JNIEnv *__jni_env, jobject, jlong nativeId, jdouble x, jdouble y)
+      (JNIEnv *__jni_env, jobject, jlong nativeId, %JNI_QREAL_type x, %JNI_QREAL_type y)
       {
           Q_UNUSED(__jni_env);
           QPolygonF *polygon = (QPolygonF *) qtjambi_from_jlong(nativeId);
@@ -2294,6 +2294,7 @@
         </inject-code>
 
        <inject-code>
+        <!-- This API is double type even on ARM -->
         <insert-template name="gui.inputDialog_get_input">
             <replace from="%RETURN_TYPE" to="Double"/>
             <replace from="%EXTRA" to="double value, double minValue, double maxValue, int decimals"/>

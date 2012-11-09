@@ -184,8 +184,8 @@
     </value-type>
 
     <template name="core.multiply-devide-add-subtract">
-    public final %TYPE multiply(double d) { operator_multiply_assign(d); return this; }
-    public final %TYPE divide(double d) { operator_divide_assign(d); return this; }
+    public final %TYPE multiply(%JAVA_QREAL_type d) { operator_multiply_assign(d); return this; }
+    public final %TYPE divide(%JAVA_QREAL_type d) { operator_divide_assign(d); return this; }
     public final %TYPE add(%TYPE p) { operator_add_assign(p); return this; }
     public final %TYPE subtract(%TYPE p) { operator_subtract_assign(p); return this; }
     </template>
@@ -313,7 +313,7 @@
         </modify-function>
         <inject-code>
             <insert-template name="core.qlocale_to_type_float">
-                <replace from="%TYPE" to="double"/>
+                <replace from="%TYPE" to="double"/><!-- This API is double even on ARM -->
                 <replace from="%FUNCTION_NAME" to="toDouble"/>
             </insert-template>
         </inject-code>
@@ -494,7 +494,7 @@
 
             <insert-template name="QByteArray::toType()">
                 <replace from="%NAME%" to="toDouble"/>
-                <replace from="%TYPE%" to="double"/>
+                <replace from="%TYPE%" to="double"/><!-- This API is double even on ARM -->
             </insert-template>
 
             <insert-template name="QByteArray::toType()">
@@ -895,6 +895,8 @@
         </insert-template>
     </inject-code>
 
+    <!-- This signature="setNum(double,char,int)" is just not present on
+    the ARM platform Qt API -->
     <modify-function signature="setNum(double,char,int)">
         <access modifier="private"/>
         <rename to="setNum_private"/>
@@ -907,7 +909,7 @@
     </modify-function>
     <inject-code>
         <insert-template name="core.qbytearray_setNum_float">
-            <replace from="%FLOAT_TYPE" to="double"/>
+            <replace from="%FLOAT_TYPE" to="double"/><!-- This API is double even on ARM -->
         </insert-template>
     </inject-code>
 

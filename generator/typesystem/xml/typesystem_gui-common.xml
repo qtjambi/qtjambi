@@ -931,27 +931,27 @@
         <insert-template name="core.unary_other_type">
             <replace from="%FUNCTION_NAME" to="rotate"/>
             <replace from="%OUT_TYPE" to="QMatrix"/>
-            <replace from="%IN_TYPE" to="double"/>
+            <replace from="%IN_TYPE" to="%JAVA_QREAL_type"/>
         </insert-template>
 
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QMatrix"/>
             <replace from="%FUNCTION_NAME" to="scale"/>
-            <replace from="%ARGUMENTS" to="double sx, double sy"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type sx, %JAVA_QREAL_type sy"/>
             <replace from="%ARGUMENT_NAMES" to="sx, sy"/>
         </insert-template>
 
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QMatrix"/>
             <replace from="%FUNCTION_NAME" to="shear"/>
-            <replace from="%ARGUMENTS" to="double sh, double sv"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type sh, %JAVA_QREAL_type sv"/>
             <replace from="%ARGUMENT_NAMES" to="sh, sv"/>
         </insert-template>
 
         <insert-template name="core.private_function_return_self">
             <replace from="%RETURN_TYPE" to="QMatrix"/>
             <replace from="%FUNCTION_NAME" to="translate"/>
-            <replace from="%ARGUMENTS" to="double dx, double dy"/>
+            <replace from="%ARGUMENTS" to="%JAVA_QREAL_type dx, %JAVA_QREAL_type dy"/>
             <replace from="%ARGUMENT_NAMES" to="dx, dy"/>
         </insert-template>
         </inject-code>
