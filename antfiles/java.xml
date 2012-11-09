@@ -68,7 +68,8 @@
             <property name="jar.excludes" value="${javac.excludes} com/trolltech/tools/**"/>
             <property name="module.excludes" value="${javac.excludes}"/>
             <property name="sourcedir" value="${java.srcdir}/qtjambi"/>
-            <property name="sourcedir2" value="${generator.outputdir}/java"/>
+            <property name="sourcedir2" value="${java.srcdir}/qtjambi-qreal-${qtjambi.qrealtype}"/>
+            <property name="sourcedir3" value="${generator.outputdir}/java"/>
         </ant>
         <ant antfile="antfiles/jar.xml" inheritrefs="true" target="makesrcjar.qtjambi">
             <property name="module" value="qtjambi"/>

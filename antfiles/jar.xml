@@ -93,6 +93,27 @@
         </javac>
     </target>
 
+    <!-- Same as "compile" target but with 3 sourcedirs -->
+    <target name="compile3" depends="jar_init">
+        <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
+        <mkdir dir="${jardir}"/>
+        <mkdir dir="${java.outdir}/${module}"/>
+        <javac source="1.5" target="1.5" debug="true" deprecation="true"
+                fork="true" memorymaximumsize="1024m" verbose="false"
+                includeantruntime="true"
+                excludes="${module.excludes}"
+                destdir="${java.outdir}/${module}">
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
+            <src path="${sourcedir}"/>
+            <src path="${sourcedir2}"/>
+            <src path="${sourcedir3}"/>
+            <!-- These are excluded due to the MacOSX port of Qt not needing this backward compatibility -->
+            <exclude name="com/trolltech/qt/xml/QXmlStream*.java" if="qtjambi.config.ismacosx"/>
+            <classpath refid="java.compile.classpath"/>
+        </javac>
+    </target>
+
     <!--
         copy-resources: copy all non Java files to the output directory so that
         the <jar> task is ready to go. Do NOT include the *.jui files, nor the
@@ -118,10 +139,33 @@
         </copy>
     </target>
 
+    <target name="copy-qreal-resources">
+        <mkdir dir="${java.outdir}/${module}-qreal-${qtjambi.qrealtype}"/>
+        <copy todir="${java.outdir}/${module}-qreal-${qtjambi.qrealtype}" includeemptydirs="false">
+            <fileset dir="${java.srcdir}/${module}-qreal-${qtjambi.qrealtype}">
+                <include name="**/*"/>
+                <exclude name="**/.*"/>
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.jui"/>
+                <exclude name="${jar.excludes}"/>
+            </fileset>
+        </copy>
+    </target>
+
     <target name="copy-src-resources">
         <mkdir dir="${java.outsrcdir}/${module}"/>
         <copy todir="${java.outsrcdir}/${module}" includeemptydirs="false">
             <fileset dir="${java.srcdir}/${module}">
+                <include name="**/*"/>
+                <exclude name="${jar.excludes}"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="copy-qreal-src-resources">
+        <mkdir dir="${java.outsrcdir}/${module}-qreal-${qtjambi.qrealtype}"/>
+        <copy todir="${java.outsrcdir}/${module}-qreal-${qtjambi.qrealtype}" includeemptydirs="false">
+            <fileset dir="${java.srcdir}/${module}-qreal-${qtjambi.qrealtype}">
                 <include name="**/*"/>
                 <exclude name="${jar.excludes}"/>
             </fileset>
@@ -295,8 +339,8 @@
         </jar>
     </target>
 
-    <!-- Same as "makejar" target but uses compile2 to process 2 sourcedirs -->
-    <target name="makejar.qtjambi" depends="compile2, copy-resources">
+    <!-- Same as "makejar" target but uses compile3 to process 3 sourcedirs -->
+    <target name="makejar.qtjambi" depends="compile3, copy-resources, copy-qreal-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
         <mkdir dir="${destdir}"/>
@@ -330,7 +374,7 @@
         </jar>
     </target>
 
-    <target name="makesrcjar.qtjambi" depends="copy-src-resources">
+    <target name="makesrcjar.qtjambi" depends="copy-src-resources, copy-qreal-src-resources">
         <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
         <mkdir dir="${destdir}"/>
@@ -339,6 +383,7 @@
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
             </manifest>
             <fileset dir="${java.outsrcdir}/${module}" excludes="**/*.class"/>
+            <fileset dir="${java.outsrcdir}/${module}-qreal-${qtjambi.qrealtype}" excludes="**/*.class"/>
             <fileset dir="${generator.outputdir}/java" excludes="com/trolltech/tools/**"/>
         </jar>
     </target>
