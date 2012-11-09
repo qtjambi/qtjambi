@@ -733,10 +733,10 @@
     </value-type>
 
     <value-type name="QRectF">
-        <modify-function signature="getCoords(double*,double*,double*,double*)const">
+        <modify-function signature="getCoords(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const">
         <remove/>
         </modify-function>
-        <modify-function signature="getRect(double*,double*,double*,double*)const">
+        <modify-function signature="getRect(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const">
         <remove/>
         </modify-function>
         <modify-function signature="operator&amp;=(QRectF)">
@@ -760,10 +760,10 @@
 
 
     <value-type name="QSize">
-        <modify-function signature="operator*=(double)">
+        <modify-function signature="operator*=(%CPP_QREAL_type)">
         <access modifier="private"/>
         </modify-function>
-        <modify-function signature="operator/=(double)">
+        <modify-function signature="operator/=(%CPP_QREAL_type)">
         <access modifier="private"/>
         </modify-function>
         <modify-function signature="operator+=(QSize)">
@@ -781,10 +781,10 @@
     </value-type>
 
     <value-type name="QSizeF">
-        <modify-function signature="operator*=(double)">
+        <modify-function signature="operator*=(%CPP_QREAL_type)">
         <access modifier="private"/>
         </modify-function>
-        <modify-function signature="operator/=(double)">
+        <modify-function signature="operator/=(%CPP_QREAL_type)">
         <access modifier="private"/>
         </modify-function>
         <modify-function signature="operator+=(QSizeF)">
@@ -985,8 +985,7 @@
 
     <value-type name="QEasingCurve">
         <modify-function signature="customType()const" remove="all" />
-        <modify-function signature="setCustomType(double)" remove="all" />
-        <modify-function signature="setCustomType(float)" remove="all" />
+        <modify-function signature="setCustomType(%CPP_QREAL_type)" remove="all" />
         <modify-function signature="operator!=(const QEasingCurve &amp;)const" remove="all" />
     </value-type>
 

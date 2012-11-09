@@ -537,12 +537,12 @@
     <value-type name="QTransform">
         <modify-function signature="operator=(QTransform)" remove="all"/>
         <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
-        <modify-function signature="map(double,double,double*,double*)const" remove="all"/>
+        <modify-function signature="map(%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type*,%CPP_QREAL_type*)const" remove="all"/>
 
-        <modify-function signature="operator*=(double)" access="private"/>
-        <modify-function signature="operator+=(double)" access="private"/>
-        <modify-function signature="operator-=(double)" access="private"/>
-        <modify-function signature="operator/=(double)" access="private"/>
+        <modify-function signature="operator*=(%CPP_QREAL_type)" access="private"/>
+        <modify-function signature="operator+=(%CPP_QREAL_type)" access="private"/>
+        <modify-function signature="operator-=(%CPP_QREAL_type)" access="private"/>
+        <modify-function signature="operator/=(%CPP_QREAL_type)" access="private"/>
         <modify-function signature="operator*(QTransform)const" rename="multiplied" />
         <modify-function signature="operator*=(QTransform)" access="private"/>
     </value-type>
@@ -910,15 +910,15 @@
         </extra-includes>
 
         <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
-        <modify-function signature="map(double,double,double*,double*)const" remove="all"/>
+        <modify-function signature="map(%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type*,%CPP_QREAL_type*)const" remove="all"/>
         <modify-function signature="operator=(QMatrix)" remove="all"/>
 
         <modify-function signature="operator*(QMatrix)const" access="private"/>
         <modify-function signature="operator*=(QMatrix)" access="private"/>
-        <modify-function signature="rotate(double)" access="private" rename="rotate_private"/>
-        <modify-function signature="scale(double,double)" access="private" rename="scale_private"/>
-        <modify-function signature="shear(double,double)" access="private" rename="shear_private"/>
-        <modify-function signature="translate(double,double)" access="private" rename="translate_private"/>
+        <modify-function signature="rotate(%CPP_QREAL_type)" access="private" rename="rotate_private"/>
+        <modify-function signature="scale(%CPP_QREAL_type,%CPP_QREAL_type)" access="private" rename="scale_private"/>
+        <modify-function signature="shear(%CPP_QREAL_type,%CPP_QREAL_type)" access="private" rename="shear_private"/>
+        <modify-function signature="translate(%CPP_QREAL_type,%CPP_QREAL_type)" access="private" rename="translate_private"/>
 
         <modify-function signature="inverted(bool*)const">
             <access modifier="private"/>
@@ -1185,7 +1185,7 @@
             <remove/>
         </modify-function>
 
-        <modify-function signature="getCmykF(double*,double*,double*,double*,double*)">
+        <modify-function signature="getCmykF(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)">
             <remove/>
         </modify-function>
 
@@ -1193,7 +1193,7 @@
             <remove/>
         </modify-function>
 
-        <modify-function signature="getHsvF(double*,double*,double*,double*)const">
+        <modify-function signature="getHsvF(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const">
             <remove/>
         </modify-function>
 
@@ -1201,7 +1201,7 @@
             <remove/>
         </modify-function>
 
-        <modify-function signature="getRgbF(double*,double*,double*,double*)const">
+        <modify-function signature="getRgbF(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const">
             <remove/>
         </modify-function>
 
@@ -2822,6 +2822,7 @@
             </modify-argument>
         </modify-function>
 
+        <!-- This API is double even on ARM -->
         <modify-function signature="getDouble(QWidget *, const QString &amp;, const QString &amp;, double, double, double, int, bool *, QFlags&lt;Qt::WindowType&gt;)">
             <rename to="getDouble_internal"/>
             <access modifier="private"/>

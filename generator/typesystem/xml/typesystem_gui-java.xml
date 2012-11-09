@@ -157,7 +157,7 @@
             </modify-argument>
         </modify-function>
 
-        <modify-function signature="rotate(double,Qt::Axis)">
+        <modify-function signature="rotate(%CPP_QREAL_type,Qt::Axis)">
             <modify-argument index="1">
                 <remove-default-expression/>
             </modify-argument>
@@ -190,7 +190,7 @@
         </insert-template>
         </inject-code>
 
-        <modify-function signature="rotateRadians(double,Qt::Axis)">
+        <modify-function signature="rotateRadians(%CPP_QREAL_type,Qt::Axis)">
         <modify-argument index="1">
             <remove-default-expression/>
         </modify-argument>
@@ -223,7 +223,7 @@
         </insert-template>
     </inject-code>
 
-    <modify-function signature="scale(double,double)">
+    <modify-function signature="scale(%CPP_QREAL_type,%CPP_QREAL_type)">
         <access modifier="private"/>
         <rename to="scale_private"/>
     </modify-function>
@@ -241,7 +241,7 @@
         </insert-template>
     </inject-code>
 
-    <modify-function signature="shear(double,double)">
+    <modify-function signature="shear(%CPP_QREAL_type,%CPP_QREAL_type)">
         <access modifier="private"/>
         <rename to="shear_private"/>
     </modify-function>
@@ -260,7 +260,7 @@
     </inject-code>
 
 
-    <modify-function signature="translate(double,double)">
+    <modify-function signature="translate(%CPP_QREAL_type,%CPP_QREAL_type)">
         <access modifier="private"/>
         <rename to="translate_private"/>
     </modify-function>
@@ -488,7 +488,7 @@
     </value-type>
 
     <object-type name="QPixmapConvolutionFilter" polymorphic-id-expression="%1-&gt;type() == QPixmapFilter::ConvolutionFilter">
-    <modify-function signature="setConvolutionKernel(const double*,int,int)">
+    <modify-function signature="setConvolutionKernel(const %CPP_QREAL_type*,int,int)">
         <access modifier="private" />
         <rename to="setConvolutionKernel_private" />
     </modify-function>
@@ -1483,7 +1483,7 @@
                 if (%2 != null) disableGarbageCollection();
             </inject-code>
         </modify-function>
-        <modify-function signature="QGraphicsEllipseItem(double,double,double,double,QGraphicsItem*,QGraphicsScene*)">
+        <modify-function signature="QGraphicsEllipseItem(%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type,QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="5" meta-name="%5"/>
                 if (%5 != null) disableGarbageCollection();
@@ -1528,7 +1528,7 @@
                 if (%2 != null) disableGarbageCollection();
             </inject-code>
         </modify-function>
-        <modify-function signature="QGraphicsLineItem(double,double,double,double,QGraphicsItem*,QGraphicsScene*)">
+        <modify-function signature="QGraphicsLineItem(%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type,QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="5" meta-name="%5"/>
                 if (%5 != null) disableGarbageCollection();
@@ -1589,7 +1589,7 @@
                 if (%1 != null) disableGarbageCollection();
             </inject-code>
         </modify-function>
-        <modify-function signature="QGraphicsRectItem(double,double,double,double,QGraphicsItem*,QGraphicsScene*)">
+        <modify-function signature="QGraphicsRectItem(%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type,%CPP_QREAL_type,QGraphicsItem*,QGraphicsScene*)">
             <inject-code position="end">
                 <argument-map index="5" meta-name="%5"/>
                 if (%5 != null) disableGarbageCollection();
@@ -2385,14 +2385,14 @@
         </inject-code>
 
         <modify-function signature="addEllipse(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
-        <modify-function signature="addEllipse(double, double, double, double, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addEllipse(%CPP_QREAL_type, %CPP_QREAL_type, %CPP_QREAL_type, %CPP_QREAL_type, const QPen &amp;, const QBrush &amp;)" remove="all" />
         <modify-function signature="addLine(const QLineF &amp;, const QPen &amp;)" remove="all" />
-        <modify-function signature="addLine(double, double, double, double, const QPen &amp;)" remove="all" />
+        <modify-function signature="addLine(%CPP_QREAL_type, %CPP_QREAL_type, %CPP_QREAL_type, %CPP_QREAL_type, const QPen &amp;)" remove="all" />
         <modify-function signature="addPath(const QPainterPath &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
         <modify-function signature="addPixmap(const QPixmap &amp;)" remove="all" />
         <modify-function signature="addPolygon(const QPolygonF &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
         <modify-function signature="addRect(const QRectF &amp;, const QPen &amp;, const QBrush &amp;)" remove="all" />
-        <modify-function signature="addRect(double, double, double, double, const QPen &amp;, const QBrush &amp;)" remove="all" />
+        <modify-function signature="addRect(%CPP_QREAL_type, %CPP_QREAL_type, %CPP_QREAL_type, %CPP_QREAL_type, const QPen &amp;, const QBrush &amp;)" remove="all" />
         <modify-function signature="addSimpleText(const QString &amp;, const QFont &amp;)" remove="all" />
         <modify-function signature="addText(const QString &amp;, const QFont &amp;)" remove="all" />
 
@@ -3193,7 +3193,7 @@
     </object-type>
 
     <interface-type name="QGraphicsLayoutItem">
-        <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
+        <modify-function signature="getContentsMargins(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const" access="private" />
         <inject-code>
             <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>
@@ -3202,7 +3202,7 @@
         </inject-code>
     </interface-type>
     <object-type name="QGraphicsLayout">
-        <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
+        <modify-function signature="getContentsMargins(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const" access="private" />
         <inject-code>
             <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class Subclass_of_QGraphicsLayoutItem___" quote-before-line="}// class"/>
         </inject-code>
@@ -3222,8 +3222,8 @@
     </modify-function>
     </object-type>
     <object-type name="QGraphicsWidget">
-        <modify-function signature="getContentsMargins(double*,double*,double*,double*)const" access="private" />
-        <modify-function signature="getWindowFrameMargins(double*,double*,double*,double*)const" access="private"/>
+        <modify-function signature="getContentsMargins(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const" access="private" />
+        <modify-function signature="getWindowFrameMargins(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*)const" access="private"/>
 
         <inject-code>
             <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QGraphicsWidget___" quote-before-line="}// class"/>
@@ -3266,7 +3266,7 @@
     </object-type>
 
     <object-type name="QPrinter">
-        <modify-function signature="getPageMargins(double*,double*,double*,double*,QPrinter::Unit)const" access="private" />
+        <modify-function signature="getPageMargins(%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,%CPP_QREAL_type*,QPrinter::Unit)const" access="private" />
         <inject-code>
             <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QPrinter___" quote-before-line="}// class"/>
         </inject-code>

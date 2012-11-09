@@ -212,12 +212,12 @@
     </value-type>
 
     <value-type name="QPoint">
-        <modify-function signature="operator*=(double)"
+        <modify-function signature="operator*=(%CPP_QREAL_type)"
                          access="private"
-                         associated-to="multiply(double d)"/>
-        <modify-function signature="operator/=(double)"
+                         associated-to="multiply(%CPP_QREAL_type d)"/>
+        <modify-function signature="operator/=(%CPP_QREAL_type)"
              access="private"
-             associated-to="divide(double d)"/>
+             associated-to="divide(%CPP_QREAL_type d)"/>
         <modify-function signature="operator+=(QPoint)"
              access="private"
              associated-to="add(QPoint)"/>
@@ -234,12 +234,12 @@
     </value-type>
 
     <value-type name="QPointF">
-        <modify-function signature="operator*=(double)"
+        <modify-function signature="operator*=(%CPP_QREAL_type)"
              access="private"
-             associated-to="multiply(double d)"/>
-        <modify-function signature="operator/=(double)"
+             associated-to="multiply(%CPP_QREAL_type d)"/>
+        <modify-function signature="operator/=(%CPP_QREAL_type)"
              access="private"
-             associated-to="divide(double d)"/>
+             associated-to="divide(%CPP_QREAL_type d)"/>
         <modify-function signature="operator+=(QPointF)"
              access="private"
              associated-to="add(QPointF p)"/>
@@ -1485,6 +1485,7 @@
           <rename to="writeFloat"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
+      <!-- This API is double even on ARM -->
       <modify-function signature="operator&lt;&lt;(double)">
           <rename to="writeDouble"/>
           <modify-argument index="0" replace-value="this"/>
@@ -1530,6 +1531,7 @@
           <access modifier="private"/>
       </modify-function>
 
+      <!-- This API is double even on ARM -->
       <modify-function signature="operator&gt;&gt;(double&amp;)">
           <rename to="operator_shift_right_double"/>
           <modify-argument index="0" replace-value="this"/>
@@ -1686,6 +1688,7 @@
           <rename to="writeFloat"/>
           <modify-argument index="0" replace-value="this"/>
       </modify-function>
+      <!-- This API is double even on ARM -->
       <modify-function signature="operator&lt;&lt;(double)">
           <rename to="writeDouble"/>
           <modify-argument index="0" replace-value="this"/>
@@ -1720,6 +1723,7 @@
           <modify-argument index="0" replace-value="this"/>
           <rename to="operator_shift_right_float"/>
       </modify-function>
+      <!-- This API is double even on ARM -->
       <modify-function signature="operator&gt;&gt;(double&amp;)">
           <access modifier="private"/>
           <modify-argument index="0" replace-value="this"/>
