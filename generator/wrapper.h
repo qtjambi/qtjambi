@@ -46,6 +46,7 @@ class Wrapper {
 
         static QString include_directory;
         static bool qtjambi_debug_tools;
+        static bool isTargetPlatformArmCpu;
         void setDefineUndefineStage(int stage) { defineUndefineStageCurrent = stage; }
 
         int runJambiGenerator();

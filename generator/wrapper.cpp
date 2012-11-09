@@ -10,6 +10,8 @@
 
 QString Wrapper::include_directory = QString();
 
+bool Wrapper::isTargetPlatformArmCpu = false;
+
 void ReportHandler_message_handler(const std::string &str) {
     ReportHandler::warning(fromStdString(str));
 }
@@ -114,6 +116,9 @@ void Wrapper::handleArguments() {
 
     if (args.contains("output-directory"))
         pp_file = QDir(args.value("output-directory")).absoluteFilePath(pp_file);
+
+    if (args.contains("target-platform-arm-cpu"))
+        isTargetPlatformArmCpu = true;
 
     if (args.contains("cpp-output-directory"))
         gs->cppOutDir = args.value("cpp-output-directory");
@@ -268,6 +273,7 @@ void Wrapper::displayHelp(GeneratorSet* generatorSet) {
            "  --qtjambi-debug-tools                     \n"
            "  --preproc-stage1                          \n"
            "  --preproc-stage2                          \n"
+           "  --target-platform-arm-cpu                 \n"
            "  -Dname[=definition]                       \n"
            "  -Uname                                    \n",
            path_splitter, path_splitter);

@@ -5,6 +5,7 @@
 
 #include "handler.h"
 #include "typedatabase.h"
+#include "wrapper.h"			/* for isTargetPlatformArmCpu */
 #include "../reporthandler.h"
 #include "../main.h"
 
@@ -935,6 +936,12 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
                 QString signature = attributes["signature"];
 
+                // Perform global substitutions for QREAL/float/double to support ARM
+                if(Wrapper::isTargetPlatformArmCpu) /* ARM */
+                    signature = signature.replace(QLatin1String("%CPP_QREAL_type"), QLatin1String("float"));
+                else /* non-ARM */
+                    signature = signature.replace(QLatin1String("%CPP_QREAL_type"), QLatin1String("double"));
+
                 signature = QMetaObject::normalizedSignature(signature.toLocal8Bit().constData());
                 if (signature.isEmpty()) {
                     m_error = "No signature for modified function";
@@ -985,8 +992,13 @@ bool Handler::startElement(const QString &, const QString &n,
                 }
 
                 QString association = attributes["associated-to"];
-                if (!association.isEmpty())
+                if (!association.isEmpty()) {
+                    if(Wrapper::isTargetPlatformArmCpu) /* ARM */
+                        association = association.replace(QLatin1String("%CPP_QREAL_type"), QLatin1String("float"));
+                    else /* non-ARM */
+                        association = association.replace(QLatin1String("%CPP_QREAL_type"), QLatin1String("double"));
                     mod.association = association;
+                }
 
                 mod.modifiers |= (convertBoolean(attributes["virtual-slot"], "virtual-slot", false) ? Modification::VirtualSlot : 0);
                 mod.modifiers |= (convertBoolean(attributes["allow-as-slot"], "allow-as-slot", false) ? Modification::AllowAsSlot : 0);

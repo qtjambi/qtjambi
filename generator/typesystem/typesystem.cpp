@@ -49,6 +49,7 @@
 #include "../generator.h"
 #include "../customtypes.h"
 
+#include "wrapper.h"			/* for isTargetPlatformArmCpu */
 #include "typesystem.h"
 #include "handler.h"
 #include "typedatabase.h"
@@ -89,7 +90,18 @@ QString formattedCodeHelper(QTextStream &s, Indentor &indentor, QStringList &lin
     bool lastEmpty = true;
     QString lastLine;
     while (!lines.isEmpty()) {
-        const QString line = lines.takeFirst().trimmed();
+        /*const*/ QString line = lines.takeFirst().trimmed();
+        if(Wrapper::isTargetPlatformArmCpu) { /* ARM */
+            line = line.replace(QLatin1String("%JAVA_QREAL_type"), QLatin1String("float"));
+            line = line.replace(QLatin1String("%JAVA_QREAL_Type"), QLatin1String("Float"));
+            line = line.replace(QLatin1String("%CPP_QREAL_type"), QLatin1String("/*cpp*/ float /* */"));
+            line = line.replace(QLatin1String("%JNI_QREAL_type"), QLatin1String("/*jni*/ jfloat /* */"));
+        } else {	/* non-ARM */
+            line = line.replace(QLatin1String("%JAVA_QREAL_type"), QLatin1String("double"));
+            line = line.replace(QLatin1String("%JAVA_QREAL_Type"), QLatin1String("Double"));
+            line = line.replace(QLatin1String("%CPP_QREAL_type"), QLatin1String("/*cpp*/ double /* */"));
+            line = line.replace(QLatin1String("%JNI_QREAL_type"), QLatin1String("/*jni*/ jdouble /* */"));
+        }
         if (line.isEmpty()) {
             if (!lastEmpty)
                 s << endl;
