@@ -288,6 +288,23 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             compiler = Compiler.resolve(compilerValue);
         }
 
+        String vsredistdirValue = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR);
+        if(vsredistdirValue != null) {
+            sourceValue = null; // " (environment variable $" + "VSREDISTDIR" + ")"; // not strictly true it could be set by ant cmdline
+            mySetProperty(-1, Constants.VSREDISTDIR_PACKAGE, sourceValue, vsredistdirValue, false);  // report value
+
+            String vsredistdirPackageValue = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR_PACKAGE);
+            if(vsredistdirPackageValue == null) {
+                sourceValue = " (default value; feature need explicit enabling)";
+                vsredistdirPackageValue = "false";
+            } else {
+                sourceValue = null;
+            }
+            mySetProperty(-1, Constants.VSREDISTDIR_PACKAGE, sourceValue, vsredistdirPackageValue, false);  // report value
+        } else {
+            mySetProperty(0, Constants.VSREDISTDIR_PACKAGE, null, "false", false);  // silently set false
+        }
+
         String CROSS_COMPILE = System.getenv("CROSS_COMPILE");   // used here
         if(CROSS_COMPILE != null)
             getProject().log(this, "CROSS_COMPILE is set: " + prettyValue(CROSS_COMPILE), Project.MSG_INFO);

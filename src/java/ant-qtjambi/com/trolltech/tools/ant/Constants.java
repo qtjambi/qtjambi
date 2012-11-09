@@ -227,8 +227,9 @@ public abstract class Constants {
     public static final String QTJAMBI_MACOSX_MAC_SDK       = "qtjambi.macosx.macsdk";
 
     // Windows specific vars...
-    public static final String VSINSTALLDIR     = "qtjambi.vsinstalldir";
-    public static final String VSREDISTDIR      = "qtjambi.vsredistdir";
+    public static final String VSINSTALLDIR        = "qtjambi.vsinstalldir";
+    public static final String VSREDISTDIR         = "qtjambi.vsredistdir";
+    public static final String VSREDISTDIR_PACKAGE = "qtjambi.vsredistdir.package";
 
     public static final String QTJAMBI_DEBUG_TOOLS         = "qtjambi.debug-tools";
     public static final String QTJAMBI_QREALTYPE           = "qtjambi.qrealtype";

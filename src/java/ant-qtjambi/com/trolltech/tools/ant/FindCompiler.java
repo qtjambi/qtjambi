@@ -90,6 +90,23 @@ public class FindCompiler {
             }
             return false;
         }
+
+        public boolean isMsvcKind() {
+            Compiler compiler = resolve(name);
+            switch(compiler) {
+            case MSVC1998:
+            case MSVC2002:
+            case MSVC2003:
+            case MSVC2005:
+            case MSVC2005_64:
+            case MSVC2008:
+            case MSVC2008_64:
+            case MSVC2010:
+            case MSVC2010_64:
+                return true;
+            }
+            return false;
+        }
     }
 
     public FindCompiler(Project project, PropertyHelper props) {

@@ -737,8 +737,9 @@ public class PlatformJarTask extends Task {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
+            String vsredistdirPackageEnable = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR_PACKAGE);
             Object vsredistdirObject = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR);
-            if(vsredistdirObject != null) {
+            if(vsredistdirPackageEnable != null && "false".compareToIgnoreCase(vsredistdirPackageEnable) != 0 && vsredistdirObject != null) {
                 String vsredistdir = vsredistdirObject.toString();
                 File crt = new File(vsredistdir, "Microsoft.VC" + vcnumber + ".CRT");
 
@@ -778,6 +779,7 @@ public class PlatformJarTask extends Task {
                     }
                 }
             } else {
+                // You also have to explicitly set -Dqtjambi.vsredistdir.package=true to make this feature work
                 getProject().log(this, "WARNING: " + Constants.VSREDISTDIR + " property not set; skipping packaging of Visual C redistributable components.", Project.MSG_WARN);
             }
             break;
