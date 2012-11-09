@@ -157,6 +157,9 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         String QTDIR = System.getenv("QTDIR");   // used here
         if(QTDIR != null)
             getProject().log(this, "QTDIR is set: " + prettyValue(QTDIR), Project.MSG_INFO);
+        else if(OSInfo.isWindows() || OSInfo.isMacOS())
+            getProject().log(this, "WARNING QTDIR is not set, yet this platform usually requires it to be set", Project.MSG_WARN);
+
 
         final String[] emitA = {
             Constants.BINDIR,
@@ -364,6 +367,8 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         String JAVA_HOME = System.getenv("JAVA_HOME");   // used here
         if(JAVA_HOME != null)
             getProject().log(this, "JAVA_HOME is set: " + prettyValue(JAVA_HOME), Project.MSG_INFO);
+        else
+            getProject().log(this, "WARNING JAVA_HOME is not set, this is usually required to be set", Project.MSG_WARN);
 
         String javaHomeTarget = decideJavaHomeTarget();
         if(javaHomeTarget == null)
