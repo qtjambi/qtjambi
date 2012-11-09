@@ -81,7 +81,7 @@ public class InitializeTask extends AbstractInitializeTask {
         };
         for(String emit : emitA) {
             String value = AntUtil.getPropertyAsString(propertyHelper, emit);
-            File dir = new File(emit);
+            File dir = new File(value);
             if(dir.isDirectory() == false)
                 sourceValue = " (WARNING: path does not exist or is not a directory)";
             else

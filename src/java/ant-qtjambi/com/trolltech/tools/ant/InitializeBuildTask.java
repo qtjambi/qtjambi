@@ -143,7 +143,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
                 if(jambiDirectoryAbspath != null) {
                     String path = jambiDirectoryAbspath.getAbsolutePath();
                     if(value.equals(path) == false) {
-                        sourceValue = " (WARNING MISMATH: " + path + ")";
+                        sourceValue = " (WARNING MISMATCH: " + path + ")";
                         thisVerbose = -1;  // noisy (because of WARNING)
                     }
                 }
