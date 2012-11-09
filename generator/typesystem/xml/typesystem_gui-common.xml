@@ -98,6 +98,7 @@
     <rejection class="QAbstractTextDocumentLayout" function-name="handlerForObject" />
     <rejection class="QGraphicsEffect" function-name="source"/>
     <rejection class="QMatrix4x4" function-name="toGenericMatrix"/>
+    <rejection class="QEasingCurve" function-name="setCustomType"/><!-- Needs qreal interface conversion -->
 
     <enum-type name="QStyleOptionTabBarBaseV2::StyleOptionVersion" />
     <enum-type name="QTabBar::SelectionBehavior" />
