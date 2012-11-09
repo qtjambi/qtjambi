@@ -57,12 +57,13 @@ import com.trolltech.qt.core.QPointF;
 import com.trolltech.qt.core.QTemporaryFile;
 import com.trolltech.qt.core.QTextStream;
 import com.trolltech.qt.gui.QPolygonF;
+import com.trolltech.qt.qreal.QReal;
 
 public class TestQTextStream extends QApplicationTest {
     @Test public void testQPolygonF() {
         QPolygonF p = new QPolygonF();
         p.add(new QPointF(10, 11));
-        p.add(new QPointF(12.2, 13.3));
+        p.add(new QPointF(QReal.valueOf(12.2).platformValue(), QReal.valueOf(13.3).platformValue()));
         p.add(new QPointF(14, 15));
 
         QFile f = new QTemporaryFile();

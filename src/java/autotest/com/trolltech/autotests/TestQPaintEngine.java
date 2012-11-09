@@ -66,6 +66,7 @@ import com.trolltech.qt.gui.QPaintDeviceInterface;
 import com.trolltech.qt.gui.QPaintEngine;
 import com.trolltech.qt.gui.QPaintEngineState;
 import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.qreal.QReal;
 
 public class TestQPaintEngine extends CustomPaintEngine {
     // TODO explain why we don't just use QApplicaitonTest subclass or #testDispose() method ?
@@ -233,7 +234,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
 
     @Test
     public void testVirtualDrawLineFs() {
-        callDrawLineFs(new QLineF(1.2, 2.3, 3.4, 4.5), 11);
+        callDrawLineFs(new QLineF(QReal.valueOf(1.2).platformValue(), QReal.valueOf(2.3).platformValue(), QReal.valueOf(3.4).platformValue(), QReal.valueOf(4.5).platformValue()), 11);
 
         assertEquals(11, length);
 
@@ -257,7 +258,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
         OtherCustomPaintEngine p = new OtherCustomPaintEngine();
 
         QLineF lines[] = new QLineF[13];
-        lines[0] = new QLineF(2.3, 3.4, 4.5, 5.6);
+        lines[0] = new QLineF(QReal.valueOf(2.3).platformValue(), QReal.valueOf(3.4).platformValue(), QReal.valueOf(4.5).platformValue(), QReal.valueOf(5.6).platformValue());
         for (int i=1; i<lines.length; ++i)
             lines[i] = new QLineF();
 
@@ -292,7 +293,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
 
     @Test
     public void testVirtualDrawRectFs() {
-        callDrawRectFs(new QRectF(1.2, 2.3, 3.4, 4.5), 11);
+        callDrawRectFs(new QRectF(QReal.valueOf(1.2).platformValue(), QReal.valueOf(2.3).platformValue(), QReal.valueOf(3.4).platformValue(), QReal.valueOf(4.5).platformValue()), 11);
 
         assertEquals(11, length);
 
@@ -316,7 +317,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
         OtherCustomPaintEngine p = new OtherCustomPaintEngine();
 
         QRectF rects[] = new QRectF[13];
-        rects[0] = new QRectF(2.3, 3.4, 4.5, 5.6);
+        rects[0] = new QRectF(QReal.valueOf(2.3).platformValue(), QReal.valueOf(3.4).platformValue(), QReal.valueOf(4.5).platformValue(), QReal.valueOf(5.6).platformValue());
         for (int i=1; i<rects.length; ++i)
             rects[i] = new QRectF();
 
@@ -465,7 +466,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
 
     @Test
     public void testVirtualDrawPointFs() {
-        callDrawPointFs(new QPointF(1.0, 2.0), 11);
+        callDrawPointFs(new QPointF(QReal.valueOf(1.0).platformValue(), QReal.valueOf(2.0).platformValue()), 11);
 
         assertEquals(11, length);
 
@@ -487,7 +488,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
         OtherCustomPaintEngine p = new OtherCustomPaintEngine();
 
         QPointF pointFs[] = new QPointF[13];
-        pointFs[0] = new QPointF(2.0, 3.0);
+        pointFs[0] = new QPointF(QReal.valueOf(2.0).platformValue(), QReal.valueOf(3.0).platformValue());
         for (int i=1; i<pointFs.length; ++i)
             pointFs[i] = new QPointF();
 
@@ -520,7 +521,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
 
     @Test
     public void testVirtualDrawPolygonFs() {
-        callDrawPolygonFs(new QPointF(1.0, 2.0), 11);
+        callDrawPolygonFs(new QPointF(QReal.valueOf(1.0).platformValue(), QReal.valueOf(2.0).platformValue()), 11);
 
         assertEquals(11, length);
 
@@ -542,7 +543,7 @@ public class TestQPaintEngine extends CustomPaintEngine {
         OtherCustomPaintEngine p = new OtherCustomPaintEngine();
 
         QPointF pointFs[] = new QPointF[13];
-        pointFs[0] = new QPointF(2.0, 3.0);
+        pointFs[0] = new QPointF(QReal.valueOf(2.0).platformValue(), QReal.valueOf(3.0).platformValue());
         for (int i=1; i<pointFs.length; ++i)
             pointFs[i] = new QPointF();
 

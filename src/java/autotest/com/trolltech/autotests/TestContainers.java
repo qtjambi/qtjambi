@@ -73,6 +73,7 @@ import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QLinearGradient;
+import com.trolltech.qt.qreal.QReal;
 
 public class TestContainers extends QApplicationTest {
     private Tulip tulip;
@@ -90,26 +91,38 @@ public class TestContainers extends QApplicationTest {
     @Test
     public void run_writeReadVectorOfPairs() {
         // Generate my data...
-        List<QPair<Double, QColor>> write_stops = new ArrayList<QPair<Double, QColor>>();
+        // We change the generics from Double to Number to allow it to compile on ARM and non-ARM
+        // It was a QPair<Double, QColor> but on ARM it needs to be QPair<Float, QColor>
+        List<QPair<Number, QColor>> write_stops = new ArrayList<QPair<Number, QColor>>();
         for (int i = 0; i < 11; ++i) {
-            QPair<Double, QColor> p = new QPair<Double, QColor>(i / 10.0, new QColor(i * 255 / 10, 0, 0));
+            QPair<Number, QColor> p = new QPair<Number, QColor>(QReal.valueOf(i / 10.0).platformValue(), new QColor(i * 255 / 10, 0, 0));
             write_stops.add(p);
         }
 
         // Set data..
         QLinearGradient gradient = new QLinearGradient(0, 0, 100, 100);
-        gradient.setStops(write_stops);
+        {
+            // ARM platform hack using QReal to make it a QPair<Double, QColor>
+            // Remove generics to allow calling API
+            @SuppressWarnings("unchecked")
+            List list = (List) write_stops;
+            gradient.setStops(list);
+        }
 
         // Read back...
-        List<QPair<Double, QColor>> read_stops = gradient.stops();
+        List read_stops = (List) gradient.stops();
 
         assertEquals(write_stops.size(), read_stops.size());
         for (int i = 0; i < write_stops.size(); ++i) {
-            QPair<Double, QColor> wstop = write_stops.get(i), rstop = read_stops.get(i);
-            assertEquals(wstop.first, rstop.first);
-            assertEquals(wstop.second.red(), rstop.second.red());
-            assertEquals(wstop.second.green(), rstop.second.green());
-            assertEquals(wstop.second.blue(), rstop.second.blue());
+            @SuppressWarnings("unchecked")
+            QPair<Number, QColor> wstop = (QPair<Number, QColor>) write_stops.get(i);
+            QPair<Number, QColor> rstop = (QPair<Number, QColor>) read_stops.get(i);
+            assertEquals(wstop.first, rstop.first); // compare as Number (since could be Float/Double)
+            QColor wsecond = wstop.second;
+            QColor rsecond = rstop.second;
+            assertEquals(wsecond.red(), rsecond.red());
+            assertEquals(wsecond.green(), rsecond.green());
+            assertEquals(wsecond.blue(), rsecond.blue());
         }
     }
 

@@ -110,8 +110,8 @@ import com.trolltech.qt.internal.QSignalEmitterInternal;
 import com.trolltech.qt.internal.QtJambiInternal;
 import com.trolltech.qt.internal.QtJambiObject;
 import com.trolltech.qt.network.QHostAddress;
-
 import com.trolltech.qt.osinfo.OSInfo;
+import com.trolltech.qt.qreal.QReal;
 
 class OrdinarySubclass extends OrdinaryDestroyed {
     private TestClassFunctionality tc = null;
@@ -244,7 +244,7 @@ public class TestClassFunctionality extends QApplicationTest {
             GraphicsSceneSubclassSubclass.items = items;
             GraphicsSceneSubclassSubclass.options = options;
 
-            options[1].setLevelOfDetail(3.0);
+            options[1].setLevelOfDetail(QReal.valueOf(3.0).platformValue());
             super.drawItems(painter, items, options, widget);
         }
 
@@ -257,10 +257,10 @@ public class TestClassFunctionality extends QApplicationTest {
     @Test
     public void testGraphicsSceneDrawItemsInjections() {
         GraphicsSceneSubclassSubclass gsss = new GraphicsSceneSubclassSubclass();
-        QGraphicsEllipseItem item1 = new QGraphicsEllipseItem(new QRectF(1.0, 2.0, 3.0, 4.0));
-        item1.setZValue(2.0);
-        QGraphicsEllipseItem item2 = new QGraphicsEllipseItem(new QRectF(2.0, 3.0, 4.0, 5.0));
-        item2.setZValue(1.0);
+        QGraphicsEllipseItem item1 = new QGraphicsEllipseItem(new QRectF(QReal.valueOf(1.0).platformValue(), QReal.valueOf(2.0).platformValue(), QReal.valueOf(3.0).platformValue(), QReal.valueOf(4.0).platformValue()));
+        item1.setZValue(QReal.valueOf(2.0).platformValue());
+        QGraphicsEllipseItem item2 = new QGraphicsEllipseItem(new QRectF(QReal.valueOf(2.0).platformValue(), QReal.valueOf(3.0).platformValue(), QReal.valueOf(4.0).platformValue(), QReal.valueOf(5.0).platformValue()));
+        item2.setZValue(QReal.valueOf(1.0).platformValue());
         gsss.addItem(item1);
         gsss.addItem(item2);
 

@@ -59,6 +59,7 @@ import com.trolltech.qt.gui.QPainterPath;
 import com.trolltech.qt.gui.QPolygon;
 import com.trolltech.qt.gui.QPolygonF;
 import com.trolltech.qt.gui.QTransform;
+import com.trolltech.qt.qreal.QReal;
 
 public class TestQTransform extends QApplicationTest {
     class Data {
@@ -135,27 +136,27 @@ public class TestQTransform extends QApplicationTest {
         // rotations
         float deg = 0;
         data.add(new Data("rot 0 a", new QTransform(
-                Math.cos(M_PI * deg / 180.), -Math.sin(M_PI * deg / 180.), Math
-                        .sin(M_PI * deg / 180.), Math.cos(M_PI * deg / 180.),
-                0, 0), new QRect(0, 0, 30, 40), new QPolygon(new QRect(0, 0,
+                QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(), QReal.valueOf(-Math.sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math
+                        .sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(),
+                QReal.valueOf(0).platformValue(), QReal.valueOf(0).platformValue()), new QRect(0, 0, 30, 40), new QPolygon(new QRect(0, 0,
                 30, 40))));
         deg = 0.00001f;
         data.add(new Data("rot 0 b", new QTransform(
-                Math.cos(M_PI * deg / 180.), -Math.sin(M_PI * deg / 180.), Math
-                        .sin(M_PI * deg / 180.), Math.cos(M_PI * deg / 180.),
-                0, 0), new QRect(0, 0, 30, 40), new QPolygon(new QRect(0, 0,
+                QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(), QReal.valueOf(-Math.sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math
+                        .sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(),
+                QReal.valueOf(0).platformValue(), QReal.valueOf(0).platformValue()), new QRect(0, 0, 30, 40), new QPolygon(new QRect(0, 0,
                 30, 40))));
         deg = 0;
         data.add(new Data("rot 0 c", new QTransform(
-                Math.cos(M_PI * deg / 180.), -Math.sin(M_PI * deg / 180.), Math
-                        .sin(M_PI * deg / 180.), Math.cos(M_PI * deg / 180.),
-                0, 0), new QRect(10, 20, 30, 40), new QPolygon(new QRect(10,
+                QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(), QReal.valueOf(-Math.sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math
+                        .sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(),
+                QReal.valueOf(0).platformValue(), QReal.valueOf(0).platformValue()), new QRect(10, 20, 30, 40), new QPolygon(new QRect(10,
                 20, 30, 40))));
         deg = 0.00001f;
         data.add(new Data("rot 0 d", new QTransform(
-                Math.cos(M_PI * deg / 180.), -Math.sin(M_PI * deg / 180.), Math
-                        .sin(M_PI * deg / 180.), Math.cos(M_PI * deg / 180.),
-                0, 0), new QRect(10, 20, 30, 40), new QPolygon(new QRect(10,
+                QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(), QReal.valueOf(-Math.sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math
+                        .sin(M_PI * deg / 180.)).platformValue(), QReal.valueOf(Math.cos(M_PI * deg / 180.)).platformValue(),
+                QReal.valueOf(0).platformValue(), QReal.valueOf(0).platformValue()), new QRect(10, 20, 30, 40), new QPolygon(new QRect(10,
                 20, 30, 40))));
 
         return data;
@@ -222,21 +223,21 @@ public class TestQTransform extends QApplicationTest {
         QTransform res = new QTransform(10, 20, 60, 80, 5, 6);
         m.scale(10, 20);
         assertTrue(m.equals(res));
-        m.scale(1. / 10., 1. / 20.);
+        m.scale(QReal.valueOf(1. / 10.).platformValue(), QReal.valueOf(1. / 20.).platformValue());
         assertTrue(m.equals(res2));
     }
 
     @Test
     public void matrix() {
         QMatrix mat1 = new QMatrix();
-        mat1.scale(0.3, 0.7);
-        mat1.translate(53.3, 94.4);
+        mat1.scale(QReal.valueOf(0.3).platformValue(), QReal.valueOf(0.7).platformValue());
+        mat1.translate(QReal.valueOf(53.3).platformValue(), QReal.valueOf(94.4).platformValue());
         mat1.rotate(45);
 
         QMatrix mat2 = new QMatrix();
         mat2.rotate(33);
-        mat2.scale(0.6, 0.6);
-        mat2.translate(13.333, 7.777);
+        mat2.scale(QReal.valueOf(0.6).platformValue(), QReal.valueOf(0.6).platformValue());
+        mat2.translate(QReal.valueOf(13.333).platformValue(), QReal.valueOf(7.777).platformValue());
 
         QTransform tran1 = new QTransform(mat1);
         QTransform tran2 = new QTransform(mat2);
