@@ -45,6 +45,8 @@
 package com.trolltech.tools.ant;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -115,13 +117,30 @@ public class InitializeTask extends AbstractInitializeTask {
             AntUtil.setNewProperty(propertyHelper, Constants.OSPLATFORM, s);
 
         s = null;
-        // FIXME incorrect for windows x86/x64, sunos
-        if(osname.endsWith("64"))
-            s = "x86_64";
-        else
-            s = "i386";
+
+        if(true) {    // FIXME lookup if verbose is set
+            Properties props = System.getProperties();
+            Enumeration e = props.propertyNames();
+            while(e.hasMoreElements()) {
+                String k = (String) e.nextElement();
+                Object v = System.getProperty(k);
+                getProject().log("systemProperty[" + k + "] = " + v, Project.MSG_VERBOSE);
+            }
+        }
+
+        String javaOsArch = System.getProperty("os.arch");	// arm|
+        if("arm".equals(javaOsArch)) {
+            // FIXME get LE or BE
+            s = "arm";
+        } else {
+            if(osname.endsWith("64"))
+                s = "x86_64";
+            else
+                s = "i386";
+        }
         if(s != null)
             AntUtil.setNewProperty(propertyHelper, Constants.OSCPU, s);
+        String osCpu = s;
 
 
         String JAVA_HOME = System.getenv("JAVA_HOME");   // used here

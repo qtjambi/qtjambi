@@ -57,6 +57,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -314,13 +315,30 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             AntUtil.setNewProperty(propertyHelper, Constants.OSPLATFORM, s);
 
         s = null;
-        // FIXME incorrect for windows x86/x64, sunos
-        if(osname.endsWith("64"))
-            s = "x86_64";
-        else
-            s = "i386";
+
+        if(true) {    // FIXME lookup if verbose is set
+            Properties props = System.getProperties();
+            Enumeration e = props.propertyNames();
+            while(e.hasMoreElements()) {
+                String k = (String) e.nextElement();
+                Object v = System.getProperty(k);
+                getProject().log("systemProperty[" + k + "] = " + v, Project.MSG_VERBOSE);
+            }
+        }
+
+        String javaOsArch = System.getProperty("os.arch");	// arm|
+        if("arm".equals(javaOsArch)) {
+            // FIXME get LE or BE
+            s = "arm";
+        } else {
+            if(osname.endsWith("64"))
+                s = "x86_64";
+            else
+                s = "i386";
+        }
         if(s != null)
             AntUtil.setNewProperty(propertyHelper, Constants.OSCPU, s);
+        String osCpu = s;
 
         finder.checkCompilerDetails();
 
@@ -510,7 +528,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         mySetProperty(-1, Constants.CACHEKEY, cachekeyVersionSource, cachekeyVersion, false);
 
 
-        if(!decideGeneratorPreProc())
+        if(!decideGeneratorPreProc(osCpu))
             throw new BuildException("Unable to determine generator pre-processor settings");
         s = Util.safeArrayToString(generatorPreProcStageOneA);
         getProject().log(this, Constants.GENERATOR_PREPROC_STAGE1 + " is " + ((s != null) ? s : "<unset>"), Project.MSG_VERBOSE);
@@ -1271,7 +1289,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         return versionFound;
     }
 
-    private boolean decideGeneratorPreProc() {
+    private boolean decideGeneratorPreProc(String osCpu) {
         List<String> generatorPreProcStageOneList = new ArrayList<String>();
         List<String> generatorPreProcStageTwoList = new ArrayList<String>();
 
@@ -1304,11 +1322,15 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-D__linux__");
             generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
-            if(is64bit != null) {
-                if(is64bit.booleanValue())
-                    generatorPreProcStageOneList.add("-D__x86_64__");
-                else
-                    generatorPreProcStageOneList.add("-D__i386__");
+            if("arm".equals(osCpu)) {
+                generatorPreProcStageOneList.add("-D__arm__");
+            } else {
+                if(is64bit != null) {
+                    if(is64bit.booleanValue())
+                        generatorPreProcStageOneList.add("-D__x86_64__");
+                    else
+                        generatorPreProcStageOneList.add("-D__i386__");
+                }
             }
         } else if(OSInfo.isMacOS()) {
             generatorPreProcStageOneList.add("-D__APPLE__");
@@ -1320,11 +1342,15 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             generatorPreProcStageOneList.add("-D__unix__");
             generatorPreProcStageOneList.add("-D__FreeBSD__");
             generatorPreProcStageOneList.add("-D__GNUC__" + gccVersionMajor);
-            if(is64bit != null) {
-                if(is64bit.booleanValue())
-                    generatorPreProcStageOneList.add("-D__x86_64__");  // untested
-                else
-                    generatorPreProcStageOneList.add("-D__i386__");  // untested
+            if("arm".equals(osCpu)) {
+                generatorPreProcStageOneList.add("-D__arm__");
+            } else {
+                if(is64bit != null) {
+                    if(is64bit.booleanValue())
+                        generatorPreProcStageOneList.add("-D__x86_64__");  // untested
+                    else
+                        generatorPreProcStageOneList.add("-D__i386__");  // untested
+                }
             }
         } else if(OSInfo.isSolaris()) {
             generatorPreProcStageOneList.add("-D__unix__");
