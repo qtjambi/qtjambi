@@ -181,7 +181,7 @@ public abstract class AbstractInitializeTask extends Task {
     }
 
     protected String decideJavaOsarchTarget() {
-        String sourceValue = null;;
+        String sourceValue = null;
         String s = AntUtil.getPropertyAsString(propertyHelper, Constants.JAVA_OSARCH_TARGET);
 
         if(s == null) {
@@ -221,6 +221,63 @@ public abstract class AbstractInitializeTask extends Task {
 
         String result = s;
         mySetProperty(-1, Constants.JAVA_OSARCH_TARGET, sourceValue, result, false);
+        return result;
+    }
+
+    protected String decideJavaOscpu() {
+        String sourceValue = null;
+        String s = AntUtil.getPropertyAsString(propertyHelper, Constants.JAVA_OSCPU);
+
+        if(s == null) {
+            try {
+                s = System.getenv("JAVA_OSCPU");
+                if(s != null)
+                    sourceValue = " (from envvar:JAVA_OSCPU)";
+            } catch(SecurityException eat) {
+            }
+        }
+        if(s == null) {
+            try {
+                s = System.getProperty("os.arch");
+                if(s != null)
+                    sourceValue = " (detected from JVM property:os.arch)";
+            } catch(SecurityException eat) {
+            }
+        }
+
+        String result = s;
+        mySetProperty(-1, Constants.JAVA_OSCPU, sourceValue, result, false);
+        return result;
+    }
+
+    protected String decideJavaOscpuTarget() {
+        String sourceValue = null;
+        String s = AntUtil.getPropertyAsString(propertyHelper, Constants.JAVA_OSCPU_TARGET);
+
+        if(s == null) {
+            try {
+                s = System.getenv("JAVA_OSCPU_TARGET");
+                if(s != null)
+                    sourceValue = " (from envvar:JAVA_OSCPU_TARGET)";
+            } catch(SecurityException eat) {
+            }
+        }
+        if(s == null) {
+            s = AntUtil.getPropertyAsString(propertyHelper, Constants.JAVA_OSCPU);
+            if(s != null)
+                sourceValue = " (inherited from ${" + Constants.JAVA_OSCPU + "})";
+        }
+        if(s == null) {
+            try {
+                s = System.getProperty("os.arch");
+                if(s != null)
+                    sourceValue = " (detected from JVM property:os.arch)";
+            } catch(SecurityException eat) {
+            }
+        }
+
+        String result = s;
+        mySetProperty(-1, Constants.JAVA_OSCPU_TARGET, sourceValue, result, false);
         return result;
     }
 

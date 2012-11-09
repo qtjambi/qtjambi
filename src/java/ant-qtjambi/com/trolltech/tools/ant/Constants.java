@@ -74,8 +74,10 @@ public abstract class Constants {
     public static final String BUNDLE_VERSION           = "qtjambi.version.bundle";
     public static final String BUNDLE_VERSION_MODE      = "qtjambi.version.bundle.mode";
     public static final String SUFFIX_VERSION           = "qtjambi.version.suffix";
-    public static final String JAVA_HOME_TARGET         = "java.home.target";
-    public static final String JAVA_OSARCH_TARGET       = "java.osarch.target";
+    public static final String JAVA_HOME_TARGET         = "java.home.target"; // build
+    public static final String JAVA_OSARCH_TARGET       = "java.osarch.target"; // target
+    public static final String JAVA_OSCPU               = "java.oscpu"; // build
+    public static final String JAVA_OSCPU_TARGET        = "java.oscpu.target"; // target
     public static final String EXEC_STRIP               = "exec.strip";
 
     public static final String QT_VERSION_MAJOR         = "qt.version.major";

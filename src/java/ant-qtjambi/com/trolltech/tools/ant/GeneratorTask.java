@@ -205,9 +205,14 @@ public class GeneratorTask extends Task {
         if(debugTools)
             commandList.add("--qtjambi-debug-tools");
 
-        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
-        Object o;
 
+        PropertyHelper props = PropertyHelper.getPropertyHelper(getProject());
+
+        String javaOsarchTarget = AntUtil.getPropertyAsString(props, Constants.JAVA_OSCPU_TARGET);
+        if("arm".equals(javaOsarchTarget))
+            commandList.add("--target-platform-arm-cpu");
+
+        Object o;
         o = AntUtil.getProperty(props, Constants.GENERATOR_PREPROC_STAGE1);
         handlePreprocArgument(o, "--preproc-stage1");
 

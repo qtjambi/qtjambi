@@ -157,6 +157,14 @@ public class InitializeTask extends AbstractInitializeTask {
                 throw new BuildException("Unable to determine JAVA_OSARCH_TARGET, setup environment variable JAVA_OSARCH_TARGET or edit build.properties");
         }
 
+        String javaOscpu = decideJavaOscpu();
+        if(javaOscpu == null)
+            throw new BuildException("Unable to determine JAVA_OSCPU, setup environment variable JAVA_OSCPU or edit build.properties");
+
+        String javaOscpuTarget = decideJavaOscpuTarget();
+        if(javaOscpuTarget  == null)
+                throw new BuildException("Unable to determine JAVA_OSCPU_TARGET, setup environment variable JAVA_OSCPU_TARGET or edit build.properties");
+
         if(OSInfo.isMacOS())
             mySetProperty(0, Constants.QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
     }
