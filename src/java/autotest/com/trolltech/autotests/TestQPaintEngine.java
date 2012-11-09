@@ -69,6 +69,9 @@ import com.trolltech.qt.gui.QPixmap;
 import com.trolltech.qt.qreal.QReal;
 
 public class TestQPaintEngine extends CustomPaintEngine {
+    // For ARM float/double conversion values must be within precision of a float
+    private static final double DELTA = 0.000001;
+
     // TODO explain why we don't just use QApplicaitonTest subclass or #testDispose() method ?
     //  I can not see a good reason other than we already subclass CustomPaintEngine so we can
     //  just invoke the static methods directly.
@@ -239,9 +242,9 @@ public class TestQPaintEngine extends CustomPaintEngine {
         assertEquals(11, length);
 
         QLineF line = (QLineF) object;
-        assertEquals(1.2, line.x1(), 0.0);
-        assertEquals(2.3, line.y1(), 0.0);
-        assertEquals(3.4, line.x2(), 0.0);
+        assertEquals(1.2, line.x1(), DELTA);	// ARM expected:<1.2> but was:<1.2000000476837158>
+        assertEquals(2.3, line.y1(), DELTA);	// ARM expected:<2.3> but was:<2.299999952316284>
+        assertEquals(3.4, line.x2(), DELTA);	// ARM expected:<3.4> but was:<3.4000000953674316>
         assertEquals(4.5, line.y2(), 0.0);
     }
 
@@ -267,10 +270,10 @@ public class TestQPaintEngine extends CustomPaintEngine {
         assertEquals(13, p.length());
 
         QLineF line = p.lineF();
-        assertEquals(2.3, line.x1(), 0.0);
-        assertEquals(3.4, line.y1(), 0.0);
+        assertEquals(2.3, line.x1(), DELTA);	// ARM expected:<2.3> but was:<2.299999952316284>
+        assertEquals(3.4, line.y1(), DELTA);	// ARM expected:<3.4> but was:<3.4000000953674316>
         assertEquals(4.5, line.x2(), 0.0);
-        assertEquals(5.6, line.y2(), 0.0);
+        assertEquals(5.6, line.y2(), DELTA);	// ARM expected:<5.6> but was:<5.599999904632568>
     }
 
     @Test
@@ -298,9 +301,9 @@ public class TestQPaintEngine extends CustomPaintEngine {
         assertEquals(11, length);
 
         QRectF rect = (QRectF) object;
-        assertEquals(1.2, rect.x(), 0.0);
-        assertEquals(2.3, rect.y(), 0.0);
-        assertEquals(3.4, rect.width(), 0.0);
+        assertEquals(1.2, rect.x(), DELTA);	// ARM expected:<1.2> but was:<1.2000000476837158>
+        assertEquals(2.3, rect.y(), DELTA);	// ARM expected:<2.3> but was:<2.299999952316284>
+        assertEquals(3.4, rect.width(), DELTA);	// ARM expected:<3.4> but was:<3.4000000953674316>
         assertEquals(4.5, rect.height(), 0.0);
     }
 
@@ -326,10 +329,10 @@ public class TestQPaintEngine extends CustomPaintEngine {
         assertEquals(13, p.length());
 
         QRectF rect = p.rectF();
-        assertEquals(2.3, rect.x(), 0.0);
-        assertEquals(3.4, rect.y(), 0.0);
+        assertEquals(2.3, rect.x(), DELTA);	// ARM expected:<2.3> but was:<2.299999952316284>
+        assertEquals(3.4, rect.y(), DELTA);	// ARM expected:<3.4> but was:<3.4000000953674316>
         assertEquals(4.5, rect.width(), 0.0);
-        assertEquals(5.6, rect.height(), 0.0);
+        assertEquals(5.6, rect.height(), DELTA);// ARM expected:<5.6> but was:<5.599999904632568>
     }
 
     @Test

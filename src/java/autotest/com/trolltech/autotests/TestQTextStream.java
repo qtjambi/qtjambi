@@ -60,6 +60,9 @@ import com.trolltech.qt.gui.QPolygonF;
 import com.trolltech.qt.qreal.QReal;
 
 public class TestQTextStream extends QApplicationTest {
+    // For ARM float/double conversion values must be within precision of a float
+    private static final double DELTA = 0.000001;
+
     @Test public void testQPolygonF() {
         QPolygonF p = new QPolygonF();
         p.add(new QPointF(10, 11));
@@ -83,8 +86,8 @@ public class TestQTextStream extends QApplicationTest {
 
             assertEquals(10.0, p2.at(0).x(), 0.0);
             assertEquals(11.0, p2.at(0).y(), 0.0);
-            assertEquals(12.2, p2.at(1).x(), 0.0);
-            assertEquals(13.3, p2.at(1).y(), 0.0);
+            assertEquals(12.2, p2.at(1).x(), DELTA);	// ARM expected:<12.2> but was:<12.199999809265137>
+            assertEquals(13.3, p2.at(1).y(), DELTA);	// ARM expected:<13.3> but was:<13.300000190734863>
             assertEquals(14.0, p2.at(2).x(), 0.0);
             assertEquals(15.0, p2.at(2).y(), 0.0);
         }

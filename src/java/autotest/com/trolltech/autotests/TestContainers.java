@@ -100,6 +100,7 @@ public class TestContainers extends QApplicationTest {
         }
 
         // Set data..
+        @SuppressWarnings("unchecked")
         QLinearGradient gradient = new QLinearGradient(0, 0, 100, 100);
         {
             // ARM platform hack using QReal to make it a QPair<Double, QColor>
@@ -116,6 +117,7 @@ public class TestContainers extends QApplicationTest {
         for (int i = 0; i < write_stops.size(); ++i) {
             @SuppressWarnings("unchecked")
             QPair<Number, QColor> wstop = (QPair<Number, QColor>) write_stops.get(i);
+            @SuppressWarnings("unchecked")
             QPair<Number, QColor> rstop = (QPair<Number, QColor>) read_stops.get(i);
             assertEquals(wstop.first, rstop.first); // compare as Number (since could be Float/Double)
             QColor wsecond = wstop.second;
