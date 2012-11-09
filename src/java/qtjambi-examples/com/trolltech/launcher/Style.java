@@ -46,6 +46,7 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 public class Style extends QWindowsStyle {
     public static QLinearGradient GRADIENT_LIGHT = null;
@@ -79,14 +80,14 @@ public class Style extends QWindowsStyle {
     static {
         GRADIENT_LIGHT = new QLinearGradient(0, 0, 0, 1);
         GRADIENT_LIGHT.setColorAt(0, TT_BG_GREEN_DARK);
-        GRADIENT_LIGHT.setColorAt(0.25, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
-        GRADIENT_LIGHT.setColorAt(0.5, TT_BG_GREEN_LIGHT);
+        GRADIENT_LIGHT.setColorAt(QReal.valueOf(0.25).platformValue(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
+        GRADIENT_LIGHT.setColorAt(QReal.valueOf(0.5).platformValue(), TT_BG_GREEN_LIGHT);
         GRADIENT_LIGHT.setColorAt(1, TT_BG_GREEN_DARK);
 
         GRADIENT_DARK = new QLinearGradient(0, 0, 0, 1);
         GRADIENT_DARK.setColorAt(0, new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
-        GRADIENT_DARK.setColorAt(0.25, TT_BG_GREEN_DARK);
-        GRADIENT_DARK.setColorAt(0.5, TT_BG_GREEN_DARK);
+        GRADIENT_DARK.setColorAt(QReal.valueOf(0.25).platformValue(), TT_BG_GREEN_DARK);
+        GRADIENT_DARK.setColorAt(QReal.valueOf(0.5).platformValue(), TT_BG_GREEN_DARK);
         GRADIENT_DARK.setColorAt(1, TT_BG_GREEN_LIGHT);
     }
 
@@ -95,14 +96,14 @@ public class Style extends QWindowsStyle {
 
         UP_INDICATOR = new QPainterPath();
         UP_INDICATOR.moveTo(0, -3);
-        UP_INDICATOR.lineTo(4.5, 2);
-        UP_INDICATOR.lineTo(-4.5, 2);
+        UP_INDICATOR.lineTo(QReal.valueOf(4.5).platformValue(), 2);
+        UP_INDICATOR.lineTo(QReal.valueOf(-4.5).platformValue(), 2);
         UP_INDICATOR.closeSubpath();
 
         DOWN_INDICATOR = new QPainterPath();
         DOWN_INDICATOR.moveTo(0, 3);
-        DOWN_INDICATOR.lineTo(4.5, -2);
-        DOWN_INDICATOR.lineTo(-4.5, -2);
+        DOWN_INDICATOR.lineTo(QReal.valueOf(4.5).platformValue(), -2);
+        DOWN_INDICATOR.lineTo(QReal.valueOf(-4.5).platformValue(), -2);
         DOWN_INDICATOR.closeSubpath();
     }
 
@@ -164,8 +165,8 @@ public class Style extends QWindowsStyle {
                 rect.height(), Qt.AlignmentFlag.AlignTop.value() | Qt.AlignmentFlag.AlignHCenter.value(),
                 label));
 
-        text_rect.adjust(-H_TEXT_PADDING, GROUPBOX_LINE_THICKNESS / 2.0, TEXT_PADDING * 2 + H_TEXT_PADDING,
-                TEXT_PADDING * 2);
+        text_rect.adjust(QReal.valueOf(-H_TEXT_PADDING).platformValue(), QReal.valueOf(GROUPBOX_LINE_THICKNESS / 2.0).platformValue(), QReal.valueOf(TEXT_PADDING * 2 + H_TEXT_PADDING).platformValue(),
+                QReal.valueOf(TEXT_PADDING * 2).platformValue());
 
         return text_rect;
     }
@@ -205,7 +206,7 @@ public class Style extends QWindowsStyle {
             QFontMetrics metrics = new QFontMetrics(w.font());
             yoff = metrics.ascent();
         }
-        return new QRectF(rect).adjusted(lt2, lt2 + yoff, -lt2, -lt2);
+        return new QRectF(rect).adjusted(QReal.valueOf(lt2).platformValue(), QReal.valueOf(lt2 + yoff).platformValue(), QReal.valueOf(-lt2).platformValue(), QReal.valueOf(-lt2).platformValue());
     }
 
     private void drawGroupBox(QStyleOptionGroupBox opt, QPainter p, QWidget widget) {
@@ -231,7 +232,7 @@ public class Style extends QWindowsStyle {
 
             drawShadeButton(p, text_rect, state);
 
-            p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
+            p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), QReal.valueOf(GROUPBOX_LINE_THICKNESS).platformValue()));
 
             p.drawRoundRect(text_rect, (int) (ROUND * 100 / text_rect.width()),
                     (int) (ROUND * 100 / text_rect.height()));
@@ -243,7 +244,7 @@ public class Style extends QWindowsStyle {
         }
 
         if(!((QGroupBox)widget).isFlat()){
-            p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), GROUPBOX_LINE_THICKNESS));
+            p.setPen(new QPen(new QBrush(TROLLTECH_GREEN), QReal.valueOf(GROUPBOX_LINE_THICKNESS).platformValue()));
             p.setClipPath(clipPath);
             QRectF bound_rect = groupBoxContentsRect(rect, opt, widget);
             drawButtonOutline(p, bound_rect, state);
@@ -274,7 +275,7 @@ public class Style extends QWindowsStyle {
         p.setPen(PEN_THICK_GREEN);
 
         double dim = Math.min(rect.width(), rect.height());
-        QRectF circle_rect = new QRectF(0, 0, dim, dim);
+        QRectF circle_rect = new QRectF(0, 0, QReal.valueOf(dim).platformValue(), QReal.valueOf(dim).platformValue());
 
         p.drawEllipse(circle_rect.adjusted(3, 3, -3, -3));
 
@@ -284,7 +285,7 @@ public class Style extends QWindowsStyle {
             p.drawEllipse(circle_rect.adjusted(6, 6, -6, -6));
         }
 
-        QRectF text_rect = new QRectF(dim + DOT_TO_TEXT_PADDING, 2, rect.width() - dim
+        QRectF text_rect = new QRectF(QReal.valueOf(dim + DOT_TO_TEXT_PADDING).platformValue(), 2, QReal.valueOf(rect.width() - dim).platformValue()
                 - DOT_TO_TEXT_PADDING, rect.height());
         p.setPen(PEN_BLACK);
         drawShadowText(p, text_rect.translated(-1, -2), text, 2, 2);
@@ -316,7 +317,7 @@ public class Style extends QWindowsStyle {
         else
             p.setPen(PEN_GRAY);
 
-        drawShadowText(p, rect.translated(translation, translation), opt.text(), shadow_offset,
+        drawShadowText(p, rect.translated(QReal.valueOf(translation).platformValue(), QReal.valueOf(translation).platformValue()), opt.text(), shadow_offset,
                 shadow_offset);
 
     }
@@ -384,13 +385,13 @@ public class Style extends QWindowsStyle {
 
         p.save();
         p.setPen(new QPen(new QColor(0, 0, 0, 20)));
-        p.drawText(rect.translated(dx, dy), flags, text);
+        p.drawText(rect.translated(QReal.valueOf(dx).platformValue(), QReal.valueOf(dy).platformValue()), flags, text);
 
         p.setPen(new QPen(new QColor(0, 0, 0, 15)));
-        p.drawText(rect.translated(dx - 1, dy), flags, text);
-        p.drawText(rect.translated(dx, dy - 1), flags, text);
-        p.drawText(rect.translated(dx + 1, dy), flags, text);
-        p.drawText(rect.translated(dx, dy + 1), flags, text);
+        p.drawText(rect.translated(QReal.valueOf(dx - 1).platformValue(), QReal.valueOf(dy).platformValue()), flags, text);
+        p.drawText(rect.translated(QReal.valueOf(dx).platformValue(), QReal.valueOf(dy - 1).platformValue()), flags, text);
+        p.drawText(rect.translated(QReal.valueOf(dx + 1).platformValue(), QReal.valueOf(dy).platformValue()), flags, text);
+        p.drawText(rect.translated(QReal.valueOf(dx).platformValue(), QReal.valueOf(dy + 1).platformValue()), flags, text);
         p.restore();
 
         p.drawText(rect, flags, text);

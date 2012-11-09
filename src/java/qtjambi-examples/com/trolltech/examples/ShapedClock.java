@@ -48,6 +48,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.MouseButton;
 import com.trolltech.qt.core.Qt.WindowFlags;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample(name = "Shaped Clock")
 //! [0]
@@ -134,13 +135,13 @@ public class ShapedClock extends QWidget {
         QPainter painter = new QPainter(this);
         painter.setRenderHint(QPainter.RenderHint.Antialiasing);
         painter.translate(width() / 2, height() / 2);
-        painter.scale(side / 200.0, side / 200.0);
+        painter.scale(QReal.valueOf(side / 200.0).platformValue(), QReal.valueOf(side / 200.0).platformValue());
 
         painter.setPen(QPen.NoPen);
         painter.setBrush(hourColor);
 
         painter.save();
-        painter.rotate(30.0 * ((time.hour() + time.minute() / 60.0)));
+        painter.rotate(QReal.valueOf(30.0 * ((time.hour() + time.minute() / 60.0))).platformValue());
         painter.drawConvexPolygon(hourHand);
         painter.restore();
 
@@ -148,14 +149,14 @@ public class ShapedClock extends QWidget {
 
         for (int i = 0; i < 12; ++i) {
             painter.drawLine(88, 0, 96, 0);
-            painter.rotate(30.0);
+            painter.rotate(QReal.valueOf(30.0).platformValue());
         }
 
         painter.setPen(QPen.NoPen);
         painter.setBrush(minuteColor);
 
         painter.save();
-        painter.rotate(6.0 * (time.minute() + time.second() / 60.0));
+        painter.rotate(QReal.valueOf(6.0 * (time.minute() + time.second() / 60.0)).platformValue());
         painter.drawConvexPolygon(minuteHand);
         painter.restore();
 
@@ -164,7 +165,7 @@ public class ShapedClock extends QWidget {
         for (int j = 0; j < 60; ++j) {
             if ((j % 5) != 0)
                 painter.drawLine(92, 0, 96, 0);
-            painter.rotate(6.0);
+            painter.rotate(QReal.valueOf(6.0).platformValue());
         }
     }
 //! [5]

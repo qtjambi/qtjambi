@@ -46,6 +46,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 import java.util.*;
 
@@ -83,8 +84,8 @@ public class CollidingMice extends QWidget {
 //! [5]
         for (int i = 0; i < MOUSE_COUNT; ++i) {
             Mouse mouse = new Mouse(this);
-            mouse.setPos(Math.sin((i * 6.28) / MOUSE_COUNT) * 200,
-                         Math.cos((i * 6.28) / MOUSE_COUNT) * 200);
+            mouse.setPos(QReal.valueOf(Math.sin((i * 6.28) / MOUSE_COUNT) * 200).platformValue(),
+                         QReal.valueOf(Math.cos((i * 6.28) / MOUSE_COUNT) * 200).platformValue());
             scene.addItem(mouse);
         }
 //! [5]
@@ -129,7 +130,7 @@ public class CollidingMice extends QWidget {
         public Mouse(QObject parent) {
             color = new QColor(generator.nextInt(256), generator.nextInt(256),
                                generator.nextInt(256));
-            rotate(generator.nextDouble() * 360);
+            rotate(QReal.valueOf(generator.nextDouble() * 360).platformValue());
 //! [10]
 
 //! [11]
@@ -144,8 +145,8 @@ public class CollidingMice extends QWidget {
 //! [12]
 
         private double adjust = 0.5;
-        private QRectF boundingRect = new QRectF(-20 - adjust, -22 - adjust,
-                                                 40 + adjust, 83 + adjust);
+        private QRectF boundingRect = new QRectF(QReal.valueOf(-20 - adjust).platformValue(), QReal.valueOf(-22 - adjust).platformValue(),
+                                                 QReal.valueOf(40 + adjust).platformValue(), QReal.valueOf(83 + adjust).platformValue());
         @Override
 //! [13]
         public QRectF boundingRect() {
@@ -172,8 +173,8 @@ public class CollidingMice extends QWidget {
             tail.cubicTo(-5, 32, -5, 42, 0, 35);
         }
 
-        private QRectF pupilRect1 = new QRectF(-8 + mouseEyeDirection, -17, 4, 4);
-        private QRectF pupilRect2 = new QRectF(4 + mouseEyeDirection, -17, 4, 4);
+        private QRectF pupilRect1 = new QRectF(QReal.valueOf(-8 + mouseEyeDirection).platformValue(), -17, 4, 4);
+        private QRectF pupilRect2 = new QRectF(QReal.valueOf(4 + mouseEyeDirection).platformValue(), -17, 4, 4);
 
         @Override
 //! [15]
@@ -298,8 +299,8 @@ public class CollidingMice extends QWidget {
             double dx = Math.sin(angle) * 10;
             mouseEyeDirection = (Math.abs(dx / 5) < 1) ? 0 : dx / 5;
 
-            rotate(dx);
-            setPos(mapToParent(0, -(3 + Math.sin(speed) * 3)));
+            rotate(QReal.valueOf(dx).platformValue());
+            setPos(mapToParent(0, QReal.valueOf(-(3 + Math.sin(speed) * 3)).platformValue()));
 //! [20] //! [21]
         }
 //! [21]

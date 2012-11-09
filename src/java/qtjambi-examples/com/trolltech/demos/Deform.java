@@ -47,6 +47,7 @@ package com.trolltech.demos;
 import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 import java.util.*;
 
@@ -80,7 +81,7 @@ class PathDeformRenderer extends ArthurFrame
         super(parent);
 
         m_radius = 100;
-        m_pos = new QPointF(m_radius, m_radius);
+        m_pos = new QPointF(QReal.valueOf(m_radius).platformValue(), QReal.valueOf(m_radius).platformValue());
         m_direction = new QPointF(1, 1);
         m_fontSize = 24;
         m_animated = true;
@@ -192,11 +193,11 @@ class PathDeformRenderer extends ArthurFrame
             painter.begin(m_lens_pixmap);
         }
 
-        QRadialGradient gr = new QRadialGradient(rad, rad, rad, 3 * rad / 5, 3 * rad / 5);
-        gr.setColorAt(0.0, new QColor(255, 255, 255, 191));
-        gr.setColorAt(0.2, new QColor(255, 255, 127, 191));
-        gr.setColorAt(0.9, new QColor(150, 150, 200, 63));
-        gr.setColorAt(0.95, new QColor(0, 0, 0, 127));
+        QRadialGradient gr = new QRadialGradient(QReal.valueOf(rad).platformValue(), QReal.valueOf(rad).platformValue(), QReal.valueOf(rad).platformValue(), QReal.valueOf(3 * rad / 5).platformValue(), QReal.valueOf(3 * rad / 5).platformValue());
+        gr.setColorAt(QReal.valueOf(0.0).platformValue(), new QColor(255, 255, 255, 191));
+        gr.setColorAt(QReal.valueOf(0.2).platformValue(), new QColor(255, 255, 127, 191));
+        gr.setColorAt(QReal.valueOf(0.9).platformValue(), new QColor(150, 150, 200, 63));
+        gr.setColorAt(QReal.valueOf(0.95).platformValue(), new QColor(0, 0, 0, 127));
         gr.setColorAt(1, new QColor(0, 0, 0, 0));
 
         painter.setRenderHint(QPainter.RenderHint.Antialiasing);
@@ -231,7 +232,7 @@ class PathDeformRenderer extends ArthurFrame
     {
         if (e.timerId() == m_repaintTimer.timerId()) {
             if ((new QLineF(new QPointF(0,0), m_direction)).length() > 1)
-                m_direction.multiply(0.995);
+                m_direction.multiply(QReal.valueOf(0.995).platformValue());
 
             double time = m_repaintTracker.restart();
 
@@ -245,22 +246,22 @@ class PathDeformRenderer extends ArthurFrame
                 dy = dy * time * 0.1;
             }
 
-            m_pos.add(new QPointF(dx, dy));
+            m_pos.add(new QPointF(QReal.valueOf(dx).platformValue(), QReal.valueOf(dy).platformValue()));
 
             if (m_pos.x() - m_radius < 0) {
                 m_direction.setX(-m_direction.x());
-                m_pos.setX(m_radius);
+                m_pos.setX(QReal.valueOf(m_radius).platformValue());
             } else if (m_pos.x() + m_radius > width()) {
                 m_direction.setX(-m_direction.x());
-                m_pos.setX(width() - m_radius);
+                m_pos.setX(QReal.valueOf(width() - m_radius).platformValue());
             }
 
             if (m_pos.y() - m_radius < 0) {
                 m_direction.setY(-m_direction.y());
-                m_pos.setY(m_radius);
+                m_pos.setY(QReal.valueOf(m_radius).platformValue());
             } else if (m_pos.y() + m_radius > height()) {
                 m_direction.setY(-m_direction.y());
-                m_pos.setY(height() - m_radius);
+                m_pos.setY(QReal.valueOf(height() - m_radius).platformValue());
             }
 
             QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
@@ -302,10 +303,10 @@ class PathDeformRenderer extends ArthurFrame
             QPointF epos = new QPointF(e.pos());
             epos.add(m_offset);
             QLineF line = new QLineF(m_pos, epos);
-            line.setLength(line.length() * .1);
+            line.setLength(QReal.valueOf(line.length() * .1).platformValue());
             QPointF dir = new QPointF(line.dx(), line.dy());
             m_direction.add(dir);
-            m_direction.multiply(0.5);
+            m_direction.multiply(QReal.valueOf(0.5).platformValue());
         }
 
         m_pos = new QPointF(e.pos());
@@ -345,10 +346,10 @@ class PathDeformRenderer extends ArthurFrame
 
             if (e.isLineTo()) {
                 deformElement(e, offset, pts);
-                path.lineTo(pts[0], pts[1]);
+                path.lineTo(QReal.valueOf(pts[0]).platformValue(), QReal.valueOf(pts[1]).platformValue());
             } else if (e.isMoveTo()) {
                 deformElement(e, offset, pts);
-                path.moveTo(pts[0], pts[1]);
+                path.moveTo(QReal.valueOf(pts[0]).platformValue(), QReal.valueOf(pts[1]).platformValue());
             } else if (e.isCurveTo()) {
                 deformElement(e, offset, pts);
                 double c1x = pts[0], c1y = pts[1];
@@ -361,7 +362,7 @@ class PathDeformRenderer extends ArthurFrame
                 deformElement(e, offset, pts);
                 double ex = pts[0], ey = pts[1];
 
-                path.cubicTo(c1x, c1y, c2x, c2y, ex, ey);
+                path.cubicTo(QReal.valueOf(c1x).platformValue(), QReal.valueOf(c1y).platformValue(), QReal.valueOf(c2x).platformValue(), QReal.valueOf(c2y).platformValue(), QReal.valueOf(ex).platformValue(), QReal.valueOf(ey).platformValue());
             }
         }
 

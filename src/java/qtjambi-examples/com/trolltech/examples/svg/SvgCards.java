@@ -46,6 +46,7 @@ package com.trolltech.examples.svg;
 import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 import com.trolltech.qt.svg.*;
 import java.util.*;
 
@@ -170,7 +171,7 @@ public class SvgCards extends QGraphicsView {
         @Override
         public void paint(QPainter painter, QStyleOptionGraphicsItem option,
                           QWidget widget) {
-            painter.setOpacity(opacity);
+            painter.setOpacity(QReal.valueOf(opacity).platformValue());
             super.paint(painter, option, widget);
         }
 //! [8]
@@ -334,7 +335,7 @@ public class SvgCards extends QGraphicsView {
         setWindowTitle("SVG Cards Example");
 
         QLinearGradient grad = new QLinearGradient(0, 0, 800, 600);
-        grad.setColorAt(0, QColor.fromRgbF(0.5, 0.5, 0.7));
+        grad.setColorAt(0, QColor.fromRgbF(QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.7).platformValue()));
         grad.setColorAt(1, QColor.fromRgbF(1, 1, 1));
         setRenderHint(QPainter.RenderHint.Antialiasing);
         setBackgroundBrush(new QBrush(grad));
@@ -362,9 +363,9 @@ public class SvgCards extends QGraphicsView {
         }
 //! [16]
 
-        item.rotate(0 + 180.0 * random.nextDouble());
+        item.rotate(QReal.valueOf(0 + 180.0 * random.nextDouble()).platformValue());
         double scaleF = 0.5 + 0.9 * random.nextDouble();
-        item.scale(scaleF, scaleF);
+        item.scale(QReal.valueOf(scaleF).platformValue(), QReal.valueOf(scaleF).platformValue());
         x += 80;
         if (x >= 650) {
             x = 100;

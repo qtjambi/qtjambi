@@ -51,6 +51,7 @@ import java.util.Vector;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample(name = "Elastic Nodes")
 public class ElasticNodes extends QGraphicsView {
@@ -144,7 +145,7 @@ public class ElasticNodes extends QGraphicsView {
         node8.setPos(0, 50);
         node9.setPos(50, 50);
 
-        scale(0.8, 0.8);
+        scale(QReal.valueOf(0.8).platformValue(), QReal.valueOf(0.8).platformValue());
 
 
 
@@ -190,7 +191,7 @@ public class ElasticNodes extends QGraphicsView {
         case Key_Enter:
             for (QGraphicsItemInterface item : scene().items()) {
                 if (item instanceof Node)
-                    item.setPos(-150 + Math.random() * 300, -150 + Math.random() * 300);
+                    item.setPos(QReal.valueOf(-150 + Math.random() * 300).platformValue(), QReal.valueOf(-150 + Math.random() * 300).platformValue());
             }
             break;
         default:
@@ -255,12 +256,12 @@ public class ElasticNodes extends QGraphicsView {
 
     private void scaleView(double scaleFactor) {
         QMatrix m = matrix();
-        m.scale(scaleFactor, scaleFactor);
+        m.scale(QReal.valueOf(scaleFactor).platformValue(), QReal.valueOf(scaleFactor).platformValue());
         double factor = m.mapRect(new QRectF(0, 0, 1, 1)).width();
         if (factor < 0.07 || factor > 100)
             return;
 
-        scale(scaleFactor, scaleFactor);
+        scale(QReal.valueOf(scaleFactor).platformValue(), QReal.valueOf(scaleFactor).platformValue());
     }
 
     public class Node extends QGraphicsItem {
@@ -269,7 +270,7 @@ public class ElasticNodes extends QGraphicsView {
         private QPointF newPos;
         private ElasticNodes graph;
         private double adjust = 2;
-        private QRectF boundingRect = new QRectF(-10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+        private QRectF boundingRect = new QRectF(QReal.valueOf(-10 - adjust).platformValue(), QReal.valueOf(-10 - adjust).platformValue(), QReal.valueOf(23 + adjust).platformValue(), QReal.valueOf(23 + adjust).platformValue());
 
         Node(ElasticNodes graphWidget) {
             graph = graphWidget;
@@ -329,8 +330,8 @@ public class ElasticNodes extends QGraphicsView {
                 xvel = yvel = 0;
 
             QRectF sceneRect = scene().sceneRect();
-            newPos.setX(Math.min(Math.max(newPos.x() + xvel, sceneRect.left() + 10), sceneRect.right() - 10));
-            newPos.setY(Math.min(Math.max(newPos.y() + yvel, sceneRect.top() + 10), sceneRect.bottom() - 10));
+            newPos.setX(QReal.valueOf(Math.min(Math.max(newPos.x() + xvel, sceneRect.left() + 10), sceneRect.right() - 10)).platformValue());
+            newPos.setY(QReal.valueOf(Math.min(Math.max(newPos.y() + yvel, sceneRect.top() + 10), sceneRect.bottom() - 10)).platformValue());
         }
 
         private boolean advance() {
@@ -444,18 +445,18 @@ public class ElasticNodes extends QGraphicsView {
             double paddingY = dy/length*10;
 
             prepareGeometryChange();
-            sourcePoint.setX(source.pos().x() - paddingX);
-            sourcePoint.setY(source.pos().y() - paddingY);
+            sourcePoint.setX(QReal.valueOf(source.pos().x() - paddingX).platformValue());
+            sourcePoint.setY(QReal.valueOf(source.pos().y() - paddingY).platformValue());
 
-            destPoint.setX(dest.pos().x() + paddingX);
-            destPoint.setY(dest.pos().y() + paddingY);
+            destPoint.setX(QReal.valueOf(dest.pos().x() + paddingX).platformValue());
+            destPoint.setY(QReal.valueOf(dest.pos().y() + paddingY).platformValue());
 
             boundingRect.setBottomLeft(source.pos());
             boundingRect.setTopRight(dest.pos());
 
             boundingRect = boundingRect.normalized();
 
-            boundingRect.adjust(-extra, -extra, extra, extra);
+            boundingRect.adjust(QReal.valueOf(-extra).platformValue(), QReal.valueOf(-extra).platformValue(), QReal.valueOf(extra).platformValue(), QReal.valueOf(extra).platformValue());
         }
 
         @Override
@@ -485,17 +486,17 @@ public class ElasticNodes extends QGraphicsView {
             if (line.dy() >= 0)
                 angle = (Math.PI * 2) - angle;
 
-            sourceArrowP1.setX(sourcePoint.x() + Math.sin(angle + Math.PI / 3) * arrowSize);
-            sourceArrowP1.setY(sourcePoint.y() + Math.cos(angle + Math.PI / 3) * arrowSize);
+            sourceArrowP1.setX(QReal.valueOf(sourcePoint.x() + Math.sin(angle + Math.PI / 3) * arrowSize).platformValue());
+            sourceArrowP1.setY(QReal.valueOf(sourcePoint.y() + Math.cos(angle + Math.PI / 3) * arrowSize).platformValue());
 
-            sourceArrowP2.setX(sourcePoint.x() + Math.sin(angle + Math.PI - Math.PI / 3) * arrowSize);
-            sourceArrowP2.setY(sourcePoint.y() + Math.cos(angle + Math.PI - Math.PI / 3) * arrowSize);
+            sourceArrowP2.setX(QReal.valueOf(sourcePoint.x() + Math.sin(angle + Math.PI - Math.PI / 3) * arrowSize).platformValue());
+            sourceArrowP2.setY(QReal.valueOf(sourcePoint.y() + Math.cos(angle + Math.PI - Math.PI / 3) * arrowSize).platformValue());
 
-            destArrowP1.setX(destPoint.x() + Math.sin(angle - Math.PI / 3) * arrowSize);
-            destArrowP1.setY(destPoint.y() + Math.cos(angle - Math.PI / 3) * arrowSize);
+            destArrowP1.setX(QReal.valueOf(destPoint.x() + Math.sin(angle - Math.PI / 3) * arrowSize).platformValue());
+            destArrowP1.setY(QReal.valueOf(destPoint.y() + Math.cos(angle - Math.PI / 3) * arrowSize).platformValue());
 
-            destArrowP2.setX(destPoint.x() + Math.sin(angle - Math.PI + Math.PI / 3) * arrowSize);
-            destArrowP2.setY(destPoint.y() + Math.cos(angle - Math.PI + Math.PI / 3) * arrowSize);
+            destArrowP2.setX(QReal.valueOf(destPoint.x() + Math.sin(angle - Math.PI + Math.PI / 3) * arrowSize).platformValue());
+            destArrowP2.setY(QReal.valueOf(destPoint.y() + Math.cos(angle - Math.PI + Math.PI / 3) * arrowSize).platformValue());
 
             pol1.clear();
             pol2.clear();

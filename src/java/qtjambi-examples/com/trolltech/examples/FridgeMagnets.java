@@ -46,6 +46,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample(name = "Drag and Drop")
 //! [0]
@@ -218,8 +219,8 @@ public class FridgeMagnets extends QWidget {
             painter.begin(image);
             painter.setRenderHint(QPainter.RenderHint.Antialiasing);
             painter.setBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white));
-            QRectF frame = new QRectF(0.5, 0.5, image.width() - 1,
-                                      image.height() - 1);
+            QRectF frame = new QRectF(QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.5).platformValue(), QReal.valueOf(image.width() - 1).platformValue(),
+                                      QReal.valueOf(image.height() - 1).platformValue());
             painter.drawRoundRect(frame, 10 * 100 / image.width(), 10 * 100 / image.height());
 
             painter.setFont(font);

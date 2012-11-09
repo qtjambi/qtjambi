@@ -47,6 +47,8 @@ import com.trolltech.examples.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QSizePolicy.*;
+import com.trolltech.qt.qreal.QReal;
+import com.trolltech.qt.qreal.QRealList;
 
 import java.util.*;
 
@@ -404,7 +406,7 @@ public class PathStrokeWidget extends QWidget {
                 // The "custom" pen
                 if (m_penStyle == Qt.PenStyle.NoPen) {
                     QPainterPathStroker stroker = new QPainterPathStroker();
-                    stroker.setWidth(m_penWidth);
+                    stroker.setWidth(QReal.valueOf(m_penWidth).platformValue());
                     stroker.setJoinStyle(m_joinStyle);
                     stroker.setCapStyle(m_capStyle);
 
@@ -423,12 +425,12 @@ public class PathStrokeWidget extends QWidget {
                     dashes.add(new Double(3.0));
                     dashes.add(space);
 
-                    stroker.setDashPattern(dashes);
+                    stroker.setDashPattern(QRealList.listOfDouble(dashes).platformValueList());
                     QPainterPath stroke = stroker.createStroke(path);
                     painter.fillPath(stroke, new QBrush(lg));
 
                 } else {
-                    QPen pen = new QPen(lg, m_penWidth, m_penStyle, m_capStyle, m_joinStyle);
+                    QPen pen = new QPen(lg, QReal.valueOf(m_penWidth).platformValue(), m_penStyle, m_capStyle, m_joinStyle);
                     painter.strokePath(path, pen);
                 }
             }
@@ -469,7 +471,7 @@ public class PathStrokeWidget extends QWidget {
 
             for (int i = 0; i < count; ++i) {
                 m_vectors.add(m.multiplied(vm).map(new QPointF(.1f, .25f)));
-                m.rotate(rot);
+                m.rotate(QReal.valueOf(rot).platformValue());
                 m_points.add(m.map(new QPointF(0 + center.x(), 100 + center.y())));
 
             }
@@ -493,11 +495,11 @@ public class PathStrokeWidget extends QWidget {
                 pos.add(vec);
                 if (pos.x() < left || pos.x() > right) {
                     vec.setX(-vec.x());
-                    pos.setX(pos.x() < left ? left : right);
+                    pos.setX(QReal.valueOf(pos.x() < left ? left : right).platformValue());
                 }
                 if (pos.y() < top || pos.y() > bottom) {
                     vec.setY(-vec.y());
-                    pos.setY(pos.y() < top ? top : bottom);
+                    pos.setY(QReal.valueOf(pos.y() < top ? top : bottom).platformValue());
                 }
                 m_points.set(i, pos);
                 m_vectors.set(i, vec);

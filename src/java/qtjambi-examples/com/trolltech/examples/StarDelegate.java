@@ -46,6 +46,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.qreal.QReal;
 
 import java.util.*;
 
@@ -272,18 +273,18 @@ public class StarDelegate extends QWidget {
 
         private void setupPolygons() {
             starPolygon = new QPolygonF();
-            starPolygon.append(new QPointF(1.0, 0.5));
+            starPolygon.append(new QPointF(QReal.valueOf(1.0).platformValue(), QReal.valueOf(0.5).platformValue()));
             for (int i = 1; i < 5; i++)
                 starPolygon.append(
-                    new QPointF(0.5 + 0.5 * Math.cos(0.8 * i * Math.PI),
-                                0.5 + 0.5 * Math.sin(0.8 * i * Math.PI)));
+                    new QPointF(QReal.valueOf(0.5 + 0.5 * Math.cos(0.8 * i * Math.PI)).platformValue(),
+                                QReal.valueOf(0.5 + 0.5 * Math.sin(0.8 * i * Math.PI)).platformValue()));
 
             diamondPolygon = new QPolygonF();
-            diamondPolygon.append(new QPointF(0.4, 0.5));
-            diamondPolygon.append(new QPointF(0.5, 0.4));
-            diamondPolygon.append(new QPointF(0.6, 0.5));
-            diamondPolygon.append(new QPointF(0.5, 0.6));
-            diamondPolygon.append(new QPointF(0.4, 0.5));
+            diamondPolygon.append(new QPointF(QReal.valueOf(0.4).platformValue(), QReal.valueOf(0.5).platformValue()));
+            diamondPolygon.append(new QPointF(QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.4).platformValue()));
+            diamondPolygon.append(new QPointF(QReal.valueOf(0.6).platformValue(), QReal.valueOf(0.5).platformValue()));
+            diamondPolygon.append(new QPointF(QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.6).platformValue()));
+            diamondPolygon.append(new QPointF(QReal.valueOf(0.4).platformValue(), QReal.valueOf(0.5).platformValue()));
         }
 
         public StarRating()
@@ -347,7 +348,7 @@ public class StarDelegate extends QWidget {
                 else
                     painter.drawPolygon(diamondPolygon, Qt.FillRule.WindingFill);
 
-                painter.translate(1.0, 0.0);
+                painter.translate(QReal.valueOf(1.0).platformValue(), QReal.valueOf(0.0).platformValue());
             }
 
             painter.restore();

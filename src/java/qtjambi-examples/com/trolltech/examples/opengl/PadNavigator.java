@@ -48,6 +48,7 @@ import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.opengl.*;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample (name = "Pad Navigator")
 public class PadNavigator extends QGraphicsView {
@@ -96,7 +97,7 @@ public class PadNavigator extends QGraphicsView {
             if (proxyWidget != null && !proxyWidget.pos().isNull())
                 proxyWidget.setGeometry(boundingRect().adjusted(25, 25, -25, -25));
 
-            painter.setOpacity(roundRectOpacity());
+            painter.setOpacity(QReal.valueOf(roundRectOpacity()).platformValue());
             painter.setPen(QPen.NoPen);
             painter.setBrush(new QColor(0, 0, 0, 64));
             painter.drawRoundRect(rect().translated(2, 2));
@@ -114,7 +115,7 @@ public class PadNavigator extends QGraphicsView {
             painter.drawRoundRect(rect());
 
             if (pix != null) {
-                painter.scale(1.95, 1.95);
+                painter.scale(QReal.valueOf(1.95).platformValue(), QReal.valueOf(1.95).platformValue());
                 painter.drawPixmap(-pix.width() / 2, -pix.height() / 2, pix);
             }
         }
@@ -122,7 +123,7 @@ public class PadNavigator extends QGraphicsView {
         public QRectF boundingRect() {
             double penW = 0.5;
             double shadowW = 2.0;
-            return rect().adjusted(-penW, -penW, penW + shadowW, penW + shadowW);
+            return rect().adjusted(QReal.valueOf(-penW).platformValue(), QReal.valueOf(-penW).platformValue(), QReal.valueOf(penW + shadowW).platformValue(), QReal.valueOf(penW + shadowW).platformValue());
         }
 
         public void setPixmap(QPixmap pixmap) {
@@ -171,7 +172,7 @@ public class PadNavigator extends QGraphicsView {
         public void updateValue(double value) {
             lastVal = value;
             if (proxyWidget == null)
-                setTransform(new QTransform().scale(1 - value / 10.0, 1 - value / 10.0), false);
+                setTransform(new QTransform().scale(QReal.valueOf(1 - value / 10.0).platformValue(), QReal.valueOf(1 - value / 10.0).platformValue()), false);
         }
 
     }
@@ -198,7 +199,7 @@ public class PadNavigator extends QGraphicsView {
         selectionTimeLine = new QTimeLine(150, this);
         flipTimeLine = new QTimeLine(500, this);
 
-        QRectF bounds = new QRectF((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
+        QRectF bounds = new QRectF(QReal.valueOf((-width / 2.0) * 150).platformValue(), QReal.valueOf((-height / 2.0) * 150).platformValue(), QReal.valueOf(width * 150).platformValue(), QReal.valueOf(height * 150).platformValue());
         scene = new QGraphicsScene(bounds, this);
         setScene(scene);
 
@@ -296,14 +297,14 @@ public class PadNavigator extends QGraphicsView {
         double nx = startPos.x() + (endPos.x() - startPos.x()) * val;
         double ny = startPos.y() + (endPos.y() - startPos.y()) * val;
 
-        QPointF newPos = new QPointF(nx, ny);
+        QPointF newPos = new QPointF(QReal.valueOf(nx).platformValue(), QReal.valueOf(ny).platformValue());
         selectionItem.setPos(newPos);
 
         QTransform transform = new QTransform();
         yrot = newPos.x() / 6.0;
         xrot = newPos.y() / 6.0;
-        transform.rotate(newPos.x() / 6.0, Qt.Axis.YAxis);
-        transform.rotate(newPos.y() / 6.0, Qt.Axis.XAxis);
+        transform.rotate(QReal.valueOf(newPos.x() / 6.0).platformValue(), Qt.Axis.YAxis);
+        transform.rotate(QReal.valueOf(newPos.y() / 6.0).platformValue(), Qt.Axis.XAxis);
         baseItem.setTransform(transform, false);
     }
 
@@ -316,10 +317,10 @@ public class PadNavigator extends QGraphicsView {
             finalyrot = yrot - yrot * val + 180 * val;
 
         QTransform transform = new QTransform();
-        transform.rotate(finalyrot, Qt.Axis.YAxis);
-        transform.rotate(finalxrot, Qt.Axis.XAxis);
+        transform.rotate(QReal.valueOf(finalyrot).platformValue(), Qt.Axis.YAxis);
+        transform.rotate(QReal.valueOf(finalxrot).platformValue(), Qt.Axis.XAxis);
         double scale = 1 - Math.sin(3.14 * val) * 0.3;
-        transform.scale(scale, scale);
+        transform.scale(QReal.valueOf(scale).platformValue(), QReal.valueOf(scale).platformValue());
         baseItem.setTransform(transform, false);
     }
 

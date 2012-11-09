@@ -46,6 +46,7 @@ package com.trolltech.demos;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 import java.util.*;
 
 class ArthurFrame extends QWidget
@@ -136,7 +137,7 @@ class ArthurFrame extends QWidget
         QAbstractTextDocumentLayout_PaintContext ctx = new QAbstractTextDocumentLayout_PaintContext();
         QLinearGradient g = new QLinearGradient(0, 0, 0, textRect.height());
         g.setColorAt(0, new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
-        g.setColorAt(0.9, new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
+        g.setColorAt(QReal.valueOf(0.9).platformValue(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
         g.setColorAt(1, new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent));
 
         QPalette pal = palette();
@@ -282,11 +283,11 @@ class ArthurFrame extends QWidget
         double bottom = r.bottom();
         double radius2 = 8 * 2;
 
-        clipPath.moveTo(right - radius2, top);
-        clipPath.arcTo(right - radius2, top, radius2, radius2, 90, -90);
-        clipPath.arcTo(right - radius2, bottom - radius2, radius2, radius2, 0, -90);
-        clipPath.arcTo(left, bottom - radius2, radius2, radius2, 270, -90);
-        clipPath.arcTo(left, top, radius2, radius2, 180, -90);
+        clipPath.moveTo(QReal.valueOf(right - radius2).platformValue(), QReal.valueOf(top).platformValue());
+        clipPath.arcTo(QReal.valueOf(right - radius2).platformValue(), QReal.valueOf(top).platformValue(), QReal.valueOf(radius2).platformValue(), QReal.valueOf(radius2).platformValue(), 90, -90);
+        clipPath.arcTo(QReal.valueOf(right - radius2).platformValue(), QReal.valueOf(bottom - radius2).platformValue(), QReal.valueOf(radius2).platformValue(), QReal.valueOf(radius2).platformValue(), 0, -90);
+        clipPath.arcTo(QReal.valueOf(left).platformValue(), QReal.valueOf(bottom - radius2).platformValue(), QReal.valueOf(radius2).platformValue(), QReal.valueOf(radius2).platformValue(), 270, -90);
+        clipPath.arcTo(QReal.valueOf(left).platformValue(), QReal.valueOf(top).platformValue(), QReal.valueOf(radius2).platformValue(), QReal.valueOf(radius2).platformValue(), 180, -90);
         clipPath.closeSubpath();
 
         painter.save();

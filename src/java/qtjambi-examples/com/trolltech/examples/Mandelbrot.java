@@ -47,6 +47,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QPainter.RenderHint;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample(name = "Mandelbrot")
 //! [0]
@@ -146,7 +147,7 @@ public class Mandelbrot extends QWidget {
 
             painter.save();
             painter.translate(newX, newY);
-            painter.scale(scaleFactor, scaleFactor);
+            painter.scale(QReal.valueOf(scaleFactor).platformValue(), QReal.valueOf(scaleFactor).platformValue());
 
             QMatrix invertedMatrix = painter.worldMatrix().inverted();
             QRect exposed = invertedMatrix.mapRect(rect());

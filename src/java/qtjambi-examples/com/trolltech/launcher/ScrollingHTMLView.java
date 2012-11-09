@@ -46,6 +46,7 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 public class ScrollingHTMLView extends QWidget {
 
@@ -128,7 +129,7 @@ public class ScrollingHTMLView extends QWidget {
             p.fillRect(rect(), new QBrush(new QColor(com.trolltech.qt.core.Qt.GlobalColor.white)));
         p.drawPixmap(w / 2 - background.width() / 2, h / 2 - background.height() / 2, background);
 
-        QRectF textRect = new QRectF(w * margin, 0, w * (1 - margin), h);
+        QRectF textRect = new QRectF(QReal.valueOf(w * margin).platformValue(), 0, QReal.valueOf(w * (1 - margin)).platformValue(), h);
         p.setPen(QPen.NoPen);
 
         int ypos = m_y_offset;

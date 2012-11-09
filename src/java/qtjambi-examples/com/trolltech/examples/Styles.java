@@ -46,6 +46,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample(name = "Styles")
 public class Styles extends QDialog
@@ -518,13 +519,13 @@ public class Styles extends QDialog
 
             QPainterPath path = new QPainterPath();
             path.moveTo(x2, y1 + radius);
-            path.arcTo(new QRectF(x2 - diam, y1, diam, diam), 0.0, +90.0);
+            path.arcTo(new QRectF(x2 - diam, y1, diam, diam), QReal.valueOf(0.0).platformValue(), QReal.valueOf(+90.0).platformValue());
             path.lineTo(x1 + radius, y1);
-            path.arcTo(new QRectF(x1, y1, diam, diam), 90.0, +90.0);
+            path.arcTo(new QRectF(x1, y1, diam, diam), QReal.valueOf(90.0).platformValue(), QReal.valueOf(+90.0).platformValue());
             path.lineTo(x1, y2 - radius);
-            path.arcTo(new QRectF(x1, y2 - diam, diam, diam), 180.0, +90.0);
+            path.arcTo(new QRectF(x1, y2 - diam, diam, diam), QReal.valueOf(180.0).platformValue(), QReal.valueOf(+90.0).platformValue());
             path.lineTo(x1 + radius, y2);
-            path.arcTo(new QRectF(x2 - diam, y2 - diam, diam, diam), 270.0, +90.0);
+            path.arcTo(new QRectF(x2 - diam, y2 - diam, diam, diam), QReal.valueOf(270.0).platformValue(), QReal.valueOf(+90.0).platformValue());
             path.closeSubpath();
 
             return path;

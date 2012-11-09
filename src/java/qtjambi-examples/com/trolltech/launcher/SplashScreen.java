@@ -46,6 +46,7 @@ package com.trolltech.launcher;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 class SplashScreen extends QSplashScreen {
 
@@ -96,10 +97,10 @@ class SplashScreen extends QSplashScreen {
 
         // The background blurring...
         p.save();
-        p.setOpacity(0.3);
+        p.setOpacity(QReal.valueOf(0.3).platformValue());
         p.drawPixmap(-1, -1, desktopBg);
         p.drawPixmap(1, 1, desktopBg);
-        p.setOpacity(0.2);
+        p.setOpacity(QReal.valueOf(0.2).platformValue());
         p.drawPixmap(1, -1, desktopBg);
         p.drawPixmap(-1, 1, desktopBg);
         p.setOpacity(1);
@@ -107,18 +108,18 @@ class SplashScreen extends QSplashScreen {
         QLinearGradient gradient = new QLinearGradient(0, 0, 0, tr.height());
 
         double alpha = 0.3;
-        QColor whiteAlpha = QColor.fromRgbF(1, 1, 1, alpha);
+        QColor whiteAlpha = QColor.fromRgbF(1, 1, 1, QReal.valueOf(alpha).platformValue());
         QColor whiteHighlight = QColor.fromRgbF(1, 1, 1);
-        QColor whiteBorder = QColor.fromRgbF(0.5, 0.5, 0.5, 0.8);
+        QColor whiteBorder = QColor.fromRgbF(QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.8).platformValue());
 
         double highlight = 0.79;
         double size = 0.08;
 
-        gradient.setColorAt(highlight - size, whiteAlpha);
-        gradient.setColorAt(highlight - size*0.9, whiteBorder);
-        gradient.setColorAt(highlight, whiteHighlight);
-        gradient.setColorAt(highlight + size*0.9, whiteBorder);
-        gradient.setColorAt(highlight + size, whiteAlpha);
+        gradient.setColorAt(QReal.valueOf(highlight - size).platformValue(), whiteAlpha);
+        gradient.setColorAt(QReal.valueOf(highlight - size*0.9).platformValue(), whiteBorder);
+        gradient.setColorAt(QReal.valueOf(highlight).platformValue(), whiteHighlight);
+        gradient.setColorAt(QReal.valueOf(highlight + size*0.9).platformValue(), whiteBorder);
+        gradient.setColorAt(QReal.valueOf(highlight + size).platformValue(), whiteAlpha);
 
         p.fillRect(target.rect(), new QBrush(gradient));
         p.restore();

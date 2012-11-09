@@ -46,6 +46,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 import com.trolltech.qt.qtjambi.util.RetroTranslatorHelper;
 
 import java.util.*;
@@ -346,7 +347,7 @@ public class ItemviewChart extends QMainWindow {
                     if (sliceIndex.equals(index)) {
                         QPainterPath slicePath = new QPainterPath();
                         slicePath.moveTo(totalSize / 2, totalSize / 2);
-                        slicePath.arcTo(margin, margin, margin + pieSize, margin + pieSize, startAngle, angle);
+                        slicePath.arcTo(margin, margin, margin + pieSize, margin + pieSize, QReal.valueOf(startAngle).platformValue(), QReal.valueOf(angle).platformValue());
                         slicePath.closeSubpath();
 
                         return new QRegion(slicePath.toFillPolygon().toPolygon());

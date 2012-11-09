@@ -46,6 +46,7 @@ package com.trolltech.examples;
 
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.qreal.QReal;
 
 import java.util.*;
 
@@ -329,13 +330,13 @@ public class UndoFramework extends QMainWindow
         {
             double startY = rect.top() - Math.IEEEremainder(rect.top(), 30.0);
             for (; startY < rect.bottom(); startY += 30.0)
-                painter.drawLine(new QPointF(rect.left(), startY),
-                                 new QPointF(rect.right(), startY));
+                painter.drawLine(new QPointF(QReal.valueOf(rect.left()).platformValue(), QReal.valueOf(startY).platformValue()),
+                                 new QPointF(QReal.valueOf(rect.right()).platformValue(), QReal.valueOf(startY).platformValue()));
 
             double startX = rect.left() - Math.IEEEremainder(rect.left(), 30.0);
             for (; startX < rect.right(); startX += 30.0)
-                painter.drawLine(new QPointF(startX, rect.top()),
-                                 new QPointF(startX, rect.bottom()));
+                painter.drawLine(new QPointF(QReal.valueOf(startX).platformValue(), QReal.valueOf(rect.top()).platformValue()),
+                                 new QPointF(QReal.valueOf(startX).platformValue(), QReal.valueOf(rect.bottom()).platformValue()));
         }
 //! [16]
     }

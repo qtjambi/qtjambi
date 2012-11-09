@@ -48,6 +48,7 @@ import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample(name = "2D Painting")
 //! [0]
@@ -165,8 +166,8 @@ public class  Painting2D extends QWidget
         public Helper() {
             QLinearGradient gradient =
                 new QLinearGradient(new QPointF(50, -20), new QPointF(80, 20));
-            gradient.setColorAt(0.0, new QColor(Qt.GlobalColor.white));
-            gradient.setColorAt(1.0, new QColor(0xa6, 0xce, 0x39));
+            gradient.setColorAt(QReal.valueOf(0.0).platformValue(), new QColor(Qt.GlobalColor.white));
+            gradient.setColorAt(QReal.valueOf(1.0).platformValue(), new QColor(0xa6, 0xce, 0x39));
 
             background = new QBrush(new QColor(64, 32, 64));
             circleBrush = new QBrush(gradient);
@@ -189,7 +190,7 @@ public class  Painting2D extends QWidget
             painter.save();
             painter.setBrush(circleBrush);
             painter.setPen(circlePen);
-            painter.rotate(elapsed * 0.030);
+            painter.rotate(QReal.valueOf(elapsed * 0.030).platformValue());
 
             double r = (elapsed)/1000.0;
             int n = 30;
@@ -197,8 +198,8 @@ public class  Painting2D extends QWidget
                 painter.rotate(30);
                 double radius = 0 + 120.0*((i+r)/n);
                 double circleRadius = 1 + ((i+r)/n)*20;
-                painter.drawEllipse(new QRectF(radius, -circleRadius,
-                circleRadius*2, circleRadius*2));
+                painter.drawEllipse(new QRectF(QReal.valueOf(radius).platformValue(), QReal.valueOf(-circleRadius).platformValue(),
+                QReal.valueOf(circleRadius*2).platformValue(), QReal.valueOf(circleRadius*2).platformValue()));
             }
             painter.restore();
 //! [13]

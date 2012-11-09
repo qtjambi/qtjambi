@@ -52,6 +52,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.ConnectionType;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.*;
+import com.trolltech.qt.qreal.QReal;
 
 @QtJambiExample(name = "40000 Chips")
 public class Chips extends QWidget {
@@ -205,7 +206,7 @@ public class Chips extends QWidget {
                 painter.setFont(font);
                 painter.setRenderHint(QPainter.RenderHint.TextAntialiasing, false);
                 painter.save();
-                painter.scale(0.1, 0.1);
+                painter.scale(QReal.valueOf(0.1).platformValue(), QReal.valueOf(0.1).platformValue());
                 painter.drawText(170, 180, String.format("Model: VSC-2000 (Very Small Chip) at %1$s %2$s", x, y));
                 painter.drawText(170, 200, String.format("Serial number: DLWR-WEER-123L-ZZ33-SDSJ", x, y));
                 painter.drawText(170, 220, String.format("Manufacturer: Chip Manufacturer", x, y));
@@ -410,7 +411,7 @@ public class Chips extends QWidget {
             double scale = Math.pow(2.0, (zoomSlider.value() - 250) / 50.0);
 
             QMatrix matrix = new QMatrix();
-            matrix.scale(scale, scale);
+            matrix.scale(QReal.valueOf(scale).platformValue(), QReal.valueOf(scale).platformValue());
             matrix.rotate(rotateSlider.value());
 
             graphicsView.setMatrix(matrix);

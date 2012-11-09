@@ -47,6 +47,7 @@ package com.trolltech.demos.imageviewer;
 import com.trolltech.launcher.Worker;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.qreal.QReal;
 
 public class View extends QWidget
 {
@@ -122,9 +123,9 @@ public class View extends QWidget
             background = new QPixmap(size());
             QPainter p = new QPainter(background);
             QLinearGradient lg = new QLinearGradient(0, 0, 0, height());
-            lg.setColorAt(0.5, new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
-            lg.setColorAt(0.7, QColor.fromRgbF(0.5, 0.5, 0.6));
-            lg.setColorAt(1, QColor.fromRgbF(0.8, 0.8, 0.9));
+            lg.setColorAt(QReal.valueOf(0.5).platformValue(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.black));
+            lg.setColorAt(QReal.valueOf(0.7).platformValue(), QColor.fromRgbF(QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.5).platformValue(), QReal.valueOf(0.6).platformValue()));
+            lg.setColorAt(1, QColor.fromRgbF(QReal.valueOf(0.8).platformValue(), QReal.valueOf(0.8).platformValue(), QReal.valueOf(0.9).platformValue()));
             p.fillRect(background.rect(), new QBrush(lg));
             p.end();
         }
@@ -168,7 +169,7 @@ public class View extends QWidget
     private static final QColor decideColor(int value, QColor c1, QColor c2) {
         QColor c = value < 0 ? c1 : c2;
         double sign = value < 0 ? -1.0 : 1.0;
-        return QColor.fromRgbF(c.redF(), c.greenF(), c.blueF(), sign * value * 0.5 / 100);
+        return QColor.fromRgbF(QReal.valueOf(c.redF()).platformValue(), QReal.valueOf(c.greenF()).platformValue(), QReal.valueOf(c.blueF()).platformValue(), QReal.valueOf(sign * value * 0.5 / 100).platformValue());
     }
 
     private void updateImage() {
@@ -250,10 +251,10 @@ public class View extends QWidget
             imageQuad.add(source.width(), source.height());
             imageQuad.add(source.width(), 0);
             QPolygonF targetQuad = new QPolygonF();
-            targetQuad.add(0, ih);
-            targetQuad.add(iw / 2 - r.width() / 2, 0);
-            targetQuad.add(iw / 2 + r.width() / 2, 0);
-            targetQuad.add(iw, ih);
+            targetQuad.add(0, QReal.valueOf(ih).platformValue());
+            targetQuad.add(QReal.valueOf(iw / 2 - r.width() / 2).platformValue(), 0);
+            targetQuad.add(QReal.valueOf(iw / 2 + r.width() / 2).platformValue(), 0);
+            targetQuad.add(QReal.valueOf(iw).platformValue(), QReal.valueOf(ih).platformValue());
             try {
                 pt.setTransform(QTransform.quadToQuad(imageQuad, targetQuad));
                 pt.drawImage(imageQuad.boundingRect(), source);
@@ -263,8 +264,8 @@ public class View extends QWidget
         } pt.restore();
 
         QLinearGradient lg = new QLinearGradient(0, 0, 0, image.height());
-        lg.setColorAt(0.1, QColor.fromRgbF(0, 0, 0, 0.4));
-        lg.setColorAt(0.6, new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent));
+        lg.setColorAt(QReal.valueOf(0.1).platformValue(), QColor.fromRgbF(0, 0, 0, QReal.valueOf(0.4).platformValue()));
+        lg.setColorAt(QReal.valueOf(0.6).platformValue(), new QColor(com.trolltech.qt.core.Qt.GlobalColor.transparent));
         pt.setCompositionMode(QPainter.CompositionMode.CompositionMode_DestinationIn);
         pt.fillRect(image.rect(), new QBrush(lg));
         pt.end();

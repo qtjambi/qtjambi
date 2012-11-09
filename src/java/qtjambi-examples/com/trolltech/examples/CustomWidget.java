@@ -47,6 +47,7 @@ package com.trolltech.examples;
 import com.trolltech.qt.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.qreal.QReal;
 
 public class CustomWidget extends QWidget {
 
@@ -406,10 +407,10 @@ public class CustomWidget extends QWidget {
     private QBrush linearGradient() {
         if (gradient == null) {
             QRectF rect = outerCircle();
-            QLinearGradient g = new QLinearGradient(new QPointF(rect.x() + rect.width() / 2.0, rect.top()),
-                                                    new QPointF(rect.x() + rect.width() / 2.0, rect.top() + framingSize() / 2.0));
-            g.setColorAt(0.0, highlightLight());
-            g.setColorAt(1.0, highlightDark());
+            QLinearGradient g = new QLinearGradient(new QPointF(QReal.valueOf(rect.x() + rect.width() / 2.0).platformValue(), QReal.valueOf(rect.top()).platformValue()),
+                                                    new QPointF(QReal.valueOf(rect.x() + rect.width() / 2.0).platformValue(), QReal.valueOf(rect.top() + framingSize() / 2.0).platformValue()));
+            g.setColorAt(QReal.valueOf(0.0).platformValue(), highlightLight());
+            g.setColorAt(QReal.valueOf(1.0).platformValue(), highlightDark());
             gradient = new QBrush(g);
         }
         return gradient;
@@ -433,9 +434,9 @@ public class CustomWidget extends QWidget {
     private QRectF innerCircle() {
         if (innerCircle == null) {
             QRectF outerCircle = outerCircle();
-            innerCircle = new QRectF(outerCircle.x() + framingSize(), outerCircle.y() + framingSize(),
-                                     outerCircle.width() - framingSize()*2,
-                                     outerCircle.height() - framingSize()*2);
+            innerCircle = new QRectF(QReal.valueOf(outerCircle.x() + framingSize()).platformValue(), QReal.valueOf(outerCircle.y() + framingSize()).platformValue(),
+                                     QReal.valueOf(outerCircle.width() - framingSize()*2).platformValue(),
+                                     QReal.valueOf(outerCircle.height() - framingSize()*2).platformValue());
         }
 
         return innerCircle;
@@ -457,13 +458,13 @@ public class CustomWidget extends QWidget {
         if (needlePath == null) {
             QRectF innerCircle = innerCircle();
             needlePath = new QPainterPath();
-            needlePath.moveTo(0.0, 0.0);
+            needlePath.moveTo(QReal.valueOf(0.0).platformValue(), QReal.valueOf(0.0).platformValue());
 
             double tipLength = (double)innerCircle.width() / 50.0f;
-            needlePath.lineTo(-innerCircle.width() / 2.0 + tipLength, -tipLength);
-            needlePath.lineTo(-innerCircle.width() / 2.0, 0.0);
-            needlePath.lineTo(-innerCircle.width() / 2.0 + tipLength, tipLength);
-            needlePath.lineTo(0.0, 0.0);
+            needlePath.lineTo(QReal.valueOf(-innerCircle.width() / 2.0 + tipLength).platformValue(), QReal.valueOf(-tipLength).platformValue());
+            needlePath.lineTo(QReal.valueOf(-innerCircle.width() / 2.0).platformValue(), QReal.valueOf(0.0).platformValue());
+            needlePath.lineTo(QReal.valueOf(-innerCircle.width() / 2.0 + tipLength).platformValue(), QReal.valueOf(tipLength).platformValue());
+            needlePath.lineTo(QReal.valueOf(0.0).platformValue(), QReal.valueOf(0.0).platformValue());
         }
 
         return needlePath;
@@ -494,14 +495,14 @@ public class CustomWidget extends QWidget {
         {
             if (step > 0.0) {
                 p.save();
-                p.translate(x,y);
+                p.translate(QReal.valueOf(x).platformValue(),QReal.valueOf(y).platformValue());
 
                 speedBarPen.setWidthF(innerCircle.width() / 100.0f);
                 p.setPen(speedBarPen);
 
                 double angle;
                 int speed = 0;
-                p.rotate(startAngle());
+                p.rotate(QReal.valueOf(startAngle()).platformValue());
                 for (angle=startAngle(); angle<=endAngle(); angle += step) {
                     p.drawLine((int)(-innerCircle.width() / 2.0f) + (int)(innerCircle.width() / 30.0f), 0, (int)(-innerCircle.width() / 2.0f) + (int)(innerCircle.width() / 14.0f), 0);
 
@@ -513,17 +514,17 @@ public class CustomWidget extends QWidget {
                     p.drawText(cachedTextRect, "" + speed);
 
                     speed += skip;
-                    p.rotate(step);
+                    p.rotate(QReal.valueOf(step).platformValue());
                 }
                 p.restore();
             }
         }
 
 
-        p.translate(x, y);
+        p.translate(QReal.valueOf(x).platformValue(), QReal.valueOf(y).platformValue());
         p.setFont(font);
         QSize size = fm.size(0, unit().title());
-        cachedTextRect.setCoords(-size.width() / 2.0, 0, size.width() / 2.0, size.height());
+        cachedTextRect.setCoords(QReal.valueOf(-size.width() / 2.0).platformValue(), QReal.valueOf(0).platformValue(), QReal.valueOf(size.width() / 2.0).platformValue(), QReal.valueOf(size.height()).platformValue());
         p.drawText(cachedTextRect, unit().title());
 
         p.restore();
@@ -536,8 +537,8 @@ public class CustomWidget extends QWidget {
             p.save();
 
             matrix.reset();
-            matrix.translate(x, y);
-            matrix.rotate(angleOfSpeed(tail[i]));
+            matrix.translate(QReal.valueOf(x).platformValue(), QReal.valueOf(y).platformValue());
+            matrix.rotate(QReal.valueOf(angleOfSpeed(tail[i])).platformValue());
 
             int len = i >= startTail ? i - startTail : i + tail.length - startTail;
             p.setOpacity((needleColor().alphaF() / (tail.length+1)) * len);
@@ -557,8 +558,8 @@ public class CustomWidget extends QWidget {
         }
 
         matrix.reset();
-        matrix.translate(x, y);
-        matrix.rotate(angleOfSpeed(currentSpeed));
+        matrix.translate(QReal.valueOf(x).platformValue(), QReal.valueOf(y).platformValue());
+        matrix.rotate(QReal.valueOf(angleOfSpeed(currentSpeed)).platformValue());
 
         p.setPen(needleFrameColor());
         QPainterPath temporaryPath = matrix.map(needlePath());
@@ -591,9 +592,9 @@ public class CustomWidget extends QWidget {
 
     private QBrush radialGradient() {
         if (radialGradient == null) {
-            QRadialGradient g = new QRadialGradient(new QPointF(rect.center()), rect.width() / 2.0);
-            g.setColorAt(0.0, frameColorDark());
-            g.setColorAt(1.0, frameColorLight());
+            QRadialGradient g = new QRadialGradient(new QPointF(rect.center()), QReal.valueOf(rect.width() / 2.0).platformValue());
+            g.setColorAt(QReal.valueOf(0.0).platformValue(), frameColorDark());
+            g.setColorAt(QReal.valueOf(1.0).platformValue(), frameColorLight());
             g.setCoordinateMode(QGradient.CoordinateMode.ObjectBoundingMode);
             radialGradient = new QBrush(g);
         }

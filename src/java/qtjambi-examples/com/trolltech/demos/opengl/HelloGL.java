@@ -52,6 +52,7 @@ import com.trolltech.examples.QtJambiExample;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.opengl.QGLWidget;
+import com.trolltech.qt.qreal.QReal;
 
 class GLWidget extends QGLWidget
 {
@@ -77,8 +78,8 @@ class GLWidget extends QGLWidget
         yRot = 0;
         zRot = 0;
 
-        trolltechGreen = QColor.fromCmykF(0.40, 0.0, 1.0, 0.0);
-        trolltechPurple = QColor.fromCmykF(0.39, 0.39, 0.0, 0.0);
+        trolltechGreen = QColor.fromCmykF(QReal.valueOf(0.40).platformValue(), QReal.valueOf(0.0).platformValue(), QReal.valueOf(1.0).platformValue(), QReal.valueOf(0.0).platformValue());
+        trolltechPurple = QColor.fromCmykF(QReal.valueOf(0.39).platformValue(), QReal.valueOf(0.39).platformValue(), QReal.valueOf(0.0).platformValue(), QReal.valueOf(0.0).platformValue());
     }
 
     @Override
