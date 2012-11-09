@@ -78,6 +78,8 @@ class JavaGenerator : public Generator {
         void writeFieldAccessors(QTextStream &s, const AbstractMetaField *field);
         void write(QTextStream &s, const AbstractMetaClass *java_class);
 
+        QString arm_platform_kludge_defaultValue(const QString &defaultExpr) const;
+
         void writeFunctionOverloads(QTextStream &s, const AbstractMetaFunction *java_function,
                                     uint included_attributes, uint excluded_attributes);
         void writeEnumOverload(QTextStream &s, const AbstractMetaFunction *java_function,

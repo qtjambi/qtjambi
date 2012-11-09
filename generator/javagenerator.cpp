@@ -53,6 +53,7 @@
 #include <QtCore/QRegExp>
 #include <QDebug>
 #include "typesystem/typedatabase.h"
+#include "wrapper.h"			/* for isTargetPlatformArmCpu */
 
 static Indentor INDENT;
 
@@ -1275,6 +1276,50 @@ void JavaGenerator::writeInstantiatedType(QTextStream &s, const AbstractMetaType
     }
 }
 
+QString JavaGenerator::arm_platform_kludge_defaultValue(const QString &defaultExpr) const
+{
+    QString tmpString = defaultExpr;
+    // ARM platform hack (this is 'qreal' type and java needs 'f' suffix for floats)
+    //  input="new com.trolltech.qt.core.QRectF(0., 0., 1000000000., 1000000000.)"
+    // output="new com.trolltech.qt.core.QRectF(0.f, 0.f, 1000000000.f, 1000000000.f)"
+    const char *arm_match = "new com.trolltech.qt.core.QRectF(";
+    int arm_fix_pos;
+    if((arm_fix_pos = tmpString.indexOf(arm_match)) >= 0) {
+        int length = tmpString.length();
+
+        if(arm_fix_pos >= 0) {
+            arm_fix_pos += strlen(arm_match);	// skip the arm_match string
+            if(arm_fix_pos >= length)
+                goto abort;	// must be more chars after
+
+            while(arm_fix_pos < length) {
+                arm_fix_pos = tmpString.indexOf(".", arm_fix_pos);
+                if(arm_fix_pos < 0)
+                    break;	// no more matches
+                arm_fix_pos++;	// skip the "."
+
+                // if there are more chars after position check they
+                //  are not digits and skip them if they are
+                while(arm_fix_pos < length && tmpString[arm_fix_pos].isDigit())
+                    arm_fix_pos++;	// skip digits "2345" in "1.2345"
+
+                if(arm_fix_pos < length) {
+                    // if there are still more chars check the next one is
+                    //  not already an 'f' that we're about to add
+                    if(tmpString[arm_fix_pos] == QChar('f')) {
+                        arm_fix_pos++;
+                        continue;    // already has 'f' suffix on real number
+                    }
+                }
+                tmpString = tmpString.insert(arm_fix_pos, QLatin1String("f"));
+            }
+        }
+    }
+
+abort:
+    return QString(tmpString);
+}
+
 void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFunction *java_function,
         uint include_attributes, uint exclude_attributes) {
     AbstractMetaArgumentList arguments = java_function->arguments();
@@ -1366,7 +1411,6 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFun
                     }
 
                     QString defaultExpr = arguments.at(j)->defaultValueExpression();
-
                     int pos = defaultExpr.indexOf(".");
                     if (pos > 0) {
                         QString someName = defaultExpr.left(pos);
@@ -1380,6 +1424,14 @@ void JavaGenerator::writeFunctionOverloads(QTextStream &s, const AbstractMetaFun
                         else
                             replacement = someName + ".";
                         defaultExpr = defaultExpr.replace(someName + ".", replacement);
+                    }
+
+                    // Check global command flag for targetting ARM then enable this kludge
+                    if(Wrapper::isTargetPlatformArmCpu) {
+                        if(fileNameForClass(decl_class).compare(QLatin1String("QAbstractTextDocumentLayout.java")) == 0
+                                                         && java_function->name().compare(QLatin1String("update")) == 0) {
+                            defaultExpr = arm_platform_kludge_defaultValue(defaultExpr);
+                        }
                     }
 
                     if (arg_type != 0 && arg_type->isFlags()) {
