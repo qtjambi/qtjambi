@@ -60,6 +60,7 @@ import com.trolltech.qt.gui.QLinearGradient;
 import com.trolltech.qt.gui.QPalette;
 import com.trolltech.qt.gui.QPixmap;
 import com.trolltech.qt.gui.QSortFilterProxyModel;
+import com.trolltech.qt.qreal.QReal;
 import com.trolltech.qt.QSignalEmitter;
 
 import java.io.PrintStream;
@@ -156,7 +157,7 @@ public class ResourceBrowserModel extends QAbstractItemModel {
 
         QLinearGradient lg = new QLinearGradient(0, 0, 0, 16);
         lg.setColorAt(0, p.color(QPalette.ColorRole.AlternateBase));
-        lg.setColorAt(0.1, p.color(QPalette.ColorRole.Base));
+        lg.setColorAt(QReal.valueOf(0.1).platformValue(), p.color(QPalette.ColorRole.Base));
         lg.setColorAt(1, p.color(QPalette.ColorRole.AlternateBase));
         gradient = new QBrush(lg);
     }

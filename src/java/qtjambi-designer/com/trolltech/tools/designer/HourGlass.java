@@ -61,6 +61,7 @@ import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QPen;
 import com.trolltech.qt.gui.QShowEvent;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.qreal.QReal;
 
 public class HourGlass extends QWidget {
 
@@ -75,12 +76,20 @@ public class HourGlass extends QWidget {
         double maxRadius = 2.5;
         double minRadius = 1;
         path = new QPainterPath();
-        QPointF pt = new QPointF(0, mainRadius - maxRadius);
+        QPointF pt = new QPointF(
+         QReal.valueOf(0).platformValue(),
+         QReal.valueOf(mainRadius - maxRadius).platformValue()
+        );
         QMatrix m = new QMatrix();
         for (int i=0; i<8; ++i) {
             m.rotate(-360 / 8);
             double size = Math.max(maxRadius * 2 - i, minRadius * 2);
-            QRectF r = new QRectF(-size / 2, -size / 2, size, size);
+            QRectF r = new QRectF(
+             QReal.valueOf(-size / 2).platformValue(),
+             QReal.valueOf(-size / 2).platformValue(),
+             QReal.valueOf(size).platformValue(),
+             QReal.valueOf(size).platformValue()
+            );
             r.moveCenter(m.map(pt));
             path.addEllipse(r);
         }
