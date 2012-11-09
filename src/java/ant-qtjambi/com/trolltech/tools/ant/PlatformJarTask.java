@@ -718,6 +718,11 @@ public class PlatformJarTask extends Task {
 
         switch(c) {
         // The manifest based ones...
+        case MSVC2012:
+        case MSVC2012_64:
+            if(vcnumber == null)
+                vcnumber = "110";
+            // fall-thru
         case MSVC2010:
         case MSVC2010_64:
             if(vcnumber == null)
