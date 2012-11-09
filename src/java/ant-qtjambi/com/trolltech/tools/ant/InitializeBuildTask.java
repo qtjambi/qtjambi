@@ -574,6 +574,16 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             AntUtil.setProperty(propertyHelper, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR, "", false);
 
 
+        // The 'qreal' Qt C++ type is 'float' on ARM platforms and 'double' on all others
+        String qrealtype = "double";
+        String qrealSource = " (the default)";
+        if("arm".equals(javaOsArch)) {
+            qrealtype = "float";
+            qrealSource = " (${" + Constants.OSCPU + "} is \"arm\")";
+        }
+        mySetProperty(-1, Constants.QTJAMBI_QREALTYPE, qrealSource, qrealtype, false);
+
+
         detectQtDsoExistAndSetProperty(Constants.CLUCENE, "QtCLucene", String.valueOf(qtMajorVersion), null);
 
         detectQtDsoExistAndSetProperty(Constants.CORE, "QtCore", String.valueOf(qtMajorVersion), null);
