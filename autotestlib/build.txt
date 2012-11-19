@@ -270,4 +270,36 @@
     <include file-name="metaobjectqtmetacast.h" location="local"/>
   </object-type>
 
+  <value-type name="GenFeatSimple" java-name="GenFeatSimple">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+
+  <value-type name="GenFeatTemplate" java-name="GenFeatTemplate">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate1" java-name="GenFeatTemplate1">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate2" java-name="GenFeatTemplate2">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate3" java-name="GenFeatTemplate3">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate4" java-name="GenFeatTemplate4">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate5" java-name="GenFeatTemplate5">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate6" java-name="GenFeatTemplate6">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate7" java-name="GenFeatTemplate7">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+  <value-type name="GenFeatTemplate8" java-name="GenFeatTemplate8">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
+
 </typesystem>

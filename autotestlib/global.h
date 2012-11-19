@@ -67,6 +67,7 @@
 #include "variants.h"
 #include "general.h"
 #include "memorymanagement.h"
+#include "generatorfeature.h"
 
 #include <qtjambi/qtjambi_core.h>
 

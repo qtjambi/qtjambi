@@ -22,6 +22,7 @@ INCLUDEPATH += ./cpp/com_trolltech_autotests_generated
 HEADERS += \
     abstractclass.h \
     destruction.h \
+    generatorfeature.h \
     global.h \
     injectedcode.h \
     interfaces.h \
@@ -40,6 +41,7 @@ HEADERS += \
 
 SOURCES += \
     destruction.cpp \
+    generatorfeature.cpp \
     global.cpp \
     injectedcode.cpp \
     testdialog.cpp \
