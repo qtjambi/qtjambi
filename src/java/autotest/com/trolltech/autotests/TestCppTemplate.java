@@ -45,14 +45,20 @@
 package com.trolltech.autotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.Test;
 
+import com.trolltech.autotests.generated.GenFeatQMultiHash;
 import com.trolltech.autotests.generated.GenFeatTemplate7;
 import com.trolltech.autotests.generated.GenFeatTemplate8;
 import com.trolltech.qt.QPair;
@@ -135,6 +141,62 @@ public class TestCppTemplate extends QApplicationTest {
         assertNotNull(qp2.second);
         assertTrue(qp2.second instanceof Integer);
         assertEquals(Integer.valueOf(3), qp2.second);
+    }
+
+    @Test
+    public void testQMultiHash() {
+        GenFeatQMultiHash multiHash = new GenFeatQMultiHash();
+        assertEquals(0, multiHash.hashStringInt_count());
+        assertEquals(0, multiHash.hashIntString_count());
+        // Add some values
+        multiHash.hashStringInt_insert("key1", 99);
+        multiHash.hashStringInt_insert("key2", 32);
+        multiHash.hashStringInt_insert("key3", 43);
+        multiHash.hashStringInt_insert("key4", 83);
+        multiHash.hashStringInt_insert("key4", 81);
+        // get count
+        assertEquals(5, multiHash.hashStringInt_count());
+        // readback values
+        assertEquals(99, multiHash.hashStringInt_getAtIndex("key1", 0));
+        assertEquals(43, multiHash.hashStringInt_getAtIndex("key3", 0));
+        assertEquals(-1, multiHash.hashStringInt_getAtIndex("key3", 1));	// does not exist
+        // remove some values
+        int i = multiHash.hashStringInt_remove("key3");
+        assertEquals(1, i);
+        i = multiHash.hashStringInt_remove("key3");	// try again
+        assertEquals(0, i);	// should be 0 now
+        // get count
+        assertEquals(4, multiHash.hashStringInt_count());
+        // readback removed item
+        assertEquals(-1, multiHash.hashStringInt_getAtIndex("key3", 0));	// should now be removed
+
+        // do full conversion of map
+        i = 0;
+        Set<String> seenSet = new HashSet<String>();
+        Map<String,List<Integer>> mapStringInteger = multiHash.hashStringInt_instance();
+        for(Entry<String, List<Integer>> e : mapStringInteger.entrySet()) {
+            String k = e.getKey();
+            List<Integer> v = e.getValue();
+
+            assertFalse("seen key already " + k, seenSet.contains(k));
+            seenSet.add(k);
+
+            if("key1".equals(k)) {
+                assertEquals(1, v.size());
+                assertEquals(Integer.valueOf(99), v.get(0));
+            } else if("key2".equals(k)) {
+                assertEquals(1, v.size());
+                assertEquals(Integer.valueOf(32), v.get(0));
+            } else if("key4".equals(k)) {
+                assertEquals(2, v.size());
+                assertEquals(Integer.valueOf(81), v.get(0));
+                assertEquals(Integer.valueOf(83), v.get(1));
+            }
+
+            i++;
+        }
+        assertEquals(3, i);
+        //Map<Integer,String> mapIntegerString;
     }
 
     public static void main(String args[]) {

@@ -301,5 +301,8 @@
   <value-type name="GenFeatTemplate8" java-name="GenFeatTemplate8">
     <include file-name="generatorfeature.h" location="local"/>
   </value-type>
+  <value-type name="GenFeatQMultiHash" java-name="GenFeatQMultiHash">
+    <include file-name="generatorfeature.h" location="local"/>
+  </value-type>
 
 </typesystem>

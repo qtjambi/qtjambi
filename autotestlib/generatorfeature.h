@@ -53,6 +53,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QPair>
 #include <QtCore/QHash>
+#include <QtCore/QMultiHash>
 #include <QtCore/QSet>
 #include <QtCore/QList>
 
@@ -228,6 +229,61 @@ public:
     QPair<int, QPair<int, int> > methodTest() const {
         return qMakePair(1, qMakePair(2, 3));
     }
+};
+
+class GenFeatQMultiHash
+{
+public:
+    GenFeatQMultiHash() { }
+
+    int hashStringInt_getAtIndex(const QString &k, int index) {
+        QList<int> values = hashStringInt.values(k);
+        if(index >= 0 && values.size() > index)
+            return values[index];
+        return -1;
+    }
+    void hashStringInt_insert(const QString &k, int v) {
+        hashStringInt.insert(k, v);
+    }
+    bool hashStringInt_contains(const QString &k) {
+        return hashStringInt.contains(k);
+    }
+    int hashStringInt_remove(const QString &k) {
+        return hashStringInt.remove(k);
+    }
+    int hashStringInt_count() const {
+        return hashStringInt.count();
+    }
+    QMultiHash<QString, int> hashStringInt_instance() {
+        return hashStringInt;
+    }
+
+    QString hashIntString_getAtIndex(int k, int index) {
+        QList<QString> values = hashIntString.values(k);
+        if(index >= 0 && values.size() > index)
+            return QString(values[index]);
+        return QString();
+    }
+    void hashIntString_insert(int k, const QString &v) {
+        hashIntString.insert(k, v);
+    }
+    bool hashIntString_contains(int k) {
+        return hashIntString.contains(k);
+    }
+    int hashIntString_remove(int k) {
+        return hashIntString.remove(k);
+    }
+    int hashIntString_count() const {
+        return hashIntString.count();
+    }
+    QMultiHash<int, QString> hashIntString_instance() {
+        return hashIntString;
+    }
+
+private:
+    // made private so Qt Jambi doesn't generate getter/setter
+    QMultiHash<QString, int> hashStringInt;
+    QMultiHash<int, QString> hashIntString;
 };
 
 #endif // GENERATORFEATURE_H
