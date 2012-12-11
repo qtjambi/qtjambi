@@ -1,10 +1,10 @@
 /****************************************************************************
- **
- ** Copyright (C) 1992-2009 Nokia. All rights reserved.
- **
- ** This file is part of Qt Jambi.
- **
- ** $BEGIN_LICENSE$
+**
+** Copyright (C) 1992-2009 Nokia. All rights reserved.
+**
+** This file is part of Qt Jambi.
+**
+** $BEGIN_LICENSE$
 ** GNU Lesser General Public License Usage
 ** This file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -27,19 +27,19 @@
 ** met: http://www.gnu.org/copyleft/gpl.html.
 ** $END_LICENSE$
 
- **
- ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- **
- ****************************************************************************/
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
 
 package com.trolltech.extensions.signalhandler;
 
 import com.trolltech.qt.QSignalEmitter;
 
 /**
- * Signal handlers are a convenience class that provides compile time type checking of signal / slot
- * connections.
+** Signal handlers are a convenience class that provides compile time type checking of signal / slot
+** connections.
  */
 public abstract class QSignalHandler0 {
 

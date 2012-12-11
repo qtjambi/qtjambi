@@ -1,10 +1,10 @@
 /****************************************************************************
- **
- ** (C) 2007-2009 Nokia. All rights reserved.
- **
- ** This file is part of Qt Jambi.
- **
- ** $BEGIN_LICENSE$
+**
+** (C) 2007-2009 Nokia. All rights reserved.
+**
+** This file is part of Qt Jambi.
+**
+** $BEGIN_LICENSE$
 ** GNU Lesser General Public License Usage
 ** This file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -27,24 +27,24 @@
 ** met: http://www.gnu.org/copyleft/gpl.html.
 ** $END_LICENSE$
 
- **
- ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- **
- ****************************************************************************/
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
 
 package com.trolltech.qt.sql;
 
 
 /**
- * The QJdbc class is responsible for implementing a Qt database
- * plugin based on a JDBC database driver. In addition to making use
- * of the QJdbc database driver an application also needs a JDBC
- * driver.
- *
- * Below you find an example use of the QJdbc database driver in
- * combination with a mysql JDBC driver and opens the output in
- * two separate QTableView's.
+** The QJdbc class is responsible for implementing a Qt database
+** plugin based on a JDBC database driver. In addition to making use
+** of the QJdbc database driver an application also needs a JDBC
+** driver.
+**
+** Below you find an example use of the QJdbc database driver in
+** combination with a mysql JDBC driver and opens the output in
+** two separate QTableView's.
 
  <pre>
     public static void main(String args[])
