@@ -1125,7 +1125,7 @@ class QApplication___ extends QApplication {
         public static void aboutQtJambi() {
             com.trolltech.qt.QtJambiGuiInternal.aboutQtJambi();
         }
-        
+
         /**
          *
          * @see #execStatic()

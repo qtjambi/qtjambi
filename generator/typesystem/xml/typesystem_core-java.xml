@@ -131,8 +131,8 @@
     <primitive-type name="short" java-name="char" preferred-java-type="no" preferred-conversion="no" jni-name="jchar"/>
     <primitive-type name="short" java-name="short" jni-name="jshort" />
     <primitive-type name="signed short" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort -->
-    <primitive-type name="unsigned short" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort --> 
-    <primitive-type name="unsigned short int" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort --> 
+    <primitive-type name="unsigned short" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort -->
+    <primitive-type name="unsigned short int" java-name="short" preferred-conversion="no" jni-name="jshort"/><!-- jchar short/jshort -->
 
     <primitive-type name="char" java-name="byte" jni-name="jbyte"/>
     <primitive-type name="signed char" java-name="byte" preferred-conversion="no" jni-name="jbyte"/>

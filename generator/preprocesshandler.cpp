@@ -48,7 +48,7 @@ void PreprocessHandler::dump(int kind) const {
 
     std::cout << "DUMP " << stage << " (end)" << std::endl;
 }
-        
+
 
 bool PreprocessHandler::handler() {
     QFile file(ppconfig);

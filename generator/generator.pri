@@ -16,8 +16,8 @@ include($$GENERATORPATH/parser/rxx.pri)
 include($$GENERATORPATH/parser/rpp/rpp.pri)
 
 # These option changes are recommended since at least: win32-msvc.net
-#          We have checked they are still needed with: win32-msvc2010 
-win32-msvc* {   
+#          We have checked they are still needed with: win32-msvc2010
+win32-msvc* {
         QMAKE_CXXFLAGS += -wd4996
         QMAKE_CFLAGS += -wd4996
 }

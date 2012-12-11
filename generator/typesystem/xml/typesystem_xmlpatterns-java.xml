@@ -22,11 +22,11 @@
             <import-file name="typesystem/java/typesystem_xmlpatterns-java.java" quote-after-line="class QXmlQuery___" quote-before-line="}// class" />
         </inject-code>
     </object-type>
-    
+
     <object-type name="QAbstractXmlNodeModel" implements="java.lang.Cloneable">
       <inject-code>
         <import-file name="typesystem/java/typesystem_xmlpatterns-java.java" quote-after-line="class QAbstractXmlNodeModel___" quote-before-line="}// class" />
-      </inject-code>    
+      </inject-code>
     </object-type>
 
     <object-type name="QSimpleXmlNodeModel" implements="java.lang.Cloneable">

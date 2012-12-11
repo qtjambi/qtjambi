@@ -37,8 +37,8 @@ include(generator.pri)
 #QMAKE_LFLAGS_DEBUG += -pg
 #
 # Each sample counts as 0.01 seconds.
-#  %   cumulative   self              self     total           
-# time   seconds   seconds    calls   s/call   s/call  name    
+#  %   cumulative   self              self     total
+# time   seconds   seconds    calls   s/call   s/call  name
 # 34.99    218.69   218.69 4638987900     0.00     0.00  QBasicAtomicInt::ref()
 # 34.66    435.31   216.62 4796821756     0.00     0.00  QBasicAtomicInt::deref()
 #  4.29    462.12    26.81 2773082225     0.00     0.00  QString::QString(QString const&)

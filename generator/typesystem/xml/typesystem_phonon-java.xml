@@ -64,7 +64,7 @@
     </value-type>
 
     <value-type name="Phonon::SubtitleDescription">
-        <modify-function signature="fromIndex(int)" remove="all" /> 
+        <modify-function signature="fromIndex(int)" remove="all" />
         <modify-function signature="operator==(Phonon::ObjectDescription)const" access="private">
             <modify-argument index="1">
                 <replace-type modified-type="com.trolltech.qt.phonon.SubtitleDescription" />
@@ -82,7 +82,7 @@
     </value-type>
 
     <value-type name="Phonon::AudioCaptureDevice">
-        <modify-function signature="fromIndex(int)" remove="all" /> 
+        <modify-function signature="fromIndex(int)" remove="all" />
         <modify-function signature="operator==(Phonon::ObjectDescription)const" access="private">
             <modify-argument index="1">
                 <replace-type modified-type="com.trolltech.qt.phonon.AudioCaptureDevice" />

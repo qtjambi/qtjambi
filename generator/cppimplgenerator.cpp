@@ -1076,7 +1076,7 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
 #if 0
         // FIXME: Lookup any special ownership details for the constructor in typesystem.
         //  If cplusplus owns this object we never emit it here, for example QTextCodec
-        //  is fully managed by Qt 
+        //  is fully managed by Qt
         // Lookup the constructor "QTextCodec()" of the "QTextCodec" class, get the method
         //  signature's ownership setting.
         shellClassName(java_class);	// QtJambiShell_QTextCodec
@@ -1397,7 +1397,7 @@ void CppImplGenerator::writeShellFunction(QTextStream &s, const AbstractMetaFunc
                 s << INDENT << "qtjambishell_throw_nullpointerexception(__jni_env, " << "\"" << implementor->name() << "::" << java_function_signature << "\"" << ");" << endl;
                 if(function_type)
                     s << INDENT << "__qt_return_value = " << default_return_statement_qt(function_type, Generator::NoReturnStatement) << ";" << endl;
-            }                
+            }
             s << INDENT << "}" << endl;         // if(__java_return_value_object)
 
             s << INDENT << "qtjambi_exception_check(__jni_env);" << endl;
@@ -2580,7 +2580,7 @@ static const QString nativePointerTypeString(const AbstractMetaType *java_type) 
 
     if(macrodef.contains(type))
         return macrodef[type];
-    
+
     return QString("%1").arg(type);
 }
 

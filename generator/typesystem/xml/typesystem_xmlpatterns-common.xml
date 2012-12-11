@@ -109,7 +109,7 @@
 
   <object-type name="QXmlQuery">
     <modify-function signature="setFocus(QIODevice*)">
-        <modify-argument index="1"> 
+        <modify-argument index="1">
             <reference-count action="set" variable-name="__rcFocusDevice" />
         </modify-argument>
     </modify-function>

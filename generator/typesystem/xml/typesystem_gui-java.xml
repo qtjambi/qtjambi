@@ -300,7 +300,7 @@
             <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QBitmap___" quote-before-line="}// class"/>
         </inject-code>
     </value-type>
-    
+
     <value-type name="QTextLine">
         <inject-code>
             <import-file name="typesystem/java/typesystem_gui-java.java" quote-after-line="class QTextLine___" quote-before-line="}// class"/>
@@ -1035,7 +1035,7 @@
             </inject-code>
         </modify-function>
     </interface-type>
-    
+
     <object-type name="QGraphicsObject" delete-in-main-thread="yes">
         <modify-function signature="setGroup(QGraphicsItemGroup*)">
             <modify-argument index="1">
@@ -1054,7 +1054,7 @@
 		  <replace-default-expression with="new com.trolltech.qt.core.Qt.GestureFlag[0]"/>
 	    </modify-argument>
 	</modify-function>
-    </object-type>    
+    </object-type>
 
     <object-type name="QAbstractGraphicsShapeItem">
         <modify-function signature="QAbstractGraphicsShapeItem(QGraphicsItem*,QGraphicsScene*)">
@@ -2493,7 +2493,7 @@
             }
             </inject-code>
         </modify-function>
-    
+
 	<modify-function signature="grabGesture(Qt::GestureType, QFlags&lt;Qt::GestureFlag&gt;)">
 	    <modify-argument index="2">
 		  <replace-default-expression with="new com.trolltech.qt.core.Qt.GestureFlag[0]"/>
@@ -3322,7 +3322,7 @@
             </modify-argument>
         </modify-function>
     </interface-type>
-    
+
     <object-type name="QTouchEvent">
       <modify-function signature="QTouchEvent(QEvent::Type,QTouchEvent::DeviceType,QFlags&lt;Qt::KeyboardModifier&gt;,QFlags&lt;Qt::TouchPointState&gt;,const QList&lt;QTouchEvent::TouchPoint&gt; &amp;)">
 	  <modify-argument index="5">
