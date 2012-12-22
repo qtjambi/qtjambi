@@ -642,6 +642,8 @@
         <reject-enum-value name="LastLanguage"/>
         <reject-enum-value name="NorwegianBokmal"/>
         <reject-enum-value name="Nynorsk"/>
+        <!-- since 4.8.4 -->
+        <reject-enum-value name="Kurundi"/>
     </enum-type>
 
     <enum-type name="QLocale::Country">
