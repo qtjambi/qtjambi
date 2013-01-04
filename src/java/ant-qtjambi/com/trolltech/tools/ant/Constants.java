@@ -232,6 +232,7 @@ public abstract class Constants {
     public static final String VSREDISTDIR_PACKAGE = "qtjambi.vsredistdir.package";
 
     public static final String QTJAMBI_DEBUG_TOOLS         = "qtjambi.debug-tools";
+    public static final String QTJAMBI_DEBUG_REFTYPE       = "qtjambi.debug-reftype";
     public static final String QTJAMBI_QREALTYPE           = "qtjambi.qrealtype";
 
     // Initialize these to empty string if unset.

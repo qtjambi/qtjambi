@@ -507,16 +507,36 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             AntUtil.setNewProperty(propertyHelper, Constants.CONFIGURATION_OSGI, s);
 
         {
-            sourceValue = null;
-            String value = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_TOOLS);
-            if(value == null) {
-                if(isConfigurationDebug() || isConfigurationTest())
-                    value = Boolean.TRUE.toString();
-                else
-                    value = Boolean.FALSE.toString();
-                sourceValue = " (auto-configured based on ${" + Constants.CONFIGURATION + "})";
+            String toolsSourceValue = null;
+            String toolsValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_TOOLS);
+            if(toolsValue == null) {
+                if(isConfigurationDebug() || isConfigurationTest()) {
+                    toolsValue = Boolean.TRUE.toString();
+                } else {
+                    toolsValue = Boolean.FALSE.toString();
+                }
+                toolsSourceValue = " (auto-configured based on ${" + Constants.CONFIGURATION + "})";
             }
-            mySetProperty(-1, Constants.QTJAMBI_DEBUG_TOOLS, sourceValue, value, false);
+
+            String reftypeSourceValue = null;
+            // This is set to true||false from properties
+            String reftypeValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_REFTYPE);
+            // TODO: Setting this has the meaning that we will try to build it into the binaries
+            //  this relies on a JDK6+ being present at build and runtime.  If this is set 'true' we
+            //  would ideally like to check and enforce the setting, if auto do a detection of JDK version.
+            if(reftypeValue == null) {
+                // This option only makes sense with QTJAMBI_DEBUG_TOOLS=true and is inert otherwise.
+                if(Boolean.TRUE.toString().compareToIgnoreCase(toolsValue) == 0) {
+                    reftypeValue = Boolean.TRUE.toString();
+                    toolsValue += " QTJAMBI_DEBUG_REFTYPE";
+                } else {
+                    reftypeValue = Boolean.FALSE.toString();
+                }
+                reftypeSourceValue = " (auto-configured based on ${" + Constants.QTJAMBI_DEBUG_TOOLS + "})";
+            }
+
+            mySetProperty(-1, Constants.QTJAMBI_DEBUG_TOOLS, toolsSourceValue, toolsValue, false);
+            mySetProperty(-1, Constants.QTJAMBI_DEBUG_REFTYPE, reftypeSourceValue, reftypeValue, false);
         }
 
         {

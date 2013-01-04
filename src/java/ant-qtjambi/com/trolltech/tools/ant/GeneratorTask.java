@@ -365,8 +365,27 @@ public class GeneratorTask extends Task {
     /**
      * Enable code generation with additional debugging output, this
      *  output may inhibit runtime performance.
+     * @see QMakeTask#setDebugTools(String)
      */
-    public void setDebugTools(boolean debugTools) {
-        this.debugTools = debugTools;
+    public void setDebugTools(String debugToolsString) {
+        boolean value = false;  // default
+        if(debugToolsString != null) {
+            StringTokenizer tok = new StringTokenizer(debugToolsString, " ,");
+            while(tok.hasMoreTokens()) {
+                String s = tok.nextToken();
+
+                if(Boolean.TRUE.toString().compareToIgnoreCase(s) == 0)
+                    value = true;
+                else if(Boolean.FALSE.toString().compareToIgnoreCase(s) == 0)
+                    value = false;
+                else if(QMakeTask.K_QTJAMBI_DEBUG_TOOLS.compareTo(s) == 0)
+                    value = true;
+                else if(String.valueOf("-" + QMakeTask.K_QTJAMBI_DEBUG_TOOLS).compareTo(s) == 0)
+                    value = false;
+                // ignore anything else
+            }
+        }
+
+        this.debugTools = value;
     }
 }

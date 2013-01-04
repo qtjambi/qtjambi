@@ -69,7 +69,7 @@ public class QMakeTask extends Task {
     private String qmakebinary;
 
     private boolean recursive;
-    private boolean debugTools;
+    private List<String> definesList = new ArrayList<String>();
 
     public static String executableName() {
         String exe;
@@ -146,8 +146,8 @@ public class QMakeTask extends Task {
         if(recursive)
             arguments.add("-r");
 
-        if(debugTools)
-            arguments.add("DEFINES+=QTJAMBI_DEBUG_TOOLS");
+        if(definesList.size() > 0)
+            arguments.add("DEFINES+=" + Util.arrayJoinToString(definesList.toArray(), " "));
 
         return arguments;
     }
@@ -255,7 +255,33 @@ public class QMakeTask extends Task {
         this.pro = pro;
     }
 
-    public void setDebugTools(boolean debugTools) {
-        this.debugTools = debugTools;
+    public  static final String K_QTJAMBI_DEBUG_TOOLS = "QTJAMBI_DEBUG_TOOLS";  // true||false
+    private static final String K_QTJAMBI_DEBUG_      = "QTJAMBI_DEBUG_";       // QTJAMBI_DEBUG_FOOBAR||-QTJAMBI_DEBUG_FOOBAR
+
+    /**
+     * Allowed input: "true", "false", "true[ ,]QTJAMBI_DEBUG_", "false[ ,]\-QTJAMBI_DEBUG_"
+     * @see GeneratorTask#setDebugTools(String)
+     */
+    public void setDebugTools(String debugToolsString) {
+        if(debugToolsString == null) {
+            definesList.clear();
+            return;
+        }
+
+        List<String> newDefinesList = new ArrayList<String>();
+        StringTokenizer tok = new StringTokenizer(debugToolsString, " ,");
+        while(tok.hasMoreTokens()) {
+            String s = tok.nextToken();
+
+            if(Boolean.TRUE.toString().compareToIgnoreCase(s) == 0)
+                newDefinesList.add(K_QTJAMBI_DEBUG_TOOLS);
+            else if(Boolean.FALSE.toString().compareToIgnoreCase(s) == 0)
+                newDefinesList.remove(K_QTJAMBI_DEBUG_TOOLS);
+            else if(s.startsWith(K_QTJAMBI_DEBUG_))
+                newDefinesList.add(s);
+            else if(s.startsWith("-" + K_QTJAMBI_DEBUG_))
+                newDefinesList.remove(s.substring(1));
+        }
+        this.definesList = newDefinesList;
     }
 }
