@@ -99,6 +99,7 @@
             <classpath>
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
                 <pathelement location="${tests.junit}" />
+                <pathelement location="${tests.hamcrest}" />
             </classpath>
             <src path="${basedir}/src/java/autotest"/>
             <!-- pick up the generated code from compile.native -->
@@ -122,6 +123,7 @@
             <classpath>
                 <pathelement location="${basedir}/jars/qtjambi.jar" />
                 <pathelement location="${tests.junit}" />
+                <pathelement location="${tests.hamcrest}" />
                 <pathelement location="${outputDir}/tests/auto" />
                 <pathelement location="${basedir}/src/java/autotest" />
             </classpath>
