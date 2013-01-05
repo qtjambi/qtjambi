@@ -181,20 +181,20 @@
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml-${kind}">
                 <fileset dir="src/java/autotest">
-                    <include name="**/com/trolltech/autotests/**/Test*.java"/>
-                    <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestCloneableOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestCloneableSQL.java" unless="${qtjambi.sql.any.true}"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeSQL.java" unless="${qtjambi.sql.any.true}"/>
-                </fileset>
-                <fileset dir="src/java/autotest">
-                    <include name="**/com/trolltech/unittests/**/Test*.java"/>
+                    <include name="com/trolltech/autotests/**/Test*.java"/>
+                    <include name="com/trolltech/unittests/**/Test*.java"/>
+                    <include name="com/trolltech/generatortests/**/Test*.java"/>
+                    <include name="com/trolltech/autotests/**/Test*.java"/>
+                    <exclude name="com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
+                    <exclude name="com/trolltech/autotests/**/TestCloneableOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
+                    <exclude name="com/trolltech/autotests/**/TestCloneableSQL.java" unless="${qtjambi.sql.any.true}"/>
+                    <exclude name="com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
+                    <exclude name="com/trolltech/autotests/**/TestInjectedCodeOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
+                    <exclude name="com/trolltech/autotests/**/TestInjectedCodeSQL.java" unless="${qtjambi.sql.any.true}"/>
+                    <exclude name="com/trolltech/unittests/support/**"/>
                     <!-- MacOSX version of Qt does not have this API -->
-                    <exclude name="**/com/trolltech/unittests/TestXmlQXmlStreamReader.java" if="qtjambi.config.ismacosx"/>
+                    <exclude name="com/trolltech/unittests/TestXmlQXmlStreamReader.java" if="qtjambi.config.ismacosx"/>
                 </fileset>
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/**/Test*.java"/>
             </batchtest>
         </junit>
     </target>
@@ -249,21 +249,23 @@
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml-${kind}">
                 <fileset dir="src/java/autotest">
-<!--                    <include name="**/com/trolltech/autotests/**/TestClipboard.java"/>                -->
-                    <include name="**/com/trolltech/autotests/**/Test*.java"/>
-                    <exclude name="**/com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestCloneableOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestCloneableSQL.java" unless="${qtjambi.sql.any.true}"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
-                    <exclude name="**/com/trolltech/autotests/**/TestInjectedCodeSQL.java" unless="${qtjambi.sql.any.true}"/>
-                </fileset>
-                <fileset dir="src/java/autotest">
-                    <include name="**/com/trolltech/unittests/**/Test*.java"/>
+<!--                    <include name="com/trolltech/autotests/**/TestClipboard.java"/>                -->
+                    <include name="com/trolltech/autotests/**/Test*.java"/>
+                    <include name="com/trolltech/unittests/**/Test*.java"/>
+                    <include name="com/trolltech/generatortests/**/Test*.java"/>
+<!--                    <exclude name="com/trolltech/autotests/**/Test*.java"/>
+                    <exclude name="com/trolltech/generatortests/**/Test*.java"/>
+                    <exclude name="com/trolltech/unittests/**/Test*.java"/>                    -->
+                    <exclude name="com/trolltech/autotests/**/*QPlastiqueStyle.java" if="qt.feature.QT_NO_STYLE_PLASTIQUE"/>
+                    <exclude name="com/trolltech/autotests/**/TestCloneableOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
+                    <exclude name="com/trolltech/autotests/**/TestCloneableSQL.java" unless="${qtjambi.sql.any.true}"/>
+                    <exclude name="com/trolltech/autotests/**/TestInjectedCodeV2LookupHost.java" if="qtjambi.javac.sunjdk5.compiler"/>
+                    <exclude name="com/trolltech/autotests/**/TestInjectedCodeOpenGL.java" unless="${qtjambi.opengl.any.true}"/>
+                    <exclude name="com/trolltech/autotests/**/TestInjectedCodeSQL.java" unless="${qtjambi.sql.any.true}"/>
+                    <exclude name="com/trolltech/unittests/support/**"/>
                     <!-- MacOSX version of Qt does not have this API -->
-                    <exclude name="**/com/trolltech/unittests/TestXmlQXmlStreamReader.java" if="qtjambi.config.ismacosx"/>
+                    <exclude name="com/trolltech/unittests/TestXmlQXmlStreamReader.java" if="qtjambi.config.ismacosx"/>
                 </fileset>
-                <fileset dir="src/java/autotest" includes="**/com/trolltech/generatortests/**/Test*.java"/>
             </batchtest>
         </junit>
     </target>
