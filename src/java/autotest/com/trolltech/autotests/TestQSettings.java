@@ -47,35 +47,80 @@ package com.trolltech.autotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
+import org.junit.After;
 import org.junit.Test;
 
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QSettings;
+import com.trolltech.qt.core.QSettings.Format;
 
-public class TestQSettings extends QApplicationTest implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class TestQSettings extends QApplicationTest {
 
-    @Test
-    public void writeSettingsSimple() {
-        QSettings settings = new QSettings("Trolltech", "Test");
-        settings.sync();
+    private File tmpFile;
+    private QSettings settings;
+    private long initialLength;
+
+    private QSettings createTmpFile() throws Exception {
+        if(tmpFile != null)
+            deleteTmpFile();
+        tmpFile = File.createTempFile("TestQSettings", ".junit");
+        assertEquals(0, tmpFile.length());
+        // was organization="Trolltech", application="Test"
+        settings = new QSettings(tmpFile.getAbsolutePath(), Format.IniFormat);
+        return settings;
+    }
+
+    private QSettings findOrCreateTmpFile() throws Exception {
+        if(settings != null)
+            return settings;
+        return createTmpFile();
+    }
+
+    private void deleteTmpFile() {
+        settings = null;  // no delete operation ?
+
+        if(tmpFile != null) {
+            if(tmpFile.delete() == false)
+                throw new RuntimeException(tmpFile.getAbsolutePath() + " delete failed");
+            tmpFile = null;
+        }
+    }
+
+    private void sync(boolean initialFlag) {
+        if(settings != null)
+            settings.sync();
+        if(initialFlag)
+            initialLength = tmpFile.length();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        deleteTmpFile();
+    }
+
+    public void writeSettingsSimple() throws Exception {
+        QSettings settings = createTmpFile();
+        sync(true);
 
         settings.setValue("int", 5);
         settings.setValue("double", 5.000001d);
         settings.setValue("String", "String");
 
-        settings.sync();
+        sync(false);
+        assertTrue(tmpFile.length() > initialLength);
     }
 
-    @Test
-    public void readSettingsSimple() {
-        QSettings settings = new QSettings("Trolltech", "Test");
-        settings.sync();
+    // This method depends on the write method completing work first
+    public void readSettingsSimple() throws Exception {
+        QSettings settings = findOrCreateTmpFile();
+        sync(true);
 
         assertEquals(5, QVariant.toInt(settings.value("int")));
         assertEquals(5.000001d, QVariant.toDouble(settings.value("double").toString()), 0.0);
@@ -83,34 +128,47 @@ public class TestQSettings extends QApplicationTest implements Serializable {
     }
 
     @Test
-    public void writeSettingsCollection() {
-        QSettings settings = new QSettings("Trolltech", "Test");
-        settings.sync();
+    public void testSettingsSimple() throws Exception {
+        writeSettingsSimple();
+        readSettingsSimple();
+    }
+
+    public void writeSettingsCollection() throws Exception {
+        QSettings settings = createTmpFile();
+        sync(true);
 
         List<String> list = new Vector<String>();
         for (int i = 0; i < 10; i++) {
             list.add("entry-" + i);
         }
         settings.setValue("test", list);
-        settings.sync();
+        sync(false);
+        assertTrue(tmpFile.length() > initialLength);
     }
 
-    @Test
-    public void readSettingsCollection() {
-        QSettings settings = new QSettings("Trolltech", "Test");
-        settings.sync();
+    // This method depends on the write method completing work first
+    public void readSettingsCollection() throws Exception {
+        QSettings settings = findOrCreateTmpFile();
+        sync(true);
 
         List<?> list = (List<?>) settings.value("test", new Vector<String>());
 
+        assertTrue(list.size() >= 10);
         for (int i = 0; i < 10; i++) {
             assertEquals("entry-" + i, list.get(i));
         }
     }
 
     @Test
-    public void readSettingsEmpty() {
-        QSettings settings = new QSettings("Trolltech", "Test");
-        settings.sync();
+    public void testSettingsCollection() throws Exception {
+        writeSettingsCollection();
+        readSettingsCollection();
+    }
+
+    @Test
+    public void readSettingsEmpty() throws Exception {
+        QSettings settings = createTmpFile();
+        sync(true);
 
         String res = (String) settings.value("empty", "ok");
         assertEquals("ok", res);
@@ -119,7 +177,7 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         assertNull(res);
     }
 
-    public class Custom implements Serializable {
+    public static class Custom implements Serializable {
         private static final long serialVersionUID = 1L;
 
         String name;
@@ -127,10 +185,9 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         Custom object;
     }
 
-    @Test
-    public void writeSettingsCustomClass() {
-        QSettings settings = new QSettings("Trolltech", "Test");
-        settings.sync();
+    public void writeSettingsCustomClass() throws Exception {
+        QSettings settings = createTmpFile();
+        sync(true);
 
         Custom custom = new Custom();
         custom.name = "abc";
@@ -138,19 +195,26 @@ public class TestQSettings extends QApplicationTest implements Serializable {
         custom.object = new Custom();
 
         settings.setValue("custom", custom);
-        settings.sync();
+        sync(false);
+        assertTrue(tmpFile.length() > initialLength);
     }
 
-    @Test
-    public void readSettingsCustomClass() {
-        QSettings settings = new QSettings("Trolltech", "Test");
-        settings.sync();
+    // This method depends on the write method completing work first
+    public void readSettingsCustomClass() throws Exception {
+        QSettings settings = findOrCreateTmpFile();
+        sync(true);
 
         Custom custom = (Custom) settings.value("custom");
         assertNotNull(custom);
         assertEquals(custom.name, "abc");
         assertEquals(custom.integer, 123);
         assertEquals(custom.object.getClass(), Custom.class);
+    }
+
+    @Test
+    public void testSettingsCustomClass() throws Exception {
+        writeSettingsCustomClass();
+        readSettingsCustomClass();
     }
 
     public static void main(String args[]) {
