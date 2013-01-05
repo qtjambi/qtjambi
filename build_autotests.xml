@@ -178,7 +178,7 @@
             the JVM may promote SIGSEGV to NullPointerException, which is
             not that useful for debugging. -->
             <jvmarg value="-Xcheck:jni"/>
-            <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
+            <!-- <env key="QTJAMBI_DEBUG_TRACE" value="true"/> -->
             <env key="DYLD_LIBRARY_PATH" value="${env.DYLD_LIBRARY_PATH}${psep}${absQtLib}${psep}${absJambiLib}"/><!-- if="qtjambi.config.ismacosx" -->
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml-${kind}">
@@ -236,18 +236,19 @@
                 <pathelement path="src/java/autotest" />
             </classpath>
             <jvmarg value="-Djava.library.path=${absQtLib}${psep}${absJambiLib}"/>
-            <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/>
+            <!-- <jvmarg value="-Dcom.trolltech.qt.verbose-loading=true"/> -->
             <jvmarg value="-Dcom.trolltech.qt.debug=${kind}"/><!-- This should not be needed now, it loads default from MANIFEST.MF -->
             <jvmarg value="-Dcom.trolltech.qt.debug.inhibitNativeResourceThread=true"/>
-            <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/>
+            <!-- <jvmarg value="-Dcom.trolltech.qt.debug.level=255"/> -->
             <jvmarg value="-Dcom.trolltech.qt.exceptions-for-messages=none"/>
-            <jvmarg value="-Xrs"/><!-- This stops JVM intercepting SIGSEGV
+            <!-- <jvmarg value="-Xrs"/> --><!-- This stops JVM intercepting SIGSEGV
             from native code (so we can see where/why it crashed) otherwise
             the JVM may promote SIGSEGV to NullPointerException, which is
             not that useful for debugging. -->
-            <jvmarg value="-Xcheck:jni"/>
-            <env key="QTJAMBI_DEBUG_TRACE" value="true"/>
-<!--            <jvmarg value="-verbose"/> -->
+            <!-- <jvmarg value="-Xcheck:jni"/> -->
+            <!-- <env key="QTJAMBI_DEBUG_TRACE" value="true"/> -->
+            <!-- <jvmarg value="-verbose"/> -->
+            <!-- <jvmarg value="-Xrunhprof:format=b,doe=y,thread=y,file=snapshot1.hprof"/> -->
             <formatter type="xml" usefile="yes" />
             <batchtest fork="yes" todir="${outputDir}/tests/junitxml-${kind}">
                 <fileset dir="src/java/autotest">
