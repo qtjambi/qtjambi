@@ -57,7 +57,7 @@ public class TestQSslSocket extends QApplicationTest {
 	@org.junit.Test
 	public void testConnectToHostEncrypted() {
 		setupSocket(K_host_google_com);
-		assertEquals("socket.state()", socket.state(), QAbstractSocket.SocketState.ConnectedState);
+		assertEquals("socket.state() for " + K_host_google_com + ":443", QAbstractSocket.SocketState.ConnectedState, socket.state());
 		assertTrue(socket.isValid());
 		// Could not use unittest.qt-jambi.org as socket.isEncrypted()==false not sure exactly why,
 		//  maybe it doesn't like the CA.
@@ -67,7 +67,7 @@ public class TestQSslSocket extends QApplicationTest {
 	@org.junit.Test
 	public void testConnectToHostWithData() {
 		setupSocket(K_host_google_com);
-		assertEquals("socket.state()", socket.state(), QAbstractSocket.SocketState.ConnectedState);
+		assertEquals("socket.state() for " + K_host_google_com + ":443", QAbstractSocket.SocketState.ConnectedState, socket.state());
 		// another test candidate
 		String s = "HEAD / HTTP/1.1\r\nHost: " + K_host_google_com + "\r\nConnection: close\r\n\r\n";
 		byte[] bA;
@@ -96,7 +96,7 @@ public class TestQSslSocket extends QApplicationTest {
 	public void testCaCertificates() {
 		// We use a remote host we can control the server side certificates on
 		setupSocket(K_host_unittest_qt_jambi_org);
-		assertEquals("socket.state()", socket.state(), QAbstractSocket.SocketState.ConnectedState);
+		assertEquals("socket.state() for " + K_host_unittest_qt_jambi_org + ":443", QAbstractSocket.SocketState.ConnectedState, socket.state());
 		certs = socket.peerCertificateChain();
 		assertNotNull(certs);
 		assertTrue(certs.size() > 0);
@@ -108,7 +108,7 @@ public class TestQSslSocket extends QApplicationTest {
 		//  time of year and the wind direction.  Making this check too brittle for general use.
 		// Ideally this should be hosted by unittest.qt-jambi.org so we can control exactly the
 		//  server side.  Making the user setup puppet and other things just presents additional
-		//  barriers to unittesting.
+		//  barriers to unit testing.
 
 		certs = certs.subList(0, date.length);
 		Iterator<QSslCertificate> i = certs.iterator();
