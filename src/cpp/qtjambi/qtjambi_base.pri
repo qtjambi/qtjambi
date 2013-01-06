@@ -61,6 +61,16 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
     CONFIG += debug_and_release build_all
 }
 
+contains(QT_CONFIG, debug) {
+    # In debug mode
+    linux-g++* | freebsd-g++* {
+        # On GCC based unix
+        # Disable inlines to help debugging
+        QMAKE_CFLAGS += -fno-inline
+        QMAKE_CXXFLAGS += -fno-inline
+    }
+}
+
 # make install related...
 !isEmpty(INSTALL_PREFIX) {
     target.path = $$INSTALL_PREFIX
