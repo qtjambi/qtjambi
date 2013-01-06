@@ -855,15 +855,10 @@ void CppImplGenerator::writeShellSignatures(QTextStream &s, const AbstractMetaCl
 }
 
 void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaClass *java_class) {
-    // QObject::metaObject()
-    s << "const QMetaObject *" << shellClassName(java_class) << "::metaObject() const" << endl
+    s << "const QMetaObject *" << shellClassName(java_class) << "::initMetaObject(JNIEnv *env, jobject java_object)" << endl
     << "{" << endl
-    << "  if (m_meta_object == 0) {" << endl
-    << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
-    << "      jobject __obj = m_link != 0 ? m_link->javaObject(__jni_env) : 0;" << endl
-    << "      if (__obj == 0) return " << java_class->qualifiedCppName() << "::metaObject();" << endl
-    << "      else m_meta_object = qtjambi_metaobject_for_class(__jni_env, __jni_env->GetObjectClass(__obj), " << java_class->qualifiedCppName() << "::metaObject());" << endl;
-
+    << "  const QMetaObject *mo = QtDynamicMetaObject::build(env, java_object, " << java_class->qualifiedCppName() << "::metaObject()" << ");" << endl;
+    s << "  Q_ASSERT(mo);" << endl;
 
     AbstractMetaFunctionList virtualFunctions = java_class->virtualFunctions();
     for (int pos = 0; pos < virtualFunctions.size(); ++pos) {
@@ -871,19 +866,23 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
         if (virtualFunction->isVirtualSlot()) {
             QStringList introspectionCompatibleSignatures = virtualFunction->introspectionCompatibleSignatures();
             foreach(QString introspectionCompatibleSignature, introspectionCompatibleSignatures) {
-                s << "      {" << endl
-                << "          int idx = "
-                << java_class->qualifiedCppName() << "::metaObject()->indexOfMethod(\""
+                s << "    {" << endl
+                << "        int idx = mo->indexOfMethod(\""
                 << introspectionCompatibleSignature << "\");" << endl;
 
-                s << "          if (idx >= 0) m_map.insert(idx, " << pos << ");" << endl
-                << "      }" << endl;
+                s << "        if (idx >= 0) m_map.insert(idx, " << pos << ");" << endl
+                << "    }" << endl;
             }
         }
-
     }
 
-    s << "  }" << endl
+    s << "  return mo;" << endl
+    << "}" << endl;
+
+    // QObject::metaObject()
+    s << "const QMetaObject *" << shellClassName(java_class) << "::metaObject() const" << endl
+    << "{" << endl
+    << "  Q_ASSERT(m_meta_object);" << endl
     << "  return m_meta_object;" << endl
     << "}" << endl << endl;
 
@@ -1941,6 +1940,9 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     writeFunctionCallArguments(s, java_function, "__qt_", SkipRemovedArguments);
     s << ");" << endl;
 
+    if (cls->isQObject())
+        s << INDENT << qt_object_name << "->m_meta_object = " << qt_object_name << "->initMetaObject(__jni_env, " << java_object_name << ");" << endl;
+
     s << INDENT << "QtJambiLink *__qt_java_link = ";
     if (cls->isQObject()) {
         s << "qtjambi_construct_qobject(__jni_env, " << java_object_name << ", "
@@ -1956,6 +1958,8 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     << INDENT << "if (!__qt_java_link) {" << endl;
     {
         Indentation indent(INDENT);
+        if (cls->isQObject())
+            s << INDENT << "/* QtDynamicMetaObject::check_dynamic_deref(" << qt_object_name << "->m_meta_object) done in delete */" << endl;
         s << INDENT << "delete " << qt_object_name << ";" << endl;
         s << INDENT << "qtjambishell_throw_runtimeexception(__jni_env, \"object construction failed for type: " << className << "\");" << endl;
         s << INDENT << "return;" << endl;
@@ -1989,11 +1993,13 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
         // Set up the link object
         s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl;
 
+#if 0
         // Make sure the user data in the QObject has bindings to the qobject's meta object
         // (this has to be done after the link is set, so that the fake meta object
         //  can access the java object, for which it gets a reference in the link)
         if (cls->isQObject())
-            s << INDENT << qt_object_name << "->m_link->setMetaObject(" << qt_object_name << "->metaObject());" << endl;
+            s << INDENT << qt_object_name << "->m_link->setMetaObject(" << qt_object_name << "->m_meta_object);" << endl;
+#endif
 
         s << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
 

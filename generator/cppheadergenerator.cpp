@@ -169,8 +169,11 @@ void CppHeaderGenerator::write(QTextStream &s, const AbstractMetaClass *java_cla
         s << "  const QMetaObject *metaObject() const;" << endl
         << "  void *qt_metacast(const char *);" << endl
         << "  QT_TR_FUNCTIONS" << endl
-        << "  virtual int qt_metacall(QMetaObject::Call, int, void **);" << endl
-        << "private:" << endl;
+        << "  virtual int qt_metacall(QMetaObject::Call, int, void **);" << endl;
+        // This is referenced by the exported static JNI constructors which have
+        //  normal access to methods and are unable to invoke privates.
+        s << "  const QMetaObject *initMetaObject(JNIEnv *env, jobject java_object);" << endl;
+        s << "private:" << endl;
     }
 
 

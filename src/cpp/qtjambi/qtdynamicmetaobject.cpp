@@ -62,6 +62,9 @@ public:
     void initialize(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object);
     void invokeMethod(JNIEnv *env, jobject object, jobject method_object, void **_a, const QString &signature = QString()) const;
 
+    QBasicAtomicInt ref;
+    int extra_data_count;
+
     int m_method_count;
     int m_signal_count;
     int m_property_count;
@@ -78,13 +81,15 @@ public:
 };
 
 QtDynamicMetaObjectPrivate::QtDynamicMetaObjectPrivate(QtDynamicMetaObject *q, JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object)
-    : q_ptr(q), m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0),
+    : q_ptr(q), extra_data_count(0),
+      m_method_count(-1), m_signal_count(0), m_property_count(0), m_methods(0), m_signals(0),
       m_property_readers(0), m_property_writers(0), m_property_resetters(0), m_property_designables(0),
       m_original_signatures(0)
 {
     Q_ASSERT(env != 0);
     Q_ASSERT(java_class != 0);
 
+    ref = 1;  /* pre c++0x compatible initialization */
     initialize(env, java_class, original_meta_object);
 }
 
@@ -267,10 +272,25 @@ void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobje
 }
 
 QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object)
-    : d_ptr(new QtDynamicMetaObjectPrivate(this, jni_env, java_class, original_meta_object)) { }
+    : d_ptr(new QtDynamicMetaObjectPrivate(this, jni_env, java_class, original_meta_object))
+{
+}
 
 QtDynamicMetaObject::~QtDynamicMetaObject()
 {
+    {
+        delete[] (uint*)d.data;
+        delete[] (char*)d.stringdata;
+
+        if (d.extradata != 0) {
+            const QMetaObject ** ptr = (const QMetaObject **) d.extradata;
+            for (int i = 0; i < d_ptr->extra_data_count; ++i)
+                check_dynamic_deref(ptr[i]);
+
+            delete[] (const QMetaObject **)d.extradata;
+        }
+    }
+
     delete d_ptr;
 }
 
@@ -420,4 +440,96 @@ int QtDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, in
     }
 
     return _id - d->m_property_count;
+}
+
+// Can't inline it into header unless I declare QtDynamicMetaObjectPrivate there too
+bool QtDynamicMetaObject::ref() {
+    bool bf = d_ptr->ref.ref();
+    // Yeah there is a race here but the Q_ASSERT is still useful
+    Q_ASSERT(d_ptr->ref.fetchAndAddOrdered(0) > 0);
+    return bf;
+}
+
+bool QtDynamicMetaObject::deref() {
+    bool bf = d_ptr->ref.deref();
+    // Yeah there is a race here but the Q_ASSERT is still useful
+    Q_ASSERT(d_ptr->ref.fetchAndAddOrdered(0) >= 0);
+    return bf;
+}
+
+// dynamic means it was constructed and published via MetaObjectTools.java and
+//  is a Java type of a subclassed QtJambiShell object.  See the initialize()
+//  method above for how this happens.
+bool QtDynamicMetaObject::is_dynamic(const QMetaObject *meta_object) {
+    if (meta_object == 0)
+        return false;
+
+    int idx = meta_object->indexOfClassInfo("__qt__binding_shell_language");
+    return (idx >= 0 && !strcmp(meta_object->classInfo(idx).value(), "Qt Jambi"));
+}
+
+// We can fix the const_cast<> use by having the shell keep a union for storage of const and non-const
+//  then split up the qtjambi_metaobject_for_class into 2 parts.  Since it is a union{} we need to keep
+//  call to is_dynamic() for type detection unless we store some other bitfield
+//  along side the union{}.  Which maybe useful in itself to allow the method to know if it has been
+//  subclassed.  For now we const_cast<>.
+// meta_object maybe 0
+bool QtDynamicMetaObject::check_dynamic_deref(const QMetaObject *meta_object)
+{
+    if(!is_dynamic(meta_object))
+        return false;
+
+    QtDynamicMetaObject *dynamic = const_cast<QtDynamicMetaObject *>(reinterpret_cast<const QtDynamicMetaObject *>(meta_object));
+    if(!dynamic->deref())
+        delete dynamic;
+
+    return true;
+}
+
+// Used by QtJambiShell code to implement the dispatch
+int QtDynamicMetaObject::dispatch_qt_metacall(QtJambiLink *link, const QMetaObject *meta_object, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (!link)
+        return _id;
+    if (!is_dynamic(meta_object))
+        return _id;
+    JNIEnv *env = qtjambi_current_environment();
+    if (!env)
+        return _id;
+
+    env->PushLocalFrame(100);
+    const QtDynamicMetaObject *dynamic_meta_object = static_cast<const QtDynamicMetaObject *>(meta_object);
+    switch (_c) {
+    case QMetaObject::InvokeMetaMethod:
+        _id = dynamic_meta_object->invokeSignalOrSlot(env, link->javaObject(env), _id, _a); break;
+    case QMetaObject::ReadProperty:
+        _id = dynamic_meta_object->readProperty(env, link->javaObject(env), _id, _a); break;
+    case QMetaObject::WriteProperty:
+        _id = dynamic_meta_object->writeProperty(env, link->javaObject(env), _id, _a); break;
+    case QMetaObject::ResetProperty:
+        _id = dynamic_meta_object->resetProperty(env, link->javaObject(env), _id, _a); break;
+    case QMetaObject::QueryPropertyDesignable:
+        _id = dynamic_meta_object->queryPropertyDesignable(env, link->javaObject(env), _id, _a); break;
+    default:
+        break;
+    };
+    env->PopLocalFrame(0);
+
+    return _id;
+}
+
+const QMetaObject *QtDynamicMetaObject::build(JNIEnv *env, jobject java_object, const QMetaObject *base_meta_object)
+{
+    Q_ASSERT(env);
+    Q_ASSERT(REFTYPE_LOCAL(env, java_object));
+
+    jclass java_class = env->GetObjectClass(java_object);
+    Q_ASSERT(java_class);
+
+    // TODO: I don't think we can recurse, i.e. base_meta_object is not a QtDynamicMetaObject
+    //  if/when we allow this we need to take a reference if we retain it.  Maybe that is
+    //  what d.extradata was for.
+    const QMetaObject *meta_object = qtjambi_metaobject_for_class(env, java_class, base_meta_object);
+    env->DeleteLocalRef(java_class);
+    return meta_object;
 }

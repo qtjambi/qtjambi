@@ -47,11 +47,12 @@
 
 #include "qtjambi_global.h"
 
-#include <QtCore/QString>
 #include <QtCore/QByteArray>
 #include <QtCore/QMetaObject>
+#include <QtCore/QString>
 
 class QtDynamicMetaObjectPrivate;
+class QtJambiLink;
 
 class QTJAMBI_EXPORT QtDynamicMetaObject: public QMetaObject
 {
@@ -66,6 +67,15 @@ public:
     int queryPropertyDesignable(JNIEnv *env, jobject object, int _id, void **_a) const;
 
     int originalSignalOrSlotSignature(JNIEnv *env, int _id, QString *signature) const;
+
+    bool ref();
+    bool deref();
+
+    static bool is_dynamic(const QMetaObject *meta_object);
+    static bool check_dynamic_deref(const QMetaObject *meta_object);
+    static int dispatch_qt_metacall(QtJambiLink *link, const QMetaObject *meta_object, QMetaObject::Call _c, int _id, void **_a);
+    static const QMetaObject *build(JNIEnv *env, jobject java_object, const QMetaObject *base_meta_object);
+
 
 private:
     QtDynamicMetaObjectPrivate *d_ptr;
