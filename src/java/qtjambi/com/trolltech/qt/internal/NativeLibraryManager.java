@@ -152,7 +152,11 @@ public class NativeLibraryManager {
 
     private static final String DEBUG_SUFFIX = "_debuglib";
 
-    private static final boolean VERBOSE_LOADING = System.getProperty("com.trolltech.qt.verbose-loading") != null;
+    private static final boolean VERBOSE_LOADING;
+    static {
+        Boolean bf = Utilities.matchBooleanProperty("com.trolltech.qt.verbose-loading", Boolean.FALSE, Boolean.TRUE, null, null);
+        VERBOSE_LOADING = bf.booleanValue();
+    }
 
     private static final int LOAD_TRUE = 1;
     private static final int LOAD_SYSTEM = 2;
