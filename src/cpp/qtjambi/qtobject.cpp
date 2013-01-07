@@ -88,6 +88,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject_nativePoint
         return 0;
 }
 
+// This method does not seem to be used by anything
 extern "C" Q_DECL_EXPORT jobject JNICALL
 QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject__1_1qt_1reassignLink)
     (JNIEnv *env, jclass, jlong old_native_id, jclass clazz, jobject constructor)
