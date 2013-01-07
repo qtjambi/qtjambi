@@ -442,6 +442,10 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
     jobject java_object = env->NewObject(object_class, constructorId, 0);
     Q_ASSERT(REFTYPE_LOCAL(env, java_object));
     QtJambiLink *link = createLinkForQObject(env, java_object, object, meta_object);
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(java_object);
+    env->DeleteLocalRef(object_class);
+#endif
     return link;
 }
 
@@ -1254,6 +1258,9 @@ bool QtJambiLink::throwQtException(JNIEnv *env, const QString &extra, const QStr
     jclass cls = resolveClass(env, name.toUtf8().constData(), "com/trolltech/qt/");
     QTJAMBI_EXCEPTION_CHECK(env);
     success = (env->ThrowNew(cls, extra.toUtf8()) == 0);
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(cls);
+#endif
     return success;
 }
 
