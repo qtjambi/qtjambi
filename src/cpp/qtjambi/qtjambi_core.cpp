@@ -828,6 +828,21 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
     Q_ASSERT(qt_thread == QThread::currentThread());
     Q_ASSERT(qt_thread);
 
+    // This 'contained' seems to check if the Qt is aware of the thread causing
+    //  the Java object construction.  Creating Threads for use with Qt is a much
+    //  rarer thing to happen than constructing objects.  So I am inclined to think
+    //  that it would be much better to make users of the framework call some
+    //  method to initializes its use with the framework.
+    // TODO provide some additional Java accessible API to query the adoption state
+    //  of an arbirary Java thread with the Qt framework.  Also provide API to cause
+    //  adopt if necessary.
+    // I'm happy to try and consider options to make this check as efficient as
+    //  possible ... for example the 'java_thread' object only seems needed
+    //  inside the if (!contained){} block below.  Unless the call to
+    //  Thread.currentThread() somehow triggers registration ?
+    // Also I am happy to be throwing execeptions in constructors when a thread
+    //  affinity problem is found here.  It looks like in debug mode we perform
+    //  Q_ASSERT or no check in release mode.
     bool contained;
     {
         QReadLocker readLocker(qtjambi_thread_table_lock());
@@ -842,7 +857,8 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
 //                    qPrintable(qobject->objectName()),
 //                    qobject->metaObject()->className(),
 //                    qobject);
-            qtjambi_thread_table()->insert(qt_thread, env->NewWeakGlobalRef(java_thread));
+            jobject weak_global_ref = env->NewWeakGlobalRef(java_thread);
+            qtjambi_thread_table()->insert(qt_thread, weak_global_ref);
             QInternal::callFunction(QInternal::RefAdoptedThread, (void **) (void *) (&qt_thread));
         }
     }
@@ -1388,7 +1404,8 @@ QThread *qtjambi_to_thread(JNIEnv *env, jobject thread)
     ThreadTable *table = qtjambi_thread_table();
 
     QWriteLocker writeLocker(qtjambi_thread_table_lock());
-    table->insert(qt_thread, env->NewWeakGlobalRef(thread));
+    jobject weak_global_ref = env->NewWeakGlobalRef(thread);
+    table->insert(qt_thread, weak_global_ref);
     return qt_thread;
 }
 
@@ -1412,7 +1429,11 @@ int qtjambi_release_threads(JNIEnv *env)
         jobject java_thread = it.value();
         Q_ASSERT(java_thread);
 
+        // Here we are checking to see if the WeakGlobalRef of a
+        //  java.lang.Thread has been lost.
         if (env->IsSameObject(java_thread, 0)) {
+            // thread has been GCed
+            env->DeleteWeakGlobalRef(java_thread);
             ++releaseCount;
             QThread *thread = it.key();
             it = table->erase(it);
@@ -1421,6 +1442,7 @@ int qtjambi_release_threads(JNIEnv *env)
             QInternal::callFunction(QInternal::DerefAdoptedThread, (void **) (void *) &thread);
 //             locker.relock();
         } else {
+            // thread still exists
             ++it;
         }
     }
