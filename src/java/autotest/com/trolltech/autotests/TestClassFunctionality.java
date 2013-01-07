@@ -273,18 +273,18 @@ public class TestClassFunctionality extends QApplicationTest {
             view.setOptimizationFlag(flag);
         view.show();
 
-	long t = System.currentTimeMillis();
-	while (t + 5000 > System.currentTimeMillis()) {
-	    // For some reason when we compile with ECJ this loop times out and then
-	    //  fails the: assertTrue(GraphicsSceneSubclassSubclass.items != null);
-	    // I tried again without using synchronized() here but am still seeing
-	    //   occasional random failures in this test.  So putting lock back in place.
-	    // Upped timeout from 2500 to 5000
-	    synchronized(GraphicsSceneSubclassSubclass.class) {
+        long t = System.currentTimeMillis();
+        while (t + 5000 > System.currentTimeMillis()) {
+            // For some reason when we compile with ECJ this loop times out and then
+            //  fails the: assertTrue(GraphicsSceneSubclassSubclass.items != null);
+            // I tried again without using synchronized() here but am still seeing
+            //   occasional random failures in this test.  So putting lock back in place.
+            // Upped timeout from 2500 to 5000
+            synchronized(GraphicsSceneSubclassSubclass.class) {
                 if(GraphicsSceneSubclassSubclass.items != null)
-	            break;
+                    break;
             }
-	    QApplication.processEvents();
+            QApplication.processEvents();
         }
 
         assertTrue(GraphicsSceneSubclassSubclass.items != null);
@@ -671,19 +671,19 @@ public class TestClassFunctionality extends QApplicationTest {
         // ensure this gets called at least once (important on MacOSX, otherwise loop will not cause it)
         QApplication.processEvents();
 
-	long t = System.currentTimeMillis();
-	while (t + 10000 > System.currentTimeMillis()) {
-	    // For some reason when we compile with ECJ this loop times out and then
-	    //  fails the: assertTrue(receiver.paintEventCastWorked);
-	    // I tried again without using synchronized() here but am still seeing
-	    //   occasional random failures in this test.  So putting lock back in place.
-	    // Upped timeout from 2500 to 5000 then to 10000 for ARM Raspberry Pi
+        long t = System.currentTimeMillis();
+        while (t + 10000 > System.currentTimeMillis()) {
+            // For some reason when we compile with ECJ this loop times out and then
+            //  fails the: assertTrue(receiver.paintEventCastWorked);
+            // I tried again without using synchronized() here but am still seeing
+            //   occasional random failures in this test.  So putting lock back in place.
+            // Upped timeout from 2500 to 5000 then to 10000 for ARM Raspberry Pi
             synchronized(receiver) {
                 // TODO: Rework this check, put a flag on everything that needs to happen, each custom event and the paint/show events.
                 if(receiver.paintEventCastWorked)
                     break;
             }
-	    QApplication.processEvents();
+            QApplication.processEvents();
         }
         assertEquals(receiver.customEventString, "this is my stuff");
         assertEquals(receiver.customEventType, QEvent.Type.resolve(QEvent.Type.User.value() + 16));
