@@ -262,15 +262,101 @@ int qtjambi_object_cache_operation_count()
     return count;
 }
 
-void QtJambiLink::registerSubObject(void *ptr) {
-    QWriteLocker locker(gUserObjectCacheLock());
-    Q_ASSERT(gUserObjectCache());
-    gUserObjectCache()->insert(ptr, this);
+// The purpose of this method is to deduplicate the 'ptrs' as C++ might use the same
+//  pointer offset for all aliases to the same object instance in memory.  Furthermore
+//  the 'base' represents the pointer to the widest C++ type.
+// TODO: More unit tests to cover many possible C++ scenarios (taking inspiration from
+//  NameSpace_NameSpace2_NameSpace3_ObjectD that already exists in testing).
+//  POD, class, w/ virtual's, interface, w/ virtual's, etc...
+// QObject (and subclasses of QObject's) do not require this (I think this is either
+//  because of the rules over multiple inheritance or because QMetaObject already
+//  provides a type system to translate and canonicalize one pointer into another).
+// The return value is the new count (>= 0) and the 'ptrs' array is modified to have
+//  valid entries upto that new count.
+int QtJambiLink::registerSubObjectsDedupe(void *base, int count, void **ptrs) {
+    Q_ASSERT(base);
+    Q_ASSERT(ptrs);
+    Q_ASSERT(count >= 0);
+    {
+        void *newPtrs[count];
+        int newCount = 0;
+
+        int i;
+        for(i = 0; i < count; i++) {
+            void *p = ptrs[i];
+            // this is accounted for already and should never appear in output list
+            if(p == base)
+                continue;
+            int j;
+            // O(n^2) we expect small values of 'n' checking actual data of project and testcases n <= 2
+            for(j = 0; j < i; j++) {
+                if(ptrs[j] == p) {
+                    p = 0;  // invalidate
+                    break;
+                }
+            }
+            if(p)
+                newPtrs[newCount++] = p;
+        }
+        if(count != newCount) {
+            for(i = 0; i < newCount; i++)
+                ptrs[i] = newPtrs[i];  // overwrite data
+        }
+        return newCount;
+    }
 }
 
-void QtJambiLink::unregisterSubObject(void *ptr) {
+// Both QObject and non-QObject register their sub objects from the QtJambiShell
+//  but for a QObject
+void QtJambiLink::registerSubObjects(void *base, int count, void **ptrs, const char **names) {
+    Q_ASSERT(ptrs);
+    count = registerSubObjectsDedupe(base, count, ptrs);
+
+    Q_ASSERT(gUserObjectCache());
     QWriteLocker locker(gUserObjectCacheLock());
-    gUserObjectCache()->remove(ptr);
+    for(int i = 0; i < count; i++) {
+        void *ptr = ptrs[i];
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        if(isQObject() == false) {
+            // For QObject's the main object is not put in the cache (since there
+            //  is a QObject->userData() facility to retrieve the QtJambiLink).
+            // For non-QObject we check the main object itself is already in the
+            //  cache.
+            void *p = gUserObjectCache()->value(pointer(), 0);
+            // We check the pointer we are adding is not already in the cache
+            void *e = gUserObjectCache()->value(ptr, 0);
+            Q_ASSERT(p);
+            Q_ASSERT(e == 0);
+        }
+        registerSubObjectCount++;
+#endif
+        // Duplicates should never occur, this would indicate a bug in the
+        //  program as some memory is reused but the old pointers in this
+        //  gUserObjectCache() were not removed when the previous user of
+        //  the memory was deallocated.
+        gUserObjectCache()->insert(ptr, this);
+    }
+}
+
+void QtJambiLink::unregisterSubObjects(void *base, int count, void **ptrs, const char **names) {
+    Q_ASSERT(ptrs);
+    count = registerSubObjectsDedupe(base, count, ptrs);
+    int i;
+
+    QWriteLocker locker(gUserObjectCacheLock());
+    for(i = 0; i < count; i++) {
+        void *ptr = ptrs[i];
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        // Check the entry we are trying to remove exists (this will detect
+        //  double unregisterSubObject() calls).
+        Q_ASSERT(gUserObjectCache()->contains(ptr)); // maybe this is overkill count==1 should achieve the same ?
+        Q_ASSERT(registerSubObjectCount > 0);
+        registerSubObjectCount--;
+#endif
+        int removeCount = gUserObjectCache()->remove(ptr);
+        Q_ASSERT(removeCount == 1);
+        Q_UNUSED(removeCount);
+    }
 }
 
 const char *QtJambiLink::debugFlagsToString(char *buf) const {
@@ -633,6 +719,10 @@ QtJambiLink::~QtJambiLink()
 #endif
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
+        // This is a check that gUserObjectCache no longer stores a pointer
+        //  to this QtJambiLink that we are destroying.  This is a bug.
+        Q_ASSERT(registerSubObjectCount == 0);
+
         qtjambi_increase_linkDestroyedCount(m_className);
 #endif
 

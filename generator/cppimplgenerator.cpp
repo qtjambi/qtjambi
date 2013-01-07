@@ -1030,13 +1030,33 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
         s << INDENT << "if (m_link) {" << endl;
 
         AbstractMetaClassList interfaces = java_class->interfaces();
-        if (interfaces.size() + (java_class->baseClass() != 0 ? 1 : 0) > 1) {
-            if (java_class->baseClass() != 0)
-                interfaces += java_class->baseClass();
-            foreach(AbstractMetaClass *iface, interfaces) {
-                AbstractMetaClass *impl = iface->isInterface() ? iface->primaryInterfaceImplementor() : iface;
-                s << INDENT << "    m_link->unregisterSubObject((" << impl->qualifiedCppName() << " *) this);" << endl;
+        int totalRegisterSubObject = interfaces.size() + (java_class->baseClass() != 0 ? 1 : 0);
+        if (totalRegisterSubObject > 1) {
+            Indentation indent(INDENT);
+            s << INDENT << "{" << endl;
+            {
+                Indentation indent(INDENT);
+                s << INDENT << "void *unregPtrs[" << totalRegisterSubObject << "];" << endl;
+                s << "#if defined(QTJAMBI_DEBUG_TOOLS)" << endl;
+                s << INDENT << "const char *unregNamePtrs[" << totalRegisterSubObject << "];" << endl;
+                s << "#else" << endl;
+                s << INDENT << "const char **unregNamePtrs = 0;" << endl;
+                s << "#endif /* QTJAMBI_DEBUG_TOOLS */" << endl;
+                if (java_class->baseClass() != 0)
+                    interfaces += java_class->baseClass();
+                int i = 0;
+                foreach(AbstractMetaClass *iface, interfaces) {
+                    AbstractMetaClass *impl = iface->isInterface() ? iface->primaryInterfaceImplementor() : iface;
+                    //s << INDENT << "m_link->unregisterSubObject((" << impl->qualifiedCppName() << " *) this);" << endl;
+                    s << INDENT << "unregPtrs[" << i << "] = (" <<  impl->qualifiedCppName() << " *) this;" << endl;
+                    s << "#if defined(QTJAMBI_DEBUG_TOOLS)" << endl;
+                    s << INDENT << "unregNamePtrs[" << i << "] = \"" <<  impl->qualifiedCppName() << "\";" << endl;
+                    s << "#endif /* QTJAMBI_DEBUG_TOOLS */" << endl;
+                    i++;
+                }
+                s << INDENT << "m_link->unregisterSubObjects(this, " << i << ", unregPtrs, unregNamePtrs);" << endl;
             }
+            s << INDENT << "}" << endl;
         }
 
         bool emit_check_qtjambi_vm_shutdown = false;
@@ -1982,13 +2002,32 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
 
 
         AbstractMetaClassList interfaces = cls->interfaces();
-        if (interfaces.size() + (cls->baseClass() != 0 ? 1 : 0) > 1)  {
-            if (cls->baseClass() != 0)
-                interfaces += cls->baseClass();
-            foreach(AbstractMetaClass *iface, interfaces) {
-                AbstractMetaClass *impl = iface->isInterface() ? iface->primaryInterfaceImplementor() : iface;
-                s << INDENT << qt_object_name << "->m_link->registerSubObject((" << impl->qualifiedCppName() << " *) " << qt_object_name << ");" << endl;
+        int totalRegisterSubObject = interfaces.size() + (cls->baseClass() != 0 ? 1 : 0);
+        if (totalRegisterSubObject > 1)  {
+            s << INDENT << "{" << endl;
+            {
+                Indentation indent(INDENT);
+                s << INDENT << "void *regPtrs[" << totalRegisterSubObject << "];" << endl;
+                s << "#if defined(QTJAMBI_DEBUG_TOOLS)" << endl;
+                s << INDENT << "const char *regNamePtrs[" << totalRegisterSubObject << "];" << endl;
+                s << "#else" << endl;
+                s << INDENT << "const char **regNamePtrs = 0;" << endl;
+                s << "#endif /* QTJAMBI_DEBUG_TOOLS */" << endl;
+                if (cls->baseClass() != 0)
+                    interfaces += cls->baseClass();
+                int i = 0;
+                foreach(AbstractMetaClass *iface, interfaces) {
+                    AbstractMetaClass *impl = iface->isInterface() ? iface->primaryInterfaceImplementor() : iface;
+                    //s << INDENT << qt_object_name << "->m_link->registerSubObject((" << impl->qualifiedCppName() << " *) " << qt_object_name << ");" << endl;
+                    s << INDENT << "regPtrs[" << i << "] = (" <<  impl->qualifiedCppName() << " *) " << qt_object_name << ";" << endl;
+                    s << "#if defined(QTJAMBI_DEBUG_TOOLS)" << endl;
+                    s << INDENT << "regNamePtrs[" << i << "] = \"" <<  impl->qualifiedCppName() << "\";" << endl;
+                    s << "#endif /* QTJAMBI_DEBUG_TOOLS */" << endl;
+                    i++;
+                }
+                s << INDENT << qt_object_name << "->m_link->registerSubObjects(" << qt_object_name << ", " << i << ", regPtrs, regNamePtrs);" << endl;
             }
+            s << INDENT << "}" << endl;
         }
     }
 

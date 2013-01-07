@@ -166,6 +166,7 @@ class QTJAMBI_EXPORT QtJambiLink
           , m_qtJambiLinkUserData(0)
           , next(0)
           , prev(0)
+          , registerSubObjectCount(0)
 #endif
     {
         m_java.object = jobj;
@@ -211,6 +212,7 @@ class QTJAMBI_EXPORT QtJambiLink
           , m_qtJambiLinkUserData(0)
           , next(0)
           , prev(0)
+          , registerSubObjectCount(0)
 #endif
     {
         m_java.object = jobj;
@@ -258,6 +260,7 @@ class QTJAMBI_EXPORT QtJambiLink
           , m_qtJambiLinkUserData(0)
           , next(0)
           , prev(0)
+          , registerSubObjectCount(0)
 #endif
     {
         m_java.weak = jobj;
@@ -304,6 +307,7 @@ protected:
           , m_qtJambiLinkUserData(0)
           , next(0)
           , prev(0)
+          , registerSubObjectCount(0)
 #endif
     {
         m_java.object = jobj;
@@ -381,8 +385,8 @@ public:
     /* Called when java object is invalidated */
     void javaObjectInvalidated(JNIEnv *env);
 
-    void registerSubObject(void *);
-    void unregisterSubObject(void *);
+    void registerSubObjects(void *base, int count, void **ptrs, const char **names);
+    void unregisterSubObjects(void *base, int count, void **ptrs, const char **names);
 
     inline bool hasBeenFinalized() const { return m_has_been_finalized; }
     inline bool qobjectDeleted() const { return m_qobject_deleted; }
@@ -460,6 +464,7 @@ private:
     void removeFromCache(JNIEnv *env);
     void aboutToMakeObjectInvalid(JNIEnv *env);
 
+    int registerSubObjectsDedupe(void *base, int count, void **ptrs);
 
 #if defined(QTJAMBI_DEBUG_TOOLS)
     long m_magic;   // natural bit width
@@ -532,6 +537,7 @@ public:
     QString m_className;
     QtJambiLink *next;
     QtJambiLink *prev;
+    int registerSubObjectCount;  // debugging help
 #endif
 };
 
