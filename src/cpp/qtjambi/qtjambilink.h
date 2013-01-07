@@ -170,7 +170,11 @@ class QTJAMBI_EXPORT QtJambiLink
 #endif
     {
         m_java.object = jobj;
-#if defined(QTJAMBI_DEBUG_TOOLS)  
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        if (global_ref)
+            Q_ASSERT(REFTYPE_NOENV_GLOBAL(jobj));
+        else
+            Q_ASSERT(REFTYPE_NOENV_WEAKGLOBAL(jobj));
         QtJambiLinkList_add();
 #endif
     };
@@ -217,6 +221,7 @@ class QTJAMBI_EXPORT QtJambiLink
     {
         m_java.object = jobj;
 #if defined(QTJAMBI_DEBUG_TOOLS)  
+        Q_ASSERT(REFTYPE_NOENV_GLOBAL(jobj));
         QtJambiLinkList_add();
 #endif
     };
@@ -265,6 +270,7 @@ class QTJAMBI_EXPORT QtJambiLink
     {
         m_java.weak = jobj;
 #if defined(QTJAMBI_DEBUG_TOOLS)  
+        Q_ASSERT(REFTYPE_NOENV_WEAKGLOBAL(jobj));
         QtJambiLinkList_add();
 #endif
     };
@@ -312,6 +318,7 @@ protected:
     {
         m_java.object = jobj;
 #if defined(QTJAMBI_DEBUG_TOOLS)  
+        Q_ASSERT(REFTYPE_NOENV_GLOBAL(jobj));
         QtJambiLinkList_add();
 #endif
     };

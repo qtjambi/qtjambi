@@ -433,12 +433,14 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
                  package_name, class_name);
         return 0;
     }
+    Q_ASSERT(REFTYPE_LOCAL(env, object_class));
 
     jmethodID constructorId = resolveMethod(env, "<init>", "(Lcom/trolltech/qt/internal/QtJambiObject$QPrivateConstructor;)V",
         class_name, package_name, false);
     Q_ASSERT(constructorId);
 
     jobject java_object = env->NewObject(object_class, constructorId, 0);
+    Q_ASSERT(REFTYPE_LOCAL(env, java_object));
     QtJambiLink *link = createLinkForQObject(env, java_object, object, meta_object);
     return link;
 }
@@ -807,6 +809,7 @@ void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
         // Delete the global reference and make it a weak one
         jweak weakGlobalRef = env->NewWeakGlobalRef(m_java_object); // CHECKME: m_global_ref ? m_java_object : m_java_weak
 
+        Q_ASSERT(REFTYPE_GLOBAL(env, m_java_object));
         env->DeleteGlobalRef(m_java_object);
         m_java_object = 0;  // PARANOIA
 
@@ -817,6 +820,7 @@ void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
         // Delete the weak ref and replace it with a global ref
         jobject globalRef = env->NewGlobalRef(m_java_object); // CHECKME: m_global_ref ? m_java_object : m_java_weak
 
+        Q_ASSERT(REFTYPE_WEAKGLOBAL(env, m_java_object));
         env->DeleteWeakGlobalRef(m_java_weak);
         m_java_weak = 0;  // PARANOIA
 
@@ -1320,6 +1324,7 @@ void QtJambiLink::setCppOwnership(JNIEnv *env, jobject obj)
         jobject globalRef = env->NewGlobalRef(obj);
 
         if (m_java_weak) {
+            Q_ASSERT(REFTYPE_WEAKGLOBAL(env, m_java_weak));
             env->DeleteWeakGlobalRef(m_java_weak);
             m_java_weak = 0;  // PARANOIA
         }
@@ -1344,6 +1349,7 @@ void QtJambiLink::setJavaOwnership(JNIEnv *env, jobject obj)
         jobject weakGlobalRef = env->NewWeakGlobalRef(obj);
 
         if (m_java_object) {
+            Q_ASSERT(REFTYPE_GLOBAL(env, m_java_object));
             env->DeleteGlobalRef(m_java_object);
             m_java_object = 0;  // PARANOIA
         }
@@ -1360,6 +1366,7 @@ void QtJambiLink::setSplitOwnership(JNIEnv *env, jobject obj)
         jobject weakGlobalRef = env->NewWeakGlobalRef(obj);
 
         if (m_java_object) {
+            Q_ASSERT(REFTYPE_GLOBAL(env, m_java_object));
             env->DeleteGlobalRef(m_java_object);
             m_java_object = 0;  // PARANOIA
         }
