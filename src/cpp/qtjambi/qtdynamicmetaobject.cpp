@@ -129,8 +129,8 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
     jbyteArray string_data = (jbyteArray) env->GetObjectField(meta_data_struct, sc->MetaData.stringData);
     Q_ASSERT(string_data);
 
-    q->d.superdata = qtjambi_metaobject_for_class(env, env->GetSuperclass(java_class), original_meta_object);
-
+    jclass java_superclass = env->GetSuperclass(java_class);
+    q->d.superdata = qtjambi_metaobject_for_class(env, java_superclass, original_meta_object);
     int string_data_len = env->GetArrayLength(string_data);
     q->d.stringdata = new char[string_data_len];
 
@@ -141,60 +141,65 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
     env->GetByteArrayRegion(string_data, 0, string_data_len, (jbyte *) q->d.stringdata);
     env->GetIntArrayRegion(meta_data, 0, meta_data_len, (jint *) q->d.data);
 
-    m_methods = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.slotsArray);
-    m_signals = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.signalsArray);
-    m_property_readers = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyReadersArray);
-    m_property_writers = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyWritersArray);
-    m_property_resetters = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyResettersArray);
-    m_property_designables = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyDesignablesArray);
-    jobjectArray extra_data = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.extraDataArray);
+    jobjectArray lr_methods = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.slotsArray);
+    jobjectArray lr_signals = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.signalsArray);
+    jobjectArray lr_property_readers = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyReadersArray);
+    jobjectArray lr_property_writers = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyWritersArray);
+    jobjectArray lr_property_resetters = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyResettersArray);
+    jobjectArray lr_property_designables = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.propertyDesignablesArray);
+    jobjectArray lr_extra_data = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.extraDataArray);
 
-    if (m_methods != 0) {
-        m_methods = (jobjectArray) env->NewGlobalRef(m_methods);
+    if (lr_methods != 0) {
+        m_methods = (jobjectArray) env->NewGlobalRef(lr_methods);
         m_method_count = env->GetArrayLength(m_methods);
     }
 
-    if (m_signals != 0) {
-        m_signals = (jobjectArray) env->NewGlobalRef(m_signals);
+    if (lr_signals != 0) {
+        m_signals = (jobjectArray) env->NewGlobalRef(lr_signals);
         m_signal_count = env->GetArrayLength(m_signals);
     }
 
     if (m_method_count + m_signal_count > 0) {
         m_original_signatures = new QString[m_method_count + m_signal_count];
         jobjectArray original_signatures = (jobjectArray) env->GetObjectField(meta_data_struct, sc->MetaData.originalSignatures);
-        for (int i=0; i<m_method_count + m_signal_count; ++i)
-            m_original_signatures[i] = qtjambi_to_qstring(env, (jstring) env->GetObjectArrayElement(original_signatures, i));
+        for (int i=0; i<m_method_count + m_signal_count; ++i) {
+            jobject lr_string = env->GetObjectArrayElement(original_signatures, i);
+            m_original_signatures[i] = qtjambi_to_qstring(env, (jstring) lr_string);
+        }
     }
 
 
-    if (m_property_readers != 0) {
-        m_property_readers = (jobjectArray) env->NewGlobalRef(m_property_readers);
+    if (lr_property_readers != 0) {
+        m_property_readers = (jobjectArray) env->NewGlobalRef(lr_property_readers);
         m_property_count = env->GetArrayLength(m_property_readers);
     }
 
-    if (m_property_writers != 0) {
-        m_property_writers = (jobjectArray) env->NewGlobalRef(m_property_writers);
+    if (lr_property_writers != 0) {
+        m_property_writers = (jobjectArray) env->NewGlobalRef(lr_property_writers);
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_writers));
     }
 
-    if (m_property_resetters != 0) {
-        m_property_resetters = (jobjectArray) env->NewGlobalRef(m_property_resetters);
+    if (lr_property_resetters != 0) {
+        m_property_resetters = (jobjectArray) env->NewGlobalRef(lr_property_resetters);
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_resetters));
     }
 
-    if (m_property_designables != 0) {
-        m_property_designables = (jobjectArray) env->NewGlobalRef(m_property_designables);
+    if (lr_property_designables != 0) {
+        m_property_designables = (jobjectArray) env->NewGlobalRef(lr_property_designables);
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_designables));
     }
 
-    int extra_data_count = extra_data != 0 ? env->GetArrayLength(extra_data) : 0;
-    if (extra_data_count > 0) {
-        const QMetaObject **ptr = new const QMetaObject *[extra_data_count];
-        q->d.extradata = ptr;
-        Q_ASSERT(q->d.extradata != 0);
+    if (lr_extra_data != 0) {
+        extra_data_count = env->GetArrayLength(lr_extra_data);
+        if (extra_data_count > 0) {
+            const QMetaObject **ptr = new const QMetaObject *[extra_data_count];
+            q->d.extradata = ptr;
+            Q_ASSERT(q->d.extradata != 0);
 
-        for (int i=0; i<extra_data_count; ++i) {
-            ptr[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(env->GetObjectArrayElement(extra_data, i)), 0);
+            for (int i=0; i<extra_data_count; ++i) {
+                jobject extra_cls = env->GetObjectArrayElement(lr_extra_data, i);
+                ptr[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(extra_cls), 0);
+            }
         }
     }
 
