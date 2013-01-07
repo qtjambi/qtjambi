@@ -399,7 +399,8 @@ public class TestInjectedCode extends QApplicationTest {
 
             super.read(null); // don't crash
             boolean result = super.read(this.image);
-            return result && (image != null ? image.load("classpath:com/trolltech/examples/images/bg1.png") : true);
+            boolean bf = result && (image != null ? image.load("classpath:com/trolltech/examples/images/bg1.png") : true);
+            return bf;
         }
 
         @Override
@@ -944,6 +945,9 @@ public class TestInjectedCode extends QApplicationTest {
         QImage ref1 = new QImage("classpath:com/trolltech/examples/images/cheese.png");
         QImage ref2 = new QImage("classpath:com/trolltech/examples/images/bg1.png");
 
+        int w = ref2.width();
+        int w2 = image.width();
+        assertEquals(w, w2);
         assertEquals(ref2.width(), image.width());
         assertEquals(ref2.height(), image.height());
         assertTrue(ref2.equals(image));
