@@ -87,7 +87,7 @@ QtDynamicMetaObjectPrivate::QtDynamicMetaObjectPrivate(QtDynamicMetaObject *q, J
       m_original_signatures(0)
 {
     Q_ASSERT(env != 0);
-    Q_ASSERT(java_class != 0);
+    Q_ASSERT(REFTYPE_LOCAL(env, java_class));
 
     ref = 1;  /* pre c++0x compatible initialization */
     initialize(env, java_class, original_meta_object);
@@ -213,7 +213,7 @@ void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobje
     sc->resolveMetaObjectTools();
 
     jobject method_signature = env->CallStaticObjectMethod(sc->MetaObjectTools.class_ref, sc->MetaObjectTools.methodSignature2, method_object, true);
-    Q_ASSERT(method_signature != 0);
+    Q_ASSERT(REFTYPE_LOCAL(env, method_signature));
 
     // If no signature is specified, we look it up
     QString signature(_signature);
@@ -279,6 +279,7 @@ void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobje
 QtDynamicMetaObject::QtDynamicMetaObject(JNIEnv *jni_env, jclass java_class, const QMetaObject *original_meta_object)
     : d_ptr(new QtDynamicMetaObjectPrivate(this, jni_env, java_class, original_meta_object))
 {
+    Q_ASSERT(REFTYPE_LOCAL(jni_env, java_class));
 }
 
 QtDynamicMetaObject::~QtDynamicMetaObject()
@@ -362,7 +363,7 @@ int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id
         d->invokeMethod(env, signal_object, signal_emit_method, _a, signal_parameters);
     } else if (_id < d->m_signal_count + d->m_method_count) { // Call the correct method
         jobject method_object = env->GetObjectArrayElement(d->m_methods, _id - d->m_signal_count);
-        Q_ASSERT(method_object != 0);
+        Q_ASSERT(REFTYPE_LOCAL(env, method_object));
 
         d->invokeMethod(env, object, method_object, _a);
     }
@@ -381,7 +382,7 @@ int QtDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void
 
     if (_id < d->m_property_count) {
         jobject method_object = env->GetObjectArrayElement(d->m_property_readers, _id);
-        Q_ASSERT(method_object != 0);
+        Q_ASSERT(REFTYPE_LOCAL(env, method_object));
 
         d->invokeMethod(env, object, method_object, _a);
     }
@@ -400,6 +401,7 @@ int QtDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, voi
 
     if (_id < d->m_property_count) {
         jobject method_object = env->GetObjectArrayElement(d->m_property_writers, _id);
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, method_object));
         if (method_object != 0) {
             // invokeMethod expects a place holder for return value, but write property meta calls
             // do not since all property writers return void by convention.
@@ -422,6 +424,7 @@ int QtDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, voi
 
     if (_id < d->m_property_count) {
         jobject method_object = env->GetObjectArrayElement(d->m_property_resetters, _id);
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, method_object));
         if (method_object != 0)
             d->invokeMethod(env, object, method_object, _a);
     }
@@ -440,6 +443,7 @@ int QtDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, in
 
     if (_id < d->m_property_count) {
         jobject method_object = env->GetObjectArrayElement(d->m_property_designables, _id);
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, method_object));
         if (method_object != 0)
             d->invokeMethod(env, object, method_object, _a);
     }
