@@ -55,7 +55,6 @@ import com.trolltech.qt.core.QEventLoop;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QImage;
 import com.trolltech.qt.gui.QPaintEvent;
 
 public class TestClassFunctionalityProblem extends QApplicationTest {
