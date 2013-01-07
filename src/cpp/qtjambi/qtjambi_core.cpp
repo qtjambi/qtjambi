@@ -2636,6 +2636,17 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
                     if (env->IsSameObject(sc->Qt.class_ref, object_class)) {
                         original_meta_object = StaticQtMetaObjectAccessor::illicitMetaObjectForQtNamespace();
                     } else {
+                        // FIXME: Look at removing this Java method completely.
+                        // Java signature is 'private static native long originalMetaObject();' and generated
+                        //  for each class.
+                        // It is not clear why we call an already native method "via Java" from here as this
+                        //  is the only user of the method.
+                        // QWidget returns: reinterpret_cast<jlong>(&QWidget::staticMetaObject);
+                        // Surely we can use a C++ pattern (functor,interface or something) and generate
+                        //  it in the QtJambiShell code then use it to provide C++ method invocation
+                        //  for any arbitrary QtJambiShell type.
+                        // One might think the purpose is to cross the Java virtual method invocation but it
+                        //  is targetting a static method.
                         jmethodID originalMetaObjectID = env->GetStaticMethodID(object_class, "originalMetaObject", "()J");
                         Q_ASSERT(originalMetaObjectID != 0);
 
