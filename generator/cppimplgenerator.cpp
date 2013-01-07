@@ -1956,9 +1956,9 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     << INDENT << "if (!__qt_java_link) {" << endl;
     {
         Indentation indent(INDENT);
-        s << INDENT << "qWarning(\"object construction failed for type: "
-        << className << "\");" << endl
-        << INDENT << "return;" << endl;
+        s << INDENT << "delete " << qt_object_name << ";" << endl;
+        s << INDENT << "qtjambishell_throw_runtimeexception(__jni_env, \"object construction failed for type: " << className << "\");" << endl;
+        s << INDENT << "return;" << endl;
     }
     s << INDENT << "}" << endl;
 
