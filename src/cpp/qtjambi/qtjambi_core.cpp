@@ -864,6 +864,10 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
         }
     }
 
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(java_thread);
+#endif
+
     return QtJambiLink::createLinkForQObject(env, java_object, qobject, meta_object);
 }
 
@@ -1142,6 +1146,11 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
     }
 
     QTJAMBI_EXCEPTION_CHECK(env);
+
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(jclass_name);
+    env->DeleteLocalRef(object_class);
+#endif
     return table;
 }
 
@@ -1467,6 +1476,8 @@ bool qtjambi_adopt_current_thread(void **args)
     QThread *qt_thread = qtjambi_find_thread_in_table(env, java_thread);
     if (!qt_thread)
         return false;
+
+    env->DeleteLocalRef(java_thread);
 
     *args = qt_thread;
     return true;
