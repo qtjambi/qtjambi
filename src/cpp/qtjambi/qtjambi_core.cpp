@@ -822,7 +822,7 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
     sc->resolveThread();
     jobject java_thread = env->CallStaticObjectMethod(sc->Thread.class_ref,
                                                       sc->Thread.currentThread);
-    Q_ASSERT(java_thread);
+    Q_ASSERT(REFTYPE_LOCAL(env, java_thread));
 
     QThread *qt_thread = qobject->thread();
     Q_ASSERT(qt_thread == QThread::currentThread());
@@ -858,6 +858,7 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
 //                    qobject->metaObject()->className(),
 //                    qobject);
             jobject weak_global_ref = env->NewWeakGlobalRef(java_thread);
+            Q_ASSERT(REFTYPE_WEAKGLOBAL(env, weak_global_ref));
             qtjambi_thread_table()->insert(qt_thread, weak_global_ref);
             QInternal::callFunction(QInternal::RefAdoptedThread, (void **) (void *) (&qt_thread));
         }
@@ -909,7 +910,7 @@ void *qtjambi_to_cpointer(JNIEnv *env, jobject java_object, int indirections)
     // What is this != test doing ?
     if (object_indirections != indirections) {
         jclass exception_class = resolveClass(env, "IllegalArgumentException", "java/lang/");
-        Q_ASSERT(exception_class);
+        Q_ASSERT(REFTYPE_LOCAL(env, exception_class));
         env->ThrowNew(exception_class, "Illegal number of indirections");
         env->DeleteLocalRef(exception_class);  // non-performance path; be correct
         return 0;
@@ -1405,6 +1406,7 @@ QThread *qtjambi_to_thread(JNIEnv *env, jobject thread)
 
     QWriteLocker writeLocker(qtjambi_thread_table_lock());
     jobject weak_global_ref = env->NewWeakGlobalRef(thread);
+    Q_ASSERT(REFTYPE_WEAKGLOBAL(env, weak_global_ref));
     table->insert(qt_thread, weak_global_ref);
     return qt_thread;
 }
@@ -1460,6 +1462,7 @@ bool qtjambi_adopt_current_thread(void **args)
 
     jobject java_thread = env->CallStaticObjectMethod(sc->Thread.class_ref,
                                                       sc->Thread.currentThread);
+    Q_ASSERT(REFTYPE_LOCAL(env, java_thread));
 
     QThread *qt_thread = qtjambi_find_thread_in_table(env, java_thread);
     if (!qt_thread)
@@ -2636,7 +2639,7 @@ public:
 //  rely on their being a QtJambiLink in existance for the object being constructed.
 const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object)
 {
-    Q_ASSERT(object_class != 0);
+    Q_ASSERT(REFTYPE_LOCAL(env, object_class));
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiInternal();
 
