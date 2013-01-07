@@ -300,6 +300,10 @@ struct QTJAMBI_EXPORT StaticCache
 
     struct {
         jclass class_ref;
+    } RuntimeException;
+
+    struct {
+        jclass class_ref;
     } String;
 
     struct {
@@ -492,6 +496,7 @@ struct QTJAMBI_EXPORT StaticCache
     DECLARE_RESOLVE_FUNCTIONS(Modifier);
     DECLARE_RESOLVE_FUNCTIONS(NativePointer);
     DECLARE_RESOLVE_FUNCTIONS(NullPointerException);
+    DECLARE_RESOLVE_FUNCTIONS(RuntimeException);
     DECLARE_RESOLVE_FUNCTIONS(Object);
     DECLARE_RESOLVE_FUNCTIONS(Pair);
     DECLARE_RESOLVE_FUNCTIONS(QModelIndex);

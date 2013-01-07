@@ -240,6 +240,8 @@ QTJAMBI_EXPORT void *qtjambishell_qt_metacast(const char *className, const char 
 
 QTJAMBI_EXPORT void qtjambishell_throw_nullpointerexception(JNIEnv *env, const char *msg);
 
+QTJAMBI_EXPORT void qtjambishell_throw_runtimeexception(JNIEnv *env, const char *msg);
+
 inline void *qtjambi_to_interface(JNIEnv *env,
                                   jobject java_object,
                                   const char *interface_name,

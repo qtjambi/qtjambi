@@ -676,6 +676,16 @@ void StaticCache::resolveNullPointerException_internal()
     Q_ASSERT(NullPointerException.class_ref);
 }
 
+void StaticCache::resolveRuntimeException_internal()
+{
+    JNIEnv *env = qtjambi_current_environment();
+
+    Q_ASSERT(!RuntimeException.class_ref);
+
+    RuntimeException.class_ref = ref_class(qtjambi_find_class(env, "java/lang/RuntimeException"));
+    Q_ASSERT(RuntimeException.class_ref);
+}
+
 void StaticCache::resolveCollection_internal()
 {
     JNIEnv *env = qtjambi_current_environment();
