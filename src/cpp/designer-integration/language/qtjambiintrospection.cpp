@@ -599,7 +599,7 @@ QtJambiMetaObject::QtJambiMetaObject(const QMetaObject *regularMetaObject)
     m_enumerator_count(0),
     m_enumerators(0),
     m_properties(0),
-    m_meta_object_is_dynamic(qtjambi_metaobject_is_dynamic(regularMetaObject))
+    m_meta_object_is_dynamic(QtDynamicMetaObject::is_dynamic(regularMetaObject))
 {
     Q_ASSERT(m_regular_meta_object != 0);
 }

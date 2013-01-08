@@ -622,7 +622,7 @@ static bool qtjambi_connect_callback(void **raw_data, bool slotMustBeGenerated);
 // is a static meta object (hence, not one of Qt Jambi's fake meta objects)
 static const QMetaObject *qtjambi_find_first_static_metaobject(const QMetaObject *meta_object)
 {
-    while (meta_object != 0 && qtjambi_metaobject_is_dynamic(meta_object))
+    while (meta_object != 0 && QtDynamicMetaObject::is_dynamic(meta_object))
         meta_object = meta_object->superClass();
     return meta_object;
 }
@@ -2588,7 +2588,16 @@ void qtjambi_set_vm_location_override(const QString &location)
     vm_location_override = location;
 }
 
-typedef QHash<QString, const QMetaObject *> MetaObjectHash;
+struct metaobject_desc
+{
+    union {
+        const QMetaObject *metaObject;
+        QtDynamicMetaObject *dynamicMetaObject;
+    } d;
+    bool isDynamic;  // isDynamic
+};
+
+typedef QHash<QString, metaobject_desc> MetaObjectHash;
 Q_GLOBAL_STATIC(MetaObjectHash, metaObjects);
 Q_GLOBAL_STATIC_WITH_ARGS(QMutex, metaObjectsLock, (QMutex::Recursive));
 
@@ -2609,11 +2618,11 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
     QString class_name = qtjambi_class_name(env, object_class);
     Q_ASSERT(!class_name.isEmpty());
 
-    const QMetaObject *returned = 0;
+    const QMetaObject *returned;
     {
         QMutexLocker locker(metaObjectsLock());
-        returned = metaObjects()->value(class_name, 0);
-        if (returned == 0) {
+        if (!metaObjects()->contains(class_name)) {  // miss
+            metaobject_desc desc;
             // Return original meta object for generated classes, and
             // create a new dynamic meta object for subclasses
             if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, object_class)) {
@@ -2630,21 +2639,49 @@ const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class
                     }
                 }
                 returned = original_meta_object;
+
+                desc.d.metaObject = original_meta_object;
+                desc.isDynamic = false;
             } else {
-                returned = new QtDynamicMetaObject(env, object_class, original_meta_object);
+                QtDynamicMetaObject *dynamic = new QtDynamicMetaObject(env, object_class, original_meta_object); // ref=1 the metaObjects() ref
+                dynamic->ref();  // the callers reference
+                returned = dynamic;
+
+                desc.d.dynamicMetaObject = dynamic;
+                desc.isDynamic = true;
             }
-            metaObjects()->insert(class_name, returned);
+            metaObjects()->insert(class_name, desc);
+        } else { // hit
+            metaobject_desc desc = metaObjects()->value(class_name);
+            if(desc.isDynamic) {
+                desc.d.dynamicMetaObject->ref();  // the callers reference
+                returned = desc.d.dynamicMetaObject;
+            } else {
+                returned = desc.d.metaObject;
+            }
         }
     }
 
     return returned;
 }
 
-bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object) {
-    if (meta_object == 0) return false;
+int qtjambi_metaobject_prune(JNIEnv *)
+{
+    QMutexLocker locker(metaObjectsLock());
+    int count = 0;
+    MetaObjectHash::iterator i = metaObjects()->begin();
+    while(i != metaObjects()->end()) {
+        metaobject_desc desc = i.value();
+        if(desc.isDynamic) {
+            if(!desc.d.dynamicMetaObject->deref())
+                delete desc.d.dynamicMetaObject;  // decrement the metaObjects() own ref on data
+        }
 
-    int idx = meta_object->indexOfClassInfo("__qt__binding_shell_language");
-    return (idx >= 0 && !strcmp(meta_object->classInfo(idx).value(), "Qt Jambi"));
+        count++;
+
+        i = metaObjects()->erase(i);
+    }
+    return count;
 }
 
 bool JObjectWrapper::operator==(const JObjectWrapper &other) const

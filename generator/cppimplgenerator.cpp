@@ -904,6 +904,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
 
     s << "  QTJAMBI_DEBUG_TRACE(\"(shell) entering: " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)\");" << endl;
 
+    bool need_label_done = false;
     if (java_class->hasVirtualSlots()) {
         s << "  int virtual_idx = m_map.value(_id, -1);" << endl
         << "  if (virtual_idx >= 0) {" << endl
@@ -942,6 +943,7 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
                     writeTypeInfo(s, virtualFunction->type());
                     s << " *>(_a[0]) = _r;" << endl
                     << "          _id = -1; goto done;" << endl;
+                    need_label_done = true;
                 }
                 s << "      }";
             }
@@ -952,31 +954,11 @@ void CppImplGenerator::writeQObjectFunctions(QTextStream &s, const AbstractMetaC
     }
 
     s << "  _id = " << java_class->qualifiedCppName() << "::qt_metacall(_c, _id, _a);" << endl
-    << "  if (_id < 0) goto done;" << endl
-    << "  {" << endl
-    << "    const QMetaObject *meta_object = metaObject();" << endl
-    << "    if (m_link != 0 && qtjambi_metaobject_is_dynamic(meta_object)) {" << endl
-    << "      JNIEnv *__jni_env = qtjambi_current_environment();" << endl
-    << "      __jni_env->PushLocalFrame(100);" << endl
-    << "      const QtDynamicMetaObject *dynamic_meta_object = static_cast<const QtDynamicMetaObject *>(meta_object);" << endl
-    << "      switch (_c) {" << endl
-    << "      case QMetaObject::InvokeMetaMethod:" << endl
-    << "          _id = dynamic_meta_object->invokeSignalOrSlot(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
-    << "      case QMetaObject::ReadProperty:" << endl
-    << "          _id = dynamic_meta_object->readProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
-    << "      case QMetaObject::WriteProperty:" << endl
-    << "          _id = dynamic_meta_object->writeProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
-    << "      case QMetaObject::ResetProperty:" << endl
-    << "          _id = dynamic_meta_object->resetProperty(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
-    << "      case QMetaObject::QueryPropertyDesignable:" << endl
-    << "          _id = dynamic_meta_object->queryPropertyDesignable(__jni_env, m_link->javaObject(__jni_env), _id, _a); break;" << endl
-    << "      default: break;" << endl
-    << "      };" << endl
-    << "      __jni_env->PopLocalFrame(0);" << endl
-    << "    }" << endl
-    << "  }" << endl
-    << "done:" << endl
-    << "  QTJAMBI_DEBUG_TRACE(\"(shell)  leaving: " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)\");" << endl
+    << "  if (_id >= 0)" << endl
+    << "    _id = QtDynamicMetaObject::dispatch_qt_metacall(m_link, metaObject(), _c, _id, _a);" << endl;
+    if (need_label_done)  // quash: warning: label 'done' defined but not used
+        s << "done:" << endl;
+    s << "  QTJAMBI_DEBUG_TRACE(\"(shell)  leaving: " << shellClassName(java_class) << "::qt_metacall(QMetaObject::Call _c, int _id, void **_a)\");" << endl
     << "  return _id;" << endl
     << "}" << endl << endl;
 }
@@ -1042,8 +1024,10 @@ void CppImplGenerator::writeShellDestructor(QTextStream &s, const AbstractMetaCl
         s << "#ifdef QT_DEBUG" << endl
         << INDENT << "if (m_vtable)" << endl
         << INDENT << "    m_vtable->deref();" << endl
-        << "#endif" << endl
-        << INDENT << "if (m_link) {" << endl;
+        << "#endif" << endl;
+        if (java_class->isQObject())
+            s << INDENT << "QtDynamicMetaObject::check_dynamic_deref(m_meta_object);" << endl;
+        s << INDENT << "if (m_link) {" << endl;
 
         AbstractMetaClassList interfaces = java_class->interfaces();
         if (interfaces.size() + (java_class->baseClass() != 0 ? 1 : 0) > 1) {

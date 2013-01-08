@@ -670,9 +670,10 @@ bool qtjambi_connect_cpp_to_java(JNIEnv *,
 QTJAMBI_EXPORT void qtjambi_call_java_signal(JNIEnv *env, QtJambiSignalInfo signal_info, jvalue *args);
 
 
+// Consider moving these methods into QtDynamicMetaObject namespace
 QTJAMBI_EXPORT const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass java_class, const QMetaObject *original_meta_object);
 
-QTJAMBI_EXPORT bool qtjambi_metaobject_is_dynamic(const QMetaObject *meta_object);
+int qtjambi_metaobject_prune(JNIEnv *env);
 
 QTJAMBI_EXPORT QString qtjambi_enum_name_for_flags_name(JNIEnv *env, const QString &qualified_name);
 

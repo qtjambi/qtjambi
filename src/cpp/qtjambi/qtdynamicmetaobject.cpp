@@ -350,15 +350,13 @@ QtDynamicMetaObject::~QtDynamicMetaObject()
     delete d_ptr;
 }
 
-
 int QtDynamicMetaObject::originalSignalOrSlotSignature(JNIEnv *env, int _id, QString *signature) const
 {
     Q_D(const QtDynamicMetaObject);
 
     const QMetaObject *super_class = superClass();
 
-    bool is_dynamic = qtjambi_metaobject_is_dynamic(super_class);
-    if (is_dynamic) {
+    if (is_dynamic(super_class)) {
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->originalSignalOrSlotSignature(env, _id, signature);
     } else {
         if (_id < super_class->methodCount()) {
@@ -380,7 +378,7 @@ int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id
     Q_D(const QtDynamicMetaObject);
 
     const QMetaObject *super_class = superClass();
-    if (qtjambi_metaobject_is_dynamic(super_class))
+    if (is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->invokeSignalOrSlot(env, object, _id, _a);
     if (_id < 0) return _id;
 
@@ -437,7 +435,7 @@ int QtDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void
     Q_D(const QtDynamicMetaObject);
 
     const QMetaObject *super_class = superClass();
-    if (qtjambi_metaobject_is_dynamic(super_class))
+    if (is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->readProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
@@ -460,7 +458,7 @@ int QtDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, voi
     Q_D(const QtDynamicMetaObject);
 
     const QMetaObject *super_class = superClass();
-    if (qtjambi_metaobject_is_dynamic(super_class))
+    if (is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->writeProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
@@ -487,7 +485,7 @@ int QtDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, voi
     Q_D(const QtDynamicMetaObject);
 
     const QMetaObject *super_class = superClass();
-    if (qtjambi_metaobject_is_dynamic(super_class))
+    if (is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->resetProperty(env, object, _id, _a);
     if (_id < 0) return _id;
 
@@ -511,7 +509,7 @@ int QtDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, in
     Q_D(const QtDynamicMetaObject);
 
     const QMetaObject *super_class = superClass();
-    if (qtjambi_metaobject_is_dynamic(super_class))
+    if (is_dynamic(super_class))
         _id = static_cast<const QtDynamicMetaObject *>(super_class)->queryPropertyDesignable(env, object, _id, _a);
     if (_id < 0) return _id;
 
