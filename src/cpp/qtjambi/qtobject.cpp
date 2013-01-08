@@ -105,7 +105,7 @@ QTJAMBI_FUNCTION_PREFIX(Java_com_trolltech_qt_internal_QtJambiObject__1_1qt_1rea
     if (link->isQObject()) {
         QObject *qobject = link->qobject();
         link->resetObject(env);
-        new_link = QtJambiLink::createLinkForQObject(env, new_object, qobject);
+        new_link = QtJambiLink::createLinkForQObject(env, new_object, qobject, qobject->metaObject());
         switch (link->ownership()) {
         case QtJambiLink::JavaOwnership:
             new_link->setJavaOwnership(env, new_object);

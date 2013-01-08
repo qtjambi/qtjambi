@@ -83,12 +83,19 @@ struct QtJambiLinkUserData : public QObjectUserData
         m_link(link),
         m_metaObject(0)
      { }
+    QtJambiLinkUserData(QtJambiLink *link, const QMetaObject *meta_object)
+      :
+#if defined(QTJAMBI_DEBUG_TOOLS)
+        m_magic(QTJAMBI_LINK_USER_DATA_MAGIC),
+#endif
+        m_link(link),
+        m_metaObject(meta_object)
+     { }
     virtual ~QtJambiLinkUserData();
 
     inline QtJambiLink *link() { return m_link; }
     inline void invalidateLink() { m_link = 0; }
 
-    inline void setMetaObject(const QMetaObject *mo) { m_metaObject = mo; }
     inline const QMetaObject *metaObject() const { return m_metaObject; }
 
     static int id();
@@ -337,7 +344,7 @@ public:
     inline QObject *qobject() const { Q_ASSERT(isQObject()); return reinterpret_cast<QObject *>(m_pointer); }
 
     /* Sets the QObject user data's meta object pointer. Object must be a QObject */
-    void setMetaObject(const QMetaObject *mo) const;
+//    void setMetaObject(const QMetaObject *mo) const;
 
     inline int metaType() const { return m_meta_type; }
     void setMetaType(int metaType);
@@ -421,9 +428,11 @@ public:
 
     static QtJambiLink *createLinkForObject(JNIEnv *env, jobject java, void *ptr, const QString &java_name,
         bool enter_in_cache);
-    static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object);
-    static QtJambiLink *createWrapperForQObject(JNIEnv *env, QObject *o, const char *class_name,
-        const char *package_name);
+    static QtJambiLink *createLinkForQObject(JNIEnv *env, jobject java, QObject *object,
+        const QMetaObject *meta_object);
+    static QtJambiLink *createWrapperForQObject(JNIEnv *env, QObject *o,
+        const QMetaObject *meta_object,
+        const char *class_name, const char *package_name);
 
     static QtJambiLink *findLink(JNIEnv *env, jobject java);
     static inline QtJambiLink *findQObjectLink(JNIEnv *env, jobject java);

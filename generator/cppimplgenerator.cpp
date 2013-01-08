@@ -1930,7 +1930,7 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
     s << INDENT << "QtJambiLink *__qt_java_link = ";
     if (cls->isQObject()) {
         s << "qtjambi_construct_qobject(__jni_env, " << java_object_name << ", "
-        << qt_object_name << ")";
+        << qt_object_name << ", " << qt_object_name << "->m_meta_object)";
     } else {
         s << "qtjambi_construct_object(__jni_env, " << java_object_name << ", " << qt_object_name;
         if (cls->typeEntry()->isValue())

@@ -1249,7 +1249,7 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
 
                     // Map null pointers to null object
                     if (*qobject != 0)
-                        success = qtjambi_construct_qobject(mEnvironment, javaObject, *qobject);
+                        success = qtjambi_construct_qobject(mEnvironment, javaObject, *qobject, (*qobject)->metaObject());
                     else
                         success = true;
                 } else if (type & Value) {

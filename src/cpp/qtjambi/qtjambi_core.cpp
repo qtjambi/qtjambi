@@ -712,7 +712,8 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
     }
 
     if (!link) {
-        const QMetaObject *mo = qtjambi_find_first_static_metaobject(qt_object->metaObject());
+        const QMetaObject *qt_object_mo = qt_object->metaObject();
+        const QMetaObject *mo = qtjambi_find_first_static_metaobject(qt_object_mo);
 
         QByteArray javaClassName;
         QByteArray javaPackageName;
@@ -753,7 +754,7 @@ jobject qtjambi_from_qobject(JNIEnv *env, QObject *qt_object, const char *classN
             }
         }
 
-        link = QtJambiLink::createWrapperForQObject(env, qt_object, className, packageName);
+        link = QtJambiLink::createWrapperForQObject(env, qt_object, qt_object_mo, className, packageName);
         if (link == 0) {
             qWarning("Qt Jambi: Couldn't created wrapper for class %s%s", packageName, className);
             return 0;
@@ -813,8 +814,9 @@ int qtjambi_to_enumerator(JNIEnv *env, jobject value)
     return env->CallIntMethod(value, sc->QtEnumerator.value);
 }
 
-
-QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject)
+// This is called from QtJambiShell code in the JNI object constructor methods
+QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject,
+                                       const QMetaObject *meta_object)
 {
     StaticCache *sc = StaticCache::instance();
     sc->resolveThread();
@@ -845,7 +847,7 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
         }
     }
 
-    return QtJambiLink::createLinkForQObject(env, java_object, qobject);
+    return QtJambiLink::createLinkForQObject(env, java_object, qobject, meta_object);
 }
 
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,

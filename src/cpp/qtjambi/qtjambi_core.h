@@ -344,7 +344,9 @@ QTJAMBI_EXPORT
 void qtjambi_invalidate_array(JNIEnv *env, jobjectArray java_array, bool checkJavaOwnership = true);
 
 QTJAMBI_EXPORT
-QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject);
+QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject *qobject,
+                                       const QMetaObject *meta_object);
+
 
 QTJAMBI_EXPORT
 QtJambiLink *qtjambi_construct_object(JNIEnv *env, jobject java_object, void *object,

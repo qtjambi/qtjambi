@@ -301,7 +301,7 @@ const char *QtJambiLink::debugFlagsToString(char *buf) const {
     return buf;
 }
 
-QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object)
+QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObject *object, const QMetaObject *meta_object)
 {
     Q_ASSERT(env);
     Q_ASSERT(java);
@@ -318,7 +318,7 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
 #endif
 
     // Fetch the user data id
-    QtJambiLinkUserData *qjlud = new QtJambiLinkUserData(link);
+    QtJambiLinkUserData *qjlud = new QtJambiLinkUserData(link, meta_object);
     object->setUserData(user_data_id(), qjlud);
 #if defined(QTJAMBI_DEBUG_TOOLS)
     link->m_qtJambiLinkUserData = qjlud;
@@ -336,8 +336,8 @@ QtJambiLink *QtJambiLink::createLinkForQObject(JNIEnv *env, jobject java, QObjec
 }
 
 
-QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, const char *class_name,
-                                                const char *package_name)
+QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, const QMetaObject *meta_object,
+                                                  const char *class_name, const char *package_name)
 {
     Q_ASSERT(!object->userData(user_data_id()));
 
@@ -353,8 +353,7 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
     Q_ASSERT(constructorId);
 
     jobject java_object = env->NewObject(object_class, constructorId, 0);
-    QtJambiLink *link = createLinkForQObject(env, java_object, object);
-    link->setMetaObject(object->metaObject());
+    QtJambiLink *link = createLinkForQObject(env, java_object, object, meta_object);
     return link;
 }
 
@@ -707,7 +706,11 @@ done:
         env->DeleteLocalRef(localRef);
 }
 
-void QtJambiLink::setMetaObject(const QMetaObject *mo) const
+#if 0
+// The reference being assigned does not manage the lifecycle for QtDynamicObject cases
+// the only user of this method is the QtJambiShell code to construct Java objects in JNI
+//  which keeps the pointer valid so long as the C++ object exists.
+void QtJambiLink::setMetaObject(const QMetaObject *mo)
 {
     Q_ASSERT(isQObject());
     if (!isQObject())
@@ -720,6 +723,7 @@ void QtJambiLink::setMetaObject(const QMetaObject *mo) const
     else
         qWarning("setMetaObject: No jambi user data in QObject, line %d in file '%s'", __LINE__, __FILE__);
 }
+#endif
 
 void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
 {
