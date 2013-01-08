@@ -343,9 +343,6 @@ public:
        is not a QObject */
     inline QObject *qobject() const { Q_ASSERT(isQObject()); return reinterpret_cast<QObject *>(m_pointer); }
 
-    /* Sets the QObject user data's meta object pointer. Object must be a QObject */
-//    void setMetaObject(const QMetaObject *mo) const;
-
     inline int metaType() const { return m_meta_type; }
     void setMetaType(int metaType);
 

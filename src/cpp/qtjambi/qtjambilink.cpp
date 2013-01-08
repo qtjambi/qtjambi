@@ -706,25 +706,6 @@ done:
         env->DeleteLocalRef(localRef);
 }
 
-#if 0
-// The reference being assigned does not manage the lifecycle for QtDynamicObject cases
-// the only user of this method is the QtJambiShell code to construct Java objects in JNI
-//  which keeps the pointer valid so long as the C++ object exists.
-void QtJambiLink::setMetaObject(const QMetaObject *mo)
-{
-    Q_ASSERT(isQObject());
-    if (!isQObject())
-        return;
-
-    QObject *o = qobject();
-    QtJambiLinkUserData *d = static_cast<QtJambiLinkUserData *>(o->userData(QtJambiLinkUserData::id()));
-    if (d != 0)
-        d->setMetaObject(mo);
-    else
-        qWarning("setMetaObject: No jambi user data in QObject, line %d in file '%s'", __LINE__, __FILE__);
-}
-#endif
-
 void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
 {
     if (global == m_global_ref)
