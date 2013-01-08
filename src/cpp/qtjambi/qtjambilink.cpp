@@ -802,6 +802,7 @@ done:
         env->DeleteLocalRef(localRef);
 }
 
+// UNUSED method ?
 void QtJambiLink::setGlobalRef(JNIEnv *env, bool global)
 {
     if (global == m_global_ref)
