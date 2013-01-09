@@ -274,6 +274,30 @@ jclass resolveClass(JNIEnv *env, const char *className, const char *package, boo
     return returned;
 }
 
+static int qtjambi_cache_prune_class(JNIEnv *env)
+{
+    QWriteLocker locker(gStaticLock());
+    int count = 0;
+    ClassIdHash::iterator i = gClassHash()->begin();
+    while(i != gClassHash()->end()) {
+        class_id key = i.key();
+
+        jclass clazz = i.value();
+        if(clazz) {
+            Q_ASSERT(REFTYPE_GLOBAL(env, clazz));
+            env->DeleteGlobalRef(clazz);
+        }
+
+        delete[] key.className;
+        delete[] key.package;
+        count++;
+
+        i = gClassHash()->erase(i);
+    }
+    return count;
+}
+
+
 /*******************************************************************************
  * Field Cache
  */
@@ -378,6 +402,26 @@ jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,
 #endif // !QTJAMBI_NOCACHE
 
     return returned;
+}
+
+static int qtjambi_cache_prune_field()
+{
+    QWriteLocker locker(gStaticLock());
+    int count = 0;
+    FieldIdHash::iterator i = gFieldHash()->begin();
+    while(i != gFieldHash()->end()) {
+        field_id key = i.key();
+
+        // jfieldID in i.value() does not need any dealloc
+
+        delete[] key.fieldName;
+        delete[] key.className;
+        delete[] key.package;
+        count++;
+
+        i = gFieldHash()->erase(i);
+    }
+    return count;
 }
 
 jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,
@@ -504,6 +548,26 @@ jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signatu
     return returned;
 }
 
+static int qtjambi_cache_prune_method()
+{
+    QWriteLocker locker(gStaticLock());
+    int count = 0;
+    MethodIdHash::iterator i = gMethodHash()->begin();
+    while(i != gMethodHash()->end()) {
+        method_id key = i.key();
+
+        // jmethodID in i.value() does not need any dealloc
+
+        delete[] key.methodName;
+        delete[] key.signature;
+        delete[] key.className;
+        delete[] key.package;
+        count++;
+
+        i = gMethodHash()->erase(i);
+    }
+    return count;
+}
 
 jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signature, jclass clazz,
                         bool isStatic)
@@ -637,6 +701,27 @@ jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char
     return returned;
 }
 
+static int qtjambi_cache_prune_superclass(JNIEnv *env)
+{
+    QWriteLocker locker(gStaticLock());
+    int count = 0;
+    ClassHash::iterator i = gQtSuperclassHash()->begin();
+    while(i != gQtSuperclassHash()->end()) {
+        closestsuperclass_id key = i.key();
+
+        jclass clazz = i.value();
+        if(clazz)
+            env->DeleteGlobalRef(clazz);
+
+        delete[] key.className;
+        delete[] key.package;
+        count++;
+
+        i = gQtSuperclassHash()->erase(i);
+    }
+    return count;
+}
+
 /*******************************************************************************
  * Function Table Cache
  */
@@ -665,6 +750,24 @@ void removeFunctionTable(QtJambiFunctionTable *table)
         functionTableCache()->remove(table->className());
 }
 
+static int qtjambi_cache_prune_functiontable()
+{
+    QWriteLocker locker(gStaticLock());
+    int count = 0;
+    FunctionTableHash::iterator i = functionTableCache()->begin();
+    while(i != functionTableCache()->end()) {
+        QString key = i.key();
+
+        QtJambiFunctionTable *table = i.value();
+        table->dtorInhibitRemoveFunctionTable();
+        delete table;
+
+        count++;
+
+        i = functionTableCache()->erase(i);
+    }
+    return count;
+}
 
 StaticCache::~StaticCache() {
     delete d;
