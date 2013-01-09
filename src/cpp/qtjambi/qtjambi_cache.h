@@ -70,7 +70,7 @@ QTJAMBI_EXPORT QString getJavaSignature(const QString &qt_name);
 PtrDestructorFunction destructor(const QString &java_name);
 ObjectDeletionPolicy objectDeletionPolicy(const QString &java_name);
 
-QTJAMBI_EXPORT jclass resolveClass(JNIEnv *env, const char *className, const char *package);
+QTJAMBI_EXPORT jclass resolveClass(JNIEnv *env, const char *className, const char *package, bool wantGlobalRef = false);
 QTJAMBI_EXPORT jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature, jclass clazz,
                       bool isStatic = false);
 
@@ -85,8 +85,8 @@ QtJambiFunctionTable *findFunctionTable(const QString &className);
 void storeFunctionTable(const QString &className, QtJambiFunctionTable *table);
 void removeFunctionTable(QtJambiFunctionTable *table);
 
-jclass resolveClosestQtSuperclass(JNIEnv *env, jclass clazz);
-jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char *package);
+jclass resolveClosestQtSuperclass(JNIEnv *env, jclass clazz, bool wantGlobalRef = false);
+jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char *package, bool wantGlobalRef = false);
 
 
 class StaticCachePrivate {

@@ -177,42 +177,99 @@ inline bool operator==(const class_id &id1, const class_id &id2)
 }
 uint qHash(const class_id &id) { return qHash(id.className) FUNC qHash(id.package); }
 
-jclass resolveClass(JNIEnv *env, const char *className, const char *package)
+// The returned reference is owned by the caller, this means for returning GlobalRef
+//  the caller needs to destroy it.
+// Previous implementations of this method could expose the GlobalRef the cache itself
+//  owned which caused this API to be tricky for consumers to handle (as you could never
+//  be sure if the caller is responsible for destroying the reference or not, and
+//  depending upon if the it was a cache-hit or cache-miss the type of reference
+//  actually returned might be a LocalRef or a GlobalRef.
+// Most use cases the caller just wants a LocalRef alias to the same instance from
+//  the cache to temporarly use and then discard.
+// I suspect there are very few users of this method that actually want a GlobalRef
+//  but none the less API is provided by setting wantGlobalRef=true and always remember
+//  to destory the any non-zero returned reference you obtained.
+jclass resolveClass(JNIEnv *env, const char *className, const char *package, bool wantGlobalRef)
 {
-    jclass returned = 0;
+    Q_ASSERT(env);
+    Q_ASSERT(className);
+    Q_ASSERT(package);
+
+    jclass returned;
 #ifndef QTJAMBI_NOCACHE
     class_id key = { className, package };
 
     {
         QReadLocker locker(gStaticLock());
-        returned = gClassHash()->value(key, 0);
+        returned = gClassHash()->value(key, 0);  // GlobalRef
+        Q_ASSERT(REFTYPE_GLOBAL_SAFE(env, returned));
     }
 
     if (returned == 0) {
-#endif // QTJAMBI_NOCACHE
+#endif // !QTJAMBI_NOCACHE
 
         QByteArray ba(package);
         ba += className;
 
-        returned = qtjambi_find_class(env, ba.constData());
+        returned = qtjambi_find_class(env, ba.constData());  // LocalRef
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, returned));
 
 #ifndef QTJAMBI_NOCACHE
-        QWriteLocker locker(gStaticLock());
-        QTJAMBI_COUNTCACHEMISSES(className);
+        if (returned) {
+            QWriteLocker locker(gStaticLock());
 
-        if (returned != 0 && !gClassHash()->contains(key)) {
-            char *tmp = new char[strlen(className) + 1];
-            qstrcpy(tmp, className);
-            key.className = tmp;
+            // Read again this time with write lock held
+            jclass confirm = gClassHash()->value(key, 0);
+            if (confirm) {
+                Q_ASSERT(REFTYPE_GLOBAL(env, confirm));
+                env->DeleteLocalRef(returned);
+                returned = confirm; // discard and use value from cache
+            } else {
+                QTJAMBI_COUNTCACHEMISSES(className);
 
-            tmp = new char[strlen(package) + 1];
-            qstrcpy(tmp, package);
-            key.package = tmp;
+                jobject global_ref = env->NewGlobalRef(returned);
+                Q_ASSERT(REFTYPE_GLOBAL(env, global_ref));
 
-            gClassHash()->insert(key, (jclass) env->NewGlobalRef(returned));
+                char *tmp = new char[strlen(className) + 1];
+                strcpy(tmp, className);
+                key.className = tmp;
+
+                tmp = new char[strlen(package) + 1];
+                strcpy(tmp, package);
+                key.package = tmp;
+
+                gClassHash()->insert(key, (jclass) global_ref);
+
+                env->DeleteLocalRef(returned);
+                returned = (jclass) global_ref;  // LocalRef => GlobalRef
+            }
         }
     }
-#endif // QTJAMBI_NOCACHE
+#endif // !QTJAMBI_NOCACHE
+
+#ifndef QTJAMBI_NOCACHE
+    if (returned) { // GlobalRef
+        Q_ASSERT(REFTYPE_GLOBAL(env, returned));
+        if (wantGlobalRef)
+            returned = (jclass) env->NewGlobalRef(returned); // don't share make new
+        else
+            returned = (jclass) env->NewLocalRef(returned);  // GlobalRef => LocalRef
+    }
+#else
+    if (returned) { // LocalRef
+        Q_ASSERT(REFTYPE_LOCAL(env, returned));
+        if (wantGlobalRef) {
+            jclass global_ref = (jclass) env->NewGlobalRef(returned); // LocalRef => GlobalRef
+            env->DeleteLocalRef(returned);
+            returned = global_ref;
+        }
+    }
+#endif // !QTJAMBI_NOCACHE
+
+    if (wantGlobalRef)
+        Q_ASSERT(REFTYPE_GLOBAL_SAFE(env, returned));
+    if (!wantGlobalRef)
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, returned));
 
     return returned;
 }
@@ -226,7 +283,7 @@ struct field_id
     const char *className;
     const char *package;
     bool isStatic;
-    JNIEnv *env;
+    JNIEnv *env;  // why is this here ?
 };
 
 typedef QHash<field_id, jfieldID> FieldIdHash ;
@@ -249,7 +306,13 @@ uint qHash(const field_id &id)
 jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,
                       const char *className, const char *package, bool isStatic)
 {
-    jfieldID returned = 0;
+    Q_ASSERT(env);
+    Q_ASSERT(fieldName);
+    Q_ASSERT(signature);
+    Q_ASSERT(className);
+    Q_ASSERT(package);
+
+    jfieldID returned;
 #ifndef QTJAMBI_NOCACHE
     field_id key = { fieldName, className, package, isStatic, env };
 
@@ -259,41 +322,61 @@ jfieldID resolveField(JNIEnv *env, const char *fieldName, const char *signature,
     }
 
     if (returned == 0) {
-#endif // QTJAMBI_NOCACHE
+#endif // !QTJAMBI_NOCACHE
         jclass clazz = resolveClass(env, className, package);
-#ifndef QTJAMBI_NOCACHE
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, clazz));
 
+#ifndef QTJAMBI_NOCACHE
         {
-#endif // QTJAMBI_NOCACHE
-            if (!isStatic)
-                returned = env->GetFieldID(clazz, fieldName, signature);
-            else
-                returned = env->GetStaticFieldID(clazz, fieldName, signature);
+#endif // !QTJAMBI_NOCACHE
+
+            if (clazz) {
+                // Hmm the fieldID is surely only valid while we pin the 'clazz' ?
+                // The JVM could theoretically unload classes
+                if (!isStatic)
+                    returned = env->GetFieldID(clazz, fieldName, signature);
+                else
+                    returned = env->GetStaticFieldID(clazz, fieldName, signature);
+            }
 
 #ifndef QTJAMBI_NOCACHE
 
             QWriteLocker locker(gStaticLock());
 
-            QTJAMBI_COUNTCACHEMISSES(fieldName);
+            // Read again this time with write lock held
+            jfieldID confirm = gFieldHash()->value(key, 0);
+            if (confirm) {
+                returned = confirm; // discard and use value from cache
+            } else {
+                // Should we really record misses for potentially non-existant fields?
+                QTJAMBI_COUNTCACHEMISSES(fieldName);
 
-            if (returned != 0 && !gFieldHash()->contains(key)) {
-                char *tmp = new char[strlen(fieldName) + 1];
-                qstrcpy(tmp, fieldName);
-                key.fieldName = tmp;
+                if (returned) {
+                    char *tmp = new char[strlen(fieldName) + 1];
+                    strcpy(tmp, fieldName);
+                    key.fieldName = tmp;
 
-                tmp = new char[strlen(className) + 1];
-                qstrcpy(tmp, className);
-                key.className = tmp;
+                    tmp = new char[strlen(className) + 1];
+                    strcpy(tmp, className);
+                    key.className = tmp;
 
-                tmp = new char[strlen(package) + 1];
-                qstrcpy(tmp, package);
-                key.package = tmp;
+                    tmp = new char[strlen(package) + 1];
+                    strcpy(tmp, package);
+                    key.package = tmp;
 
-                gFieldHash()->insert(key, returned);
+                    gFieldHash()->insert(key, returned);
+                }
             }
         }
+#endif // !QTJAMBI_NOCACHE
+
+        if(clazz)
+            env->DeleteLocalRef(clazz);
+
+#ifndef QTJAMBI_NOCACHE
     }
-#endif // QTJAMBI_NOCACHE
+#endif // !QTJAMBI_NOCACHE
+
     return returned;
 }
 
@@ -345,7 +428,13 @@ uint qHash(const method_id &id)
 jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signature, const char *className,
                         const char *package, bool isStatic)
 {
-    jmethodID returned = 0;
+    Q_ASSERT(env);
+    Q_ASSERT(methodName);
+    Q_ASSERT(signature);
+    Q_ASSERT(className);
+    Q_ASSERT(package);
+
+    jmethodID returned;
 #ifndef QTJAMBI_NOCACHE
     method_id key = { methodName, signature, className, package, isStatic, env };
 
@@ -355,47 +444,66 @@ jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signatu
     }
 
     if (returned == 0) {
-#endif
+#endif // !QTJAMBI_NOCACHE
         jclass clazz = resolveClass(env, className, package);
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, clazz));
 #ifndef QTJAMBI_NOCACHE
 
-        if (clazz != 0) {
-#endif // QTJAMBI_NOCACHE
+#endif // !QTJAMBI_NOCACHE
+
+        if (clazz) {
+            // Hmm the methodID is surely only valid while we pin the 'clazz' ?
+            // The JVM could theoretically unload classes
             if (!isStatic)
                 returned = env->GetMethodID(clazz, methodName, signature);
             else
                 returned = env->GetStaticMethodID(clazz, methodName, signature);
-#ifndef QTJAMBI_NOCACHE
+        }
 
+#ifndef QTJAMBI_NOCACHE
+        {
             QWriteLocker locker(gStaticLock());
 
-            QTJAMBI_COUNTCACHEMISSES(methodName);
+            // Read again this time with write lock held
+            jmethodID confirm = gMethodHash()->value(key, 0);
+            if (confirm) {
+                returned = confirm; // discard and use value from cache
+            } else {
+                // Should we really record misses for potentially non-existant fields?
+                QTJAMBI_COUNTCACHEMISSES(methodName);
 
-            if (returned != 0 && !gMethodHash()->contains(key)) {
-                char *tmp = new char[strlen(methodName) + 1];
-                qstrcpy(tmp, methodName);
-                key.methodName = tmp;
+                if (returned) {
+                    char *tmp = new char[strlen(methodName) + 1];
+                    strcpy(tmp, methodName);
+                    key.methodName = tmp;
 
-                tmp = new char[strlen(signature) + 1];
-                qstrcpy(tmp, signature);
-                key.signature = tmp;
+                    tmp = new char[strlen(signature) + 1];
+                    strcpy(tmp, signature);
+                    key.signature = tmp;
 
-                tmp = new char[strlen(className) + 1];
-                qstrcpy(tmp, className);
-                key.className = tmp;
+                    tmp = new char[strlen(className) + 1];
+                    strcpy(tmp, className);
+                    key.className = tmp;
 
-                tmp = new char[strlen(package) + 1];
-                qstrcpy(tmp, package);
-                key.package = tmp;
+                    tmp = new char[strlen(package) + 1];
+                    strcpy(tmp, package);
+                    key.package = tmp;
 
-                gMethodHash()->insert(key, returned);
+                    gMethodHash()->insert(key, returned);
+                }
             }
         }
+#endif // !QTJAMBI_NOCACHE
+
+        env->DeleteLocalRef(clazz);
+
+#ifndef QTJAMBI_NOCACHE
     }
-#endif // QTJAMBI_NOCACHE
+#endif // !QTJAMBI_NOCACHE
 
     return returned;
 }
+
 
 jmethodID resolveMethod(JNIEnv *env, const char *methodName, const char *signature, jclass clazz,
                         bool isStatic)
@@ -424,67 +532,107 @@ inline bool operator==(const closestsuperclass_id &id1, const closestsuperclass_
 }
 uint qHash(const closestsuperclass_id &id) { return qHash(id.className) FUNC qHash(id.package); }
 
-
-jclass resolveClosestQtSuperclass(JNIEnv *env, jclass clazz)
+jclass resolveClosestQtSuperclass(JNIEnv *env, jclass clazz, bool wantGlobalRef)
 {
+    Q_ASSERT(env);
+    Q_ASSERT(clazz);
+    Q_ASSERT(REFTYPE_LOCAL(env, clazz));
+
     QString qualifiedName = QtJambiLink::nameForClass(env, clazz).replace(QLatin1Char('.'), QLatin1Char('/'));
     QByteArray className = QtJambiTypeManager::className(qualifiedName).toUtf8();
     QByteArray package = QtJambiTypeManager::package(qualifiedName).toUtf8();
 
-    return resolveClosestQtSuperclass(env, className.constData(), package.constData());
+    return resolveClosestQtSuperclass(env, className.constData(), package.constData(), wantGlobalRef);  // recursive
 }
 
 typedef QHash<closestsuperclass_id, jclass> ClassHash;
 Q_GLOBAL_STATIC(ClassHash, gQtSuperclassHash);
-jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char *package)
+jclass resolveClosestQtSuperclass(JNIEnv *env, const char *className, const char *package, bool wantGlobalRef)
 {
+    Q_ASSERT(env);
+    Q_ASSERT(className);
+    Q_ASSERT(package);
+
     closestsuperclass_id key = { className, package };
 
-    jclass returned = 0;
+    jclass returned;
     {
         QReadLocker locker(gStaticLock());
-        returned = gQtSuperclassHash()->value(key, 0);
+        returned = gQtSuperclassHash()->value(key, 0); // GlobalRef
+        Q_ASSERT(REFTYPE_GLOBAL_SAFE(env, returned));
     }
 
     if (returned == 0) {
-        jclass clazz = resolveClass(env, className, package);
+        jclass clazz = resolveClass(env, className, package, false);  // LocalRef
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, clazz));
 
         // Check if key is a Qt class
-        if (clazz != 0) {
+        if (clazz) {
 
             StaticCache *sc = StaticCache::instance();
             sc->resolveQtJambiInternal();
 
-            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, clazz))
-                returned = clazz;
-        }
+            if (env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, clazz)) {
+                returned = clazz;  // already LocalRef
+                clazz = 0;  // to stop DeleteLocalRef
+            }
 
-        // If not, try the superclass recursively
-        if (returned == 0 && clazz != 0) {
-            jclass superKey = env->GetSuperclass(clazz);
-            if (superKey != 0) {
-                returned = resolveClosestQtSuperclass(env, superKey);
+            // If not, try the superclass recursively
+            if (returned == 0) {
+                jclass superKey = env->GetSuperclass(clazz);
+                Q_ASSERT(REFTYPE_LOCAL_SAFE(env, superKey));
+                if (superKey) {
+                    returned = resolveClosestQtSuperclass(env, superKey);  // LocalRef
+                    Q_ASSERT(REFTYPE_LOCAL_SAFE(env, returned));
+                    env->DeleteLocalRef(superKey);
+                }
+                env->DeleteLocalRef(clazz);
             }
         }
 
-        if (returned != 0) {
+        if (returned) {  // LocalRef
             QWriteLocker locker(gStaticLock());
 
-            if (!gQtSuperclassHash()->contains(key)) {
+            // Read again this time with write lock held
+            jclass confirm = gQtSuperclassHash()->value(key, 0);
+            if (confirm) {
+                Q_ASSERT(REFTYPE_GLOBAL(env, confirm));
+                env->DeleteLocalRef(returned);
+                returned = confirm; // discard and use value from cache
+            } else {
                 QTJAMBI_COUNTCACHEMISSES(className);
 
+                jobject global_ref = env->NewGlobalRef(returned);
+                Q_ASSERT(REFTYPE_GLOBAL(env, global_ref));
+
                 char *tmp = new char[strlen(className) + 1];
-                qstrcpy(tmp, className);
+                strcpy(tmp, className);
                 key.className = tmp;
 
                 tmp = new char[strlen(package) + 1];
-                qstrcpy(tmp, package);
+                strcpy(tmp, package);
                 key.package = tmp;
 
-                gQtSuperclassHash()->insert(key, (jclass) env->NewGlobalRef(returned));
+                gQtSuperclassHash()->insert(key, (jclass) global_ref);
+
+                env->DeleteLocalRef(returned);
+                returned = (jclass) global_ref;  // LocalRef => GlobalRef
             }
         }
     }
+
+    if (returned) { // GlobalRef
+        Q_ASSERT(REFTYPE_GLOBAL(env, returned));
+        if (wantGlobalRef)
+            returned = (jclass) env->NewGlobalRef(returned); // don't share make new
+        else
+            returned = (jclass) env->NewLocalRef(returned);  // GlobalRef => LocalRef
+    }
+
+    if (wantGlobalRef)
+        Q_ASSERT(REFTYPE_GLOBAL_SAFE(env, returned));
+    if (!wantGlobalRef)
+        Q_ASSERT(REFTYPE_LOCAL_SAFE(env, returned));
 
     return returned;
 }
