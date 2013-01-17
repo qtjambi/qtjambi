@@ -333,15 +333,26 @@ QString qtjambi_class_name(JNIEnv *env, jclass java_class)
     Q_ASSERT(java_class);
     StaticCache *sc = StaticCache::instance();
     sc->resolveClass();
-    Q_ASSERT(java_class);
     Q_ASSERT(env->IsInstanceOf(java_class, sc->Class.class_ref));  // check the java object is right type
     jstring name = (jstring) env->CallObjectMethod(java_class, sc->Class.getName);
-    return qtjambi_to_qstring(env, name);
+    Q_ASSERT(name);
+    QString s = qtjambi_to_qstring(env, name);
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(name);
+#endif
+    return s;
 }
 
 QString qtjambi_object_class_name(JNIEnv *env, jobject java_object)
 {
-    return qtjambi_class_name(env, env->GetObjectClass(java_object));
+    Q_ASSERT(java_object);
+    jclass clazz = env->GetObjectClass(java_object);
+    Q_ASSERT(clazz);
+    QString s = qtjambi_class_name(env, clazz);
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(clazz);
+#endif
+    return s;
 }
 
 jobject qtjambi_from_qvariant(JNIEnv *env, const QVariant &qt_variant)
@@ -486,6 +497,7 @@ int qtjambi_to_enum(JNIEnv *env, jobject java_object)
     int returned = 0;
     Q_ASSERT(java_object);
     jclass clazz = env->GetObjectClass(java_object);
+    Q_ASSERT(clazz);  // when is this 0 ?  we can remove test below ?
     if (clazz != 0) {
         jmethodID methodId = resolveMethod(env, "value", "()I", clazz);
         if (methodId == 0) {
@@ -496,6 +508,10 @@ int qtjambi_to_enum(JNIEnv *env, jobject java_object)
 
         if (methodId != 0)
             returned = env->CallIntMethod(java_object, methodId);
+
+#ifdef PARANOID_LOCALREF_CLEANUP
+        env->DeleteLocalRef(clazz);
+#endif
     }
 
     return returned;
@@ -1066,6 +1082,11 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
         table->ref();
 #endif
 
+#ifdef PARANOID_LOCALREF_CLEANUP
+        env->DeleteLocalRef(jclass_name);
+        env->DeleteLocalRef(object_class);
+#endif
+        // this has already been reference counted on behalf of the caller
         return table;
     } else {
         table = new QtJambiFunctionTable(qclass_name, count);
@@ -1140,6 +1161,10 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
             QtJambiLink::throwQtException(env, errorMessage,
                                          QLatin1String("QNonVirtualOverridingException"));
             env->DeleteLocalRef(method_object);
+#ifdef PARANOID_LOCALREF_CLEANUP
+            env->DeleteLocalRef(jclass_name);
+            env->DeleteLocalRef(object_class);
+#endif
             return 0;
         }
 

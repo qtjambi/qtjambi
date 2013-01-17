@@ -465,7 +465,11 @@ bool QtJambiTypeManager::isQtSubClass(JNIEnv *env, const QString &className, con
     StaticCache *sc = StaticCache::instance();
     sc->resolveQtJambiObject();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
-    return (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QtJambiObject.class_ref)));
+    bool bf = (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QtJambiObject.class_ref)));
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(clazz);
+#endif
+    return bf;
 }
 
 bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const QString &package) {
@@ -473,25 +477,39 @@ bool QtJambiTypeManager::isQtClass(JNIEnv *env, const QString &className, const 
     sc->resolveQtJambiObject();
     sc->resolveQtJambiInternal();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
-    return (clazz != 0 && env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, clazz));
+    bool bf = (clazz != 0 && env->CallStaticBooleanMethod(sc->QtJambiInternal.class_ref, sc->QtJambiInternal.isGeneratedClass, clazz));
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(clazz);
+#endif
+    return bf;
 }
 
 bool QtJambiTypeManager::isQObjectSubclass(JNIEnv *env, const QString &className, const QString &package) {
     StaticCache *sc = StaticCache::instance();
     sc->resolveQObject();
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
-    return (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QObject.class_ref)));
+    bool bf = (clazz != 0 && bool(env->IsAssignableFrom(clazz, sc->QObject.class_ref)));
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(clazz);
+#endif
+    return bf;
 }
 
 QString QtJambiTypeManager::closestQtSuperclass(JNIEnv *env, const QString &className,
         const QString &package) {
     jclass clazz = resolveClass(env, className.toUtf8().constData(), package.toUtf8().constData());
     jclass sc = resolveClosestQtSuperclass(env, clazz);
-
-    if (sc != 0)
-        return QtJambiLink::nameForClass(env, sc).replace(QLatin1Char('.'), QLatin1Char('/'));
-    else
-        return QString();
+#ifdef PARANOID_LOCALREF_CLEANUP
+    env->DeleteLocalRef(clazz);
+#endif
+    if (sc != 0) {
+        QString s = QtJambiLink::nameForClass(env, sc).replace(QLatin1Char('.'), QLatin1Char('/'));
+#ifdef PARANOID_LOCALREF_CLEANUP
+        env->DeleteLocalRef(sc);
+#endif
+        return s;
+    }
+    return QString();
 }
 
 jvalue QtJambiTypeManager::convertToComplex(JNIEnv *env, jvalue val, Type typeId,
@@ -534,6 +552,9 @@ jvalue QtJambiTypeManager::convertToComplex(JNIEnv *env, jvalue val, Type typeId
                 if (success != 0)
                     *success = true;
             }
+#ifdef PARANOID_LOCALREF_CLEANUP
+            env->DeleteLocalRef(clazz);
+#endif
         }
     }
 
@@ -845,18 +866,30 @@ bool QtJambiTypeManager::isFlagsType(jclass clazz) const {
 
 bool QtJambiTypeManager::isEnumType(const QString &className, const QString &package) const {
     jclass clazz = resolveClass(mEnvironment, className.toUtf8().constData(), package.toUtf8().constData());
-    if (clazz != 0)
-        return isEnumType(clazz);
-    else
-        return false;
+    bool bf;
+    if (clazz != 0) {
+        bf = isEnumType(clazz);
+#ifdef PARANOID_LOCALREF_CLEANUP
+        mEnvironment->DeleteLocalRef(clazz);
+#endif
+    } else {
+        bf = false;
+    }
+    return bf;
 }
 
 bool QtJambiTypeManager::isFlagsType(const QString &className, const QString &package) const {
     jclass clazz = resolveClass(mEnvironment, className.toUtf8().constData(), package.toUtf8().constData());
-    if (clazz != 0)
-        return isFlagsType(clazz);
-    else
-        return false;
+    bool bf;
+    if (clazz != 0) {
+        bf = isFlagsType(clazz);
+#ifdef PARANOID_LOCALREF_CLEANUP
+        mEnvironment->DeleteLocalRef(clazz);
+#endif
+    } else {
+        bf = false;
+    }
+    return bf;
 }
 
 // Returns true if conversion mode is QVariantMode and the type is a subclass of a Qt type
@@ -1076,6 +1109,9 @@ jobject QtJambiTypeManager::flagsForInt(int value, const QString &className, con
                  "the flags.",
                  utfPackage.constData(), utfClassName.constData());
     }
+#ifdef PARANOID_LOCALREF_CLEANUP
+    mEnvironment->DeleteLocalRef(clazz);
+#endif
 
     return flags;
 }
@@ -1130,6 +1166,9 @@ jobject QtJambiTypeManager::enumForInt(int value, const QString &className, cons
         resolved = mEnvironment->GetObjectArrayElement(enum_constants, value);
     }
 
+#ifdef PARANOID_LOCALREF_CLEANUP
+    mEnvironment->DeleteLocalRef(clazz);
+#endif
     return resolved;
 }
 
@@ -1267,6 +1306,9 @@ bool QtJambiTypeManager::convertInternalToExternal(const void *in, void **out,
                     else
                         success = true;
                 }
+#ifdef PARANOID_LOCALREF_CLEANUP
+                mEnvironment->DeleteLocalRef(clazz);
+#endif
             }
         }
 
