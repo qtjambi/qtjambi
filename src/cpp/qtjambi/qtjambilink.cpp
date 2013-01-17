@@ -1314,13 +1314,20 @@ bool QtJambiLink::throwQtException(JNIEnv *env, const QString &extra, const QStr
     return success;
 }
 
+// This method is called by the StaticCache code itself to perform resolution
+//  so therefore it has to be careful what lower level API we call.
 QString QtJambiLink::nameForClass(JNIEnv *env, jclass clazz)
 {
     QString returned;
 
     jmethodID methodId = resolveMethod(env, "getName", "()Ljava/lang/String;", "Class", "java/lang/");
     if (methodId != 0) {
-        returned = qtjambi_to_qstring(env, reinterpret_cast<jstring>(env->CallObjectMethod(clazz, methodId)));
+        jobject java_string = env->CallObjectMethod(clazz, methodId);
+        Q_ASSERT(REFTYPE_LOCAL(env, java_string));
+        returned = qtjambi_to_qstring(env, reinterpret_cast<jstring>(java_string));
+ #ifdef PARANOID_LOCALREF_CLEANUP
+        env->DeleteLocalRef(java_string);
+ #endif
     }
 
     return returned;
