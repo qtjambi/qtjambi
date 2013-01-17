@@ -327,6 +327,7 @@ JNIEnv *qtjambi_current_environment()
     return env;
 }
 
+// Duplicated functionaliy with QtJambiLink::nameForClass() ?
 QString qtjambi_class_name(JNIEnv *env, jclass java_class)
 {
     Q_ASSERT(java_class);
