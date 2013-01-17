@@ -262,6 +262,48 @@ int qtjambi_object_cache_operation_count()
     return count;
 }
 
+int QtJambiLink::qtjambi_object_cache_prune()
+{
+    QWriteLocker lock(gUserObjectCacheLock());
+    int count = 0;
+    LinkHash::iterator i = gUserObjectCache()->begin();
+    while(i != gUserObjectCache()->end()) {
+        const void *key = i.key();
+        Q_ASSERT(key);
+        QtJambiLink *link = i.value();
+        Q_ASSERT(link);
+
+        // It is possible for a QtJambiLink to be in the cache more than once
+        // under a different pointer key due to QtJambiLink::registerSubObject()
+        // this means we must undo the preceding actions.
+        if(key == link->pointer()) {
+            // When key==link->pointer() this must be the cache entry for the main
+            //  object.
+            // (At the time of writing) A QObject never has the main object entered
+            //  into the cache, but it is possible for entries to get into cache with
+            //  m_in_cache==false this happens from QtJambiLink::registerSubObject()
+            //  when used with a secondary class interface of a QObject.  However see
+            //  the else{} clause handling registerSubObjectCount below for that case.
+            // All (cachable) non-QObject's have an entry for the main object in
+            //  the cache and m_in_cache==true and that is the case that ends up here.
+            Q_ASSERT(link->m_in_cache);
+            link->m_in_cache = false;
+        } else {
+            // This must be a secondary class interface (ala C++ multiple inheritance).
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            Q_ASSERT(link->registerSubObjectCount > 0);
+            if(link->registerSubObjectCount > 0)
+                link->registerSubObjectCount--;
+#endif
+        }
+
+        count++;
+
+        i = gUserObjectCache()->erase(i);
+    }
+    return count;
+}
+
 // The purpose of this method is to deduplicate the 'ptrs' as C++ might use the same
 //  pointer offset for all aliases to the same object instance in memory.  Furthermore
 //  the 'base' represents the pointer to the widest C++ type.
@@ -476,6 +518,11 @@ QtJambiLink *QtJambiLink::createLinkForObject(JNIEnv *env, jobject java, void *p
         if(qtjambi_object_cache_mode_get() != 0) {
             QWriteLocker locker(gUserObjectCacheLock());
             Q_ASSERT(gUserObjectCache());
+#if defined(QTJAMBI_DEBUG_TOOLS)
+            // We check we're not overwriting an existing value, that should never happen
+            void *p = gUserObjectCache()->value(ptr, 0);
+            Q_ASSERT(p == 0);
+#endif
             gUserObjectCache()->insert(ptr, link);
             link->m_in_cache = true;
         }
@@ -1244,13 +1291,15 @@ jmethodID QtJambiLink::findMethod(JNIEnv *env, jobject javaRef, const QString &m
 
 void QtJambiLink::removeFromCache(JNIEnv *)
 {
+    Q_ASSERT(m_pointer);
+    Q_ASSERT(gUserObjectCache());
     QWriteLocker locker(gUserObjectCacheLock());
-    if (m_pointer != 0 && gUserObjectCache() && gUserObjectCache()->contains(m_pointer)) {
-        int count = gUserObjectCache()->remove(m_pointer);
-        Q_ASSERT(count == 1);
-        Q_UNUSED(count);
-        m_in_cache = false;
-    }
+    Q_ASSERT(gUserObjectCache()->contains(m_pointer));
+
+    int count = gUserObjectCache()->remove(m_pointer);
+    Q_ASSERT(count == 1);
+    Q_UNUSED(count);
+    m_in_cache = false;
 }
 
 bool QtJambiLink::throwQtException(JNIEnv *env, const QString &extra, const QString &name)
