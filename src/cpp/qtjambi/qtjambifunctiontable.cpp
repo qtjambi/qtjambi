@@ -51,7 +51,8 @@ QtJambiFunctionTable::QtJambiFunctionTable(const QString &className,
                                          int size)
     : m_class_name(className),
       m_method_count(size),
-      m_reference_count(1)
+      m_reference_count(1),
+      m_dtor_inhibit_removeFunctionTable(false)
 {
     m_method_ids = new jmethodID[size];
 
@@ -61,7 +62,10 @@ QtJambiFunctionTable::QtJambiFunctionTable(const QString &className,
 
 QtJambiFunctionTable::~QtJambiFunctionTable()
 {
-    removeFunctionTable(this);
+    // FIXME: Push the responbility out of the dtor and back into
+    //   {deref,delete}FunctionTable() handling.
+    if(!m_dtor_inhibit_removeFunctionTable)
+        removeFunctionTable(this);
     delete [] m_method_ids;
 }
 
@@ -75,4 +79,9 @@ void QtJambiFunctionTable::deref()
 {
     --m_reference_count;
     Q_ASSERT(m_reference_count >= 0);
+}
+
+void QtJambiFunctionTable::dtorInhibitRemoveFunctionTable()
+{
+    m_dtor_inhibit_removeFunctionTable = true;
 }

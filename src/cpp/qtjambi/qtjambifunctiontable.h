@@ -65,6 +65,7 @@ public:
 
     void deref();
     void ref();
+    void dtorInhibitRemoveFunctionTable();
 
 private:
     QString m_class_name;
@@ -73,6 +74,7 @@ private:
     jmethodID *m_method_ids;
 
     int m_reference_count;
+    bool m_dtor_inhibit_removeFunctionTable;
 };
 
 QTJAMBI_EXPORT jmethodID QtJambiFunctionTable::method(int pos) const
