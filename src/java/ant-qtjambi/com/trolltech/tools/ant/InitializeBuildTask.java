@@ -509,12 +509,14 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         {
             String toolsSourceValue = null;
             String toolsValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_TOOLS);
+            String originalToolsValue = toolsValue;  // string without any appending
             if(toolsValue == null) {
                 if(isConfigurationDebug() || isConfigurationTest()) {
                     toolsValue = Boolean.TRUE.toString();
                 } else {
                     toolsValue = Boolean.FALSE.toString();
                 }
+                originalToolsValue = toolsValue;
                 toolsSourceValue = " (auto-configured based on ${" + Constants.CONFIGURATION + "})";
             }
 
@@ -526,7 +528,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             //  would ideally like to check and enforce the setting, if auto do a detection of JDK version.
             if(reftypeValue == null) {
                 // This option only makes sense with QTJAMBI_DEBUG_TOOLS=true and is inert otherwise.
-                if(Boolean.TRUE.toString().compareToIgnoreCase(toolsValue) == 0) {
+                if(Boolean.TRUE.toString().compareToIgnoreCase(originalToolsValue) == 0) {
                     reftypeValue = Boolean.TRUE.toString();
                     toolsValue += " QTJAMBI_DEBUG_REFTYPE";
                 } else {
@@ -535,8 +537,23 @@ public class InitializeBuildTask extends AbstractInitializeTask {
                 reftypeSourceValue = " (auto-configured based on ${" + Constants.QTJAMBI_DEBUG_TOOLS + "})";
             }
 
+            String localrefCleanupSourceValue = null;
+            // This is set to true||false from properties
+            String localrefCleanupValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_LOCALREF_CLEANUP);
+            if(localrefCleanupValue == null) {
+                // This option only makes sense with QTJAMBI_DEBUG_TOOLS=true and is inert otherwise.
+                if(Boolean.TRUE.toString().compareToIgnoreCase(originalToolsValue) == 0) {
+                    localrefCleanupValue = Boolean.TRUE.toString();
+                    toolsValue += " QTJAMBI_DEBUG_LOCALREF_CLEANUP";
+                } else {
+                    localrefCleanupValue = Boolean.FALSE.toString();
+                }
+                localrefCleanupSourceValue = " (auto-configured based on ${" + Constants.QTJAMBI_DEBUG_TOOLS + "})";
+            }
+
             mySetProperty(-1, Constants.QTJAMBI_DEBUG_TOOLS, toolsSourceValue, toolsValue, false);
             mySetProperty(-1, Constants.QTJAMBI_DEBUG_REFTYPE, reftypeSourceValue, reftypeValue, false);
+            mySetProperty(-1, Constants.QTJAMBI_DEBUG_LOCALREF_CLEANUP, localrefCleanupSourceValue, localrefCleanupValue, false);
         }
 
         {

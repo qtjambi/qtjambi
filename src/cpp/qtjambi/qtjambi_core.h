@@ -66,6 +66,20 @@
 #include <QtCore/QModelIndex>
 #include <QtCore/QVarLengthArray>
 
+// It is not required to cleanup every local reference created however...
+// We should write such cleanup code and provide the option to disable
+//  via #ifdef when optimization becomes clear.  Correctness first
+//  optimize later.  This way we think about it, documented it and are
+//  able to provide a clean usage that doesn't rely on the JVM being
+//  forgiving.  Some JVM like runtimes we may wish to run on might have
+//  restrictions, such as non-stack based VMs.
+// All I need now is an instrumented JVM that can provide statistics
+//  on reference leaks at every Java<>native crossover.
+// This exists here to document the setting but it should be configured
+//  via build system to enable it such as with
+//  -Dqtjambi.debug-localref-cleanup=true
+//#define QTJAMBI_DEBUG_LOCALREF_CLEANUP 1
+
 #ifdef QT_NO_DEBUG
 #  define QTJAMBI_EXCEPTION_CHECK(env)
 #  define QTJAMBI_EXCEPTION_CHECK_CLEAR(env)
