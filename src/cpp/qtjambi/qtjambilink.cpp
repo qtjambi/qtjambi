@@ -484,7 +484,7 @@ QtJambiLink *QtJambiLink::createWrapperForQObject(JNIEnv *env, QObject *object, 
     jobject java_object = env->NewObject(object_class, constructorId, 0);
     Q_ASSERT(REFTYPE_LOCAL(env, java_object));
     QtJambiLink *link = createLinkForQObject(env, java_object, object, meta_object);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(java_object);
     env->DeleteLocalRef(object_class);
 #endif
@@ -1308,7 +1308,7 @@ bool QtJambiLink::throwQtException(JNIEnv *env, const QString &extra, const QStr
     jclass cls = resolveClass(env, name.toUtf8().constData(), "com/trolltech/qt/");
     QTJAMBI_EXCEPTION_CHECK(env);
     success = (env->ThrowNew(cls, extra.toUtf8()) == 0);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(cls);
 #endif
     return success;
@@ -1325,7 +1325,7 @@ QString QtJambiLink::nameForClass(JNIEnv *env, jclass clazz)
         jobject java_string = env->CallObjectMethod(clazz, methodId);
         Q_ASSERT(REFTYPE_LOCAL(env, java_string));
         returned = qtjambi_to_qstring(env, reinterpret_cast<jstring>(java_string));
- #ifdef PARANOID_LOCALREF_CLEANUP
+ #ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(java_string);
  #endif
     }

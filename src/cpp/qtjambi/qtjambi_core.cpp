@@ -337,7 +337,7 @@ QString qtjambi_class_name(JNIEnv *env, jclass java_class)
     jstring name = (jstring) env->CallObjectMethod(java_class, sc->Class.getName);
     Q_ASSERT(name);
     QString s = qtjambi_to_qstring(env, name);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(name);
 #endif
     return s;
@@ -349,7 +349,7 @@ QString qtjambi_object_class_name(JNIEnv *env, jobject java_object)
     jclass clazz = env->GetObjectClass(java_object);
     Q_ASSERT(clazz);
     QString s = qtjambi_class_name(env, clazz);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(clazz);
 #endif
     return s;
@@ -509,7 +509,7 @@ int qtjambi_to_enum(JNIEnv *env, jobject java_object)
         if (methodId != 0)
             returned = env->CallIntMethod(java_object, methodId);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(clazz);
 #endif
     }
@@ -881,7 +881,7 @@ QtJambiLink *qtjambi_construct_qobject(JNIEnv *env, jobject java_object, QObject
         }
     }
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(java_thread);
 #endif
 
@@ -1082,7 +1082,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
         table->ref();
 #endif
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(jclass_name);
         env->DeleteLocalRef(object_class);
 #endif
@@ -1161,7 +1161,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
             QtJambiLink::throwQtException(env, errorMessage,
                                          QLatin1String("QNonVirtualOverridingException"));
             env->DeleteLocalRef(method_object);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
             env->DeleteLocalRef(jclass_name);
             env->DeleteLocalRef(object_class);
 #endif
@@ -1173,7 +1173,7 @@ QtJambiFunctionTable *qtjambi_setup_vtable(JNIEnv *env,
 
     QTJAMBI_EXCEPTION_CHECK(env);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(jclass_name);
     env->DeleteLocalRef(object_class);
 #endif

@@ -133,7 +133,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
         {
             jclass java_superclass = env->GetSuperclass(java_class);
             q->d.superdata = qtjambi_metaobject_for_class(env, java_superclass, original_meta_object);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
             env->DeleteLocalRef(java_superclass);
 #endif
         }
@@ -147,7 +147,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
         env->GetByteArrayRegion(string_data, 0, string_data_len, (jbyte *) q->d.stringdata);
         env->GetIntArrayRegion(meta_data, 0, meta_data_len, (jint *) q->d.data);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(string_data);
         env->DeleteLocalRef(meta_data);
 #endif
@@ -163,7 +163,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     if (lr_methods != 0) {
         m_methods = (jobjectArray) env->NewGlobalRef(lr_methods);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(lr_methods);
 #endif
         m_method_count = env->GetArrayLength(m_methods);
@@ -171,7 +171,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     if (lr_signals != 0) {
         m_signals = (jobjectArray) env->NewGlobalRef(lr_signals);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(lr_signals);
 #endif
         m_signal_count = env->GetArrayLength(m_signals);
@@ -183,11 +183,12 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
         for (int i=0; i<m_method_count + m_signal_count; ++i) {
             jobject lr_string = env->GetObjectArrayElement(original_signatures, i);
             m_original_signatures[i] = qtjambi_to_qstring(env, (jstring) lr_string);
-#ifdef PARANOID_LOCALREF_CLEANUP
+fprintf(stderr, "QtDynamicMetaObjectPrivate::QtDynamicMetaObjectPrivate(%p) initialize q->d=%p m_original_signatures[%d]=\"%s\"\n", this, &q->d, i, qPrintable(m_original_signatures[i]));
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
             env->DeleteLocalRef(lr_string);
 #endif
         }
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(original_signatures);
 #endif
     }
@@ -195,7 +196,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     if (lr_property_readers != 0) {
         m_property_readers = (jobjectArray) env->NewGlobalRef(lr_property_readers);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(lr_property_readers);
 #endif
         m_property_count = env->GetArrayLength(m_property_readers);
@@ -203,7 +204,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     if (lr_property_writers != 0) {
         m_property_writers = (jobjectArray) env->NewGlobalRef(lr_property_writers);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(lr_property_writers);
 #endif
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_writers));
@@ -211,7 +212,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     if (lr_property_resetters != 0) {
         m_property_resetters = (jobjectArray) env->NewGlobalRef(lr_property_resetters);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(lr_property_resetters);
 #endif
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_resetters));
@@ -219,7 +220,7 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
 
     if (lr_property_designables != 0) {
         m_property_designables = (jobjectArray) env->NewGlobalRef(lr_property_designables);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(lr_property_designables);
 #endif
         Q_ASSERT(m_property_count == env->GetArrayLength(m_property_designables));
@@ -235,17 +236,17 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
             for (int i=0; i<extra_data_count; ++i) {
                 jobject extra_cls = env->GetObjectArrayElement(lr_extra_data, i);
                 ptr[i] = qtjambi_metaobject_for_class(env, reinterpret_cast<jclass>(extra_cls), 0);
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
                 env->DeleteLocalRef(extra_cls);
 #endif
             }
         }
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(lr_extra_data);
 #endif
     }
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(meta_data_struct);
 #endif
 
@@ -266,7 +267,7 @@ void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobje
         signature = qtjambi_to_qstring(env, reinterpret_cast<jstring>(method_signature));
     Q_ASSERT(!signature.isEmpty());
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(method_signature);
 #endif
 
@@ -299,7 +300,7 @@ void QtDynamicMetaObjectPrivate::invokeMethod(JNIEnv *env, jobject object, jobje
 
         QString jni_type = QtJambiTypeManager::mangle(type_list.at(0));
         if (!jni_type.isEmpty()) {
-            // TODO: Understand and audit for PARANOID_LOCALREF_CLEANUP
+            // TODO: Understand and audit for QTJAMBI_DEBUG_LOCALREF_CLEANUP
             switch (jni_type.at(0).toLatin1()) {
             case 'V': returned->j = 0; env->CallVoidMethodA(object, id, args); break;
             case 'I': returned->i = env->CallIntMethodA(object, id, args); break;
@@ -410,7 +411,7 @@ int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id
         QString signal_parameters = "void emit(" + qtjambi_to_qstring(env, j_signal_parameters) + ")";
         d->invokeMethod(env, signal_object, signal_emit_method, _a, signal_parameters);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(j_signal_parameters);
         env->DeleteLocalRef(signal_emit_method);
         env->DeleteLocalRef(signal_object);
@@ -422,7 +423,7 @@ int QtDynamicMetaObject::invokeSignalOrSlot(JNIEnv *env, jobject object, int _id
 
         d->invokeMethod(env, object, method_object, _a);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(method_object);
 #endif
     }
@@ -445,7 +446,7 @@ int QtDynamicMetaObject::readProperty(JNIEnv *env, jobject object, int _id, void
 
         d->invokeMethod(env, object, method_object, _a);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
         env->DeleteLocalRef(method_object);
 #endif
     }
@@ -471,7 +472,7 @@ int QtDynamicMetaObject::writeProperty(JNIEnv *env, jobject object, int _id, voi
             void *a[2] = { 0, _a[0] };
             d->invokeMethod(env, object, method_object, a);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
             env->DeleteLocalRef(method_object);
 #endif
         }
@@ -495,7 +496,7 @@ int QtDynamicMetaObject::resetProperty(JNIEnv *env, jobject object, int _id, voi
         if (method_object != 0) {
             d->invokeMethod(env, object, method_object, _a);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
             env->DeleteLocalRef(method_object);
 #endif
         }
@@ -519,7 +520,7 @@ int QtDynamicMetaObject::queryPropertyDesignable(JNIEnv *env, jobject object, in
         if (method_object != 0) {
             d->invokeMethod(env, object, method_object, _a);
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
             env->DeleteLocalRef(method_object);
 #endif
         }

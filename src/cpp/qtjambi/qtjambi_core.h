@@ -277,7 +277,7 @@ inline jobjectArray qtjambi_from_array(JNIEnv *env, T *array,
         }
     }
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(clazz);
 #endif
     return returned;
@@ -304,7 +304,7 @@ inline jobjectArray qtjambi_from_interface_array(JNIEnv *env, T *array,
         }
     }
 
-#ifdef PARANOID_LOCALREF_CLEANUP
+#ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
     env->DeleteLocalRef(clazz);
 #endif
     return returned;
