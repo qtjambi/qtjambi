@@ -2609,6 +2609,9 @@ public:
     static const QMetaObject *illicitMetaObjectForQtNamespace() { return &staticQtMetaObject; }
 };
 
+// This method is used during Java object contructions (and maybe other places) from the
+//  initMetaObject() and QtDynamicMetaObject::build() methods.  So this code should not
+//  rely on their being a QtJambiLink in existance for the object being constructed.
 const QMetaObject *qtjambi_metaobject_for_class(JNIEnv *env, jclass object_class, const QMetaObject *original_meta_object)
 {
     Q_ASSERT(object_class != 0);

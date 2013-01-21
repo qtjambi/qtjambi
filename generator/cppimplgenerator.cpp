@@ -1977,14 +1977,6 @@ void CppImplGenerator::writeFinalConstructor(QTextStream &s,
         // Set up the link object
         s << INDENT << qt_object_name << "->m_link = __qt_java_link;" << endl;
 
-#if 0
-        // Make sure the user data in the QObject has bindings to the qobject's meta object
-        // (this has to be done after the link is set, so that the fake meta object
-        //  can access the java object, for which it gets a reference in the link)
-        if (cls->isQObject())
-            s << INDENT << qt_object_name << "->m_link->setMetaObject(" << qt_object_name << "->m_meta_object);" << endl;
-#endif
-
         s << INDENT << qt_object_name << "->m_link->setCreatedByJava(true);" << endl;
 
 
