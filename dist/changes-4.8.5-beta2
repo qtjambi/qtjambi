@@ -1,0 +1,12 @@
+This is patch release for original beta for Qt Jambi 4.8.5.
+
+There is no changelog for original release, so this changelog will list
+everything related to that release. Only thing that has been changed
+for this beta is Windows installer fixes, bugs #280 and #281.
+
+************************************************************************
+ Qt Jambi Library
+************************************************************************
+- This release includes most of the work made since last release, up to
+current state of trunk (date: 13.08.2013). For proper changelog, see
+git log of the repository.
