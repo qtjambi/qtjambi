@@ -10,12 +10,14 @@ CRCCheck force
 XPStyle on
 SetCompressor /FINAL /SOLID lzma
 ;SetCompressorDictSize 64
-!define v 4.7.1
-!define QtDir C:\Qt\4.7.1
+!define v 4.8.5
+!define VersionSuffix -beta2
+!define QtDir C:\qt-everywhere-opensource-src-4.8.5
+!define MingwDir C:\MinGW
 !define comp mingw
 InstallDir C:\qtjambi-${v} ; The default installation directory
 Name "Qt Jambi Installer" ; The name of the installer
-OutFile "setup-qt-jambi-${v}-win32-beta2.exe"; The file to write
+OutFile "setup-qt-jambi-${v}-win32-beta1.exe"; The file to write
 BrandingText /TRIMLEFT "Qtjambi-${v}"
 RequestExecutionLevel admin
 
@@ -48,7 +50,7 @@ RequestExecutionLevel admin
     !define MUI_FINISHPAGE_RUN_CHECKED
     !define MUI_FINISHPAGE_RUN_TEXT "Launch Qtjambi Demo"
     !define MUI_FINISHPAGE_SHOWREADME_CHECKED
-    ;!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\changes-4.7.0-beta2" ; must have a .txt or .rtf suffix to work
+    ;!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\changes-4.8.5-beta2" ; must have a .txt or .rtf suffix to work
 	!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
 !insertmacro MUI_PAGE_FINISH
 
@@ -148,13 +150,12 @@ WriteUninstaller $INSTDIR\uninstall.exe ; Tell it where to put the uninstaller
 File ..\..\qtjambi-${v}.jar
 File ..\..\qtjambi-designer-${v}.jar
 File ..\..\qtjambi-examples-${v}.jar
-File ..\..\build\qtjambi-win32-${comp}-${v}.jar
+File ..\..\build\qtjambi-native-win32-${comp}-${v}.jar
 File examples.bat
 File examples.vbs
 File designer.bat
 File designer.vbs
-;File ..\changes-${v} ; TODO: Fails if no such file is there
-File ..\changes-4.7.0-beta2 ; DEBUG
+File ..\changes-${v}${VersionSuffix}
 File ..\install.html
 File ..\LICENSE.GPL3
 File ..\LICENSE.LGPL
@@ -163,9 +164,9 @@ File ..\README.txt
 
 ; Qt files + Juic
 SetOutPath $INSTDIR\bin
-File ..\..\bin\juic.exe
-File ${QtDir}\bin\mingwm10.dll
-File ${QtDir}\bin\libgcc_s_dw2-1.dll
+File ..\..\build\qmake-juic\release\juic.exe
+File ${MingwDir}\bin\mingwm10.dll
+File ${MingwDir}\bin\libgcc_s_dw2-1.dll
 
 File ${QtDir}\bin\designer.exe
 File ${QtDir}\bin\linguist.exe
@@ -227,9 +228,8 @@ Delete $INSTDIR\examples.bat
 Delete $INSTDIR\examples.vbs
 Delete $INSTDIR\designer.bat
 Delete $INSTDIR\designer.vbs
-Delete $INSTDIR\qtjambi-win32-${comp}-${v}.jar
-;Delete $INSTDIR\changes-${v} ; TODO: Fails if no such file is there
-Delete $INSTDIR\changes-4.7.0-beta2 ; DEBUG
+Delete $INSTDIR\qtjambi-native-win32-${comp}-${v}.jar
+Delete $INSTDIR\changes-${v}${VersionSuffix}
 Delete $INSTDIR\install.html
 Delete $INSTDIR\LICENSE.GPL3
 Delete $INSTDIR\LICENSE.LGPL
