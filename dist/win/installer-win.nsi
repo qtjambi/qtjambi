@@ -167,6 +167,7 @@ SetOutPath $INSTDIR\bin
 File ..\..\build\qmake-juic\release\juic.exe
 File ${MingwDir}\bin\mingwm10.dll
 File ${MingwDir}\bin\libgcc_s_dw2-1.dll
+File ${MingwDir}\bin\libstdc++-6.dll
 
 File ${QtDir}\bin\designer.exe
 File ${QtDir}\bin\linguist.exe
@@ -199,6 +200,7 @@ Section "uninstall"
 ; Bin
 Delete $INSTDIR\bin\mingwm10.dll
 Delete $INSTDIR\bin\libgcc_s_dw2-1.dll
+Delete $INSTDIR\bin\libstdc++-6.dll
 
 Delete $INSTDIR\bin\designer.exe
 Delete $INSTDIR\bin\linguist.exe
