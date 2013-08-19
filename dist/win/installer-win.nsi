@@ -17,7 +17,7 @@ SetCompressor /FINAL /SOLID lzma
 !define comp mingw
 InstallDir C:\qtjambi-${v} ; The default installation directory
 Name "Qt Jambi Installer" ; The name of the installer
-OutFile "setup-qt-jambi-${v}-win32-beta1.exe"; The file to write
+OutFile "setup-qt-jambi-${v}-win32${VersionSuffix}.exe"; The file to write
 BrandingText /TRIMLEFT "Qtjambi-${v}"
 RequestExecutionLevel admin
 
