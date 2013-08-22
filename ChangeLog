@@ -1,0 +1,9 @@
+
+Qt Jambi 4.8.5-beta3
+====================
+
+	* Changelog changed to single ChangeLog file
+	Previously changelogs were found per-release at dist/changes-x.y.z files.
+	In fufure all important changes will be in this file. 
+	All changes can be found by cloning the git tree and using "git log" at it.
+
