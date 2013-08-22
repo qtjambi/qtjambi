@@ -8,7 +8,7 @@ set QT_PLUGIN_PATH=%BASE_DIR%\plugins
 set BIN_PATH=%BASE_DIR%\bin
 set PATH=%BIN_PATH%;%PATH%
 set CLASSPATH=%BASE_DIR%\qtjambi-%VERSION%.jar;^
-%BASE_DIR%\qtjambi-win32-mingw-%VERSION%.jar;^
+%BASE_DIR%\qtjambi-native-win32-mingw-%VERSION%.jar;^
 %BASE_DIR%\qtjambi-examples-%VERSION%.jar
 
 REM Launch demo
