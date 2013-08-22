@@ -11,7 +11,7 @@ XPStyle on
 SetCompressor /FINAL /SOLID lzma
 ;SetCompressorDictSize 64
 !define v 4.8.5
-!define VersionSuffix -beta2
+!define VersionSuffix -beta3
 !define QtDir C:\qt-everywhere-opensource-src-4.8.5
 !define MingwDir C:\MinGW
 !define comp mingw
@@ -155,7 +155,8 @@ File examples.bat
 File examples.vbs
 File designer.bat
 File designer.vbs
-File ..\changes-${v}${VersionSuffix}
+; File ..\changes-${v}${VersionSuffix} We rather supply simple ChangeLog file now rather than release specific files
+File ..\..\ChangeLog
 File ..\install.html
 File ..\LICENSE.GPL3
 File ..\LICENSE.LGPL
@@ -231,7 +232,8 @@ Delete $INSTDIR\examples.vbs
 Delete $INSTDIR\designer.bat
 Delete $INSTDIR\designer.vbs
 Delete $INSTDIR\qtjambi-native-win32-${comp}-${v}.jar
-Delete $INSTDIR\changes-${v}${VersionSuffix}
+; Delete $INSTDIR\changes-${v}${VersionSuffix}
+Delete $INSTDIR\ChangeLog
 Delete $INSTDIR\install.html
 Delete $INSTDIR\LICENSE.GPL3
 Delete $INSTDIR\LICENSE.LGPL
