@@ -73,14 +73,12 @@ public class QtJambiGuiInternal {
                    + "<p>Qt Jambi provides single-source "
                    + "portability across MS&nbsp;Windows, Mac&nbsp;OS&nbsp;X, "
                    + "Linux, and all major commercial Unix variants"
-                   + "<p>Qt Jambi is a Trolltech product. See "
-                   + "<a href=\"http://www.trolltech.com/jambi\">http://www.trolltech.com/jambi</a> for more information.</p>");
+                   + "<p>Qt Jambi is an open-source product and subject to its respective open-source license. See "
+                   + "<a href=\"http://qt-jambi.org\">http://qt-jambi.org</a> for more information.</p>");
         mb.setIconPixmap(new QPixmap(
                 "classpath:com/trolltech/qt/images/qt-logo.png"));
         mb.exec();
     }
-
-
 
     private static HashMap<QWidget, QPainter> painters = new HashMap<QWidget, QPainter>();
 
