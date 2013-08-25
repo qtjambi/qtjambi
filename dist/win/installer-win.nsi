@@ -150,6 +150,7 @@ WriteUninstaller $INSTDIR\uninstall.exe ; Tell it where to put the uninstaller
 File ..\..\qtjambi-${v}.jar
 File ..\..\qtjambi-designer-${v}.jar
 File ..\..\qtjambi-examples-${v}.jar
+File /oname=qtjambi-examples-src-${v}.jar ..\..\jars\qtjambi-examples-src.jar 
 File ..\..\build\qtjambi-native-win32-${comp}-${v}.jar
 File examples.bat
 File examples.vbs
@@ -227,6 +228,7 @@ Delete $INSTDIR\uninstall.exe
 Delete $INSTDIR\qtjambi-${v}.jar
 Delete $INSTDIR\qtjambi-designer-${v}.jar
 Delete $INSTDIR\qtjambi-examples-${v}.jar
+Delete $INSTDIR\qtjambi-examples-src-${v}.jar
 Delete $INSTDIR\examples.bat
 Delete $INSTDIR\examples.vbs
 Delete $INSTDIR\designer.bat
