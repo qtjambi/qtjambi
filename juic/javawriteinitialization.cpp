@@ -665,7 +665,7 @@ void WriteInitialization::writeProperties(const QString &varName,
             else if (p->elementEnum() == QLatin1String("com.trolltech.qt.core.Qt.Orientation.Horizontal"))
                 output << option.indent << varName << ".setFrameShape(QFrame.Shape.HLine);\n";
             else
-                fprintf(stderr, "Error: Invalid Line Type '%s'\n", p->elementEnum().toStdString());
+                fprintf(stderr, "Error: Invalid Line Type '%s'\n", p->elementEnum().toStdString().c_str());
             continue;
 
         } else if (propertyName == QLatin1String("leftMargin")
