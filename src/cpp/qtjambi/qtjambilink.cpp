@@ -318,9 +318,9 @@ int QtJambiLink::qtjambi_object_cache_prune()
 int QtJambiLink::registerSubObjectsDedupe(void *base, int count, void **ptrs) {
     Q_ASSERT(base);
     Q_ASSERT(ptrs);
-    Q_ASSERT(count >= 0);
+    Q_ASSERT(count >= 0 && count <= 10);
     {
-        void *newPtrs[count];
+        void *newPtrs[10];
         int newCount = 0;
 
         int i;
