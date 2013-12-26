@@ -456,13 +456,13 @@ public class Launcher extends QWidget {
         List<File> deliver = new LinkedList<File>();
         for (final String path : RetroTranslatorHelper.split(list, pathSep)) {
             final File object = new File(path);
-            if (object.isDirectory())
+            if (object.isDirectory()) {
                 for (String entry : object.list()) {
                     final File thing = new File(entry);
                     if (thing.isFile())
                         deliver.add(thing);
                 }
-            else if (object.isFile())
+            } else if (object.isFile())
                 deliver.add(object);
         }
         return deliver;
