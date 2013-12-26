@@ -54,7 +54,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
@@ -65,8 +64,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-
-import javax.swing.SpringLayout.Constraints;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -89,278 +86,38 @@ public class InitializeBuildTask extends AbstractInitializeTask {
     private String[] generatorPreProcStageOneA;
     private String[] generatorPreProcStageTwoA;
 
+    private String javaOsArch;
+    private String osCpu;
+
     // did somebody mention something about methods never being longer than 10 lines?
+    // yeah sure, this is too annoying to modify so just going to split this away...
     public void executeInitialize() throws BuildException {
+
+        solveSeparator("sep", File.separator);
+        solveSeparator("psep", File.pathSeparator);
+
         String sourceValue;
 
-        String sep = AntUtil.getPropertyAsString(propertyHelper, "sep");
-        if(sep == null) {
-            sep = File.separator;
-            sourceValue = " (auto-detect)";
-        } else {
-            sourceValue = null;
-        }
-        mySetProperty(-1, "sep", sourceValue, sep, false);
-
-        String psep = AntUtil.getPropertyAsString(propertyHelper, "psep");
-        if(psep == null) {
-            psep = File.pathSeparator;
-            sourceValue = " (auto-detect)";
-        } else {
-            sourceValue = null;
-        }
-        mySetProperty(-1, "psep", sourceValue, psep, false);
-
-        File jambiDirectoryAbspath = null;
-        {
-            sourceValue = null;
-            String value = AntUtil.getPropertyAsString(propertyHelper, Constants.DIRECTORY);
-            File dir = null;
-            if(value == null) {
-                // If this is not set we can auto-configure from $JAMBIDIR
-                String JAMBIDIR = System.getenv("JAMBIDIR");
-                if(JAMBIDIR != null)
-                    getProject().log(this, "JAMBIDIR is set: " + prettyValue(JAMBIDIR), Project.MSG_INFO);
-                dir = new File(JAMBIDIR);
-                sourceValue = " (from envvar:JAMBIDIR)";
-            } else {
-                dir = new File(value);
-            }
-            if(dir != null) {
-                if(dir.isDirectory() == false)
-                    sourceValue = " (WARNING: path does not exist or is not a directory)";
-                else
-                    jambiDirectoryAbspath = ResolvePathTask.resolve(dir);
-            }
-            mySetProperty(-1, Constants.DIRECTORY, sourceValue, value, false);
-        }
-
-        {
-            int thisVerbose = 0;  // quiet
-            sourceValue = null;
-            String value = AntUtil.getPropertyAsString(propertyHelper, Constants.DIRECTORY_ABSPATH);
-            if(value != null) {
-                if(jambiDirectoryAbspath != null) {
-                    String path = jambiDirectoryAbspath.getAbsolutePath();
-                    if(value.equals(path) == false) {
-                        sourceValue = " (WARNING MISMATCH: " + path + ")";
-                        thisVerbose = -1;  // noisy (because of WARNING)
-                    }
-                }
-            } else if(jambiDirectoryAbspath != null) {
-                value = jambiDirectoryAbspath.getAbsolutePath();
-                thisVerbose = -1;  // noisy (because we set it)
-            }
-            mySetProperty(thisVerbose, Constants.DIRECTORY_ABSPATH, null, value, false);
-        }
+        solveVerbosity(solveJambiDirectory());
 
         String QTDIR = System.getenv("QTDIR");   // used here
-        if(QTDIR != null)
+        if(QTDIR != null) {
             getProject().log(this, "QTDIR is set: " + prettyValue(QTDIR), Project.MSG_INFO);
-        else if(OSInfo.isWindows() || OSInfo.isMacOS())
-            getProject().log(this, "WARNING QTDIR is not set, yet this platform usually requires it to be set", Project.MSG_WARN);
-
-
-        final String[] emitA = {
-            Constants.BINDIR,
-            Constants.LIBDIR,
-            Constants.INCLUDEDIR,
-            Constants.PLUGINSDIR
-        };
-        for(String emit : emitA) {
-            sourceValue = null;
-            String value = AntUtil.getPropertyAsString(propertyHelper, emit);
-            File dir = null;
-            if(value != null) {
-                dir = new File(value);
-            } else if(value == null && QTDIR != null) {
-                dir = resolveDirectoryViaQTDIR(QTDIR, emit);
-                if(dir != null) {
-                    value = dir.getAbsolutePath();
-                    sourceValue = " (from envvar:QTDIR)";
-                }
-            }
-            if(dir != null) {
-                if(dir.isDirectory() == false)
-                    sourceValue = " (WARNING: path does not exist or is not a directory)";
-            }
-            mySetProperty(-1, emit, sourceValue, value, false);
+        } else if(OSInfo.isWindows() || OSInfo.isMacOS()) {
+            getProject().log(this, "WARNING: QTDIR is not set, yet this platform usually requires it to be set", Project.MSG_WARN);
         }
 
-        final String[] emitB = {
-            Constants.QTJAMBI_PHONON_INCLUDEDIR,
-            Constants.QTJAMBI_PHONON_LIBDIR,
-            Constants.QTJAMBI_PHONON_PLUGINSDIR
-        };
-        for(String emit : emitB) {
-            sourceValue = null;
-            String value = AntUtil.getPropertyAsString(propertyHelper, emit);
-            File dir = null;
-            if(value != null) {
-                dir = new File(value);
-            } else if(value == null) {
-                String x = null;
-                if(Constants.QTJAMBI_PHONON_INCLUDEDIR.equals(emit))
-                    x = Constants.INCLUDEDIR;
-                else if(Constants.QTJAMBI_PHONON_LIBDIR.equals(emit))
-                    x = Constants.LIBDIR;
-                else if(Constants.QTJAMBI_PHONON_PLUGINSDIR.equals(emit))
-                    x = Constants.PLUGINSDIR;
-                if(x != null)
-                    value = AntUtil.getPropertyAsString(propertyHelper, x);
-                if(value != null)
-                    sourceValue = " (inherited from ${" + x + "})";
-            }
-            if(dir != null) {
-                if(dir.isDirectory() == false)
-                    sourceValue = " (WARNING: path does not exist or is not a directory)";
-            }
-            mySetProperty(-1, emit, sourceValue, value, false);
-        }
-
-        {
-            sourceValue = null;
-            // FIXME: we could auto-configure this instead of setenv.xml doing that
-            String value = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_PHONON_KDEPHONON_PATH);
-            if(value == null)
-                value = "";   // set this empty-string default here
-            mySetProperty(-1, Constants.QTJAMBI_PHONON_KDEPHONON_PATH, sourceValue, value, false);
-        }
-
-        {
-            sourceValue = null;
-            String qtQmake = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE);
-            String detectedQmake = QMakeTask.executableName();
-            if(qtQmake == null) {
-                qtQmake = detectedQmake;
-                sourceValue = " (default)";
-            } else if(qtQmake.equals(detectedQmake) == false) {
-                sourceValue = " (WARNING expected " + detectedQmake + ")";
-            }
-            mySetProperty(-1, Constants.QMAKE, sourceValue, qtQmake, false);
-
-            String detectedQmakeAbsolutePath = QMakeTask.resolveExecutableAbsolutePath(getProject(), qtQmake);
-
-            String qtQmakeAbspath = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE_ABSPATH);
-            if(qtQmakeAbspath == null) {
-                qtQmakeAbspath = detectedQmakeAbsolutePath;
-                if(qtQmakeAbspath != null)
-                    sourceValue = " (auto-detected)";
-                else
-                    sourceValue = " (WARNING not found)";
-            } else {
-                if(qtQmakeAbspath.equals(detectedQmakeAbsolutePath) == false)
-                    sourceValue = " (WARNING detected at " + detectedQmakeAbsolutePath + ")";
-            }
-            mySetProperty(-1, Constants.QMAKE_ABSPATH, sourceValue, qtQmakeAbspath, false);
-        }
-
+        solveEmits(QTDIR);
+        solveKdePhonon();
+        solveQmake();
         FindCompiler finder = new FindCompiler(getProject(), propertyHelper);
-
-        String detectedOsname = OSInfo.osArchName();
-        String osname = AntUtil.getPropertyAsString(propertyHelper, Constants.OSNAME);
-        if(osname == null) {
-            sourceValue = " (auto-detected)";
-            osname = detectedOsname;
-        } else {
-            if("help".equals(osname) || "?".equals(osname)) {
-                OSInfo.OS[] values = OSInfo.OS.values();
-                String s = Arrays.toString(values);
-                throw new BuildException(Constants.OSNAME + " valid values: " + s);
-            }
-            sourceValue = " (detected: " + detectedOsname + ")";
-        }
-        mySetProperty(-1, Constants.OSNAME, sourceValue, osname, false);  // report value
-
-        Compiler compiler;
-        {
-            Compiler detectedCompiler = finder.decideCompiler();
-            String compilerValue = AntUtil.getPropertyAsString(propertyHelper, Constants.COMPILER);
-            if(compilerValue == null) {
-                sourceValue = " (available compilers: " + finder.getAvailableCompilers() + "; auto-detected)";
-                compilerValue = detectedCompiler.toString();
-            } else {
-                if("help".equals(compilerValue) || "?".equals(compilerValue)) {
-                    Compiler[] values = Compiler.values();
-                    String s = Arrays.toString(values);
-                    throw new BuildException(Constants.COMPILER + " valid values: " + s);
-                }
-                sourceValue = " (available compilers: " + finder.getAvailableCompilers() + "; detected: " + detectedCompiler + ")";
-            }
-            mySetProperty(-1, Constants.COMPILER, sourceValue, compilerValue, false);  // report value
-            compiler = Compiler.resolve(compilerValue);
-        }
-
-        String vsredistdirValue = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR);
-        if(vsredistdirValue != null) {
-            sourceValue = null; // " (environment variable $" + "VSREDISTDIR" + ")"; // not strictly true it could be set by ant cmdline
-            mySetProperty(-1, Constants.VSREDISTDIR_PACKAGE, sourceValue, vsredistdirValue, false);  // report value
-
-            String vsredistdirPackageValue = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR_PACKAGE);
-            if(vsredistdirPackageValue == null) {
-                sourceValue = " (default value; feature need explicit enabling)";
-                vsredistdirPackageValue = "false";
-            } else {
-                sourceValue = null;
-            }
-            mySetProperty(-1, Constants.VSREDISTDIR_PACKAGE, sourceValue, vsredistdirPackageValue, false);  // report value
-        } else {
-            mySetProperty(0, Constants.VSREDISTDIR_PACKAGE, null, "false", false);  // silently set false
-        }
-
-        String CROSS_COMPILE = System.getenv("CROSS_COMPILE");   // used here
-        if(CROSS_COMPILE != null)
-            getProject().log(this, "CROSS_COMPILE is set: " + prettyValue(CROSS_COMPILE), Project.MSG_INFO);
-
-        if(OSInfo.isMacOS())
-            mySetProperty(0, Constants.QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
-
-        String wantedSdk = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_MACOSX_MAC_SDK);
-        detectMacosxSdk(wantedSdk);
+        String osname = solveOsName();
+        Compiler compiler = solveCompiler(finder);
+        solveVSRedistDir();
 
         String s;
 
-        s = null;
-        if(OSInfo.isLinux())
-            s = OSInfo.K_LINUX;
-        else if(OSInfo.isWindows())
-            s = OSInfo.K_WINDOWS;
-        else if(OSInfo.isMacOS())
-            s = OSInfo.K_MACOSX;
-        else if(OSInfo.isFreeBSD())
-            s = OSInfo.K_FREEBSD;
-        else if(OSInfo.isSolaris())
-            s = OSInfo.K_SUNOS;
-        if(s != null)
-            AntUtil.setNewProperty(propertyHelper, Constants.OSPLATFORM, s);
-
-        s = null;
-
-        if(true) {    // FIXME lookup if verbose is set
-            Properties props = System.getProperties();
-            Enumeration e = props.propertyNames();
-            while(e.hasMoreElements()) {
-                String k = (String) e.nextElement();
-                Object v = System.getProperty(k);
-                getProject().log("systemProperty[" + k + "] = " + v, Project.MSG_VERBOSE);
-            }
-        }
-
-        String javaOsArch = System.getProperty("os.arch");	// arm|
-        if("arm".equals(javaOsArch)) {
-            // FIXME get LE or BE
-            s = "arm";
-        } else {
-            if(osname.endsWith("64"))
-                s = "x86_64";
-            else
-                s = "i386";
-        }
-        if(s != null)
-            AntUtil.setNewProperty(propertyHelper, Constants.OSCPU, s);
-        String osCpu = s;
-
-        finder.checkCompilerDetails();
+        solvePlatformInformation(finder, osname);
 
         mySetProperty(-1, Constants.EXEC_STRIP, null, null, false);  // report value
 
@@ -388,214 +145,25 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         if(javaOscpuTarget  == null)
                 throw new BuildException("Unable to determine JAVA_OSCPU_TARGET, setup environment variable JAVA_OSCPU_TARGET or edit build.properties");
 
-        {
-            sourceValue = null;
-            String toolsBindir = AntUtil.getPropertyAsString(propertyHelper, Constants.TOOLS_BINDIR);
-            if(toolsBindir == null) {
-                String bindir = AntUtil.getPropertyAsString(propertyHelper, Constants.BINDIR);
-                if(bindir != null) {
-                   sourceValue = " (inherited from ${" + Constants.BINDIR + "})";
-                   toolsBindir = bindir;
-                }
-            }
-            mySetProperty(-1, Constants.TOOLS_BINDIR, sourceValue, toolsBindir, false);  // report value
-        }
-        {
-            sourceValue = null;
-            String toolsLibdir = AntUtil.getPropertyAsString(propertyHelper, Constants.TOOLS_LIBDIR);
-            if(toolsLibdir == null) {
-                String libdir = AntUtil.getPropertyAsString(propertyHelper, Constants.LIBDIR);
-                if(libdir != null) {
-                    sourceValue = " (inherited from ${" + Constants.LIBDIR + "})";
-                    toolsLibdir = libdir;
-                }
-            }
-            mySetProperty(-1, Constants.TOOLS_LIBDIR, sourceValue, toolsLibdir, false);  // report value
-        }
-        {
-            sourceValue = null;
-            String toolsQmake = AntUtil.getPropertyAsString(propertyHelper, Constants.TOOLS_QMAKE);
-            if(toolsQmake == null) {
-                String qmake = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE);
-                sourceValue = " (inherited from ${" + Constants.QMAKE + "})";
-                toolsQmake = qmake;
-            }
-            mySetProperty(-1, Constants.TOOLS_QMAKE, sourceValue, toolsQmake, false);  // report value
+        solveToolsDir(Constants.TOOLS_BINDIR, Constants.BINDIR);
+        solveToolsDir(Constants.TOOLS_LIBDIR, Constants.LIBDIR);
+        solveToolsQmake();
 
-            // This method needs to look in Constants.TOOLS_BINDIR not Constants.BINDIR
-            String detectedQmakeAbsolutePath = QMakeTask.resolveExecutableAbsolutePath(getProject(), toolsQmake, Constants.TOOLS_BINDIR);
-
-            String toolsQmakeAbspath = AntUtil.getPropertyAsString(propertyHelper, Constants.TOOLS_QMAKE_ABSPATH);
-            if(toolsQmakeAbspath == null) {
-                toolsQmakeAbspath = detectedQmakeAbsolutePath;
-                if(toolsQmakeAbspath != null)
-                    sourceValue = " (auto-detected)";
-                else
-                    sourceValue = " (WARNING not found)";
-            } else {
-                if(toolsQmakeAbspath.equals(detectedQmakeAbsolutePath) == false)
-                    sourceValue = " (WARNING detected at " + detectedQmakeAbsolutePath + ")";
-            }
-            mySetProperty(-1, Constants.TOOLS_QMAKE_ABSPATH, sourceValue, toolsQmakeAbspath, false);
-        }
-
-
-        if(!decideQtVersion())
-            throw new BuildException("Unable to determine Qt version, try editing: " + pathVersionPropertiesTemplate);
-        s = String.valueOf(qtVersion);
-
-        getProject().log(this, Constants.QT_VERSION + " is " + s + qtVersionSource, Project.MSG_VERBOSE);
-        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION, s);
-        AntUtil.setNewProperty(propertyHelper, Constants.VERSION, s); // this won't overwrite existing value
-
-        s = String.valueOf(qtMajorVersion);
-        getProject().log(this, Constants.QT_VERSION_MAJOR + " is " + s, Project.MSG_VERBOSE);
-        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MAJOR, s);
-        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MAJOR_NEXT, String.valueOf(qtMajorVersion + 1));
-        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MINOR,      String.valueOf(qtMinorVersion));
-        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MINOR_NEXT, String.valueOf(qtMinorVersion + 1));
-        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
-
-
-        versionSuffix = AntUtil.getPropertyAsString(propertyHelper, Constants.SUFFIX_VERSION);
-        mySetProperty(-1, Constants.SUFFIX_VERSION, null, null, false);  // report
-
-        String canonVersionSuffix;
-        if(versionSuffix != null)
-            canonVersionSuffix = versionSuffix;
-        else
-            canonVersionSuffix = "";
-        String bundleVersionMode = AntUtil.getPropertyAsString(propertyHelper, Constants.BUNDLE_VERSION_MODE);
-        if(bundleVersionMode != null) {
-            if(bundleVersionMode.equals("auto-suffix-date")) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                s = qtVersion + "." + sdf.format(new Date()) + canonVersionSuffix;
-            }
-        } else {
-            s = qtVersion + canonVersionSuffix;
-        }
-        mySetProperty(-1, Constants.BUNDLE_VERSION, null, s, false);
-
+        solveQtVersion();
 
         {   // Need to detect the version of Qt we a reworking with before deciding configuration
             String wantedConfiguration = AntUtil.getPropertyAsString(propertyHelper, Constants.CONFIGURATION);
             detectConfiguration(wantedConfiguration);  // all the magic in in here now
         }
 
-        // Moved until after auto-detect of configuration is complete
-        s = null;
-        if(Constants.CONFIG_RELEASE.equals(getConfiguration()))
-            s = "";   // empty
-        else if(Constants.CONFIG_DEBUG.equals(getConfiguration()))
-            s = "-debug";
-        else if(Constants.CONFIG_TEST.equals(getConfiguration()))
-            s = "-test";
-        else
-            s = "";   // empty (debug_and_release)
-        if(s != null)
-            AntUtil.setNewProperty(propertyHelper, Constants.CONFIGURATION_DASH, s);
-        s = null;
-        if(Constants.CONFIG_RELEASE.equals(getConfiguration()))
-            s = "";   // empty
-        else if(Constants.CONFIG_DEBUG.equals(getConfiguration()))
-            s = ".debug";
-        else if(Constants.CONFIG_TEST.equals(getConfiguration()))
-            s = ".test";
-        else
-            s = "";   // empty (debug_and_release)
-        if(s != null)
-            AntUtil.setNewProperty(propertyHelper, Constants.CONFIGURATION_OSGI, s);
-
-        {
-            String toolsSourceValue = null;
-            String toolsValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_TOOLS);
-            String originalToolsValue = toolsValue;  // string without any appending
-            if(toolsValue == null) {
-                if(isConfigurationDebug() || isConfigurationTest()) {
-                    toolsValue = Boolean.TRUE.toString();
-                } else {
-                    toolsValue = Boolean.FALSE.toString();
-                }
-                originalToolsValue = toolsValue;
-                toolsSourceValue = " (auto-configured based on ${" + Constants.CONFIGURATION + "})";
-            }
-
-            String reftypeSourceValue = null;
-            // This is set to true||false from properties
-            String reftypeValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_REFTYPE);
-            // TODO: Setting this has the meaning that we will try to build it into the binaries
-            //  this relies on a JDK6+ being present at build and runtime.  If this is set 'true' we
-            //  would ideally like to check and enforce the setting, if auto do a detection of JDK version.
-            if(reftypeValue == null) {
-                // This option only makes sense with QTJAMBI_DEBUG_TOOLS=true and is inert otherwise.
-                if(Boolean.TRUE.toString().compareToIgnoreCase(originalToolsValue) == 0) {
-                    reftypeValue = Boolean.TRUE.toString();
-                    toolsValue += " QTJAMBI_DEBUG_REFTYPE";
-                } else {
-                    reftypeValue = Boolean.FALSE.toString();
-                }
-                reftypeSourceValue = " (auto-configured based on ${" + Constants.QTJAMBI_DEBUG_TOOLS + "})";
-            }
-
-            String localrefCleanupSourceValue = null;
-            // This is set to true||false from properties
-            String localrefCleanupValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_LOCALREF_CLEANUP);
-            if(localrefCleanupValue == null) {
-                // This option only makes sense with QTJAMBI_DEBUG_TOOLS=true and is inert otherwise.
-                if(Boolean.TRUE.toString().compareToIgnoreCase(originalToolsValue) == 0) {
-                    localrefCleanupValue = Boolean.TRUE.toString();
-                    toolsValue += " QTJAMBI_DEBUG_LOCALREF_CLEANUP";
-                } else {
-                    localrefCleanupValue = Boolean.FALSE.toString();
-                }
-                localrefCleanupSourceValue = " (auto-configured based on ${" + Constants.QTJAMBI_DEBUG_TOOLS + "})";
-            }
-
-            mySetProperty(-1, Constants.QTJAMBI_DEBUG_TOOLS, toolsSourceValue, toolsValue, false);
-            mySetProperty(-1, Constants.QTJAMBI_DEBUG_REFTYPE, reftypeSourceValue, reftypeValue, false);
-            mySetProperty(-1, Constants.QTJAMBI_DEBUG_LOCALREF_CLEANUP, localrefCleanupSourceValue, localrefCleanupValue, false);
-        }
-
-        {
-            sourceValue = null;
-            String qmakeTargetDefault = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE_TARGET_DEFAULT);
-            if(qmakeTargetDefault == null) {
-                // We only need to override the default when the Qt SDK is debug_and_release but
-                //  we are only building the project for one kind.
-//              if(Constants.CONFIG_RELEASE.equals(configuration))
-//                  qmakeTargetDefault = configuration;
-//              else if(Constants.CONFIG_DEBUG.equals(configuration))
-//                  qmakeTargetDefault = configuration;
-                if(Constants.CONFIG_DEBUG_AND_RELEASE.equals(getConfiguration()))
-                    qmakeTargetDefault = "all";
-              else
-                    qmakeTargetDefault = "";  // must be set to empty string (avoid ant subst ${qmake.target.default})
-                // FIXME: We want ${qtjambi.configuration} to set from QTDIR build kind *.prl data
-//                sourceValue = " (set from ${qtjambi.configuration})";
-            }
-            mySetProperty(-1, Constants.QMAKE_TARGET_DEFAULT, sourceValue, qmakeTargetDefault, false);  // report value
-        }
+        solvePackageSuffix();
+        solveDebugValues();
+        solveQmakeTarget();
+        solveSonameVersion();
+        solveCacheKey();
 
 
-        String sonameVersionMajor = Constants.DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR;
-        String sonameSource = " (set by init)";
-        if(OSInfo.isWindows()) {   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
-            sonameVersionMajor = "";  // got to set it empty otherwise we get unsubstituted ${foo} are value
-            sonameSource = " (set blank by init)";
-        }
-        mySetProperty(-1, Constants.QTJAMBI_SONAME_VERSION_MAJOR, sonameSource, sonameVersionMajor, false);
-
-        String cachekeyVersion = AntUtil.getPropertyAsString(propertyHelper, Constants.CACHEKEY);
-        String cachekeyVersionSource = " (already set)";
-        if(cachekeyVersion == null) {   // auto-configure
-            cachekeyVersionSource = " (set by init)";
-            // ${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}
-            cachekeyVersion = propertyHelper.replaceProperties(null, "${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}", null);
-        }
-        mySetProperty(-1, Constants.CACHEKEY, cachekeyVersionSource, cachekeyVersion, false);
-
-
-        if(!decideGeneratorPreProc(osCpu))
+        if(!decideGeneratorPreProc())
             throw new BuildException("Unable to determine generator pre-processor settings");
         s = Util.safeArrayToString(generatorPreProcStageOneA);
         getProject().log(this, Constants.GENERATOR_PREPROC_STAGE1 + " is " + ((s != null) ? s : "<unset>"), Project.MSG_VERBOSE);
@@ -604,234 +172,19 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         getProject().log(this, Constants.GENERATOR_PREPROC_STAGE2 + " is " + ((s != null) ? s : "<unset>"), Project.MSG_VERBOSE);
         AntUtil.setNewProperty(propertyHelper, Constants.GENERATOR_PREPROC_STAGE2, Util.safeArrayJoinToString(generatorPreProcStageTwoA, ","));
 
+        solveMacOSX();
+        solveqreal();
+        solveQtLibraries();
+        solveQtPlugins();
 
-        String qtjambiQtLibdir = AntUtil.getPropertyAsString(propertyHelper, Constants.LIBDIR);
-        if(qtjambiQtLibdir != null) {
-            sourceValue = null;
-//            s = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR);
-//            if(s == null) {
-                s = doesQtLibExistDir(qtjambiQtLibdir, "Resources/qt_menu.nib");
-                if(s == null)
-                    s = doesQtLibExistDir(qtjambiQtLibdir, "qt_menu.nib");
-                //if(s == null)
-                //    s= = doesQtLibExistDir(qtjambiQtLibdir, "src/gui/mac/qt_menu.nib");
-                // FIXME: auto-detect, directory from source, directory from QtSDK on MacOSX, directory from framework on MacOSX
-                
-                if(s != null)
-                    sourceValue = " (auto-detected)";
-//            }
-            if(s == null) {
-                if(OSInfo.isMacOS() == false)
-                    sourceValue = " (expected for non-MacOSX platform)";
-                else
-                    sourceValue = " (WARNING you should resolve this for targetting MacOSX)";
-                s = "";
-            }
-            mySetProperty(-1, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
-        }
-        if(AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR) == null)
-            AntUtil.setProperty(propertyHelper, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR, "", false);
-
-
-        // The 'qreal' Qt C++ type is 'float' on ARM platforms and 'double' on all others
-        String qrealtype = "double";
-        String qrealSource = " (the default)";
-        if("arm".equals(javaOsArch)) {
-            qrealtype = "float";
-            qrealSource = " (${" + Constants.OSCPU + "} is \"arm\")";
-        }
-        mySetProperty(-1, Constants.QTJAMBI_QREALTYPE, qrealSource, qrealtype, false);
-
-
-        detectQtDsoExistAndSetProperty(Constants.CLUCENE, "QtCLucene", String.valueOf(qtMajorVersion), null);
-
-        detectQtDsoExistAndSetProperty(Constants.CORE, "QtCore", String.valueOf(qtMajorVersion), null);
-
-        detectQtDsoExistAndSetProperty(Constants.DBUS, "QtDBus", String.valueOf(qtMajorVersion), "dbus");
-
-        detectQtDsoExistAndSetProperty(Constants.DECLARATIVE, "QtDeclarative", String.valueOf(qtMajorVersion), "declarative");
-
-        detectQtDsoExistAndSetProperty(Constants.DESIGNER, "QtDesigner", String.valueOf(qtMajorVersion), "designer");
-
-        detectQtDsoExistAndSetProperty(Constants.DESIGNERCOMPONENTS, "QtDesignerComponents", String.valueOf(qtMajorVersion), null);
-
-        detectQtDsoExistAndSetProperty(Constants.GUI, "QtGui", String.valueOf(qtMajorVersion), "gui");
-
-        detectQtDsoExistAndSetProperty(Constants.HELP, "QtHelp", String.valueOf(qtMajorVersion), "help");
-
-        detectQtDsoExistAndSetProperty(Constants.MULTIMEDIA, "QtMultimedia", String.valueOf(qtMajorVersion), "multimedia");
-
-        detectQtDsoExistAndSetProperty(Constants.NETWORK, "QtNetwork", String.valueOf(qtMajorVersion), "network");
-
-        detectQtDsoExistAndSetProperty(Constants.OPENGL, "QtOpenGL", String.valueOf(qtMajorVersion), "opengl");
-
-        String phononLibDir = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_PHONON_LIBDIR);  // maybe null or valid
-        String qtDetectPhonon = detectQtDsoExistAndSetProperty(Constants.PHONON, "phonon", String.valueOf(qtMajorVersion), "phonon", phononLibDir);
-
-        detectQtDsoExistAndSetProperty(Constants.SCRIPT, "QtScript", String.valueOf(qtMajorVersion), "script");
-
-        detectQtDsoExistAndSetProperty(Constants.SCRIPTTOOLS, "QtScriptTools", String.valueOf(qtMajorVersion), "scripttools");
-
-        detectQtDsoExistAndSetProperty(Constants.SQL, "QtSql", String.valueOf(qtMajorVersion), "sql");
-
-        detectQtDsoExistAndSetProperty(Constants.SVG, "QtSvg", String.valueOf(qtMajorVersion), "svg");
-
-        detectQtDsoExistAndSetProperty(Constants.TEST, "QtTest", String.valueOf(qtMajorVersion), "qtestlib");
-
-        String qtDetectWebkit = detectQtDsoExistAndSetProperty(Constants.WEBKIT, "QtWebKit", String.valueOf(qtMajorVersion), "webkit");
-        // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
-        //  if you have headers and DSOs for WebKit then QtJambi should build the support.
-        if(qtDetectWebkit != null && qtDetectPhonon == null)
-            getProject().log(this, "WARNING: " + Constants.WEBKIT + " is FOUND, but " + Constants.PHONON + " is NOT FOUND", Project.MSG_VERBOSE);
-
-        detectQtDsoExistAndSetProperty(Constants.XML, "QtXml", String.valueOf(qtMajorVersion), "xml");
-
-        detectQtDsoExistAndSetProperty(Constants.XMLPATTERNS, "QtXmlPatterns", String.valueOf(qtMajorVersion), "xmlpatterns");
-
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, "accessible", "qtaccessiblewidgets", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_CONNMANBEARER,    "bearer", "qconnmanbearer", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_GENERICBEARER,    "bearer", "qgenericbearer", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_NATIVEWIFIBEARER, "bearer", "qnativewifibearer", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_NMBEARER,         "bearer", "qnmbearer", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_CNCODECS, "codecs", "qcncodecs", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_JPCODECS, "codecs", "qjpcodecs", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_KRCODECS, "codecs", "qkrcodecs", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_TWCODECS, "codecs", "qtwcodecs", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM,    "graphicssystems", "qglgraphicssystem", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, "graphicssystems", "qtracegraphicssystem", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_ICONENGINES_SVGICON, "iconengines", "qsvgicon", null, null, null);
-
-        // These are only detecting if the plugins exist for these modules,
-        // lack of a plugins does not necessarily mean Qt doesn't have support
-        // since the implementation might be statically linked in.
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_GIF,  "imageformats",  "qgif", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_ICO,  "imageformats",  "qico", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_JPEG, "imageformats", "qjpeg", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_MNG,  "imageformats",  "qmng", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_PNG,  "imageformats",  "qpng", null, "probably a built-in", null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_SVG,  "imageformats",  "qsvg", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_TIFF, "imageformats", "qtiff", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_INPUTMETHODS_IMSW_MULTI, "inputmethods",  "qimsw-multi", null, null, null);
-
-        // We now just do plugin detection and emit what we see, regardless of platform
-        String sourceValueIfNull;
-
-        sourceValueIfNull = null;
-        if(OSInfo.isWindows() == false)
-            sourceValueIfNull = "expected for non-Windows platform";
-        detectQtPluginExistAndSetProperty(Constants.PHONON_DS9, "phonon_backend", "phonon_ds9", null, sourceValueIfNull, "auto-detected");
-
-        if(OSInfo.isLinux() == false)
-            sourceValueIfNull = "expected for non-Linux platform";  // also sunos/freebsd/ete...
-        decideQtPluginsPhononBackendPhononGstreamer(Constants.PHONON_GSTREAMER, "phonon_backend", "phonon_gstreamer", sourceValueIfNull);
-
-        sourceValueIfNull = null;
-        if(OSInfo.isMacOS() == false)
-            sourceValueIfNull = "expected for non-MacOSX platform";
-        detectQtPluginExistAndSetProperty(Constants.PHONON_QT7, "phonon_backend", "phonon_qt7", null, sourceValueIfNull, "auto-detected");
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_QMLTOOLING_QMLDBG_TCP,     "qmltooling",   "qmldbg_tcp", null, null, null);
-
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SCRIPT_QTSCRIPTDBUS,           "script", "qtscriptdbus", null, null, null);
-
-        // FIXME: Detect the case when this module was compiled into QtSql
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLITE,   "sqldrivers",   "qsqlite", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLITE2,  "sqldrivers",  "qsqlite2", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLMYSQL, "sqldrivers", "qsqlmysql", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLODBC,  "sqldrivers",  "qsqlodbc", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLPSQL,  "sqldrivers",  "qsqlpsql", null, null, null);
-        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLTDS,   "sqldrivers",   "qsqltds", null, null, null);
-
-        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(Constants.PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6", null, null));
-        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1", null, null));
-        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1", null, null));
-        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_MINGWM10,        decideQtBinDso(Constants.PACKAGING_DSO_MINGWM10,        "mingwm10", null, null));
-
-
-        String packagingDsoLibeay32 = decideQtBinDso(Constants.PACKAGING_DSO_LIBEAY32, "libeay32", null, false);
-        mySetProperty(-1, Constants.PACKAGING_DSO_LIBEAY32, null, packagingDsoLibeay32, false);
-
-        String packagingDsoLibssl32 = decideQtBinDso(Constants.PACKAGING_DSO_LIBSSL32, "libssl32", null, false);
-        String packagingDsoSsleay32 = decideQtBinDso(Constants.PACKAGING_DSO_SSLEAY32, "ssleay32", null, false);
-        // When building QtJambi against the official Nokia Qt SDK they appear to provide duplicate
-        // DLLs for the two naming variants libssl32.dll ssleay32.dll so we need to resolve this and
-        // omit one.
-        String packagingDsoLibssl32Message = "";
-        String packagingDsoSsleay32Message = "";
-        // "true" or a path, also means true.  Only "false" means false.
-        if(("false".equals(packagingDsoLibssl32) == false && packagingDsoLibssl32 != null) && ("false".equals(packagingDsoSsleay32) == false && packagingDsoSsleay32 != null)) {
-            // FIXME: Compare the files are actually the same
-            if(compiler == Compiler.GCC || compiler == Compiler.OldGCC || compiler == Compiler.MinGW || compiler == Compiler.MinGW_W64) {
-                packagingDsoSsleay32Message = " (was " + packagingDsoSsleay32 + "; auto-inhibited)";
-                packagingDsoSsleay32 = "false";    // favour libssl32.dll
-            } else {
-                packagingDsoLibssl32Message = " (was " + packagingDsoLibssl32 + "; auto-inhibited)";
-                packagingDsoLibssl32 = "false";    // favour ssleay32.dll
-            }
-        }
-        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBSSL32, packagingDsoLibssl32);
-        if((packagingDsoLibssl32Message.length() > 0 || ("false".equals(packagingDsoLibssl32) == false) && packagingDsoLibssl32 != null))
-            getProject().log(this, Constants.PACKAGING_DSO_LIBSSL32 + ": " + packagingDsoLibssl32 + packagingDsoLibssl32Message, Project.MSG_INFO);
-
-        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_SSLEAY32, packagingDsoSsleay32);
-        if((packagingDsoSsleay32Message.length() > 0 || ("false".equals(packagingDsoSsleay32) == false) && packagingDsoSsleay32 != null))
-            getProject().log(this, Constants.PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message, Project.MSG_INFO);
-
-        if(OSInfo.isWindows()) {
-            String packagingDsoZlib1 = decideQtBinDso(Constants.PACKAGING_DSO_ZLIB1, "zlib1", null, false);
-            mySetProperty(-1, Constants.PACKAGING_DSO_ZLIB1, null, packagingDsoZlib1, false);
-        } else {
-            // If the lib directory contains "libz.so.1" or "libssl.so" or "libcrypto.so.1.0.0"
-            sourceValue = null;
-            String packagingDsoLibssl = decideQtBinDso(Constants.PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, false);
-            if(packagingDsoLibssl != null && QTDIR != null && packagingDsoLibssl.startsWith(QTDIR) == false) {
-                sourceValue = " (detected: " + packagingDsoLibssl + "; but inhibited as not inside QTDIR)";
-                packagingDsoLibssl = null;
-            }
-            mySetProperty(-1, Constants.PACKAGING_DSO_LIBSSL, sourceValue, packagingDsoLibssl, false);
-
-            // FIXME: Implement file globs and reverse sort
-            sourceValue = null;
-            String packagingDsoLibcrypto = decideQtBinDso(Constants.PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0h", "1.0.0g", "1.0.0", "0.0.0", null, "10" }, false);
-            if(packagingDsoLibcrypto != null && QTDIR != null && packagingDsoLibcrypto.startsWith(QTDIR) == false) {
-                sourceValue = " (detected: " + packagingDsoLibcrypto + "; but inhibited as not inside QTDIR)";
-                packagingDsoLibcrypto = null;
-            }
-            mySetProperty(-1, Constants.PACKAGING_DSO_LIBCRYPTO, sourceValue, packagingDsoLibcrypto, false);
-
-            sourceValue = null;
-            String packagingDsoLibz = decideQtBinDso(Constants.PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, false);
-            if(packagingDsoLibz != null && QTDIR != null && packagingDsoLibz.startsWith(QTDIR) == false) {
-                sourceValue = " (detected: " + packagingDsoLibz + "; but inhibited as not inside QTDIR)";
-                packagingDsoLibz = null;
-            }
-            mySetProperty(-1, Constants.PACKAGING_DSO_LIBZ, sourceValue, packagingDsoLibz, false);
-        }
-
-        // FIXME: On Macosx when we build and have qtjambi.dbus==true we should WARN when we can not locate libdbus-1.*.dylib
-        // FIXME: On Macosx we should also search /usr/local/lib
-        String packagingDsoLibdbus = decideQtBinDso(Constants.PACKAGING_DSO_LIBDBUS, "dbus-1", new String[] { "3", "2", null }, null);
-        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBDBUS, packagingDsoLibdbus);
+        solveReleasePackaging(compiler, QTDIR);
 
         // Other build information sanity testing and warning
 
         String generatorIncludepaths = AntUtil.getPropertyAsString(propertyHelper, Constants.GENERATOR_INCLUDEPATHS);
         if(generatorIncludepaths != null) {
             // Validate the settings
-            sourceValue = null;
-            mySetProperty(-1, Constants.GENERATOR_INCLUDEPATHS, sourceValue, generatorIncludepaths, false);
+            mySetProperty(-1, Constants.GENERATOR_INCLUDEPATHS, null, generatorIncludepaths, false);
 
             prettifyPathSeparator(generatorIncludepaths, true);
         }
@@ -843,112 +196,13 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         }
 
         if(OSInfo.isLinux()) {    // Check we have libQtCore.so.4 in one of the paths in LD_LIBRARY_PATH
-            String LD_LIBRARY_PATH = System.getenv("LD_LIBRARY_PATH");
-            getProject().log(this, "LD_LIBRARY_PATH is set: " + ((LD_LIBRARY_PATH == null) ? "<notset>" : LD_LIBRARY_PATH), Project.MSG_INFO);
-            if(LD_LIBRARY_PATH != null) {
-                String[] sA = LD_LIBRARY_PATH.split(File.pathSeparator);  // should regex escape it
-                String filename = LibraryEntry.formatQtName("QtCore", isConfigurationDebug(), String.valueOf(qtMajorVersion));
-                int found = 0;
-                for(String element : sA) {
-                    File testDir = new File(element);
-                    if(testDir.isDirectory() == false)
-                        getProject().log(this, " WARNING: LD_LIBRARY_PATH directory does not exit: " + element, Project.MSG_INFO);
-                    File testFile = new File(element, filename);
-                    if(testFile.isFile()) {
-                        getProject().log(this, "   FOUND: LD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
-                        found++;
-                    }
-                }
-                if(found == 0)  // Maybe we should check to see if (QTDIR != null) before warning
-                    getProject().log(this, " WARNING: LD_LIBRARY_PATH environment variable is set, but does not contain a valid location for libQtCore.so.*; this is usually needed to allow 'generator' and 'juic' executables to run during the build", Project.MSG_INFO);
-
-                // FIXME: Refactor this duplicate code later (we look for !debug here but don't WARNING is we dont find it)
-                filename = LibraryEntry.formatQtName("QtCore", !isConfigurationDebug(), String.valueOf(qtMajorVersion));
-                found = 0;
-                for(String element : sA) {
-                    File testDir = new File(element);
-                    // we already warned about non-existing directory here
-                    File testFile = new File(element, filename);
-                    if(testFile.isFile()) {
-                        getProject().log(this, "  XFOUND: LD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
-                        found++;
-                    }
-                }
-            } else {   // Maybe we should check to see if (QTDIR != null) before warning
-                getProject().log(this, " WARNING: LD_LIBRARY_PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build", Project.MSG_INFO);
-            }
+            miscChecks("LD_LIBRARY_PATH");
         }
         if(OSInfo.isWindows()) {    // Check we have QtCore4.dll in one of the paths in PATH
-            String PATH = System.getenv("PATH");
-            getProject().log(this, "PATH is set: " + ((PATH == null) ? "<notset>" : PATH), Project.MSG_INFO);
-            if(PATH != null) {
-                String[] sA = PATH.split(File.pathSeparator);  // should regex escape it
-                String filename = LibraryEntry.formatQtName("QtCore", isConfigurationDebug(), String.valueOf(qtMajorVersion));
-                int found = 0;
-                for(String element : sA) {
-                    File testDir = new File(element);
-                    if(testDir.isDirectory() == false)
-                        getProject().log(this, " WARNING: PATH directory does not exit: " + element, Project.MSG_INFO);
-                    File testFile = new File(element, filename);
-                    if(testFile.isFile()) {
-                        getProject().log(this, "   FOUND: PATH directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
-                        found++;
-                    }
-                }
-                if(found == 0)
-                    getProject().log(this, " WARNING: PATH environment variable is set, but does not contain a valid location for QtCore*.dll; this is usually needed to allow 'generator' and 'juic' executables to run during the build", Project.MSG_INFO);
-
-                // FIXME: Refactor this duplicate code later (we look for !debug here but don't WARNING is we dont find it)
-                filename = LibraryEntry.formatQtName("QtCore", !isConfigurationDebug(), String.valueOf(qtMajorVersion));
-                found = 0;
-                for(String element : sA) {
-                    File testDir = new File(element);
-                    // we already warned about non-existing directory here
-                    File testFile = new File(element, filename);
-                    if(testFile.isFile()) {
-                        getProject().log(this, "  XFOUND: PATH directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
-                        found++;
-                    }
-                }
-            } else {
-                getProject().log(this, " WARNING: PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build", Project.MSG_INFO);
-            }
+            miscChecks("PATH");
         }
         if(OSInfo.isMacOS()) {    // Check we have libQtCore.4.dylib in one of the paths in DYLD_LIBRARY_PATH
-            String DYLD_LIBRARY_PATH = System.getenv("DYLD_LIBRARY_PATH");
-            getProject().log(this, "DYLD_LIBRARY_PATH is set: " + ((DYLD_LIBRARY_PATH == null) ? "<notset>" : DYLD_LIBRARY_PATH), Project.MSG_INFO);
-            if(DYLD_LIBRARY_PATH != null) {
-                String[] sA = DYLD_LIBRARY_PATH.split(File.pathSeparator);  // should regex escape it
-                String filename = LibraryEntry.formatQtName("QtCore", isConfigurationDebug(), String.valueOf(qtMajorVersion));
-                int found = 0;
-                for(String element : sA) {
-                    File testDir = new File(element);
-                    if(testDir.isDirectory() == false)
-                        getProject().log(this, " WARNING: DYLD_LIBRARY_PATH directory does not exit: " + element, Project.MSG_INFO);
-                    File testFile = new File(element, filename);
-                    if(testFile.isFile()) {
-                        getProject().log(this, "   FOUND: DYLD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
-                        found++;
-                    }
-                }
-                if(found == 0)
-                    getProject().log(this, " WARNING: DYLD_LIBRARY_PATH environment variable is set, but does not contain a valid location for libQtCore.*.dylib; this is usually needed to allow 'generator' and 'juic' executables to run during the build", Project.MSG_INFO);
-
-                // FIXME: Refactor this duplicate code later (we look for !debug here but don't WARNING is we dont find it)
-                filename = LibraryEntry.formatQtName("QtCore", !isConfigurationDebug(), String.valueOf(qtMajorVersion));
-                found = 0;
-                for(String element : sA) {
-                    File testDir = new File(element);
-                    // we already warned about non-existing directory here
-                    File testFile = new File(element, filename);
-                    if(testFile.isFile()) {
-                        getProject().log(this, "  XFOUND: DYLD_LIBRARY_PATH directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
-                        found++;
-                    }
-                }
-            } else {
-                getProject().log(this, " WARNING: DYLD_LIBRARY_PATH environment variable is not set; this is usually needed to allow 'generator' and 'juic' executables to run during the build", Project.MSG_INFO);
-            }
+            miscChecks("DYLD_LIBRARY_PATH");
         }
 
         // Setup some properties to be silently set to an empty string for safe ANT substitution
@@ -1366,7 +620,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         return versionFound;
     }
 
-    private boolean decideGeneratorPreProc(String osCpu) {
+    private boolean decideGeneratorPreProc() {
         List<String> generatorPreProcStageOneList = new ArrayList<String>();
         List<String> generatorPreProcStageTwoList = new ArrayList<String>();
 
@@ -1821,6 +1075,723 @@ public class InitializeBuildTask extends AbstractInitializeTask {
                 return rv;
         }
         return rv;
+    }
+
+    private void solveSeparator(String separatorType, String separatorValue) {
+        String sourceValue;
+        String sep = AntUtil.getPropertyAsString(propertyHelper, separatorType);
+        if(sep == null) {
+            sep = separatorValue;
+            sourceValue = " (auto-detect)";
+        } else {
+            sourceValue = null;
+        }
+        mySetProperty(-1, separatorType, sourceValue, sep, false);
+    }
+
+    private File solveJambiDirectory() {
+        File jambiDirectoryAbspath = null;
+        String sourceValue = null;
+        String value = AntUtil.getPropertyAsString(propertyHelper, Constants.DIRECTORY);
+        File dir = null;
+        if(value == null) {
+            // If this is not set we can auto-configure from $JAMBIDIR
+            String JAMBIDIR = System.getenv("JAMBIDIR");
+            if(JAMBIDIR != null)
+                getProject().log(this, "JAMBIDIR is set: " + prettyValue(JAMBIDIR), Project.MSG_INFO);
+            dir = new File(JAMBIDIR);
+            sourceValue = " (from env var: JAMBIDIR)";
+        } else {
+            dir = new File(value);
+        }
+        if(dir.isDirectory() == false) {
+            sourceValue = " (WARNING: path does not exist or is not a directory)";
+        } else {
+            jambiDirectoryAbspath = ResolvePathTask.resolve(dir);
+        }
+        mySetProperty(-1, Constants.DIRECTORY, sourceValue, value, false);
+
+        return jambiDirectoryAbspath;
+    }
+
+    private void solveVerbosity(File jambiDirectoryAbspath) {
+        int verbose = 0;  // quiet
+        String sourceValue = null;
+        String value = AntUtil.getPropertyAsString(propertyHelper, Constants.DIRECTORY_ABSPATH);
+        if(value != null) {
+            if(jambiDirectoryAbspath != null) {
+                String path = jambiDirectoryAbspath.getAbsolutePath();
+                if(value.equals(path) == false) {
+                    sourceValue = " (WARNING MISMATCH: " + path + ")";
+                    verbose = -1;  // noisy (because of WARNING)
+                }
+            }
+        } else if(jambiDirectoryAbspath != null) {
+            value = jambiDirectoryAbspath.getAbsolutePath();
+            verbose = -1;  // noisy (because we set it)
+        }
+        mySetProperty(verbose, Constants.DIRECTORY_ABSPATH, null, value, false);
+    }
+
+    private void solveEmits(String QTDIR) {
+        String sourceValue = null;
+
+        final String[] emitA = {
+                Constants.BINDIR,
+                Constants.LIBDIR,
+                Constants.INCLUDEDIR,
+                Constants.PLUGINSDIR
+        };
+        for(String emit : emitA) {
+            sourceValue = null;
+            String value = AntUtil.getPropertyAsString(propertyHelper, emit);
+            File dir = null;
+            if(value != null) {
+                dir = new File(value);
+            } else if(value == null && QTDIR != null) {
+                dir = resolveDirectoryViaQTDIR(QTDIR, emit);
+                if(dir != null) {
+                    value = dir.getAbsolutePath();
+                    sourceValue = " (from env var: QTDIR)";
+                }
+            }
+            if(dir != null) {
+                if(dir.isDirectory() == false)
+                    sourceValue = " (WARNING: path does not exist or is not a directory)";
+            }
+            mySetProperty(-1, emit, sourceValue, value, false);
+        }
+
+        final String[] emitB = {
+                Constants.QTJAMBI_PHONON_INCLUDEDIR,
+                Constants.QTJAMBI_PHONON_LIBDIR,
+                Constants.QTJAMBI_PHONON_PLUGINSDIR
+        };
+        for(String emit : emitB) {
+            sourceValue = null;
+            String value = AntUtil.getPropertyAsString(propertyHelper, emit);
+            File dir = null;
+            if(value != null) {
+                dir = new File(value);
+            } else if(value == null) {
+                String x = null;
+                if(Constants.QTJAMBI_PHONON_INCLUDEDIR.equals(emit))
+                    x = Constants.INCLUDEDIR;
+                else if(Constants.QTJAMBI_PHONON_LIBDIR.equals(emit))
+                    x = Constants.LIBDIR;
+                else if(Constants.QTJAMBI_PHONON_PLUGINSDIR.equals(emit))
+                    x = Constants.PLUGINSDIR;
+                if(x != null)
+                    value = AntUtil.getPropertyAsString(propertyHelper, x);
+                if(value != null)
+                    sourceValue = " (inherited from ${" + x + "})";
+            }
+            if(dir != null) {
+                if(dir.isDirectory() == false)
+                    sourceValue = " (WARNING: path does not exist or is not a directory)";
+            }
+            mySetProperty(-1, emit, sourceValue, value, false);
+        }
+    }
+
+    private void solveKdePhonon() {
+        String sourceValue = null;
+        // FIXME: we could auto-configure this instead of setenv.xml doing that
+        String value = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_PHONON_KDEPHONON_PATH);
+        if(value == null)
+            value = "";   // set this empty-string default here
+        mySetProperty(-1, Constants.QTJAMBI_PHONON_KDEPHONON_PATH, sourceValue, value, false);
+    }
+
+    private void solveQmake() {
+        String sourceValue = null;
+        String qtQmake = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE);
+        String detectedQmake = QMakeTask.executableName();
+        if(qtQmake == null) {
+            qtQmake = detectedQmake;
+            sourceValue = " (default)";
+        } else if(qtQmake.equals(detectedQmake) == false) {
+            sourceValue = " (WARNING expected " + detectedQmake + ")";
+        }
+        mySetProperty(-1, Constants.QMAKE, sourceValue, qtQmake, false);
+
+        String detectedQmakeAbsolutePath = QMakeTask.resolveExecutableAbsolutePath(getProject(), qtQmake);
+
+        String qtQmakeAbspath = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE_ABSPATH);
+        if(qtQmakeAbspath == null) {
+            qtQmakeAbspath = detectedQmakeAbsolutePath;
+            if(qtQmakeAbspath != null)
+                sourceValue = " (auto-detected)";
+            else
+                sourceValue = " (WARNING not found)";
+        } else {
+            if(qtQmakeAbspath.equals(detectedQmakeAbsolutePath) == false)
+                sourceValue = " (WARNING detected at " + detectedQmakeAbsolutePath + ")";
+        }
+        mySetProperty(-1, Constants.QMAKE_ABSPATH, sourceValue, qtQmakeAbspath, false);
+    }
+
+    private String solveOsName() {
+        String sourceValue = null;
+        String detectedOsname = OSInfo.osArchName();
+        String osname = AntUtil.getPropertyAsString(propertyHelper, Constants.OSNAME);
+        if(osname == null) {
+            sourceValue = " (auto-detected)";
+            osname = detectedOsname;
+        } else {
+            if("help".equals(osname) || "?".equals(osname)) {
+                OSInfo.OS[] values = OSInfo.OS.values();
+                String s = Arrays.toString(values);
+                throw new BuildException(Constants.OSNAME + " valid values: " + s);
+            }
+            sourceValue = " (detected: " + detectedOsname + ")";
+        }
+        mySetProperty(-1, Constants.OSNAME, sourceValue, osname, false);  // report value
+
+        return osname;
+    }
+
+    private Compiler solveCompiler(FindCompiler finder) {
+        String sourceValue = null;
+        Compiler compiler;
+        Compiler detectedCompiler = finder.decideCompiler();
+        String compilerValue = AntUtil.getPropertyAsString(propertyHelper, Constants.COMPILER);
+        if(compilerValue == null) {
+            sourceValue = " (available compilers: " + finder.getAvailableCompilers() + "; auto-detected)";
+            compilerValue = detectedCompiler.toString();
+        } else {
+            if("help".equals(compilerValue) || "?".equals(compilerValue)) {
+                Compiler[] values = Compiler.values();
+                String s = Arrays.toString(values);
+                throw new BuildException(Constants.COMPILER + " valid values: " + s);
+            }
+            sourceValue = " (available compilers: " + finder.getAvailableCompilers() + "; detected: " + detectedCompiler + ")";
+        }
+        mySetProperty(-1, Constants.COMPILER, sourceValue, compilerValue, false);  // report value
+        compiler = Compiler.resolve(compilerValue);
+
+        return compiler;
+    }
+
+    private void solveVSRedistDir() {
+        String sourceValue = null;
+        String vsredistdirValue = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR);
+        if(vsredistdirValue != null) {
+            sourceValue = null; // " (environment variable $" + "VSREDISTDIR" + ")"; // not strictly true it could be set by ant cmdline
+            mySetProperty(-1, Constants.VSREDISTDIR_PACKAGE, sourceValue, vsredistdirValue, false);  // report value
+
+            String vsredistdirPackageValue = AntUtil.getPropertyAsString(propertyHelper, Constants.VSREDISTDIR_PACKAGE);
+            if(vsredistdirPackageValue == null) {
+                sourceValue = " (default value; feature need explicit enabling)";
+                vsredistdirPackageValue = "false";
+            } else {
+                sourceValue = null;
+            }
+            mySetProperty(-1, Constants.VSREDISTDIR_PACKAGE, sourceValue, vsredistdirPackageValue, false);  // report value
+        } else {
+            mySetProperty(0, Constants.VSREDISTDIR_PACKAGE, null, "false", false);  // silently set false
+        }
+    }
+
+    private void solvePlatformInformation(FindCompiler finder, String osname) {
+
+        String CROSS_COMPILE = System.getenv("CROSS_COMPILE");   // used here
+        if(CROSS_COMPILE != null)
+            getProject().log(this, "CROSS_COMPILE is set: " + prettyValue(CROSS_COMPILE), Project.MSG_INFO);
+
+        if(OSInfo.isMacOS())
+            mySetProperty(0, Constants.QTJAMBI_CONFIG_ISMACOSX, " (set by init)", "true", false);
+
+        String wantedSdk = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_MACOSX_MAC_SDK);
+        detectMacosxSdk(wantedSdk);
+
+        String s = null;
+        if(OSInfo.isLinux())
+            s = OSInfo.K_LINUX;
+        else if(OSInfo.isWindows())
+            s = OSInfo.K_WINDOWS;
+        else if(OSInfo.isMacOS())
+            s = OSInfo.K_MACOSX;
+        else if(OSInfo.isFreeBSD())
+            s = OSInfo.K_FREEBSD;
+        else if(OSInfo.isSolaris())
+            s = OSInfo.K_SUNOS;
+        if(s != null)
+            AntUtil.setNewProperty(propertyHelper, Constants.OSPLATFORM, s);
+
+        s = null;
+
+        if(true) { // FIXME lookup if verbose is set
+            Properties props = System.getProperties();
+            Enumeration e = props.propertyNames();
+            while(e.hasMoreElements()) {
+                String k = (String) e.nextElement();
+                Object v = System.getProperty(k);
+                getProject().log("systemProperty[" + k + "] = " + v, Project.MSG_VERBOSE);
+            }
+        }
+
+        javaOsArch = System.getProperty("os.arch"); // arm|
+        if("arm".equals(javaOsArch)) {
+            // FIXME get LE or BE
+            s = "arm";
+        } else {
+            if(osname.endsWith("64"))
+                s = "x86_64";
+            else
+                s = "i386";
+        }
+        if(s != null)
+            AntUtil.setNewProperty(propertyHelper, Constants.OSCPU, s);
+        osCpu = s;
+
+        finder.checkCompilerDetails();
+    }
+
+    private String solveToolsDir(String toolsDirKey, String dirKey) {
+        String sourceValue = null;
+        String toolsDir = AntUtil.getPropertyAsString(propertyHelper, toolsDirKey);
+        if(toolsDir == null) {
+            String dir = AntUtil.getPropertyAsString(propertyHelper, dirKey);
+            if(dir != null) {
+                sourceValue = " (inherited from ${" + dirKey + "})";
+                toolsDir = dir;
+            }
+        }
+        mySetProperty(-1, toolsDirKey, sourceValue, toolsDir, false);  // report value
+
+        return toolsDir;
+    }
+
+    private void solveToolsQmake() {
+        String sourceValue = null;
+        String toolsQmake = solveToolsDir(Constants.TOOLS_QMAKE, Constants.QMAKE);
+
+        // This method needs to look in Constants.TOOLS_BINDIR not Constants.BINDIR
+        String detectedQmakeAbsolutePath = QMakeTask.resolveExecutableAbsolutePath(getProject(), toolsQmake, Constants.TOOLS_BINDIR);
+
+        String toolsQmakeAbspath = AntUtil.getPropertyAsString(propertyHelper, Constants.TOOLS_QMAKE_ABSPATH);
+        if(toolsQmakeAbspath == null) {
+            toolsQmakeAbspath = detectedQmakeAbsolutePath;
+            if(toolsQmakeAbspath != null)
+                sourceValue = " (auto-detected)";
+            else
+                sourceValue = " (WARNING not found)";
+        } else {
+            if(toolsQmakeAbspath.equals(detectedQmakeAbsolutePath) == false)
+                sourceValue = " (WARNING detected at " + detectedQmakeAbsolutePath + ")";
+        }
+        mySetProperty(-1, Constants.TOOLS_QMAKE_ABSPATH, sourceValue, toolsQmakeAbspath, false);
+    }
+
+    private void solveQtVersion() {
+        if(!decideQtVersion())
+            throw new BuildException("Unable to determine Qt version, try editing: " + pathVersionPropertiesTemplate);
+        String s = String.valueOf(qtVersion);
+
+        getProject().log(this, Constants.QT_VERSION + " is " + s + qtVersionSource, Project.MSG_VERBOSE);
+        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION, s);
+        AntUtil.setNewProperty(propertyHelper, Constants.VERSION, s); // this won't overwrite existing value
+
+        s = String.valueOf(qtMajorVersion);
+        getProject().log(this, Constants.QT_VERSION_MAJOR + " is " + s, Project.MSG_VERBOSE);
+        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MAJOR, s);
+        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MAJOR_NEXT, String.valueOf(qtMajorVersion + 1));
+        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MINOR,      String.valueOf(qtMinorVersion));
+        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_MINOR_NEXT, String.valueOf(qtMinorVersion + 1));
+        AntUtil.setNewProperty(propertyHelper, Constants.QT_VERSION_PATCHLEVEL, String.valueOf(qtPatchlevelVersion));
+
+        // suffix / bundle version
+
+        versionSuffix = AntUtil.getPropertyAsString(propertyHelper, Constants.SUFFIX_VERSION);
+        mySetProperty(-1, Constants.SUFFIX_VERSION, null, null, false);  // report
+
+        String canonVersionSuffix;
+        if(versionSuffix != null)
+            canonVersionSuffix = versionSuffix;
+        else
+            canonVersionSuffix = "";
+        String bundleVersionMode = AntUtil.getPropertyAsString(propertyHelper, Constants.BUNDLE_VERSION_MODE);
+        if(bundleVersionMode != null) {
+            if(bundleVersionMode.equals("auto-suffix-date")) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                s = qtVersion + "." + sdf.format(new Date()) + canonVersionSuffix;
+            }
+        } else {
+            s = qtVersion + canonVersionSuffix;
+        }
+        mySetProperty(-1, Constants.BUNDLE_VERSION, null, s, false);
+    }
+
+    private void solvePackageSuffix() {
+        // Moved until after auto-detect of configuration is complete
+        String s = null;
+        if(Constants.CONFIG_RELEASE.equals(getConfiguration())) {
+            s = "";   // empty
+        } else if(Constants.CONFIG_DEBUG.equals(getConfiguration())) {
+            s = "-debug";
+        } else if(Constants.CONFIG_TEST.equals(getConfiguration())) {
+            s = "-test";
+        } else {
+            s = "";   // empty (debug_and_release)
+        }
+
+        if(s != null) {
+            AntUtil.setNewProperty(propertyHelper, Constants.CONFIGURATION_DASH, s);
+        }
+
+        s = null;
+        if(Constants.CONFIG_RELEASE.equals(getConfiguration())) {
+            s = "";   // empty
+        } else if(Constants.CONFIG_DEBUG.equals(getConfiguration())) {
+            s = ".debug";
+        } else if(Constants.CONFIG_TEST.equals(getConfiguration())) {
+            s = ".test";
+        } else {
+            s = "";   // empty (debug_and_release)
+        }
+
+        if(s != null) {
+            AntUtil.setNewProperty(propertyHelper, Constants.CONFIGURATION_OSGI, s);
+        }
+    }
+
+    private void solveDebugValues() {
+        String toolsSourceValue = null;
+        String toolsValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_TOOLS);
+        String originalToolsValue = toolsValue;  // string without any appending
+        if(toolsValue == null) {
+            if(isConfigurationDebug() || isConfigurationTest()) {
+                toolsValue = Boolean.TRUE.toString();
+            } else {
+                toolsValue = Boolean.FALSE.toString();
+            }
+            originalToolsValue = toolsValue;
+            toolsSourceValue = " (auto-configured based on ${" + Constants.CONFIGURATION + "})";
+        }
+
+        String reftypeSourceValue = null;
+        // This is set to true||false from properties
+        String reftypeValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_REFTYPE);
+        // TODO: Setting this has the meaning that we will try to build it into the binaries
+        //  this relies on a JDK6+ being present at build and runtime.  If this is set 'true' we
+        //  would ideally like to check and enforce the setting, if auto do a detection of JDK version.
+        if(reftypeValue == null) {
+            // This option only makes sense with QTJAMBI_DEBUG_TOOLS=true and is inert otherwise.
+            if(Boolean.TRUE.toString().compareToIgnoreCase(originalToolsValue) == 0) {
+                reftypeValue = Boolean.TRUE.toString();
+                toolsValue += " QTJAMBI_DEBUG_REFTYPE";
+            } else {
+                reftypeValue = Boolean.FALSE.toString();
+            }
+            reftypeSourceValue = " (auto-configured based on ${" + Constants.QTJAMBI_DEBUG_TOOLS + "})";
+        }
+
+        String localrefCleanupSourceValue = null;
+        // This is set to true||false from properties
+        String localrefCleanupValue = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_DEBUG_LOCALREF_CLEANUP);
+        if(localrefCleanupValue == null) {
+            // This option only makes sense with QTJAMBI_DEBUG_TOOLS=true and is inert otherwise.
+            if(Boolean.TRUE.toString().compareToIgnoreCase(originalToolsValue) == 0) {
+                localrefCleanupValue = Boolean.TRUE.toString();
+                toolsValue += " QTJAMBI_DEBUG_LOCALREF_CLEANUP";
+            } else {
+                localrefCleanupValue = Boolean.FALSE.toString();
+            }
+            localrefCleanupSourceValue = " (auto-configured based on ${" + Constants.QTJAMBI_DEBUG_TOOLS + "})";
+        }
+
+        mySetProperty(-1, Constants.QTJAMBI_DEBUG_TOOLS, toolsSourceValue, toolsValue, false);
+        mySetProperty(-1, Constants.QTJAMBI_DEBUG_REFTYPE, reftypeSourceValue, reftypeValue, false);
+        mySetProperty(-1, Constants.QTJAMBI_DEBUG_LOCALREF_CLEANUP, localrefCleanupSourceValue, localrefCleanupValue, false);
+    }
+
+    private void solveQmakeTarget() {
+        String sourceValue = null;
+        String qmakeTargetDefault = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE_TARGET_DEFAULT);
+        if(qmakeTargetDefault == null) {
+            // We only need to override the default when the Qt SDK is debug_and_release but
+            //  we are only building the project for one kind.
+//              if(Constants.CONFIG_RELEASE.equals(configuration))
+//                  qmakeTargetDefault = configuration;
+//              else if(Constants.CONFIG_DEBUG.equals(configuration))
+//                  qmakeTargetDefault = configuration;
+            if(Constants.CONFIG_DEBUG_AND_RELEASE.equals(getConfiguration()))
+                qmakeTargetDefault = "all";
+            else
+                qmakeTargetDefault = "";  // must be set to empty string (avoid ant subst ${qmake.target.default})
+            // FIXME: We want ${qtjambi.configuration} to set from QTDIR build kind *.prl data
+//                sourceValue = " (set from ${qtjambi.configuration})";
+        }
+        mySetProperty(-1, Constants.QMAKE_TARGET_DEFAULT, sourceValue, qmakeTargetDefault, false);  // report value
+    }
+
+    private void solveSonameVersion() {
+        String sonameVersionMajor = Constants.DEFAULT_QTJAMBI_SONAME_VERSION_MAJOR;
+        String sonameSource = " (set by init)";
+        if(OSInfo.isWindows()) {   // skip setting it by default, only do for Linux/MacOSX/Unix set to soname major
+            sonameVersionMajor = "";  // got to set it empty otherwise we get unsubstituted ${foo} are value
+            sonameSource = " (set blank by init)";
+        }
+        mySetProperty(-1, Constants.QTJAMBI_SONAME_VERSION_MAJOR, sonameSource, sonameVersionMajor, false);
+    }
+
+    private void solveCacheKey() {
+        String cachekeyVersion = AntUtil.getPropertyAsString(propertyHelper, Constants.CACHEKEY);
+        String cachekeyVersionSource = " (already set)";
+        if(cachekeyVersion == null) {   // auto-configure
+            cachekeyVersionSource = " (set by init)";
+            // ${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}
+            cachekeyVersion = propertyHelper.replaceProperties(null, "${qtjambi.compiler}${qtjambi.configuration.dash}-${DSTAMP}-${TSTAMP}", null);
+        }
+        mySetProperty(-1, Constants.CACHEKEY, cachekeyVersionSource, cachekeyVersion, false);
+    }
+
+    private void solveMacOSX() {
+        String qtjambiQtLibdir = AntUtil.getPropertyAsString(propertyHelper, Constants.LIBDIR);
+        if(qtjambiQtLibdir != null) {
+            String sourceValue = null;
+//            s = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR);
+//            if(s == null) {
+            String s = doesQtLibExistDir(qtjambiQtLibdir, "Resources/qt_menu.nib");
+            if(s == null)
+                s = doesQtLibExistDir(qtjambiQtLibdir, "qt_menu.nib");
+            //if(s == null)
+            //    s= = doesQtLibExistDir(qtjambiQtLibdir, "src/gui/mac/qt_menu.nib");
+            // FIXME: auto-detect, directory from source, directory from QtSDK on MacOSX, directory from framework on MacOSX
+
+            if(s != null)
+                sourceValue = " (auto-detected)";
+//            }
+            if(s == null) {
+                if(OSInfo.isMacOS() == false)
+                    sourceValue = " (expected for non-MacOSX platform)";
+                else
+                    sourceValue = " (WARNING: you should resolve this for targetting MacOSX)";
+                s = "";
+            }
+            mySetProperty(-1, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR, sourceValue, s, false);
+        }
+        if(AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR) == null)
+            AntUtil.setProperty(propertyHelper, Constants.QTJAMBI_MACOSX_QTMENUNIB_DIR, "", false);
+    }
+
+    private void solveqreal() {
+        // The 'qreal' Qt C++ type is 'float' on ARM platforms and 'double' on all others
+        String qrealtype = "double";
+        String qrealSource = " (the default)";
+        if("arm".equals(javaOsArch)) {
+            qrealtype = "float";
+            qrealSource = " (${" + Constants.OSCPU + "} is \"arm\")";
+        }
+        mySetProperty(-1, Constants.QTJAMBI_QREALTYPE, qrealSource, qrealtype, false);
+    }
+
+    private void solveQtLibraries() {
+        detectQtDsoExistAndSetProperty(Constants.CLUCENE, "QtCLucene", String.valueOf(qtMajorVersion), null);
+        detectQtDsoExistAndSetProperty(Constants.CORE, "QtCore", String.valueOf(qtMajorVersion), null);
+        detectQtDsoExistAndSetProperty(Constants.DBUS, "QtDBus", String.valueOf(qtMajorVersion), "dbus");
+        detectQtDsoExistAndSetProperty(Constants.DECLARATIVE, "QtDeclarative", String.valueOf(qtMajorVersion), "declarative");
+        detectQtDsoExistAndSetProperty(Constants.DESIGNER, "QtDesigner", String.valueOf(qtMajorVersion), "designer");
+        detectQtDsoExistAndSetProperty(Constants.DESIGNERCOMPONENTS, "QtDesignerComponents", String.valueOf(qtMajorVersion), null);
+        detectQtDsoExistAndSetProperty(Constants.GUI, "QtGui", String.valueOf(qtMajorVersion), "gui");
+        detectQtDsoExistAndSetProperty(Constants.HELP, "QtHelp", String.valueOf(qtMajorVersion), "help");
+        detectQtDsoExistAndSetProperty(Constants.MULTIMEDIA, "QtMultimedia", String.valueOf(qtMajorVersion), "multimedia");
+        detectQtDsoExistAndSetProperty(Constants.NETWORK, "QtNetwork", String.valueOf(qtMajorVersion), "network");
+        detectQtDsoExistAndSetProperty(Constants.OPENGL, "QtOpenGL", String.valueOf(qtMajorVersion), "opengl");
+        String phononLibDir = AntUtil.getPropertyAsString(propertyHelper, Constants.QTJAMBI_PHONON_LIBDIR);  // maybe null or valid
+        String qtDetectPhonon = detectQtDsoExistAndSetProperty(Constants.PHONON, "phonon", String.valueOf(qtMajorVersion), "phonon", phononLibDir);
+        detectQtDsoExistAndSetProperty(Constants.SCRIPT, "QtScript", String.valueOf(qtMajorVersion), "script");
+        detectQtDsoExistAndSetProperty(Constants.SCRIPTTOOLS, "QtScriptTools", String.valueOf(qtMajorVersion), "scripttools");
+        detectQtDsoExistAndSetProperty(Constants.SQL, "QtSql", String.valueOf(qtMajorVersion), "sql");
+        detectQtDsoExistAndSetProperty(Constants.SVG, "QtSvg", String.valueOf(qtMajorVersion), "svg");
+        detectQtDsoExistAndSetProperty(Constants.TEST, "QtTest", String.valueOf(qtMajorVersion), "qtestlib");
+
+        String qtDetectWebkit = detectQtDsoExistAndSetProperty(Constants.WEBKIT, "QtWebKit", String.valueOf(qtMajorVersion), "webkit");
+        // Not sure why this is a problem "ldd libQtWebKit.so.4.7.4" has no dependency on libphonon for me,
+        //  if you have headers and DSOs for WebKit then QtJambi should build the support.
+        if(qtDetectWebkit != null && qtDetectPhonon == null)
+            getProject().log(this, "WARNING: " + Constants.WEBKIT + " is FOUND, but " + Constants.PHONON + " is NOT FOUND", Project.MSG_VERBOSE);
+
+        detectQtDsoExistAndSetProperty(Constants.XML, "QtXml", String.valueOf(qtMajorVersion), "xml");
+
+        detectQtDsoExistAndSetProperty(Constants.XMLPATTERNS, "QtXmlPatterns", String.valueOf(qtMajorVersion), "xmlpatterns");
+
+    }
+
+    private void solveQtPlugins() {
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_ACCESSIBLE_QTACCESSIBLEWIDGETS, "accessible", "qtaccessiblewidgets", null, null, null);
+
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_CONNMANBEARER,    "bearer", "qconnmanbearer", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_GENERICBEARER,    "bearer", "qgenericbearer", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_NATIVEWIFIBEARER, "bearer", "qnativewifibearer", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_BEARER_NMBEARER,         "bearer", "qnmbearer", null, null, null);
+
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_CNCODECS, "codecs", "qcncodecs", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_JPCODECS, "codecs", "qjpcodecs", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_KRCODECS, "codecs", "qkrcodecs", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_CODECS_TWCODECS, "codecs", "qtwcodecs", null, null, null);
+
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_GRAPHICSSYSTEMS_GLGRAPHICSSYSTEM,    "graphicssystems", "qglgraphicssystem", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_GRAPHICSSYSTEMS_TRACEGRAPHICSSYSTEM, "graphicssystems", "qtracegraphicssystem", null, null, null);
+
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_ICONENGINES_SVGICON, "iconengines", "qsvgicon", null, null, null);
+
+        // These are only detecting if the plugins exist for these modules,
+        // lack of a plugins does not necessarily mean Qt doesn't have support
+        // since the implementation might be statically linked in.
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_GIF,  "imageformats",  "qgif", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_ICO,  "imageformats",  "qico", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_JPEG, "imageformats", "qjpeg", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_MNG,  "imageformats",  "qmng", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_PNG,  "imageformats",  "qpng", null, "probably a built-in", null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_SVG,  "imageformats",  "qsvg", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_IMAGEFORMATS_TIFF, "imageformats", "qtiff", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_INPUTMETHODS_IMSW_MULTI, "inputmethods",  "qimsw-multi", null, null, null);
+
+        // We now just do plugin detection and emit what we see, regardless of platform
+        String sourceValueIfNull;
+
+        sourceValueIfNull = null;
+        if(OSInfo.isWindows() == false)
+            sourceValueIfNull = "expected for non-Windows platform";
+        detectQtPluginExistAndSetProperty(Constants.PHONON_DS9, "phonon_backend", "phonon_ds9", null, sourceValueIfNull, "auto-detected");
+
+        if(OSInfo.isLinux() == false)
+            sourceValueIfNull = "expected for non-Linux platform";  // also sunos/freebsd/ete...
+        decideQtPluginsPhononBackendPhononGstreamer(Constants.PHONON_GSTREAMER, "phonon_backend", "phonon_gstreamer", sourceValueIfNull);
+
+        sourceValueIfNull = null;
+        if(OSInfo.isMacOS() == false)
+            sourceValueIfNull = "expected for non-MacOSX platform";
+        detectQtPluginExistAndSetProperty(Constants.PHONON_QT7, "phonon_backend", "phonon_qt7", null, sourceValueIfNull, "auto-detected");
+
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_QMLTOOLING_QMLDBG_TCP,     "qmltooling",   "qmldbg_tcp", null, null, null);
+
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SCRIPT_QTSCRIPTDBUS,           "script", "qtscriptdbus", null, null, null);
+
+        // FIXME: Detect the case when this module was compiled into QtSql
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLITE,   "sqldrivers",   "qsqlite", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLITE2,  "sqldrivers",  "qsqlite2", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLMYSQL, "sqldrivers", "qsqlmysql", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLODBC, "sqldrivers", "qsqlodbc", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLPSQL, "sqldrivers", "qsqlpsql", null, null, null);
+        detectQtPluginExistAndSetProperty(Constants.PLUGINS_SQLDRIVERS_SQLTDS, "sqldrivers", "qsqltds", null, null, null);
+    }
+
+    private void solveReleasePackaging(Compiler compiler, String QTDIR) {
+        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBSTDC___6,     decideQtBinDso(Constants.PACKAGING_DSO_LIBSTDC___6,     "libstdc++-6", null, null));
+        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_DW2_1,  "libgcc_s_dw2-1", null, null));
+        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, decideQtBinDso(Constants.PACKAGING_DSO_LIBGCC_S_SJLJ_1, "libgcc_s_sjlj-1", null, null));
+        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_MINGWM10,        decideQtBinDso(Constants.PACKAGING_DSO_MINGWM10,        "mingwm10", null, null));
+
+        String packagingDsoLibeay32 = decideQtBinDso(Constants.PACKAGING_DSO_LIBEAY32, "libeay32", null, false);
+        mySetProperty(-1, Constants.PACKAGING_DSO_LIBEAY32, null, packagingDsoLibeay32, false);
+
+        String packagingDsoLibssl32 = decideQtBinDso(Constants.PACKAGING_DSO_LIBSSL32, "libssl32", null, false);
+        String packagingDsoSsleay32 = decideQtBinDso(Constants.PACKAGING_DSO_SSLEAY32, "ssleay32", null, false);
+        // When building QtJambi against the official Nokia Qt SDK they appear to provide duplicate
+        // DLLs for the two naming variants libssl32.dll ssleay32.dll so we need to resolve this and
+        // omit one.
+        String packagingDsoLibssl32Message = "";
+        String packagingDsoSsleay32Message = "";
+        // "true" or a path, also means true.  Only "false" means false.
+        if(("false".equals(packagingDsoLibssl32) == false && packagingDsoLibssl32 != null) && ("false".equals(packagingDsoSsleay32) == false && packagingDsoSsleay32 != null)) {
+            // FIXME: Compare the files are actually the same
+            if(compiler == Compiler.GCC || compiler == Compiler.OldGCC || compiler == Compiler.MinGW || compiler == Compiler.MinGW_W64) {
+                packagingDsoSsleay32Message = " (was " + packagingDsoSsleay32 + "; auto-inhibited)";
+                packagingDsoSsleay32 = "false";    // favour libssl32.dll
+            } else {
+                packagingDsoLibssl32Message = " (was " + packagingDsoLibssl32 + "; auto-inhibited)";
+                packagingDsoLibssl32 = "false";    // favour ssleay32.dll
+            }
+        }
+        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBSSL32, packagingDsoLibssl32);
+        if((packagingDsoLibssl32Message.length() > 0 || ("false".equals(packagingDsoLibssl32) == false) && packagingDsoLibssl32 != null))
+            getProject().log(this, Constants.PACKAGING_DSO_LIBSSL32 + ": " + packagingDsoLibssl32 + packagingDsoLibssl32Message, Project.MSG_INFO);
+
+        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_SSLEAY32, packagingDsoSsleay32);
+        if((packagingDsoSsleay32Message.length() > 0 || ("false".equals(packagingDsoSsleay32) == false) && packagingDsoSsleay32 != null))
+            getProject().log(this, Constants.PACKAGING_DSO_SSLEAY32 + ": " + packagingDsoSsleay32 + packagingDsoSsleay32Message, Project.MSG_INFO);
+
+        if(OSInfo.isWindows()) {
+            String packagingDsoZlib1 = decideQtBinDso(Constants.PACKAGING_DSO_ZLIB1, "zlib1", null, false);
+            mySetProperty(-1, Constants.PACKAGING_DSO_ZLIB1, null, packagingDsoZlib1, false);
+        } else {
+            // If the lib directory contains "libz.so.1" or "libssl.so" or "libcrypto.so.1.0.0"
+            String sourceValue = null;
+            String packagingDsoLibssl = decideQtBinDso(Constants.PACKAGING_DSO_LIBSSL, "ssl", new String[] { null, "1", "0" }, false);
+            if(packagingDsoLibssl != null && QTDIR != null && packagingDsoLibssl.startsWith(QTDIR) == false) {
+                sourceValue = " (detected: " + packagingDsoLibssl + "; but inhibited as not inside QTDIR)";
+                packagingDsoLibssl = null;
+            }
+            mySetProperty(-1, Constants.PACKAGING_DSO_LIBSSL, sourceValue, packagingDsoLibssl, false);
+
+            // FIXME: Implement file globs and reverse sort
+            sourceValue = null;
+            String packagingDsoLibcrypto = decideQtBinDso(Constants.PACKAGING_DSO_LIBCRYPTO, "crypto", new String[] { "1.0.0h", "1.0.0g", "1.0.0", "0.0.0", null, "10" }, false);
+            if(packagingDsoLibcrypto != null && QTDIR != null && packagingDsoLibcrypto.startsWith(QTDIR) == false) {
+                sourceValue = " (detected: " + packagingDsoLibcrypto + "; but inhibited as not inside QTDIR)";
+                packagingDsoLibcrypto = null;
+            }
+            mySetProperty(-1, Constants.PACKAGING_DSO_LIBCRYPTO, sourceValue, packagingDsoLibcrypto, false);
+
+            sourceValue = null;
+            String packagingDsoLibz = decideQtBinDso(Constants.PACKAGING_DSO_LIBZ, "z", new String[] { "1", null }, false);
+            if(packagingDsoLibz != null && QTDIR != null && packagingDsoLibz.startsWith(QTDIR) == false) {
+                sourceValue = " (detected: " + packagingDsoLibz + "; but inhibited as not inside QTDIR)";
+                packagingDsoLibz = null;
+            }
+            mySetProperty(-1, Constants.PACKAGING_DSO_LIBZ, sourceValue, packagingDsoLibz, false);
+        }
+
+        // FIXME: On Macosx when we build and have qtjambi.dbus==true we should WARN when we can not locate libdbus-1.*.dylib
+        // FIXME: On Macosx we should also search /usr/local/lib
+        String packagingDsoLibdbus = decideQtBinDso(Constants.PACKAGING_DSO_LIBDBUS, "dbus-1", new String[] { "3", "2", null }, null);
+        AntUtil.setNewProperty(propertyHelper, Constants.PACKAGING_DSO_LIBDBUS, packagingDsoLibdbus);
+    }
+
+    private void miscChecks(String envKey) {
+        String systemPath = System.getenv(envKey);
+        getProject().log(this, envKey + " is set: " + ((systemPath == null) ? "<notset>" : systemPath), Project.MSG_INFO);
+
+        if(systemPath != null) {
+            String[] sA = systemPath.split(File.pathSeparator);  // should regex escape it
+            String filename = LibraryEntry.formatQtName("QtCore", isConfigurationDebug(), String.valueOf(qtMajorVersion));
+            int found = 0;
+            for(String element : sA) {
+                File testDir = new File(element);
+                if(testDir.isDirectory() == false)
+                    getProject().log(this, " WARNING: " + envKey + " directory does not exit: " + element, Project.MSG_INFO);
+                File testFile = new File(element, filename);
+                if(testFile.isFile()) {
+                    getProject().log(this, "   FOUND: " + envKey + " directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
+                    found++;
+                }
+            }
+
+            if(found == 0)  // Maybe we should check to see if (QTDIR != null) before warning
+                getProject().log(this, " WARNING: " + envKey + " environment variable is set, but does not contain a " +
+                        "valid location for libQtCore.so.*; this is usually needed to allow 'generator' and 'juic' " +
+                        "executables to run during the build", Project.MSG_INFO);
+
+            // FIXME: Refactor this duplicate code later (we look for !debug here but don't WARNING is we dont find it)
+            filename = LibraryEntry.formatQtName("QtCore", !isConfigurationDebug(), String.valueOf(qtMajorVersion));
+            found = 0;
+            for(String element : sA) {
+                File testDir = new File(element);
+                // we already warned about non-existing directory here
+                File testFile = new File(element, filename);
+                if(testFile.isFile()) {
+                    getProject().log(this, "  XFOUND: " + envKey + " directory contains QtCore: " + testFile.getAbsolutePath(), Project.MSG_INFO);
+                    found++;
+                }
+            }
+
+        } else {   // Maybe we should check to see if (QTDIR != null) before warning
+            getProject().log(this, " WARNING: " + envKey + " environment variable is not set; this is usually needed to " +
+                    "allow 'generator' and 'juic' executables to run during the build", Project.MSG_INFO);
+        }
     }
 
 }
