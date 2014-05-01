@@ -46,6 +46,9 @@
             </condition>
         </fail>
 
+        <mkdir dir="${jardir}"/>
+        <mkdir dir="${jardir}/nobundle"/>
+
    <!--<pathconvert pathsep="," property="tmp.jarxml.path" refid="java.src.${module}" />-->
     </target>
 
@@ -59,7 +62,6 @@
 
     <target name="compile" depends="jar_init">
         <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
-        <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
         <javac source="1.5" target="1.5" debug="true" deprecation="true"
                 fork="true" memorymaximumsize="1024m" verbose="false"
@@ -76,7 +78,6 @@
     <!-- Same as "compile" target but with 2 sourcedirs -->
     <target name="compile2" depends="jar_init">
         <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
-        <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
         <javac source="1.5" target="1.5" debug="true" deprecation="true"
                 fork="true" memorymaximumsize="1024m" verbose="false"
@@ -96,7 +97,6 @@
     <!-- Same as "compile" target but with 3 sourcedirs -->
     <target name="compile3" depends="jar_init">
         <echo message="Compiling java classes: ${java.srcdir}/${module} excludes: ${module.excludes}"/>
-        <mkdir dir="${jardir}"/>
         <mkdir dir="${java.outdir}/${module}"/>
         <javac source="1.5" target="1.5" debug="true" deprecation="true"
                 fork="true" memorymaximumsize="1024m" verbose="false"
@@ -191,7 +191,6 @@
     <target name="makejar" depends="compile, copy-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
@@ -202,7 +201,6 @@
     <target name="makesrcjar" depends="copy-src-resources">
         <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
@@ -214,7 +212,6 @@
     <target name="makejar.qtjambi-util" depends="compile, copy-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <!-- FIXME: Chicken and Egg problem with ANT building, we need the -->
@@ -239,7 +236,6 @@
     <target name="makesrcjar.qtjambi-util" depends="copy-src-resources">
         <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
@@ -251,7 +247,6 @@
     <target name="makejar.qtjambi-examples" depends="compile2, copy-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar basedir="${java.outdir}/${module}" destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
@@ -282,7 +277,6 @@
     <target name="makesrcjar.qtjambi-examples" depends="copy-src-resources">
         <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
@@ -295,7 +289,6 @@
     <target name="makejar.qtjambi-designer" depends="compile2, copy-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
@@ -329,7 +322,6 @@
     <target name="makesrcjar.qtjambi-designer" depends="copy-src-resources">
         <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By" value="${user.name} - ${TODAY}"/>
@@ -343,7 +335,6 @@
     <target name="makejar.qtjambi" depends="compile3, copy-resources, copy-qreal-resources">
         <echo message="Creating JAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar destfile="${destdir}/${module}.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
@@ -377,7 +368,6 @@
     <target name="makesrcjar.qtjambi" depends="copy-src-resources, copy-qreal-src-resources">
         <echo message="Creating SRCJAR file: ${module}.jar   excludes: ${jar.excludes}"/>
         <property name="destdir" value="${jardir}"/>
-        <mkdir dir="${destdir}"/>
         <jar destfile="${destdir}/${module}-src.jar" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Built-By"                value="${user.name} - ${TODAY}"/>
