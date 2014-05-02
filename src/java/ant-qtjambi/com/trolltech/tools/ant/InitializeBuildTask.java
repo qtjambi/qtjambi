@@ -173,12 +173,25 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         // Other build information sanity testing and warning
 
         String generatorIncludepaths = AntUtil.getPropertyAsString(propertyHelper, Constants.GENERATOR_INCLUDEPATHS);
-        if(generatorIncludepaths != null) {
-            // Validate the settings
-            mySetProperty(-1, Constants.GENERATOR_INCLUDEPATHS, null, generatorIncludepaths, false);
 
-            prettifyPathSeparator(generatorIncludepaths, true);
+        // in case generator.includepaths was not specified in build.properties, let’s guess one
+        if(generatorIncludepaths == null) { // ${generator.includepaths}
+            String baseDir = AntUtil.getPropertyAsString(propertyHelper, Constants.DIRECTORY_ABSPATH);
+            javaHomeTarget = AntUtil.getPropertyAsString(propertyHelper, Constants.JAVA_HOME_TARGET);
+            if(OSInfo.isWindows()) {
+                generatorIncludepaths = baseDir + "/generator/targets;" + baseDir + "/src/cpp;" +
+                        javaHomeTarget + "/include;" + javaHomeTarget + "/include/" + javaHomeTarget;
+            } else {
+                generatorIncludepaths = baseDir + "/generator/targets:" + baseDir + "/src/cpp:" +
+                        javaHomeTarget + "/include:" + javaHomeTarget + "/include/" + javaHomeTarget;
+            }
         }
+
+        // Validate generator.includepaths
+        mySetProperty(-1, Constants.GENERATOR_INCLUDEPATHS, null, generatorIncludepaths, false);
+
+        prettifyPathSeparator(generatorIncludepaths, true);
+
         // On Windows it is usual to configure the compile include directory via envvar
         String INCLUDE = System.getenv("INCLUDE");
         if(INCLUDE != null) {
@@ -210,11 +223,6 @@ public class InitializeBuildTask extends AbstractInitializeTask {
             }
         }
 
-        // Sanity checking, the goal here is to abort the build process early
-        //  on so the developer doesn't waste their time getting an error
-        //  message later in the build process.
-        if(generatorIncludepaths == null)      // ${generator.includepaths}
-            throw new BuildException("ERROR: " + Constants.GENERATOR_INCLUDEPATHS + " property is not configured, please ensure you read and edit build.properties");
         String qtCore = AntUtil.getPropertyAsString(propertyHelper, Constants.CORE);
         String qtCoreDebug = AntUtil.getPropertyAsString(propertyHelper, Constants.CORE + ".debug");
         if(qtCore == null && qtCoreDebug == null)
@@ -336,7 +344,6 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         return thisConfiguration;
     }
 
-    
     // wantedSdk maybe "MacOSX10.5.sdk" or "/Developer/SDKs/MacOSX10.5.sdk"
     private String detectMacosxSdk(String wantedSdk) {
         if(OSInfo.isMacOS() == false)
