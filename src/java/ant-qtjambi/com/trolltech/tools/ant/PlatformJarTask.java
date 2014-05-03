@@ -827,6 +827,29 @@ public class PlatformJarTask extends Task {
         if(cplusplusRuntime != null)
             copyRuntime(cplusplusRuntime);
 
+        // libraries for all platforms
+        copyPlatformAgnosticRuntime("png");
+    }
+
+    private void copyPlatformAgnosticRuntime(String name) {
+        String libName = "";
+        switch(OSInfo.os()) {
+            case Windows:
+                libName = name + ".dll";
+                break;
+            case MacOS:
+                libName = "lib" + name + ".dylib";
+                break;
+            case Solaris:
+            case Linux:
+            case FreeBSD:
+                libName ="lib" + name + ".so";
+                break;
+            default:
+                libName = name;
+        }
+
+        copyRuntime(libName);
     }
 
     private void copyRuntime(String name) {
