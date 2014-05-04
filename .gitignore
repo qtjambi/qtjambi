@@ -20,3 +20,6 @@ qtjambi*.jar
 
 # qdoc3 output location
 doc/html/com/trolltech/qt/*
+
+# Intellij Idea project files
+*.iml
