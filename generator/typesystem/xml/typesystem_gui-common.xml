@@ -124,11 +124,20 @@
     <enum-type name="QAbstractSpinBox::ButtonSymbols"/>
     <enum-type name="QAbstractSpinBox::CorrectionMode"/>
     <enum-type name="QAbstractSpinBox::StepEnabledFlag" flags="QAbstractSpinBox::StepEnabled"/>
+
+    <enum-type name="QAccessible::Action">
+        <reject-enum-value name="FirstStandardAction"/>
+        <reject-enum-value name="LastStandardAction"/>
+    </enum-type>
     <enum-type name="QAccessible::Event"/>
     <enum-type name="QAccessible::Method"/>
     <enum-type name="QAccessible::RelationFlag" flags="QAccessible::Relation"/>
+    <enum-type name="QAccessible::Role">
+        <reject-enum-value name="Button"/>
+    </enum-type>
     <enum-type name="QAccessible::StateFlag" flags="QAccessible::State"/>
     <enum-type name="QAccessible::Text"/>
+
     <enum-type name="QDesktopServices::StandardLocation" />
     <enum-type name="QDirModel::Roles"/>
     <enum-type name="QFont::Capitalization" />
@@ -432,15 +441,6 @@
     <enum-type name="QWizard::WizardButton">
         <reject-enum-value name="NStandardButtons"/>
         <reject-enum-value name="NButtons"/>
-    </enum-type>
-
-    <enum-type name="QAccessible::Action">
-        <reject-enum-value name="FirstStandardAction"/>
-        <reject-enum-value name="LastStandardAction"/>
-    </enum-type>
-
-    <enum-type name="QAccessible::Role">
-        <reject-enum-value name="Button"/>
     </enum-type>
 
     <enum-type name="QBoxLayout::Direction">
