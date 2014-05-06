@@ -127,7 +127,6 @@
     <enum-type name="QAccessible::Event"/>
     <enum-type name="QAccessible::Method"/>
     <enum-type name="QAccessible::RelationFlag" flags="QAccessible::Relation"/>
-    <enum-type name="QAccessible::Role"/>
     <enum-type name="QAccessible::StateFlag" flags="QAccessible::State"/>
     <enum-type name="QAccessible::Text"/>
     <enum-type name="QDesktopServices::StandardLocation" />
@@ -438,6 +437,10 @@
     <enum-type name="QAccessible::Action">
         <reject-enum-value name="FirstStandardAction"/>
         <reject-enum-value name="LastStandardAction"/>
+    </enum-type>
+
+    <enum-type name="QAccessible::Role">
+        <reject-enum-value name="Button"/>
     </enum-type>
 
     <enum-type name="QBoxLayout::Direction">
