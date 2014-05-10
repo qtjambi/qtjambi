@@ -572,7 +572,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
 
         if(!versionFound) {
             // Run "qmake -query"
-            String qmakeExe = AntUtil.getPropertyAsString(propertyHelper, "qmake.binary");
+            String qmakeExe = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE);
             qmakeExe = QMakeTask.resolveExecutableAbsolutePath(getProject(), qmakeExe);
 
             final String K_QT_VERSION = "QT_VERSION";
