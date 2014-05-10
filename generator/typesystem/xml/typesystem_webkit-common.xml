@@ -76,6 +76,7 @@
                  <define-ownership class="java" owner="cplusplus"/>
             </modify-argument>
         </modify-function>
+        <modify-function signature="applicationCacheQuotaExceeded(QWebSecurityOrigin*,unsigned long long,unsigned long long)" rename="applicationCacheQuotaExceeded_3"/><!-- required in order to compile in the Ubuntu family tree-->
     </object-type>
 
     <value-type name="QWebHitTestResult">
