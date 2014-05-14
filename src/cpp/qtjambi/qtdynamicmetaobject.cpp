@@ -174,7 +174,6 @@ void QtDynamicMetaObjectPrivate::initialize(JNIEnv *env, jclass java_class, cons
         for (int i=0; i<m_method_count + m_signal_count; ++i) {
             jobject lr_string = env->GetObjectArrayElement(original_signatures, i);
             m_original_signatures[i] = qtjambi_to_qstring(env, (jstring) lr_string);
-fprintf(stderr, "QtDynamicMetaObjectPrivate::QtDynamicMetaObjectPrivate(%p) initialize q->d=%p m_original_signatures[%d]=\"%s\"\n", this, &q->d, i, qPrintable(m_original_signatures[i]));
 #ifdef QTJAMBI_DEBUG_LOCALREF_CLEANUP
             env->DeleteLocalRef(lr_string);
 #endif
