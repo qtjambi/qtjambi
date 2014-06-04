@@ -143,7 +143,7 @@
     <target name="qtjambi.source" depends="log, generator.run">
         <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${java.srcdir}/qtjambi">
         </zip>
-        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${generator.outputdir}/java/qtjambi" update="true">
+        <zip destfile="qtjambi-${qtjambi.version}-src.zip" basedir="${generator.outputdir}/java" update="true">
         </zip>
     </target>
 
