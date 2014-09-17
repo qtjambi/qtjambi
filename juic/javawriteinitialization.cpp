@@ -1532,22 +1532,17 @@ void WriteInitialization::acceptConnection(DomConnection *connection)
         QString signalName, slotSignature;
 
         QString signal = connection->elementSignal();
+        signal = signal.replace(QRegExp("\\(.*\\)"), "");
 
         // Java connection, no type mapping...
         int ltPos = signal.indexOf(QLatin1Char('<'));
-        if (ltPos >= 1 || !signal.contains(QLatin1Char('('))) {
+        if (ltPos >= 1) {
             signalName = ltPos >= 1 ? signal.left(ltPos) : signal;
-            slotSignature = connection->elementSlot();
-
-        // C++ signature on connection...
         } else {
-            fprintf(stderr,
-                    "Malformed signal/slot connection '%s::%s -> %s::%s', C++ syntax not allowed",
-                    qPrintable(senderClassName),
-                    qPrintable(connection->elementSignal()),
-                    qPrintable(connection->elementReceiver()),
-                    qPrintable(connection->elementSlot()));
+            signalName = signal;
         }
+
+        slotSignature = connection->elementSlot();
 
         if (signalName.isEmpty () || slotSignature.isEmpty()) {
             fprintf(stderr, "Connection rejected: %s::%s -> %s::%s\n",
