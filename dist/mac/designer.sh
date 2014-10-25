@@ -14,7 +14,7 @@ then
     echo "is available in the PATH environment."
 else
     VERSION=$(ls qtjambi-4*.jar)
-    VERSION=${VERSION:8:8}
+    VERSION=${VERSION:8:5}
     CP=qtjambi-$VERSION.jar:qtjambi-examples-$VERSION.jar:qtjambi-designer-$VERSION.jar
     DYLD_LIBRARY_PATH=$me/lib QT_PLUGIN_PATH=$me/plugins PATH=$me/bin:$PATH CLASSPATH=$CP $me/bin/designer.app/Contents/MacOS/Designer
 fi
