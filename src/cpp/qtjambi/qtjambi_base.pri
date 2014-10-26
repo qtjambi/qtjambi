@@ -36,7 +36,7 @@ DEPENDPATH += $$PWD/..
 
 macx:{
     # if(!defined(QMAKE_MAC_SDK)) { }
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.5.sdk
+    #QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.5.sdk # handled by QMakeTask
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     LIBS += -framework JavaVM
     QMAKE_EXTENSION_SHLIB = jnilib

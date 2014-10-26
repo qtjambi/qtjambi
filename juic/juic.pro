@@ -33,7 +33,7 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
 }
 
 mac {
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.5.sdk
+    #QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.5.sdk # handled by QMakeTask
     # (commented out) To inherit the Qt SDK default arches
     #contains(QT_CONFIG, x86):CONFIG += x86
     #contains(QT_CONFIG, ppc):CONFIG += ppc

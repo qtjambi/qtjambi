@@ -39,8 +39,8 @@ contains(QT_CONFIG, release):contains(QT_CONFIG, debug) {
 win32:CONFIG += precompile_header
 
 macx {
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
-    QMAKE_MACOSX_DEPLOYMENT_TARGET=10.4
+    #QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk # handled by QMakeTask
+    #QMAKE_MACOSX_DEPLOYMENT_TARGET=10.4
     contains(QT_CONFIG, x86):CONFIG += x86
     contains(QT_CONFIG, ppc):CONFIG += ppc
     contains(QT_CONFIG, x86_64):CONFIG += x86_64
