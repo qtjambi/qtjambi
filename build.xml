@@ -14,6 +14,8 @@
 -->
 
 <project default="help" basedir="." name="qtjambi.main">
+
+    <!-- We want environment variables to be available on Ant files -->
     <property environment="env"/>
 
     <property name="jambi.directory"               value="${basedir}"/>

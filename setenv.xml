@@ -11,10 +11,9 @@
     <property file="${jambi.directory}/antcontrib.properties"/>
 
     <!--
-        We want the environment variables and we want a timestamp for jars.
+        we want a timestamp for jars.
     -->
 
-    <property environment="env"/>
     <tstamp/>
 
     <!--
