@@ -26,6 +26,7 @@ cp build/qtjambi-native-$OS-$COMPILER-$VERSION.jar $RELEASE
 
 cp dist/mac/qtjambi.sh $RELEASE
 cp dist/mac/designer.sh $RELEASE
+cp dist/mac/juic.sh $RELEASE
 cp dist/mac/installer-osx.sh $RELEASE
 #cp set_qtjambi_env.sh $RELEASE
 cp dist/changes-$VERSION $RELEASE
