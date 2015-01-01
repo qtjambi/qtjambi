@@ -1131,41 +1131,72 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         mySetProperty(verbose, Constants.DIRECTORY_ABSPATH, null, value, false);
     }
 
-    private void solveEmits(String QTDIR) {
+    private void handleProperty(String QTDIR, String property, String qmakeProperty) {
         String sourceValue = null;
-
-        final String[] emitA = {
-                Constants.BINDIR,
-                Constants.LIBDIR,
-                Constants.INCLUDEDIR,
-                Constants.PLUGINSDIR
-        };
-        for(String emit : emitA) {
-            sourceValue = null;
-            String value = AntUtil.getPropertyAsString(propertyHelper, emit);
-            File dir = null;
-            if(value != null) {
-                dir = new File(value);
-            } else if(value == null && QTDIR != null) {
-                dir = resolveDirectoryViaQTDIR(QTDIR, emit);
-                if(dir != null) {
-                    value = dir.getAbsolutePath();
-                    sourceValue = " (from env var: QTDIR)";
-                }
-            }
+        String value = AntUtil.getPropertyAsString(propertyHelper, property);
+        File dir = null;
+        if(value != null) {
+            dir = new File(value);
+        } else if(value == null && QTDIR != null) {
+            dir = resolveDirectoryViaQTDIR(QTDIR, property);
             if(dir != null) {
-                if(dir.isDirectory() == false)
-                    sourceValue = " (WARNING: path does not exist or is not a directory)";
+                value = dir.getAbsolutePath();
+                sourceValue = " (from env var: QTDIR)";
             }
-            mySetProperty(-1, emit, sourceValue, value, false);
-        }
+        } else { // Use qmake -query [qmakeProperty] for the library path
+            String qmakeExe = AntUtil.getPropertyAsString(propertyHelper, Constants.QMAKE);
+            qmakeExe = QMakeTask.resolveExecutableAbsolutePath(getProject(), qmakeExe);
 
-        final String[] emitB = {
+            List<String> qmakeArgs = new ArrayList<String>();
+            qmakeArgs.add(qmakeExe);
+            qmakeArgs.add("-query");
+            qmakeArgs.add(qmakeProperty);
+
+            String tmpLibDir = null;
+
+            try {
+                File fileDir = new File(".");
+                String[] sA = Exec.executeCaptureOutput(qmakeArgs, fileDir, getProject(), null, false);
+                Util.emitDebugLog(getProject(), sA);
+                if(sA != null && sA.length == 2 && sA[0] != null)
+                    tmpLibDir = sA[0].replaceAll("\\s", ""); // stdout
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+            if(tmpLibDir != null) {
+                dir = new File(tmpLibDir);
+                sourceValue = "(From qmake -query)";
+                value = tmpLibDir;
+            }
+        }
+        if(dir != null) {
+            try {
+                dir = dir.getCanonicalFile();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+            if(dir.isDirectory() == false)
+                sourceValue = " (WARNING: path does not exist or is not a directory)";
+        }
+        mySetProperty(-1, property, sourceValue, value, false);
+    }
+
+    private void solveEmits(String QTDIR) {
+
+        handleProperty(QTDIR, Constants.BINDIR, "QT_INSTALL_BINS");
+        handleProperty(QTDIR, Constants.LIBDIR, "QT_INSTALL_LIBS");
+        handleProperty(QTDIR, Constants.INCLUDEDIR, "QT_INSTALL_HEADERS");
+        handleProperty(QTDIR, Constants.PLUGINSDIR, "QT_INSTALL_PLUGINS");
+
+        String sourceValue = null;
+        final String[] phononProperties = {
                 Constants.QTJAMBI_PHONON_INCLUDEDIR,
                 Constants.QTJAMBI_PHONON_LIBDIR,
                 Constants.QTJAMBI_PHONON_PLUGINSDIR
         };
-        for(String emit : emitB) {
+        for(String emit : phononProperties) {
             sourceValue = null;
             String value = AntUtil.getPropertyAsString(propertyHelper, emit);
             File dir = null;
@@ -1249,7 +1280,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         return osname;
     }
 
-    private Compiler solveCompiler(FindCompiler finder) {
+    private Compiler   solveCompiler(FindCompiler finder) {
         String sourceValue = null;
         Compiler compiler;
         Compiler detectedCompiler = finder.decideCompiler();
