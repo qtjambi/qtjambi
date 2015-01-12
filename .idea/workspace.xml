@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c9b1c152-c773-458b-a7ca-058a1425019d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/ant-qtjambi/com/trolltech/tools/ant/InitializeBuildTask.java" afterPath="$PROJECT_DIR$/src/java/ant-qtjambi/com/trolltech/tools/ant/InitializeBuildTask.java" />
-    </list>
+    <list default="true" id="c9b1c152-c773-458b-a7ca-058a1425019d" name="Default" comment="" />
     <ignored path="qtjambi.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,14 +24,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="InitializeBuildTask.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="InitializeBuildTask.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/java/ant-qtjambi/com/trolltech/tools/ant/InitializeBuildTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3529412" vertical-offset="19566" max-vertical-offset="27480">
+            <state vertical-scroll-proportion="0.0" vertical-offset="19566" max-vertical-offset="27480">
               <caret line="1326" column="37" selection-start-line="1326" selection-start-column="31" selection-end-line="1326" selection-end-column="37" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="QSignalEmitter.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build/java-src/qtjambi/com/trolltech/qt/QSignalEmitter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.3130352" vertical-offset="2341" max-vertical-offset="9420">
+              <caret line="184" column="20" selection-start-line="184" selection-start-column="12" selection-end-line="184" selection-end-column="23" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#7958#7959#0" expanded="true" />
+                <element signature="e#7995#7996#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -75,7 +81,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-6" />
     <option name="width" value="1932" />
-    <option name="height" value="1059" />
+    <option name="height" value="1179" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -374,7 +380,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="0" width="1932" height="1059" extended-state="6" />
+    <frame x="-6" y="0" width="1932" height="1179" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -430,11 +436,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/java/ant-qtjambi/com/trolltech/tools/ant/InitializeBuildTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3529412" vertical-offset="19566" max-vertical-offset="27480">
+        <state vertical-scroll-proportion="0.0" vertical-offset="19566" max-vertical-offset="27480">
           <caret line="1326" column="37" selection-start-line="1326" selection-start-column="31" selection-end-line="1326" selection-end-column="37" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build/java-src/qtjambi/com/trolltech/qt/QSignalEmitter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3130352" vertical-offset="2341" max-vertical-offset="9420">
+          <caret line="184" column="20" selection-start-line="184" selection-start-column="12" selection-end-line="184" selection-end-column="23" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#7958#7959#0" expanded="true" />
+            <element signature="e#7995#7996#0" expanded="true" />
           </folding>
         </state>
       </provider>
