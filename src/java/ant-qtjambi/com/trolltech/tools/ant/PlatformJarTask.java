@@ -780,13 +780,13 @@ public class PlatformJarTask extends Task {
             }
             break;
 
-        case MSVC1998:
+        case MSVC2003:
             if(debug) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            copyRuntime("msvcr60.dll");
-            copyRuntime("msvcp60.dll");
+            copyRuntime("msvcr71.dll");
+            copyRuntime("msvcp71.dll");
             break;
 
         case MSVC2002:
@@ -798,13 +798,13 @@ public class PlatformJarTask extends Task {
             copyRuntime("msvcp70.dll");
             break;
 
-        case MSVC2003:
+        case MSVC1998:
             if(debug) {
                 printVisualStudioDebugRuntimeWarning();
                 break;
             }
-            copyRuntime("msvcr71.dll");
-            copyRuntime("msvcp71.dll");
+            copyRuntime("msvcr60.dll");
+            copyRuntime("msvcp60.dll");
             break;
 
         case MinGW:
@@ -812,6 +812,8 @@ public class PlatformJarTask extends Task {
             break;
 
         case GCC:
+            copyPlatformAgnosticRuntime("png");
+
             // This is auto-detected and emitted in the descriptor now
             break;
 
@@ -826,9 +828,6 @@ public class PlatformJarTask extends Task {
         String cplusplusRuntime = AntUtil.getPropertyAsString(propertyHelper, Constants.PACKAGING_DSO_CPLUSPLUSRUNTIME);
         if(cplusplusRuntime != null)
             copyRuntime(cplusplusRuntime);
-
-        // libraries for all platforms
-        copyPlatformAgnosticRuntime("png");
     }
 
     private void copyPlatformAgnosticRuntime(String name) {
