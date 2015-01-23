@@ -88,7 +88,18 @@
         </taskdef>
     </target>
 
-    <target name="init" depends="log, init.taskdef">
+    <target name="checkOS">
+        <condition property="isMac">
+            <os family="mac" />
+        </condition>
+    </target>
+
+    <target name="setMacSDK" depends="checkOS" if="isMac">
+        <!-- QMakeTask will map this variable into QMAKE_MAC_SDK which is needed to compile some files -->
+        <property name="qtjambi.macosx.macsdk" value="${env.SDKROOT}"/>
+    </target>
+
+    <target name="init" depends="log, setMacSDK, init.taskdef">
         <qtjambi-initialize verbose="true"/>
         <!-- copy jogl to the jar dir. needed for compilation examples  -->
         <copy file="jogl/jogl.jar" todir="${jardir}"/>
@@ -106,7 +117,7 @@
     </target>
 
     <!--
-        END of initilization tasks
+        END of initialization tasks
     -->
 
     <!--
