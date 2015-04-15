@@ -51,10 +51,25 @@ If you wish to compile Jambi from sources, there is more information at [INSTALL
 Preferably, we will take contributions to our [Gerrit](http://gerrit.smar.fi/#/q/project:qtjambi-community):
 
 1. Register to [Gerrit](http://gerrit.smar.fi/#/q/project:qtjambi-community)
+
+For convenience, our Gerrit uses Github as authentication. When you click the Sign in button (for registration),
+it redirects to you Github for authorizing Gerrit to access some information in your profile. Afterwards,
+you can populate your Gerrit profile from Github data by choosing the GitHub tab from menu, Profile from sub-menu
+and you see your user information. After verifying they are correct, you can press the Import button and the information
+will be added to your Gerrit profile.
+
 2. Clone the git repository
-3. (only if clone is not from Gerrit) Add gerrit as remote ssh://[YOURUSER]@gerrit.smar.fi:29418/qtjambi-community
-4. Do your modifications
-5. git push gerrit HEAD:refs/for/master
+
+You can use a clone from Github as well as use Gerrit as only source. If you decide to use Github as main remote,
+you need to add gerrit as alternative remote: `git add remote gerrit ssh://[YOURUSER]@gerrit.smar.fi:29418/qtjambi-community`
+
+3. Do your modifications
+
+touch nya
+git add nya
+git commit nya -m "My new shiny commit"
+
+4. git push gerrit HEAD:refs/for/master
 
 More information about how Gerrit works can be found at their [official documentation](https://gerrit-documentation.storage.googleapis.com/Documentation/2.11/intro-quick.html).
 
