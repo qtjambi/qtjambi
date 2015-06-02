@@ -289,8 +289,15 @@ public class FindCompiler {
 
     private Compiler testForGCC() {
         try {
+            // TODO: there is similar logic for cross compiling for GCC, MinGW and something in InitializeBuildTask too. This should be unified.
+            String crossCompiler = System.getenv("CROSS_COMPILE");
+            String cmd = "gcc";
             List<String> cmdAndArgs = new ArrayList<String>();
-            cmdAndArgs.add("gcc");
+            if(crossCompiler != null) {
+                System.out.println("NOTE: CROSS_COMPILE has been specified, with value " + crossCompiler + ". compiler executables will be prefixed with this value.");
+                cmd = crossCompiler += cmd;
+            }
+            cmdAndArgs.add(cmd);
             cmdAndArgs.add("-dumpversion");
             String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
             Util.emitDebugLog(project, sA);
@@ -319,7 +326,7 @@ public class FindCompiler {
             patternA[i] = Pattern.compile(regexA[i]);
         for(String s : sA) {
             // regex does appear to still work without needing to ensure not multiline ah but habbit
-            s = s.replace('\r', ' ');  
+            s = s.replace('\r', ' ');
             s = s.replace('\n', ' ');
             StringBuilder sb = new StringBuilder();
             sb.append(">>" + s);
@@ -343,7 +350,11 @@ public class FindCompiler {
      */
     private Compiler testForMinGW() {
         try {
+            String crossCompiler = System.getenv("CROSS_COMPILE");
             List<String> cmdAndArgs = new ArrayList<String>();
+            if(crossCompiler != null) {
+                cmdAndArgs.add(crossCompiler);
+            }
             cmdAndArgs.add("gcc");
             cmdAndArgs.add("-v");
             String[] sA = Exec.executeCaptureOutput(cmdAndArgs, new File("."), project, null, false);
@@ -364,7 +375,6 @@ public class FindCompiler {
     }
 
     private Compiler testForMinGW_W64() {
-        // FIXME: Prepend $CROSS_COMPILE
         String crossCompiler = System.getenv("CROSS_COMPILE");
         String cmd;
         if(crossCompiler != null)

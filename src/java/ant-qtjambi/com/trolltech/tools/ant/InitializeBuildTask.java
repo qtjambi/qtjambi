@@ -1287,6 +1287,9 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         String compilerValue = AntUtil.getPropertyAsString(propertyHelper, Constants.COMPILER);
         if(compilerValue == null) {
             sourceValue = " (available compilers: " + finder.getAvailableCompilers() + "; auto-detected)";
+            if(detectedCompiler == null) {
+                throw new BuildException("ERROR: Compiler was not detected.");
+            }
             compilerValue = detectedCompiler.toString();
         } else {
             if("help".equals(compilerValue) || "?".equals(compilerValue)) {
