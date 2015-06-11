@@ -812,7 +812,7 @@ public class PlatformJarTask extends Task {
             break;
 
         case GCC:
-            copyPlatformAgnosticRuntime("png");
+            //copyPlatformAgnosticRuntime("png");
 
             // This is auto-detected and emitted in the descriptor now
             break;
