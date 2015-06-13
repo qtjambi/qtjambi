@@ -15,7 +15,7 @@ and for programs and libraries built with Qt.
 ## Features
 
 * Qt 4.8 compliant bindings for Linux, Mac OSX and Windows
-* “Stand-alone” generator for generating bindings for miscelleanous Qt programs and libraries
+* “Stand-alone” generator for generating bindings for miscellaneous Qt programs and libraries
 
 ### Known problems
 
@@ -42,7 +42,9 @@ drop QtWebkit, if you don’t need it.
 
 Newest releases can be found at http://qtjambi.org/downloads.
 
-If you wish to compile Jambi from sources, there is more information at [INSTALL.md](install.md).
+If you wish to compile Jambi from sources, there is more information at [INSTALL.md](INSTALL.md).
+
+For a more detailed guide check our [Compiling Guides](http://redmine.smar.fi/projects/qtjambi/wiki/Compiling_Guides) 
 
 ## Contributing
 
