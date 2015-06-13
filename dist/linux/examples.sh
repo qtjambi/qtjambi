@@ -1,13 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
 me=$(dirname $0)
-
-if [ -e binpatch ];
-then
-    ./binpatch
-    export LD_LIBRARY_PATH=$me/lib
-    export QT_PLUGIN_PATH=$me/plugins
-fi
 
 if ! java -version 2>&1 | grep -q "1\.[5-9]"
 then
@@ -15,8 +8,13 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    for lib in $(ls $me/qtjambi*.jar); do
-        CP=$lib:$CP
-    done
+    VERSION=$(ls qtjambi-4*.jar)
+    VERSION=${VERSION:8:5}
+
+    OS=$(ls qtjambi-native-*.jar)
+    OS=${OS:15:7}
+
+    CP=$me/qtjambi-$VERSION.jar:$me/qtjambi-examples-src.jar:$me/qtjambi-examples-$VERSION.jar:$me/qtjambi-native-$OS-gcc-$VERSION.jar
+
     java -cp $CP com.trolltech.launcher.Launcher
 fi

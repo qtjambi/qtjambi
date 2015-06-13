@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ -e binpatch ];
 then
     ./binpatch
@@ -11,7 +13,21 @@ then
     echo "to work. If Java is installed then make sure that the 'java' executable"
     echo "is available in the PATH environment."
 else
-    VERSION=`sed '/^\#/d' version.properties | grep 'qtjambi.version'  | tail -n 1 | sed 's/^.*=//;s/^[[:space:]]*//;s/[[:space:]]*$//'`
+
+    if [ ! -d "plugins" ]; then
+        echo "Expanding Qt Jambi libs and plugins in order for Qt Designer to work."
+        ./designer_lib_expander.sh
+    fi
+
+    VERSION=$(ls qtjambi-4*.jar)
+    VERSION=${VERSION:8:5}
     CP=$me/qtjambi-$VERSION.jar:$me/qtjambi-examples-$VERSION.jar:$me/qtjambi-designer-$VERSION.jar
-    LD_LIBRARY_PATH=$me/lib QT_PLUGIN_PATH=$me/plugins CLASSPATH=$CP $me/bin/designer
+
+    if [ "$JAVA_HOME" == "" ]; then
+        JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
+        echo "Warning JAVA_HOME was not set! Attempting to use: "$JAVA_HOME
+        LD_LIBRARY_PATH=$me/lib QT_PLUGIN_PATH=$me/plugins CLASSPATH=$CP JAVA_HOME=$JAVA_HOME $me/bin/designer
+    else
+        LD_LIBRARY_PATH=$me/lib QT_PLUGIN_PATH=$me/plugins CLASSPATH=$CP $me/bin/designer
+    fi
 fi
