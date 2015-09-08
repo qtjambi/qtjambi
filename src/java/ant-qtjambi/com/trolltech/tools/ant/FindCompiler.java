@@ -34,6 +34,8 @@ public class FindCompiler {
         MSVC2010_64("msvc2010x64"),
         MSVC2012("msvc2012"),
         MSVC2012_64("msvc2012x64"),
+        MSVC2013("msvc2013"),
+        MSVC2013_64("msvc2013x64"),
         MinGW("mingw"),
         MinGW_W64("mingw-w64"),
         OldGCC("gcc3.3"),
@@ -61,6 +63,8 @@ public class FindCompiler {
             if(name.equals("msvc2010x64")) return MSVC2010_64;
             if(name.equals("msvc2012")) return MSVC2012;
             if(name.equals("msvc2012x64")) return MSVC2012_64;
+            if(name.equals("msvc2013")) return MSVC2013;
+            if(name.equals("msvc2013x64")) return MSVC2013_64;
             if(name.equals("mingw")) return MinGW;
             if(name.equals("mingw-w64")) return MinGW_W64;
             if(name.equals("gcc3.3")) return OldGCC;
@@ -81,6 +85,8 @@ public class FindCompiler {
             if(compiler == MSVC2010_64)
                 return true;
             if(compiler == MSVC2012_64)
+                return true;
+            if(compiler == MSVC2013_64)
                 return true;
             return false;
         }
@@ -111,6 +117,8 @@ public class FindCompiler {
             case MSVC2010_64:
             case MSVC2012:
             case MSVC2012_64:
+            case MSVC2013:
+            case MSVC2013_64:
                 return true;
             }
             return false;
@@ -132,6 +140,8 @@ public class FindCompiler {
         case MSVC2010_64:
         case MSVC2012:
         case MSVC2012_64:
+        case MSVC2013:
+        case MSVC2013_64:
             try {
                 String vcdir = System.getenv("VSINSTALLDIR");
                 if(vcdir == null) {
@@ -149,7 +159,7 @@ public class FindCompiler {
                         AntUtil.setNewProperty(props, Constants.VSINSTALLDIR, vcdir);
 
                         String redistDir;
-                        if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64 || compiler == Compiler.MSVC2012_64)
+                        if(compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64 || compiler == Compiler.MSVC2012_64 || compiler == Compiler.MSVC2013_64)
                             redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "amd64" });
                         else
                             redistDir = Util.pathCanon(new String[] { vcdir, "vc", "redist", "x86" });
@@ -175,7 +185,7 @@ public class FindCompiler {
     void checkCompilerBits() {
         if(OSInfo.os() == OSInfo.OS.Windows) {
             boolean vmx64 = OSInfo.osArchName().contains("64");
-            boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64 || compiler == Compiler.MSVC2012_64;
+            boolean compiler64 = compiler == Compiler.MSVC2005_64 || compiler == Compiler.MSVC2008_64 || compiler == Compiler.MSVC2010_64 || compiler == Compiler.MSVC2012_64 || compiler == Compiler.MSVC2013_64;
             if(vmx64 != compiler64) {
                 // This is allowed and is not an outright build failure, but warn the user.
                 if(vmx64)
@@ -419,6 +429,11 @@ public class FindCompiler {
                         return Compiler.MSVC2012_64;
                     return Compiler.MSVC2012;
                 }
+                if(stderr.contains("18.00")) {
+                    if(stderr.contains("x64"))
+                        return Compiler.MSVC2013_64;
+                    return Compiler.MSVC2013;
+                }
                 throw new BuildException("Failed to detect Visual Studio version\n  \"" + stderr + "\"");
             }
         } catch(InterruptedException ex) {
@@ -435,3 +450,4 @@ public class FindCompiler {
         return availableCompilers;
     }
 }
+

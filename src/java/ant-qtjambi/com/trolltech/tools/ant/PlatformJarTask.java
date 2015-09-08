@@ -709,6 +709,10 @@ public class PlatformJarTask extends Task {
 
         switch(c) {
         // The manifest based ones...
+        case MSVC2013:
+        case MSVC2013_64:
+            if(vcnumber == null)
+                vcnumber = "120";
         case MSVC2012:
         case MSVC2012_64:
             if(vcnumber == null)
@@ -1069,3 +1073,4 @@ getProject().log(this, " with.Name         =  " + with.getName(), Project.MSG_VE
         return sb.toString();
     }
 }
+
