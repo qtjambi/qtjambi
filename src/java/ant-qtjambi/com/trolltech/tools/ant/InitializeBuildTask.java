@@ -1280,7 +1280,7 @@ public class InitializeBuildTask extends AbstractInitializeTask {
         return osname;
     }
 
-    private Compiler   solveCompiler(FindCompiler finder) {
+    private Compiler solveCompiler(FindCompiler finder) {
         String sourceValue = null;
         Compiler compiler;
         Compiler detectedCompiler = finder.decideCompiler();
