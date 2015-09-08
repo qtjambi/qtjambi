@@ -1279,7 +1279,7 @@ QString WriteInitialization::pixCall(DomProperty *p) const
         s = p->elementPixmap()->text();
     }
 
-    if (s.isEmpty()){
+    if (s.isEmpty()) {
         if(type == QLatin1String("QIcon") &&
                 p->elementIconSet()->attributeTheme() != QLatin1String("")){
             QString iconName = p->elementIconSet()->attributeTheme();
@@ -1287,7 +1287,7 @@ QString WriteInitialization::pixCall(DomProperty *p) const
         }else {
             return "new " + type + QLatin1String("()");
         }
-    } else if (findImage(s) != 0){
+    } else if (findImage(s) != 0) {
         return QLatin1String("icon(") + s + QLatin1String("_ID)");
     }
 
